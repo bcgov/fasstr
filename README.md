@@ -7,6 +7,8 @@ fasstr
 
 This is a set of R functions to summarize, analyze, and visualize streamflow data.
 
+Very much under development, this package combines the BCWaterDischargeAnalysis package and FASST scripts in the bcgov repository.
+
 ### Features
 
 ### Installation
