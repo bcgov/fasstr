@@ -24,7 +24,7 @@
 #' @param flow.data Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
 #'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Q' column with the daily 
 #'    mean streamflow values in units of cubic metres per second. \code{flow.data} not required if \code{HYDAT} is used.
-#' @HYDAT Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
+#' @param HYDAT Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
 #'    tidyhydat package and a downloaded SQLite HYDAT required.
 #' @param water.year Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
 #'    default calendar year (Jan-Dec) (\code{water.year=FALSE}). Water years are designated by the year which they end in
@@ -33,6 +33,7 @@
 #'    year of the data provided.
 #' @param end.year Numeric. The last year of streamflow data to analyze. If unset, the default \code{end.year} is the last
 #'    year of the data provided.
+#' @param excluded.years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).    
 #' @param basin.area Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm).
 #'    If no value provided, yield calculations will result in NA values.
 #' @param write.table Logical. Should a file be created with the calendar year computed percentiles?
@@ -847,6 +848,7 @@ annual.stats <- function(station.name=NULL,
   return(list( "station name"= station.name,
                "year type"=ifelse(!water.year,"Calendar Year (Jan-Dec)","Water Year (Oct-Sep)"),
                "year range"=paste0(start.year," - ",end.year),
+               exclude.years=exclude.years,
                Q.flow.summary=flow.sum,
                Q.stat.annual=Q.stat,
                Q.stat.annual.trans=Q.stat.trans,

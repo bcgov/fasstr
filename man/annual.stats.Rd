@@ -22,6 +22,9 @@ data and no \code{station.name} is provided, the HYDAT station number will be th
 Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Q' column with the daily 
 mean streamflow values in units of cubic metres per second. \code{flow.data} not required if \code{HYDAT} is used.}
 
+\item{HYDAT}{Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
+tidyhydat package and a downloaded SQLite HYDAT required.}
+
 \item{water.year}{Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
 default calendar year (Jan-Dec) (\code{water.year=FALSE}). Water years are designated by the year which they end in
 (e.g. water year 2000 start on 1 Oct 1999 and ends on 30 Sep 2000).}
@@ -66,6 +69,8 @@ The file name will be \code{file.path(report.dir, paste(station.name,"-cumulativ
 \item{csv.nddigits}{Numeric. Number of significant digits to round the results in the written tables. Default is 3.}
 
 \item{debug}{TBD}
+
+\item{excluded.years}{Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).}
 }
 \value{
 A list with the following elements:
