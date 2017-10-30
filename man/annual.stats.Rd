@@ -6,7 +6,7 @@
 \usage{
 annual.stats(station.name = NULL, flow.data = NULL, HYDAT = NULL,
   water.year = FALSE, start.year = NULL, end.year = NULL,
-  exclude.year = NULL, basin.area = NA, zyp.trending = NA,
+  exclude.years = NULL, basin.area = NA, zyp.trending = NA,
   zyp.alpha = 0.05, write.table = FALSE, write.transposed.table = FALSE,
   write.summary.table = FALSE, write.lowflow.table = FALSE,
   plot.stat.trend = FALSE, plot.cumdepart = FALSE,

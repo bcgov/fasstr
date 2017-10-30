@@ -111,7 +111,7 @@ annual.stats <- function(station.name=NULL,
                          water.year=FALSE, #create another for own water year????
                          start.year=NULL,
                          end.year=NULL,
-                         exclude.year=NULL, # list of stations
+                         exclude.years=NULL, # list of stations
                          basin.area=NA, # if na, then all Yield values == NA
                          zyp.trending=NA,
                          zyp.alpha=0.05,
@@ -159,7 +159,7 @@ annual.stats <- function(station.name=NULL,
   if( !is.logical(plot.cumdepart))  {stop("plot.cumdepart parameter must be logical (TRUE/FALSE")}
   if( !is.logical(water.year))  {stop("water.year parameter must be logical (TRUE/FALSE")}
   
-  if( !is.null(exclude.year) & !is.numeric(exclude.year)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
+  if( !is.null(exclude.years) & !is.numeric(exclude.years)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
 
   if( !is.na(zyp.trending) & !zyp.trending %in% c("yuepilon","zhang"))   {
     stop('zyp.trending parameter must have either "yuepilon" or "zhang" listed')}
@@ -357,6 +357,7 @@ annual.stats <- function(station.name=NULL,
 
   Q.stat <- dplyr::filter(Q.stat, Year >= start.year & Year <= end.year)
   Q.stat <- dplyr::filter(Q.stat, Year >= min.year & Year <=max.year)
+  Q.stat[Q.stat$Year %in% exclude.years,-1] <- NA
 
 
   ## Write the files
