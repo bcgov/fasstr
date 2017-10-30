@@ -1,10 +1,16 @@
 Package: fasstr
-Title: What the Package Does (one line, title case)
+Title: Summarize, analyze, and visualize streamflow data.
 Version: 0.0.0.9000
-Authors@R: c(person("First", "Last", email = "first.last@example.com", role = c("aut", "cre")), 
+Authors@R: c(person("Jon", "Goetz", email = "jon.goetz@gov.bc.ca", role = c("aut", "cre")), 
                                    person("Province of British Columbia", role = "cph"))
-Description: What the package does (one paragraph).
+Description: This is a set of R functions to summarize, analyze, and visualize streamflow data.
 Depends: R (>= 3.4.2)
 License: Apache License (== 2.0) | file LICENSE
+URL: https://github.com/bcgov/fasstr
+BugReports: https://github.com/bcgov/fasstr/issues
 Encoding: UTF-8
+Imports:
+    dplyr (>= 0.7.3),
+    lubridate (>= 1.6.0),
+    tidyr (>= 0.7.1)
 LazyData: true
