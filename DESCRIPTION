@@ -11,6 +11,16 @@ BugReports: https://github.com/bcgov/fasstr/issues
 Encoding: UTF-8
 Imports:
     dplyr,
+    ggplot2,
+    grDevices,
     lubridate,
-    tidyr
+    plyr,
+    reshape2,
+    scales,
+    tidyr,
+    zoo,
+    zyp
+Remotes:
+Remotes: 
+    bcgov/tidyhydat
 LazyData: true
