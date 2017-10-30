@@ -4,41 +4,68 @@
 \alias{annual.stats}
 \title{Compute multiple annual statistics.}
 \usage{
-annual.stats(station.name = NULL, basin.area = NA, flow.data = NULL,
-  HYDAT = NULL, water.year = FALSE, start.year = NULL, end.year = NULL,
-  zyp.trending = NA, zyp.alpha = 0.05, write.table = FALSE,
-  write.transposed.table = FALSE, write.summary.table = FALSE,
-  write.lowflow.table = FALSE, plot.stat.trend = FALSE,
-  plot.cumdepart = FALSE, write.zyp.table = FALSE,
-  write.zyp.plots = FALSE, report.dir = ".", na.rm = list(na.rm.global =
-  FALSE), csv.nddigits = 3, debug = FALSE)
+annual.stats(station.name = NULL, flow.data = NULL, HYDAT = NULL,
+  water.year = FALSE, start.year = NULL, end.year = NULL,
+  exclude.year = NULL, basin.area = NA, zyp.trending = NA,
+  zyp.alpha = 0.05, write.table = FALSE, write.transposed.table = FALSE,
+  write.summary.table = FALSE, write.lowflow.table = FALSE,
+  plot.stat.trend = FALSE, plot.cumdepart = FALSE,
+  write.zyp.table = FALSE, write.zyp.plots = FALSE, report.dir = ".",
+  na.rm = list(na.rm.global = FALSE), csv.nddigits = 3, debug = FALSE)
 }
 \arguments{
-\item{write.table}{Should a file be created with the calendar year computed percentiles?
+\item{station.name}{Character. Identifier name of the stream or station. Required when supplying data through \code{flow.data}.
+The station name will be used in plots and filenames of exported tables and plot. If using \code{HYDAT} to supply
+data and no \code{station.name} is provided, the HYDAT station number will be the identifier.}
+
+\item{flow.data}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
+Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Q' column with the daily 
+mean streamflow values in units of cubic metres per second. \code{flow.data} not required if \code{HYDAT} is used.}
+
+\item{water.year}{Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
+default calendar year (Jan-Dec) (\code{water.year=FALSE}). Water years are designated by the year which they end in
+(e.g. water year 2000 start on 1 Oct 1999 and ends on 30 Sep 2000).}
+
+\item{start.year}{Numeric. The first year of streamflow data to analyze. If unset, the default \code{start.year} is the first
+year of the data provided.}
+
+\item{end.year}{Numeric. The last year of streamflow data to analyze. If unset, the default \code{end.year} is the last
+year of the data provided.}
+
+\item{basin.area}{Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm).
+If no value provided, yield calculations will result in NA values.}
+
+\item{write.table}{Logical. Should a file be created with the calendar year computed percentiles?
 The file name will be  \code{file.path(report.dir,paste(station.name,'-annual-cy-summary-stat.csv'))}.}
 
-\item{write.transposed.table}{Should a file be created with the transposed of the annual statistics
+\item{write.transposed.table}{Logical. Should a file be created with the transposed of the annual statistics
 (both calendar and water year)?
 The file name will be  \code{file.path(report.dir,paste(station.name,'-annual-summary-stat-trans.csv'))}.}
 
-\item{write.summary.table}{Should a file be created with a flow summary over the years between the
+\item{write.summary.table}{Logical. Should a file be created with a flow summary over the years between the
 start.year and end.year (inclusive). This summary includes number of days, number of missing values,
 mean, median, minimum, maximum, and standard deviation of \code{flow.data$Q}.
 The file name will be \code{file.path(report.dir, paste(station.name,"-period-record-summary.csv", sep=""))}.}
 
-\item{write.lowflow.table}{Should a file be created with the minimum value of \code{flow.data$Q} and date the
+\item{write.lowflow.table}{Logical. Should a file be created with the minimum value of \code{flow.data$Q} and date the
 minimum occured.
 The file name will be \code{file.path(report.dir,paste(station.name,"-lowflow-summary.csv",sep=""))}}
 
-\item{plot.stat.trend}{Should a file be created with plots of the statistics over the years
+\item{plot.stat.trend}{Logical. Should a file be created with plots of the statistics over the years
      between \code{start.year} and \code{end.year}.
 The file name will be \code{file.path(report.dir, paste(station.name,"-annual-trend.pdf",sep=""))}}
 
-\item{plot.cumdepart}{Should a file be created with plots of the yearly and cumulative departures
+\item{plot.cumdepart}{Logical. Should a file be created with plots of the yearly and cumulative departures
 from the grand mean between \code{start.year} and \code{end.year}.
 The file name will be \code{file.path(report.dir, paste(station.name,"-cumulative departure.pdf",sep=""))}}
 
-\item{debug}{}
+\item{report.dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
+
+\item{na.rm}{TBD}
+
+\item{csv.nddigits}{Numeric. Number of significant digits to round the results in the written tables. Default is 3.}
+
+\item{debug}{TBD}
 }
 \value{
 A list with the following elements:

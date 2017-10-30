@@ -17,34 +17,46 @@
 #' HYDAT database using the tidyhydat package and \code{HYDAT} parameter.
 #' and (optionally) saves the results in *.csv and *.pdf files.
 #'
-#' @param station.name
-#' @param basin.area
-#' @param flow.data
-#' @param water.year
-#' @param start.year
-#' @param end.year
-#' @param write.table Should a file be created with the calendar year computed percentiles?
+#' @param station.name Character. Identifier name of the stream or station. Required when supplying data through \code{flow.data}.
+#'    The station name will be used in plots and filenames of exported tables and plot. If using \code{HYDAT} to supply
+#'    data and no \code{station.name} is provided, the HYDAT station number will be the identifier.
+
+#' @param flow.data Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
+#'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Q' column with the daily 
+#'    mean streamflow values in units of cubic metres per second. \code{flow.data} not required if \code{HYDAT} is used.
+#' @HYDAT Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
+#'    tidyhydat package and a downloaded SQLite HYDAT required.
+#' @param water.year Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
+#'    default calendar year (Jan-Dec) (\code{water.year=FALSE}). Water years are designated by the year which they end in
+#'    (e.g. water year 2000 start on 1 Oct 1999 and ends on 30 Sep 2000).
+#' @param start.year Numeric. The first year of streamflow data to analyze. If unset, the default \code{start.year} is the first
+#'    year of the data provided.
+#' @param end.year Numeric. The last year of streamflow data to analyze. If unset, the default \code{end.year} is the last
+#'    year of the data provided.
+#' @param basin.area Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm).
+#'    If no value provided, yield calculations will result in NA values.
+#' @param write.table Logical. Should a file be created with the calendar year computed percentiles?
 #'    The file name will be  \code{file.path(report.dir,paste(station.name,'-annual-cy-summary-stat.csv'))}.
-#' @param write.transposed.table Should a file be created with the transposed of the annual statistics
+#' @param write.transposed.table Logical. Should a file be created with the transposed of the annual statistics
 #'    (both calendar and water year)?
 #'    The file name will be  \code{file.path(report.dir,paste(station.name,'-annual-summary-stat-trans.csv'))}.
-#' @param write.summary.table Should a file be created with a flow summary over the years between the
+#' @param write.summary.table Logical. Should a file be created with a flow summary over the years between the
 #'    start.year and end.year (inclusive). This summary includes number of days, number of missing values,
 #'    mean, median, minimum, maximum, and standard deviation of \code{flow.data$Q}.
 #'    The file name will be \code{file.path(report.dir, paste(station.name,"-period-record-summary.csv", sep=""))}.
-#' @param write.lowflow.table Should a file be created with the minimum value of \code{flow.data$Q} and date the
+#' @param write.lowflow.table Logical. Should a file be created with the minimum value of \code{flow.data$Q} and date the
 #'    minimum occured.
 #'    The file name will be \code{file.path(report.dir,paste(station.name,"-lowflow-summary.csv",sep=""))}
-#' @param plot.stat.trend Should a file be created with plots of the statistics over the years
+#' @param plot.stat.trend Logical. Should a file be created with plots of the statistics over the years
 #'         between \code{start.year} and \code{end.year}.
 #'    The file name will be \code{file.path(report.dir, paste(station.name,"-annual-trend.pdf",sep=""))}
-#' @param plot.cumdepart Should a file be created with plots of the yearly and cumulative departures
+#' @param plot.cumdepart Logical. Should a file be created with plots of the yearly and cumulative departures
 #'    from the grand mean between \code{start.year} and \code{end.year}.
 #'    The file name will be \code{file.path(report.dir, paste(station.name,"-cumulative departure.pdf",sep=""))}
-#' @param report.dir
-#' @param csv.nddigits
-#' @param na.rm
-#' @param debug
+#' @param report.dir Character. Folder location of where to write tables and plots. Default is the working directory.
+#' @param csv.nddigits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
+#' @param na.rm TBD
+#' @param debug TBD
 #'
 #' @return A list with the following elements:
 #'   \item{Q.flow.summary}{Data frame with flow summary.}
@@ -94,12 +106,13 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 annual.stats <- function(station.name=NULL,
-                         basin.area=NA, # if na, then all Yield values == NA
                          flow.data=NULL,
                          HYDAT=NULL,
                          water.year=FALSE, #create another for own water year????
                          start.year=NULL,
                          end.year=NULL,
+                         exclude.year=NULL, # list of stations
+                         basin.area=NA, # if na, then all Yield values == NA
                          zyp.trending=NA,
                          zyp.alpha=0.05,
                          write.table=FALSE,        # write out statistics on calendar year
@@ -145,6 +158,8 @@ annual.stats <- function(station.name=NULL,
   if( !is.logical(plot.stat.trend)) {stop("plot.stat.trend parameter must be logical (TRUE/FALSE")}
   if( !is.logical(plot.cumdepart))  {stop("plot.cumdepart parameter must be logical (TRUE/FALSE")}
   if( !is.logical(water.year))  {stop("water.year parameter must be logical (TRUE/FALSE")}
+  
+  if( !is.null(exclude.year) & !is.numeric(exclude.year)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
 
   if( !is.na(zyp.trending) & !zyp.trending %in% c("yuepilon","zhang"))   {
     stop('zyp.trending parameter must have either "yuepilon" or "zhang" listed')}
