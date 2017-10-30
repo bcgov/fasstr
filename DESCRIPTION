@@ -20,7 +20,6 @@ Imports:
     tidyr,
     zoo,
     zyp
-Remotes:
 Remotes: 
     bcgov/tidyhydat
 LazyData: true
