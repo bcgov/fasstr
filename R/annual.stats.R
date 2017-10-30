@@ -1,14 +1,28 @@
-#' @title Compute annual (calendar and water year) statistics.
+# Copyright 2017 Province of British Columbia
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+# http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and limitations under the License.
+
+#' @title Compute multiple annual statistics.
 #'
-#' @description Computes many annual (calendar and water year) statistics
+#' @description Computes annual statistics (summary statistics, trending) of streamflow data.
+#' Streamflow data can be supplied through the \code{flow.data} parameter or extracted from a 
+#' HYDAT database using the tidyhydat package and \code{HYDAT} parameter.
 #' and (optionally) saves the results in *.csv and *.pdf files.
 #'
-#' @template station.name
-#' @template basin.area
-#' @template flow.data
-#' @template water.year
-#' @template start.year
-#' @template end.year
+#' @param station.name
+#' @param basin.area
+#' @param flow.data
+#' @param water.year
+#' @param start.year
+#' @param end.year
 #' @param write.table Should a file be created with the calendar year computed percentiles?
 #'    The file name will be  \code{file.path(report.dir,paste(station.name,'-annual-cy-summary-stat.csv'))}.
 #' @param write.transposed.table Should a file be created with the transposed of the annual statistics
@@ -27,10 +41,10 @@
 #' @param plot.cumdepart Should a file be created with plots of the yearly and cumulative departures
 #'    from the grand mean between \code{start.year} and \code{end.year}.
 #'    The file name will be \code{file.path(report.dir, paste(station.name,"-cumulative departure.pdf",sep=""))}
-#' @template report.dir
-#' @template csv.nddigits
-#' @template na.rm
-#' @template debug
+#' @param report.dir
+#' @param csv.nddigits
+#' @param na.rm
+#' @param debug
 #'
 #' @return A list with the following elements:
 #'   \item{Q.flow.summary}{Data frame with flow summary.}
@@ -60,9 +74,7 @@
 #'                          end.year      =2014)
 #' }
 #' @export
-#' @import ggplot2
-#' @import scales
-#' @import utils
+
 #'
 #--------------------------------------------------------------
 # Compute the statistics on an (calendar and water) year basis
@@ -82,26 +94,26 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 annual.stats <- function(station.name=NULL,
-                                  basin.area=NA, # if na, then all Yield values == NA
-                                  flow.data=NULL,
-                                  HYDAT=NULL,
-                                  water.year=FALSE,
-                                  start.year=NULL,
-                                  end.year=NULL,
-                                  zyp.trending=NA,
-                                  zyp.alpha=0.05,
-                                  write.table=TRUE,        # write out statistics on calendar year
-                                  write.transposed.table=TRUE,  # write out statistics in transposed format (cy & wy)
-                                  write.summary.table=TRUE, # write out a summary of period of record
-                                  write.lowflow.table=TRUE,      # write out a summary of low flows
-                                  plot.stat.trend=FALSE,        # should you plot all of stat trends?
-                                  plot.cumdepart=FALSE,         # plot cumulative departure curves
-                                  write.zyp.table=FALSE,
-                                  write.zyp.plots=FALSE,
-                                  report.dir=".",
-                                  na.rm=list(na.rm.global=FALSE),
-                                  csv.nddigits=3,              # decimal digits for csv files for statistics
-                                  debug=FALSE){
+                         basin.area=NA, # if na, then all Yield values == NA
+                         flow.data=NULL,
+                         HYDAT=NULL,
+                         water.year=FALSE, #create another for own water year????
+                         start.year=NULL,
+                         end.year=NULL,
+                         zyp.trending=NA,
+                         zyp.alpha=0.05,
+                         write.table=FALSE,        # write out statistics on calendar year
+                         write.transposed.table=FALSE,  # write out statistics in transposed format (cy & wy)
+                         write.summary.table=FALSE, # write out a summary of period of record
+                         write.lowflow.table=FALSE,      # write out a summary of low flows
+                         plot.stat.trend=FALSE,        # should you plot all of stat trends?
+                         plot.cumdepart=FALSE,         # plot cumulative departure curves
+                         write.zyp.table=FALSE,
+                         write.zyp.plots=FALSE,
+                         report.dir=".",
+                         na.rm=list(na.rm.global=FALSE),
+                         csv.nddigits=3,              # decimal digits for csv files for statistics
+                         debug=FALSE){
   #  Compute statistics on an annual (calendar and water) year basis
   #
   #  See the man-roxygen director for definition of parameters
@@ -111,39 +123,39 @@ annual.stats <- function(station.name=NULL,
   #############################################################
   #  Some basic error checking on the input parameters
   #
-  Version <- packageVersion("BCWaterDischargeAnalysis")
+  Version <- packageVersion("fasstr")
   if( is.null(flow.data) & is.null(HYDAT)){stop("Flow or HYDAT parameters must be set")}
   if( !is.null(HYDAT) & !is.null(flow.data))  {stop("Must select either flow.data or HYDAT parameters, not both.")}
-  if( is.null(HYDAT) & is.null(station.name))  {stop("station.name required with flow.data parameter.")}
-  if( is.null(HYDAT) & !is.character(station.name))  {stop("station.name must be a character string.")}
-  if( is.null(HYDAT) & length(station.name)>1)        {stop("station.name cannot have length > 1")}
-  if( !is.na(basin.area) & !is.numeric(basin.area))    {stop("basin.area must be numeric")}
-  if( length(basin.area)>1)        {stop("basin.area cannot have length > 1")}
-  if( is.null(HYDAT) & !is.data.frame(flow.data))         {stop("flow.data is not a data frame.")}
+  if( is.null(HYDAT) & is.null(station.name))  {stop("station.name parameter is required with flow.data parameter.")}
+  if( is.null(HYDAT) & !is.character(station.name))  {stop("station.name parameter must be a character string.")}
+  if( is.null(HYDAT) & length(station.name)>1)        {stop("station.name parameter cannot have length > 1")}
+  if( !is.na(basin.area) & !is.numeric(basin.area))    {stop("basin.area parameter must be numeric")}
+  if( length(basin.area)>1)        {stop("basin.area parameter cannot have length > 1")}
+  if( is.null(HYDAT) & !is.data.frame(flow.data))         {stop("flow.data parameter is not a data frame.")}
   if( is.null(HYDAT) & !all(c("Date","Q") %in% names(flow.data))){
     stop("flow.data dataframe doesn't contain the variables Date and Q.")}
   if( is.null(HYDAT) & !inherits(flow.data$Date[1], "Date")){
-    stop("Date column in Flow data frame is not a date.")}
-  if( is.null(HYDAT) & !is.numeric(flow.data$Q))          {stop("Q column in flow dataframe is not numeric.")}
+    stop("Date column in flow.data dataframe is not a date.")}
+  if( is.null(HYDAT) & !is.numeric(flow.data$Q))          {stop("Q column in flow.data dataframe is not numeric.")}
   if( is.null(HYDAT) & any(flow.data$Q <0, na.rm=TRUE))   {stop('flow.data cannot have negative values - check your data')}
-  if( !is.logical(write.table))  {stop("write.table must be logical (TRUE/FALSE")}
-  if( !is.logical(write.transposed.table)){stop("write.transposed.table must be logical (TRUE/FALSE")}
-  if( !is.logical(write.summary.table)){stop("write.summary.table must be logical (TRUE/FALSE")}
-  if( !is.logical(write.lowflow.table)){ stop("write.lowflow.table must be logical (TRUE/FALSE)")}
-  if( !is.logical(plot.stat.trend)) {stop("plot.stat.trend must be logical (TRUE/FALSE")}
-  if( !is.logical(plot.cumdepart))  {stop("plot.cumdepart must be logical (TRUE/FALSE")}
-  if( !is.logical(water.year))  {stop("water.year must be logical (TRUE/FALSE")}
+  if( !is.logical(write.table))  {stop("write.table parameter must be logical (TRUE/FALSE")}
+  if( !is.logical(write.transposed.table)){stop("write.transposed.table parameter must be logical (TRUE/FALSE")}
+  if( !is.logical(write.summary.table)){stop("write.summary.table parameter must be logical (TRUE/FALSE")}
+  if( !is.logical(write.lowflow.table)){ stop("write.lowflow.table parameter must be logical (TRUE/FALSE)")}
+  if( !is.logical(plot.stat.trend)) {stop("plot.stat.trend parameter must be logical (TRUE/FALSE")}
+  if( !is.logical(plot.cumdepart))  {stop("plot.cumdepart parameter must be logical (TRUE/FALSE")}
+  if( !is.logical(water.year))  {stop("water.year parameter must be logical (TRUE/FALSE")}
 
   if( !is.na(zyp.trending) & !zyp.trending %in% c("yuepilon","zhang"))   {
-    stop('zyp.trending must have either "yuepilon" or "zhang" listed')}
-  if( !is.logical(write.zyp.table))  {stop("write.zyp.table must be logical (TRUE/FALSE")}
-  if( !is.logical(write.zyp.plots))  {stop("write.zyp.plots must be logical (TRUE/FALSE")}
+    stop('zyp.trending parameter must have either "yuepilon" or "zhang" listed')}
+  if( !is.logical(write.zyp.table))  {stop("write.zyp.table parameter must be logical (TRUE/FALSE")}
+  if( !is.logical(write.zyp.plots))  {stop("write.zyp.plots parameter must be logical (TRUE/FALSE")}
   if( is.na(zyp.trending) & (write.zyp.table | write.zyp.plots) ) {
-    stop('zyp.trending method must be selected to write results')}
-  if( !is.numeric(zyp.alpha))  { stop("zyp.alpha needs to be numeric")}
+    stop('zyp.trending parameter method must be selected to write results')}
+  if( !is.numeric(zyp.alpha))  { stop("zyp.alpha parameter needs to be numeric")}
 
   if( !dir.exists(as.character(report.dir)))      {stop("directory for saved files does not exist")}
-  if( !is.numeric(csv.nddigits))  { stop("csv.ndddigits needs to be numeric")}
+  if( !is.numeric(csv.nddigits))  { stop("csv.ndddigits parameter needs to be numeric")}
   csv.nddigits <- round(csv.nddigits[1])  # number of decimal digits for rounding in csv files
 
   if( !is.list(na.rm))              {stop("na.rm is not a list") }
@@ -154,7 +166,7 @@ annual.stats <- function(station.name=NULL,
   na.rm <- my.na.rm  # set the na.rm for the rest of the function.
 
   if (!is.null(HYDAT)) {
-    if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("HYDAT station does not exist.")}
+    if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
     if (is.null(station.name)) {station.name <- HYDAT}
     flow.data <- tidyhydat::DLY_FLOWS(STATION_NUMBER = HYDAT)
     flow.data <- dplyr::select(flow.data,Date,Q=Value)
@@ -163,7 +175,7 @@ annual.stats <- function(station.name=NULL,
   # Filter for start and end years
   if (!is.numeric(start.year)) {start.year <- lubridate::year(min(flow.data$Date))-water.year}
   if (!is.numeric(end.year)) {end.year <- lubridate::year(max(flow.data$Date))}
-  if(! (start.year <= end.year))    {stop("start.year must be less than end.year")}
+  if(! (start.year <= end.year))    {stop("start.year parameter must be less than end.year parameter")}
 
   #  Generate all dates between min and max dates and merge with flow
   #  data frame to generate any dates that were missing.
