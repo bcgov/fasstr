@@ -142,7 +142,7 @@ annual.stats <- function(station.name=NULL,
   if( !is.logical(write.zyp.table))  {stop("write.zyp.table parameter must be logical (TRUE/FALSE")}
   if( !is.na(write.zyp.plots) & !write.zyp.plots %in% c("png","jpeg","tiff","bmp"))  {
     stop("write.zyp.plots parameter must be logical (TRUE/FALSE)")}
-  if( is.na(zyp.trending) & (write.zyp.table | write.zyp.plots) ) {
+  if( is.na(zyp.trending) & (write.zyp.table | !is.na(write.zyp.plots)) ) {
     stop('zyp.trending parameter method must be selected to write results')}
   if( !is.numeric(zyp.alpha))  { stop("zyp.alpha parameter needs to be numeric")}
   
