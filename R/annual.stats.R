@@ -121,8 +121,8 @@ annual.stats <- function(station.name=NULL,
                          write.zyp.plots=FALSE,
                          report.dir=".",
                          na.rm=list(na.rm.global=FALSE),
-                         csv.nddigits=3,              # decimal digits for csv files for statistics
-){
+                         csv.nddigits=3              # decimal digits for csv files for statistics
+                         ){
   #  Compute statistics on an annual (calendar and water) year basis
   #
   #  See the man-roxygen director for definition of parameters
