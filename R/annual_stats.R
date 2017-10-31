@@ -431,7 +431,7 @@ annual_stats <- function(station_name=NULL,
       trends_plotdata <- dplyr::mutate(trends_plotdata,Year=as.numeric(Year))
       trends_plotdata <- dplyr::mutate(trends_plotdata,
                                        Units="Discharge (cms)",
-                                       Units=replace(Units, grepl("TOTALQ",Statistic), "Total Discharge (mil. cubic metres)"),
+                                       Units=replace(Units, grepl("TOTALQ",Statistic), "Total Discharge (cubic metres)"),
                                        Units=replace(Units, grepl("YIELD",Statistic), "Water Yield (mm)"),
                                        Units=replace(Units, grepl("FLOW",Statistic), "Day of Year"),
                                        Units=replace(Units, grepl("DAYS",Statistic), "Number of Days"))
@@ -482,7 +482,7 @@ annual_stats <- function(station_name=NULL,
           #int <- trends_resultsdata$intercept - trends_resultsdata$trend * (Start_Year)
           # Plot each metric
           trends_plot <- ggplot2::ggplot(trends_trendsdata,ggplot2::aes(x=Year,y=Value))+
-            ggplot2::geom_point(color="skyblue4")+
+            ggplot2::geom_point(color="skyblue4",size=3)+
             ggplot2::geom_line(alpha = 0.3,color="skyblue4") +
             #ggplot2::ggtitle(paste0(metric,"   (Sig. = ",round(trends_resultsdata$sig,3),")"))+
             ggplot2::ylab(trends_trendsdata$Units[1])+
@@ -491,7 +491,9 @@ annual_stats <- function(station_name=NULL,
             ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
             ggplot2::theme_bw() +
             ggplot2::theme(panel.border = ggplot2::element_rect(colour = "grey50", fill=NA, size=.1),
-                           panel.grid = ggplot2::element_blank())
+                           panel.grid = ggplot2::element_blank(),
+                           axis.text = ggplot2::element_text(size=12),
+                           axis.title = ggplot2::element_text(size=12))
           if (water_year) {trends_plot <- trends_plot + ggplot2::xlab("Water Year")}
           
           # If sig. trend, plot trend
