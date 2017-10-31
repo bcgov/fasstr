@@ -140,7 +140,7 @@ annual.stats <- function(station.name=NULL,
   if( !is.na(zyp.trending) & !zyp.trending %in% c("yuepilon","zhang"))   {
     stop('zyp.trending parameter must have either "yuepilon" or "zhang" listed')}
   if( !is.logical(write.zyp.table))  {stop("write.zyp.table parameter must be logical (TRUE/FALSE")}
-  if( !is.na(write.zyp.plots) & !write.zyp.plots %in% c("png","jpeg","tiff","bmp"))  {
+  if( !is.na(write.zyp.plots) & !write.zyp.plots %in% c("pdf","png","jpeg","tiff","bmp"))  {
     stop("write.zyp.plots parameter must be logical (TRUE/FALSE)")}
   if( is.na(zyp.trending) & (write.zyp.table | !is.na(write.zyp.plots)) ) {
     stop('zyp.trending parameter method must be selected to write results')}
