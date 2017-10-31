@@ -390,10 +390,6 @@ annual.stats <- function(station.name=NULL,
   Q.lowflows <- dplyr::select(Q.stat,
                               Year,dplyr::contains("MIN_0"),dplyr::contains("MINDOY_0"),
                               dplyr::contains("MIN_3"),dplyr::contains("MINDOY_3"))
-  # Q.lowflows <- tidyr::gather(Q.lowflows,Stat,Value,2:ncol(Q.lowflows))
-  # Q.lowflows <- dplyr::mutate(Q.lowflows,Stat=paste0(ifelse(water.year,paste("WY_"),paste("CY_")),Stat))
-  # Q.lowflows <- tidyr::spread(Q.lowflows,Stat,Value)
-  
   if (water.year) {
     Q.lowflows <- dplyr::mutate(Q.lowflows,
                                 WY_MINDate_01Day = as.Date(WY_MINDOY_01Day-1, origin=as.Date(paste0(Year-1,"-10-01"))),
