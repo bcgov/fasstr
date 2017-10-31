@@ -97,11 +97,11 @@ annual.stats <- function(station.name=NULL,
                          write.summary.table=FALSE, # write out a summary of period of record
                          write.lowflow.table=FALSE,      # write out a summary of low flows
                          write.zyp.table=FALSE,
-                         write.zyp.plots=FALSE,
+                         write.zyp.plots=NA,
                          report.dir=".",
                          na.rm=list(na.rm.global=FALSE),
-                         csv.nddigits=3              # decimal digits for csv files for statistics
-                         ){
+                         csv.nddigits=3){              # decimal digits for csv files for statistics
+                         
   #  Compute statistics on an annual (calendar and water) year basis
   #
   #  See the man-roxygen director for definition of parameters
@@ -113,7 +113,7 @@ annual.stats <- function(station.name=NULL,
   #
   Version <- packageVersion("fasstr")
   
-  if( is.null(flow.data) & is.null(HYDAT)) {stop("Flow or HYDAT parameters must be set")}
+  if( is.null(flow.data) & is.null(HYDAT)) {stop("flow.data or HYDAT parameters must be set")}
   if( !is.null(HYDAT) & !is.null(flow.data))  {stop("Must select either flow.data or HYDAT parameters, not both.")}
   if( is.null(HYDAT) & is.null(station.name))  {stop("station.name parameter is required with flow.data parameter.")}
   if( is.null(HYDAT) & !is.character(station.name))  {stop("station.name parameter must be a character string.")}
@@ -126,21 +126,22 @@ annual.stats <- function(station.name=NULL,
   if( is.null(HYDAT) & !is.numeric(flow.data$Q))          {stop("Q column in flow.data dataframe is not numeric.")}
   if( is.null(HYDAT) & any(flow.data$Q <0, na.rm=TRUE))   {stop('flow.data cannot have negative values - check your data')}
   
-  if( !is.logical(water.year))  {stop("water.year parameter must be logical (TRUE/FALSE")}
+  if( !is.logical(water.year))  {stop("water.year parameter must be logical (TRUE/FALSE)")}
   if( !is.null(exclude.years) & !is.numeric(exclude.years)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
   
   if( !is.na(basin.area) & !is.numeric(basin.area))    {stop("basin.area parameter must be numeric")}
   if( length(basin.area)>1)        {stop("basin.area parameter cannot have length > 1")}
   
-  if( !is.logical(write.table))  {stop("write.table parameter must be logical (TRUE/FALSE")}
-  if( !is.logical(write.transposed.table)){stop("write.transposed.table parameter must be logical (TRUE/FALSE")}
-  if( !is.logical(write.summary.table)){stop("write.summary.table parameter must be logical (TRUE/FALSE")}
+  if( !is.logical(write.table))  {stop("write.table parameter must be logical (TRUE/FALSE)")}
+  if( !is.logical(write.transposed.table)){stop("write.transposed.table parameter must be logical (TRUE/FALSE)")}
+  if( !is.logical(write.summary.table)){stop("write.summary.table parameter must be logical (TRUE/FALSE)")}
   if( !is.logical(write.lowflow.table)){ stop("write.lowflow.table parameter must be logical (TRUE/FALSE)")}
 
   if( !is.na(zyp.trending) & !zyp.trending %in% c("yuepilon","zhang"))   {
     stop('zyp.trending parameter must have either "yuepilon" or "zhang" listed')}
   if( !is.logical(write.zyp.table))  {stop("write.zyp.table parameter must be logical (TRUE/FALSE")}
-  if( !is.logical(write.zyp.plots))  {stop("write.zyp.plots parameter must be logical (TRUE/FALSE")}
+  if( !is.na(write.zyp.plots) & !write.zyp.plots %in% c("png","jpeg","tiff","bmp"))  {
+    stop("write.zyp.plots parameter must be logical (TRUE/FALSE)")}
   if( is.na(zyp.trending) & (write.zyp.table | write.zyp.plots) ) {
     stop('zyp.trending parameter method must be selected to write results')}
   if( !is.numeric(zyp.alpha))  { stop("zyp.alpha parameter needs to be numeric")}
@@ -255,12 +256,11 @@ annual.stats <- function(station.name=NULL,
                                       MEAN_DAILY    = mean(Q, na.rm=na.rm$na.rm.global),     # CY Mean Discharge (Based on Daily avgs)
                                       MEDIAN_DAILY  = median(Q, na.rm=na.rm$na.rm.global),  # CY median Discharge (Based on Daily avgs)
                                       TOTALQ_DAILY  = MEAN_DAILY*length(Q)*60*60*24,    # Yearly sum of daily avg (cms) *60*60*24 # deal with missing values
-                                      CUMQ_DAILY    = TOTALQ_DAILY/(60*60*24),      # Yearly sum of daily avg (cms) # deal with missing values
                                       YIELDMM_DAILY = TOTALQ_DAILY/basin.area/1000 ,
-                                      Date_25P_CUMQ_DAILY = DayofYear[ match(TRUE, CumQ > 0.25  *CUMQ_DAILY)],
-                                      Date_33P_CUMQ_DAILY = DayofYear[ match(TRUE, CumQ > 0.333 *CUMQ_DAILY)],
-                                      Date_50P_CUMQ_DAILY = DayofYear[ match(TRUE, CumQ > 0.50  *CUMQ_DAILY)],
-                                      Date_75P_CUMQ_DAILY = DayofYear[ match(TRUE, CumQ > 0.75  *CUMQ_DAILY)])
+                                      Date_25P_FLOW_DAILY = DayofYear[ match(TRUE, CumQ > 0.25  *TOTALQ_DAILY/(60*60*24))],
+                                      Date_33P_FLOW_DAILY = DayofYear[ match(TRUE, CumQ > 0.333 *TOTALQ_DAILY/(60*60*24))],
+                                      Date_50P_FLOW_DAILY = DayofYear[ match(TRUE, CumQ > 0.50  *TOTALQ_DAILY/(60*60*24))],
+                                      Date_75P_FLOW_DAILY = DayofYear[ match(TRUE, CumQ > 0.75  *TOTALQ_DAILY/(60*60*24))])
   Q.stat.annual <-   dplyr::rename(Q.stat.annual,Year=AnalysisYear)
   
   # four seasons
@@ -412,12 +412,19 @@ annual.stats <- function(station.name=NULL,
       utils::write.csv(temp, file=file.zyp.csv, row.names=FALSE)
     }
     
-    if (write.zyp.plots) {
-      file.zyp.pdf <- file.path(report.dir,paste(station.name,"-zyp-",zyp.trending,"-trends-results.pdf",sep=""))
-      
+    if (!is.na(write.zyp.plots)) {
       trends.plot.data <- tidyr::gather(Q.stat.trans,Year,Value,-1)
       trends.plot.data <- dplyr::mutate(trends.plot.data,Year=as.numeric(Year))
-      pdf(file = file.zyp.pdf,8,5)
+      trends.plot.data <- dplyr::mutate(trends.plot.data,
+                                        Units="Discharge (cms)",
+                                        Units=replace(Units, grepl("TOTALQ",Statistic), "Total Discharge (mil. cubic metres)"),
+                                        Units=replace(Units, grepl("YIELD",Statistic), "Water Yield (mm)"),
+                                        Units=replace(Units, grepl("FLOW",Statistic), "Day of Year"),
+                                        Units=replace(Units, grepl("DAYS",Statistic), "Number of Days"))
+     
+      if (write.zyp.plots=="pdf") {
+      file.zyp.pdf <- file.path(report.dir,paste(station.name,"-zyp-",zyp.trending,"-trends-results.pdf",sep=""))
+      pdf(file = file.zyp.pdf,8,4)
       for (metric in unique(trends.plot.data$Statistic)){
         # Filter for metric
         trends.data.metric <- dplyr::filter(trends.plot.data,Statistic==metric)
@@ -428,7 +435,7 @@ annual.stats <- function(station.name=NULL,
           ggplot2::geom_point()+
           ggplot2::geom_line(alpha = 0.3) +
           ggplot2::ggtitle(paste0(metric,"   (Sig. = ",round(trends.results.metric$sig,3),")"))+
-          ggplot2::ylab("Units")+
+          ggplot2::ylab(trends.data.metric$Units[1])+
           ggplot2::xlab("Year")+
           ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 12))+
           ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
@@ -444,6 +451,41 @@ annual.stats <- function(station.name=NULL,
         plot(trends.plot)
       }
       dev.off()
+      }
+   
+      ## PNG/JPG
+      if (write.zyp.plots %in% c("png","jpeg","tiff","bmp")) {
+      plot.dir <- paste(station.name,"-zyp-",zyp.trending,"-trends-results",sep = "")
+      dir.create(plot.dir)
+      for (metric in unique(trends.plot.data$Statistic)){
+        # Filter for metric
+        
+        file.zyp <- file.path(report.dir,plot.dir,paste(metric,".",write.zyp.plots,sep=""))
+        
+        trends.data.metric <- dplyr::filter(trends.plot.data,Statistic==metric)
+        trends.results.metric <- dplyr::filter(Q.zyp.trends,Statistic==metric)
+        #int <- trends.results.metric$intercept - trends.results.metric$trend * (Start_Year)
+        # Plot each metric
+        trends.plot <- ggplot2::ggplot(trends.data.metric,ggplot2::aes(x=Year,y=Value))+
+          ggplot2::geom_point()+
+          ggplot2::geom_line(alpha = 0.3) +
+          ggplot2::ggtitle(paste0(metric,"   (Sig. = ",round(trends.results.metric$sig,3),")"))+
+          ggplot2::ylab(trends.data.metric$Units[1])+
+          ggplot2::xlab("Year")+
+          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 12))+
+          ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
+          ggplot2::theme(panel.border = ggplot2::element_rect(colour = "grey50", fill=NA, size=.1),
+                         panel.grid = ggplot2::element_line(size=.2))
+        if (water.year) {trends.plot <- trends.plot + ggplot2::xlab("Water Year")}
+        
+        # If sig. trend, plot trend
+        if (trends.results.metric$sig < zyp.alpha & !is.na(trends.results.metric$sig)) {
+          trends.plot <- trends.plot +
+            ggplot2::geom_abline(slope = trends.results.metric$trend, intercept = (trends.results.metric$intercept - trends.results.metric$trend * (start.year)), colour="red")
+        }
+        ggplot2::ggsave(filename =file.zyp,trends.plot,width=8,height=4)
+      }
+      }
     }
   }
   
