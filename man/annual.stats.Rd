@@ -9,9 +9,9 @@ annual.stats(station.name = NULL, flow.data = NULL, HYDAT = NULL,
   exclude.years = NULL, basin.area = NA, zyp.trending = NA,
   zyp.alpha = 0.05, write.table = FALSE, write.transposed.table = FALSE,
   write.summary.table = FALSE, write.lowflow.table = FALSE,
-  plot.stat.trend = FALSE, plot.cumdepart = FALSE,
-  write.zyp.table = FALSE, write.zyp.plots = FALSE, report.dir = ".",
-  na.rm = list(na.rm.global = FALSE), csv.nddigits = 3, debug = FALSE)
+  plot.cumdepart = FALSE, write.zyp.table = FALSE,
+  write.zyp.plots = FALSE, report.dir = ".", na.rm = list(na.rm.global =
+  FALSE), csv.nddigits = 3)
 }
 \arguments{
 \item{station.name}{Character. Identifier name of the stream or station. Required when supplying data through \code{flow.data}.
@@ -54,10 +54,6 @@ The file name will be \code{file.path(report.dir, paste(station.name,"-period-re
 minimum occured.
 The file name will be \code{file.path(report.dir,paste(station.name,"-lowflow-summary.csv",sep=""))}}
 
-\item{plot.stat.trend}{Logical. Should a file be created with plots of the statistics over the years
-     between \code{start.year} and \code{end.year}.
-The file name will be \code{file.path(report.dir, paste(station.name,"-annual-trend.pdf",sep=""))}}
-
 \item{plot.cumdepart}{Logical. Should a file be created with plots of the yearly and cumulative departures
 from the grand mean between \code{start.year} and \code{end.year}.
 The file name will be \code{file.path(report.dir, paste(station.name,"-cumulative departure.pdf",sep=""))}}
@@ -67,8 +63,6 @@ The file name will be \code{file.path(report.dir, paste(station.name,"-cumulativ
 \item{na.rm}{TBD}
 
 \item{csv.nddigits}{Numeric. Number of significant digits to round the results in the written tables. Default is 3.}
-
-\item{debug}{TBD}
 
 \item{excluded.years}{Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).}
 }
