@@ -387,11 +387,11 @@ annual.stats <- function(station.name=NULL,
   
   # Write out the low flow summary
   # all mins and acutal dates
-  Q.lowflows <- dplyr::select(Q.stat.annual,Year,dplyr::contains("MIN_0"),dplyr::contains("MINDOY_0"),
-                                  dplyr::contains("MIN_3"),dplyr::contains("MINDOY_3"))
+  Q.lowflows <- dplyr::select(Q.stat.annual,
+                              Year,dplyr::contains("MIN_0"),dplyr::contains("MINDOY_0"),
+                              dplyr::contains("MIN_3"),dplyr::contains("MINDOY_3"))
   Q.lowflows <- tidyr::gather(Q.lowflows,Stat,Value,2:ncol(Q.lowflows))
   Q.lowflows <- dplyr::mutate(Q.lowflows,Stat=paste0(ifelse(water.year,paste("WY_"),paste("CY_")),Stat))
-  col.order <- c("Year",unique(Q.lowflows$Stat)) # to keep the same order as merged when spread below
   Q.lowflows <- tidyr::spread(Q.lowflows,Stat,Value)
   
   if (water.year) {
