@@ -446,15 +446,16 @@ annual_stats <- function(station_name=NULL,
           #int <- trends_resultsdata$intercept - trends_resultsdata$trend * (Start_Year)
           # Plot each metric
           trends_plot <- ggplot2::ggplot(trends_trendsdata,ggplot2::aes(x=Year,y=Value))+
-            ggplot2::geom_point()+
-            ggplot2::geom_line(alpha = 0.3) +
+            ggplot2::geom_point(color="skyblue4")+
+            ggplot2::geom_line(alpha = 0.3,color="skyblue4") +
             ggplot2::ggtitle(paste0(metric,"   (Sig. = ",round(trends_resultsdata$sig,3),")"))+
             ggplot2::ylab(trends_trendsdata$Units[1])+
             ggplot2::xlab("Year")+
             ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 12))+
             ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
+            ggplot2::theme_bw() +
             ggplot2::theme(panel.border = ggplot2::element_rect(colour = "grey50", fill=NA, size=.1),
-                           panel.grid = ggplot2::element_line(size=.2))
+                           panel.grid = ggplot2::element_blank())
           if (water_year) {trends_plot <- trends_plot + ggplot2::xlab("Water Year")}
           
           # If sig. trend, plot trend
@@ -481,15 +482,16 @@ annual_stats <- function(station_name=NULL,
           #int <- trends_resultsdata$intercept - trends_resultsdata$trend * (Start_Year)
           # Plot each metric
           trends_plot <- ggplot2::ggplot(trends_trendsdata,ggplot2::aes(x=Year,y=Value))+
-            ggplot2::geom_point()+
-            ggplot2::geom_line(alpha = 0.3) +
-            ggplot2::ggtitle(paste0(metric,"   (Sig. = ",round(trends_resultsdata$sig,3),")"))+
+            ggplot2::geom_point(color="skyblue4")+
+            ggplot2::geom_line(alpha = 0.3,color="skyblue4") +
+            #ggplot2::ggtitle(paste0(metric,"   (Sig. = ",round(trends_resultsdata$sig,3),")"))+
             ggplot2::ylab(trends_trendsdata$Units[1])+
             ggplot2::xlab("Year")+
             ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 12))+
             ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
+            ggplot2::theme_bw() +
             ggplot2::theme(panel.border = ggplot2::element_rect(colour = "grey50", fill=NA, size=.1),
-                           panel.grid = ggplot2::element_line(size=.2))
+                           panel.grid = ggplot2::element_blank())
           if (water_year) {trends_plot <- trends_plot + ggplot2::xlab("Water Year")}
           
           # If sig. trend, plot trend
