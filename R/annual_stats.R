@@ -438,7 +438,7 @@ annual_stats <- function(station_name=NULL,
       
       if (write_zyp_plots=="pdf") {
         file_Qtrends_zyp_plot <- file.path(report_dir,paste(station_name,"-zyp-",zyp_trending,"-trends-results.pdf",sep=""))
-        pdf(file = file.zyp.pdf,8,4)
+        pdf(file = file_Qtrends_zyp_plot,8,4)
         for (metric in unique(trends_plotdata$Statistic)){
           # Filter for metric
           trends_trendsdata <- dplyr::filter(trends_plotdata,Statistic==metric)
@@ -497,7 +497,7 @@ annual_stats <- function(station_name=NULL,
             trends_plot <- trends_plot +
               ggplot2::geom_abline(slope = trends_resultsdata$trend, intercept = (trends_resultsdata$intercept - trends_resultsdata$trend * (start_year)), colour="red")
           }
-          ggplot2::ggsave(filename =file.zyp,trends_plot,width=8,height=4)
+          ggplot2::ggsave(filename =plot_dir,trends_plot,width=8,height=4)
         }
       }
     }
