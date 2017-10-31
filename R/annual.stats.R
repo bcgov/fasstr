@@ -67,14 +67,14 @@
 #'
 #' @examples
 #' \dontrun{
-#' stat.annual <- annual.stats(
-#'                          station.name  ='ABCD',
-#'                          basin.area  =12345,
-#'                          HYDAT="08HB048",
-#'                          flow.data          =flow,
-#'                          water.year = TRUE,
-#'                          start.year    =1960,
-#'                          end.year      =2014)
+#' stat.annual <- annual.stats(HYDAT="08HB048")
+#' 
+#' #' stat.annual <- annual.stats(station.name  ='Mission Creek',
+#'                                basin.area    = 178,
+#'                                flow.data     = flow,
+#'                                water.year    = TRUE,
+#'                                start.year    = 1967,
+#'                                end.year      = 2014)
 #' }
 #' @export
 
