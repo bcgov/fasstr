@@ -63,7 +63,6 @@
 #'          \code{start.year} and \code{end.year}}
 #'   \item{file.stat.csv}{Object with file name of *.csv file with calendar year summary statistics.}
 #'   \item{file.stat.trans.csv}{Object with file name of *.csv file with transposed summary statistics.}
-#'   \item{file.stat.trend.pdf}{Object with file name of *.pdf file with plot of statistics over time.}
 #'   \item{file.cumdepart.pdf}{Object with file name of *.pdf file with plot of yearly and cumulative departures.}
 #'   \item{file.summary.csv}{Object with file name of *.csv file with summary statistics.}
 #'   \item{file.lowflow.csv}{Object with file name of *.csv file with low flow summary statistics.}
@@ -521,7 +520,6 @@ annual.stats <- function(station.name=NULL,
                dates.missing.flows=dates.missing.flows,
                file.stat.csv=file.stat.csv,
                file.stat.trans.csv=file.stat.trans.csv,
-               file.stat.trend.pdf=file.stat.trend.pdf,
                file.cumdepart.pdf=file.cumdepart.pdf,
                file.summary.csv=file.summary.csv,
                file.lowflow.csv=file.lowflow.csv,
