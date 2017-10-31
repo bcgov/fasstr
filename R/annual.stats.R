@@ -48,9 +48,6 @@
 #' @param write.lowflow.table Logical. Should a file be created with the minimum value of \code{flow.data$Q} and date the
 #'    minimum occured.
 #'    The file name will be \code{file.path(report.dir,paste(station.name,"-lowflow-summary.csv",sep=""))}
-#' @param plot.cumdepart Logical. Should a file be created with plots of the yearly and cumulative departures
-#'    from the grand mean between \code{start.year} and \code{end.year}.
-#'    The file name will be \code{file.path(report.dir, paste(station.name,"-cumulative departure.pdf",sep=""))}
 #' @param report.dir Character. Folder location of where to write tables and plots. Default is the working directory.
 #' @param csv.nddigits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
 #' @param na.rm TBD
@@ -63,7 +60,6 @@
 #'          \code{start.year} and \code{end.year}}
 #'   \item{file.stat.csv}{Object with file name of *.csv file with calendar year summary statistics.}
 #'   \item{file.stat.trans.csv}{Object with file name of *.csv file with transposed summary statistics.}
-#'   \item{file.cumdepart.pdf}{Object with file name of *.pdf file with plot of yearly and cumulative departures.}
 #'   \item{file.summary.csv}{Object with file name of *.csv file with summary statistics.}
 #'   \item{file.lowflow.csv}{Object with file name of *.csv file with low flow summary statistics.}
 #'   \item{na.rm}{Missing value flags.}
@@ -115,7 +111,6 @@ annual.stats <- function(station.name=NULL,
                          write.transposed.table=FALSE,  # write out statistics in transposed format (cy & wy)
                          write.summary.table=FALSE, # write out a summary of period of record
                          write.lowflow.table=FALSE,      # write out a summary of low flows
-                         plot.cumdepart=FALSE,         # plot cumulative departure curves
                          write.zyp.table=FALSE,
                          write.zyp.plots=FALSE,
                          report.dir=".",
@@ -156,8 +151,7 @@ annual.stats <- function(station.name=NULL,
   if( !is.logical(write.transposed.table)){stop("write.transposed.table parameter must be logical (TRUE/FALSE")}
   if( !is.logical(write.summary.table)){stop("write.summary.table parameter must be logical (TRUE/FALSE")}
   if( !is.logical(write.lowflow.table)){ stop("write.lowflow.table parameter must be logical (TRUE/FALSE)")}
-  if( !is.logical(plot.cumdepart))  {stop("plot.cumdepart parameter must be logical (TRUE/FALSE")}
-  
+
   if( !is.na(zyp.trending) & !zyp.trending %in% c("yuepilon","zhang"))   {
     stop('zyp.trending parameter must have either "yuepilon" or "zhang" listed')}
   if( !is.logical(write.zyp.table))  {stop("write.zyp.table parameter must be logical (TRUE/FALSE")}
@@ -472,36 +466,8 @@ annual.stats <- function(station.name=NULL,
   ## Do some plotting
   #################################
   
-  # make a plot of the cumulative departures
-  plot_cumdepart <- function(Q.stat, variable){
-    # find the grand mean over all of the years ignoring all missing values
-    grand.mean <- mean( Q.stat[, variable], na.rm=TRUE)
-    plotdata <- Q.stat[,c("Year",variable)]
-    plotdata <- plotdata[stats::complete.cases(plotdata),]   # remove all missing values
-    plotdata$diff.from.mean <- plotdata[, variable] - grand.mean
-    plotdata$cum.diff.from.mean <- cumsum(plotdata$diff.from.mean)
-    plot1 <- ggplot2::ggplot(data=plotdata,  ggplot2::aes(x=Year, y=cum.diff.from.mean))+
-      ggplot2::ggtitle(paste(station.name," - cumulative departure curve for ",variable,sep=""))+
-      ggplot2::geom_hline(yintercept=0)+
-      ggplot2::geom_segment( ggplot2::aes(x=Year, y=0, xend=Year, yend=diff.from.mean), size=2)+
-      ggplot2::geom_line()+
-      ggplot2::ylab("Departure from the mean")
-    plot1
-  }
+
   
-  file.cumdepart.pdf <- NA
-  if(plot.cumdepart){
-    # cumulative departure plots
-    file.cumdepart.pdf <- file.path(report.dir, paste(station.name,"-cumulative departure.pdf",sep=""))
-    var.list <- c("CY_MEAN_DAILY_SW","WY_MEAN_DAILY_SW", "CY_YIELDMM_DAILY_SW", "WY_YIELDMM_DAILY_SW",
-                  "ONDJFM_YIELDMM_DAILY_SW","AMJJAS_YIELDMM_DAILY_SW"   )
-    grDevices::pdf(file=file.cumdepart.pdf, h=8, w=11)
-    plyr::l_ply(var.list, function(x, Q.stat){
-      plot1 <- plot_cumdepart(Q.stat, x)
-      graphics::plot(plot1)
-    },Q.stat=Q.stat)
-    grDevices::dev.off()
-  }
   
   
   return(list( "station name"= station.name,
@@ -516,7 +482,6 @@ annual.stats <- function(station.name=NULL,
                dates.missing.flows=dates.missing.flows,
                file.stat.csv=file.stat.csv,
                file.stat.trans.csv=file.stat.trans.csv,
-               file.cumdepart.pdf=file.cumdepart.pdf,
                file.summary.csv=file.summary.csv,
                file.lowflow.csv=file.lowflow.csv,
                na.rm = na.rm,

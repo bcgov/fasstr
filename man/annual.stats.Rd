@@ -9,9 +9,8 @@ annual.stats(station.name = NULL, flow.data = NULL, HYDAT = NULL,
   exclude.years = NULL, basin.area = NA, zyp.trending = NA,
   zyp.alpha = 0.05, write.table = FALSE, write.transposed.table = FALSE,
   write.summary.table = FALSE, write.lowflow.table = FALSE,
-  plot.cumdepart = FALSE, write.zyp.table = FALSE,
-  write.zyp.plots = FALSE, report.dir = ".", na.rm = list(na.rm.global =
-  FALSE), csv.nddigits = 3)
+  write.zyp.table = FALSE, write.zyp.plots = FALSE, report.dir = ".",
+  na.rm = list(na.rm.global = FALSE), csv.nddigits = 3)
 }
 \arguments{
 \item{station.name}{Character. Identifier name of the stream or station. Required when supplying data through \code{flow.data}.
@@ -54,10 +53,6 @@ The file name will be \code{file.path(report.dir, paste(station.name,"-period-re
 minimum occured.
 The file name will be \code{file.path(report.dir,paste(station.name,"-lowflow-summary.csv",sep=""))}}
 
-\item{plot.cumdepart}{Logical. Should a file be created with plots of the yearly and cumulative departures
-from the grand mean between \code{start.year} and \code{end.year}.
-The file name will be \code{file.path(report.dir, paste(station.name,"-cumulative departure.pdf",sep=""))}}
-
 \item{report.dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
 
 \item{na.rm}{TBD}
@@ -75,7 +70,6 @@ A list with the following elements:
          \code{start.year} and \code{end.year}}
   \item{file.stat.csv}{Object with file name of *.csv file with calendar year summary statistics.}
   \item{file.stat.trans.csv}{Object with file name of *.csv file with transposed summary statistics.}
-  \item{file.cumdepart.pdf}{Object with file name of *.pdf file with plot of yearly and cumulative departures.}
   \item{file.summary.csv}{Object with file name of *.csv file with summary statistics.}
   \item{file.lowflow.csv}{Object with file name of *.csv file with low flow summary statistics.}
   \item{na.rm}{Missing value flags.}
