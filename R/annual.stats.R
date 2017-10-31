@@ -20,7 +20,6 @@
 #' @param station.name Character. Identifier name of the stream or station. Required when supplying data through \code{flow.data}.
 #'    The station name will be used in plots and filenames of exported tables and plot. If using \code{HYDAT} to supply
 #'    data and no \code{station.name} is provided, the HYDAT station number will be the identifier.
-
 #' @param flow.data Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
 #'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Q' column with the daily 
 #'    mean streamflow values in units of cubic metres per second. \code{flow.data} not required if \code{HYDAT} is used.
