@@ -334,8 +334,7 @@ annual.stats <- function(station.name=NULL,
   
   
   # Combine all and label columns
-  Q.stat <- merge(Q.stat.lowflow,Q.stat.annual,by="Year",all = TRUE)
-  Q.stat <- merge(Q.stat,Q.stat.seasons4,by="Year",all = TRUE)
+  Q.stat <- merge(Q.stat.annual,Q.stat.seasons4,by="Year",all = TRUE)
   Q.stat <- merge(Q.stat,Q.stat.seasons2,by="Year",all = TRUE)
   Q.stat <- merge(Q.stat,Q.stat.month,by="Year",all = TRUE)
   Q.stat <- merge(Q.stat,Q.outside.quant,by="Year",all = TRUE)
@@ -391,7 +390,7 @@ annual.stats <- function(station.name=NULL,
   # all mins and acutal dates
   Q.lowflows <- dplyr::select(Q.stat,Year,dplyr::contains("MIN_0"),dplyr::contains("MINDOY_0"),
                                   dplyr::contains("MIN_3"),dplyr::contains("MINDOY_3"))
-  Q.lowflows <- tidyr::gather(Q.lowflows,Stat,Value,2:ncol(Q.stat.lowflow))
+  Q.lowflows <- tidyr::gather(Q.lowflows,Stat,Value,2:ncol(Q.lowflows))
   Q.lowflows <- dplyr::mutate(Q.lowflows,Stat=paste0(ifelse(water.year,paste("WY_"),paste("CY_")),Stat))
   col.order <- c("Year",unique(Q.lowflows$Stat)) # to keep the same order as merged when spread below
   Q.lowflows <- tidyr::spread(Q.lowflows,Stat,Value)
