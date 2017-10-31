@@ -1,20 +1,19 @@
-station.name="TEST"
+station_name=NULL
 #flow.data=NULL,
-HYDAT="08HB048"
-water.year=FALSE #create another for own water year????
-start.year=1975
-end.year=2000
-exclude.years=c(1979,1981) # list of stations
-basin.area=10.1 # if na, then all Yield values == NA
-zyp.trending=NA
-zyp.alpha=0.05
-write.table=FALSE        # write out statistics on calendar year
-write.transposed.table=FALSE  # write out statistics in transposed format (cy & wy)
-write.summary.table=FALSE # write out a summary of period of record
-write.lowflow.table=FALSE      # write out a summary of low flows
-plot.cumdepart=FALSE         # plot cumulative departure curves
-write.zyp.table=FALSE
-write.zyp.plots=FALSE
-report.dir="."
+HYDAT="08HA002"
+water_year=TRUE #create another for own water year????
+start_year=1965
+end_year=2015
+exclude_years=NULL # list of stations
+basin_area=594 # if na, then all Yield values == NA
+zyp_trending="yuepilon"
+zyp_alpha=0.05
+write_table=FALSE        # write out statistics on calendar year
+write_transposed.table=FALSE  # write out statistics in transposed format (cy & wy)
+write_summary_table=FALSE # write out a summary of period of record
+write_lowflow_table=FALSE      # write out a summary of low flows
+write_zyp_table=TRUE
+write_zyp_plots="png"
+report_dir="Upper"
 na.rm=list(na.rm.global=FALSE)
-csv.nddigits=3   
+table_nddigits=3   
