@@ -333,7 +333,7 @@ annual.stats <- function(station.name=NULL,
   Q.outside.quant <- dplyr::rename(Q.outside.quant,Year=AnalysisYear)
   
   
-  # Combine all and label columns
+  # Combine all and label columnss
   Q.stat <- merge(Q.stat.annual,Q.stat.seasons4,by="Year",all = TRUE)
   Q.stat <- merge(Q.stat,Q.stat.seasons2,by="Year",all = TRUE)
   Q.stat <- merge(Q.stat,Q.stat.month,by="Year",all = TRUE)
