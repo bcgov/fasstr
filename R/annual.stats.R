@@ -183,7 +183,8 @@ annual.stats <- function(station.name=NULL,
                                          as.Date(paste(end.year  ,'12-31',sep='-'), '%Y-%m-%d'), 1)),
                      all.y=TRUE)
   
-  #  create the year (annual and water), seasonal, and month variables
+  # CREATE DATE VARIABLES AND ROLLING MEANS/SUMS ==============================
+
   flow.data$Year  <- lubridate::year(flow.data$Date)
   flow.data$Month  <- lubridate::month(flow.data$Date)
   flow.data$MonthText <- month.abb[flow.data$Month]
@@ -218,6 +219,29 @@ annual.stats <- function(station.name=NULL,
   # compuate the annual cumulative total
   flow.data <- dplyr::mutate(dplyr::group_by(flow.data,AnalysisYear),CumQ=cumsum(Q))
   
+  
+  
+  # CALCULATE STATS ==============================
+  
+  ## Compute statistics on 2 seasons (must be water year) so calc'd first before filtering for selected years
+  Q.stat.seasons2 <- dplyr::summarize(dplyr::group_by(flow.data,WaterYear,Seasons2),
+                                      TOTALQ_DAILY=mean(Q, na.rm=na.rm$na.rm.global)*length(Q)*60*60*24,
+                                      YIELDMM_DAILY=mean(Q, na.rm=na.rm$na.rm.global)*length(Q)*60*60*24 /basin.area/1000)
+  Q.stat.seasons2 <- tidyr::gather(Q.stat.seasons2,stat,value,3:4)
+  Q.stat.seasons2 <- dplyr::mutate(Q.stat.seasons2,title=paste0(Seasons2,"_",stat))
+  Q.stat.seasons2 <- dplyr::select(Q.stat.seasons2,-Seasons2,-stat)
+  Q.stat.seasons2 <- tidyr::spread(Q.stat.seasons2,title,value)
+  Q.stat.seasons2 <- dplyr::rename(Q.stat.seasons2,Year=WaterYear)
+  Q.stat.seasons2 <- dplyr::filter(Q.stat.seasons2, Year >= start.year & Year <= end.year)
+  
+  
+  # FILTER DATA FOR SELECTED YEARS FOR REMAINDER OF CALCS
+  flow.data <- dplyr::filter(flow.data, AnalysisYear >= start.year & AnalysisYear <= end.year)
+  flow.data <- dplyr::filter(flow.data, AnalysisYear >= min.year & AnalysisYear <=max.year)
+  flow.data[flow.data$AnalysisYear %in% exclude.years,-1] <- NA
+  
+  
+  
   #  which dates have missing flows.
   dates.missing.flows <- flow.data$Date[ is.na(flow.data$Q)]
   
@@ -236,21 +260,20 @@ annual.stats <- function(station.name=NULL,
   
   
   ## Compute statistics on  year basis
-  #################################
-  
+
   Q.stat.annual <-   dplyr::summarize(dplyr::group_by(flow.data,AnalysisYear),
-                                      MIN_01Day    = min(Q, na.rm=na.rm$na.rm.global),	      # CY Min Daily Q
+                                      MIN_01Day    = min(Q, na.rm=na.rm$na.rm.global),	     
                                       MINDOY_01Day = ifelse(is.na(MIN_01Day),NA,
-                                                            AnalysisDoY[which.min(Q)]),# Date of CY Min Daily Q
-                                      MIN_03Day    = min(Q.03DAvg, na.rm=na.rm$na.rm.global),	      # CY Min Daily Q
+                                                            AnalysisDoY[which(Q==MIN_01Day)]),
+                                      MIN_03Day    = min(Q.03DAvg, na.rm=na.rm$na.rm.global),	    
                                       MINDOY_03Day = ifelse(is.na(MIN_03Day),NA,
-                                                            AnalysisDoY[which.min(Q.03DAvg)]),# Date of CY Min Daily Q
-                                      MIN_07Day    = min(Q.07DAvg, na.rm=na.rm$na.rm.global),	      # CY Min Daily Q
+                                                            AnalysisDoY[which(Q.03DAvg==MIN_03Day)]),
+                                      MIN_07Day    = min(Q.07DAvg, na.rm=na.rm$na.rm.global),	     
                                       MINDOY_07Day = ifelse(is.na(MIN_07Day),NA,
-                                                            AnalysisDoY[which.min(Q.07DAvg)]),# Date of CY Min Daily Q
-                                      MIN_30Day    = min(Q.30DAvg, na.rm=na.rm$na.rm.global),	      # CY Min Daily Q
+                                                            AnalysisDoY[which(Q.07DAvg==MIN_07Day)]),
+                                      MIN_30Day    = min(Q.30DAvg, na.rm=na.rm$na.rm.global),	     
                                       MINDOY_30Day = ifelse(is.na(MIN_30Day),NA,
-                                                            AnalysisDoY[which.min(Q.30DAvg)]),# Date of CY Min Daily Q
+                                                            AnalysisDoY[which(Q.30DAvg==MIN_30Day)]),
                                       MIN_DAILY     = min (Q, na.rm=na.rm$na.rm.global),	    # CY Min Daily Q 	CY Min Daily Q
                                       MAX_DAILY	    = max (Q, na.rm=na.rm$na.rm.global),      # CY Max Daily Q
                                       MEAN_DAILY    = mean(Q, na.rm=na.rm$na.rm.global),     # CY Mean Discharge (Based on Daily avgs)
@@ -263,7 +286,7 @@ annual.stats <- function(station.name=NULL,
                                       Date_75P_FLOW_DAILY = DayofYear[ match(TRUE, CumQ > 0.75  *TOTALQ_DAILY/(60*60*24))])
   Q.stat.annual <-   dplyr::rename(Q.stat.annual,Year=AnalysisYear)
   
-  # four seasons
+  ## Compute statistics on 4 seasons
   Q.stat.seasons4 <- dplyr::summarize(dplyr::group_by(flow.data,AnalysisYear,Seasons4),
                                       TOTALQ_DAILY=mean(Q, na.rm=na.rm$na.rm.global)*length(Q)*60*60*24,
                                       YIELDMM_DAILY=mean(Q, na.rm=na.rm$na.rm.global)*length(Q)*60*60*24 /basin.area/1000)
@@ -273,18 +296,9 @@ annual.stats <- function(station.name=NULL,
   Q.stat.seasons4 <- tidyr::spread(Q.stat.seasons4,title,value)
   Q.stat.seasons4 <-   dplyr::rename(Q.stat.seasons4,Year=AnalysisYear)
   
-  # two seasons  MUST BE WATER YEAR
-  Q.stat.seasons2 <- dplyr::summarize(dplyr::group_by(flow.data,WaterYear,Seasons2),
-                                      TOTALQ_DAILY=mean(Q, na.rm=na.rm$na.rm.global)*length(Q)*60*60*24,
-                                      YIELDMM_DAILY=mean(Q, na.rm=na.rm$na.rm.global)*length(Q)*60*60*24 /basin.area/1000)
-  Q.stat.seasons2 <- tidyr::gather(Q.stat.seasons2,stat,value,3:4)
-  Q.stat.seasons2 <- dplyr::mutate(Q.stat.seasons2,title=paste0(Seasons2,"_",stat))
-  Q.stat.seasons2 <- dplyr::select(Q.stat.seasons2,-Seasons2,-stat)
-  Q.stat.seasons2 <- tidyr::spread(Q.stat.seasons2,title,value)
-  Q.stat.seasons2 <- dplyr::rename(Q.stat.seasons2,Year=WaterYear)
-  Q.stat.seasons2 <- dplyr::filter(Q.stat.seasons2, Year >= start.year & Year <= end.year)
+
   
-  # monthly
+  ## Compute statistics on months
   Q.stat.month <- dplyr::summarize(dplyr::group_by(flow.data,AnalysisYear,MonthText),
                                    "_MIN_DAILY" = min   (Q, na.rm=na.rm$na.rm.global),
                                    "_MAX_DAILY" = max   (Q, na.rm=na.rm$na.rm.global),
@@ -322,9 +336,7 @@ annual.stats <- function(station.name=NULL,
   Q.stat <- tidyr::spread(Q.stat,Stat,Value)
   Q.stat <- Q.stat[,col.order]
   
-  Q.stat <- dplyr::filter(Q.stat, Year >= start.year & Year <= end.year)
-  Q.stat <- dplyr::filter(Q.stat, Year >= min.year & Year <=max.year)
-  Q.stat[Q.stat$Year %in% exclude.years,-1] <- NA
+
   
   
   ## Write the files
