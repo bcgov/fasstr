@@ -9,7 +9,7 @@ annual.stats(station.name = NULL, flow.data = NULL, HYDAT = NULL,
   exclude.years = NULL, basin.area = NA, zyp.trending = NA,
   zyp.alpha = 0.05, write.table = FALSE, write.transposed.table = FALSE,
   write.summary.table = FALSE, write.lowflow.table = FALSE,
-  write.zyp.table = FALSE, write.zyp.plots = FALSE, report.dir = ".",
+  write.zyp.table = FALSE, write.zyp.plots = NA, report.dir = ".",
   na.rm = list(na.rm.global = FALSE), csv.nddigits = 3)
 }
 \arguments{

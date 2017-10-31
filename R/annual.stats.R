@@ -97,7 +97,7 @@ annual.stats <- function(station.name=NULL,
                          write.summary.table=FALSE, # write out a summary of period of record
                          write.lowflow.table=FALSE,      # write out a summary of low flows
                          write.zyp.table=FALSE,
-                         write.zyp.plots=NA,
+                         write.zyp.plots=NA,  # else = c("pdf","png","jpeg","tiff","bmp")
                          report.dir=".",
                          na.rm=list(na.rm.global=FALSE),
                          csv.nddigits=3){              # decimal digits for csv files for statistics

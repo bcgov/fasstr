@@ -4,7 +4,7 @@ HYDAT="08HB048"
 water.year=FALSE #create another for own water year????
 start.year=1975
 end.year=2000
-exclude.years=NULL # list of stations
+exclude.years=c(1979,1981) # list of stations
 basin.area=10.1 # if na, then all Yield values == NA
 zyp.trending=NA
 zyp.alpha=0.05
