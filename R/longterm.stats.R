@@ -85,12 +85,12 @@ longterm.stats <- function(station.name=NULL,
                            start.year=NULL, #not required
                            end.year=NULL, #not required
                            exclude.years=NULL, # list of stations
-                           write.table=TRUE,         # write out calendar year statistics
-                           write.transposed.table=TRUE,   # write out statistics in transposed format
+                           write.table=FALSE,         # write out calendar year statistics
+                           write.transposed.table=FALSE,   # write out statistics in transposed format
                            report.dir='.',
                            csv.nddigits=3,               # decimal digit for csv files.
                            na.rm=list(na.rm.global=TRUE) ## may not be req'd
-){
+                           ){
   
   #  Output: List with elements as desribed above
   #
@@ -103,10 +103,10 @@ longterm.stats <- function(station.name=NULL,
   if( is.null(HYDAT) & is.null(station.name))  {stop("station.name required with flow.data parameter.")}
   if( is.null(HYDAT) & !is.character(station.name))  {stop("station.name must be a character string.")}
   if( is.null(HYDAT) & length(station.name)>1)        {stop("station.name cannot have length > 1")}
-  if( is.null(flow.data) & is.null(HYDAT)){stop("Flow or HYDAT parameters must be set")}
-  if( is.null(HYDAT) & !is.data.frame(flow.data))         {stop("Flow is not a data frame.")}
-  if( is.null(HYDAT) &! all(c("Date","Q") %in% names(flow))){stop("Flow dataframe doesn't contain the variables Date and Q.")}
-  if( is.null(HYDAT) & ! inherits(flow.data$Date[1], "Date")){stop("Date column in Flow data frame is not a date.")}
+  if( is.null(flow.data) & is.null(HYDAT)){stop("flow.data or HYDAT parameters must be set")}
+  if( is.null(HYDAT) & !is.data.frame(flow.data))         {stop("flow.data is not a data frame.")}
+  if( is.null(HYDAT) &! all(c("Date","Q") %in% names(flow.data))){stop("flow.data dataframe doesn't contain the variables Date and Q.")}
+  if( is.null(HYDAT) & ! inherits(flow.data$Date[1], "Date")){stop("Date column in flow.data dataframe is not a date.")}
   if( is.null(HYDAT) & !is.numeric(flow.data$Q))          {stop("Q column in flow.data dataframe is not numeric.")}
   if( is.null(HYDAT) & any(flow.data$Q <0, na.rm=TRUE))   {stop('flow.data cannot have negative values - check your data')}
   

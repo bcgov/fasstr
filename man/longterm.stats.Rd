@@ -6,8 +6,9 @@
 \usage{
 longterm.stats(station.name = NULL, flow.data = NULL, HYDAT = NULL,
   water.year = FALSE, start.year = NULL, end.year = NULL,
-  exclude.years = NULL, write.table = TRUE, write.transposed.table = TRUE,
-  report.dir = ".", csv.nddigits = 3, na.rm = list(na.rm.global = TRUE))
+  exclude.years = NULL, write.table = FALSE,
+  write.transposed.table = FALSE, report.dir = ".", csv.nddigits = 3,
+  na.rm = list(na.rm.global = TRUE))
 }
 \arguments{
 \item{station.name}{Character. Identifier name of the stream or station. Required when supplying data through \code{flow.data}.
