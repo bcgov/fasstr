@@ -93,6 +93,8 @@ fasstr_annual_trends <- function(trendsdata=NULL,
       stop("If no trendsdata provided, one of flowdata or HYDAT parameters must be set.")}
     if( !is.null(HYDAT) & !is.null(flowdata))  {
       stop("If no trendsdata provided, one of flowdata or HYDAT parameters must be set, not both.")}
+    if( !is.null(HYDAT) | length(HYDAT)>1 )        {
+      stop("Only one HYDAT station can be selected.")}
     if( is.null(HYDAT) & !is.data.frame(flowdata))         {
       stop("flowdata parameter is not a data frame.")}
     if( is.null(HYDAT) & "Date" %in% names(flowdata) ){

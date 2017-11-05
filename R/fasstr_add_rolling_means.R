@@ -71,6 +71,7 @@ fasstr_add_rolling_means <- function(flowdata=NULL,
   
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
+    if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
     flowdata <- tidyhydat::DLY_FLOWS(STATION_NUMBER = HYDAT)
     flowdata <- dplyr::rename(flowdata,Q=Value)
@@ -81,7 +82,7 @@ fasstr_add_rolling_means <- function(flowdata=NULL,
   dates.list <- c(flowdata$Date)
   
   # fill in missing dates to ensure means roll over consecutive days
-  flowdata <- fasstr_fill_missing_dates(flowdata=flowdata)
+  flowdata <- fasstr::fasstr_fill_missing_dates(flowdata=flowdata)
   
   # Add rolling means
   for (x in days) {

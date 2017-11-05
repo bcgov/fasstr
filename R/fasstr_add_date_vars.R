@@ -65,6 +65,7 @@ fasstr_add_date_vars <- function(
 
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
+    if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
     flowdata <- tidyhydat::DLY_FLOWS(STATION_NUMBER = HYDAT)
   }

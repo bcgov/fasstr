@@ -113,6 +113,7 @@ fasstr_annual_stats <- function(flowdata=NULL,
   
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
+    if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
     if (station_name=="fasstr") {station_name <- HYDAT}
     if (is.na(basin_area)) {basin_area <- tidyhydat::STATIONS(STATION_NUMBER = HYDAT)$DRAINAGE_AREA_GROSS}
