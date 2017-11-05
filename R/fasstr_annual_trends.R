@@ -85,7 +85,7 @@ fasstr_annual_trends <- function(trendsdata=NULL,
   # if trendsdata is provided
   if( !is.null(trendsdata) ) {
     if( !is.data.frame(trendsdata))         {
-      stop("trendsdata parameter is not a data frame.")}
+      stop("trendsdata parameter is not a dataframe.")}
 
   # if no trendsdata is provided, but flowdata is
   } else {
@@ -93,10 +93,10 @@ fasstr_annual_trends <- function(trendsdata=NULL,
       stop("If no trendsdata provided, one of flowdata or HYDAT parameters must be set.")}
     if( !is.null(HYDAT) & !is.null(flowdata))  {
       stop("If no trendsdata provided, one of flowdata or HYDAT parameters must be set, not both.")}
-    if( !is.null(HYDAT) | length(HYDAT)>1 )        {
+    if( !is.null(HYDAT) & length(HYDAT)>1 )        {
       stop("Only one HYDAT station can be selected.")}
     if( is.null(HYDAT) & !is.data.frame(flowdata))         {
-      stop("flowdata parameter is not a data frame.")}
+      stop("flowdata parameter is not a dataframe.")}
     if( is.null(HYDAT) & "Date" %in% names(flowdata) ){
       stop("flowdata dataframe doesn't contain 'Date' column.")}
     if( is.null(HYDAT) & "Q" %in% names(flowdata) ){
@@ -170,6 +170,7 @@ fasstr_annual_trends <- function(trendsdata=NULL,
   
   # Merge the summary stats with the results
   trends_results <- merge(trends_results,trends_data_summary, by="Statistic",all=TRUE)
+  # merge all inputdata at end for dataframe? (incl_data=TRUE)
   
   
   if(write_trends_data){
