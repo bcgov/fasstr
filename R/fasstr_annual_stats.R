@@ -10,12 +10,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
+
 #' @title Compute multiple annual statistics.
 #'
 #' @description Computes annual statistics (summary statistics, trending) of streamflow data.
 #' Streamflow data can be supplied through the \code{flowdata} parameter or extracted from a 
 #' HYDAT database using the tidyhydat package and \code{HYDAT} parameter.
-#' and (optionally) saves the results in *.csv and *.pdf files.
 #'
 #' @param flowdata Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
 #'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Q' column with the daily 
@@ -35,11 +35,9 @@
 #' @param excluded.years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).    
 #' @param basin_area Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm).
 #'    If no value provided, yield calculations will result in NA values.
+#' @param transpose Logical. Switch the rows and columns of the results.
 #' @param write_table Logical. Should a file be created with the calendar year computed percentiles?
 #'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
-#' @param write_transposed_table Logical. Should a file be created with the transposed of the annual statistics
-#'    (both calendar and water year)?
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-summary-stat-trans.csv'))}.
 #' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
 #' @param table_nddigits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
 #' @param na.rm TBD
@@ -64,32 +62,24 @@
 
 fasstr_annual_stats <- function(flowdata=NULL,
                          HYDAT=NULL,
-                         station_name=NULL,
+                         station_name="fasstr",
                          water_year=FALSE, #create another for own water year????
                          start_year=NULL,
                          end_year=NULL,
                          exclude_years=NULL, # list of stations
                          basin_area=NA, # if na, then all Yield values == NA
+                         transpose=FALSE,
                          write_table=FALSE,        # write out statistics on calendar year
-                         write_transposed_table=FALSE,  # write out statistics in transposed format (cy & wy)
                          report_dir=".",
                          na.rm=list(na.rm.global=FALSE),
                          table_nddigits=3){              # decimal digits for csv files for statistics
-  
-  #  Compute statistics on an annual (calendar and water) year basis
-  #
-  #  See the man-roxygen director for definition of parameters
-  #
-  #  Output: List with elements given above.
-  #
+
   #############################################################
+  
   #  Some basic error checking on the input parameters
   #
-  Version <- packageVersion("fasstr")
-  
   if( is.null(flowdata) & is.null(HYDAT)) {stop("flowdata or HYDAT parameters must be set")}
   if( !is.null(HYDAT) & !is.null(flowdata))  {stop("Must select either flowdata or HYDAT parameters, not both.")}
-  if( is.null(HYDAT) & is.null(station_name))  {stop("station_name parameter is required with flowdata parameter.")}
   if( is.null(HYDAT) & !is.character(station_name))  {stop("station_name parameter must be a character string.")}
   if( is.null(HYDAT) & length(station_name)>1)        {stop("station_name parameter cannot have length > 1")}
   if( is.null(HYDAT) & !is.data.frame(flowdata))         {stop("flowdata parameter is not a data frame.")}
@@ -106,8 +96,8 @@ fasstr_annual_stats <- function(flowdata=NULL,
   if( !is.na(basin_area) & !is.numeric(basin_area))    {stop("basin_area parameter must be numeric")}
   if( length(basin_area)>1)        {stop("basin_area parameter cannot have length > 1")}
   
+  if( !is.logical(transpose))  {stop("transpose parameter must be logical (TRUE/FALSE)")}
   if( !is.logical(write_table))  {stop("write_table parameter must be logical (TRUE/FALSE)")}
-  if( !is.logical(write_transposed_table)){stop("write_transposed_table parameter must be logical (TRUE/FALSE)")}
 
   if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
   if( !is.numeric(table_nddigits))  { stop("csv.ndddigits parameter needs to be numeric")}
@@ -135,31 +125,16 @@ fasstr_annual_stats <- function(flowdata=NULL,
   max_year <- lubridate::year(max(flowdata$Date))
   if (!is.numeric(start_year)) {start_year <- min_year}
   if (!is.numeric(end_year)) {end_year <- max_year}
-  if(! (start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
+  if(! (start_year <= end_year))    {stop("start_year argument must be less than end_year argument")}
   
   
-  #  Generate all dates between min and max dates and merge with flow
-  #  data frame to generate any dates that were missing.
-  #  This will automatically generate NA for the days that were not in the file
-  
+  # Fill in any missing dates with NA
   flowdata <- fasstr::fasstr_fill_missing_dates(flowdata,water_year = TRUE)
-  # flowdata <- merge(flowdata, 
-  #                   data.frame(Date=seq(as.Date(paste(start_year-1,'01-01',sep='-'), "%Y-%m-%d"),
-  #                                       as.Date(paste(end_year  ,'12-31',sep='-'), '%Y-%m-%d'), 1)),
-  #                   all.y=TRUE)
+
   
   # CREATE DATE VARIABLES AND ROLLING MEANS/SUMS ==============================
   
   flowdata <- fasstr::fasstr_add_date_vars(flowdata)
-  # flowdata$Year  <- lubridate::year(flowdata$Date)
-  # flowdata$Month  <- lubridate::month(flowdata$Date)
-  # flowdata$MonthName <- month.abb[flowdata$Month]
-  # flowdata$WaterYear <- as.numeric(ifelse(flowdata$Month>=10,flowdata$Year+1,flowdata$Year))
-  # flowdata$DayofYear <- lubridate::yday(flowdata$Date)
-  # flowdata$WaterDoY <- ifelse(flowdata$Month<10,flowdata$DayofYear+92,
-  #                             ifelse((as.Date(with(flowdata, paste(Year+1,01,01,sep="-")),"%Y-%m-%d")-as.Date(with(flowdata, paste(Year,01,01,sep="-")),"%Y-%m-%d"))==366,
-  #                                    flowdata$DayofYear-274,
-  #                                    flowdata$DayofYear-273))
   flowdata <- dplyr::mutate(flowdata,
                             Seasons4= ifelse(Month<=3,"JFM",
                                              ifelse(Month>=4&Month<=6,"AMJ",
@@ -178,10 +153,7 @@ fasstr_annual_stats <- function(flowdata=NULL,
   }
   
   #  Compute the 3, 7, and 30 day rolling average values
-  flowdata <- fasstr_add_rolling_means(flowdata,days = c(3,7,30))
-  #flowdata$Q03DAvg <- zoo::rollapply( flowdata$Q,  3, mean, fill=NA, align="right")
-  #flowdata$Q07DAvg <- zoo::rollapply( flowdata$Q,  7, mean, fill=NA, align="right")
-  #flowdata$Q30DAvg <- zoo::rollapply( flowdata$Q, 30, mean, fill=NA, align="right")
+  flowdata <- fasstr::fasstr_add_rolling_means(flowdata,days = c(3,7,30))
   
   # compuate the annual cumulative total
   flowdata <- dplyr::mutate(dplyr::group_by(flowdata,AnalysisYear),Qcumul=cumsum(Q))
@@ -205,22 +177,6 @@ fasstr_annual_stats <- function(flowdata=NULL,
   # FILTER DATA FOR SELECTED YEARS FOR REMAINDER OF CALCS
   flowdata <- dplyr::filter(flowdata, AnalysisYear >= start_year & AnalysisYear <= end_year)
   flowdata <- dplyr::filter(flowdata, AnalysisYear >= min_year & AnalysisYear <=max_year)
-
-  #  which dates have missing flows.
-  dates_missing_flows <- flowdata$Date[ is.na(flowdata$Q)]
-  
-  #  simple summary statistics
-  Qsummary <-   dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear),
-                                 n_days   = length(Year),
-                                 n_Q      = sum (!is.na(Q)),
-                                 n_missing_Q = sum ( is.na(Q)),
-                                 min_Q    = min (Q,          na.rm=na.rm$na.rm.global),
-                                 max_Q    = max (Q,          na.rm=na.rm$na.rm.global),
-                                 mean_Q   = mean(Q,          na.rm=na.rm$na.rm.global),
-                                 median_Q = stats::median(Q, na.rm=na.rm$na.rm.global),
-                                 sd_Q     = stats::sd  (Q,   na.rm=na.rm$na.rm.global)
-  )
-  Qsummary <-   dplyr::rename(Qsummary,Year=AnalysisYear)
   
   
   ## Compute statistics on  year basis
@@ -303,32 +259,27 @@ fasstr_annual_stats <- function(flowdata=NULL,
   # Remove excluded years
   Qstat[Qstat$Year %in% exclude_years,-1] <- NA
   
+  if(transpose){
+    options(scipen = 999)
+    Qstat_tpose <- tidyr::gather(Qstat,Statistic,Value,-Year)
+    Qstat_tpose.temp <- dplyr::mutate(Qstat_tpose,Value=round(Value,table_nddigits)) # for writing to csv
+    Qstat <- tidyr::spread(Qstat_tpose,Year,Value)
+  }
+  
   
   # See if you want to write out the summary tables?
-  file_Qstat_table <- NA
   if(write_table){
-    
     # Write out the summary table for comparison to excel spreadsheet for calendar year
-    file_Qstat_table <- file.path(report_dir, paste(station_name,"-annual-summary-stat.csv", sep=""))
+    file_Qstat_table <- file.path(report_dir, paste(station_name,"-annual-statistics.csv", sep=""))
     temp <- Qstat
     temp <- round(temp, table_nddigits)
+    if(transpose){
+      temp <- tidyr::spread(Qstat_tpose.temp,Year,Value)
+    }
     utils::write.csv(temp,file=file_Qstat_table, row.names=FALSE)
   }
   
-  
-  # Write out the annual summary table in transposed format?
-  file_Qstat_tpose_table<- NA
-  options(scipen = 999)
-  Qstat_tpose <- tidyr::gather(Qstat,Statistic,Value,-Year)
-  Qstat_tpose.temp <- dplyr::mutate(Qstat_tpose,Value=round(Value,table_nddigits)) # for writing to csv
-  Qstat_tpose <- tidyr::spread(Qstat_tpose,Year,Value)
-  
-  if(write_transposed_table){
-    file_Qstat_tpose_table <-file.path(report_dir,paste(station_name,"-annual-summary-stat-trans.csv",sep=""))
-    Qstat_tpose.temp <- tidyr::spread(Qstat_tpose.temp,Year,Value)
-    utils::write.csv(Qstat_tpose.temp, file=file_Qstat_tpose_table, row.names=FALSE)
-  }
-  
+
   
   
   return(Qstat)
