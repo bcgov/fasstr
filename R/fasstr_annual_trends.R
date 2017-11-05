@@ -113,7 +113,7 @@ fasstr_annual_trends <- function(trendsdata=NULL,
     if( length(basin_area)>1 )        {stop("basin_area parameter cannot have length > 1")}
   }
   
-  if( !is.na(zyp_method) & !zyp_method %in% c("yuepilon","zhang"))   {
+  if( is.na(zyp_method) | !zyp_method %in% c("yuepilon","zhang") )   {
     stop('zyp_trending parameter must have either "yuepilon" or "zhang" listed')}
   
   if( !is.character(station_name) )  {stop("station_name parameter must be a character string.")}
@@ -142,7 +142,7 @@ fasstr_annual_trends <- function(trendsdata=NULL,
     # If HYDAT station is listed, check if it exists and make it the flowdata
     if (!is.null(HYDAT)) {
       if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
-      if (is.null(station_name)) {station_name <- HYDAT}
+      if (station_name=="fasstr") {station_name <- HYDAT}
       flowdata <- tidyhydat::DLY_FLOWS(STATION_NUMBER = HYDAT)
       flowdata <- dplyr::select(flowdata,Date,Q=Value)
     }
@@ -156,6 +156,7 @@ fasstr_annual_trends <- function(trendsdata=NULL,
                                                 basin_area=basin_area,
                                                 transpose=TRUE,
                                                 na.rm=na.rm)
+    trends_data <- annual_stats
   }
   
   
