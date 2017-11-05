@@ -4,8 +4,8 @@
 \alias{fasstr_add_rolling_means}
 \title{Add rolling means.}
 \usage{
-fasstr_add_rolling_means(flowdata = NULL, HYDAT = NULL,
-  rolling_nday = c(3, 7, 30), align = "right")
+fasstr_add_rolling_means(flowdata = NULL, HYDAT = NULL, days = c(3, 7,
+  30), align = "right")
 }
 \arguments{
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
@@ -15,7 +15,7 @@ mean streamflow values in units of cubic metres per second. \code{flowdata} not 
 \item{HYDAT}{Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
 tidyhydat package and a downloaded SQLite HYDAT required.}
 
-\item{rolling_nday}{Numeric. Default 3,7,30.}
+\item{days}{Numeric. The number of days to apply the rolling mean. Default c(3,7,30).}
 
 \item{align}{Character. specifyies whether the index of the result should be left- or right-aligned or centered 
 (default) compared to the rolling window of observations}
@@ -25,7 +25,7 @@ A list with the following elements:
   \item{flowdata}
 }
 \description{
-Adds rollings means.
+Adds n-day rolling means. Ensures rolling means
 }
 \examples{
 \dontrun{

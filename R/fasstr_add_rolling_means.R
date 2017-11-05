@@ -12,14 +12,14 @@
 
 #' @title Add rolling means.
 #'
-#' @description Adds rollings means.
+#' @description Adds n-day rolling means. Ensures rolling means 
 #'
 #' @param flowdata Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
 #'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Q' column with the daily 
 #'    mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.
 #' @param HYDAT Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
 #'    tidyhydat package and a downloaded SQLite HYDAT required.
-#' @param rolling_nday  Numeric. Default 3,7,30.
+#' @param days  Numeric. The number of days to apply the rolling mean. Default c(3,7,30).
 #' @param align Character. specifyies whether the index of the result should be left- or right-aligned or centered 
 #'    (default) compared to the rolling window of observations
 #' 
@@ -40,7 +40,7 @@
 
 fasstr_add_rolling_means <- function(flowdata=NULL,
                                      HYDAT=NULL,
-                                     rolling_nday=c(3,7,30),
+                                     days=c(3,7,30),
                                      align="right"){  # or left or centre
   
   
@@ -63,10 +63,14 @@ fasstr_add_rolling_means <- function(flowdata=NULL,
     stop('flowdata cannot have negative values - check your data')}
   if( is.null(HYDAT) & !inherits(flowdata$Date[1], "Date")){
     stop("Date column in flowdata dataframe is not a date.")}
-  if( !is.numeric(rolling_nday))  {
-    stop("rolling_nday parameter must be numeric between 1 and 12 (Jan-Dec)")}
-  #SOMETHING ABOUT ALIGN
-  #SOMETHING ABOUT FILL NA
+  if( !is.numeric(days))   {
+    stop("days must be numeric")}
+  if( !all(days>0 & days<=180))  {
+    stop("days must be >0 and <=180)")}
+  if( !all(days==floor(days)))  {
+    stop("days must be integers")}
+  if ( !align %in% c("right","left","center")){
+    stop("align parameter must be 'right', 'left', or 'center'.")}
   
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
@@ -76,15 +80,16 @@ fasstr_add_rolling_means <- function(flowdata=NULL,
   }
   
   # get list of dates in flowdata
+  flowdata <- flowdata[ order(flowdata$Date),]
   dates.list <- c(flowdata$Date)
   
   # fill in missing dates to ensure means roll over consecutive days
   flowdata <- fasstr_fill_missing_dates(flowdata=flowdata)
   
   # Add rolling means
-  flowdata$Q03DAvg <- zoo::rollapply( flowdata$Q,  3, mean, fill=NA, align=align)
-  flowdata$Q07DAvg <- zoo::rollapply( flowdata$Q,  7, mean, fill=NA, align=align)
-  flowdata$Q30DAvg <- zoo::rollapply( flowdata$Q, 30, mean, fill=NA, align=align)
+  for (x in days) {
+    flowdata[, paste0("Q",x,"Day")] <- zoo::rollapply( flowdata$Q,  x, mean, fill=NA, align=align)
+  }
   
   # Return flowdata to original dates
   flowdata <- dplyr::filter(flowdata,Date %in% dates.list)

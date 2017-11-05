@@ -78,6 +78,10 @@ fasstr_fill_missing_dates <- function(flowdata=NULL,
   if ("STATION_NUMBER" %in% names(flowdata)){STATION_NUMBER <- flowdata$STATION_NUMBER[1]}
   if ("Parameter" %in% names(flowdata)){Parameter <- flowdata$Parameter[1]}
   
+  
+  flowdata <- flowdata[ order(flowdata$Date),]
+  
+  
   # If water year is TRUE and month is not January
   if (water_year & water_year_start>1) {
     
