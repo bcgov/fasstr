@@ -136,18 +136,10 @@ fasstr_annual_trends <- function(trendsdata=NULL,
   
   trends_data <- trendsdata
   
-  
+  # If no trendsata is provided, use flowdata ot HYDAT
   if ( is.null(trendsdata) ) {
-    
-    # If HYDAT station is listed, check if it exists and make it the flowdata
-    if (!is.null(HYDAT)) {
-      if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
-      if (station_name=="fasstr") {station_name <- HYDAT}
-      flowdata <- tidyhydat::DLY_FLOWS(STATION_NUMBER = HYDAT)
-      flowdata <- dplyr::select(flowdata,Date,Q=Value)
-    }
-    
-    annual_stats <- fasstr::fasstr_annual_stats(flowdata,
+    trends_data <- fasstr::fasstr_annual_stats(flowdata=flowdata,
+                                                HYDAT = HYDAT,
                                                 station_name=station_name,
                                                 water_year=water_year, #create another for own water year????
                                                 start_year=start_year,
@@ -156,14 +148,26 @@ fasstr_annual_trends <- function(trendsdata=NULL,
                                                 basin_area=basin_area,
                                                 transpose=TRUE,
                                                 na.rm=na.rm)
-    trends_data <- annual_stats
   }
   
+  # Compute some summary stats on the input data
+  trends_data_summary <- tidyr::gather(trends_data,Year,Value,2:ncol(trends_data))
+  trends_data_summary <- dplyr::summarise(dplyr::group_by(trends_data_summary,Statistic),
+                                          min_year=min(Year),
+                                          max_year=max(Year),
+                                          n_years= sum(!is.na(Value)),
+                                          mean=mean(Value, na.rm = T),
+                                          median=median(Value,na.rm = T),
+                                          min=min(Value, na.rm = T),
+                                          max=max(Value, na.rm = T))
   
   # Complete trends analysis
   trends_results <- zyp::zyp.trend.dataframe(indat = trends_data,
                                              metadata.cols = 1,
                                              method=zyp_method)
+  
+  # Merge the summary stats with the results
+  trends_results <- merge(trends_results,trends_data_summary, by="Statistic",all=TRUE)
   
   
   if(write_trends_data){
