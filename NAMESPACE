@@ -3,6 +3,7 @@
 export(annual_stats)
 export(fasstr_add_date_vars)
 export(fasstr_add_rolling_means)
+export(fasstr_annual_stats)
 export(fasstr_fill_missing_dates)
 export(longterm.stats)
 import(ggplot2)

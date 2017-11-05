@@ -17,14 +17,14 @@
 #' HYDAT database using the tidyhydat package and \code{HYDAT} parameter.
 #' and (optionally) saves the results in *.csv and *.pdf files.
 #'
-#' @param station_name Character. Identifier name of the stream or station. Required when supplying data through \code{flowdata}.
-#'    The station name will be used in plots and filenames of exported tables and plot. If using \code{HYDAT} to supply
-#'    data and no \code{station_name} is provided, the HYDAT station number will be the identifier.
 #' @param flowdata Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
 #'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Q' column with the daily 
 #'    mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.
 #' @param HYDAT Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
 #'    tidyhydat package and a downloaded SQLite HYDAT required.
+#' @param station_name Character. Identifier name of the stream or station. Required when supplying data through \code{flowdata}.
+#'    The station name will be used in plots and filenames of exported tables and plot. If using \code{HYDAT} to supply
+#'    data and no \code{station_name} is provided, the HYDAT station number will be the identifier.
 #' @param water_year Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
 #'    default calendar year (Jan-Dec) (\code{water_year=FALSE}). Water years are designated by the year which they end in
 #'    (e.g. water year 2000 start on 1 Oct 1999 and ends on 30 Sep 2000).
@@ -40,30 +40,10 @@
 #' @param write_transposed_table Logical. Should a file be created with the transposed of the annual statistics
 #'    (both calendar and water year)?
 #'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-summary-stat-trans.csv'))}.
-#' @param write_summary_table Logical. Should a file be created with a flow summary over the years between the
-#'    start_year and end_year (inclusive). This summary includes number of days, number of missing values,
-#'    mean, median, minimum, maximum, and standard deviation of \code{flowdata$Q}.
-#'    The file name will be \code{file.path(report_dir, paste(station_name,"-period-record-summary.csv", sep=""))}.
-#' @param write_lowflow_table Logical. Should a file be created with the minimum value of \code{flowdata$Q} and date the
-#'    minimum occured.
-#'    The file name will be \code{file.path(report_dir,paste(station_name,"-lowflow-summary.csv",sep=""))}
 #' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
 #' @param table_nddigits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
 #' @param na.rm TBD
 #'
-#' @return A list with the following elements:
-#'   \item{Qsummary}{Data frame with flow summary.}
-#'   \item{Qstat_annual}{Data frame with summary statistics as listed at \code{\link{SummaryStatistics}}.}
-#'   \item{Qstat_annual_tpose}{Data frame with transposed summary statistics as listed at \code{\link{SummaryStatistics}}.}
-#'   \item{dates_missing_flows}{Data framw with dates of missing \code{flowdata$Q} between
-#'          \code{start_year} and \code{end_year}}
-#'   \item{file_Qstat_table}{Object with file name of *.csv file with calendar year summary statistics.}
-#'   \item{file_Qstat_tpose_table}{Object with file name of *.csv file with transposed summary statistics.}
-#'   \item{file_Qsummary_table}{Object with file name of *.csv file with summary statistics.}
-#'   \item{file_Qlowflow_table}{Object with file name of *.csv file with low flow summary statistics.}
-#'   \item{na.rm}{Missing value flags.}
-#'   \item{Version}{Version of this function.}
-#'   \item{Date}{Date function was run.}
 #'
 #' @examples
 #' \dontrun{
@@ -82,22 +62,16 @@
 #--------------------------------------------------------------
 # Compute the statistics on an (calendar and water) year basis
 
-annual_stats <- function(station_name=NULL,
-                         flowdata=NULL,
+fasstr_annual_stats <- function(flowdata=NULL,
                          HYDAT=NULL,
+                         station_name=NULL,
                          water_year=FALSE, #create another for own water year????
                          start_year=NULL,
                          end_year=NULL,
                          exclude_years=NULL, # list of stations
                          basin_area=NA, # if na, then all Yield values == NA
-                         zyp_trending=NA,
-                         zyp_alpha=0.05,
                          write_table=FALSE,        # write out statistics on calendar year
                          write_transposed_table=FALSE,  # write out statistics in transposed format (cy & wy)
-                         write_summary_table=FALSE, # write out a summary of period of record
-                         write_lowflow_table=FALSE,      # write out a summary of low flows
-                         write_zyp_table=FALSE,
-                         write_zyp_plots=NA,  # else = c("pdf","png","jpeg","tiff","bmp")
                          report_dir=".",
                          na.rm=list(na.rm.global=FALSE),
                          table_nddigits=3){              # decimal digits for csv files for statistics
@@ -134,18 +108,7 @@ annual_stats <- function(station_name=NULL,
   
   if( !is.logical(write_table))  {stop("write_table parameter must be logical (TRUE/FALSE)")}
   if( !is.logical(write_transposed_table)){stop("write_transposed_table parameter must be logical (TRUE/FALSE)")}
-  if( !is.logical(write_summary_table)){stop("write_summary_table parameter must be logical (TRUE/FALSE)")}
-  if( !is.logical(write_lowflow_table)){ stop("write_lowflow_table parameter must be logical (TRUE/FALSE)")}
-  
-  if( !is.na(zyp_trending) & !zyp_trending %in% c("yuepilon","zhang"))   {
-    stop('zyp_trending parameter must have either "yuepilon" or "zhang" listed')}
-  if( !is.logical(write_zyp_table))  {stop("write_zyp_table parameter must be logical (TRUE/FALSE")}
-  if( !is.na(write_zyp_plots) & !write_zyp_plots %in% c("pdf","png","jpeg","tiff","bmp"))  {
-    stop("write_zyp_plots parameter must be logical (TRUE/FALSE)")}
-  if( is.na(zyp_trending) & (write_zyp_table | !is.na(write_zyp_plots)) ) {
-    stop('zyp_trending parameter method must be selected to write results')}
-  if( !is.numeric(zyp_alpha))  { stop("zyp_alpha parameter needs to be numeric")}
-  
+
   if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
   if( !is.numeric(table_nddigits))  { stop("csv.ndddigits parameter needs to be numeric")}
   table_nddigits <- round(table_nddigits[1])  # number of decimal digits for rounding in csv files
@@ -341,21 +304,6 @@ annual_stats <- function(station_name=NULL,
   Qstat[Qstat$Year %in% exclude_years,-1] <- NA
   
   
-  
-  
-  
-  ## Write the files
-  #################################
-  
-  file_Qsummary_table <- NA
-  if(write_summary_table){
-    # write out the flow summary
-    file_Qsummary_table <- file.path(report_dir, paste(station_name,"-period-record-summary.csv", sep=""))
-    temp <- Qsummary
-    temp[,2:ncol(Qsummary)] <- round(temp[,2:ncol(Qsummary)], table_nddigits)
-    utils::write.csv(temp,file=file_Qsummary_table, row.names=FALSE)
-  }
-  
   # See if you want to write out the summary tables?
   file_Qstat_table <- NA
   if(write_table){
@@ -381,162 +329,8 @@ annual_stats <- function(station_name=NULL,
     utils::write.csv(Qstat_tpose.temp, file=file_Qstat_tpose_table, row.names=FALSE)
   }
   
-  # Write out the low flow summary
-  # all mins and acutal dates
-  Qstat_lowflows <- dplyr::select(Qstat,
-                                  Year,dplyr::contains("MIN_0"),dplyr::contains("MINDOY_0"),
-                                  dplyr::contains("MIN_3"),dplyr::contains("MINDOY_3"))
-  if (water_year) {
-    Qstat_lowflows <- dplyr::mutate(Qstat_lowflows,
-                                    WY_MINDate_01Day = as.Date(WY_MINDOY_01Day-1, origin=as.Date(paste0(Year-1,"-10-01"))),
-                                    WY_MINDate_03Day = as.Date(WY_MINDOY_03Day-1, origin=as.Date(paste0(Year-1,"-10-01"))),
-                                    WY_MINDate_07Day = as.Date(WY_MINDOY_07Day-1, origin=as.Date(paste0(Year-1,"-10-01"))),
-                                    WY_MINDate_30Day = as.Date(WY_MINDOY_30Day-1, origin=as.Date(paste0(Year-1,"-10-01"))) )
-  } else {
-    Qstat_lowflows <- dplyr::mutate(Qstat_lowflows,
-                                    CY_MINDate_01Day = as.Date(CY_MINDOY_01Day-1, origin=as.Date(paste0(Year,"-01-01"))),
-                                    CY_MINDate_03Day = as.Date(CY_MINDOY_03Day-1, origin=as.Date(paste0(Year,"-01-01"))),
-                                    CY_MINDate_07Day = as.Date(CY_MINDOY_07Day-1, origin=as.Date(paste0(Year,"-01-01"))),
-                                    CY_MINDate_30Day = as.Date(CY_MINDOY_30Day-1, origin=as.Date(paste0(Year,"-01-01"))) )
-  }
-  Qstat_lowflows <- dplyr::select(Qstat_lowflows,Year,
-                                  dplyr::contains("_01"),dplyr::contains("_03"),
-                                  dplyr::contains("_07"),dplyr::contains("_30"))
-  Qstat_lowflows <- dplyr::filter(Qstat_lowflows, Year >= start_year & Year <= end_year)
-  Qstat_lowflows <- dplyr::filter(Qstat_lowflows, Year >= min_year & Year <=max_year)
-  
-  file_Qlowflow_table <- NA
-  if(write_lowflow_table){
-    file_Qlowflow_table <- file.path(report_dir,paste(station_name,"-lowflow-summary.csv",sep=""))
-    temp <- Qstat_lowflows
-    temp[,c(2,5,8,11)] = round(temp[,c(2,5,8,11)],3)
-    utils::write.csv(temp, file=file_Qlowflow_table, row.names=FALSE)
-  }
   
   
-  
-  Qtrends_zyp <- NA
-  file_Qtrends_zyp_table <- NA
-  file_Qtrends_zyp_plot <- NA
-  if (!is.na(zyp_trending)) {
-    
-    Qtrends_zyp <- zyp::zyp.trend.dataframe(indat = Qstat_tpose,
-                                            metadata.cols = 1,
-                                            method=zyp_trending)
-    ## ADD SOME METRICS
-    
-    if (write_zyp_table) {
-      file_Qtrends_zyp_table <- file.path(report_dir,paste(station_name,"-zyp-",zyp_trending,"-trends-results.csv",sep=""))
-      temp <- Qtrends_zyp
-      utils::write.csv(temp, file=file_Qtrends_zyp_table, row.names=FALSE)
-    }
-    
-    if (!is.na(write_zyp_plots)) {
-      trends_plotdata <- tidyr::gather(Qstat_tpose,Year,Value,-1)
-      trends_plotdata <- dplyr::mutate(trends_plotdata,Year=as.numeric(Year))
-      trends_plotdata <- dplyr::mutate(trends_plotdata,
-                                       Units="Discharge (cms)",
-                                       Units=replace(Units, grepl("TOTALQ",Statistic), "Total Discharge (cubic metres)"),
-                                       Units=replace(Units, grepl("YIELD",Statistic), "Water Yield (mm)"),
-                                       Units=replace(Units, grepl("FLOW",Statistic), "Day of Year"),
-                                       Units=replace(Units, grepl("DAYS",Statistic), "Number of Days"))
-      
-      if (write_zyp_plots=="pdf") {
-        file_Qtrends_zyp_plot <- file.path(report_dir,paste(station_name,"-zyp-",zyp_trending,"-trends-results.pdf",sep=""))
-        pdf(file = file_Qtrends_zyp_plot,8,4)
-        for (metric in unique(trends_plotdata$Statistic)){
-          # Filter for metric
-          trends_trendsdata <- dplyr::filter(trends_plotdata,Statistic==metric)
-          trends_resultsdata <- dplyr::filter(Qtrends_zyp,Statistic==metric)
-          #int <- trends_resultsdata$intercept - trends_resultsdata$trend * (Start_Year)
-          # Plot each metric
-          trends_plot <- ggplot2::ggplot(trends_trendsdata,ggplot2::aes(x=Year,y=Value))+
-            ggplot2::geom_point(color="skyblue4")+
-            ggplot2::geom_line(alpha = 0.3,color="skyblue4") +
-            ggplot2::ggtitle(paste0(metric,"   (Sig. = ",round(trends_resultsdata$sig,3),")"))+
-            ggplot2::ylab(trends_trendsdata$Units[1])+
-            ggplot2::xlab("Year")+
-            ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 12))+
-            ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
-            ggplot2::theme_bw() +
-            ggplot2::theme(panel.border = ggplot2::element_rect(colour = "grey50", fill=NA, size=.1),
-                           panel.grid = ggplot2::element_blank())
-          if (water_year) {trends_plot <- trends_plot + ggplot2::xlab("Water Year")}
-          
-          # If sig. trend, plot trend
-          if (trends_resultsdata$sig < zyp_alpha & !is.na(trends_resultsdata$sig)) {
-            trends_plot <- trends_plot +
-              ggplot2::geom_abline(slope = trends_resultsdata$trend, intercept = (trends_resultsdata$intercept - trends_resultsdata$trend * (start_year)), colour="red")
-          }
-          plot(trends_plot)
-        }
-        dev.off()
-      }
-      
-      ## PNG/JPG
-      if (write_zyp_plots %in% c("png","jpeg","tiff","bmp")) {
-        file_Qtrends_zyp_plot <- paste(report_dir,"/",station_name,"-zyp-",zyp_trending,"-trends-results",sep = "")
-        dir.create(file_Qtrends_zyp_plot)
-        for (metric in unique(trends_plotdata$Statistic)){
-          # Filter for metric
-          
-          plot_dir <- file.path(file_Qtrends_zyp_plot,paste(metric,".",write_zyp_plots,sep=""))
-          
-          trends_trendsdata <- dplyr::filter(trends_plotdata,Statistic==metric)
-          trends_resultsdata <- dplyr::filter(Qtrends_zyp,Statistic==metric)
-          #int <- trends_resultsdata$intercept - trends_resultsdata$trend * (Start_Year)
-          # Plot each metric
-          trends_plot <- ggplot2::ggplot(trends_trendsdata,ggplot2::aes(x=Year,y=Value))+
-            ggplot2::geom_point(color="skyblue4",size=3)+
-            ggplot2::geom_line(alpha = 0.3,color="skyblue4") +
-            #ggplot2::ggtitle(paste0(metric,"   (Sig. = ",round(trends_resultsdata$sig,3),")"))+
-            ggplot2::ylab(trends_trendsdata$Units[1])+
-            ggplot2::xlab("Year")+
-            ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 12))+
-            ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
-            ggplot2::theme_bw() +
-            ggplot2::theme(panel.border = ggplot2::element_rect(colour = "grey50", fill=NA, size=.1),
-                           panel.grid = ggplot2::element_blank(),
-                           axis.text = ggplot2::element_text(size=12),
-                           axis.title = ggplot2::element_text(size=12))
-          if (water_year) {trends_plot <- trends_plot + ggplot2::xlab("Water Year")}
-          
-          # If sig. trend, plot trend
-          if (trends_resultsdata$sig < zyp_alpha & !is.na(trends_resultsdata$sig)) {
-            trends_plot <- trends_plot +
-              ggplot2::geom_abline(slope = trends_resultsdata$trend, intercept = (trends_resultsdata$intercept - trends_resultsdata$trend * (start_year)), colour="red")
-          }
-          ggplot2::ggsave(filename =plot_dir,trends_plot,width=8,height=4)
-        }
-      }
-    }
-  }
-  
-  
-  ## Do some plotting
-  #################################
-  
-  
-  
-  
-  
-  return(list( "station name"= station_name,
-               "year type"=ifelse(!water_year,"Calendar Year (Jan-Dec)","Water Year (Oct-Sep)"),
-               "year range"=paste0(start_year," - ",end_year),
-               exclude_years=exclude_years,
-               Qsummary=Qsummary,
-               Qstat_annual=Qstat,
-               Qstat_annual_tpose=Qstat_tpose,
-               Qstat_lowflows=Qstat_lowflows,
-               "zyp trending method"=zyp_trending,
-               Qtrends_zyp=Qtrends_zyp,
-               dates_missing_flows=dates_missing_flows,
-               file_Qstat_table=file_Qstat_table,
-               file_Qstat_tpose_table=file_Qstat_tpose_table,
-               file_Qsummary_table=file_Qsummary_table,
-               file_Qlowflow_table=file_Qlowflow_table,
-               na.rm = na.rm,
-               Version=Version,
-               Date=Sys.time()))
+  return(Qstat)
 } # end of function
 
