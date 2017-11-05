@@ -21,10 +21,6 @@
 #' @param HYDAT Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
 #'    tidyhydat package and a downloaded SQLite HYDAT required.
 #' @param water_year_start Numeric. Month to start water year (1 to 12 for Jan to Dec).
-
-#'
-#' @return A list with the following elements:
-#'   \item{flowdata}
 #'
 #' @examples
 #' \dontrun{

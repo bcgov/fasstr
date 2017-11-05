@@ -16,10 +16,6 @@ tidyhydat package and a downloaded SQLite HYDAT required.}
 
 \item{water_year_start}{Numeric. Month to start water year (1 to 12 for Jan to Dec).}
 }
-\value{
-A list with the following elements:
-  \item{flowdata}
-}
 \description{
 Adds mulitple date variables to a dataframe from a column of dates, including
   year, month (numeric and text), day of years, and water years and day of water years.

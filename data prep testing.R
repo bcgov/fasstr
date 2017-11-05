@@ -29,4 +29,6 @@ test2 <- fasstr_fill_missing_dates(test2)
 test2 <- fasstr_fill_missing_dates(HYDAT = "08NM116")
 
 
-
+test <- fasstr::fasstr_add_date_vars(HYDAT = "08HB048")
+test <- fasstr::fasstr_add_rolling_means(test)
+test <- fasstr::fasstr_fill_missing_dates(test)

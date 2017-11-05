@@ -22,10 +22,6 @@
 #'    tidyhydat package and a downloaded SQLite HYDAT required.
 #' @param water_year Logical (TRUE/FALSE). Choose to fill to the start of the first/last water years.
 #' @param water_year_start Numeric. Month to start water year (1 to 12 for Jan to Dec). Default 10 (Oct).
-#' 
-#'
-#' @return A list with the following elements:
-#'   \item{flowdata}
 #'
 #' @examples
 #' \dontrun{

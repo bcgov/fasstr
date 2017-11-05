@@ -19,10 +19,6 @@ tidyhydat package and a downloaded SQLite HYDAT required.}
 
 \item{water_year_start}{Numeric. Month to start water year (1 to 12 for Jan to Dec). Default 10 (Oct).}
 }
-\value{
-A list with the following elements:
-  \item{flowdata}
-}
 \description{
 Fill missing dates with NA.
 }

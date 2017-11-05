@@ -24,9 +24,6 @@
 #'    (default) compared to the rolling window of observations
 #' 
 #'
-#' @return A list with the following elements:
-#'   \item{flowdata}
-#'
 #' @examples
 #' \dontrun{
 #' 

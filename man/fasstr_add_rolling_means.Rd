@@ -20,10 +20,6 @@ tidyhydat package and a downloaded SQLite HYDAT required.}
 \item{align}{Character. specifyies whether the index of the result should be left- or right-aligned or centered 
 (default) compared to the rolling window of observations}
 }
-\value{
-A list with the following elements:
-  \item{flowdata}
-}
 \description{
 Adds n-day rolling means. Ensures rolling means
 }
