@@ -158,7 +158,8 @@ fasstr_annual_stats <- function(flowdata=NULL,
   flowdata <- fasstr::fasstr_add_rolling_means(flowdata,days = c(3,7,30))
   
   # compuate the annual cumulative total
-  flowdata <- dplyr::mutate(dplyr::group_by(flowdata,AnalysisYear),Qcumul=cumsum(Q))
+  flowdata <- fasstr_add_total_volume(flowdata,water_year = water_year)
+ # flowdata <- dplyr::mutate(dplyr::group_by(flowdata,AnalysisYear),Qcumul=cumsum(Q))
   
 
   
@@ -202,10 +203,10 @@ fasstr_annual_stats <- function(flowdata=NULL,
                                      MEDIAN_DAILY  = median(Q, na.rm=na.rm$na.rm.global),  # CY median Discharge (Based on Daily avgs)
                                      TOTALQ_DAILY  = MEAN_DAILY*length(Q)*60*60*24,    # Yearly sum of daily avg (cms) *60*60*24 # deal with missing values
                                      YIELDMM_DAILY = TOTALQ_DAILY/basin_area/1000 ,
-                                     Date_25P_FLOW_DAILY = DayofYear[ match(TRUE, Qcumul > 0.25  *TOTALQ_DAILY/(60*60*24))],
-                                     Date_33P_FLOW_DAILY = DayofYear[ match(TRUE, Qcumul > 0.333 *TOTALQ_DAILY/(60*60*24))],
-                                     Date_50P_FLOW_DAILY = DayofYear[ match(TRUE, Qcumul > 0.50  *TOTALQ_DAILY/(60*60*24))],
-                                     Date_75P_FLOW_DAILY = DayofYear[ match(TRUE, Qcumul > 0.75  *TOTALQ_DAILY/(60*60*24))])
+                                     Date_25P_FLOW_DAILY = DayofYear[ match(TRUE, Vtotal > 0.25  *TOTALQ_DAILY)],
+                                     Date_33P_FLOW_DAILY = DayofYear[ match(TRUE, Vtotal > 0.333 *TOTALQ_DAILY)],
+                                     Date_50P_FLOW_DAILY = DayofYear[ match(TRUE, Vtotal > 0.50  *TOTALQ_DAILY)],
+                                     Date_75P_FLOW_DAILY = DayofYear[ match(TRUE, Vtotal > 0.75  *TOTALQ_DAILY)])
   Qstat_annual <-   dplyr::rename(Qstat_annual,Year=AnalysisYear)
   
   ## Compute statistics on 4 seasons
