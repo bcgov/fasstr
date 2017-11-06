@@ -133,7 +133,7 @@ longterm.stats <- function(station.name=NULL,
   if (!is.null(HYDAT)) {
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("HYDAT station does not exist.")}
     if (is.null(station.name)) {station.name <- HYDAT}
-    flow.data <- tidyhydat::DLY_FLOWS(STATION_NUMBER = HYDAT)
+    flowdata <- tidyhydat::hy_daily_flows(station_number =  HYDAT)
     flow.data <- dplyr::select(flow.data,Date,Q=Value)
   }
   

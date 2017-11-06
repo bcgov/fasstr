@@ -162,7 +162,7 @@ annual_stats <- function(station_name=NULL,
   if (!is.null(HYDAT)) {
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
     if (is.null(station_name)) {station_name <- HYDAT}
-    flowdata <- tidyhydat::DLY_FLOWS(STATION_NUMBER = HYDAT)
+    flowdata <- tidyhydat::hy_daily_flows(station_number =  HYDAT)
     flowdata <- dplyr::select(flowdata,Date,Q=Value)
   }
   

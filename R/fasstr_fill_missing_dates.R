@@ -68,7 +68,7 @@ fasstr_fill_missing_dates <- function(flowdata=NULL,
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
-    flowdata <- tidyhydat::DLY_FLOWS(STATION_NUMBER = HYDAT)
+    flowdata <- tidyhydat::hy_daily_flows(station_number =  HYDAT)
   }
   
   #Get the station_number and Parameter from flowdata if used HYDAT in a previous fasstr function
