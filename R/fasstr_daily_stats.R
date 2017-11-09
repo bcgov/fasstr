@@ -10,9 +10,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Compute long-term statistics.
+#' @title Compute streamflow statistics for each day of the year.
 #'
-#' @description Computes long-term statistics of streamflow data.
+#' @description Compute streamflow statistics for each day of the year.
 #' Streamflow data can be supplied through the \code{flowdata} parameter or extracted from a 
 #' HYDAT database using the tidyhydat package and \code{HYDAT} parameter.
 #'
@@ -32,8 +32,11 @@
 #'    year of the data provided.
 #' @param end_year Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
 #'    year of the data provided.
-#' @param excluded_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).    
-#' @param transpose Logical. Switch the rows and columns of the results.
+#' @param excluded_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).   
+#' @param percentiles Numeric. List of numbers to calculate percentiles (5 = 5th percentile). Default c(5,25,75,95).
+#' @param rolling_days Numeric. Rolling days. Default 1.
+#' @param rolling_align Character. Specifies whether the index of the result should be left- or right-aligned or centered 
+#'    (default) compared to the rolling window of observations#' @param transpose Logical. Switch the rows and columns of the results.
 #' @param write_table Logical. Should a file be created with the calendar year computed percentiles?
 #'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
 #' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
@@ -63,20 +66,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-fasstr_longterm_stats <- function(flowdata=NULL,
-                                  HYDAT=NULL,
-                                  station_name="fasstr",
-                                  water_year=FALSE, #create another for own water year????
-                                  water_year_start=10,
-                                  start_year=NULL,
-                                  end_year=NULL,
-                                  exclude_years=NULL, # list of stations
-                                  percentiles=c(10,90),
-                                  transpose=FALSE,
-                                  write_table=FALSE,        # write out statistics on calendar year
-                                  report_dir=".",
-                                  na.rm=list(na.rm.global=FALSE),
-                                  table_nddigits=3){
+fasstr_daily_stats <- function(flowdata=NULL,
+                               HYDAT=NULL,
+                               station_name="fasstr",
+                               water_year=FALSE, #create another for own water year????
+                               water_year_start=10,
+                               start_year=NULL,
+                               end_year=NULL,
+                               exclude_years=NULL, # list of stations
+                               percentiles=c(5,25,75,95),
+                               rolling_days=1,
+                               rolling_align="right",
+                               transpose=FALSE,
+                               write_table=FALSE,        # write out statistics on calendar year
+                               report_dir=".",
+                               na.rm=list(na.rm.global=FALSE),
+                               table_nddigits=3){
   
   
   #
@@ -101,6 +106,20 @@ fasstr_longterm_stats <- function(flowdata=NULL,
     stop("Value column in flowdata dataframe is not numeric.")}
   if( is.null(HYDAT) & any(flowdata$Value <0, na.rm=TRUE))   {
     stop('flowdata cannot have negative values - check your data')}
+  
+  if( !is.numeric(percentiles))   {
+    stop("percentiles must be numeric")}
+  if( !all(percentiles>0 & percentiles<=100))  {
+    stop("percentiles must be >0 and <=100)")}
+  
+  if( !is.numeric(rolling_days))   {
+    stop("rolling_days must be numeric")}
+  if( !all(rolling_days>0 & rolling_days<=180))  {
+    stop("rolling_days must be >0 and <=180)")}
+  if( !all(rolling_days==floor(rolling_days)))  {
+    stop("rolling_days must be integers")}
+  if ( !rolling_align %in% c("right","left","center")){
+    stop("rolling_align parameter must be 'right', 'left', or 'center'.")}
   
   if( !is.logical(water_year))  {
     stop("water_year parameter must be logical (TRUE/FALSE)")}
@@ -137,14 +156,12 @@ fasstr_longterm_stats <- function(flowdata=NULL,
     flowdata <- tidyhydat::hy_daily_flows(station_number =  HYDAT)
   }
   
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year_start = water_year_start)
-  
   # If start/end years are not select, set them as the min/max dates
-  min_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))
-  max_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))
-  if (is.null(start_year)) {start_year <- min_year}
-  if (is.null(end_year)) {end_year <- max_year}
-  if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
+  min.year <- lubridate::year(min(flowdata$Date))-water_year
+  max.year <- lubridate::year(max(flowdata$Date))
+  if (!is.numeric(start_year)) {start_year <- min.year}
+  if (!is.numeric(end_year)) {end_year <- max.year}
+  if(! (start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
   
   #  create the year (annual ) and month variables
   flowdata <- fasstr::fasstr_fill_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
@@ -152,105 +169,95 @@ fasstr_longterm_stats <- function(flowdata=NULL,
   
   # Set selected year-type column for analysis
   if (water_year) {
+    
     flowdata$AnalysisYear <- flowdata$WaterYear
     flowdata$AnalysisDoY <- flowdata$WaterDayofYear
+    
+    if (water_year_start==1) {
+      flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1989-12-31")
+    } else if (water_year_start==2) {
+      flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-01-31")
+    } else if (water_year_start==3) {
+      flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-02-28")
+    } else if (water_year_start==4) {
+      flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-03-31")
+    } else if (water_year_start==5) {
+      flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-04-30")
+    } else if (water_year_start==6) {
+      flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-05-31")
+    } else if (water_year_start==7) {
+      flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-06-30")
+    } else if (water_year_start==8) {
+      flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-07-31")
+    } else if (water_year_start==9) {
+      flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-08-31")
+    } else if (water_year_start==10) {
+      flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-09-30")
+    } else if (water_year_start==11) {
+      flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-10-31")
+    } else if (water_year_start==12) {
+      flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-11-30")
+    }
+    
+    
   }  else {
+    
     flowdata$AnalysisYear <- flowdata$Year
     flowdata$AnalysisDoY <- flowdata$DayofYear
+    flowdata$AnalysisDate <- as.Date(flowdata$DayofYear, origin = "1899-12-31")
+    
   }
   
-  # Filter for the selected year
+  # Apply rolling mean if designated, default of 1
+  flowdata <- fasstr::fasstr_add_rolling_means(flowdata,days = rolling_days,align = rolling_align)
+  colnames(flowdata)[ncol(flowdata)] <- "RollingValue"
+  
+  
+  # Filter for the selected and excluded years
   flowdata <- dplyr::filter(flowdata,AnalysisYear>=start_year & AnalysisYear <= end_year)
   flowdata <- dplyr::filter(flowdata,!(AnalysisYear %in% exclude_years))
   
+  # remove leap year values
+  flowdata <- dplyr::filter(flowdata,AnalysisDoY<366)
   
-  #  Compute calendar year long-term stats
-  Q_month_longterm <-   dplyr::summarize(dplyr::group_by(flowdata,MonthName),
-                                         Mean = mean(Value,na.rm=TRUE),
-                                         Median = median(Value,na.rm=TRUE),
-                                         Maximum = max(Value,na.rm=TRUE),
-                                         Minimum = min(Value,na.rm=TRUE))
-  Q_all_longterm <-   dplyr::summarize(flowdata,
-                                       Mean = mean(Value,na.rm=TRUE),
-                                       Median = median(Value,na.rm=TRUE),
-                                       Maximum = max(Value,na.rm=TRUE),
-                                       Minimum = min(Value,na.rm=TRUE))
-  Q_all_longterm <- dplyr::mutate(Q_all_longterm,MonthName="Long-term")
-  Q_longterm <- rbind(Q_month_longterm, Q_all_longterm)
+  #  Compute calendar year daily stats
+  Q_daily <- dplyr::summarise(dplyr::group_by(flowdata,AnalysisDate,AnalysisDoY),
+                              Mean=mean(RollingValue, na.rm=T),
+                              Median=median(RollingValue, na.rm=T),
+                              Minimum=min(RollingValue, na.rm=T),
+                              Maximum=max(RollingValue, na.rm=T))
   
-  # Calculate some percentiles
   if (!all(is.na(percentiles))){
     for (ptile in percentiles) {
-      
-      Q_month_longterm_ptile <- dplyr::summarise(dplyr::group_by(flowdata,MonthName),
-                                                 Percentile=quantile(Value,ptile/100, na.rm=TRUE))
-      Q_all_longterm_ptile <- dplyr::summarise(flowdata,
-                                               Percentile=quantile(Value,ptile/100, na.rm=TRUE))
-      Q_all_longterm_ptile <- dplyr::mutate(Q_all_longterm_ptile,MonthName="Long-term")
-      
-      colnames(Q_month_longterm_ptile)[2] <- paste0("P",ptile)
-      colnames(Q_all_longterm_ptile)[1] <- paste0("P",ptile)
-      
-      Q_longterm_ptiles <- rbind(Q_month_longterm_ptile, Q_all_longterm_ptile)
-      Q_longterm <- merge(Q_longterm,Q_longterm_ptiles,by=c("MonthName"))
+      Q_daily_ptile <- dplyr::summarise(dplyr::group_by(flowdata,AnalysisDate,AnalysisDoY),
+                                        Percentile=quantile(RollingValue,ptile/100, na.rm=TRUE))
+      colnames(Q_daily_ptile)[3] <- paste0("P",ptile)
+      Q_daily <- merge(Q_daily,Q_daily_ptile,by=c("AnalysisDate","AnalysisDoY"))
     }
   }
   
+  # Final formatting
+  Q_daily <- dplyr::rename(Q_daily,"DayofYear"=AnalysisDoY,Date=AnalysisDate)
+  Q_daily$Date <- format(as.Date(Q_daily$Date),format="%b-%d")
+  col_order <- Q_daily$Date
   
   
-  
-  Q_longterm <- dplyr::rename(Q_longterm,Month=MonthName)
-  if (water_year) {
-    if (water_year_start==1) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Long-term"))
-    } else if (water_year_start==2) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan","Long-term"))
-    } else if (water_year_start==3) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Long-term"))
-    } else if (water_year_start==4) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Long-term"))
-    } else if (water_year_start==5) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "Long-term"))
-    } else if (water_year_start==6) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Long-term"))
-    } else if (water_year_start==7) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Long-term"))
-    } else if (water_year_start==8) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Long-term"))
-    } else if (water_year_start==9) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Long-term"))
-    } else if (water_year_start==10) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Long-term"))
-    } else if (water_year_start==11) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Long-term"))
-    } else if (water_year_start==12) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Long-term"))
-    }
-    
-  } else {           
-    Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Long-term"))
-  }
-  Q_longterm <- with(Q_longterm, Q_longterm[order(Month),])
-  
-  
-  
+  # If transpose==TRUE
   if (transpose) {
-    Q_longterm_tpose <- tidyr::gather(Q_longterm,Statistic,Value,-Month)
-    Q_longterm <- tidyr::spread(Q_longterm_tpose,Month,Value)
+    Q_daily_tpose <- tidyr::gather(Q_daily,Statistic,Value,-Date)
+    Q_daily <- tidyr::spread(Q_daily_tpose,Date,Value)
+    Q_daily <-  Q_daily[,c("Statistic",col_order)]
   }
   
-  
-  
-  #  Write out summary tables for calendar years
+  #  Write the table
   if (write_table) {
-    file.stat.csv <-file.path(report_dir, paste(station_name,"-longterm-summary-stat.csv", sep=""))
-    temp <- Q_longterm
+    file.stat.csv <-file.path(report_dir, paste(station_name,"-daily-summary-stat.csv", sep=""))
+    temp <- Q_daily
     temp[,2:ncol(temp)] <- round(temp[,2:ncol(temp)], table_nddigits)  # round the output
     utils::write.csv(temp, file=file.stat.csv, row.names=FALSE)
   }
   
-  
-  return(Q_longterm)
+  return(Q_daily)
   
   
 } # end of function

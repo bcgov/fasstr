@@ -10,9 +10,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Compute long-term statistics.
+#' @title Compute a long-term percentiles table.
 #'
-#' @description Computes long-term statistics of streamflow data.
+#' @description Compute a long-term percentiles table.
 #' Streamflow data can be supplied through the \code{flowdata} parameter or extracted from a 
 #' HYDAT database using the tidyhydat package and \code{HYDAT} parameter.
 #'
@@ -63,7 +63,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-fasstr_longterm_stats <- function(flowdata=NULL,
+fasstr_longterm_ptiles <- function(flowdata=NULL,
                                   HYDAT=NULL,
                                   station_name="fasstr",
                                   water_year=FALSE, #create another for own water year????
@@ -71,7 +71,7 @@ fasstr_longterm_stats <- function(flowdata=NULL,
                                   start_year=NULL,
                                   end_year=NULL,
                                   exclude_years=NULL, # list of stations
-                                  percentiles=c(10,90),
+                                  percentiles=c(1:99),
                                   transpose=FALSE,
                                   write_table=FALSE,        # write out statistics on calendar year
                                   report_dir=".",
@@ -163,23 +163,9 @@ fasstr_longterm_stats <- function(flowdata=NULL,
   flowdata <- dplyr::filter(flowdata,AnalysisYear>=start_year & AnalysisYear <= end_year)
   flowdata <- dplyr::filter(flowdata,!(AnalysisYear %in% exclude_years))
   
-  
-  #  Compute calendar year long-term stats
-  Q_month_longterm <-   dplyr::summarize(dplyr::group_by(flowdata,MonthName),
-                                         Mean = mean(Value,na.rm=TRUE),
-                                         Median = median(Value,na.rm=TRUE),
-                                         Maximum = max(Value,na.rm=TRUE),
-                                         Minimum = min(Value,na.rm=TRUE))
-  Q_all_longterm <-   dplyr::summarize(flowdata,
-                                       Mean = mean(Value,na.rm=TRUE),
-                                       Median = median(Value,na.rm=TRUE),
-                                       Maximum = max(Value,na.rm=TRUE),
-                                       Minimum = min(Value,na.rm=TRUE))
-  Q_all_longterm <- dplyr::mutate(Q_all_longterm,MonthName="Long-term")
-  Q_longterm <- rbind(Q_month_longterm, Q_all_longterm)
-  
+  Q_longterm_ptiles <- as.data.frame(c(unique(flowdata$MonthName),"Long-term"))
+  colnames(Q_longterm_ptiles)[1] <- "MonthName"
   # Calculate some percentiles
-  if (!all(is.na(percentiles))){
     for (ptile in percentiles) {
       
       Q_month_longterm_ptile <- dplyr::summarise(dplyr::group_by(flowdata,MonthName),
@@ -191,66 +177,69 @@ fasstr_longterm_stats <- function(flowdata=NULL,
       colnames(Q_month_longterm_ptile)[2] <- paste0("P",ptile)
       colnames(Q_all_longterm_ptile)[1] <- paste0("P",ptile)
       
-      Q_longterm_ptiles <- rbind(Q_month_longterm_ptile, Q_all_longterm_ptile)
-      Q_longterm <- merge(Q_longterm,Q_longterm_ptiles,by=c("MonthName"))
+      Q_longterm_ptiles_temp <- rbind(Q_month_longterm_ptile, Q_all_longterm_ptile)
+      Q_longterm_ptiles <- merge(Q_longterm_ptiles,Q_longterm_ptiles_temp,by=c("MonthName"))
     }
-  }
   
   
   
   
-  Q_longterm <- dplyr::rename(Q_longterm,Month=MonthName)
+  
+  Q_longterm_ptiles <- dplyr::rename(Q_longterm_ptiles,Month=MonthName)
   if (water_year) {
     if (water_year_start==1) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Long-term"))
+      Q_longterm_ptiles$Month <- factor(Q_longterm_ptiles$Month, levels=c("Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Long-term"))
     } else if (water_year_start==2) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan","Long-term"))
+      Q_longterm_ptiles$Month <- factor(Q_longterm_ptiles$Month, levels=c("Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan","Long-term"))
     } else if (water_year_start==3) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Long-term"))
+      Q_longterm_ptiles$Month <- factor(Q_longterm_ptiles$Month, levels=c("Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Long-term"))
     } else if (water_year_start==4) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Long-term"))
+      Q_longterm_ptiles$Month <- factor(Q_longterm_ptiles$Month, levels=c("Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Long-term"))
     } else if (water_year_start==5) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "Long-term"))
+      Q_longterm_ptiles$Month <- factor(Q_longterm_ptiles$Month, levels=c("May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "Long-term"))
     } else if (water_year_start==6) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Long-term"))
+      Q_longterm_ptiles$Month <- factor(Q_longterm_ptiles$Month, levels=c("Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Long-term"))
     } else if (water_year_start==7) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Long-term"))
+      Q_longterm_ptiles$Month <- factor(Q_longterm_ptiles$Month, levels=c("Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Long-term"))
     } else if (water_year_start==8) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Long-term"))
+      Q_longterm_ptiles$Month <- factor(Q_longterm_ptiles$Month, levels=c("Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Long-term"))
     } else if (water_year_start==9) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Long-term"))
+      Q_longterm_ptiles$Month <- factor(Q_longterm_ptiles$Month, levels=c("Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Long-term"))
     } else if (water_year_start==10) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Long-term"))
+      Q_longterm_ptiles$Month <- factor(Q_longterm_ptiles$Month, levels=c("Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Long-term"))
     } else if (water_year_start==11) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Long-term"))
+      Q_longterm_ptiles$Month <- factor(Q_longterm_ptiles$Month, levels=c("Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Long-term"))
     } else if (water_year_start==12) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Long-term"))
+      Q_longterm_ptiles$Month <- factor(Q_longterm_ptiles$Month, levels=c("Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Long-term"))
     }
     
   } else {           
-    Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Long-term"))
+    Q_longterm_ptiles$Month <- factor(Q_longterm_ptiles$Month, levels=c("Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Long-term"))
   }
-  Q_longterm <- with(Q_longterm, Q_longterm[order(Month),])
+  Q_longterm_ptiles <- with(Q_longterm_ptiles, Q_longterm_ptiles[order(Month),])
   
   
   
   if (transpose) {
-    Q_longterm_tpose <- tidyr::gather(Q_longterm,Statistic,Value,-Month)
-    Q_longterm <- tidyr::spread(Q_longterm_tpose,Month,Value)
+    row_order <- colnames(Q_longterm_ptiles[,-1])
+    Q_longterm_tpose <- tidyr::gather(Q_longterm_ptiles,Percentile,Value,-Month)
+    Q_longterm_ptiles <- tidyr::spread(Q_longterm_tpose,Month,Value)
+    Q_longterm_ptiles <- Q_longterm_ptiles[match(row_order, Q_longterm_ptiles$Percentile),]
+
   }
   
   
   
   #  Write out summary tables for calendar years
   if (write_table) {
-    file.stat.csv <-file.path(report_dir, paste(station_name,"-longterm-summary-stat.csv", sep=""))
-    temp <- Q_longterm
+    file_stat_csv <-file.path(report_dir, paste(station_name,"-longterm-percentiles.csv", sep=""))
+    temp <- Q_longterm_ptiles
     temp[,2:ncol(temp)] <- round(temp[,2:ncol(temp)], table_nddigits)  # round the output
-    utils::write.csv(temp, file=file.stat.csv, row.names=FALSE)
+    utils::write.csv(temp, file=file_stat_csv, row.names=FALSE)
   }
   
   
-  return(Q_longterm)
+  return(Q_longterm_ptiles)
   
   
 } # end of function

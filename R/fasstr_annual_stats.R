@@ -18,7 +18,7 @@
 #' HYDAT database using the tidyhydat package and \code{HYDAT} parameter.
 #'
 #' @param flowdata Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-#'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Q' column with the daily 
+#'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
 #'    mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.
 #' @param HYDAT Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
 #'    tidyhydat package and a downloaded SQLite HYDAT required.
@@ -83,12 +83,12 @@ fasstr_annual_stats <- function(flowdata=NULL,
   if( is.null(HYDAT) & !is.character(station_name))  {stop("station_name parameter must be a character string.")}
   if( is.null(HYDAT) & length(station_name)>1)        {stop("station_name parameter cannot have length > 1")}
   if( is.null(HYDAT) & !is.data.frame(flowdata))         {stop("flowdata parameter is not a data frame.")}
-  if( is.null(HYDAT) & !all(c("Date","Q") %in% names(flowdata))){
-    stop("flowdata dataframe doesn't contain the variables Date and Q.")}
+  if( is.null(HYDAT) & !all(c("Date","Value") %in% names(flowdata))){
+    stop("flowdata dataframe doesn't contain the variables Date and Value.")}
   if( is.null(HYDAT) & !inherits(flowdata$Date[1], "Date")){
     stop("Date column in flowdata dataframe is not a date.")}
-  if( is.null(HYDAT) & !is.numeric(flowdata$Q))          {stop("Q column in flowdata dataframe is not numeric.")}
-  if( is.null(HYDAT) & any(flowdata$Q <0, na.rm=TRUE))   {stop('flowdata cannot have negative values - check your data')}
+  if( is.null(HYDAT) & !is.numeric(flowdata$Value))          {stop("Value column in flowdata dataframe is not numeric.")}
+  if( is.null(HYDAT) & any(flowdata$Value <0, na.rm=TRUE))   {stop('flowdata cannot have negative values - check your data')}
   
   if( !is.logical(water_year))  {stop("water_year parameter must be logical (TRUE/FALSE)")}
   if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
@@ -118,7 +118,6 @@ fasstr_annual_stats <- function(flowdata=NULL,
     if (station_name=="fasstr") {station_name <- HYDAT}
     if (is.na(basin_area)) {basin_area <- tidyhydat::hy_stations(station_number = HYDAT)$DRAINAGE_AREA_GROSS}
     flowdata <- tidyhydat::hy_daily_flows(station_number =  HYDAT)
-    flowdata <- dplyr::select(flowdata,Date,Q=Value)
   }
   
   
@@ -167,8 +166,8 @@ fasstr_annual_stats <- function(flowdata=NULL,
   
   ## Compute statistics on 2 seasons (must be water year) so calc'd first before filtering for selected years
   Qstat_2seasons <- dplyr::summarize(dplyr::group_by(flowdata,WaterYear,Seasons2),
-                                     TOTALQ_DAILY=mean(Q, na.rm=F)*length(Q)*60*60*24,
-                                     YIELDMM_DAILY=mean(Q, na.rm=F)*length(Q)*60*60*24 /basin_area/1000)
+                                     TOTALQ_DAILY=mean(Value, na.rm=F)*length(Value)*60*60*24,
+                                     YIELDMM_DAILY=mean(Value, na.rm=F)*length(Value)*60*60*24 /basin_area/1000)
   Qstat_2seasons <- tidyr::gather(Qstat_2seasons,stat,value,3:4)
   Qstat_2seasons <- dplyr::mutate(Qstat_2seasons,title=paste0(Seasons2,"_",stat))
   Qstat_2seasons <- dplyr::select(Qstat_2seasons,-Seasons2,-stat)
@@ -185,9 +184,9 @@ fasstr_annual_stats <- function(flowdata=NULL,
   ## Compute statistics on  year basis
   
   Qstat_annual <-   dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear),
-                                     MIN_01Day    = min(Q, na.rm=na.rm$na.rm.global),	     
+                                     MIN_01Day    = min(Value, na.rm=na.rm$na.rm.global),	     
                                      MINDOY_01Day = ifelse(is.na(MIN_01Day),NA,
-                                                           AnalysisDoY[which(Q==MIN_01Day)]),
+                                                           AnalysisDoY[which(Value==MIN_01Day)]),
                                      MIN_03Day    = min(Q3Day, na.rm=na.rm$na.rm.global),	    
                                      MINDOY_03Day = ifelse(is.na(MIN_03Day),NA,
                                                            AnalysisDoY[which(Q3Day==MIN_03Day)]),
@@ -197,11 +196,11 @@ fasstr_annual_stats <- function(flowdata=NULL,
                                      MIN_30Day    = min(Q30Day, na.rm=na.rm$na.rm.global),	     
                                      MINDOY_30Day = ifelse(is.na(MIN_30Day),NA,
                                                            AnalysisDoY[which(Q30Day==MIN_30Day)]),
-                                     MIN_DAILY     = min (Q, na.rm=na.rm$na.rm.global),	    # CY Min Daily Q 	CY Min Daily Q
-                                     MAX_DAILY	    = max (Q, na.rm=na.rm$na.rm.global),      # CY Max Daily Q
-                                     MEAN_DAILY    = mean(Q, na.rm=na.rm$na.rm.global),     # CY Mean Discharge (Based on Daily avgs)
-                                     MEDIAN_DAILY  = median(Q, na.rm=na.rm$na.rm.global),  # CY median Discharge (Based on Daily avgs)
-                                     TOTALQ_DAILY  = MEAN_DAILY*length(Q)*60*60*24,    # Yearly sum of daily avg (cms) *60*60*24 # deal with missing values
+                                     MIN_DAILY     = min (Value, na.rm=na.rm$na.rm.global),	    # CY Min Daily Q 	CY Min Daily Q
+                                     MAX_DAILY	    = max (Value, na.rm=na.rm$na.rm.global),      # CY Max Daily Q
+                                     MEAN_DAILY    = mean(Value, na.rm=na.rm$na.rm.global),     # CY Mean Discharge (Based on Daily avgs)
+                                     MEDIAN_DAILY  = median(Value, na.rm=na.rm$na.rm.global),  # CY median Discharge (Based on Daily avgs)
+                                     TOTALQ_DAILY  = MEAN_DAILY*length(Value)*60*60*24,    # Yearly sum of daily avg (cms) *60*60*24 # deal with missing values
                                      YIELDMM_DAILY = TOTALQ_DAILY/basin_area/1000 ,
                                      Date_25P_FLOW_DAILY = DayofYear[ match(TRUE, Vtotal > 0.25  *TOTALQ_DAILY)],
                                      Date_33P_FLOW_DAILY = DayofYear[ match(TRUE, Vtotal > 0.333 *TOTALQ_DAILY)],
@@ -211,8 +210,8 @@ fasstr_annual_stats <- function(flowdata=NULL,
   
   ## Compute statistics on 4 seasons
   Qstat_4seasons <- dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear,Seasons4),
-                                     TOTALQ_DAILY=mean(Q, na.rm=na.rm$na.rm.global)*length(Q)*60*60*24,
-                                     YIELDMM_DAILY=mean(Q, na.rm=na.rm$na.rm.global)*length(Q)*60*60*24 /basin_area/1000)
+                                     TOTALQ_DAILY=mean(Value, na.rm=na.rm$na.rm.global)*length(Value)*60*60*24,
+                                     YIELDMM_DAILY=mean(Value, na.rm=na.rm$na.rm.global)*length(Value)*60*60*24 /basin_area/1000)
   Qstat_4seasons <- tidyr::gather(Qstat_4seasons,stat,value,3:4)
   Qstat_4seasons <- dplyr::mutate(Qstat_4seasons,title=paste0(Seasons4,"_",stat))
   Qstat_4seasons <- dplyr::select(Qstat_4seasons,-Seasons4,-stat)
@@ -223,12 +222,12 @@ fasstr_annual_stats <- function(flowdata=NULL,
   
   ## Compute statistics on months
   Qstat_months <- dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear,MonthName),
-                                   "_MIN_DAILY" = min   (Q, na.rm=na.rm$na.rm.global),
-                                   "_MAX_DAILY" = max   (Q, na.rm=na.rm$na.rm.global),
-                                   "_MEAN_DAILY"= mean  (Q, na.rm=na.rm$na.rm.global),
-                                   "_MEDIAN_DAILY" = stats::median(Q, na.rm=na.rm$na.rm.global),
-                                   "_P10_DAILY" = stats::quantile(Q, prob=.10, na.rm=T),
-                                   "_P20_DAILY" = stats::quantile(Q, prob=.20, na.rm=T)
+                                   "_MIN_DAILY" = min   (Value, na.rm=na.rm$na.rm.global),
+                                   "_MAX_DAILY" = max   (Value, na.rm=na.rm$na.rm.global),
+                                   "_MEAN_DAILY"= mean  (Value, na.rm=na.rm$na.rm.global),
+                                   "_MEDIAN_DAILY" = stats::median(Value, na.rm=na.rm$na.rm.global),
+                                   "_P10_DAILY" = stats::quantile(Value, prob=.10, na.rm=T),
+                                   "_P20_DAILY" = stats::quantile(Value, prob=.20, na.rm=T)
   )
   Qstat_months <- tidyr::gather(Qstat_months,stat,value,3:8)
   Qstat_months <- dplyr::mutate(Qstat_months,title=paste0(MonthName,stat))
@@ -238,12 +237,12 @@ fasstr_annual_stats <- function(flowdata=NULL,
   
   # compute the number of days in a year outside of the 25th or 75th percentile for each day.
   daily_normals <- dplyr::summarise(dplyr::group_by(flowdata,AnalysisDoY),
-                                    P25=stats::quantile(Q, prob=0.25, na.rm=TRUE),
-                                    P75=stats::quantile(Q, prob=0.75, na.rm=TRUE))
+                                    P25=stats::quantile(Value, prob=0.25, na.rm=TRUE),
+                                    P75=stats::quantile(Value, prob=0.75, na.rm=TRUE))
   flowdata_temp <- merge(flowdata, daily_normals, by="AnalysisDoY") # merge back with the original data
   Qstat_dailynormals <- dplyr::summarise(dplyr::group_by(flowdata_temp,AnalysisYear),
-                                         DAYS_BELOW_25=sum(Q < P25, na.rm=TRUE),
-                                         DAYS_ABOVE_75=sum(Q > P75, na.rm=TRUE),
+                                         DAYS_BELOW_25=sum(Value < P25, na.rm=TRUE),
+                                         DAYS_ABOVE_75=sum(Value > P75, na.rm=TRUE),
                                          DAYS_OUTSIDE_25_75 = DAYS_BELOW_25 + DAYS_ABOVE_75)
   Qstat_dailynormals <- dplyr::rename(Qstat_dailynormals,Year=AnalysisYear)
   

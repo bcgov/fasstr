@@ -15,7 +15,7 @@
 #' @description Adds n-day rolling means. Ensures rolling means 
 #'
 #' @param flowdata Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-#'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Q' column with the daily 
+#'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
 #'    mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.
 #' @param HYDAT Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
 #'    tidyhydat package and a downloaded SQLite HYDAT required.
@@ -42,21 +42,17 @@ fasstr_add_rolling_means <- function(flowdata=NULL,
   
   
   #  Some basic error checking on the input parameters
-  Value.Q=FALSE #used if flow is in a column called Value, not Q
-  if ("Value" %in% names(flowdata)){
-    Value.Q=TRUE
-    flowdata <- dplyr::rename(flowdata,Q=Value)}
   if( is.null(flowdata) & is.null(HYDAT)) {
     stop("flowdata or HYDAT parameters must be set")}
   if( !is.null(HYDAT) & !is.null(flowdata))  {
     stop("Must select either flowdata or HYDAT parameters, not both.")}
   if( is.null(HYDAT) & !is.data.frame(flowdata))         {
     stop("flowdata parameter is not a data frame.")}
-  if( is.null(HYDAT) & !all(c("Date","Q") %in% names(flowdata))){
-    stop("flowdata dataframe doesn't contain date or flow columns (labeled Q or Value)")}
-  if( is.null(HYDAT) & !is.numeric(flowdata$Q))          {
-    stop("Flow data (Q or Value) column in flowdata dataframe is not numeric.")}
-  if( is.null(HYDAT) & any(flowdata$Q <0, na.rm=TRUE))   {
+  if( is.null(HYDAT) & !all(c("Date","Value") %in% names(flowdata))){
+    stop("flowdata dataframe doesn't contain date or flow columns (labeled Value)")}
+  if( is.null(HYDAT) & !is.numeric(flowdata$Value))          {
+    stop("Flow data (Value) column in flowdata dataframe is not numeric.")}
+  if( is.null(HYDAT) & any(flowdata$Value <0, na.rm=TRUE))   {
     stop('flowdata cannot have negative values - check your data')}
   if( is.null(HYDAT) & !inherits(flowdata$Date[1], "Date")){
     stop("Date column in flowdata dataframe is not a date.")}
@@ -74,7 +70,6 @@ fasstr_add_rolling_means <- function(flowdata=NULL,
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
     flowdata <- tidyhydat::hy_daily_flows(station_number =  HYDAT)
-    flowdata <- dplyr::rename(flowdata,Q=Value)
   }
   
   # get list of dates in flowdata
@@ -86,7 +81,7 @@ fasstr_add_rolling_means <- function(flowdata=NULL,
   
   # Add rolling means
   for (x in days) {
-    flowdata[, paste0("Q",x,"Day")] <- zoo::rollapply( flowdata$Q,  x, mean, fill=NA, align=align)
+    flowdata[, paste0("Q",x,"Day")] <- zoo::rollapply( flowdata$Value,  x, mean, fill=NA, align=align)
   }
   
   # Return flowdata to original dates
@@ -97,10 +92,7 @@ fasstr_add_rolling_means <- function(flowdata=NULL,
   if (!is.null(HYDAT)) {
     flowdata$STATION_NUMBER <- HYDAT
     flowdata$Parameter <- "FLOW"
-    flowdata <- dplyr::rename(flowdata,Value=Q)
   }
-  
-  if (Value.Q) {flowdata <- dplyr::rename(flowdata,Value=Q)}
   
   return(flowdata)
 } # end of function

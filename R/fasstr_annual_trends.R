@@ -17,7 +17,7 @@
 #'
 #' @param trendsdata Dataframe. Annual data with column names of years and rows of annual statistics.
 #'@param flowdata Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-#'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Q' column with the daily 
+#'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
 #'    mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.
 #' @param HYDAT Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
 #'    tidyhydat package and a downloaded SQLite HYDAT required.
@@ -76,11 +76,6 @@ fasstr_annual_trends <- function(trendsdata=NULL,
   
   
   #  Some basic error checking on the input parameters
-  
-  # If flowdata was from HYDAT in a previous function
-  if ("Value" %in% names(flowdata)){
-    flowdata <- dplyr::rename(flowdata,Q=Value)
-  }
 
   # if trendsdata is provided
   if( !is.null(trendsdata) ) {
@@ -99,13 +94,13 @@ fasstr_annual_trends <- function(trendsdata=NULL,
       stop("flowdata parameter is not a dataframe.")}
     if( is.null(HYDAT) & "Date" %in% names(flowdata) ){
       stop("flowdata dataframe doesn't contain 'Date' column.")}
-    if( is.null(HYDAT) & "Q" %in% names(flowdata) ){
-      stop("flowdata dataframe doesn't contain a flow column labeled Q or Value.")}
+    if( is.null(HYDAT) & "Value" %in% names(flowdata) ){
+      stop("flowdata dataframe doesn't contain a flow column labeled 'Value'.")}
     if( is.null(HYDAT) & !inherits(flowdata$Date[1], "Date")){
       stop("Date column in flowdata dataframe is not a date.")}
-    if( is.null(HYDAT) & !is.numeric(flowdata$Q))          {
-      stop("Flow data (Q or Value) column in flowdata dataframe is not numeric.")}
-    if( is.null(HYDAT) & any(flowdata$Q <0, na.rm=TRUE))   {
+    if( is.null(HYDAT) & !is.numeric(flowdata$Value))          {
+      stop("Flow data ('Value') column in flowdata dataframe is not numeric.")}
+    if( is.null(HYDAT) & any(flowdata$Value <0, na.rm=TRUE))   {
       stop('flowdata cannot have negative values - check your data')}
     
     if( !is.logical(water_year))  {stop("water_year parameter must be logical (TRUE/FALSE)")}

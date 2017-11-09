@@ -7,12 +7,13 @@
 fasstr_longterm_stats(flowdata = NULL, HYDAT = NULL,
   station_name = "fasstr", water_year = FALSE, water_year_start = 10,
   start_year = NULL, end_year = NULL, exclude_years = NULL,
-  transpose = FALSE, write_table = FALSE, report_dir = ".",
-  na.rm = list(na.rm.global = FALSE), table_nddigits = 3)
+  percentiles = c(10, 90), transpose = FALSE, write_table = FALSE,
+  report_dir = ".", na.rm = list(na.rm.global = FALSE),
+  table_nddigits = 3)
 }
 \arguments{
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Q' column with the daily 
+Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
 mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.}
 
 \item{HYDAT}{Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
@@ -46,9 +47,6 @@ The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy
 \item{table_nddigits}{Numeric. Number of significant digits to round the results in the written tables. Default is 3.}
 
 \item{excluded_years}{Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).}
-
-\item{basin_area}{Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm).
-If no value provided, yield calculations will result in NA values.}
 }
 \description{
 Computes long-term statistics of streamflow data.

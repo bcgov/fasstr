@@ -9,7 +9,7 @@ fasstr_add_total_volume(flowdata = NULL, HYDAT = NULL, water_year = FALSE,
 }
 \arguments{
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Q' column with the daily 
+Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
 mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.}
 
 \item{HYDAT}{Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.

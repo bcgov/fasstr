@@ -16,7 +16,7 @@
 #' @description Fill missing dates with NA.
 #'
 #' @param flowdata Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-#'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Q' column with the daily 
+#'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
 #'    mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.
 #' @param HYDAT Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
 #'    tidyhydat package and a downloaded SQLite HYDAT required.
@@ -40,21 +40,17 @@ fasstr_fill_missing_dates <- function(flowdata=NULL,
                                       water_year_start=10){
   
   #  Some basic error checking on the input parameters
-  Value.Q=FALSE #used if flow is in a column called Value, not Q
-  if ("Value" %in% names(flowdata)){
-    Value.Q=TRUE
-    flowdata <- dplyr::rename(flowdata,Q=Value)}
   if( is.null(flowdata) & is.null(HYDAT)) {
     stop("flowdata or HYDAT parameters must be set")}
   if( !is.null(HYDAT) & !is.null(flowdata))  {
     stop("Must select either flowdata or HYDAT parameters, not both.")}
   if( is.null(HYDAT) & !is.data.frame(flowdata))         {
     stop("flowdata parameter is not a data frame.")}
-  if( is.null(HYDAT) & !all(c("Date","Q") %in% names(flowdata))){
-    stop("flowdata dataframe doesn't contain date or flow columns (labeled Q or Value)")}
-  if( is.null(HYDAT) & !is.numeric(flowdata$Q))          {
-    stop("Flow data (Q or Value) column in flowdata dataframe is not numeric.")}
-  if( is.null(HYDAT) & any(flowdata$Q <0, na.rm=TRUE))   {
+  if( is.null(HYDAT) & !all(c("Date","Value") %in% names(flowdata))){
+    stop("flowdata dataframe doesn't contain date or flow columns (labeled 'Value')")}
+  if( is.null(HYDAT) & !is.numeric(flowdata$Value))          {
+    stop("Flow data ('Value') column in flowdata dataframe is not numeric.")}
+  if( is.null(HYDAT) & any(flowdata$Value <0, na.rm=TRUE))   {
     stop('flowdata cannot have negative values - check your data')}
   if( is.null(HYDAT) & !inherits(flowdata$Date[1], "Date")){
     stop("Date column in flowdata dataframe is not a date.")}
@@ -77,45 +73,35 @@ fasstr_fill_missing_dates <- function(flowdata=NULL,
   
   
   flowdata <- flowdata[ order(flowdata$Date),]
-  
+  col_order <- names(flowdata)
   
   # If water year is TRUE and month is not January
   if (water_year & water_year_start>1) {
     
     #Create a temp file to determine the min/max water years (cant affect flowdata yet)
-    flowdata.temp <- flowdata
-    flowdata.temp$Year  <- lubridate::year(flowdata.temp$Date)
-    flowdata.temp$Month  <- lubridate::month(flowdata.temp$Date)
-    flowdata.temp$WaterYear <- as.numeric(ifelse(flowdata.temp$Month>=water_year_start,
-                                                 flowdata.temp$Year+1,
-                                                 flowdata.temp$Year))
-    min_wateryear <- min(flowdata.temp$WaterYear)
-    max_wateryear <- max(flowdata.temp$WaterYear)
+    flowdata.temp <- fasstr::fasstr_add_date_vars(dplyr::select(flowdata,Date,Value),
+                                                  water_year_start = water_year_start)
+    min_wateryear <- ifelse(water_year,min(flowdata.temp$WaterYear),min(flowdata.temp$Year))
+    max_wateryear <- ifelse(water_year,max(flowdata.temp$WaterYear),max(flowdata.temp$Year))
     
     
     # Extend the flowdata to well before the start and end dates (will filter to water years)
-    min_year <- lubridate::year(min(flowdata$Date))-1
-    max_year <- lubridate::year(max(flowdata$Date))+1
-    
-    flowdata <- merge(flowdata, 
-                      data.frame(Date=seq(as.Date(paste(min_year,'01-01',sep='-'),
+    flowdata.temp <- merge(flowdata.temp, 
+                      data.frame(Date=seq(as.Date(paste(min(flowdata.temp$Year)-1,'01-01',sep='-'),
                                                   "%Y-%m-%d"),
-                                          as.Date(paste(max_year  ,'12-31',sep='-'),
+                                          as.Date(paste(max(flowdata.temp$Year)+1,'12-31',sep='-'),
                                                   '%Y-%m-%d'), 1)),
                       all.y=TRUE)
     
     # Add Water year to be able to filter it
-    flowdata$Year  <- lubridate::year(flowdata$Date)
-    flowdata$Month  <- lubridate::month(flowdata$Date)
-    flowdata$WaterYear <- as.numeric(ifelse(flowdata$Month>=water_year_start,
-                                            flowdata$Year+1,
-                                            flowdata$Year))
-    
+    flowdata.temp <- fasstr::fasstr_add_date_vars(flowdata.temp,
+                                                  water_year_start = water_year_start)
     
     # Filter flowdata for the min and max water years and remove date columns
-    flowdata <- dplyr::filter(flowdata,WaterYear>=min_wateryear & WaterYear<=max_wateryear)
-    flowdata <- dplyr::select(flowdata,-Year,-Month,-WaterYear)
+    flowdata.temp <- dplyr::filter(flowdata.temp,WaterYear>=min_wateryear & WaterYear<=max_wateryear)
+    flowdata.temp <- dplyr::select(flowdata.temp,Date,Value)
     
+    flowdata <- merge(flowdata,flowdata.temp,all.y = T)
     
     
     # If not water year, or January is chosen as water year start  
@@ -131,6 +117,9 @@ fasstr_fill_missing_dates <- function(flowdata=NULL,
                       all.y=TRUE)
   }
   
+  # Return columns to original order
+  flowdata <-  flowdata[,col_order]
+  
   
   # Fill in STATION_NUMBER and Parameter if HYDAT selected
   if (!is.null(HYDAT)) {
@@ -141,12 +130,6 @@ fasstr_fill_missing_dates <- function(flowdata=NULL,
   # If flowdata was from HYDAT in a previous function
   if ("STATION_NUMBER" %in% names(flowdata)){flowdata$STATION_NUMBER <- STATION_NUMBER}
   if ("Parameter" %in% names(flowdata)){flowdata$Parameter <- Parameter}
-  if (Value.Q) {flowdata <- dplyr::rename(flowdata,Value=Q)}
-  
-  # If fasstr_add_date_vars() used previously, add the date variables to the new dates
-  if (all(c("Year","Month","MonthName","WaterYear","DayofYear","WaterDayofYear") %in% names(flowdata))) {
-    flowdata <- fasstr_add_date_vars(flowdata=flowdata)
-  }
   
   
   
