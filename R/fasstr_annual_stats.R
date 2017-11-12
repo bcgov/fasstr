@@ -32,7 +32,7 @@
 #'    year of the data provided.
 #' @param end_year Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
 #'    year of the data provided.
-#' @param excluded_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).    
+#' @param exclude_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).    
 #' @param basin_area Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm).
 #'    If no value provided, yield calculations will result in NA values.
 #' @param transpose Logical. Switch the rows and columns of the results.

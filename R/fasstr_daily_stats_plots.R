@@ -251,7 +251,7 @@ fasstr_daily_stats_plots <- function(flowdata=NULL,
     ggplot2::geom_line(ggplot2::aes(y=Mean, colour="Mean"), size=.5) +
     ggplot2::scale_fill_manual(values = c("Max-Min Range" = "lightblue2" ,"5-95 Percentiles" = "lightblue3", "25-75 Percentiles" = "lightblue4")) +
     ggplot2::scale_color_manual(values = c("Mean" = "paleturquoise", "Median" = "dodgerblue4"),labels = c("Mean", "Median")) +
-    ggplot2::scale_y_continuous(expand = c(0, 0))+
+    {if (!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0))}+
     {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0))} +
     {if (log_discharge) ggplot2::annotation_logticks(base= 10,"left",colour = "grey25",size=0.3,
                                                   short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))} +
