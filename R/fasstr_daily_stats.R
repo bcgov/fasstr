@@ -156,12 +156,15 @@ fasstr_daily_stats <- function(flowdata=NULL,
     flowdata <- tidyhydat::hy_daily_flows(station_number =  HYDAT)
   }
   
+  # add date variables to determine the min/max cal/water years
+  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year_start = water_year_start)
+  min_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))
+  max_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))
+  
   # If start/end years are not select, set them as the min/max dates
-  min.year <- lubridate::year(min(flowdata$Date))-water_year
-  max.year <- lubridate::year(max(flowdata$Date))
-  if (!is.numeric(start_year)) {start_year <- min.year}
-  if (!is.numeric(end_year)) {end_year <- max.year}
-  if(! (start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
+  if (is.null(start_year)) {start_year <- min_year}
+  if (is.null(end_year)) {end_year <- max_year}
+  if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
   
   #  create the year (annual ) and month variables
   flowdata <- fasstr::fasstr_fill_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
@@ -220,17 +223,18 @@ fasstr_daily_stats <- function(flowdata=NULL,
   # remove leap year values
   flowdata <- dplyr::filter(flowdata,AnalysisDoY<366)
   
-  #  Compute calendar year daily stats
+  #  Compute daily summary stats
   Q_daily <- dplyr::summarise(dplyr::group_by(flowdata,AnalysisDate,AnalysisDoY),
                               Mean=mean(RollingValue, na.rm=T),
                               Median=median(RollingValue, na.rm=T),
                               Minimum=min(RollingValue, na.rm=T),
                               Maximum=max(RollingValue, na.rm=T))
   
+  # Compute daily percentiles (if 10 or more years of data)
   if (!all(is.na(percentiles))){
     for (ptile in percentiles) {
       Q_daily_ptile <- dplyr::summarise(dplyr::group_by(flowdata,AnalysisDate,AnalysisDoY),
-                                        Percentile=quantile(RollingValue,ptile/100, na.rm=TRUE))
+                                        Percentile=ifelse(sum(!is.na(RollingValue))>=10,quantile(RollingValue,ptile/100, na.rm=TRUE),NA))
       colnames(Q_daily_ptile)[3] <- paste0("P",ptile)
       Q_daily <- merge(Q_daily,Q_daily_ptile,by=c("AnalysisDate","AnalysisDoY"))
     }

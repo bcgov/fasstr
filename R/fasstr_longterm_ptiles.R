@@ -137,11 +137,12 @@ fasstr_longterm_ptiles <- function(flowdata=NULL,
     flowdata <- tidyhydat::hy_daily_flows(station_number =  HYDAT)
   }
   
+  # add date variables to determine the min/max cal/water years
   flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year_start = water_year_start)
-  
-  # If start/end years are not select, set them as the min/max dates
   min_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))
   max_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))
+  
+  # If start/end years are not select, set them as the min/max dates
   if (is.null(start_year)) {start_year <- min_year}
   if (is.null(end_year)) {end_year <- max_year}
   if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}

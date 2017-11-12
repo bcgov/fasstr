@@ -120,22 +120,19 @@ fasstr_annual_stats <- function(flowdata=NULL,
     flowdata <- tidyhydat::hy_daily_flows(station_number =  HYDAT)
   }
   
+  # add date variables to determine the min/max cal/water years
+  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year_start = water_year_start)
+  min_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))
+  max_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))
   
   # If start/end years are not select, set them as the min/max dates
-  min_year <- lubridate::year(min(flowdata$Date))-water_year
-  max_year <- lubridate::year(max(flowdata$Date))
-  if (!is.numeric(start_year)) {start_year <- min_year}
-  if (!is.numeric(end_year)) {end_year <- max_year}
-  if(! (start_year <= end_year))    {stop("start_year argument must be less than end_year argument")}
+  if (is.null(start_year)) {start_year <- min_year}
+  if (is.null(end_year)) {end_year <- max_year}
+  if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
   
-  
-  # Fill in any missing dates with NA
-  flowdata <- fasstr::fasstr_fill_missing_dates(flowdata,water_year = TRUE)
-
-  
-  # CREATE DATE VARIABLES AND ROLLING MEANS/SUMS ==============================
-  
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata)
+  #  create the year (annual ) and month variables
+  flowdata <- fasstr::fasstr_fill_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
+  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year_start = water_year_start)
   flowdata <- dplyr::mutate(flowdata,
                             Seasons4= ifelse(Month<=3,"JFM",
                                              ifelse(Month>=4&Month<=6,"AMJ",
@@ -152,14 +149,12 @@ fasstr_annual_stats <- function(flowdata=NULL,
     flowdata$AnalysisYear <- flowdata$Year
     flowdata$AnalysisDoY <- flowdata$DayofYear
   }
-  
+ 
+
   #  Compute the 3, 7, and 30 day rolling average values
   flowdata <- fasstr::fasstr_add_rolling_means(flowdata,days = c(3,7,30))
-  
-  # compuate the annual cumulative total
   flowdata <- fasstr_add_total_volume(flowdata,water_year = water_year)
- # flowdata <- dplyr::mutate(dplyr::group_by(flowdata,AnalysisYear),Qcumul=cumsum(Q))
-  
+
 
   
   # CALCULATE STATS ==============================
@@ -178,8 +173,7 @@ fasstr_annual_stats <- function(flowdata=NULL,
   
   # FILTER DATA FOR SELECTED YEARS FOR REMAINDER OF CALCS
   flowdata <- dplyr::filter(flowdata, AnalysisYear >= start_year & AnalysisYear <= end_year)
-  flowdata <- dplyr::filter(flowdata, AnalysisYear >= min_year & AnalysisYear <=max_year)
-  
+
   
   ## Compute statistics on  year basis
   
