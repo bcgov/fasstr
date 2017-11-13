@@ -5,11 +5,11 @@
 \title{Perform a volume frequency analysis on annual statistics.}
 \usage{
 fasstr_annual_freq_analysis(station_name = "fasstr", flowdata = NULL,
-  HYDAT = NULL, water_year = FALSE, start_year = NULL, end_year = NULL,
-  exclude_years = NULL, rolling_days = c(3, 7, 30), use_log = FALSE,
-  use_max = FALSE, prob_plot_position = c("weibull", "median", "hazen"),
-  prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5, 0.2, 0.1, 0.02, 0.01,
-  0.001, 1e-04), fit_distr = c("PIII", "weibull"),
+  HYDAT = NULL, HYDAT_peaks = NA, water_year = FALSE, start_year = NULL,
+  end_year = NULL, exclude_years = NULL, rolling_days = c(3, 7, 30),
+  use_log = FALSE, use_max = FALSE, prob_plot_position = c("weibull",
+  "median", "hazen"), prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5,
+  0.2, 0.1, 0.02, 0.01, 0.001, 1e-04), fit_distr = c("PIII", "weibull"),
   fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
   fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1, 0.05,
   0.01), na.rm = list(na.rm.global = TRUE), write_stat_table = TRUE,
@@ -28,6 +28,8 @@ mean streamflow values in units of cubic metres per second. \code{flowdata} not 
 
 \item{HYDAT}{Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
 tidyhydat package and a downloaded SQLite HYDAT required.}
+
+\item{HYDAT_peaks}{Character. "MAX" or "MIN" instantaneous peaks pulled from HYDAT}
 
 \item{water_year}{Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
 default calendar year (Jan-Dec) (\code{water_year=FALSE}). Water years are designated by the year which they end in

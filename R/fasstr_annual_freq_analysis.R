@@ -7,6 +7,7 @@
 #'    mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.
 #' @param HYDAT Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
 #'    tidyhydat package and a downloaded SQLite HYDAT required.
+#' @param HYDAT_peaks Character. "MAX" or "MIN" instantaneous peaks pulled from HYDAT
 #' @param station_name Character. Identifier name of the stream or station. Required when supplying data through \code{flowdata}.
 #'    The station name will be used in plots and filenames of exported tables and plot. If using \code{HYDAT} to supply
 #'    data and no \code{station_name} is provided, the HYDAT station number will be the identifier.
@@ -100,6 +101,7 @@
 fasstr_annual_freq_analysis <- function(station_name="fasstr",
                                  flowdata=NULL,
                                  HYDAT=NULL,
+                                 HYDAT_peaks=NA,
                                  water_year=FALSE,
                                  start_year=NULL,
                                  end_year=NULL,
@@ -124,7 +126,6 @@ fasstr_annual_freq_analysis <- function(station_name="fasstr",
 # Output list - see above.
 
 {
-  Version <- packageVersion("BCWaterDischargeAnalysis")
   # replicate the frequency analysis of the HEC-SSP program
   # refer to Chapter 7 of the user manual
   
@@ -140,11 +141,15 @@ fasstr_annual_freq_analysis <- function(station_name="fasstr",
   if( is.null(HYDAT) & !is.numeric(flowdata$Value))          {stop("Value column in flowdata dataframe is not numeric.")}
   if( is.null(HYDAT) & any(flowdata$Value <0, na.rm=TRUE))   {stop('flowdata cannot have negative values - check your data')}
   
-  
-  
-  
-  
+  if( !HYDAT_peaks %in% c("MAX","MIN") & !is.na(HYDAT_peaks) ) {
+    stop("HYDAT_peaks argument must be 'MAX', 'MIN', or NA.")}
+if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
+    stop('Station in HYDAT argument must be selected with HYDAT_peaks.')}
   if( !is.logical(water_year))  {stop("water_year must be logical (TRUE/FALSE")}
+  if( water_year & HYDAT_peaks %in% c("MAX","MIN"))   {
+    warning("water_year argument was ignored. HYDAT_peaks completed strictly using calendar years.")}
+    
+  
   if( !is.numeric(rolling_days))   {stop("rolling_days must be numeric")}
   if( !all(rolling_days>=0 & rolling_days<=180))
   {stop("rolling_days must be >0 and <=180)")}
@@ -234,7 +239,7 @@ fasstr_annual_freq_analysis <- function(station_name="fasstr",
   flowdata <- plyr::ldply(rolling_days, function (x, flowdata){
     # compute the rolling average of x days
     # create a variable to be attached to the statistic
-    flowdata$Measure <- paste("Q", formatC(x, width=3, format="d", flag="0"),"-day Min",sep="")
+    flowdata$Measure <- paste("Q", formatC(x, width=3, format="d", flag="0"),"-day Mean",sep="")
     flowdata$Q       <- zoo::rollapply( flowdata$Value,  x, mean, fill=NA, align="right")
     flowdata
   }, flowdata=flowdata)
@@ -251,6 +256,18 @@ fasstr_annual_freq_analysis <- function(station_name="fasstr",
   },use_max=use_max, na.rm=na.rm)
   if(nrow(Q_stat)==0){stop("start_year and end_year eliminated ALL data values")}
   Q_stat <- dplyr::rename(Q_stat,Year=AnalysisYear)
+  
+  
+  if ( !is.na(HYDAT_peaks)) {
+  inst_peaks <- tidyhydat::hy_annual_instant_peaks(HYDAT)
+  inst_peaks <- dplyr::filter(inst_peaks,Parameter=="Flow")
+  inst_peaks <- dplyr::filter(inst_peaks,PEAK_CODE==HYDAT_peaks)
+  inst_peaks <- dplyr::select(inst_peaks,Year=YEAR,Measure=PEAK_CODE,value=Value)
+  inst_peaks <- dplyr::mutate(inst_peaks,Measure=paste0("INST_",Measure))
+  inst_peaks <- inst_peaks[ inst_peaks$Year >=start_year & inst_peaks$Year <= end_year,]
+  inst_peaks <- dplyr::filter(inst_peaks,!(Year %in% exclude_years))
+  Q_stat <- inst_peaks
+  }
   
   # Compute the summary table for output
   Q_stat_output <- tidyr::spread(Q_stat,Measure,value)
@@ -278,7 +295,7 @@ fasstr_annual_freq_analysis <- function(station_name="fasstr",
   }, a=a, b=b, use_max=use_max)
   # change the measure labels in the plot
   plotdata2<- plotdata
-  plotdata2$Measure <- paste(formatC(as.numeric(substr(plotdata2$Measure,2,4)),width=3),"-day Avg",sep="")
+  if (is.na(HYDAT_peaks)) {plotdata2$Measure <- paste(formatC(as.numeric(substr(plotdata2$Measure,2,4)),width=3),"-day Avg",sep="")}
   freqplot <- ggplot2::ggplot(data=plotdata2, ggplot2::aes(x=prob, y=value, group=Measure, color=Measure),environment=environment())+
     #ggplot2::ggtitle(paste(station_name, " Volume Frequency Analysis"))+
     ggplot2::geom_point()+
