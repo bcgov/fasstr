@@ -258,7 +258,7 @@ fasstr_annual_stats <- function(flowdata=NULL,
   if(transpose){
     options(scipen = 999)
     Qstat_tpose <- tidyr::gather(Qstat,Statistic,Value,-Year)
-    Qstat_tpose.temp <- dplyr::mutate(Qstat_tpose,Value=round(Value,table_nddigits)) # for writing to csv
+    Qstat_tpose_temp <- dplyr::mutate(Qstat_tpose,Value=round(Value,table_nddigits)) # for writing to csv
     Qstat <- tidyr::spread(Qstat_tpose,Year,Value)
   }
   
@@ -270,7 +270,7 @@ fasstr_annual_stats <- function(flowdata=NULL,
     temp <- Qstat
     temp <- round(temp, table_nddigits)
     if(transpose){
-      temp <- tidyr::spread(Qstat_tpose.temp,Year,Value)
+      temp <- tidyr::spread(Qstat_tpose_temp,Year,Value)
     }
     utils::write.csv(temp,file=file_Qstat_table, row.names=FALSE)
   }

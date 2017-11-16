@@ -36,7 +36,8 @@
 #' @param percentiles Numeric. List of numbers to calculate percentiles (5 = 5th percentile). Default c(5,25,75,95).
 #' @param rolling_days Numeric. Rolling days. Default 1.
 #' @param rolling_align Character. Specifies whether the index of the result should be left- or right-aligned or centered 
-#'    (default) compared to the rolling window of observations#' @param transpose Logical. Switch the rows and columns of the results.
+#'    (default) compared to the rolling window of observations#' 
+#' @param transpose Logical. Switch the rows and columns of the results.
 #' @param write_table Logical. Should a file be created with the calendar year computed percentiles?
 #'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
 #' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
@@ -114,6 +115,8 @@ fasstr_daily_stats <- function(flowdata=NULL,
   
   if( !is.numeric(rolling_days))   {
     stop("rolling_days must be numeric")}
+  if( length(rolling_days)>1 ) {
+    stop("rolling_days must be one number")  }
   if( !all(rolling_days>0 & rolling_days<=180))  {
     stop("rolling_days must be >0 and <=180)")}
   if( !all(rolling_days==floor(rolling_days)))  {
