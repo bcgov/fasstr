@@ -201,6 +201,8 @@ fasstr_daily_stats_plots <- function(flowdata=NULL,
     } else if (water_year_start==12) {
       origin_date <- as.Date("1899-11-30")
     }
+  } else if (!water_year) {
+    origin_date <- as.Date("1899-12-31")
   }
   
   flowdata <- dplyr::mutate(flowdata,AnalysisDate=as.Date(AnalysisDoY, origin = origin_date))
