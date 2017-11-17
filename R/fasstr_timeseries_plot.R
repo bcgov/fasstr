@@ -43,7 +43,6 @@
 #' @param plot_title Character. Text string of desired title for all plots. Default NA.
 #' @param log_discharge Logical. Place the discharge axis (Y) on log scale. Default FALSE (linear).
 #' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
-#' @param na.rm TBD
 #'
 #'
 #' @examples
@@ -132,9 +131,6 @@ fasstr_timeseries_plot <- function(flowdata=NULL,
   
   if( !dir.exists(as.character(report_dir)))      {
     stop("directory for saved files does not exist")}
-  if( !is.numeric(table_nddigits))  { 
-    stop("table_nddigits argument needs to be numeric")}
-  table_nddigits <- round(table_nddigits[1])  # number of decimal digits for rounding in csv files
 
   
   if (!is.null(HYDAT)) {

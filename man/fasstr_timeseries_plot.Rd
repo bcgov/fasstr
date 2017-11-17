@@ -54,8 +54,6 @@ The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy
 \item{excluded_years}{Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).}
 
 \item{percentiles}{Numeric. List of numbers to calculate percentiles (5 = 5th percentile). Default c(5,25,75,95).}
-
-\item{na.rm}{TBD}
 }
 \description{
 Plots the time series record.
