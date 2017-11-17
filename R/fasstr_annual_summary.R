@@ -104,13 +104,6 @@ fasstr_annual_summary <- function(flowdata=NULL,
   if( !is.numeric(table_nddigits))  { stop("csv.ndddigits parameter needs to be numeric")}
   table_nddigits <- round(table_nddigits[1])  # number of decimal digits for rounding in csv files
   
-  if( !is.list(na.rm))              {stop("na.rm is not a list") }
-  if(! is.logical(unlist(na.rm))){   stop("na.rm is list of logical (TRUE/FALSE) values only.")}
-  my.na.rm <- list(na.rm.global=FALSE)
-  if( !all(names(na.rm) %in% names(my.na.rm))){stop("Illegal element in na.rm")}
-  my.na.rm[names(na.rm)]<- na.rm
-  na.rm <- my.na.rm  # set the na.rm for the rest of the function.
-  
   
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
