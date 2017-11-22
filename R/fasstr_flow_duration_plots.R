@@ -10,9 +10,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Plots the time series record.
+#' @title Flow duration plots
 #'
-#' @description Plots the time series record.
+#' @description Compute a long-term percentiles table.
 #' Streamflow data can be supplied through the \code{flowdata} parameter or extracted from a 
 #' HYDAT database using the tidyhydat package and \code{HYDAT} parameter.
 #'
@@ -32,17 +32,13 @@
 #'    year of the data provided.
 #' @param end_year Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
 #'    year of the data provided.
-#' @param excluded_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).   
-#' @param percentiles Numeric. List of numbers to calculate percentiles (5 = 5th percentile). Default c(5,25,75,95).
-#' @param rolling_days Numeric. Rolling days. Default 1.
-#' @param rolling_align Character. Specifies whether the index of the result should be left- or right-aligned or centered 
-#'    (default) compared to the rolling window of observations#' @param transpose Logical. Switch the rows and columns of the results.
-#' @param write_plot Logical. Should a file be created with the calendar year computed percentiles?
+#' @param excluded_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).    
+#' @param transpose Logical. Switch the rows and columns of the results.
+#' @param write_table Logical. Should a file be created with the calendar year computed percentiles?
 #'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
-#' @param plot_type Character. pdf, png, bmp, jpeg, tiff. Default pdf.
-#' @param plot_title Character. Text string of desired title for all plots. Default NA.
-#' @param log_discharge Logical. Place the discharge axis (Y) on log scale. Default FALSE (linear).
 #' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
+#' @param table_nddigits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
+#' @param na.rm TBD
 #'
 #'
 #' @examples
@@ -67,22 +63,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-fasstr_timeseries_plot <- function(flowdata=NULL,
-                                     HYDAT=NULL,
-                                     station_name="fasstr",
-                                     water_year=FALSE, #create another for own water year????
-                                     water_year_start=10,
-                                     start_year=NULL,
-                                     end_year=NULL,
-                                     exclude_years=NULL, # list of stations
-                                     rolling_days=1,
-                                     rolling_align="right",
-                                     write_plot=FALSE,        # write out statistics on calendar year
-                                     plot_type="pdf",        # write out statistics on calendar year
-                                     facet_wrap=FALSE,
-                                     log_discharge=FALSE,
-                                     plot_title=NA,
-                                     report_dir="."){
+fasstr_flow_duration_plots <- function(flowdata=NULL,
+                                  HYDAT=NULL,
+                                  station_name="fasstr",
+                                  water_year=FALSE, #create another for own water year????
+                                  water_year_start=10,
+                                  start_year=NULL,
+                                  end_year=NULL,
+                                  exclude_years=NULL, # list of stations
+                                  #months="all",
+                                  percentiles=c(1:99),
+                                  log_discharge=TRUE,
+                                  write_plot=FALSE,        # write out statistics on calendar year
+                                  plot_type="pdf",        # write out statistics on calendar year
+                                  report_dir=".",
+                                  na.rm=list(na.rm.global=FALSE)){
   
   
   #
@@ -94,11 +89,11 @@ fasstr_timeseries_plot <- function(flowdata=NULL,
   if( !is.null(HYDAT) & !is.null(flowdata))  {
     stop("Must select either flowdata or HYDAT parameters, not both.")}
   if( is.null(HYDAT) & !is.character(station_name))  {
-    stop("station_name argument must be a character string.")}
+    stop("station_name parameter must be a character string.")}
   if( is.null(HYDAT) & length(station_name)>1)        {
-    stop("station_name argument cannot have length > 1")}
+    stop("station_name parameter cannot have length > 1")}
   if( is.null(HYDAT) & !is.data.frame(flowdata))         {
-    stop("flowdata is not a data frame.")}
+    stop("flowdata parameter is not a data frame.")}
   if( is.null(HYDAT) & !all(c("Date","Value") %in% names(flowdata))){
     stop("flowdata dataframe doesn't contain the variables Date and Value.")}
   if( is.null(HYDAT) & !inherits(flowdata$Date[1], "Date")){
@@ -108,26 +103,16 @@ fasstr_timeseries_plot <- function(flowdata=NULL,
   if( is.null(HYDAT) & any(flowdata$Value <0, na.rm=TRUE))   {
     stop('flowdata cannot have negative values - check your data')}
   
-  if( !is.numeric(rolling_days))   {
-    stop("rolling_days must be numeric")}
-  if( !all(rolling_days>0 & rolling_days<=180))  {
-    stop("rolling_days must be >0 and <=180)")}
-  if( !all(rolling_days==floor(rolling_days)))  {
-    stop("rolling_days must be integers")}
-  if ( !rolling_align %in% c("right","left","center")){
-    stop("rolling_align argument must be 'right', 'left', or 'center'.")}
-  
   if( !is.logical(water_year))  {
-    stop("water_year argument must be logical (TRUE/FALSE)")}
+    stop("water_year parameter must be logical (TRUE/FALSE)")}
   if( !is.null(exclude_years) & !is.numeric(exclude_years)) {
     stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
   
-  
   if( !is.logical(log_discharge))  {
     stop("log_discharge argument must be logical (TRUE/FALSE)")}
-  
+
   if( !is.logical(write_plot))  {
-    stop("write_plot argument must be logical (TRUE/FALSE)")}
+    stop("write_plot parameter must be logical (TRUE/FALSE)")}
   if( length(plot_type)>1)        {
     stop("plot_type argument cannot have length > 1")}
   if( !is.na(plot_type) & !plot_type %in% c("pdf","png","jpeg","tiff","bmp"))  {
@@ -136,59 +121,64 @@ fasstr_timeseries_plot <- function(flowdata=NULL,
   if( !dir.exists(as.character(report_dir)))      {
     stop("directory for saved files does not exist")}
 
+  if( !is.list(na.rm))              {
+    stop("na.rm is not a list") }
+  if(! is.logical(unlist(na.rm))){   
+    stop("na.rm is list of logical (TRUE/FALSE) values only.")}
+  my.na.rm <- list(na.rm.global=FALSE)
+  if( !all(names(na.rm) %in% names(my.na.rm))){
+    stop("Illegal element in na.rm")}
+  my.na.rm[names(na.rm)]<- na.rm
+  na.rm <- my.na.rm  # set the na.rm for the rest of the function.
   
-  if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
-    if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' argument does not exist.")}
-    if (station_name=="fasstr") {station_name <- HYDAT}
-    flowdata <- tidyhydat::hy_daily_flows(station_number =  HYDAT)
-  }
   
-  flowdata <- fasstr::fasstr_fill_missing_dates(flowdata,water_year_start=water_year_start)
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year_start=water_year_start)
-  flowdata <- fasstr::fasstr_add_rolling_means(flowdata,days = rolling_days,align = rolling_align)
-  colnames(flowdata)[ncol(flowdata)] <- "RollingValue"
-  min_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))
-  max_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))
-  if (is.null(start_year)) {start_year <- min_year}
-  if (is.null(end_year)) {end_year <- max_year}
-  if (water_year) {
-    flowdata$AnalysisYear <- flowdata$WaterYear
-  }  else {
-    flowdata$AnalysisYear <- flowdata$Year
-  }
-  flowdata <- dplyr::filter(flowdata, AnalysisYear >= start_year & AnalysisYear <= end_year)
-  flowdata <- dplyr::filter(flowdata,!(AnalysisYear %in% exclude_years))
-
   
-  timeseries_plot <- ggplot2::ggplot(data=flowdata, ggplot2::aes(x=Date, y=RollingValue))+
-    #ggtitle("Mean Daily Discharge")+
-    ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))+
-    ggplot2::geom_line(colour="dodgerblue4")+
-    ggplot2::ylab("Discharge (cms)")+
-    {if (facet_wrap) ggplot2::facet_wrap(~AnalysisYear, scales="free_x")} +
-    {if (!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 8),expand = c(0, 0))}+
+  percentiles_data <- fasstr_longterm_ptiles(flowdata=flowdata,
+                         HYDAT=HYDAT,
+                         station_name=station_name,
+                         water_year=water_year, #create another for own water year????
+                         water_year_start=water_year_start,
+                         start_year=start_year,
+                         end_year=end_year,
+                         exclude_years=exclude_years, # list of stations
+                         percentiles=c(1:99),
+                         transpose=FALSE,
+                         write_table=FALSE,        # write out statistics on calendar year
+                         report_dir=report_dir,
+                         na.rm=list(na.rm.global=FALSE),
+                         table_nddigits=3)
+  percentiles_data <- tidyr::gather(percentiles_data,Percentile,Value,-1)
+  percentiles_data <- dplyr::mutate(percentiles_data,Percentile=100-as.numeric(gsub("P", "", Percentile)))
+  
+  flow_duration_plot <- ggplot2::ggplot(percentiles_data,ggplot2::aes(x=Percentile,y=Value,colour=Month))+
+    ggplot2::geom_line()+
     {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0))}+
-    {if (facet_wrap) ggplot2::scale_x_date(date_labels = "%b")} +
-    {if (!facet_wrap) ggplot2::scale_x_date(breaks = scales::pretty_breaks(n = 12))} +
-    ggplot2::theme( panel.border = ggplot2::element_rect(colour = "grey80", fill=NA, size=.5),
-           panel.grid.minor.y = ggplot2::element_blank())
+    {if (!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 10),expand = c(0, 0))}+
+    ggplot2::scale_x_continuous(expand =c(0,0),breaks = scales::pretty_breaks(n = 10))+
+    #ggtitle(paste0("Flow Duration Curves - ",Stream_Name," (",yeartype.years.label,")"))+
+    ggplot2::ylab("Discharge (cms)")+
+    ggplot2::xlab("% Time flow equalled or exceeded")+
+    ggplot2::scale_color_manual(values = c("Jan" = "dodgerblue3", "Feb" = "skyblue1", "Mar" = "turquoise","Apr" = "forestgreen", "May" = "limegreen","Jun" = "gold","Jul" = "orange", "Aug" = "red","Sep" = "darkred", "Oct" = "orchid", "Nov" = "purple3","Dec" = "midnightblue","Long-term" = "black"))+
+    ggplot2:: annotation_logticks(sides="l",base= 10,colour = "grey25",size=0.3,short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))+
+    ggplot2::theme(#plot.title = element_text(size=12, colour = "grey25",face="italic"),
+      panel.border = ggplot2::element_rect(colour = "grey80", fill=NA, size=.1),
+      panel.grid = ggplot2::element_line(size=.2),
+      legend.title = ggplot2::element_blank(),
+      legend.justification = "top")
   
   
+  
+  #  Write out summary tables for calendar years
   if (write_plot) {
-    file_timeseries_plot <- paste(report_dir,"/",station_name,"-daily-timeseries.",plot_type,sep = "")
-    ggplot2::ggsave(filename = file_timeseries_plot,
-                    timeseries_plot,
-                    height=ifelse(facet_wrap,11,6.35),
-                    width = 18)
+    file_flowduration_plot <- paste(report_dir,"/",station_name,"-flow_duration_curves.",plot_type,sep = "")
+    ggplot2::ggsave(filename = file_flowduration_plot,
+                    flow_duration_plot,
+                    height= 6,
+                    width = 11)
   }
   
-
   
-  
-  
-  
-  return(timeseries_plot)
+  return(flow_duration_plot)
   
   
 } # end of function
