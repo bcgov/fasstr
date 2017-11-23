@@ -5,17 +5,51 @@
 fasstr
 ======
 
-This is a set of R functions to summarize, analyze, and visualize streamflow data.
+The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http://www.r-project.org) functions to summarize, analyze, trend, and visualize daily streamflow data.
 
-Very much under development, this package combines the BCWaterDischargeAnalysis package and FASST scripts in the bcgov repository.
+Features
+--------
 
-### Features
+Useful features of this package include the of utilization of [tidyhydat](https://github.com/bcgov/tidyhydat) to extract Water Survey of Canada historical streamflow data from a locally saved [HYDAT](https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html) database for analyses, the filtering of years included in analyses (start and end years, excluded years), option to choose water years for analyses instead of calendar years, streamflow data preparation functions, options to save/write plots directly to your computer within the functions, and customizing how missing dates are handled.
 
-### Installation
+Installation
+------------
 
-### Usage
+To install the `fasstr` package, you need to install the `devtools` package then the `fasstr` package
 
-#### Example
+``` r
+install.packages("devtools")
+devtools::install_github("bcgov/fasstr")
+```
+
+Then to call the `fasstr` functions you can either load the package using the `library()` function or you access a function using `fasstr::` (e.g. `fasstr::fasstr_daily_stats()`). Several other packages will be installed in addition to this pacakage.
+
+To use the `HYDAT` arguments of the `fasstr` functions, you will need to download the `tidyhydat` package and a HYDAT database. Installation instructions for both can be found [here](https://github.com/bcgov/tidyhydat).
+
+Usage
+-----
+
+#### Flow Data Input
+
+All functions in `fasstr` require a dataset of daily mean streamflow. Flow data can be provided to the functions through either the `HYDAT` or `flowdata` arguments. When using the `HYDAT` argument, a Water Survey of Canada station number is listed (e.g. HYDAT="08NM116") and its corresponding historical daily streamflow record is extracted from HYDAT using `tidyhydat`.
+
+Alternatively, data can be provided using the `flowdata` argument as a dataframe with vectors named 'Date' (YYYY-MM-DD in date format) and 'Value' (mean daily discharge in cubic metres per second in numeric format) is provided.
+
+#### Year Options
+
+To customize your analyses for specific time periods, you can designate the start and end years of your analysis using the `start_year` and `end_year` arguments and remove any unwanted years (for partial datasets for example) by listing them in the `excluded_years` argument (e.g. `excluded_years=c(1990,1992:1994)`).
+
+To group analyses by water, or hydrologic, years instead of calendar years, if desired, you can use `water_year=TRUE` within most functions. A water year can be defined as a 12-month period that comprises a complete hydrologic cycle (wet seasons can typically cross calendar year), typically starting with the month with minimum flows (the start of a new water recharge cycle). As water years commonly start in October, the default water year is October for `fasstr`. If another start month is desired, you can choose is using the `water_year_start` argument (numeric month) to designate the water year time period. Start, end and exlcuded years will be based on the specified water year.
+
+#### Handling Missing Dates
+
+Coming soon.
+
+#### Writing/saving plots and tables
+
+In most functions that compute statistics or create plots, there is an option to directly write or save the tables and plots to your computer without additional functions. The default directory is your working directory, but you can choose your directory using the `report_dir` argument. Tables are saved in '.csv' format and plots can be saved several formats (including "pdf","png","jpeg","tiff", or "bmp"), with the default being '.pdf'.
+
+### Example
 
 This is a basic example which shows you how to solve a common problem:
 
@@ -23,21 +57,25 @@ This is a basic example which shows you how to solve a common problem:
 ## basic example code
 ```
 
-### Project Status
+Project Status
+--------------
 
-This package is under active development and many functions likely not to work.
+This package is under development. This package is maintained by the Water Protection and Sustainability Branch of the [British Columbia Ministry of Environment and Climate Change Strategy](https://www2.gov.bc.ca/gov/content/governments/organizational-structure/ministries-organizations/ministries/environment-climate-change).
 
-### Getting Help or Reporting an Issue
+Getting Help or Reporting an Issue
+----------------------------------
 
-To report bugs/issues/feature requests, please file an [issue](https://github.com/bcgov/%3Cpkg-name%3E/issues/).
+To report bugs/issues/feature requests, please file an [issue](https://github.com/bcgov/fasstr/issues/).
 
-### How to Contribute
+How to Contribute
+-----------------
 
 If you would like to contribute to the package, please see our [CONTRIBUTING](CONTRIBUTING.md) guidelines.
 
 Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
 
-### License
+License
+-------
 
     Copyright 2017 Province of British Columbia
 
