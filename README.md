@@ -29,31 +29,31 @@ To use the `HYDAT` arguments of the `fasstr` functions, you will need to downloa
 Usage
 -----
 
-#### Flow Data Input
+### Flow Data Input
 
 All functions in `fasstr` require a dataset of daily mean streamflow. Flow data can be provided to the functions through either the `HYDAT` or `flowdata` arguments. When using the `HYDAT` argument, a Water Survey of Canada station number is required (e.g. `HYDAT="08NM116"`) and its corresponding historical daily streamflow record is extracted from HYDAT using `tidyhydat`. [Installation](https://github.com/bcgov/tidyhydat) of both `tidyhydat` and a HYDAT database is required to use this argument.
 
 Data can alternatively be provided using the `flowdata` argument as a dataframe with columns of 'Date' (YYYY-MM-DD in date format) and 'Value' (mean daily discharge in cubic metres per second in numeric format). The `fasstr` functions will not recognize your dates and flow data if the columns are not appropriately named 'Date' and 'Value'.
 
-#### Year Options
+### Year Options
 
 To customize your analyses for specific time periods, you can designate the start and end years of your analysis using the `start_year` and `end_year` arguments and remove any unwanted years (for partial datasets for example) by listing them in the `excluded_years` argument (e.g. `excluded_years=c(1990,1992:1994)`). Leaving these arguments blank will result in the summary/analysis of all years of the provided dataset.
 
 To group analyses by water, or hydrologic, years instead of calendar years, if desired, you can use `water_year=TRUE` within most functions (default is `water_year=FALSE`). A water year can be defined as a 12-month period that comprises a complete hydrologic cycle (wet seasons can typically cross calendar year), typically starting with the month with minimum flows (the start of a new water recharge cycle). As water years commonly start in October, the default water year is October for `fasstr`. If another start month is desired, you can choose is using the `water_year_start` argument (numeric month) to designate the water year time period. Start, end and excluded years will be based on the specified water year.
 
-#### Drainage Basin Area
+### Drainage Basin Area
 
 For annual yield runoff statistics calculated in the annual statistics functions, a upstream drainage basin area (in sq. km) is required with the `basin_area` argument. If no area is supplied, all yield results will be `NA`. If using the `HYDAT` argument to supply streamflow data, the function will automatically use the basin area of the station provided in HYDAT, if available, as a result `basin_area` is not required. To override the basin area from HYDAT, just set the `basin_area` to your choosing and it will replace the HYDAT number.
 
-#### Handling Missing Dates
+### Handling Missing Dates
 
 Coming soon.
 
-#### Writing/saving plots and tables
+### Writing/saving plots and tables
 
 In most functions that compute statistics or create plots, there is an option to directly write or save the tables and plots to your computer without additional functions. The default directory is your working directory, but you can choose your directory using the `report_dir` argument. Tables are saved in '.csv' format and plots can be saved several formats (including "pdf","png","jpeg","tiff", or "bmp"), with the default being '.pdf'.
 
-#### Example
+### Example
 
 Coming soon.
 
