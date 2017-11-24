@@ -13,9 +13,9 @@ fasstr_annual_freq_analysis(station_name = "fasstr", flowdata = NULL,
   0.001, 0.0001), fit_distr = c("PIII", "weibull"),
   fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
   fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1, 0.05,
-  0.01), na.rm = list(na.rm.global = TRUE), write_stat_table = TRUE,
-  write_plotdata_table = TRUE, write_quantiles_table = TRUE,
-  write_frequency_plot = TRUE, write_frequency_plot_type = c("pdf", "png"),
+  0.01), na.rm = list(na.rm.global = TRUE), write_stat_table = FALSE,
+  write_plotdata_table = FALSE, write_quantiles_table = FALSE,
+  write_frequency_plot = FALSE, write_frequency_plot_type = c("pdf", "png"),
   report_dir = ".", table_nddigits = 3)
 }
 \arguments{
