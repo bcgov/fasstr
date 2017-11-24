@@ -2,7 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-.fasstr.Rproj
 out/
 internal.R
 *.DS_Store
