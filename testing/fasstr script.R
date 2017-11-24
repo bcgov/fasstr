@@ -27,9 +27,15 @@ timeseries_plot <- fasstr_timeseries_plot(HYDAT = stn_number,
                        report_dir = paste0(folder,timeseriesfolder),
                        facet_wrap = T,start_year = start_year,end_year = end_year)
 
-flow_summary <- fasstr_annual_summary(HYDAT = stn_number,write_table = T,report_dir = paste0(folder,timeseriesfolder),start_year = start_year,end_year = end_year)
-summary_plot <- fasstr_annual_summary_plots(HYDAT = stn_number,write_plot = T,report_dir = paste0(folder,timeseriesfolder),start_year = start_year,end_year = end_year)
-missing_plot <- fasstr_annual_missing_plots(HYDAT = stn_number,write_plot = T,report_dir = paste0(folder,timeseriesfolder),start_year = start_year,end_year = end_year)
+flow_summary <- fasstr_annual_summary(flowdata=timeseries,
+                                      #HYDAT = stn_number,
+                                      write_table = T,report_dir = paste0(folder,timeseriesfolder),start_year = start_year,end_year = end_year)
+summary_plot <- fasstr_annual_summary_plots(flowdata=timeseries,
+                                            #HYDAT = stn_number,
+                                            write_plot = T,report_dir = paste0(folder,timeseriesfolder),start_year = start_year,end_year = end_year)
+missing_plot <- fasstr_annual_missing_plots(flowdata=timeseries,
+                                            #HYDAT = stn_number,
+                                            write_plot = T,report_dir = paste0(folder,timeseriesfolder),start_year = start_year,end_year = end_year)
 
 
 
@@ -38,11 +44,17 @@ missing_plot <- fasstr_annual_missing_plots(HYDAT = stn_number,write_plot = T,re
 longtermfolder <- "2-Longterm/"
 dir.create(path=paste0(folder,longtermfolder))
 
-longterm_table <- fasstr_longterm_stats(HYDAT = stn_number,write_table = T,report_dir = paste0(folder,longtermfolder),start_year = start_year,end_year = end_year)
+longterm_table <- fasstr_longterm_stats(flowdata=timeseries,
+                                        #HYDAT = stn_number,
+                                        write_table = T,report_dir = paste0(folder,longtermfolder),start_year = start_year,end_year = end_year)
 #longterm_plot <- INSERT LONGTERM PLOT FUNCTION
 
-longterm_ptiles <- fasstr_longterm_ptiles(HYDAT = stn_number,write_table = T,report_dir = paste0(folder,longtermfolder), transpose = T,start_year = start_year,end_year = end_year)
-flow_curves <- fasstr_flow_duration_plots(HYDAT = stn_number,write_plot = T,report_dir = paste0(folder,longtermfolder),start_year = start_year,end_year = end_year)
+longterm_ptiles <- fasstr_longterm_ptiles(flowdata=timeseries,
+                                         # HYDAT = stn_number,
+                                          write_table = T,report_dir = paste0(folder,longtermfolder), transpose = T,start_year = start_year,end_year = end_year)
+flow_curves <- fasstr_flow_duration_plots(flowdata=timeseries,
+                                        #  HYDAT = stn_number,
+                                          write_plot = T,report_dir = paste0(folder,longtermfolder),start_year = start_year,end_year = end_year)
 
 
 
@@ -51,7 +63,9 @@ flow_curves <- fasstr_flow_duration_plots(HYDAT = stn_number,write_plot = T,repo
 annualfolder <- "3-Annual/"
 dir.create(path=paste0(folder,annualfolder))
 
-all_annual <- fasstr_annual_stats(HYDAT = stn_number,write_table = T,report_dir = paste0(folder,annualfolder),start_year = start_year,end_year = end_year)
+all_annual <- fasstr_annual_stats(flowdata=timeseries,
+                                  #HYDAT = stn_number,
+                                  write_table = T,report_dir = paste0(folder,annualfolder),start_year = start_year,end_year = end_year)
 
 # YIELD AND TOTAL DISCHARGE
 # TIMING OF FLOWS
@@ -73,11 +87,19 @@ dir.create(path=paste0(folder,monthfolder))
 dailyfolder <- "5-Daily/"
 dir.create(path=paste0(folder,dailyfolder))
 
-daily_table <- fasstr_daily_stats(HYDAT = stn_number,write_table = T,report_dir = paste0(folder,dailyfolder),start_year = start_year,end_year = end_year)
-daily_plots <- fasstr_daily_stats_plots(HYDAT = stn_number,write_plot = T,report_dir = paste0(folder,dailyfolder),log_discharge = T,start_year = start_year,end_year = end_year)
+daily_table <- fasstr_daily_stats(flowdata=timeseries,
+                                  #HYDAT = stn_number,
+                                  write_table = T,report_dir = paste0(folder,dailyfolder),start_year = start_year,end_year = end_year)
+daily_plots <- fasstr_daily_stats_plots(flowdata=timeseries,
+                                        #HYDAT = stn_number,
+                                        write_plot = T,report_dir = paste0(folder,dailyfolder),log_discharge = T,start_year = start_year,end_year = end_year)
 
-cumulative_table <- fasstr_daily_cumulative_stats(HYDAT = stn_number,write_table = T,report_dir = paste0(folder,dailyfolder),start_year = start_year,end_year = end_year)
-cumulative_plots <- fasstr_daily_cumulative_plots(HYDAT = stn_number,write_plot = T,report_dir = paste0(folder,dailyfolder),start_year = start_year,end_year = end_year)
+cumulative_table <- fasstr_daily_cumulative_stats(flowdata=timeseries,
+                                                  #HYDAT = stn_number,
+                                                  write_table = T,report_dir = paste0(folder,dailyfolder),start_year = start_year,end_year = end_year)
+cumulative_plots <- fasstr_daily_cumulative_plots(flowdata=timeseries,
+                                                  #HYDAT = stn_number,
+                                                  write_plot = T,report_dir = paste0(folder,dailyfolder),start_year = start_year,end_year = end_year)
 
 
 
@@ -94,7 +116,9 @@ dir.create(path=paste0(folder,lowflowfolder))
 freqfolder <- "7-LowFlowFrequencies/"
 dir.create(path=paste0(folder,freqfolder))
 
-lowflow_results <- fasstr_annual_freq_analysis(HYDAT = stn_number,report_dir = paste0(folder,freqfolder),start_year = start_year,end_year = end_year)
+lowflow_results <- fasstr_annual_freq_analysis(flowdata=timeseries,
+                                               #HYDAT = stn_number,
+                                               report_dir = paste0(folder,freqfolder),start_year = start_year,end_year = end_year)
 
 
 ### Annual Trending
@@ -102,7 +126,9 @@ lowflow_results <- fasstr_annual_freq_analysis(HYDAT = stn_number,report_dir = p
 trendingfolder <- "8-Trending/"
 dir.create(path=paste0(folder,trendingfolder))
 
-trends <- fasstr_annual_trends(HYDAT = stn_number,write_trends_data = T,write_trends_results = T,report_dir = paste0(folder,trendingfolder),zyp_method = "yuepilon",start_year = start_year,end_year = end_year)
+trends <- fasstr_annual_trends(flowdata=timeseries,
+                               #HYDAT = stn_number,
+                               write_trends_data = T,write_trends_results = T,report_dir = paste0(folder,trendingfolder),zyp_method = "yuepilon",start_year = start_year,end_year = end_year)
 # ANNUAL TRENDS PLOTS
 
 

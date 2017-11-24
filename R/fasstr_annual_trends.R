@@ -92,9 +92,9 @@ fasstr_annual_trends <- function(trendsdata=NULL,
       stop("Only one HYDAT station can be selected.")}
     if( is.null(HYDAT) & !is.data.frame(flowdata))         {
       stop("flowdata parameter is not a dataframe.")}
-    if( is.null(HYDAT) & "Date" %in% names(flowdata) ){
+    if( is.null(HYDAT) & !("Date" %in% names(flowdata)) ){
       stop("flowdata dataframe doesn't contain 'Date' column.")}
-    if( is.null(HYDAT) & "Value" %in% names(flowdata) ){
+    if( is.null(HYDAT) & !("Value" %in% names(flowdata)) ){
       stop("flowdata dataframe doesn't contain a flow column labeled 'Value'.")}
     if( is.null(HYDAT) & !inherits(flowdata$Date[1], "Date")){
       stop("Date column in flowdata dataframe is not a date.")}
