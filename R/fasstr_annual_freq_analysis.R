@@ -116,10 +116,10 @@ fasstr_annual_freq_analysis <- function(station_name="fasstr",
                                  fit_distr_method=ifelse(fit_distr=="PIII","MOM","MLE"),
                                  fit_quantiles=c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),
                                  na.rm=list(na.rm.global=TRUE),
-                                 write_stat_table=TRUE,
-                                 write_plotdata_table=TRUE,  # write out the plotting data
-                                 write_quantiles_table=TRUE, # write out the fitted quantiles
-                                 write_frequency_plot=TRUE,  # write out the frequency plot
+                                 write_stat_table=FALSE,
+                                 write_plotdata_table=FALSE,  # write out the plotting data
+                                 write_quantiles_table=FALSE, # write out the fitted quantiles
+                                 write_frequency_plot=FALSE,  # write out the frequency plot
                                  write_frequency_plot_type=c("pdf","png"),
                                  report_dir='.',
                                  table_nddigits=3)

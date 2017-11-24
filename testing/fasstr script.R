@@ -1,6 +1,20 @@
 
+devtools::document()
+#install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
+install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
+
+
 
 library(fasstr)
+
+
+trends <- fasstr_annual_trends_plots(HYDAT = "08HA002", zyp_method = "yuepilon",
+                                     start_year = 1965,end_year = 2015,exclude_years = c(1985:1990),
+                                     write_plots = T,plot_type = "png"
+                                     )
+
+
+
 
 # Parameters
 stn_number <- "08NM116"
@@ -23,9 +37,13 @@ timeseries <- fasstr_add_rolling_means(timeseries)
 write.csv(timeseries, file = paste0(folder,timeseriesfolder,stn_number,"-timeseries.csv"),row.names=FALSE,na="")
 
 timeseries_plot <- fasstr_timeseries_plot(HYDAT = stn_number,
-                       write_plot = T,
-                       report_dir = paste0(folder,timeseriesfolder),
-                       facet_wrap = T,start_year = start_year,end_year = end_year)
+                                          write_plot = T,
+                                          report_dir = paste0(folder,timeseriesfolder),
+                                          start_year = start_year,end_year = end_year)
+timeseries_annual_plot <- fasstr_timeseries_plot(HYDAT = stn_number,
+                                          write_plot = T,
+                                          report_dir = paste0(folder,timeseriesfolder),
+                                          plot_by_year = T,start_year = start_year,end_year = end_year)
 
 flow_summary <- fasstr_annual_summary(flowdata=timeseries,
                                       #HYDAT = stn_number,

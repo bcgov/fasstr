@@ -41,6 +41,7 @@
 #'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
 #' @param plot_type Character. pdf, png, bmp, jpeg, tiff. Default pdf.
 #' @param plot_title Character. Text string of desired title for all plots. Default NA.
+#' @param plot_by_year Logical. Plot each year of data individually. Default FALSE.
 #' @param log_discharge Logical. Place the discharge axis (Y) on log scale. Default FALSE (linear).
 #' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
 #'
@@ -79,7 +80,7 @@ fasstr_timeseries_plot <- function(flowdata=NULL,
                                      rolling_align="right",
                                      write_plot=FALSE,        # write out statistics on calendar year
                                      plot_type="pdf",        # write out statistics on calendar year
-                                     facet_wrap=FALSE,
+                                     plot_by_year=FALSE,
                                      log_discharge=FALSE,
                                      plot_title=NA,
                                      report_dir="."){
@@ -132,6 +133,9 @@ fasstr_timeseries_plot <- function(flowdata=NULL,
     stop("plot_type argument cannot have length > 1")}
   if( !is.na(plot_type) & !plot_type %in% c("pdf","png","jpeg","tiff","bmp"))  {
     stop("plot_type argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
+  if( !is.logical(plot_by_year))  {
+    stop("plot_by_year argument must be logical (TRUE/FALSE)")}
+  
   
   if( !dir.exists(as.character(report_dir)))      {
     stop("directory for saved files does not exist")}
@@ -166,20 +170,22 @@ fasstr_timeseries_plot <- function(flowdata=NULL,
     ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))+
     ggplot2::geom_line(colour="dodgerblue4")+
     ggplot2::ylab("Discharge (cms)")+
-    {if (facet_wrap) ggplot2::facet_wrap(~AnalysisYear, scales="free_x")} +
+    {if (plot_by_year) ggplot2::facet_wrap(~AnalysisYear, scales="free_x")} +
     {if (!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 8),expand = c(0, 0))}+
     {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0))}+
-    {if (facet_wrap) ggplot2::scale_x_date(date_labels = "%b")} +
-    {if (!facet_wrap) ggplot2::scale_x_date(breaks = scales::pretty_breaks(n = 12))} +
+    {if (plot_by_year) ggplot2::scale_x_date(date_labels = "%b")} +
+    {if (!plot_by_year) ggplot2::scale_x_date(breaks = scales::pretty_breaks(n = 12))} +
     ggplot2::theme( panel.border = ggplot2::element_rect(colour = "grey80", fill=NA, size=.5),
            panel.grid.minor.y = ggplot2::element_blank())
   
   
   if (write_plot) {
-    file_timeseries_plot <- paste(report_dir,"/",station_name,"-daily-timeseries.",plot_type,sep = "")
+    file_timeseries_plot <- paste(report_dir,"/",station_name,
+                                  ifelse(plot_by_year,paste0("-annual-daily-timeseries."),paste0("-longterm-daily-timeseries.")),
+                                  plot_type,sep = "")
     ggplot2::ggsave(filename = file_timeseries_plot,
                     timeseries_plot,
-                    height=ifelse(facet_wrap,11,6.35),
+                    height=ifelse(plot_by_year,11,6.35),
                     width = 18)
   }
   

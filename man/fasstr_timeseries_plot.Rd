@@ -8,7 +8,7 @@ fasstr_timeseries_plot(flowdata = NULL, HYDAT = NULL,
   station_name = "fasstr", water_year = FALSE, water_year_start = 10,
   start_year = NULL, end_year = NULL, exclude_years = NULL,
   rolling_days = 1, rolling_align = "right", write_plot = FALSE,
-  plot_type = "pdf", facet_wrap = FALSE, log_discharge = FALSE,
+  plot_type = "pdf", plot_by_year = FALSE, log_discharge = FALSE,
   plot_title = NA, report_dir = ".")
 }
 \arguments{
@@ -44,6 +44,8 @@ year of the data provided.}
 The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
 
 \item{plot_type}{Character. pdf, png, bmp, jpeg, tiff. Default pdf.}
+
+\item{plot_by_year}{Logical. Plot each year of data individually. Default FALSE.}
 
 \item{log_discharge}{Logical. Place the discharge axis (Y) on log scale. Default FALSE (linear).}
 
