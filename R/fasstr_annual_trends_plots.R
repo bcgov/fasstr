@@ -115,6 +115,13 @@ fasstr_annual_trends_plots <- function(trendsdata=NULL,
   
   if( !is.character(station_name) )  {stop("station_name parameter must be a character string.")}
   if( length(station_name)>1 )        {stop("station_name parameter cannot have length > 1")}
+  
+  if( !is.logical(write_plots))  {
+    stop("write_plots argument must be logical (TRUE/FALSE)")}
+  if( length(plot_type)>1)        {
+    stop("plot_type argument cannot have length > 1")}
+  if( !is.na(plot_type) & !plot_type %in% c("pdf","png","jpeg","tiff","bmp"))  {
+    stop("plot_type argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
 
   if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
 
@@ -148,7 +155,7 @@ fasstr_annual_trends_plots <- function(trendsdata=NULL,
   
   
   
-  trends_results <- fasstr_annual_trends_analysis(trendsdata=trends_data,
+  trends_results <- fasstr::fasstr_annual_trends_analysis(trendsdata=trends_data,
                                    flowdata=NULL,
                                    HYDAT=NULL,
                                    zyp_method=zyp_method,
