@@ -17,7 +17,7 @@ test <- fasstr::fasstr_daily_stats(HYDAT = "08HB048")
 test <- fasstr::fasstr_longterm_stats(HYDAT = "08HB048",percentiles = c(5,6,7,90,99),
                                       water_year = T,water_year_start = 7)
 
-test <- fasstr_add_date_vars(HYDAT = "08HB048",water_year_start = 2)
+fasstr_add_date_vars(HYDAT = "08HB048",water_year_start = 2)
 
 test <- fasstr::fasstr_longterm_ptiles(HYDAT = "08NM116",transpose = T,water_year = T,
                                        water_year_start = 6)

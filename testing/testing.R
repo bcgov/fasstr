@@ -1,7 +1,7 @@
 station_name=NULL
 #flow.data=NULL,
 HYDAT="08HA002"
-water_year=TRUE #create another for own water year????
+water_year=FALSE #create another for own water year????
 start_year=1965
 end_year=2015
 exclude_years=NULL # list of stations
@@ -17,3 +17,8 @@ write_zyp_plots="png"
 report_dir="Upper"
 na.rm=list(na.rm.global=FALSE)
 table_nddigits=3   
+
+
+data <- fasstr::fasstr_add_rolling_means(HYDAT = "08HB048")
+data <- fasstr_add_total_volume(HYDAT = "08HB048")
+
