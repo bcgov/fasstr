@@ -103,6 +103,11 @@ fasstr_annual_missing_plots <- function(flowdata=NULL,
   
   if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
 
+  
+  if (!is.null(HYDAT)) {
+    if (station_name=="fasstr") {station_name <- HYDAT}
+  }
+  
   flow_summary <- fasstr::fasstr_annual_summary(flowdata=flowdata,
                                                 HYDAT=HYDAT,
                                                 station_name=station_name,

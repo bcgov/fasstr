@@ -222,11 +222,11 @@ fasstr_daily_cumulative_plots <- function(flowdata=NULL,
   
   if (write_plot) {
     if (plot_type=="pdf"){
-      file_stat_plot <-file.path(report_dir, paste(station_name,"-daily-summary-statistics.pdf", sep=""))
+      file_stat_plot <-file.path(report_dir, paste(station_name,"-daily-summary-cumulative.pdf", sep=""))
       pdf(file = file_stat_plot,8.5,4)
     }
     if (plot_type %in% c("png","jpeg","tiff","bmp")) {
-      file_stat_plot <- paste(report_dir,"/",station_name,"-daily-summary-statistics",sep = "")
+      file_stat_plot <- paste(report_dir,"/",station_name,"-daily-summary-cumulative",sep = "")
       dir.create(file_stat_plot)
     }
   }

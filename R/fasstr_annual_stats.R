@@ -64,6 +64,7 @@ fasstr_annual_stats <- function(flowdata=NULL,
                          HYDAT=NULL,
                          station_name="fasstr",
                          water_year=FALSE, #create another for own water year????
+                         water_year_start=10,
                          start_year=NULL,
                          end_year=NULL,
                          exclude_years=NULL, # list of stations
