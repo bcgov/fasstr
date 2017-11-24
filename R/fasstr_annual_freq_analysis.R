@@ -208,7 +208,7 @@ if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
     if (station_name=="fasstr") {station_name <- HYDAT}
-    flowdata <- tidyhydat::hy_daily_flows(station_number =  HYDAT)
+    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
   # add date variables to determine the min/max cal/water years
@@ -260,7 +260,7 @@ if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
   
   
   if ( !is.na(HYDAT_peaks)) {
-  inst_peaks <- tidyhydat::hy_annual_instant_peaks(HYDAT)
+  inst_peaks <- suppressMessages(tidyhydat::hy_annual_instant_peaks(HYDAT))
   inst_peaks <- dplyr::filter(inst_peaks,Parameter=="Flow")
   inst_peaks <- dplyr::filter(inst_peaks,PEAK_CODE==HYDAT_peaks)
   inst_peaks <- dplyr::select(inst_peaks,Year=YEAR,Measure=PEAK_CODE,value=Value)

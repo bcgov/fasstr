@@ -43,7 +43,6 @@
 #' @param plot_title Character. Text string of desired title for all plots. Default NA.
 #' @param log_discharge Logical. Place the discharge axis (Y) on log scale. Default FALSE (linear).
 #' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
-#' @param table_nddigits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
 #' @param na.rm TBD
 #'
 #'
@@ -85,8 +84,7 @@ fasstr_daily_stats_plots <- function(flowdata=NULL,
                                      log_discharge=FALSE,
                                      plot_title=NA,
                                      report_dir=".",
-                                     na.rm=list(na.rm.global=FALSE),
-                                     table_nddigits=3){
+                                     na.rm=list(na.rm.global=FALSE)){
   
   
   #
@@ -135,9 +133,6 @@ fasstr_daily_stats_plots <- function(flowdata=NULL,
   
   if( !dir.exists(as.character(report_dir)))      {
     stop("directory for saved files does not exist")}
-  if( !is.numeric(table_nddigits))  { 
-    stop("table_nddigits argument needs to be numeric")}
-  table_nddigits <- round(table_nddigits[1])  # number of decimal digits for rounding in csv files
   
   if( !is.list(na.rm))              {
     stop("na.rm is not a list") }
@@ -154,9 +149,10 @@ fasstr_daily_stats_plots <- function(flowdata=NULL,
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' argument does not exist.")}
     if (station_name=="fasstr") {station_name <- HYDAT}
+    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
-  flowdata <- fasstr::fasstr_add_date_vars(HYDAT=HYDAT,water_year_start=water_year_start)
+  flowdata <- fasstr::fasstr_add_date_vars(flowdata = flowdata,water_year_start=water_year_start)
   flowdata <- fasstr::fasstr_add_rolling_means(flowdata,days = rolling_days,align = rolling_align)
   colnames(flowdata)[ncol(flowdata)] <- "AnalysisQ"
   min_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))
@@ -206,6 +202,7 @@ fasstr_daily_stats_plots <- function(flowdata=NULL,
   }
   
   flowdata <- dplyr::mutate(flowdata,AnalysisDate=as.Date(AnalysisDoY, origin = origin_date))
+
   
   
 
@@ -274,7 +271,7 @@ fasstr_daily_stats_plots <- function(flowdata=NULL,
                    legend.text = ggplot2::element_text(size=7, colour="grey25"),
                    legend.box = "vertical",legend.justification = "top",
                    legend.key.size = ggplot2::unit(0.4,"cm"),
-                   legend.margin=ggplot2::unit(0, "cm")) +
+                   legend.spacing=ggplot2::unit(0, "cm")) +
     {if (!is.na(plot_title)) ggplot2::theme(plot.title = ggplot2::element_text(size=12, colour = "grey25",hjust = 0,face="italic"))}+
     ggplot2::guides(colour = ggplot2::guide_legend(order = 1), fill = ggplot2::guide_legend(order = 2))
   # Add the plot to the list
@@ -294,10 +291,10 @@ fasstr_daily_stats_plots <- function(flowdata=NULL,
   # Add each annaul data to the plot
   for (yr in unique(flowdata$AnalysisYear)){
     flowdata_plot <- dplyr::filter(flowdata,AnalysisYear==yr)
-    daily_stats_year <- daily_stats_plot +
+    suppressMessages(daily_stats_year <- daily_stats_plot +
       ggplot2::geom_line(data = flowdata_plot, ggplot2::aes(x=AnalysisDate, y=AnalysisQ, colour= "yr.colour"), size=0.5) +
       ggplot2::scale_color_manual(values = c("Mean" = "paleturquoise", "Median" = "dodgerblue4", "yr.colour" = "red"),
-                                  labels = c("Mean", "Median",paste0(yr," Flows")))
+                                  labels = c("Mean", "Median",paste0(yr," Flows"))))
     daily_stats_plots[[paste0("daily_", yr)]] <- daily_stats_year
     
     # Plot the plots to the PDF device if selected

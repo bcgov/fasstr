@@ -134,7 +134,7 @@ fasstr_longterm_stats <- function(flowdata=NULL,
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
     if (station_name=="fasstr") {station_name <- HYDAT}
-    flowdata <- tidyhydat::hy_daily_flows(station_number =  HYDAT)
+    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
   # add date variables to determine the min/max cal/water years

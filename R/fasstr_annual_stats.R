@@ -116,8 +116,8 @@ fasstr_annual_stats <- function(flowdata=NULL,
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
     if (station_name=="fasstr") {station_name <- HYDAT}
-    if (is.na(basin_area)) {basin_area <- tidyhydat::hy_stations(station_number = HYDAT)$DRAINAGE_AREA_GROSS}
-    flowdata <- tidyhydat::hy_daily_flows(station_number =  HYDAT)
+    if (is.na(basin_area)) {basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = HYDAT)$DRAINAGE_AREA_GROSS)}
+    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
   # add date variables to determine the min/max cal/water years

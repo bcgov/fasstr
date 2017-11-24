@@ -9,8 +9,7 @@ fasstr_daily_stats_plots(flowdata = NULL, HYDAT = NULL,
   start_year = NULL, end_year = NULL, exclude_years = NULL,
   rolling_days = 1, rolling_align = "right", write_plot = FALSE,
   plot_type = "pdf", log_discharge = FALSE, plot_title = NA,
-  report_dir = ".", na.rm = list(na.rm.global = FALSE),
-  table_nddigits = 3)
+  report_dir = ".", na.rm = list(na.rm.global = FALSE))
 }
 \arguments{
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
@@ -53,8 +52,6 @@ The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy
 \item{report_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
 
 \item{na.rm}{TBD}
-
-\item{table_nddigits}{Numeric. Number of significant digits to round the results in the written tables. Default is 3.}
 
 \item{excluded_years}{Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).}
 
