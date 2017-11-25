@@ -232,6 +232,7 @@ fasstr_longterm_stats <- function(flowdata=NULL,
     Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Long-term"))
   }
   Q_longterm <- with(Q_longterm, Q_longterm[order(Month),])
+  row.names(Q_longterm) <- c(1:nrow(Q_longterm))
   
   
   
