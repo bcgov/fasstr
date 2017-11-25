@@ -116,6 +116,7 @@ fasstr_annual_freq_analysis <- function(station_name="fasstr",
                                  fit_distr_method=ifelse(fit_distr=="PIII","MOM","MLE"),
                                  fit_quantiles=c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),
                                  na.rm=list(na.rm.global=TRUE),
+                                 write_overview=FALSE,
                                  write_stat_table=FALSE,
                                  write_plotdata_table=FALSE,  # write out the plotting data
                                  write_quantiles_table=FALSE, # write out the fitted quantiles
@@ -390,8 +391,10 @@ if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
                                            "Return Period"=Return)
   
   file_stat_csv <- NA
+  if (write_overview | write_stat_table | write_plotdata_table | write_quantiles_table | write_frequency_plot) {
   folder_stat <- paste(report_dir,"/",station_name,"-annual-frequency-analysis",sep = "")
   dir.create(folder_stat)
+  }
   if(write_stat_table){
     # Write out the summary table for comparison to HEC spreadsheet
     file_stat_csv <- file.path(folder_stat,paste(station_name,"-annual-vfa-annual-statistics.csv", sep=""))
@@ -436,14 +439,17 @@ if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
                    "Selection"=unlist(analysis.options,use.names = F))
   
   # Write out the analysis options
+  if (write_overview){
   file_options_csv<- file.path(folder_stat, paste(station_name,"-annual-vfa-overview.csv", sep=""))
   utils::write.csv(analysis.options.df,file=file_options_csv, row.names=FALSE)
+  }
   
   
   list(Q_stat=Q_stat_output,
        plotdata=plotdata,  # has the plotting positions for each point in frequency analysis
        freqplot = freqplot,
        fit = fit,               # list of fits of freq.distr to each measure
-       fitted_quantiles=fitted_quantiles_output             # fitted quantiles and their transposition
+       fitted_quantiles=fitted_quantiles_output,             # fitted quantiles and their transposition
+       overview = analysis.options.df
   )
 }
