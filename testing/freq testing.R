@@ -3,12 +3,15 @@ devtools::document()
 #install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
 install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
+fasstr::fasstr_longterm_stats_plot(HYDAT = "08NM116",log_discharge = T,write_plot =T,plot_type = "png",start_year = 1974)
+
+
 fasstr::fasstr_daily_cumulative_plots(HYDAT = "08HB048",water_year = T,
                                       water_year_start = 7)$cumulative_2009
 
 fasstr::fasstr_flow_duration_plots(HYDAT = "08HB048", start_year = 1990,end_year = 1991)
 
-test <- fasstr::fasstr_daily_stats_plots(HYDAT = "08HB048",log_discharge = T,start_year = 1990,end_year = 2000)
+test <- fasstr::fasstr_daily_stats_plots(HYDAT = "08HB048",log_discharge = T)
 
 fasstr::fasstr_longterm_ptiles(HYDAT = "08HB048")#,
                                                  # start_year = 1990,

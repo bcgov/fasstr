@@ -148,8 +148,7 @@ fasstr_longterm_stats_plot <- function(flowdata=NULL,
   longterm_stats_months <- dplyr::filter(longterm_stats,Month!="Long-term")
   longterm_stats_longterm <- dplyr::filter(longterm_stats,Month=="Long-term")
   
-  longterm_plot <- 
-    ggplot2::ggplot(longterm_stats_months,ggplot2::aes(group = 1))+
+  longterm_plot <- ggplot2::ggplot(longterm_stats_months,ggplot2::aes(group = 1))+
     ggplot2::geom_ribbon(ggplot2::aes(x=Month,ymin=Minimum,ymax=Maximum,fill="Max-Min Range"))+
     ggplot2::geom_ribbon(ggplot2::aes(x=Month,ymin=P5,ymax=P95,fill="5-95 Percentiles"))+
     ggplot2::geom_ribbon(ggplot2::aes(x=Month,ymin=P25,ymax=P75,fill="25-75 Percentiles"))+
@@ -175,7 +174,7 @@ fasstr_longterm_stats_plot <- function(flowdata=NULL,
                    plot.title =  ggplot2::element_text(size=12, colour = "grey25",face="italic"),
                    panel.grid =  ggplot2::element_line(size=.2),
                    panel.grid.major.x  =  ggplot2::element_blank())+
-    ggplot2::guides(colour=ggplot2::guide_legend(override.aes = list(linetype=c(2,2,1,1), shape=c(NA,NA,16,16))))+
+    ggplot2::guides(colour=ggplot2::guide_legend(override.aes = list(linetype=c(2,2,1,1), shape=c(NA,NA,16,16))))
 
   
   
@@ -183,7 +182,7 @@ fasstr_longterm_stats_plot <- function(flowdata=NULL,
   if (write_plot) {
     file_longterm_plot <- paste(report_dir,"/",station_name,"-longterm-statistics.",plot_type,sep = "")
     ggplot2::ggsave(filename = file_longterm_plot,
-                    longterm_plot,
+                    plot=longterm_plot,
                     height= 5,
                     width = 11)
   }

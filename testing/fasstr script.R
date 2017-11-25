@@ -1,20 +1,11 @@
 
-devtools::document()
+#devtools::document()
 #install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
-install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
+#install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
 
 
 library(fasstr)
-
-
-trends <- fasstr_annual_trends_plots(HYDAT = "08HA002", zyp_method = "yuepilon",
-                                     start_year = 1965,end_year = 2015,exclude_years = c(1985:1990),
-                                     write_plots = T,plot_type = "png"
-                                     )
-
-
-
 
 # Parameters
 stn_number <- "08NM116"
@@ -65,7 +56,10 @@ dir.create(path=paste0(folder,longtermfolder))
 longterm_table <- fasstr_longterm_stats(flowdata=timeseries,
                                         #HYDAT = stn_number,
                                         write_table = T,report_dir = paste0(folder,longtermfolder),start_year = start_year,end_year = end_year)
-#longterm_plot <- INSERT LONGTERM PLOT FUNCTION
+longterm_plot <- fasstr_longterm_stats_plot(flowdata=timeseries,
+                                            #HYDAT = stn_number,
+                                            log_discharge = T,
+                                            write_plot =T,report_dir = paste0(folder,longtermfolder),start_year = start_year,end_year = end_year)
 
 longterm_ptiles <- fasstr_longterm_ptiles(flowdata=timeseries,
                                          # HYDAT = stn_number,
@@ -144,11 +138,14 @@ lowflow_results <- fasstr_annual_freq_analysis(flowdata=timeseries,
 trendingfolder <- "8-Trending/"
 dir.create(path=paste0(folder,trendingfolder))
 
-trends <- fasstr_annual_trends(flowdata=timeseries,
+trends <- fasstr_annual_trends_analysis(flowdata=timeseries,
                                #HYDAT = stn_number,
-                               write_trends_data = T,write_trends_results = T,report_dir = paste0(folder,trendingfolder),zyp_method = "yuepilon",start_year = start_year,end_year = end_year)
-# ANNUAL TRENDS PLOTS
-
+                               write_trends_data = T,write_trends_results = T,report_dir = paste0(folder,trendingfolder),
+                               zyp_method = "yuepilon",start_year = start_year,end_year = end_year)
+trends_plots <- fasstr_annual_trends_plots(flowdata=timeseries,
+                                           #HYDAT = stn_number,
+                                           write_plots = T, report_dir = paste0(folder,trendingfolder),
+                                           zyp_method = "yuepilon",start_year = start_year,end_year = end_year)
 
 
 
