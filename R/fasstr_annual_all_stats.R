@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 
-#' @title Compute multiple annual statistics.
+#' @title Compute all annual statistics.
 #'
 #' @description Computes annual statistics of streamflow data.
 #' Streamflow data can be supplied through the \code{flowdata} parameter or extracted from a 
@@ -60,21 +60,21 @@
 #--------------------------------------------------------------
 # Compute the statistics on an (calendar and water) year basis
 
-fasstr_annual_stats <- function(flowdata=NULL,
-                         HYDAT=NULL,
-                         station_name="fasstr",
-                         water_year=FALSE, #create another for own water year????
-                         water_year_start=10,
-                         start_year=NULL,
-                         end_year=NULL,
-                         exclude_years=NULL, # list of stations
-                         basin_area=NA, # if na, then all Yield values == NA
-                         transpose=FALSE,
-                         write_table=FALSE,        # write out statistics on calendar year
-                         report_dir=".",
-                         na.rm=list(na.rm.global=FALSE),
-                         table_nddigits=3){              # decimal digits for csv files for statistics
-
+fasstr_annual_all_stats <- function(flowdata=NULL,
+                                    HYDAT=NULL,
+                                    station_name="fasstr",
+                                    water_year=FALSE,
+                                    water_year_start=10,
+                                    start_year=NULL,
+                                    end_year=NULL,
+                                    exclude_years=NULL, 
+                                    basin_area=NA, 
+                                    transpose=FALSE,
+                                    write_table=FALSE,
+                                    report_dir=".",
+                                    na.rm=list(na.rm.global=FALSE),
+                                    table_nddigits=3){
+  
   #############################################################
   
   #  Some basic error checking on the input parameters
@@ -92,6 +92,10 @@ fasstr_annual_stats <- function(flowdata=NULL,
   if( is.null(HYDAT) & any(flowdata$Value <0, na.rm=TRUE))   {stop('flowdata cannot have negative values - check your data')}
   
   if( !is.logical(water_year))  {stop("water_year parameter must be logical (TRUE/FALSE)")}
+  if( length(water_year_start)>1) {stop("water_year_start must be a number between 1 and 12 (Jan-Dec)")}
+  if( water_year_start <1 | water_year_start >12 ) {stop("water_year_start must be an integer between 1 and 12 (Jan-Dec)")}
+  if( !(water_year_start==floor(water_year_start)))  {stop("water_year_start must be an integer between 1 and 12 (Jan-Dec)")}
+  
   if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
   
   if( !is.na(basin_area) & !is.numeric(basin_area))    {stop("basin_area parameter must be numeric")}
@@ -99,7 +103,7 @@ fasstr_annual_stats <- function(flowdata=NULL,
   
   if( !is.logical(transpose))  {stop("transpose parameter must be logical (TRUE/FALSE)")}
   if( !is.logical(write_table))  {stop("write_table parameter must be logical (TRUE/FALSE)")}
-
+  
   if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
   if( !is.numeric(table_nddigits))  { stop("csv.ndddigits parameter needs to be numeric")}
   table_nddigits <- round(table_nddigits[1])  # number of decimal digits for rounding in csv files
@@ -134,13 +138,10 @@ fasstr_annual_stats <- function(flowdata=NULL,
   #  create the year (annual ) and month variables
   flowdata <- fasstr::fasstr_fill_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
   flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year_start = water_year_start)
-  flowdata <- dplyr::mutate(flowdata,
-                            Seasons4= ifelse(Month<=3,"JFM",
-                                             ifelse(Month>=4&Month<=6,"AMJ",
-                                                    ifelse(Month>=7&Month<=9,"JAS",
-                                                           ifelse(Month>=10,"OND",NA)))),
-                            Seasons2=ifelse(Month<=3|Month>=10,"ONDJFM",
-                                            ifelse(Month>=4&Month<=9,"AMJJAS",NA)))
+  
+  #  Compute the 3, 7, and 30 day rolling average values
+  flowdata <- fasstr::fasstr_add_rolling_means(flowdata,days = c(3,7,30))
+  flowdata <- fasstr::fasstr_add_total_volume(flowdata,water_year = water_year,water_year_start = water_year_start)
   
   # Set selected year-type column for analysis
   if (water_year) {
@@ -150,34 +151,62 @@ fasstr_annual_stats <- function(flowdata=NULL,
     flowdata$AnalysisYear <- flowdata$Year
     flowdata$AnalysisDoY <- flowdata$DayofYear
   }
- 
-
-  #  Compute the 3, 7, and 30 day rolling average values
-  flowdata <- fasstr::fasstr_add_rolling_means(flowdata,days = c(3,7,30))
-  flowdata <- fasstr_add_total_volume(flowdata,water_year = water_year)
-
-
   
-  # CALCULATE STATS ==============================
   
-  ## Compute statistics on 2 seasons (must be water year) so calc'd first before filtering for selected years
-  Qstat_2seasons <- dplyr::summarize(dplyr::group_by(flowdata,WaterYear,Seasons2),
+  
+  # CALCULATE SEASONAL STATS ==============================
+  
+  # Setup up flowdata to have seasons and the proper years according to water year
+  # Year value is designated by the year the season ends in 
+  # Example: ONDJFM with calendar years 2000-2001 and water-year-start=2, means ONDJ are WY2001 (ends 
+  #          in CY2001) and FM are WY2002 (ends in CY2002) so the the Year for that season is 2002.
+  seasons_flowdata <- fasstr::fasstr_fill_missing_dates(flowdata,water_year = T,water_year_start = 10)
+  seasons_flowdata <- fasstr::fasstr_add_date_vars(seasons_flowdata,water_year_start = 10)
+  seasons_flowdata <- dplyr::mutate(seasons_flowdata,
+                                    Seasons4= ifelse(Month<=3,"JFM",
+                                                     ifelse(Month>=4&Month<=6,"AMJ",
+                                                            ifelse(Month>=7&Month<=9,"JAS",
+                                                                   ifelse(Month>=10,"OND",NA)))),
+                                    Seasons2=ifelse(Month<=3|Month>=10,"ONDJFM",
+                                                    ifelse(Month>=4&Month<=9,"AMJJAS",NA)),
+                                    Seasons2_year=ifelse(Month>=10,
+                                                         Year+1,
+                                                         Year),
+                                    Seasons4_year=Year)
+  
+  # Calculate the 2-season summaries (winter/summer)
+  Qstat_2seasons <- dplyr::summarise(dplyr::group_by(seasons_flowdata,Seasons2,Seasons2_year),
                                      TOTALQ_DAILY=mean(Value, na.rm=F)*length(Value)*60*60*24,
-                                     YIELDMM_DAILY=mean(Value, na.rm=F)*length(Value)*60*60*24 /basin_area/1000)
+                                     YIELDMM_DAILY=TOTALQ_DAILY /basin_area/1000,
+                                     Max_year=max(AnalysisYear))
+  Qstat_2seasons <- dplyr::ungroup(Qstat_2seasons)
+  Qstat_2seasons <- dplyr::select(Qstat_2seasons,Year=Max_year,Seasons2,TOTALQ_DAILY,YIELDMM_DAILY)
   Qstat_2seasons <- tidyr::gather(Qstat_2seasons,stat,value,3:4)
   Qstat_2seasons <- dplyr::mutate(Qstat_2seasons,title=paste0(Seasons2,"_",stat))
   Qstat_2seasons <- dplyr::select(Qstat_2seasons,-Seasons2,-stat)
-  Qstat_2seasons <- tidyr::spread(Qstat_2seasons,title,value)
-  Qstat_2seasons <- dplyr::rename(Qstat_2seasons,Year=WaterYear)
   Qstat_2seasons <- dplyr::filter(Qstat_2seasons, Year >= start_year & Year <= end_year)
+  Qstat_2seasons <- tidyr::spread(Qstat_2seasons,title,value)
+  
+  # Calculate the 4-season summaries (winter/spring/summer/fall)
+  Qstat_4seasons <- dplyr::summarise(dplyr::group_by(seasons_flowdata,Seasons4,Seasons4_year),
+                                     TOTALQ_DAILY=mean(Value, na.rm=F)*length(Value)*60*60*24,
+                                     YIELDMM_DAILY=TOTALQ_DAILY*60*60*24 /basin_area/1000, 
+                                     Max_year=max(AnalysisYear))
+  Qstat_4seasons <- dplyr::ungroup(Qstat_4seasons)
+  Qstat_4seasons <- dplyr::select(Qstat_4seasons,Year=Max_year,Seasons4,TOTALQ_DAILY,YIELDMM_DAILY)
+  Qstat_4seasons <- tidyr::gather(Qstat_4seasons,stat,value,3:4)
+  Qstat_4seasons <- dplyr::mutate(Qstat_4seasons,title=paste0(Seasons4,"_",stat))
+  Qstat_4seasons <- dplyr::select(Qstat_4seasons,-Seasons4,-stat)
+  Qstat_4seasons <- dplyr::filter(Qstat_4seasons, Year >= start_year & Year <= end_year)
+  Qstat_4seasons <- tidyr::spread(Qstat_4seasons,title,value)
   
   
-  # FILTER DATA FOR SELECTED YEARS FOR REMAINDER OF CALCS
+  
+  # FILTER FLOWDATA FOR SELECTED YEARS FOR REMAINDER OF CALCS
   flowdata <- dplyr::filter(flowdata, AnalysisYear >= start_year & AnalysisYear <= end_year)
-
   
-  ## Compute statistics on  year basis
   
+  ## Compute remaining statistics on  year basis
   Qstat_annual <-   dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear),
                                      MIN_01Day    = min(Value, na.rm=na.rm$na.rm.global),	     
                                      MINDOY_01Day = ifelse(is.na(MIN_01Day),NA,
@@ -202,18 +231,6 @@ fasstr_annual_stats <- function(flowdata=NULL,
                                      Date_50P_FLOW_DAILY = DayofYear[ match(TRUE, Vtotal > 0.50  *TOTALQ_DAILY)],
                                      Date_75P_FLOW_DAILY = DayofYear[ match(TRUE, Vtotal > 0.75  *TOTALQ_DAILY)])
   Qstat_annual <-   dplyr::rename(Qstat_annual,Year=AnalysisYear)
-  
-  ## Compute statistics on 4 seasons
-  Qstat_4seasons <- dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear,Seasons4),
-                                     TOTALQ_DAILY=mean(Value, na.rm=na.rm$na.rm.global)*length(Value)*60*60*24,
-                                     YIELDMM_DAILY=mean(Value, na.rm=na.rm$na.rm.global)*length(Value)*60*60*24 /basin_area/1000)
-  Qstat_4seasons <- tidyr::gather(Qstat_4seasons,stat,value,3:4)
-  Qstat_4seasons <- dplyr::mutate(Qstat_4seasons,title=paste0(Seasons4,"_",stat))
-  Qstat_4seasons <- dplyr::select(Qstat_4seasons,-Seasons4,-stat)
-  Qstat_4seasons <- tidyr::spread(Qstat_4seasons,title,value)
-  Qstat_4seasons <-   dplyr::rename(Qstat_4seasons,Year=AnalysisYear)
-  
-  
   
   ## Compute statistics on months
   Qstat_months <- dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear,MonthName),
@@ -256,6 +273,8 @@ fasstr_annual_stats <- function(flowdata=NULL,
   # Remove excluded years
   Qstat[Qstat$Year %in% exclude_years,-1] <- NA
   
+  
+  
   if(transpose){
     options(scipen = 999)
     Qstat_tpose <- tidyr::gather(Qstat,Statistic,Value,-Year)
@@ -276,7 +295,7 @@ fasstr_annual_stats <- function(flowdata=NULL,
     utils::write.csv(temp,file=file_Qstat_table, row.names=FALSE)
   }
   
-
+  
   
   
   return(Qstat)

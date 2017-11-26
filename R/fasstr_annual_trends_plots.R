@@ -63,6 +63,7 @@ fasstr_annual_trends_plots <- function(trendsdata=NULL,
                                  zyp_alpha=0.05,
                                  station_name="fasstr",
                                  water_year=FALSE,
+                                 water_year_start=10,
                                  start_year=NULL,
                                  end_year=NULL,
                                  exclude_years=NULL, 
@@ -104,6 +105,11 @@ fasstr_annual_trends_plots <- function(trendsdata=NULL,
       stop('flowdata cannot have negative values - check your data')}
     
     if( !is.logical(water_year))  {stop("water_year parameter must be logical (TRUE/FALSE)")}
+    
+    if( length(water_year_start)>1) {stop("water_year_start must be a number between 1 and 12 (Jan-Dec)")}
+    if( water_year_start <1 | water_year_start >12 ) {stop("water_year_start must be an integer between 1 and 12 (Jan-Dec)")}
+    if( !(water_year_start==floor(water_year_start)))  {stop("water_year_start must be an integer between 1 and 12 (Jan-Dec)")}
+    
     if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
     
     if( !is.na(basin_area) & !is.numeric(basin_area))    {stop("basin_area parameter must be numeric")}
@@ -141,13 +147,14 @@ fasstr_annual_trends_plots <- function(trendsdata=NULL,
   
   # If no trendsata is provided, use flowdata ot HYDAT
   if ( is.null(trendsdata) ) {
-    trends_data <- fasstr::fasstr_annual_stats(flowdata=flowdata,
+    trends_data <- fasstr::fasstr_annual_all_stats(flowdata=flowdata,
                                                 HYDAT = HYDAT,
                                                 station_name=station_name,
-                                                water_year=water_year, #create another for own water year????
+                                                water_year=water_year,
+                                                water_year_start=water_year_start,
                                                 start_year=start_year,
                                                 end_year=end_year,
-                                                exclude_years=exclude_years, # list of stations
+                                                exclude_years=exclude_years,
                                                 basin_area=basin_area,
                                                 transpose=TRUE,
                                                 na.rm=na.rm)
@@ -160,13 +167,14 @@ fasstr_annual_trends_plots <- function(trendsdata=NULL,
                                    HYDAT=NULL,
                                    zyp_method=zyp_method,
                                    station_name=station_name,
-                                   water_year=water_year, #create another for own water year????
+                                   water_year=water_year,
+                                   water_year_start=water_year_start,
                                    start_year=start_year,
                                    end_year=end_year,
-                                   exclude_years=exclude_years, # list of stations
-                                   basin_area=basin_area, # if na, then all Yield values == NA
-                                   write_trends_data=FALSE,        # write out statistics on calendar year
-                                   write_trends_results=FALSE,  # write out statistics in transposed format (cy & wy)
+                                   exclude_years=exclude_years, 
+                                   basin_area=basin_area,
+                                   write_trends_data=FALSE,      
+                                   write_trends_results=FALSE,
                                    report_dir=".",
                                    na.rm=list(na.rm.global=FALSE),
                                    table_nddigits=3)

@@ -6,10 +6,11 @@
 \usage{
 fasstr_annual_trends_analysis(trendsdata = NULL, flowdata = NULL,
   HYDAT = NULL, zyp_method = NA, station_name = "fasstr",
-  water_year = FALSE, start_year = NULL, end_year = NULL,
-  exclude_years = NULL, basin_area = NA, write_trends_data = FALSE,
-  write_trends_results = FALSE, report_dir = ".",
-  na.rm = list(na.rm.global = FALSE), table_nddigits = 3)
+  water_year = FALSE, water_year_start = 10, start_year = NULL,
+  end_year = NULL, exclude_years = NULL, basin_area = NA,
+  write_trends_data = FALSE, write_trends_results = FALSE,
+  report_dir = ".", na.rm = list(na.rm.global = FALSE),
+  table_nddigits = 3)
 }
 \arguments{
 \item{trendsdata}{Dataframe. Annual data with column names of years and rows of annual statistics.}
