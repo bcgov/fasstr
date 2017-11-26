@@ -1,11 +1,20 @@
 
-#devtools::document()
-#install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
+devtools::document()
+install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
 #install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
 
 
 library(fasstr)
+
+
+ann_stats <- fasstr_annual_all_stats(HYDAT = "08HB048",transpose = T)
+ann_stats <- ann_stats[c(1:5),]
+trends <- fasstr_annual_trends_analysis(trendsdata = ann_stats,zyp_method = "yuepilon")
+trends <- fasstr_annual_trends_plots(trendsdata = ann_stats,zyp_method = "yuepilon")
+
+fasstr_longterm_stats(HYDAT = "08NM116")
+test <- fasstr_annual_freq_analysis(HYDAT = "08NM116")
 
 # Parameters
 stn_number <- "08NM116"
