@@ -108,7 +108,7 @@ fasstr_annual_missing_plots <- function(flowdata=NULL,
     if (station_name=="fasstr") {station_name <- HYDAT}
   }
   
-  flow_summary <- fasstr::fasstr_annual_summary(flowdata=flowdata,
+  flow_summary <- fasstr::fasstr_data_screening(flowdata=flowdata,
                                                 HYDAT=HYDAT,
                                                 station_name=station_name,
                                                 water_year=water_year, 
