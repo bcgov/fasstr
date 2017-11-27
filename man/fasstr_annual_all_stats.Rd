@@ -7,9 +7,10 @@
 fasstr_annual_all_stats(flowdata = NULL, HYDAT = NULL,
   station_name = "fasstr", water_year = FALSE, water_year_start = 10,
   start_year = NULL, end_year = NULL, exclude_years = NULL,
-  basin_area = NA, transpose = FALSE, write_table = FALSE,
-  report_dir = ".", na.rm = list(na.rm.global = FALSE),
-  table_nddigits = 3)
+  basin_area = NA, lowflow_days = c(1, 3, 7, 30),
+  totalflow_seasons = TRUE, percentflow_days = c(25, 33, 50, 75),
+  transpose = FALSE, write_table = FALSE, report_dir = ".",
+  na.rm = list(na.rm.global = FALSE), table_nddigits = 3)
 }
 \arguments{
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
@@ -50,7 +51,7 @@ The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy
 \item{table_nddigits}{Numeric. Number of significant digits to round the results in the written tables. Default is 3.}
 }
 \description{
-Computes annual statistics of streamflow data.
+Computes annual statistics of streamflow data. Take all functions with an annual value attached to it.
 Streamflow data can be supplied through the \code{flowdata} parameter or extracted from a 
 HYDAT database using the tidyhydat package and \code{HYDAT} parameter.
 }

@@ -11,12 +11,11 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 
-#' @title Compute annual low flows and their dates.
+#' @title Compute basin annual summary statistics.
 #'
-#' @description Compute annual low flows and their dates.
+#' @description Computes annual statistics of streamflow data.
 #' Streamflow data can be supplied through the \code{flowdata} parameter or extracted from a 
 #' HYDAT database using the tidyhydat package and \code{HYDAT} parameter.
-#' No transpose due to dates.
 #'
 #' @param flowdata Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
 #'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
@@ -34,46 +33,43 @@
 #'    year of the data provided.
 #' @param end_year Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
 #'    year of the data provided.
+#' @param seasons Logical. Include seasonal yields and total discharges
+#' @param basin_area Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm).
+#'    If no value provided, yield calculations will result in NA values.#' 
 #' @param exclude_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).    
 #' @param transpose Logical. Switch the rows and columns of the results. Dates excluded.
 #' @param write_table Logical. Should a file be created with the calendar year computed percentiles?
 #'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
 #' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
-#' @param table_nddigits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
 #' @param na.rm TBD
 #'
 #'
 #' @examples
 #' \dontrun{
-#' stat.annual <- annual_stats(HYDAT="08HB048",
-#'                             basin_area    = 10.1)
 #' 
-#' stat.annual <- annual_stats(station_name  ='Mission Creek',
-#'                                flowdata     = flow,
-#'                                water_year    = TRUE,
-#'                                start_year    = 1967,
-#'                                end_year      = 2014)
+#' coming soon :)
+#' 
+#' 
 #' }
 #' @export
 
 #'
 #--------------------------------------------------------------
-# Compute the statistics on an (calendar and water) year basis
 
-fasstr_annual_lowflows <- function(flowdata=NULL,
-                                HYDAT=NULL,
-                                station_name="fasstr",
-                                water_year=FALSE,
-                                water_year_start=10,
-                                start_year=NULL,
-                                end_year=NULL,
-                                exclude_years=NULL,
-                                rolling_days=c(1,3,7,30),
-                                transpose=FALSE,
-                                write_table=FALSE,
-                                report_dir=".",
-                                na.rm=list(na.rm.global=FALSE),
-                                table_nddigits=3){
+
+fasstr_annual_flow_dates <- function(flowdata=NULL,
+                                      HYDAT=NULL,
+                                      station_name="fasstr",
+                                      water_year=FALSE,
+                                      water_year_start=10,
+                                      start_year=NULL,
+                                      end_year=NULL,
+                                      exclude_years=NULL,
+                                      percent_of_total=c(25,33.3,50,75),
+                                      transpose=FALSE,
+                                      write_table=FALSE,
+                                      report_dir=".",
+                                      na.rm=list(na.rm.global=FALSE)){
   
   #############################################################
   
@@ -98,12 +94,13 @@ fasstr_annual_lowflows <- function(flowdata=NULL,
   
   if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
   
+  #percent_of_total
+  
+  if( !is.logical(transpose))  {stop("transpose parameter must be logical (TRUE/FALSE)")}
   if( !is.logical(write_table))  {stop("write_table parameter must be logical (TRUE/FALSE)")}
   
   if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
-  if( !is.numeric(table_nddigits))  { stop("csv.ndddigits parameter needs to be numeric")}
-  table_nddigits <- round(table_nddigits[1])  # number of decimal digits for rounding in csv files
-  
+
   if( !is.list(na.rm))              {stop("na.rm is not a list") }
   if(! is.logical(unlist(na.rm))){   stop("na.rm is list of logical (TRUE/FALSE) values only.")}
   my.na.rm <- list(na.rm.global=FALSE)
@@ -133,6 +130,7 @@ fasstr_annual_lowflows <- function(flowdata=NULL,
   #  Fill in the missing dates and the add the date variables again
   flowdata <- fasstr::fasstr_fill_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
   flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
+  flowdata <- fasstr::fasstr_add_total_volume(flowdata,water_year = water_year,water_year_start = water_year_start)
   
   # Set selected year-type column for analysis
   if (water_year) {
@@ -143,87 +141,42 @@ fasstr_annual_lowflows <- function(flowdata=NULL,
     flowdata$AnalysisDoY <- flowdata$DayofYear
   }
   
+  # FILTER FLOWDATA FOR SELECTED YEARS FOR REMAINDER OF CALCS
+  flowdata <- dplyr::filter(flowdata, AnalysisYear >= start_year & AnalysisYear <= end_year)
   
   
-  if (water_year) {
-    if (water_year_start==1) {
-      origin_date <- "12-31"
-    } else if (water_year_start==2) {
-      origin_date <- "01-31"
-    } else if (water_year_start==3) {
-      origin_date <- "02-28"
-    } else if (water_year_start==4) {
-      origin_date <- "03-31"
-    } else if (water_year_start==5) {
-      origin_date <- "04-30"
-    } else if (water_year_start==6) {
-      origin_date <- "05-31"
-    } else if (water_year_start==7) {
-      origin_date <- "06-30"
-    } else if (water_year_start==8) {
-      origin_date <- "07-31"
-    } else if (water_year_start==9) {
-      origin_date <- "08-31"
-    } else if (water_year_start==10) {
-      origin_date <- "09-30"
-    } else if (water_year_start==11) {
-      origin_date <- "10-31"
-    } else if (water_year_start==12) {
-      origin_date <- "11-30"
-    }
-  } else if (!water_year) {
-    origin_date <- "12-31"
-  }
-  
-  # Loop through each rolling_day and compute annual min values and their dates
-  Q_lowflow <- dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear))
-  for (day in rolling_days) {
-    flowdata_temp <- fasstr::fasstr_add_rolling_means(flowdata,days = day)
-    names(flowdata_temp)[names(flowdata_temp) == paste0("Q",day,"Day")] <- "RollingValue"
-    Q_lowflow_temp <- dplyr::summarize(dplyr::group_by(flowdata_temp,AnalysisYear),
-                                  MIN_VALUE = min(RollingValue, na.rm=na.rm$na.rm.global),	     
-                                  MIN_DAY = ifelse(is.na(MIN_VALUE),NA,
-                                                        AnalysisDoY[which(RollingValue==MIN_VALUE)]),
-                                  MIN_DATE= ifelse(is.na(MIN_VALUE),NA,
-                                               Date[which(RollingValue==MIN_VALUE)]))
-    class(Q_lowflow_temp$MIN_DATE)<- "Date" # fixes ifelse and date issue
-    names(Q_lowflow_temp)[names(Q_lowflow_temp) == "MIN_VALUE"] <- paste0("Min_",day,"_Day")
-    names(Q_lowflow_temp)[names(Q_lowflow_temp) == "MIN_DAY"] <- paste0("Min_",day,"_Day_DoY")
-    names(Q_lowflow_temp)[names(Q_lowflow_temp) == "MIN_DATE"] <- paste0("Min_",day,"_Day_Date")
+  # Loop through percents
+  Qstat <-   dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear))
+  for (percent in percent_of_total) {
+    Qstat_pcnt <-   dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear),
+                               TOTALQ_DAY  =  AnalysisDoY[ match(TRUE, Vtotal > percent/100  * ((mean(Value, na.rm=na.rm$na.rm.global))*length(Value)*60*60*24))],
+                               TOTALQ_DATE =  Date[ match(TRUE, Vtotal > percent/100  * ((mean(Value, na.rm=na.rm$na.rm.global))*length(Value)*60*60*24))])
+    names(Qstat_pcnt)[names(Qstat_pcnt) == "TOTALQ_DAY"] <- paste0("DoY_",percent,"pct_TotalQ")
+    names(Qstat_pcnt)[names(Qstat_pcnt) == "TOTALQ_DATE"] <- paste0("Date_",percent,"pct_TotalQ")
+    Qstat <- merge(Qstat,Qstat_pcnt,by="AnalysisYear",all=T)
     
-    Q_lowflow <- merge(Q_lowflow,Q_lowflow_temp,by="AnalysisYear",all = T)
-    }
-  Q_lowflow <-   dplyr::rename(Q_lowflow,Year=AnalysisYear)
+  }
+  Qstat <-   dplyr::rename(Qstat,Year=AnalysisYear)
   
-  # FILTER Q_lowflow FOR SELECTED YEARS FOR REMAINDER OF CALCS
-  Q_lowflow <- dplyr::filter(Q_lowflow, Year >= start_year & Year <= end_year)
-  Q_lowflow[Q_lowflow$Year %in% exclude_years,-1] <- NA
-
   
+  #Remove any excluded
+  Qstat[Qstat$Year %in% exclude_years,-1] <- NA
   
   if(transpose){
-    Q_lowflow <- dplyr::select(Q_lowflow,Year,dplyr::contains("Day"),-dplyr::contains("Date"))
-    Q_lowflow <- tidyr::gather(Q_lowflow,Statistic,Value,-Year)
-    Q_lowflow <- tidyr::spread(Q_lowflow,Year,Value)
+    Qstat <- dplyr::select(Qstat,Year,dplyr::contains("DoY"))
+    Qstat <- tidyr::gather(Qstat,Statistic,Value,-Year)
+    Qstat <- tidyr::spread(Qstat,Year,Value)
   }
-  
   
   if(write_table){
-    file_Qlowflows_table <- file.path(report_dir, paste(station_name,"-annual-lowflows.csv", sep=""))
-    temp <- Q_lowflow
-    # rounding just numeric columns
-    if (transpose) {
-      temp[,2:ncol(temp)] <- round(temp[,2:ncol(temp)], table_nddigits)
-    } else {
-      numVars <- sapply(temp, is.numeric) 
-      temp[numVars] <- lapply(temp[numVars], round, digits = table_nddigits) 
-    }
-    utils::write.csv(temp,file=file_Qlowflows_table, row.names=FALSE)
+    file_Qstat_table <- file.path(report_dir, paste(station_name,"-annual-date-of-flows.csv", sep=""))
+    temp <- Qstat
+    utils::write.csv(temp,file=file_Qstat_table, row.names=FALSE)
   }
   
   
   
   
-  return(Q_lowflow)
-}
+  return(Qstat)
+} # end of function
 

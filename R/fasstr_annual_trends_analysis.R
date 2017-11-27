@@ -67,6 +67,9 @@ fasstr_annual_trends_analysis <- function(trendsdata=NULL,
                                  end_year=NULL,
                                  exclude_years=NULL, # list of stations
                                  basin_area=NA, # if na, then all Yield values == NA
+                                 lowflow_days=c(1,3,7,30),
+                                 totalflow_seasons=TRUE,
+                                 percentflow_days=c(25,33,50,75),
                                  write_trends_data=FALSE,        # write out statistics on calendar year
                                  write_trends_results=FALSE,  # write out statistics in transposed format (cy & wy)
                                  report_dir=".",
@@ -150,6 +153,9 @@ fasstr_annual_trends_analysis <- function(trendsdata=NULL,
                                                 end_year=end_year,
                                                 exclude_years=exclude_years,
                                                 basin_area=basin_area,
+                                                lowflow_days=lowflow_days,
+                                                totalflow_seasons=totalflow_seasons,
+                                                percentflow_days=percentflow_days,
                                                 transpose=TRUE,
                                                 na.rm=na.rm)
   }

@@ -8,8 +8,10 @@ fasstr_annual_trends_plots(trendsdata = NULL, flowdata = NULL,
   HYDAT = NULL, zyp_method = NA, zyp_alpha = 0.05,
   station_name = "fasstr", water_year = FALSE, water_year_start = 10,
   start_year = NULL, end_year = NULL, exclude_years = NULL,
-  basin_area = NA, write_plots = FALSE, plot_type = "pdf",
-  report_dir = ".", na.rm = list(na.rm.global = FALSE))
+  basin_area = NA, lowflow_days = c(1, 3, 7, 30),
+  totalflow_seasons = TRUE, percentflow_days = c(25, 33, 50, 75),
+  write_plots = FALSE, plot_type = "pdf", report_dir = ".",
+  na.rm = list(na.rm.global = FALSE))
 }
 \arguments{
 \item{trendsdata}{Dataframe. Annual data with column names of years and rows of annual statistics.}

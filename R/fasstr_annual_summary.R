@@ -143,13 +143,13 @@ fasstr_annual_summary <- function(flowdata=NULL,
   
  
   Q_summary <-   dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear),
-                                 n_days   = length(AnalysisYear),
-                                 n_Q      = sum (!is.na(RollingValue)),
+                                 n_days      = length(AnalysisYear),
+                                 n_Q         = sum (!is.na(RollingValue)),
                                  n_missing_Q = sum ( is.na(RollingValue)),
-                                 Minimum    = min (RollingValue,          na.rm=T),
-                                 Maximum    = max (RollingValue,          na.rm=T),
-                                 Mean   = mean(RollingValue,          na.rm=T),
-                                 Median = stats::median(RollingValue, na.rm=T),
+                                 Minimum     = ifelse(n_Q==0,NA,min (RollingValue,na.rm=T)),
+                                 Maximum     = ifelse(n_Q==0,NA,max (RollingValue,na.rm=T)),
+                                 Mean        = ifelse(n_Q==0,NA,mean(RollingValue,na.rm=T)),
+                                 Median      = stats::median(RollingValue, na.rm=T),
                                  StandardDeviation     = stats::sd  (RollingValue,   na.rm=T)
   )
   

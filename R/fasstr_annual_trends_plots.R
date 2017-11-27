@@ -68,6 +68,9 @@ fasstr_annual_trends_plots <- function(trendsdata=NULL,
                                  end_year=NULL,
                                  exclude_years=NULL, 
                                  basin_area=NA,
+                                 lowflow_days=c(1,3,7,30),
+                                 totalflow_seasons=TRUE,
+                                 percentflow_days=c(25,33,50,75),
                                  write_plots=FALSE,      
                                  plot_type="pdf",  
                                  report_dir=".",
@@ -156,6 +159,9 @@ fasstr_annual_trends_plots <- function(trendsdata=NULL,
                                                 end_year=end_year,
                                                 exclude_years=exclude_years,
                                                 basin_area=basin_area,
+                                                lowflow_days=lowflow_days,
+                                                totalflow_seasons=totalflow_seasons,
+                                                percentflow_days=percentflow_days,
                                                 transpose=TRUE,
                                                 na.rm=na.rm)
   }
@@ -163,21 +169,22 @@ fasstr_annual_trends_plots <- function(trendsdata=NULL,
   
   
   trends_results <- fasstr::fasstr_annual_trends_analysis(trendsdata=trends_data,
-                                   flowdata=NULL,
-                                   HYDAT=NULL,
-                                   zyp_method=zyp_method,
-                                   station_name=station_name,
-                                   water_year=water_year,
-                                   water_year_start=water_year_start,
-                                   start_year=start_year,
-                                   end_year=end_year,
-                                   exclude_years=exclude_years, 
-                                   basin_area=basin_area,
-                                   write_trends_data=FALSE,      
-                                   write_trends_results=FALSE,
-                                   report_dir=".",
-                                   na.rm=list(na.rm.global=FALSE),
-                                   table_nddigits=3)
+                                                          flowdata=NULL,
+                                                          HYDAT=NULL,
+                                                          zyp_method=zyp_method#,
+                                                          #station_name=station_name,
+                                                          #water_year=water_year,
+                                                          #water_year_start=water_year_start,
+                                                          #start_year=start_year,
+                                                          #end_year=end_year,
+                                                          #exclude_years=exclude_years, 
+                                                          #basin_area=basin_area,
+                                                          #write_trends_data=FALSE,      
+                                                          #write_trends_results=FALSE,
+                                                          #report_dir=".",
+                                                          #na.rm=list(na.rm.global=FALSE),
+                                                          #table_nddigits=3
+  )
   
   
   # Create the list to place all plots
@@ -200,11 +207,10 @@ fasstr_annual_trends_plots <- function(trendsdata=NULL,
   if ( is.null(trendsdata) ) {
     trends_data <- dplyr::mutate(trends_data,
                                  Units="Discharge (cms)",
-                                 Units=replace(Units, grepl("YIELD",Statistic), "Runoff Yield (mm)"),
-                                 Units=replace(Units, grepl("TOTALQ",Statistic), "Total Discharge (cubic metres)"),
-                                 Units=replace(Units, grepl("Date",Statistic), "Day of Year"),
-                                 Units=replace(Units, grepl("MINDOY",Statistic), "Day of Year"),
-                                 Units=replace(Units, grepl("DAYS",Statistic), "Number of Days"))
+                                 Units=replace(Units, grepl("Yield_mm",Statistic), "Runoff Yield (mm)"),
+                                 Units=replace(Units, grepl("TotalQ_m3",Statistic), "Total Discharge (cubic metres)"),
+                                 Units=replace(Units, grepl("DoY",Statistic), "Day of Year"),
+                                 Units=replace(Units, grepl("Days",Statistic), "Number of Days"))
   }
   
   for (stat in unique(trends_results$Statistic)){
