@@ -45,14 +45,11 @@
 #'
 #' @examples
 #' \dontrun{
-#' stat.annual <- annual_stats(HYDAT="08HB048",
-#'                             basin_area    = 10.1)
 #' 
-#' stat.annual <- annual_stats(station_name  ='Mission Creek',
-#'                                flowdata     = flow,
-#'                                water_year    = TRUE,
-#'                                start_year    = 1967,
-#'                                end_year      = 2014)
+#' 
+#' Coming soon :)
+#' 
+#' 
 #' }
 #' @export
 
@@ -150,11 +147,11 @@ fasstr_monthly_stats <- function(flowdata=NULL,
   }
   
   
-  # FILTER FLOWDATA FOR SELECTED YEARS FOR REMAINDER OF CALCS
+  # Filte the data for the start and end years
   flowdata <- dplyr::filter(flowdata, AnalysisYear >= start_year & AnalysisYear <= end_year)
   
   
-  ## Compute remaining statistics on  year basis
+  # Compute basic stats for each month for each year
   Qstat_monthly <-   dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear,MonthName),
                                      Mean    = mean(Value, na.rm=na.rm$na.rm.global),     # CY Mean Discharge (Based on Daily avgs)
                                      Median  = median(Value, na.rm=na.rm$na.rm.global),  # CY median Discharge (Based on Daily avgs)
@@ -162,6 +159,7 @@ fasstr_monthly_stats <- function(flowdata=NULL,
                                      Minimum     = min (Value, na.rm=na.rm$na.rm.global)#,	    # CY Min Daily Q 	CY Min Daily Q
   )
   
+  # Compute selected percentiles for each month for each year
   if (!all(is.na(percentiles))){
     for (ptile in percentiles) {
       
@@ -173,21 +171,54 @@ fasstr_monthly_stats <- function(flowdata=NULL,
     }
   }
   
+  # Rename some columns
   Qstat_monthly <-   dplyr::rename(Qstat_monthly,Year=AnalysisYear,Month=MonthName)
   
+  # Set the levels of the months for proper ordering
+  if (water_year) {
+    if (water_year_start==1) {
+      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
+    } else if (water_year_start==2) {
+      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan"))
+    } else if (water_year_start==3) {
+      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb"))
+    } else if (water_year_start==4) {
+      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar"))
+    } else if (water_year_start==5) {
+      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr"))
+    } else if (water_year_start==6) {
+      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May"))
+    } else if (water_year_start==7) {
+      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun"))
+    } else if (water_year_start==8) {
+      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul"))
+    } else if (water_year_start==9) {
+      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug"))
+    } else if (water_year_start==10) {
+      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep"))
+    } else if (water_year_start==11) {
+      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct"))
+    } else if (water_year_start==12) {
+      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov"))
+    }
+  } else {           
+    Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
+  }
   
-  # Remove excluded years
+  # Reorder months
+  Qstat_monthly <- with(Qstat_monthly, Qstat_monthly[order(Year, Month),])
+  row.names(Qstat_monthly) <- c(1:nrow(Qstat_monthly))
+  
+  # Make any excluded years NA (doesnt remove the data)
   Qstat_monthly[Qstat_monthly$Year %in% exclude_years,3:ncol(Qstat_monthly)] <- NA
   
-  
-  
+  # Transform data to chosen format
   if (spread) {
     Qstat_monthly <- tidyr::gather(Qstat_monthly,Statistic,Value,3:ncol(Qstat_monthly))
     Qstat_monthly <- dplyr::mutate(Qstat_monthly,StatMonth=paste0(Month,"_",Statistic))
     Qstat_monthly <- dplyr::select(Qstat_monthly,-Statistic,-Month)
     Qstat_monthly <- tidyr::spread(Qstat_monthly,StatMonth,Value)
   }  
-  
   if (transpose) {
     Qstat_monthly <- tidyr::gather(Qstat_monthly,Stat,Value,3:ncol(Qstat_monthly))
     Qstat_monthly <- dplyr::mutate(Qstat_monthly,Statistic=paste0(Month,"_",Stat))
@@ -196,7 +227,7 @@ fasstr_monthly_stats <- function(flowdata=NULL,
   }  
   
 
-  
+  # Save the table if selected
   if(write_table){
     file_Qmonth_table <- file.path(report_dir, paste(station_name,"-monthly-statistics.csv", sep=""))
     temp <- Qstat_monthly
@@ -212,5 +243,5 @@ fasstr_monthly_stats <- function(flowdata=NULL,
   
   
   return(Qstat_monthly)
-} # end of function
+}
 

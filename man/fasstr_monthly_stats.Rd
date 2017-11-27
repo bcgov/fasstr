@@ -57,13 +57,10 @@ HYDAT database using the tidyhydat package and \code{HYDAT} parameter.
 }
 \examples{
 \dontrun{
-stat.annual <- annual_stats(HYDAT="08HB048",
-                            basin_area    = 10.1)
 
-stat.annual <- annual_stats(station_name  ='Mission Creek',
-                               flowdata     = flow,
-                               water_year    = TRUE,
-                               start_year    = 1967,
-                               end_year      = 2014)
+
+Coming soon :)
+
+
 }
 }
