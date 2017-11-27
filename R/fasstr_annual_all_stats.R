@@ -286,7 +286,7 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
   # See if you want to write out the summary tables?
   if(write_table){
     # Write out the summary table for comparison to excel spreadsheet for calendar year
-    file_Qstat_table <- file.path(report_dir, paste(station_name,"-annual-statistics.csv", sep=""))
+    file_Qstat_table <- file.path(report_dir, paste(station_name,"-all_annual-statistics.csv", sep=""))
     temp <- Qstat
     temp <- round(temp, table_nddigits)
     if(transpose){
