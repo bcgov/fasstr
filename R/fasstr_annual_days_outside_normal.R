@@ -158,7 +158,7 @@ fasstr_annual_days_outside_normal <- function(flowdata=NULL,
   flowdata <- dplyr::mutate(flowdata, Value=replace(Value, AnalysisYear %in% exclude_years, NA))
   
   # Determine years with complete data and filter for only those years
-  flow_summary <- fasstr::fasstr_annual_summary(flowdata=flowdata,
+  flow_summary <- fasstr::fasstr_data_screening(flowdata=flowdata,
                                                 HYDAT=NULL,
                                                 water_year=water_year,
                                                 start_year=start_year,

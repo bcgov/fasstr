@@ -1,14 +1,14 @@
 
 devtools::document()
-install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
-#install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
+#install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
+install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
 
 
 library(fasstr)
 
 
-ann_stats <- fasstr_annual_all_stats(HYDAT = "08HB048",transpose = T)
+ann_stats <- fasstr_annual_all_stats(HYDAT = "08HB048",percentflow_days = c(50,60),totalflow_seasons=F)
 ann_stats <- ann_stats[c(1:5),]
 trends <- fasstr_annual_trends_analysis(trendsdata = ann_stats,zyp_method = "yuepilon")
 trends <- fasstr_annual_trends_plots(trendsdata = ann_stats,zyp_method = "yuepilon")
@@ -45,13 +45,13 @@ timeseries_annual_plot <- fasstr_timeseries_plot(HYDAT = stn_number,
                                           report_dir = paste0(folder,timeseriesfolder),
                                           plot_by_year = T,start_year = start_year,end_year = end_year)
 
-flow_summary <- fasstr_annual_summary(flowdata=timeseries,
+flow_summary <- fasstr_data_screening(flowdata=timeseries,
                                       #HYDAT = stn_number,
                                       write_table = T,report_dir = paste0(folder,timeseriesfolder),start_year = start_year,end_year = end_year)
-summary_plot <- fasstr_annual_summary_plots(flowdata=timeseries,
+summary_plot <- fasstr_data_screening_plots(flowdata=timeseries,
                                             #HYDAT = stn_number,
                                             write_plot = T,report_dir = paste0(folder,timeseriesfolder),start_year = start_year,end_year = end_year)
-missing_plot <- fasstr_annual_missing_plots(flowdata=timeseries,
+missing_plot <- fasstr_data_screening_plots(flowdata=timeseries,
                                             #HYDAT = stn_number,
                                             write_plot = T,report_dir = paste0(folder,timeseriesfolder),start_year = start_year,end_year = end_year)
 

@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 
-#' @title Compute summary statistics to review a streamflow dataset.
+#' @title fasstr_data_screening_plots
 #'
 #' @description Compute summary statistics to review a streamflow dataset.
 #' Streamflow data can be supplied through the \code{flowdata} parameter or extracted from a 
@@ -53,7 +53,7 @@
 #--------------------------------------------------------------
 # Compute the statistics on an (calendar and water) year basis
 
-fasstr_annual_summary_plots <- function(flowdata=NULL,
+fasstr_data_screening_plots <- function(flowdata=NULL,
                                   HYDAT=NULL,
                                   station_name="fasstr",
                                   water_year=FALSE, #create another for own water year????
@@ -108,7 +108,7 @@ fasstr_annual_summary_plots <- function(flowdata=NULL,
     if (station_name=="fasstr") {station_name <- HYDAT}
   }
   
-  flow_summary <- fasstr::fasstr_annual_summary(flowdata=flowdata,
+  flow_summary <- fasstr::fasstr_data_screening(flowdata=flowdata,
                                                 HYDAT=HYDAT,
                                                 station_name=station_name,
                                                 water_year=water_year, 

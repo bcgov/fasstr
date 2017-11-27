@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 
-#' @title Compute multiple annual statistics.
+#' @title fasstr_annual_screening
 #'
 #' @description Computes annual statistics of streamflow data.
 #' Streamflow data can be supplied through the \code{flowdata} parameter or extracted from a 
@@ -54,7 +54,7 @@
 #--------------------------------------------------------------
 # Compute the statistics on an (calendar and water) year basis
 
-fasstr_annual_summary <- function(flowdata=NULL,
+fasstr_data_screening <- function(flowdata=NULL,
                                   HYDAT=NULL,
                                   station_name="fasstr",
                                   water_year=FALSE, #create another for own water year????
