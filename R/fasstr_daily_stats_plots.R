@@ -152,7 +152,7 @@ fasstr_daily_stats_plots <- function(flowdata=NULL,
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata = flowdata,water_year_start=water_year_start)
+  flowdata <- fasstr::fasstr_add_date_vars(flowdata = flowdata,water_year = T,water_year_start=water_year_start)
   flowdata <- fasstr::fasstr_add_rolling_means(flowdata,days = rolling_days,align = rolling_align)
   colnames(flowdata)[ncol(flowdata)] <- "AnalysisQ"
   min_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))

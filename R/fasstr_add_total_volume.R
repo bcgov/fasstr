@@ -73,7 +73,7 @@ fasstr_add_total_volume <- function(flowdata=NULL,
 
   # fill in missing dates to ensure means roll over consecutive days
   flowdata.temp <- fasstr::fasstr_fill_missing_dates(flowdata=flowdata)
-  flowdata.temp <- fasstr::fasstr_add_date_vars(flowdata=flowdata.temp,water_year_start = water_year_start)
+  flowdata.temp <- fasstr::fasstr_add_date_vars(flowdata=flowdata.temp,water_year = T,water_year_start = water_year_start)
   
   # Set selected year-type column for analysis
   if (water_year) {

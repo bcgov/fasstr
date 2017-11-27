@@ -64,20 +64,20 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 fasstr_flow_duration_plots <- function(flowdata=NULL,
-                                  HYDAT=NULL,
-                                  station_name="fasstr",
-                                  water_year=FALSE, #create another for own water year????
-                                  water_year_start=10,
-                                  start_year=NULL,
-                                  end_year=NULL,
-                                  exclude_years=NULL, # list of stations
-                                  #months="all",
-                                  percentiles=c(1:99),
-                                  log_discharge=TRUE,
-                                  write_plot=FALSE,        # write out statistics on calendar year
-                                  plot_type="pdf",        # write out statistics on calendar year
-                                  report_dir=".",
-                                  na.rm=list(na.rm.global=FALSE)){
+                                       HYDAT=NULL,
+                                       station_name="fasstr",
+                                       water_year=FALSE, #create another for own water year????
+                                       water_year_start=10,
+                                       start_year=NULL,
+                                       end_year=NULL,
+                                       exclude_years=NULL, # list of stations
+                                       #months="all",
+                                       percentiles=c(1:99),
+                                       log_discharge=TRUE,
+                                       write_plot=FALSE,        # write out statistics on calendar year
+                                       plot_type="pdf",        # write out statistics on calendar year
+                                       report_dir=".",
+                                       na.rm=list(na.rm.global=FALSE)){
   
   
   #
@@ -110,7 +110,7 @@ fasstr_flow_duration_plots <- function(flowdata=NULL,
   
   if( !is.logical(log_discharge))  {
     stop("log_discharge argument must be logical (TRUE/FALSE)")}
-
+  
   if( !is.logical(write_plot))  {
     stop("write_plot parameter must be logical (TRUE/FALSE)")}
   if( length(plot_type)>1)        {
@@ -120,7 +120,7 @@ fasstr_flow_duration_plots <- function(flowdata=NULL,
   
   if( !dir.exists(as.character(report_dir)))      {
     stop("directory for saved files does not exist")}
-
+  
   if( !is.list(na.rm))              {
     stop("na.rm is not a list") }
   if(! is.logical(unlist(na.rm))){   
@@ -134,19 +134,19 @@ fasstr_flow_duration_plots <- function(flowdata=NULL,
   
   
   percentiles_data <- fasstr_longterm_ptiles(flowdata=flowdata,
-                         HYDAT=HYDAT,
-                         station_name=station_name,
-                         water_year=water_year, #create another for own water year????
-                         water_year_start=water_year_start,
-                         start_year=start_year,
-                         end_year=end_year,
-                         exclude_years=exclude_years, # list of stations
-                         percentiles=c(1:99),
-                         transpose=FALSE,
-                         write_table=FALSE,        # write out statistics on calendar year
-                         report_dir=report_dir,
-                         na.rm=list(na.rm.global=FALSE),
-                         table_nddigits=3)
+                                             HYDAT=HYDAT,
+                                             station_name=station_name,
+                                             water_year=water_year, #create another for own water year????
+                                             water_year_start=water_year_start,
+                                             start_year=start_year,
+                                             end_year=end_year,
+                                             exclude_years=exclude_years, # list of stations
+                                             percentiles=c(1:99),
+                                             transpose=FALSE,
+                                             write_table=FALSE,        # write out statistics on calendar year
+                                             report_dir=report_dir,
+                                             na.rm=list(na.rm.global=FALSE),
+                                             table_nddigits=3)
   percentiles_data <- tidyr::gather(percentiles_data,Percentile,Value,-1)
   percentiles_data <- dplyr::mutate(percentiles_data,Percentile=100-as.numeric(gsub("P", "", Percentile)))
   

@@ -33,10 +33,10 @@
 #--------------------------------------------------------------
 # Compute the statistics on an (calendar and water) year basis
 
-fasstr_add_date_vars <- function(
-                         flowdata=NULL,
-                         HYDAT=NULL,
-                         water_year_start=10){  
+fasstr_add_date_vars <- function(flowdata=NULL,
+                                 HYDAT=NULL,
+                                 water_year=FALSE,
+                                 water_year_start=10){  
   
   #  Compute statistics on an annual (calendar and water) year basis
   #
@@ -47,7 +47,7 @@ fasstr_add_date_vars <- function(
   #############################################################
   #  Some basic error checking on the input parameters
   #
-
+  
   if( is.null(flowdata) & is.null(HYDAT)) {
     stop("flowdata or HYDAT parameters must be set")}
   if( !is.null(HYDAT) & !is.null(flowdata))  {
@@ -62,7 +62,7 @@ fasstr_add_date_vars <- function(
     stop("water_year_start parameter must be numeric between 1 and 12 (Jan-Dec)")}
   if( water_year_start<1 & water_year_start>12 )  {
     stop("water_year_start parameter must be numeric between 1 and 12 (Jan-Dec)")}
-
+  
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
@@ -70,45 +70,49 @@ fasstr_add_date_vars <- function(
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
-  # Create values used to calculate the water year day of year
-  if (water_year_start==2) {doy.temp <- c(31,31)}
-  if (water_year_start==3) {doy.temp <- c(61,62)}
-  if (water_year_start==4) {doy.temp <- c(90,91)}
-  if (water_year_start==5) {doy.temp <- c(120,121)}
-  if (water_year_start==6) {doy.temp <- c(151,152)}
-  if (water_year_start==7) {doy.temp <- c(181,182)}
-  if (water_year_start==8) {doy.temp <- c(212,213)}
-  if (water_year_start==9) {doy.temp <- c(243,244)}
-  if (water_year_start==10) {doy.temp <- c(273,274)}
-  if (water_year_start==11) {doy.temp <- c(304,305)}
-  if (water_year_start==12) {doy.temp <- c(334,335)}
-
+  
+  
   # Calculate each date variable
   flowdata$Year  <- lubridate::year(flowdata$Date)
   flowdata$Month  <- lubridate::month(flowdata$Date)
   flowdata$MonthName <- month.abb[flowdata$Month]
   flowdata$DayofYear <- lubridate::yday(flowdata$Date)
-
-  if (water_year_start==1) {
-    flowdata$WaterYear <- flowdata$Year
-    flowdata$WaterDayofYear <- flowdata$DayofYear
-  } else {
-    flowdata$WaterYear <- as.numeric(ifelse(flowdata$Month>=water_year_start,
-                                            flowdata$Year+1,
-                                            flowdata$Year))
-    flowdata$WaterDayofYear <- ifelse(flowdata$Month<water_year_start,
-                                      flowdata$DayofYear+(365-doy.temp[1]),
-                                      ifelse((as.Date(with(flowdata, paste(Year+1,01,01,sep="-")),"%Y-%m-%d")
-                                              -as.Date(with(flowdata, paste(Year,01,01,sep="-")),"%Y-%m-%d"))==366,
-                                             flowdata$DayofYear-doy.temp[2],
-                                             flowdata$DayofYear-doy.temp[1]))
+  
+  if (water_year){
+    # Create values used to calculate the water year day of year
+    if (water_year_start==2) {doy.temp <- c(31,31)}
+    if (water_year_start==3) {doy.temp <- c(61,62)}
+    if (water_year_start==4) {doy.temp <- c(90,91)}
+    if (water_year_start==5) {doy.temp <- c(120,121)}
+    if (water_year_start==6) {doy.temp <- c(151,152)}
+    if (water_year_start==7) {doy.temp <- c(181,182)}
+    if (water_year_start==8) {doy.temp <- c(212,213)}
+    if (water_year_start==9) {doy.temp <- c(243,244)}
+    if (water_year_start==10) {doy.temp <- c(273,274)}
+    if (water_year_start==11) {doy.temp <- c(304,305)}
+    if (water_year_start==12) {doy.temp <- c(334,335)}
+    
+    if (water_year_start==1) {
+      flowdata$WaterYear <- flowdata$Year
+      flowdata$WaterDayofYear <- flowdata$DayofYear
+    } else {
+      flowdata$WaterYear <- as.numeric(ifelse(flowdata$Month>=water_year_start,
+                                              flowdata$Year+1,
+                                              flowdata$Year))
+      flowdata$WaterDayofYear <- ifelse(flowdata$Month<water_year_start,
+                                        flowdata$DayofYear+(365-doy.temp[1]),
+                                        ifelse((as.Date(with(flowdata, paste(Year+1,01,01,sep="-")),"%Y-%m-%d")
+                                                -as.Date(with(flowdata, paste(Year,01,01,sep="-")),"%Y-%m-%d"))==366,
+                                               flowdata$DayofYear-doy.temp[2],
+                                               flowdata$DayofYear-doy.temp[1]))
+    }
   }
   
- 
-
+  
+  
   
   # ADD SEASONS?
-
+  
   
   return(flowdata)
 } # end of function

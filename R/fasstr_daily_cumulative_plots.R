@@ -143,7 +143,7 @@ fasstr_daily_cumulative_plots <- function(flowdata=NULL,
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata = flowdata,water_year_start=water_year_start)
+  flowdata <- fasstr::fasstr_add_date_vars(flowdata = flowdata,water_year = T,water_year_start=water_year_start)
   min_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))
   max_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))
   if (is.null(start_year)) {start_year <- min_year}
