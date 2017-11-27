@@ -20,6 +20,9 @@
 #'    mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.
 #' @param HYDAT Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
 #'    tidyhydat package and a downloaded SQLite HYDAT required.
+#' @param water_year Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
+#'    default calendar year (Jan-Dec) (\code{water_year=FALSE}). Water years are designated by the year which they end in
+#'    (e.g. water year 2000 start on 1 Oct 1999 and ends on 30 Sep 2000).
 #' @param water_year_start Numeric. Month to start water year (1 to 12 for Jan to Dec).
 #'
 #' @examples
@@ -38,12 +41,8 @@ fasstr_add_date_vars <- function(flowdata=NULL,
                                  water_year=FALSE,
                                  water_year_start=10){  
   
-  #  Compute statistics on an annual (calendar and water) year basis
-  #
-  #  See the man-roxygen director for definition of parameters
-  #
-  #  Output: List with elements given above.
-  #
+
+
   #############################################################
   #  Some basic error checking on the input parameters
   #
@@ -58,6 +57,7 @@ fasstr_add_date_vars <- function(flowdata=NULL,
     stop("flowdata dataframe doesn't contain a Date variable.")}
   if( is.null(HYDAT) & !inherits(flowdata$Date[1], "Date")){
     stop("Date column in flowdata dataframe is not a date.")}
+  if( !is.logical(water_year))  {stop("water_year parameter must be logical (TRUE/FALSE)")}
   if( !is.numeric(water_year_start))  {
     stop("water_year_start parameter must be numeric between 1 and 12 (Jan-Dec)")}
   if( water_year_start<1 & water_year_start>12 )  {
