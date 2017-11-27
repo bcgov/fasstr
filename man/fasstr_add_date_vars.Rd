@@ -4,7 +4,8 @@
 \alias{fasstr_add_date_vars}
 \title{Add calendar and water year date variables.}
 \usage{
-fasstr_add_date_vars(flowdata = NULL, HYDAT = NULL, water_year_start = 10)
+fasstr_add_date_vars(flowdata = NULL, HYDAT = NULL, water_year = FALSE,
+  water_year_start = 10)
 }
 \arguments{
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 

@@ -114,7 +114,7 @@ fasstr_annual_summary <- function(flowdata=NULL,
   }
   
   # add date variables to determine the min/max cal/water years
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year_start = water_year_start)
+  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
   min_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))
   max_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))
   
@@ -123,9 +123,9 @@ fasstr_annual_summary <- function(flowdata=NULL,
   if (is.null(end_year)) {end_year <- max_year}
   if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
   
-  #  create the year (annual ) and month variables
+  #  Fill in the missing dates and the add the date variables again
   flowdata <- fasstr::fasstr_fill_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year_start = water_year_start)
+  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
   flowdata <- fasstr::fasstr_add_rolling_means(flowdata,days = rolling_days,align = rolling_align)
   colnames(flowdata)[ncol(flowdata)] <- "RollingValue"
   

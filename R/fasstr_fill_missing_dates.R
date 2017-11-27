@@ -79,29 +79,31 @@ fasstr_fill_missing_dates <- function(flowdata=NULL,
   if (water_year & water_year_start>1) {
     
     #Create a temp file to determine the min/max water years (cant affect flowdata yet)
-    flowdata.temp <- fasstr::fasstr_add_date_vars(dplyr::select(flowdata,Date,Value),
+    flowdata_temp <- fasstr::fasstr_add_date_vars(dplyr::select(flowdata,Date,Value),
+                                                  water_year = T,
                                                   water_year_start = water_year_start)
-    min_wateryear <- ifelse(water_year,min(flowdata.temp$WaterYear),min(flowdata.temp$Year))
-    max_wateryear <- ifelse(water_year,max(flowdata.temp$WaterYear),max(flowdata.temp$Year))
+    min_wateryear <- ifelse(water_year,min(flowdata_temp$WaterYear),min(flowdata_temp$Year))
+    max_wateryear <- ifelse(water_year,max(flowdata_temp$WaterYear),max(flowdata_temp$Year))
     
     
     # Extend the flowdata to well before the start and end dates (will filter to water years)
-    flowdata.temp <- merge(flowdata.temp, 
-                      data.frame(Date=seq(as.Date(paste(min(flowdata.temp$Year)-1,'01-01',sep='-'),
+    flowdata_temp <- merge(flowdata_temp, 
+                      data.frame(Date=seq(as.Date(paste(min(flowdata_temp$Year)-1,'01-01',sep='-'),
                                                   "%Y-%m-%d"),
-                                          as.Date(paste(max(flowdata.temp$Year)+1,'12-31',sep='-'),
+                                          as.Date(paste(max(flowdata_temp$Year)+1,'12-31',sep='-'),
                                                   '%Y-%m-%d'), 1)),
                       all.y=TRUE)
     
     # Add Water year to be able to filter it
-    flowdata.temp <- fasstr::fasstr_add_date_vars(flowdata.temp,
+    flowdata_temp <- fasstr::fasstr_add_date_vars(flowdata_temp,
+                                                  water_year = T,
                                                   water_year_start = water_year_start)
     
     # Filter flowdata for the min and max water years and remove date columns
-    flowdata.temp <- dplyr::filter(flowdata.temp,WaterYear>=min_wateryear & WaterYear<=max_wateryear)
-    flowdata.temp <- dplyr::select(flowdata.temp,Date,Value)
+    flowdata_temp <- dplyr::filter(flowdata_temp,WaterYear>=min_wateryear & WaterYear<=max_wateryear)
+    flowdata_temp <- dplyr::select(flowdata_temp,Date,Value)
     
-    flowdata <- merge(flowdata,flowdata.temp,all.y = T)
+    flowdata <- merge(flowdata,flowdata_temp,all.y = T)
     
     
     # If not water year, or January is chosen as water year start  

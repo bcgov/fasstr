@@ -126,7 +126,7 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
   }
   
   # add date variables to determine the min/max cal/water years
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year_start = water_year_start)
+  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
   min_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))
   max_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))
   
@@ -135,9 +135,9 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
   if (is.null(end_year)) {end_year <- max_year}
   if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
   
-  #  create the year (annual ) and month variables
+  #  Fill in the missing dates and the add the date variables again
   flowdata <- fasstr::fasstr_fill_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year_start = water_year_start)
+  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
   
   #  Compute the 3, 7, and 30 day rolling average values
   flowdata <- fasstr::fasstr_add_rolling_means(flowdata,days = c(3,7,30))
@@ -161,7 +161,7 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
   # Example: ONDJFM with calendar years 2000-2001 and water-year-start=2, means ONDJ are WY2001 (ends 
   #          in CY2001) and FM are WY2002 (ends in CY2002) so the the Year for that season is 2002.
   seasons_flowdata <- fasstr::fasstr_fill_missing_dates(flowdata,water_year = T,water_year_start = 10)
-  seasons_flowdata <- fasstr::fasstr_add_date_vars(seasons_flowdata,water_year_start = 10)
+  seasons_flowdata <- fasstr::fasstr_add_date_vars(seasons_flowdata,water_year = T,water_year_start = 10)
   seasons_flowdata <- dplyr::mutate(seasons_flowdata,
                                     Seasons4= ifelse(Month<=3,"JFM",
                                                      ifelse(Month>=4&Month<=6,"AMJ",
