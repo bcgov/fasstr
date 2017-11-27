@@ -53,7 +53,15 @@ All functions in `fasstr` require a record of daily mean streamflow from a hydro
 
 Flow data can be provided to the functions through either the `HYDAT` or `flowdata` arguments. When using the `HYDAT` argument, a Water Survey of Canada station number is required (e.g. `HYDAT="08NM116"`) and its corresponding historical daily streamflow record is extracted from HYDAT using `tidyhydat`. [Installation](https://github.com/ropensci/tidyhydat) of both `tidyhydat` and a HYDAT database is required to use this argument.
 
-Data can alternatively be provided using the `flowdata` argument as a dataframe with columns of 'Date' (YYYY-MM-DD in date format) and 'Value' (mean daily discharge in cubic metres per second in numeric format). The `fasstr` functions will not recognize your dates and flow data if the columns are not appropriately named 'Date' and 'Value'. 
+Data can alternatively be provided using the `flowdata` argument as a dataframe with columns of 'Date' (YYYY-MM-DD in date format) and 'Value' (mean daily discharge in cubic metres per second in numeric format). The dataframe can have other columns with other names as the functions will looks for 'Date' and 'Value'. The `fasstr` functions will not recognize your dates and flow data if the columns are not appropriately named 'Date' and 'Value'. The following is an example of an appropriate flowdata dataframe:
+```{r setup, include=FALSE}
+flowdata <- tidyhydat::hy_daily_flows("08HB048")
+flowdata <- flowdata[,c(2,4)]
+```
+
+```{r flowdata, warning=FALSE}
+str(flowdata)
+```
 
 ### Year Options
 
