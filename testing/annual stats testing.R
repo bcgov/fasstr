@@ -1,7 +1,16 @@
 
 devtools::document()
-#install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
-install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
+install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
+#install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
+
+
+data <- tidyhydat::hy_daily_flows(station_number = "08HB048")
+fasstr::fasstr_annual_total_flows_plots(data,basin_area = 10.4,
+                                                water_year = F,
+                                        water_year_start = 6)[4]
+fasstr::fasstr_annual_total_flows_plots(HYDAT = "08HB048",basin_area = 10.4,
+                                        water_year = T,
+                                        water_year_start = 5)[4]
 
 all_ann <- fasstr::fasstr_annual_all_stats(HYDAT = "08NM116")
 
@@ -37,3 +46,27 @@ table_nddigits=3
 
 
 fasstr::fasstr_add_date_vars(HYDAT = "08HB048")
+
+
+
+
+flowdata=NULL
+HYDAT="08HB048"
+station_name="fasstr"
+water_year=FALSE
+water_year_start=10
+start_year=NULL
+end_year=NULL
+exclude_years=NULL
+basin_area=NA
+seasons=TRUE
+write_plot=TRUE
+plot_type="pdf"        # write out statistics on calendar year
+log_discharge=FALSE
+report_dir="."
+na.rm=list(na.rm.global=FALSE)
+
+
+
+
+
