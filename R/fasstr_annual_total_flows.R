@@ -118,6 +118,7 @@ fasstr_annual_total_flows <- function(flowdata=NULL,
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
     if (station_name=="fasstr") {station_name <- HYDAT}
+    if (is.na(basin_area)) {basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = HYDAT)$DRAINAGE_AREA_GROSS)}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
@@ -184,7 +185,7 @@ fasstr_annual_total_flows <- function(flowdata=NULL,
     # Calculate the 4-season summaries (winter/spring/summer/fall)
     Qstat_4seasons <- dplyr::summarise(dplyr::group_by(seasons_flowdata,Seasons4,Seasons4_year),
                                        TotalQ_m3=mean(Value, na.rm=F)*length(Value)*60*60*24,
-                                       Yield_mm=TotalQ_m3*60*60*24 /basin_area/1000, 
+                                       Yield_mm=TotalQ_m3 /basin_area/1000, 
                                        Max_year=max(AnalysisYear))
     Qstat_4seasons <- dplyr::ungroup(Qstat_4seasons)
     Qstat_4seasons <- dplyr::select(Qstat_4seasons,Year=Max_year,Seasons4,TotalQ_m3,Yield_mm)
