@@ -237,36 +237,36 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
                                                           table_nddigits=3)
   
   
-  Qannual_flowdates <- fasstr::fasstr_annual_flow_dates(flowdata=flowdata,
-                                                     HYDAT=NULL,
-                                                     station_name=station_name,
-                                                     water_year=water_year,
-                                                     water_year_start=water_year_start,
-                                                     start_year=start_year,
-                                                     end_year=end_year,
-                                                     exclude_years=exclude_years,
-                                                     percent_of_total=percentflow_days,
-                                                     transpose=FALSE,
-                                                     write_table=FALSE,
-                                                     report_dir=report_dir,
-                                                     na.rm=list(na.rm.global=FALSE))
+  Qannual_flowdates <- fasstr::fasstr_annual_flow_timing(flowdata=flowdata,
+                                                         HYDAT=NULL,
+                                                         station_name=station_name,
+                                                         water_year=water_year,
+                                                         water_year_start=water_year_start,
+                                                         start_year=start_year,
+                                                         end_year=end_year,
+                                                         exclude_years=exclude_years,
+                                                         percent_of_total=percentflow_days,
+                                                         transpose=FALSE,
+                                                         write_table=FALSE,
+                                                         report_dir=report_dir,
+                                                         na.rm=list(na.rm.global=FALSE))
   Qannual_flowdates <- dplyr::select(Qannual_flowdates,Year,dplyr::contains("DoY"))
   
   Qannual_months <- fasstr::fasstr_monthly_stats(flowdata=flowdata,
-                                              HYDAT=NULL,
-                                              station_name=station_name,
-                                              water_year=water_year,
-                                              water_year_start=water_year_start,
-                                              start_year=start_year,
-                                              end_year=end_year,
-                                              exclude_years=exclude_years, 
-                                              percentiles=c(10,20),
-                                              spread=TRUE,
-                                              transpose=FALSE,
-                                              write_table=FALSE,
-                                              report_dir=report_dir,
-                                              na.rm=na.rm,
-                                              table_nddigits=3)
+                                                 HYDAT=NULL,
+                                                 station_name=station_name,
+                                                 water_year=water_year,
+                                                 water_year_start=water_year_start,
+                                                 start_year=start_year,
+                                                 end_year=end_year,
+                                                 exclude_years=exclude_years, 
+                                                 percentiles=c(10,20),
+                                                 spread=TRUE,
+                                                 transpose=FALSE,
+                                                 write_table=FALSE,
+                                                 report_dir=report_dir,
+                                                 na.rm=na.rm,
+                                                 table_nddigits=3)
   
   Qannual_normals <- fasstr::fasstr_annual_days_outside_normal(flowdata=flowdata,
                                                                HYDAT=NULL,
@@ -282,7 +282,7 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
                                                                write_table=FALSE,
                                                                report_dir=report_dir,
                                                                na.rm=na.rm)
-
+  
   
   # Combine all and label columns
   Qstat <- merge(Qannual_stats,Qannual_lowflows,by="Year",all = TRUE)

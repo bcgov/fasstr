@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 
-#' @title Compute basin annual summary statistics.
+#' @title fasstr_annual_flow_timing
 #'
 #' @description Computes annual statistics of streamflow data.
 #' Streamflow data can be supplied through the \code{flowdata} parameter or extracted from a 
@@ -57,7 +57,7 @@
 #--------------------------------------------------------------
 
 
-fasstr_annual_flow_dates <- function(flowdata=NULL,
+fasstr_annual_flow_timing <- function(flowdata=NULL,
                                       HYDAT=NULL,
                                       station_name="fasstr",
                                       water_year=FALSE,
