@@ -3,7 +3,15 @@ devtools::document()
 #install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
 install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
-fasstr::fasstr_annual_stats(HYDAT = "08HB048",write_table = T,exclude_years = c(1972:1975),start_year = 1974)
+all_ann <- fasstr::fasstr_annual_all_stats(HYDAT = "08NM116")
+
+plots <- fasstr::fasstr_annual_trends_plots(HYDAT = "08HB048",zyp_method = "yuepilon",write_plots = T)
+
+
+fasstr::fasstr_flow_duration_plots(HYDAT="08HB048")
+
+
+
 low.flows <- fasstr::fasstr_annual_lowflows(HYDAT = "08HB048",water_year = T)
 low.flows <- dplyr::select(low.flows,-dplyr::contains("Date"))
 

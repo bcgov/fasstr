@@ -4,7 +4,7 @@ devtools::document()
 install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
 
-
+test <- fasstr::fasstr_add_date_vars(HYDAT = "08HB048")
 library(fasstr)
 
 
