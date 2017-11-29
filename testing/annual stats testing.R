@@ -3,6 +3,16 @@ devtools::document()
 install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
 #install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
+data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+data <- fasstr::fasstr_add_rolling_means(data)
+data <- fasstr::fasstr_add_total_volume(data)
+data <- fasstr_fill_missing_dates(data)
+data <- fasstr::fasstr_add_date_vars(data)
+
+fasstr::fasstr_write_daily_flows(data,na="")
+
+fasstr::fasstr_write_daily_flows(HYDAT = "08HA002")
+
 
 test <- fasstr::fasstr_monthly_stats_plots(HYDAT = "08NM116",
                                            write_plot = T,
