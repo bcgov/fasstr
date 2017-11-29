@@ -131,7 +131,7 @@ fasstr_annual_flow_timing <- function(flowdata=NULL,
   if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
   
   #  Fill in the missing dates and the add the date variables again
-  flowdata <- fasstr::fasstr_fill_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
+  flowdata <- fasstr::fasstr_add_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
   flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
   flowdata <- fasstr::fasstr_add_total_volume(flowdata,water_year = water_year,water_year_start = water_year_start)
   

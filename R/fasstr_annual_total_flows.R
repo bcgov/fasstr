@@ -133,7 +133,7 @@ fasstr_annual_total_flows <- function(flowdata=NULL,
   if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
   
   #  Fill in the missing dates and the add the date variables again
-  flowdata <- fasstr::fasstr_fill_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
+  flowdata <- fasstr::fasstr_add_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
   flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
   
   # Set selected year-type column for analysis
@@ -155,7 +155,7 @@ fasstr_annual_total_flows <- function(flowdata=NULL,
     # Year value is designated by the year the season ends in 
     # Example: ONDJFM with calendar years 2000-2001 and water-year-start=2, means ONDJ are WY2001 (ends 
     #          in CY2001) and FM are WY2002 (ends in CY2002) so the the Year for that season is 2002.
-    seasons_flowdata <- fasstr::fasstr_fill_missing_dates(flowdata,water_year = T,water_year_start = 10)
+    seasons_flowdata <- fasstr::fasstr_add_missing_dates(flowdata,water_year = T,water_year_start = 10)
     seasons_flowdata <- fasstr::fasstr_add_date_vars(seasons_flowdata,water_year = T,water_year_start = 10)
     seasons_flowdata <- dplyr::mutate(seasons_flowdata,
                                       Seasons4= ifelse(Month<=3,"JFM",

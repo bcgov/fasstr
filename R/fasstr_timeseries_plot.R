@@ -148,7 +148,7 @@ fasstr_timeseries_plot <- function(flowdata=NULL,
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
-  flowdata <- fasstr::fasstr_fill_missing_dates(flowdata,water_year_start=water_year_start)
+  flowdata <- fasstr::fasstr_add_missing_dates(flowdata,water_year_start=water_year_start)
   flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start=water_year_start)
   flowdata <- fasstr::fasstr_add_rolling_means(flowdata,days = rolling_days,align = rolling_align)
   colnames(flowdata)[ncol(flowdata)] <- "RollingValue"

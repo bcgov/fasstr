@@ -34,7 +34,7 @@
 #--------------------------------------------------------------
 # Compute the statistics on an (calendar and water) year basis
 
-fasstr_fill_missing_dates <- function(flowdata=NULL,
+fasstr_add_missing_dates <- function(flowdata=NULL,
                                       HYDAT=NULL,
                                       water_year=FALSE,
                                       water_year_start=10){

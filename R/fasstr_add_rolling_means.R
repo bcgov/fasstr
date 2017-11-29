@@ -77,7 +77,7 @@ fasstr_add_rolling_means <- function(flowdata=NULL,
   dates.list <- c(flowdata$Date)
   
   # fill in missing dates to ensure means roll over consecutive days
-  flowdata <- fasstr::fasstr_fill_missing_dates(flowdata=flowdata)
+  flowdata <- fasstr::fasstr_add_missing_dates(flowdata=flowdata)
   
   # Add rolling means
   for (x in days) {

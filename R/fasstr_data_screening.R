@@ -124,7 +124,7 @@ fasstr_data_screening <- function(flowdata=NULL,
   if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
   
   #  Fill in the missing dates and the add the date variables again
-  flowdata <- fasstr::fasstr_fill_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
+  flowdata <- fasstr::fasstr_add_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
   flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
   flowdata <- fasstr::fasstr_add_rolling_means(flowdata,days = rolling_days,align = rolling_align)
   colnames(flowdata)[ncol(flowdata)] <- "RollingValue"
