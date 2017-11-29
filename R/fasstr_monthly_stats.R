@@ -96,6 +96,10 @@ fasstr_monthly_stats <- function(flowdata=NULL,
   
   if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
   
+  if( !is.numeric(percentiles))   {
+    stop("percentiles must be numeric")}
+  if( !all(percentiles>0 & percentiles<=100))  {
+    stop("percentiles must be >0 and <=100)")}
   
   if( !is.logical(transpose))  {stop("transpose parameter must be logical (TRUE/FALSE)")}
   if( !is.logical(spread))  {stop("spread parameter must be logical (TRUE/FALSE)")}

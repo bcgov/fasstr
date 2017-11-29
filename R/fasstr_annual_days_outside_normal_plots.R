@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 
-#' @title fasstr_annual_flow_timing
+#' @title Compute the number of days for each year that flows are above/below normal.
 #'
 #' @description Computes annual statistics of streamflow data.
 #' Streamflow data can be supplied through the \code{flowdata} parameter or extracted from a 
@@ -33,12 +33,11 @@
 #'    year of the data provided.
 #' @param end_year Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
 #'    year of the data provided.
-#' @param seasons Logical. Include seasonal yields and total discharges
-#' @param basin_area Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm).
-#'    If no value provided, yield calculations will result in NA values.#' 
 #' @param exclude_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).    
 #' @param transpose Logical. Switch the rows and columns of the results. Dates excluded.
-#' @param write_table Logical. Should a file be created with the calendar year computed percentiles?
+#' @param normal_lower_ptile=25 Numeric. Percentile indicating the lower limit of the normal range. Default 25.
+#' @param normal_upper_ptile=25 Numeric. Percentile indicating the upper limit of the normal range. Default 75.
+#' @param write_table Logical.
 #'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
 #' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
 #' @param na.rm TBD
@@ -57,7 +56,7 @@
 #--------------------------------------------------------------
 
 
-fasstr_annual_flow_timing <- function(flowdata=NULL,
+fasstr_annual_days_outside_normal_plots <- function(flowdata=NULL,
                                       HYDAT=NULL,
                                       station_name="fasstr",
                                       water_year=FALSE,
@@ -65,11 +64,11 @@ fasstr_annual_flow_timing <- function(flowdata=NULL,
                                       start_year=NULL,
                                       end_year=NULL,
                                       exclude_years=NULL,
-                                      timing_percent=c(25,33.3,50,75),
-                                      transpose=FALSE,
-                                      write_table=FALSE,
-                                      report_dir=".",
-                                      na.rm=list(na.rm.global=FALSE)){
+                                      normal_lower_ptile=25,
+                                      normal_upper_ptile=75,
+                                      write_plot=FALSE,
+                                      plot_type="pdf",        # write out statistics on calendar year
+                                      report_dir="."){
   
   #############################################################
   
@@ -94,22 +93,26 @@ fasstr_annual_flow_timing <- function(flowdata=NULL,
   
   if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
   
-  if( !is.numeric(timing_percent))   {
-    stop("timing_percent must be numeric")}
-  if( !all(timing_percent>0 & timing_percent<100))  {
-    stop("timing_percent must be >0 and <100)")}
+  if( !is.numeric(normal_lower_ptile))   {
+    stop("normal_lower_ptile must be numeric")}
+  if( !all(normal_lower_ptile>0 & normal_lower_ptile<100))  {
+    stop("normal_lower_ptile must be >0 and <100")}
+  if( !is.numeric(normal_upper_ptile))   {
+    stop("normal_upper_ptile must be numeric")}
+  if( !all(normal_upper_ptile>0 & normal_upper_ptile<100))  {
+    stop("normal_upper_ptile must be >0 and <100")}
+  if( normal_lower_ptile >= normal_upper_ptile ) {
+    stop("normal_lower_ptile must be < normal_upper_ptile")}
   
-  if( !is.logical(transpose))  {stop("transpose parameter must be logical (TRUE/FALSE)")}
-  if( !is.logical(write_table))  {stop("write_table parameter must be logical (TRUE/FALSE)")}
+  if( !is.logical(write_plot))  {stop("write_plot parameter must be logical (TRUE/FALSE)")}
+  if( length(plot_type)>1)        {
+    stop("plot_type argument cannot have length > 1")}
+  if( !is.na(plot_type) & !plot_type %in% c("pdf","png","jpeg","tiff","bmp"))  {
+    stop("plot_type argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
   
   if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
 
-  if( !is.list(na.rm))              {stop("na.rm is not a list") }
-  if(! is.logical(unlist(na.rm))){   stop("na.rm is list of logical (TRUE/FALSE) values only.")}
-  my.na.rm <- list(na.rm.global=FALSE)
-  if( !all(names(na.rm) %in% names(my.na.rm))){stop("Illegal element in na.rm")}
-  my.na.rm[names(na.rm)]<- na.rm
-  na.rm <- my.na.rm  # set the na.rm for the rest of the function.
+  
   
   
   # If HYDAT station is listed, check if it exists and make it the flowdata
@@ -117,69 +120,42 @@ fasstr_annual_flow_timing <- function(flowdata=NULL,
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
     if (station_name=="fasstr") {station_name <- HYDAT}
-    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
-  # add date variables to determine the min/max cal/water years
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
-  min_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))
-  max_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))
+  normal_data <- fasstr::fasstr_annual_days_outside_normal(flowdata=flowdata,
+                                                           HYDAT=HYDAT,
+                                                           station_name=station_name,
+                                                           water_year=water_year,
+                                                           water_year_start=water_year_start,
+                                                           start_year=start_year,
+                                                           end_year=end_year,
+                                                           exclude_years=exclude_years,
+                                                           normal_lower_ptile=normal_lower_ptile,
+                                                           normal_upper_ptile=normal_upper_ptile,
+                                                           transpose=FALSE,
+                                                           write_table=FALSE,
+                                                           report_dir=".")
+  normal_data <- tidyr::gather(normal_data,Statistic,Value,-1)
   
-  # If start/end years are not select, set them as the min/max dates
-  if (is.null(start_year)) {start_year <- min_year}
-  if (is.null(end_year)) {end_year <- max_year}
-  if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
+  normal_plot <- ggplot2::ggplot(data=normal_data, ggplot2::aes(x=Year, y=Value))+
+    ggplot2::geom_line(ggplot2::aes(colour=Statistic))+
+    ggplot2::geom_point(ggplot2::aes(colour=Statistic))+
+    ggplot2::facet_wrap(~Statistic, scales="free_x",ncol = 1, strip.position="right")+
+    ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6))+
+    ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
+    ggplot2::ylab("Number of Days")+
+    ggplot2::xlab("Year")+
+    ggplot2::guides(colour=FALSE)+
+    ggplot2::theme(panel.border = ggplot2::element_rect(colour = "grey80", fill=NA, size=.1),
+                   panel.grid = ggplot2::element_line(size=.2))
   
-  #  Fill in the missing dates and the add the date variables again
-  flowdata <- fasstr::fasstr_fill_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
-  flowdata <- fasstr::fasstr_add_total_volume(flowdata,water_year = water_year,water_year_start = water_year_start)
-  
-  # Set selected year-type column for analysis
-  if (water_year) {
-    flowdata$AnalysisYear <- flowdata$WaterYear
-    flowdata$AnalysisDoY <- flowdata$WaterDayofYear
-  }  else {
-    flowdata$AnalysisYear <- flowdata$Year
-    flowdata$AnalysisDoY <- flowdata$DayofYear
-  }
-  
-  # FILTER FLOWDATA FOR SELECTED YEARS FOR REMAINDER OF CALCS
-  flowdata <- dplyr::filter(flowdata, AnalysisYear >= start_year & AnalysisYear <= end_year)
-  
-  
-  # Loop through percents
-  Qstat <-   dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear))
-  for (percent in timing_percent) {
-    Qstat_pcnt <-   dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear),
-                               TOTALQ_DAY  =  AnalysisDoY[ match(TRUE, Vtotal > percent/100  * ((mean(Value, na.rm=na.rm$na.rm.global))*length(Value)*60*60*24))],
-                               TOTALQ_DATE =  Date[ match(TRUE, Vtotal > percent/100  * ((mean(Value, na.rm=na.rm$na.rm.global))*length(Value)*60*60*24))])
-    names(Qstat_pcnt)[names(Qstat_pcnt) == "TOTALQ_DAY"] <- paste0("DoY_",percent,"pct_TotalQ")
-    names(Qstat_pcnt)[names(Qstat_pcnt) == "TOTALQ_DATE"] <- paste0("Date_",percent,"pct_TotalQ")
-    Qstat <- merge(Qstat,Qstat_pcnt,by="AnalysisYear",all=T)
-    
-  }
-  Qstat <-   dplyr::rename(Qstat,Year=AnalysisYear)
-  
-  
-  #Remove any excluded
-  Qstat[Qstat$Year %in% exclude_years,-1] <- NA
-  
-  if(transpose){
-    Qstat <- dplyr::select(Qstat,Year,dplyr::contains("DoY"))
-    Qstat <- tidyr::gather(Qstat,Statistic,Value,-Year)
-    Qstat <- tidyr::spread(Qstat,Year,Value)
-  }
-  
-  if(write_table){
-    file_Qstat_table <- file.path(report_dir, paste(station_name,"-annual-date-of-flows.csv", sep=""))
-    temp <- Qstat
-    utils::write.csv(temp,file=file_Qstat_table, row.names=FALSE)
+  if (write_plot) {
+    file_plot <- paste(report_dir,"/",station_name,"_days_outside_normal.",plot_type,sep = "")
+    ggplot2::ggsave(filename =file_plot,normal_plot,width=8.5,height=6)
   }
   
   
   
-  
-  return(Qstat)
-} # end of function
+  return(normal_plot)
+}
 

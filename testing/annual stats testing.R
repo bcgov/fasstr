@@ -4,6 +4,17 @@ install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "sour
 #install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
 
+test <- fasstr::fasstr_monthly_stats_plots(HYDAT = "08NM116",
+                                           write_plot = T,
+                                           percentiles = c(1:100))
+
+fasstr::fasstr_annual_flow_timing_plots(HYDAT = "08NM116",
+                                               # write_plot = T,
+                                               # water_year = T,
+                                               start_year = 1967,
+                                               exclude_years = c(1980:1985,1987)
+                                        )
+
 data <- tidyhydat::hy_daily_flows(station_number = "08HB048")
 fasstr::fasstr_annual_total_flows_plots(data,basin_area = 10.4,
                                                 water_year = F,

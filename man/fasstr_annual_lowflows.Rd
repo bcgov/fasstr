@@ -7,9 +7,9 @@
 fasstr_annual_lowflows(flowdata = NULL, HYDAT = NULL,
   station_name = "fasstr", water_year = FALSE, water_year_start = 10,
   start_year = NULL, end_year = NULL, exclude_years = NULL,
-  rolling_days = c(1, 3, 7, 30), transpose = FALSE, write_table = FALSE,
-  report_dir = ".", na.rm = list(na.rm.global = FALSE),
-  table_nddigits = 3)
+  rolling_days = c(1, 3, 7, 30), rolling_align = "right",
+  transpose = FALSE, write_table = FALSE, report_dir = ".",
+  na.rm = list(na.rm.global = FALSE), table_nddigits = 3)
 }
 \arguments{
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 

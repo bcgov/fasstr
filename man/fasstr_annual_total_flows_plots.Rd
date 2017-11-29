@@ -8,8 +8,7 @@ fasstr_annual_total_flows_plots(flowdata = NULL, HYDAT = NULL,
   station_name = "fasstr", water_year = FALSE, water_year_start = 10,
   start_year = NULL, end_year = NULL, exclude_years = NULL,
   basin_area = NA, write_plot = FALSE, plot_type = "pdf",
-  log_discharge = FALSE, report_dir = ".", na.rm = list(na.rm.global =
-  FALSE))
+  report_dir = ".", na.rm = list(na.rm.global = FALSE))
 }
 \arguments{
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 

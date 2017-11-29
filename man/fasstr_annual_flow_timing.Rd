@@ -7,7 +7,7 @@
 fasstr_annual_flow_timing(flowdata = NULL, HYDAT = NULL,
   station_name = "fasstr", water_year = FALSE, water_year_start = 10,
   start_year = NULL, end_year = NULL, exclude_years = NULL,
-  percent_of_total = c(25, 33.3, 50, 75), transpose = FALSE,
+  timing_percent = c(25, 33.3, 50, 75), transpose = FALSE,
   write_table = FALSE, report_dir = ".", na.rm = list(na.rm.global =
   FALSE))
 }

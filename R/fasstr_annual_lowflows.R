@@ -61,19 +61,20 @@
 # Compute the statistics on an (calendar and water) year basis
 
 fasstr_annual_lowflows <- function(flowdata=NULL,
-                                HYDAT=NULL,
-                                station_name="fasstr",
-                                water_year=FALSE,
-                                water_year_start=10,
-                                start_year=NULL,
-                                end_year=NULL,
-                                exclude_years=NULL,
-                                rolling_days=c(1,3,7,30),
-                                transpose=FALSE,
-                                write_table=FALSE,
-                                report_dir=".",
-                                na.rm=list(na.rm.global=FALSE),
-                                table_nddigits=3){
+                                   HYDAT=NULL,
+                                   station_name="fasstr",
+                                   water_year=FALSE,
+                                   water_year_start=10,
+                                   start_year=NULL,
+                                   end_year=NULL,
+                                   exclude_years=NULL,
+                                   rolling_days=c(1,3,7,30),
+                                   rolling_align="right",
+                                   transpose=FALSE,
+                                   write_table=FALSE,
+                                   report_dir=".",
+                                   na.rm=list(na.rm.global=FALSE),
+                                   table_nddigits=3){
   
   #############################################################
   
@@ -97,6 +98,16 @@ fasstr_annual_lowflows <- function(flowdata=NULL,
   if( !(water_year_start==floor(water_year_start)))  {stop("water_year_start must be an integer between 1 and 12 (Jan-Dec)")}
   
   if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
+  
+  if( !is.numeric(rolling_days))   {
+    stop("rolling_days must be numeric")}
+  if( !all(rolling_days>0 & rolling_days<=180))  {
+    stop("rolling_days must be >0 and <=180)")}
+  if( !all(rolling_days==floor(rolling_days)))  {
+    stop("rolling_days must be integers")}
+  if ( !rolling_align %in% c("right","left","center")){
+    stop("align rolling_align must be 'right', 'left', or 'center'.")}
+  
   
   if( !is.logical(write_table))  {stop("write_table parameter must be logical (TRUE/FALSE)")}
   
@@ -178,27 +189,27 @@ fasstr_annual_lowflows <- function(flowdata=NULL,
   # Loop through each rolling_day and compute annual min values and their dates
   Q_lowflow <- dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear))
   for (day in rolling_days) {
-    flowdata_temp <- fasstr::fasstr_add_rolling_means(flowdata,days = day)
+    flowdata_temp <- fasstr::fasstr_add_rolling_means(flowdata,days = day,align = rolling_align)
     names(flowdata_temp)[names(flowdata_temp) == paste0("Q",day,"Day")] <- "RollingValue"
     Q_lowflow_temp <- dplyr::summarize(dplyr::group_by(flowdata_temp,AnalysisYear),
-                                  MIN_VALUE = min(RollingValue, na.rm=na.rm$na.rm.global),	     
-                                  MIN_DAY = ifelse(is.na(MIN_VALUE),NA,
+                                       MIN_VALUE = min(RollingValue, na.rm=na.rm$na.rm.global),	     
+                                       MIN_DAY = ifelse(is.na(MIN_VALUE),NA,
                                                         AnalysisDoY[which(RollingValue==MIN_VALUE)]),
-                                  MIN_DATE= ifelse(is.na(MIN_VALUE),NA,
-                                               Date[which(RollingValue==MIN_VALUE)]))
+                                       MIN_DATE= ifelse(is.na(MIN_VALUE),NA,
+                                                        Date[which(RollingValue==MIN_VALUE)]))
     class(Q_lowflow_temp$MIN_DATE)<- "Date" # fixes ifelse and date issue
     names(Q_lowflow_temp)[names(Q_lowflow_temp) == "MIN_VALUE"] <- paste0("Min_",day,"_Day")
     names(Q_lowflow_temp)[names(Q_lowflow_temp) == "MIN_DAY"] <- paste0("Min_",day,"_Day_DoY")
     names(Q_lowflow_temp)[names(Q_lowflow_temp) == "MIN_DATE"] <- paste0("Min_",day,"_Day_Date")
     
     Q_lowflow <- merge(Q_lowflow,Q_lowflow_temp,by="AnalysisYear",all = T)
-    }
+  }
   Q_lowflow <-   dplyr::rename(Q_lowflow,Year=AnalysisYear)
   
   # FILTER Q_lowflow FOR SELECTED YEARS FOR REMAINDER OF CALCS
   Q_lowflow <- dplyr::filter(Q_lowflow, Year >= start_year & Year <= end_year)
   Q_lowflow[Q_lowflow$Year %in% exclude_years,-1] <- NA
-
+  
   
   
   if(transpose){

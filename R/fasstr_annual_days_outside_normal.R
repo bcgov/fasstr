@@ -68,8 +68,7 @@ fasstr_annual_days_outside_normal <- function(flowdata=NULL,
                                       normal_upper_ptile=75,
                                       transpose=FALSE,
                                       write_table=FALSE,
-                                      report_dir=".",
-                                      na.rm=list(na.rm.global=FALSE)){
+                                      report_dir="."){
   
   #############################################################
   
@@ -110,13 +109,6 @@ fasstr_annual_days_outside_normal <- function(flowdata=NULL,
   
   if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
 
-  if( !is.list(na.rm))              {stop("na.rm is not a list") }
-  if(! is.logical(unlist(na.rm))){   stop("na.rm is list of logical (TRUE/FALSE) values only.")}
-  my.na.rm <- list(na.rm.global=FALSE)
-  if( !all(names(na.rm) %in% names(my.na.rm))){stop("Illegal element in na.rm")}
-  my.na.rm[names(na.rm)]<- na.rm
-  na.rm <- my.na.rm  # set the na.rm for the rest of the function.
-  
   
   ## check about number of years of data
   ## check for full years

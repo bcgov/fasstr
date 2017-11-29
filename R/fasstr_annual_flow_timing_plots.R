@@ -57,7 +57,7 @@
 #--------------------------------------------------------------
 
 
-fasstr_annual_flow_timing <- function(flowdata=NULL,
+fasstr_annual_flow_timing_plots <- function(flowdata=NULL,
                                       HYDAT=NULL,
                                       station_name="fasstr",
                                       water_year=FALSE,
@@ -66,8 +66,8 @@ fasstr_annual_flow_timing <- function(flowdata=NULL,
                                       end_year=NULL,
                                       exclude_years=NULL,
                                       timing_percent=c(25,33.3,50,75),
-                                      transpose=FALSE,
-                                      write_table=FALSE,
+                                      write_plot=FALSE,
+                                      plot_type="pdf",        # write out statistics on calendar year
                                       report_dir=".",
                                       na.rm=list(na.rm.global=FALSE)){
   
@@ -99,9 +99,11 @@ fasstr_annual_flow_timing <- function(flowdata=NULL,
   if( !all(timing_percent>0 & timing_percent<100))  {
     stop("timing_percent must be >0 and <100)")}
   
-  if( !is.logical(transpose))  {stop("transpose parameter must be logical (TRUE/FALSE)")}
-  if( !is.logical(write_table))  {stop("write_table parameter must be logical (TRUE/FALSE)")}
-  
+  if( !is.logical(write_plot))  {stop("write_plot parameter must be logical (TRUE/FALSE)")}
+  if( length(plot_type)>1)        {
+    stop("plot_type argument cannot have length > 1")}
+  if( !is.na(plot_type) & !plot_type %in% c("pdf","png","jpeg","tiff","bmp"))  {
+    stop("plot_type argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}  
   if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
 
   if( !is.list(na.rm))              {stop("na.rm is not a list") }
@@ -117,69 +119,45 @@ fasstr_annual_flow_timing <- function(flowdata=NULL,
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
     if (station_name=="fasstr") {station_name <- HYDAT}
-    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
-  }
-  
-  # add date variables to determine the min/max cal/water years
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
-  min_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))
-  max_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))
-  
-  # If start/end years are not select, set them as the min/max dates
-  if (is.null(start_year)) {start_year <- min_year}
-  if (is.null(end_year)) {end_year <- max_year}
-  if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
-  
-  #  Fill in the missing dates and the add the date variables again
-  flowdata <- fasstr::fasstr_fill_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
-  flowdata <- fasstr::fasstr_add_total_volume(flowdata,water_year = water_year,water_year_start = water_year_start)
-  
-  # Set selected year-type column for analysis
-  if (water_year) {
-    flowdata$AnalysisYear <- flowdata$WaterYear
-    flowdata$AnalysisDoY <- flowdata$WaterDayofYear
-  }  else {
-    flowdata$AnalysisYear <- flowdata$Year
-    flowdata$AnalysisDoY <- flowdata$DayofYear
-  }
-  
-  # FILTER FLOWDATA FOR SELECTED YEARS FOR REMAINDER OF CALCS
-  flowdata <- dplyr::filter(flowdata, AnalysisYear >= start_year & AnalysisYear <= end_year)
-  
-  
-  # Loop through percents
-  Qstat <-   dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear))
-  for (percent in timing_percent) {
-    Qstat_pcnt <-   dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear),
-                               TOTALQ_DAY  =  AnalysisDoY[ match(TRUE, Vtotal > percent/100  * ((mean(Value, na.rm=na.rm$na.rm.global))*length(Value)*60*60*24))],
-                               TOTALQ_DATE =  Date[ match(TRUE, Vtotal > percent/100  * ((mean(Value, na.rm=na.rm$na.rm.global))*length(Value)*60*60*24))])
-    names(Qstat_pcnt)[names(Qstat_pcnt) == "TOTALQ_DAY"] <- paste0("DoY_",percent,"pct_TotalQ")
-    names(Qstat_pcnt)[names(Qstat_pcnt) == "TOTALQ_DATE"] <- paste0("Date_",percent,"pct_TotalQ")
-    Qstat <- merge(Qstat,Qstat_pcnt,by="AnalysisYear",all=T)
-    
-  }
-  Qstat <-   dplyr::rename(Qstat,Year=AnalysisYear)
-  
-  
-  #Remove any excluded
-  Qstat[Qstat$Year %in% exclude_years,-1] <- NA
-  
-  if(transpose){
-    Qstat <- dplyr::select(Qstat,Year,dplyr::contains("DoY"))
-    Qstat <- tidyr::gather(Qstat,Statistic,Value,-Year)
-    Qstat <- tidyr::spread(Qstat,Year,Value)
-  }
-  
-  if(write_table){
-    file_Qstat_table <- file.path(report_dir, paste(station_name,"-annual-date-of-flows.csv", sep=""))
-    temp <- Qstat
-    utils::write.csv(temp,file=file_Qstat_table, row.names=FALSE)
   }
   
   
+  flowtiming_data <- fasstr::fasstr_annual_flow_timing(flowdata=flowdata,
+                                               HYDAT=HYDAT,
+                                               station_name=station_name,
+                                               water_year=water_year,
+                                               water_year_start=water_year_start,
+                                               start_year=start_year,
+                                               end_year=end_year,
+                                               exclude_years=exclude_years,
+                                               timing_percent=timing_percent,
+                                               transpose=FALSE,
+                                               write_table=FALSE,
+                                               report_dir=".",
+                                               na.rm=list(na.rm.global=FALSE))
+  flowtiming_data <- dplyr::select(flowtiming_data,Year,dplyr::contains("TotalQ"),-dplyr::contains("Date"))
+  flowtiming_data <- tidyr::gather(flowtiming_data,Statistic,Value,-1)
+  flowtiming_data <- dplyr::mutate(flowtiming_data,
+                                   Statistic=substr(Statistic,5,nchar(Statistic)))
   
   
-  return(Qstat)
-} # end of function
+  flowtiming_plot <- ggplot2::ggplot(data=flowtiming_data, ggplot2::aes(x=Year, y=Value))+
+    ggplot2::geom_line(ggplot2::aes(colour=Statistic))+
+    ggplot2::geom_point(ggplot2::aes(colour=Statistic))+
+    ggplot2::facet_wrap(~Statistic, scales="free_x",ncol = 1, strip.position="right")+
+    ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6))+
+    ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
+    ggplot2::ylab("Day of Year")+
+    ggplot2::xlab("Year")+
+    ggplot2::guides(colour=FALSE)+
+    ggplot2::theme(panel.border = ggplot2::element_rect(colour = "grey80", fill=NA, size=.1),
+                   panel.grid = ggplot2::element_line(size=.2))
+
+  if (write_plot) {
+    file_plot <- paste(report_dir,"/",station_name,"_timing_of_flows.",plot_type,sep = "")
+    ggplot2::ggsave(filename =file_plot,flowtiming_plot,width=8.5,height=6)
+  }
+  
+  return(flowtiming_plot)
+}
 

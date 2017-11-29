@@ -69,7 +69,6 @@ fasstr_annual_total_flows_plots <- function(flowdata=NULL,
                                             basin_area=NA,
                                             write_plot=FALSE,
                                             plot_type="pdf",        # write out statistics on calendar year
-                                            log_discharge=FALSE,
                                             report_dir=".",
                                             na.rm=list(na.rm.global=FALSE)){
   
@@ -101,8 +100,7 @@ fasstr_annual_total_flows_plots <- function(flowdata=NULL,
     stop("plot_type argument cannot have length > 1")}
   if( !is.na(plot_type) & !plot_type %in% c("pdf","png","jpeg","tiff","bmp"))  {
     stop("plot_type argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
-  if( !is.logical(log_discharge))  {stop("log_discharge argument must be logical (TRUE/FALSE)")}
-  
+
   if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
   
   if( !is.list(na.rm))              {stop("na.rm is not a list") }
