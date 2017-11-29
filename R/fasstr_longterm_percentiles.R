@@ -63,7 +63,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-fasstr_longterm_ptiles <- function(flowdata=NULL,
+fasstr_longterm_percentiles <- function(flowdata=NULL,
                                   HYDAT=NULL,
                                   station_name="fasstr",
                                   water_year=FALSE, #create another for own water year????

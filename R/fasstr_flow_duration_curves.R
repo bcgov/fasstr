@@ -63,7 +63,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-fasstr_flow_duration_plots <- function(flowdata=NULL,
+fasstr_flow_duration_curves <- function(flowdata=NULL,
                                        HYDAT=NULL,
                                        station_name="fasstr",
                                        water_year=FALSE, #create another for own water year????
@@ -133,7 +133,7 @@ fasstr_flow_duration_plots <- function(flowdata=NULL,
   
   
   
-  percentiles_data <- fasstr_longterm_ptiles(flowdata=flowdata,
+  percentiles_data <- fasstr_longterm_percentiles(flowdata=flowdata,
                                              HYDAT=HYDAT,
                                              station_name=station_name,
                                              water_year=water_year, #create another for own water year????
