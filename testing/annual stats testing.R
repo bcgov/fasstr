@@ -1,7 +1,14 @@
 
 devtools::document()
-install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
-#install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
+#install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
+install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
+
+
+
+fasstr::fasstr_annual_lowflows_plots(HYDAT = "08NM116",
+                                     start_year = 1969,
+                                     exclude_years = c(2000,2002:2004))[1]
+
 
 data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 data <- fasstr::fasstr_add_rolling_means(data)
@@ -88,6 +95,21 @@ report_dir="."
 na.rm=list(na.rm.global=FALSE)
 
 
+
+flowdata=NULL
+HYDAT="08HB048"
+station_name="fasstr"
+water_year=FALSE
+water_year_start=10
+start_year=NULL
+end_year=NULL
+exclude_years=NULL
+rolling_days=c(1,3,7,30)
+rolling_align="right"
+write_plot=FALSE
+plot_type="pdf"      
+report_dir="."
+na.rm=list(na.rm.global=FALSE)
 
 
 

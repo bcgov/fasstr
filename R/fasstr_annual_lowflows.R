@@ -35,6 +35,9 @@
 #' @param end_year Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
 #'    year of the data provided.
 #' @param exclude_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).    
+#' @param rolling_days Numeric. The rolling n-day mean. Default c(1,3,7,30).
+#' @param rolling_align Character. Specifies whether the date of the means should be left- (first day) or right (last day)-aligned 
+#'    or centered (middle day). Default right.
 #' @param transpose Logical. Switch the rows and columns of the results. Dates excluded.
 #' @param write_table Logical. Should a file be created with the calendar year computed percentiles?
 #'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.

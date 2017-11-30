@@ -37,6 +37,11 @@ year of the data provided.}
 
 \item{exclude_years}{Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).}
 
+\item{rolling_days}{Numeric. The rolling n-day mean. Default c(1,3,7,30).}
+
+\item{rolling_align}{Character. Specifies whether the date of the means should be left- (first day) or right (last day)-aligned 
+or centered (middle day). Default right.}
+
 \item{transpose}{Logical. Switch the rows and columns of the results. Dates excluded.}
 
 \item{write_table}{Logical. Should a file be created with the calendar year computed percentiles?

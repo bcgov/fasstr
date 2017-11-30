@@ -33,8 +33,8 @@
 #' @param end_year Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
 #'    year of the data provided.
 #' @param rolling_days Numeric. Rolling days. Default 1.
-#' @param rolling_align Character. Specifies whether the index of the result should be left- or right-aligned or centered 
-#'    (default) compared to the rolling window of observations#'
+#' @param rolling_align Character. Specifies whether the date of the means should be left- (first day) or right (last day)-aligned 
+#'    or centered (middle day). Default right.
 #' @param write_plot Logical. Should a file be created with the calendar year computed percentiles?
 #'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
 #' @param plot_type Character. pdf, png, bmp, jpeg, tiff. Default pdf.
