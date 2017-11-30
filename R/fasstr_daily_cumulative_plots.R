@@ -33,10 +33,13 @@
 #' @param end_year Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
 #'    year of the data provided.
 #' @param excluded_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).   
+#' @param basin_area Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm)
+#' @param use_yield Logical. Use runoff yield for total flows instead of total volume. Basin Area required. Default FALSE
 #' @param percentiles Numeric. List of numbers to calculate percentiles (5 = 5th percentile). Default c(5,25,75,95).
 #' @param rolling_days Numeric. Rolling days. Default 1.
 #' @param rolling_align Character. Specifies whether the index of the result should be left- or right-aligned or centered 
-#'    (default) compared to the rolling window of observations#' @param transpose Logical. Switch the rows and columns of the results.
+#'    (default) compared to the rolling window of observations#' 
+#' @param transpose Logical. Switch the rows and columns of the results.
 #' @param write_plot Logical. Should a file be created with the calendar year computed percentiles?
 #'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
 #' @param plot_type Character. pdf, png, bmp, jpeg, tiff. Default pdf.
@@ -76,6 +79,8 @@ fasstr_daily_cumulative_plots <- function(flowdata=NULL,
                                           start_year=NULL,
                                           end_year=NULL,
                                           exclude_years=NULL, 
+                                          use_yield=FALSE,
+                                          basin_area=NA,
                                           write_plot=FALSE,      
                                           plot_type="pdf",    
                                           #plot_all_years=TRUE,
@@ -115,6 +120,12 @@ fasstr_daily_cumulative_plots <- function(flowdata=NULL,
   if( !is.null(exclude_years) & !is.numeric(exclude_years)) {
     stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
   
+  if( !is.logical(use_yield))  {
+    stop("use_yield parameter must be logical (TRUE/FALSE)")}
+  if( !is.na(basin_area) & !is.numeric(basin_area))    {stop("basin_area parameter must be numeric")}
+  if( length(basin_area)>1)        {stop("basin_area parameter cannot have length > 1")}
+  
+  
   if( !is.logical(write_plot))  {
     stop("write_plot argument must be logical (TRUE/FALSE)")}
   if( length(plot_type)>1)        {
@@ -140,8 +151,14 @@ fasstr_daily_cumulative_plots <- function(flowdata=NULL,
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' argument does not exist.")}
     if (station_name=="fasstr") {station_name <- HYDAT}
+    if (is.na(basin_area)) {basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = HYDAT)$DRAINAGE_AREA_GROSS)}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
+  
+  # Check if no basin_area if use-yield is TRUE
+  if( use_yield & is.na(basin_area) )  {
+    stop("no basin_area provided with use_yield")}
+  
   
   flowdata <- fasstr::fasstr_add_date_vars(flowdata = flowdata,water_year = T,water_year_start=water_year_start)
   min_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))
@@ -202,6 +219,8 @@ fasstr_daily_cumulative_plots <- function(flowdata=NULL,
                                                          start_year=start_year,
                                                          end_year=end_year,
                                                          exclude_years=exclude_years, # list of stations
+                                                         use_yield=use_yield,
+                                                         basin_area=basin_area,
                                                          percentiles=c(5,25,75,95),
                                                          transpose=FALSE,
                                                          write_table=FALSE,        # write out statistics on calendar year
@@ -210,8 +229,13 @@ fasstr_daily_cumulative_plots <- function(flowdata=NULL,
                                                          table_nddigits=3)
   
   # Add cumulative flows to original flow data
-  flowdata <- fasstr_add_total_volume(flowdata,water_year = water_year, water_year_start = water_year_start)
-  
+  if (use_yield){
+    flowdata <- fasstr::fasstr_add_cumulative_yield(flowdata,water_year = water_year, water_year_start = water_year_start, basin_area = basin_area)
+    flowdata$Cumul_Flow <- flowdata$Cumul_Yield
+  } else {
+    flowdata <- fasstr::fasstr_add_cumulative_volume(flowdata,water_year = water_year, water_year_start = water_year_start)
+    flowdata$Cumul_Flow <- flowdata$Cumul_Volume
+  }
   
   
   Q_daily_total <- dplyr::mutate(Q_daily_total,Date=as.Date(DayofYear, origin = origin_date))
@@ -222,11 +246,11 @@ fasstr_daily_cumulative_plots <- function(flowdata=NULL,
   
   if (write_plot) {
     if (plot_type=="pdf"){
-      file_stat_plot <-file.path(report_dir, paste(station_name,"-daily-summary-cumulative.pdf", sep=""))
+      file_stat_plot <-file.path(report_dir, paste(station_name,"-daily-cumulative",ifelse(use_yield,paste0("-yield"),paste0("-volume")),"-stats.pdf", sep=""))
       pdf(file = file_stat_plot,8.5,4)
     }
     if (plot_type %in% c("png","jpeg","tiff","bmp")) {
-      file_stat_plot <- paste(report_dir,"/",station_name,"-daily-summary-cumulative",sep = "")
+      file_stat_plot <- paste(report_dir,"/",station_name,"-daily-cumulative",ifelse(use_yield,paste0("-yield"),paste0("-volume")),"-stats",sep = "")
       dir.create(file_stat_plot)
     }
   }
@@ -248,7 +272,8 @@ fasstr_daily_cumulative_plots <- function(flowdata=NULL,
                                                      short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))} +
     ggplot2::scale_x_date(date_labels = "%b", date_breaks = "1 month", limits = as.Date(c(NA,as.character(max(Q_daily_total$Date)))),expand=c(0,0)) +
     ggplot2::xlab(NULL)+
-    ggplot2::ylab("Cumulative Discharge (cubic metres)")+
+    {if (!use_yield) ggplot2::ylab("Cumulative Discharge (cubic metres)")}+
+    {if (use_yield) ggplot2::ylab("Cumulative Runoff Yield (mm)")}+
     {if (!is.na(plot_title)) ggplot2::ggtitle(paste0(plot_title))}+
     ggplot2::theme(axis.text=ggplot2::element_text(size=6, colour = "grey25"),
                    axis.title=ggplot2::element_text(size=8, colour = "grey25"),
@@ -287,7 +312,7 @@ fasstr_daily_cumulative_plots <- function(flowdata=NULL,
   for (yr in unique(flowdata$AnalysisYear)){
     flowdata_plot <- dplyr::filter(flowdata,AnalysisYear==yr)
     suppressMessages(daily_stats_year <- daily_stats_plot +
-                       ggplot2::geom_line(data = flowdata_plot, ggplot2::aes(x=AnalysisDate, y=Vtotal, colour= "yr.colour"), size=0.5) +
+                       ggplot2::geom_line(data = flowdata_plot, ggplot2::aes(x=AnalysisDate, y=Cumul_Flow, colour= "yr.colour"), size=0.5) +
                        ggplot2::scale_color_manual(values = c("Mean" = "paleturquoise", "Median" = "dodgerblue4", "yr.colour" = "red"),
                                                    labels = c("Mean", "Median",paste0(yr," Flows"))))
     daily_stats_plots[[paste0("cumulative_", yr)]] <- daily_stats_year

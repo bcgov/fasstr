@@ -21,6 +21,9 @@
 #'    tidyhydat package and a downloaded SQLite HYDAT required.
 #' @param water_year Logical (TRUE/FALSE). Choose to fill to the start of the first/last water years.
 #' @param water_year_start Numeric. Month to start water year (1 to 12 for Jan to Dec). Default 10 (Oct).
+#' @param use_yield Logical. Convert the volumetric to mm depth. Requires and basin_area.
+#' @param basin_area Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm)
+#' 
 #' 
 #'
 #' @examples
@@ -34,7 +37,7 @@
 #--------------------------------------------------------------
 # Compute the statistics on an (calendar and water) year basis
 
-fasstr_add_total_volume <- function(flowdata=NULL,
+fasstr_add_cumulative_volume <- function(flowdata=NULL,
                                   HYDAT=NULL,
                                   water_year=FALSE,
                                   water_year_start=10){  # or left or centre
@@ -60,6 +63,7 @@ fasstr_add_total_volume <- function(flowdata=NULL,
   if( water_year_start<1 & water_year_start>12 )  {
     stop("water_year_start parameter must be numeric between 1 and 12 (Jan-Dec)")}
   
+  
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
@@ -83,14 +87,15 @@ fasstr_add_total_volume <- function(flowdata=NULL,
   }
   
   # Add cumulative
-  flowdata.temp <- dplyr::mutate(dplyr::group_by(flowdata.temp,AnalysisYear),Vtotal=cumsum(Value)*86400)
+  flowdata.temp <- dplyr::mutate(dplyr::group_by(flowdata.temp,AnalysisYear),Cumul_Volume=cumsum(Value)*86400)
+
 
   
   # Return flowdata to original dates
-  flowdata.temp <- dplyr::select(dplyr::ungroup(flowdata.temp),Date,Vtotal)
+  flowdata.temp <- dplyr::select(dplyr::ungroup(flowdata.temp),Date,Cumul_Volume)
   
   flowdata <- merge(flowdata,flowdata.temp,by="Date",all.x = T)
-  flowdata <-  flowdata[,c(col.ord,paste("Vtotal"))]
+  flowdata <-  flowdata[,c(col.ord,paste("Cumul_Volume"))]
   
   # Fill in STATION_NUMBER and Parameter if HYDAT selected
   if (!is.null(HYDAT)) {

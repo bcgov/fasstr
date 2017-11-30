@@ -7,9 +7,9 @@
 fasstr_daily_cumulative_stats(flowdata = NULL, HYDAT = NULL,
   station_name = "fasstr", water_year = FALSE, water_year_start = 10,
   start_year = NULL, end_year = NULL, exclude_years = NULL,
-  percentiles = c(5, 25, 75, 95), transpose = FALSE, write_table = FALSE,
-  report_dir = ".", na.rm = list(na.rm.global = FALSE),
-  table_nddigits = 3)
+  percentiles = c(5, 25, 75, 95), use_yield = FALSE, basin_area = NA,
+  transpose = FALSE, write_table = FALSE, report_dir = ".",
+  na.rm = list(na.rm.global = FALSE), table_nddigits = 3)
 }
 \arguments{
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
@@ -36,6 +36,10 @@ year of the data provided.}
 year of the data provided.}
 
 \item{percentiles}{Numeric. List of numbers to calculate percentiles (5 = 5th percentile). Default c(5,25,75,95).}
+
+\item{use_yield}{Logical. Use runoff yield for total flows instead of total volume. Basin Area required. Default FALSE}
+
+\item{basin_area}{Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm)}
 
 \item{transpose}{Logical. Switch the rows and columns of the results.}
 

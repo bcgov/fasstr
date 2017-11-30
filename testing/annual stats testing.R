@@ -4,6 +4,23 @@ devtools::document()
 install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
 
+data <- fasstr::fasstr_add_cumulative_volume(HYDAT = "08HB048")
+data <- fasstr::fasstr_add_total_volume(HYDAT = "08HB048",use_yield = T)
+
+
+data <- fasstr::fasstr_add_daily_yield(data, basin_area = 10.3)
+data <- fasstr::fasstr_add_daily_volume(data)
+
+data <- fasstr::fasstr_daily_cumulative_stats(HYDAT = "08HB048",use_yield = T)
+
+data <- fasstr::fasstr_daily_cumulative_stats(data,use_yield = T, basin_area = 10.3)
+
+
+
+
+data <- fasstr::fasstr_daily_cumulative_stats(data,use_yield = T, basin_area = 10.3)
+
+fasstr::fasstr_daily_cumulative_plots(HYDAT = "08HB048",use_yield = T)[6]
 
 fasstr::fasstr_annual_lowflows_plots(HYDAT = "08NM116",
                                      start_year = 1969,
@@ -113,3 +130,21 @@ na.rm=list(na.rm.global=FALSE)
 
 
 
+
+flowdata=NULL
+HYDAT="08HB048"
+station_name="fasstr"
+water_year=FALSE
+water_year_start=10
+start_year=NULL
+end_year=NULL
+exclude_years=NULL
+use_yield=FALSE
+basin_area=NA
+write_plot=FALSE
+plot_type="pdf"
+#plot_all_years=TRUE,
+log_discharge=FALSE
+plot_title=NA
+report_dir="."
+na.rm=list(na.rm.global=FALSE)

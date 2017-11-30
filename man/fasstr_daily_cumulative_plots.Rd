@@ -7,8 +7,9 @@
 fasstr_daily_cumulative_plots(flowdata = NULL, HYDAT = NULL,
   station_name = "fasstr", water_year = FALSE, water_year_start = 10,
   start_year = NULL, end_year = NULL, exclude_years = NULL,
-  write_plot = FALSE, plot_type = "pdf", log_discharge = FALSE,
-  plot_title = NA, report_dir = ".", na.rm = list(na.rm.global = FALSE))
+  use_yield = FALSE, basin_area = NA, write_plot = FALSE,
+  plot_type = "pdf", log_discharge = FALSE, plot_title = NA,
+  report_dir = ".", na.rm = list(na.rm.global = FALSE))
 }
 \arguments{
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
@@ -34,6 +35,10 @@ year of the data provided.}
 \item{end_year}{Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
 year of the data provided.}
 
+\item{use_yield}{Logical. Use runoff yield for total flows instead of total volume. Basin Area required. Default FALSE}
+
+\item{basin_area}{Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm)}
+
 \item{write_plot}{Logical. Should a file be created with the calendar year computed percentiles?
 The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
 
@@ -54,7 +59,9 @@ The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy
 \item{rolling_days}{Numeric. Rolling days. Default 1.}
 
 \item{rolling_align}{Character. Specifies whether the index of the result should be left- or right-aligned or centered 
-(default) compared to the rolling window of observations#' @param transpose Logical. Switch the rows and columns of the results.}
+(default) compared to the rolling window of observations#'}
+
+\item{transpose}{Logical. Switch the rows and columns of the results.}
 }
 \description{
 Compute streamflow statistics for each day of the year.

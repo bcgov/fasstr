@@ -34,6 +34,8 @@
 #'    year of the data provided.
 #' @param excluded_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).   
 #' @param percentiles Numeric. List of numbers to calculate percentiles (5 = 5th percentile). Default c(5,25,75,95).
+#' @param use_yield Logical. Use runoff yield for total flows instead of total volume. Basin Area required. Default FALSE
+#' @param basin_area Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm)
 #' @param transpose Logical. Switch the rows and columns of the results.
 #' @param write_table Logical. Should a file be created with the calendar year computed percentiles?
 #'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
@@ -73,6 +75,8 @@ fasstr_daily_cumulative_stats <- function(flowdata=NULL,
                                           end_year=NULL,
                                           exclude_years=NULL,
                                           percentiles=c(5,25,75,95),
+                                          use_yield=FALSE,
+                                          basin_area=NA,
                                           transpose=FALSE,
                                           write_table=FALSE,
                                           report_dir=".",
@@ -108,6 +112,10 @@ fasstr_daily_cumulative_stats <- function(flowdata=NULL,
   if( !all(percentiles>0 & percentiles<=100))  {
     stop("percentiles must be >0 and <=100)")}
 
+  if( !is.logical(use_yield))  {
+    stop("use_yield parameter must be logical (TRUE/FALSE)")}
+  if( !is.na(basin_area) & !is.numeric(basin_area))    {stop("basin_area parameter must be numeric")}
+  if( length(basin_area)>1)        {stop("basin_area parameter cannot have length > 1")}
   
   if( !is.logical(water_year))  {
     stop("water_year parameter must be logical (TRUE/FALSE)")}
@@ -141,8 +149,13 @@ fasstr_daily_cumulative_stats <- function(flowdata=NULL,
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% suppressMessages(tidyhydat::allstations$STATION_NUMBER)) {stop("Station in 'HYDAT' parameter does not exist.")}
     if (station_name=="fasstr") {station_name <- HYDAT}
+    if (is.na(basin_area)) {basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = HYDAT)$DRAINAGE_AREA_GROSS)}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
+  
+  # Check if no basin_area if use-yield is TRUE
+  if( use_yield & is.na(basin_area) )  {
+    stop("no basin_area provided with use_yield")}
   
   # add date variables to determine the min/max cal/water years
   flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
@@ -200,8 +213,13 @@ fasstr_daily_cumulative_stats <- function(flowdata=NULL,
   }
   
   # Add cumulative flows
-  flowdata <- fasstr_add_total_volume(flowdata,water_year = water_year, water_year_start = water_year_start)
-  
+  if (use_yield){
+    flowdata <- fasstr::fasstr_add_cumulative_yield(flowdata,water_year = water_year, water_year_start = water_year_start, basin_area = basin_area)
+    flowdata$Cumul_Flow <- flowdata$Cumul_Yield
+  } else {
+    flowdata <- fasstr::fasstr_add_cumulative_volume(flowdata,water_year = water_year, water_year_start = water_year_start)
+    flowdata$Cumul_Flow <- flowdata$Cumul_Volume
+  }
   
   
   # Filter for the selected and excluded years
@@ -215,16 +233,17 @@ fasstr_daily_cumulative_stats <- function(flowdata=NULL,
   
   #  Compute daily summary stats
   Q_total <- dplyr::summarise(dplyr::group_by(flowdata,AnalysisDate,AnalysisDoY),
-                              Mean=mean(Vtotal, na.rm=T),
-                              Median=median(Vtotal, na.rm=T),
-                              Minimum=min(Vtotal, na.rm=T),
-                              Maximum=max(Vtotal, na.rm=T))
+                              Mean=mean(Cumul_Flow, na.rm=T),
+                              Median=median(Cumul_Flow, na.rm=T),
+                              Minimum=min(Cumul_Flow, na.rm=T),
+                              Maximum=max(Cumul_Flow, na.rm=T))
   
+
   # Compute daily percentiles (if 10 or more years of data)
   if (!all(is.na(percentiles))){
     for (ptile in percentiles) {
       Q_total_ptile <- dplyr::summarise(dplyr::group_by(flowdata,AnalysisDate,AnalysisDoY),
-                                        Percentile=ifelse(sum(!is.na(Vtotal))>=10,quantile(Vtotal,ptile/100, na.rm=TRUE),NA))
+                                        Percentile=ifelse(sum(!is.na(Cumul_Flow))>=10,quantile(Cumul_Flow,ptile/100, na.rm=TRUE),NA))
       colnames(Q_total_ptile)[3] <- paste0("P",ptile)
       Q_total <- merge(Q_total,Q_total_ptile,by=c("AnalysisDate","AnalysisDoY"))
     }
@@ -245,7 +264,7 @@ fasstr_daily_cumulative_stats <- function(flowdata=NULL,
   
   #  Write the table
   if (write_table) {
-    file.stat.csv <-file.path(report_dir, paste(station_name,"-daily-cumulative-stat.csv", sep=""))
+    file.stat.csv <-file.path(report_dir, paste(station_name,"-daily-cumulative",ifelse(use_yield,paste0("-yield"),paste0("-volume")),"-stats.csv", sep=""))
     temp <- Q_total
     temp[,2:ncol(temp)] <- round(temp[,2:ncol(temp)], table_nddigits)  # round the output
     utils::write.csv(temp, file=file.stat.csv, row.names=FALSE)
@@ -254,4 +273,4 @@ fasstr_daily_cumulative_stats <- function(flowdata=NULL,
   return(Q_total)
   
   
-} # end of function
+}
