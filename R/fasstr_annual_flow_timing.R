@@ -133,7 +133,7 @@ fasstr_annual_flow_timing <- function(flowdata=NULL,
   #  Fill in the missing dates and the add the date variables again
   flowdata <- fasstr::fasstr_add_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
   flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
-  flowdata <- fasstr::fasstr_add_total_volume(flowdata,water_year = water_year,water_year_start = water_year_start)
+  flowdata <- fasstr::fasstr_add_cumulative_volume(flowdata,water_year = water_year,water_year_start = water_year_start)
   
   # Set selected year-type column for analysis
   if (water_year) {
@@ -152,8 +152,8 @@ fasstr_annual_flow_timing <- function(flowdata=NULL,
   Qstat <-   dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear))
   for (percent in timing_percent) {
     Qstat_pcnt <-   dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear),
-                               TOTALQ_DAY  =  AnalysisDoY[ match(TRUE, Vtotal > percent/100  * ((mean(Value, na.rm=na.rm$na.rm.global))*length(Value)*60*60*24))],
-                               TOTALQ_DATE =  Date[ match(TRUE, Vtotal > percent/100  * ((mean(Value, na.rm=na.rm$na.rm.global))*length(Value)*60*60*24))])
+                               TOTALQ_DAY  =  AnalysisDoY[ match(TRUE, Cumul_Volume > percent/100  * ((mean(Value, na.rm=na.rm$na.rm.global))*length(Value)*60*60*24))],
+                               TOTALQ_DATE =  Date[ match(TRUE, Cumul_Volume > percent/100  * ((mean(Value, na.rm=na.rm$na.rm.global))*length(Value)*60*60*24))])
     names(Qstat_pcnt)[names(Qstat_pcnt) == "TOTALQ_DAY"] <- paste0("DoY_",percent,"pct_TotalQ")
     names(Qstat_pcnt)[names(Qstat_pcnt) == "TOTALQ_DATE"] <- paste0("Date_",percent,"pct_TotalQ")
     Qstat <- merge(Qstat,Qstat_pcnt,by="AnalysisYear",all=T)

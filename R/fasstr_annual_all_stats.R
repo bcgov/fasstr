@@ -71,7 +71,7 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
                                     basin_area=NA, 
                                     lowflow_days=c(1,3,7,30),
                                     totalflow_seasons=TRUE,
-                                    percentflow_days=c(25,33,50,75),
+                                    timing_percent=c(25,33,50,75),
                                     transpose=FALSE,
                                     write_table=FALSE,
                                     report_dir=".",
@@ -106,10 +106,10 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
   
   if( !is.logical(totalflow_seasons))  {stop("totalflow_seasons must be logical (TRUE/FALSE)")}
   
-  if( !is.numeric(percentflow_days))   {
-    stop("percentflow_days must be numeric")}
-  if( !all(percentflow_days>0 & percentflow_days<100))  {
-    stop("percentflow_days must be >0 and <100")}
+  if( !is.numeric(timing_percent))   {
+    stop("timing_percent must be numeric")}
+  if( !all(timing_percent>0 & timing_percent<100))  {
+    stop("timing_percent must be >0 and <100")}
   
   
   if( !is.numeric(lowflow_days))   {
@@ -141,6 +141,11 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
     if (station_name=="fasstr") {station_name <- HYDAT}
     if (is.na(basin_area)) {basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = HYDAT)$DRAINAGE_AREA_GROSS)}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
+  }
+  
+  # Looks for STATION_NUMBER column to search for basin_area
+  if ( is.na(basin_area) & "STATION_NUMBER" %in% names(flowdata)){
+    basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = flowdata$STATION_NUMBER[1])$DRAINAGE_AREA_GROSS)
   }
   
   # add date variables to determine the min/max cal/water years
@@ -245,7 +250,7 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
                                                          start_year=start_year,
                                                          end_year=end_year,
                                                          exclude_years=exclude_years,
-                                                         percent_of_total=percentflow_days,
+                                                         timing_percent=timing_percent,
                                                          transpose=FALSE,
                                                          write_table=FALSE,
                                                          report_dir=report_dir,
@@ -280,8 +285,7 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
                                                                normal_upper_ptile=75,
                                                                transpose=FALSE,
                                                                write_table=FALSE,
-                                                               report_dir=report_dir,
-                                                               na.rm=na.rm)
+                                                               report_dir=report_dir)
   
   
   # Combine all and label columns

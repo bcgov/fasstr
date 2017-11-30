@@ -69,7 +69,7 @@ fasstr_add_daily_yield <- function(flowdata=NULL,
   }
   
   # Looks for STATION_NUMBER column to search for basin_area
-  if ( is.na(basin_area) & "STATION_NUMBER" %in% names(flowdata) ){
+  if ( is.na(basin_area) & "STATION_NUMBER" %in% names(flowdata)){
     basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = flowdata$STATION_NUMBER[1])$DRAINAGE_AREA_GROSS)
   }
   

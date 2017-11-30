@@ -156,8 +156,6 @@ fasstr_annual_stats <- function(flowdata=NULL,
                                      Maximum	    = max (Value, na.rm=na.rm$na.rm.global),      # CY Max Daily Q
                                      Minimum     = min (Value, na.rm=na.rm$na.rm.global)#,	    # CY Min Daily Q 	CY Min Daily Q
   )
-  #TOTALQ_DAILY  = MEAN_DAILY*length(Value)*60*60*24,    # Yearly sum of daily avg (cms) *60*60*24 # deal with missing values
-  #YIELDMM_DAILY = TOTALQ_DAILY/basin_area/1000)
   
   if (!all(is.na(percentiles))){
     for (ptile in percentiles) {

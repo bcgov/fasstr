@@ -118,6 +118,11 @@ fasstr_annual_total_flows_plots <- function(flowdata=NULL,
     if (is.na(basin_area)) {basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = HYDAT)$DRAINAGE_AREA_GROSS)}
   }
   
+  # Looks for STATION_NUMBER column to search for basin_area
+  if ( is.na(basin_area) & "STATION_NUMBER" %in% names(flowdata)){
+    basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = flowdata$STATION_NUMBER[1])$DRAINAGE_AREA_GROSS)
+  }
+  
   
   totalflows_data <- fasstr::fasstr_annual_total_flows(flowdata=flowdata,
                                                        HYDAT=HYDAT,

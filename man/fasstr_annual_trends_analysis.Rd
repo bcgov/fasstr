@@ -4,24 +4,24 @@
 \alias{fasstr_annual_trends_analysis}
 \title{Compute annual trends.}
 \usage{
-fasstr_annual_trends_analysis(trendsdata = NULL, flowdata = NULL,
-  HYDAT = NULL, zyp_method = NA, station_name = "fasstr",
+fasstr_annual_trends_analysis(flowdata = NULL, HYDAT = NULL,
+  trendsdata = NULL, zyp_method = NA, station_name = "fasstr",
   water_year = FALSE, water_year_start = 10, start_year = NULL,
   end_year = NULL, exclude_years = NULL, basin_area = NA,
   lowflow_days = c(1, 3, 7, 30), totalflow_seasons = TRUE,
-  percentflow_days = c(25, 33, 50, 75), write_trends_data = FALSE,
+  timing_percent = c(25, 33, 50, 75), write_trends_data = FALSE,
   write_trends_results = FALSE, report_dir = ".",
   na.rm = list(na.rm.global = FALSE), table_nddigits = 3)
 }
 \arguments{
-\item{trendsdata}{Dataframe. Annual data with column names of years and rows of annual statistics.}
-
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
 Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
 mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.}
 
 \item{HYDAT}{Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
 tidyhydat package and a downloaded SQLite HYDAT required.}
+
+\item{trendsdata}{Dataframe. Annual data with column names of years and rows of annual statistics.}
 
 \item{station_name}{Character. Identifier name of the stream or station. Required when supplying data through \code{flowdata}.
 The station name will be used in plots and filenames of exported tables and plot. If using \code{HYDAT} to supply

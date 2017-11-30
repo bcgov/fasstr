@@ -143,12 +143,15 @@ fasstr_annual_lowflows_plots <- function(flowdata=NULL,
                                                   transpose=FALSE,
                                                   write_table=FALSE,
                                                   report_dir=".",
-                                                  na.rm=list(na.rm.global=FALSE))
-  
+                                                  na.rm=list(na.rm.global=FALSE),
+                                                  table_nddigits=3)
+
   
   # Gather data and plot the minimums day
   lowflows_DoY_data <- dplyr::select(lowflows_data,Year,dplyr::contains("DoY"))
   lowflows_DoY_data <- tidyr::gather(lowflows_DoY_data,Statistic,Value,-1)
+  
+  
   
   doy_plot <- ggplot2::ggplot(data=lowflows_DoY_data, ggplot2::aes(x=Year, y=Value))+
     ggplot2::geom_line(ggplot2::aes(colour=Statistic))+
@@ -161,7 +164,7 @@ fasstr_annual_lowflows_plots <- function(flowdata=NULL,
     ggplot2::guides(colour=FALSE)+
     ggplot2::theme(panel.border = ggplot2::element_rect(colour = "grey80", fill=NA, size=.1),
                    panel.grid = ggplot2::element_line(size=.2))
-  
+
   
   # Gather data and plot the minimums values
   lowflows_value_data <- dplyr::select(lowflows_data,Year,dplyr::contains("Day"),
@@ -180,7 +183,7 @@ fasstr_annual_lowflows_plots <- function(flowdata=NULL,
     ggplot2::guides(colour=FALSE)+
     ggplot2::theme(panel.border = ggplot2::element_rect(colour = "grey80", fill=NA, size=.1),
                    panel.grid = ggplot2::element_line(size=.2))
-  
+
   
     # Save the plots if selected.
   if (write_plot) {
@@ -191,8 +194,12 @@ fasstr_annual_lowflows_plots <- function(flowdata=NULL,
     ggplot2::ggsave(filename =file_min_plot,min_plot,width=8.5,height=5)
   }
   
+  low_flow_plots <- list()
+  low_flow_plots[["Annual_Minimums"]] <- min_plot
+  low_flow_plots[["Annual_Minimum_Days"]] <- doy_plot
   
-  return(list("Annual_Minimums"=min_plot,
-              "Annual_Minimum_Days"=doy_plot))
+  
+  
+  return(low_flow_plots)
 }
 

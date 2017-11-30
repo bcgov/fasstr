@@ -122,6 +122,11 @@ fasstr_annual_total_flows <- function(flowdata=NULL,
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
+  # Looks for STATION_NUMBER column to search for basin_area
+  if ( is.na(basin_area) & "STATION_NUMBER" %in% names(flowdata)){
+    basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = flowdata$STATION_NUMBER[1])$DRAINAGE_AREA_GROSS)
+  }
+  
   # add date variables to determine the min/max cal/water years
   flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
   min_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))

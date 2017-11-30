@@ -4,8 +4,8 @@
 \alias{fasstr_annual_freq_analysis}
 \title{Perform a volume frequency analysis on annual statistics.}
 \usage{
-fasstr_annual_freq_analysis(station_name = "fasstr", flowdata = NULL,
-  HYDAT = NULL, HYDAT_peaks = NA, water_year = FALSE,
+fasstr_annual_freq_analysis(flowdata = NULL, HYDAT = NULL,
+  station_name = "fasstr", HYDAT_peaks = NA, water_year = FALSE,
   water_year_start = 10, start_year = NULL, end_year = NULL,
   exclude_years = NULL, rolling_days = c(1, 3, 7, 30), use_log = FALSE,
   use_max = FALSE, prob_plot_position = c("weibull", "median", "hazen"),
@@ -20,16 +20,16 @@ fasstr_annual_freq_analysis(station_name = "fasstr", flowdata = NULL,
   table_nddigits = 3)
 }
 \arguments{
-\item{station_name}{Character. Identifier name of the stream or station. Required when supplying data through \code{flowdata}.
-The station name will be used in plots and filenames of exported tables and plot. If using \code{HYDAT} to supply
-data and no \code{station_name} is provided, the HYDAT station number will be the identifier.}
-
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics.
 Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily
 mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.}
 
 \item{HYDAT}{Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
 tidyhydat package and a downloaded SQLite HYDAT required.}
+
+\item{station_name}{Character. Identifier name of the stream or station. Required when supplying data through \code{flowdata}.
+The station name will be used in plots and filenames of exported tables and plot. If using \code{HYDAT} to supply
+data and no \code{station_name} is provided, the HYDAT station number will be the identifier.}
 
 \item{HYDAT_peaks}{Character. "MAX" or "MIN" instantaneous peaks pulled from HYDAT}
 

@@ -98,9 +98,9 @@
 # The key difference lies in how the PIII distribuition is fit. I use MLE while
 # HEC-SSP appears to use method of moments.
 
-fasstr_annual_freq_analysis <- function(station_name="fasstr",
-                                 flowdata=NULL,
+fasstr_annual_freq_analysis <- function(flowdata=NULL,
                                  HYDAT=NULL,
+                                 station_name="fasstr",
                                  HYDAT_peaks=NA,
                                  water_year=FALSE,
                                  water_year_start=10,
@@ -134,7 +134,7 @@ fasstr_annual_freq_analysis <- function(station_name="fasstr",
   # data checks
   if( !is.null(HYDAT) & !is.null(flowdata))  {stop("Must select either flowdata or HYDAT parameters, not both.")}
   if( is.null(HYDAT) & is.null(station_name))  {stop("station_name required with flowdata parameter.")}
-  if( is.null(HYDAT) & !is.character(station_name))  {stop("Station Code must be a character string.")}
+  if( is.null(HYDAT) & !is.character(station_name))  {stop("station_name must be a character string.")}
   if( is.null(HYDAT) & !is.data.frame(flowdata))         {stop("flowdata is not a data frame.")}
   if( is.null(HYDAT) & !all(c("Date","Value") %in% names(flowdata))){
     stop("flowdata dataframe doesn't contain the variables Date and Value.")}
@@ -241,7 +241,7 @@ if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
   flowdata <- plyr::ldply(rolling_days, function (x, flowdata){
     # compute the rolling average of x days
     # create a variable to be attached to the statistic
-    flowdata$Measure <- paste("Q", formatC(x, width=3, format="d", flag="0"),"-day Mean",sep="")
+    flowdata$Measure <- paste("Q", formatC(x, width=3, format="d", flag="0"),"-day-Avg",sep="")
     flowdata$Q       <- zoo::rollapply( flowdata$Value,  x, mean, fill=NA, align="right")
     flowdata
   }, flowdata=flowdata)

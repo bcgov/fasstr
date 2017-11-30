@@ -1,21 +1,10 @@
 
-devtools::document()
+#devtools::document()
 #install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
-install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
+#install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
 
-test <- fasstr::fasstr_add_date_vars(HYDAT = "08HB048")
 library(fasstr)
-
-
-ann_stats <- fasstr_annual_all_stats(HYDAT = "08HB048",percentflow_days = c(50,60),totalflow_seasons=F)
-ann_stats <- ann_stats[c(1:5),]
-trends <- fasstr_annual_trends_analysis(trendsdata = ann_stats,zyp_method = "yuepilon")
-trends <- fasstr_annual_trends_plots(trendsdata = ann_stats,zyp_method = "yuepilon")
-
-fasstr_longterm_stats(HYDAT = "08NM116")
-test <- fasstr_annual_freq_analysis(HYDAT = "08NM116")
-
 # Parameters
 stn_number <- "08NM116"
 start_year=1981 #NULL
@@ -31,11 +20,10 @@ dir.create(path=folder)
 timeseriesfolder <- "1-TimeSeries/"
 dir.create(path=paste0(folder,timeseriesfolder))
 
-timeseries <- fasstr_fill_missing_dates(HYDAT = stn_number)
+timeseries <- fasstr_add_missing_dates(HYDAT = stn_number)
 timeseries <- fasstr_add_date_vars(timeseries)
 timeseries <- fasstr_add_rolling_means(timeseries)
-write.csv(timeseries, file = paste0(folder,timeseriesfolder,stn_number,"-timeseries.csv"),row.names=FALSE,na="")
-
+fasstr_write_daily_flows(timeseries,report_dir = paste0(folder,timeseriesfolder),na="")
 timeseries_plot <- fasstr_timeseries_plot(HYDAT = stn_number,
                                           write_plot = T,
                                           report_dir = paste0(folder,timeseriesfolder),
@@ -84,14 +72,18 @@ flow_curves <- fasstr_flow_duration_plots(flowdata=timeseries,
 annualfolder <- "3-Annual/"
 dir.create(path=paste0(folder,annualfolder))
 
-all_annual <- fasstr_annual_stats(flowdata=timeseries,
+annual_stats <- fasstr_annual_stats(flowdata=timeseries,
                                   #HYDAT = stn_number,
                                   write_table = T,report_dir = paste0(folder,annualfolder),start_year = start_year,end_year = end_year)
-
-# YIELD AND TOTAL DISCHARGE
-# TIMING OF FLOWS
-# DAYS OUTSIDE NORMAL
-
+annual_total <- fasstr_annual_total_flows(flowdata=timeseries,
+                                          #HYDAT = stn_number,
+                                          write_table = T,report_dir = paste0(folder,annualfolder),start_year = start_year,end_year = end_year)
+annual_timing <- fasstr_annual_flow_timing(flowdata=timeseries,
+                                          #HYDAT = stn_number,
+                                          write_table = T,report_dir = paste0(folder,annualfolder),start_year = start_year,end_year = end_year)# DAYS OUTSIDE NORMAL
+annual_normal <- fasstr_annual_days_outside_normal(flowdata=timeseries,
+                                          #HYDAT = stn_number,
+                                          write_table = T,report_dir = paste0(folder,annualfolder),start_year = start_year,end_year = end_year)
 
 
 ### Monthly Stats

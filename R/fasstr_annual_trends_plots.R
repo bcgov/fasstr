@@ -56,9 +56,9 @@
 #--------------------------------------------------------------
 # Compute the trends analysis
 
-fasstr_annual_trends_plots <- function(trendsdata=NULL,
-                                 flowdata=NULL,
+fasstr_annual_trends_plots <- function(flowdata=NULL,
                                  HYDAT=NULL,
+                                 trendsdata=NULL,
                                  zyp_method=NA,
                                  zyp_alpha=0.05,
                                  station_name="fasstr",
@@ -70,7 +70,7 @@ fasstr_annual_trends_plots <- function(trendsdata=NULL,
                                  basin_area=NA,
                                  lowflow_days=c(1,3,7,30),
                                  totalflow_seasons=TRUE,
-                                 percentflow_days=c(25,33,50,75),
+                                 timing_percent=c(25,33,50,75),
                                  write_plots=FALSE,      
                                  plot_type="pdf",  
                                  report_dir=".",
@@ -161,7 +161,7 @@ fasstr_annual_trends_plots <- function(trendsdata=NULL,
                                                 basin_area=basin_area,
                                                 lowflow_days=lowflow_days,
                                                 totalflow_seasons=totalflow_seasons,
-                                                percentflow_days=percentflow_days,
+                                                timing_percent=timing_percent,
                                                 transpose=TRUE,
                                                 na.rm=na.rm)
   }

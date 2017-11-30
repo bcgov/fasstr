@@ -57,16 +57,16 @@
 fasstr_data_screening <- function(flowdata=NULL,
                                   HYDAT=NULL,
                                   station_name="fasstr",
-                                  water_year=FALSE, #create another for own water year????
+                                  water_year=FALSE, 
                                   start_year=NULL,
                                   end_year=NULL,
                                   water_year_start=10,
                                   rolling_days=1,
                                   rolling_align="right",
                                   transpose=FALSE,
-                                  write_table=FALSE,        # write out statistics on calendar year
+                                  write_table=FALSE,      
                                   report_dir=".",
-                                  table_nddigits=3){              # decimal digits for csv files for statistics
+                                  table_nddigits=3){             
 
   #############################################################
   
