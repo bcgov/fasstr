@@ -24,6 +24,7 @@
 #'    default calendar year (Jan-Dec) (\code{water_year=FALSE}). Water years are designated by the year which they end in
 #'    (e.g. water year 2000 start on 1 Oct 1999 and ends on 30 Sep 2000).
 #' @param water_year_start Numeric. Month to start water year (1 to 12 for Jan to Dec).
+#' @param fill_missing_dates Logical.
 #'
 #' @examples
 #' \dontrun{
@@ -93,7 +94,7 @@ fasstr_write_daily_flows <- function(flowdata=NULL,
   
   
   if (fill_missing_dates) {
-    flowdata <- fasstr::fasstr_fill_missing_dates(flowdata=flowdata,
+    flowdata <- fasstr::fasstr_add_missing_dates(flowdata=flowdata,
                                                   HYDAT=NULL,
                                                   water_year=water_year,
                                                   water_year_start=water_year_start)

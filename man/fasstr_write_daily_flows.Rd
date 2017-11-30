@@ -17,6 +17,8 @@ mean streamflow values in units of cubic metres per second. \code{flowdata} not 
 \item{HYDAT}{Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
 tidyhydat package and a downloaded SQLite HYDAT required.}
 
+\item{fill_missing_dates}{Logical.}
+
 \item{water_year}{Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
 default calendar year (Jan-Dec) (\code{water_year=FALSE}). Water years are designated by the year which they end in
 (e.g. water year 2000 start on 1 Oct 1999 and ends on 30 Sep 2000).}
