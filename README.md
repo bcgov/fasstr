@@ -58,6 +58,8 @@ To group analyses by water, or hydrologic, years instead of calendar years, if d
 
 For annual yield runoff statistics calculated in the annual statistics functions, an upstream drainage basin area (in sq. km) is required with the `basin_area` argument. If no area is supplied with `flowdata` all yield results will be `NA`. If using the `HYDAT` argument to supply streamflow data, the function will automatically use the basin area of the station provided in HYDAT, if available, so `basin_area` is not required. To override the basin area from HYDAT, set the `basin_area` to your choosing and it will replace the HYDAT number.
 
+If not using `HYDAT` and your `flowdata` dataframe contains a column called `STATION_NUMBER` (HYDAT originated) the functions will look up the station number listed and grab the corresponding basin area from HYDAT, if it exists, without setting the `basin_area` argument. This allows you to use a `flowdata` dataframe that originated from HYDAT without having to look up a basin area.
+
 ### Handling Missing Dates
 
 Coming soon.
@@ -110,7 +112,7 @@ fasstr_daily_stats_plots(HYDAT = "08NM116",
 Flow duration curves can be produced using the `fasstr_flow_duration_plots()` function.
 
 ``` r
-fasstr_flow_duration_plots(HYDAT = "08NM116",
+fasstr_flow_duration_curves(HYDAT = "08NM116",
                            start_year = 1981,
                            end_year = 2010)
 ```
@@ -127,18 +129,18 @@ fasstr_annual_freq_analysis(HYDAT = "08NM116",
                             end_year = 2010,
                             rolling_days=7)[5]
 #> $fitted_quantiles
-#>    Distribution Probability Return Period Q007-day Mean
-#> 1          PIII       0.010    100.000000     0.1929445
-#> 2          PIII       0.050     20.000000     0.2770067
-#> 3          PIII       0.100     10.000000     0.3318582
-#> 4          PIII       0.200      5.000000     0.4084737
-#> 5          PIII       0.500      2.000000     0.5881156
-#> 6          PIII       0.800      1.250000     0.8122160
-#> 7          PIII       0.900      1.111111     0.9463443
-#> 8          PIII       0.950      1.052632     1.0651498
-#> 9          PIII       0.975      1.025641     1.1735280
-#> 10         PIII       0.980      1.020408     1.2066583
-#> 11         PIII       0.990      1.010101     1.3050198
+#>    Distribution Probability Return Period Q007-day-Avg
+#> 1          PIII       0.010    100.000000    0.1929445
+#> 2          PIII       0.050     20.000000    0.2770067
+#> 3          PIII       0.100     10.000000    0.3318582
+#> 4          PIII       0.200      5.000000    0.4084737
+#> 5          PIII       0.500      2.000000    0.5881156
+#> 6          PIII       0.800      1.250000    0.8122160
+#> 7          PIII       0.900      1.111111    0.9463443
+#> 8          PIII       0.950      1.052632    1.0651498
+#> 9          PIII       0.975      1.025641    1.1735280
+#> 10         PIII       0.980      1.020408    1.2066583
+#> 11         PIII       0.990      1.010101    1.3050198
 ```
 
 Project Status
