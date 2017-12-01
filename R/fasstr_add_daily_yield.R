@@ -10,57 +10,61 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Add volume per day
+#' @title Add daily volumetric runoff yields
 #'
-#' @description Add cumulative volumetric flows on an annual basis.
+#' @description Add a column of daily runoff yields to a streamflow dataset, in units of millimetres. Converts the discharge to a depth
+#'   of water based on the upstream drainge basin area.
 #'
-#' @param flowdata Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-#'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
-#'    mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.
-#' @param HYDAT Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
-#'    tidyhydat package and a downloaded SQLite HYDAT required.
-#' @param basin_area Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm)
+#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
+#'    YYYY-MM-DD, and a 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+#'    Not required if \code{HYDAT} argument is used.
+#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
+#'    database are required. Not required if \code{flowdata} argument is used.
+#' @param basin_area Numeric. Upstream drainage basin area of the hydrometric station, in sq. km. Leave blank if \code{HYDAT} is used or a column in 
 #' 
-#' 
+#' @return A column of runoff yield flows for each day called 'Yield_mm' added to the flowdata data frame input or HYDAT dataset, 
+#'    in units of millimetres.
 #'
 #' @examples
 #' \dontrun{
 #' 
-#' set example :)
+#'fasstr_add_daily_yield(flowdata = flowdata, basin_area = 104.5)
+#' 
+#'fasstr_add_daily_yield(HYDAT = "08NM116")
+#'
 #' }
 #' @export
 
-#'
+
 #--------------------------------------------------------------
-# Compute the statistics on an (calendar and water) year basis
 
 fasstr_add_daily_yield <- function(flowdata=NULL,
-                                    HYDAT=NULL,
-                                   basin_area=NA){  # or left or centre
+                                   HYDAT=NULL,
+                                   basin_area=NA){
   
   
+  #--------------------------------------------------------------
   #  Some basic error checking on the input parameters
-  if( is.null(flowdata) & is.null(HYDAT)) {
-    stop("flowdata or HYDAT parameters must be set")}
-  if( !is.null(HYDAT) & !is.null(flowdata))  {
-    stop("Must select either flowdata or HYDAT parameters, not both.")}
-  if( is.null(HYDAT) & !is.data.frame(flowdata))         {
-    stop("flowdata parameter is not a data frame.")}
-  if( is.null(HYDAT) & !all(c("Date","Value") %in% names(flowdata))){
-    stop("flowdata dataframe doesn't contain date or flow columns (labeled 'Value')")}
-  if( is.null(HYDAT) & !is.numeric(flowdata$Value))          {
-    stop("Flow data ('Value') column in flowdata dataframe is not numeric.")}
-  if( is.null(HYDAT) & any(flowdata$Value <0, na.rm=TRUE))   {
-    stop('flowdata cannot have negative values - check your data')}
-  if( is.null(HYDAT) & !inherits(flowdata$Date[1], "Date")){
-    stop("Date column in flowdata dataframe is not a date.")}
   
+  if( !is.null(HYDAT) & !is.null(flowdata))  {
+    stop("must select either flowdata or HYDAT arguments, not both")}
+  if( is.null(HYDAT)) {
+    if( is.null(flowdata)) {stop("one of flowdata or HYDAT arguments must be set")}
+    if( !is.data.frame(flowdata)) {stop("flowdata arguments is not a data frame")}
+    if( !all(c("Date","Value") %in% names(flowdata))){stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
+    if( !inherits(flowdata$Date[1], "Date")){stop("'Date' column in flowdata data frame is not a date")}
+    if( !is.numeric(flowdata$Value)) {stop("'Value' column in flowdata data frame is not numeric")}
+    if( any(flowdata$Value <0, na.rm=TRUE)) {stop('flowdata cannot have negative values - check your data')}
+  }
   
   if( !is.na(basin_area) & !is.numeric(basin_area))    {stop("basin_area parameter must be numeric")}
   if( length(basin_area)>1)        {stop("basin_area parameter cannot have length > 1")}
   
   
+  #--------------------------------------------------------------
   # If HYDAT station is listed, check if it exists and make it the flowdata
+  
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' arguement does not exist.")}
@@ -73,12 +77,13 @@ fasstr_add_daily_yield <- function(flowdata=NULL,
     basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = flowdata$STATION_NUMBER[1])$DRAINAGE_AREA_GROSS)
   }
   
-  
   # Check if no basin_area if use-yield is TRUE
   if( is.na(basin_area) )  {
     stop("no basin_area provided")}
   
   
+  #--------------------------------------------------------------
+  # Add column to flowdata
   
   flowdata <- dplyr::mutate(flowdata,Yield_mm=Value*86400 /(basin_area*1000))
   

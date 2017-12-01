@@ -32,6 +32,7 @@ A column of cumulative runoff yield flows for each day for each year specific ca
 \description{
 Add a column of daily cumulative runoff yield flows on an annual basis to a streamflow dataset. Adds the runoff yield 
    discharge from each day with the previous day(s) for each year, in units of millimetres. The cumulative flows restart every year.
+   Converts cumulative discharge to a depth of water based on the upstream drainge basin area.
 }
 \examples{
 \dontrun{

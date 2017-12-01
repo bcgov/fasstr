@@ -2,26 +2,35 @@
 % Please edit documentation in R/fasstr_add_daily_yield.R
 \name{fasstr_add_daily_yield}
 \alias{fasstr_add_daily_yield}
-\title{Add volume per day}
+\title{Add daily volumetric runoff yields}
 \usage{
 fasstr_add_daily_yield(flowdata = NULL, HYDAT = NULL, basin_area = NA)
 }
 \arguments{
-\item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
-mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.}
+\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
+YYYY-MM-DD, and a 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+Not required if \code{HYDAT} argument is used.}
 
-\item{HYDAT}{Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
-tidyhydat package and a downloaded SQLite HYDAT required.}
+\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
+database are required. Not required if \code{flowdata} argument is used.}
 
-\item{basin_area}{Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm)}
+\item{basin_area}{Numeric. Upstream drainage basin area of the hydrometric station, in sq. km. Leave blank if \code{HYDAT} is used or a column in}
+}
+\value{
+A column of runoff yield flows for each day called 'Yield_mm' added to the flowdata data frame input or HYDAT dataset, 
+   in units of millimetres.
 }
 \description{
-Add cumulative volumetric flows on an annual basis.
+Add a column of daily runoff yields to a streamflow dataset, in units of millimetres. Converts the discharge to a depth
+  of water based on the upstream drainge basin area.
 }
 \examples{
 \dontrun{
 
-set example :)
+fasstr_add_daily_yield(flowdata = flowdata, basin_area = 104.5)
+
+fasstr_add_daily_yield(HYDAT = "08NM116")
+
 }
 }

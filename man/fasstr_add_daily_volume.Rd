@@ -2,24 +2,32 @@
 % Please edit documentation in R/fasstr_add_daily_volume.R
 \name{fasstr_add_daily_volume}
 \alias{fasstr_add_daily_volume}
-\title{Add volume per day}
+\title{Add daily volumetric flows}
 \usage{
 fasstr_add_daily_volume(flowdata = NULL, HYDAT = NULL)
 }
 \arguments{
-\item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
-mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.}
+\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
+YYYY-MM-DD, and a 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+Not required if \code{HYDAT} argument is used.}
 
-\item{HYDAT}{Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
-tidyhydat package and a downloaded SQLite HYDAT required.}
+\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
+database are required. Not required if \code{flowdata} argument is used.}
+}
+\value{
+A column of volumetric flows for each day called 'Volume_m3' added to the flowdata data frame input or HYDAT dataset, 
+   in units of cubic metres.
 }
 \description{
-Add cumulative volumetric flows on an annual basis.
+Add a column of daily volumetric flows to a streamflow dataset, in units of cubic metres. Converts the discharge to a volume.
 }
 \examples{
 \dontrun{
 
-set example :)
+fasstr_add_daily_volume(flowdata = flowdata)
+
+fasstr_add_daily_volume(HYDAT = "08NM116")
+
 }
 }

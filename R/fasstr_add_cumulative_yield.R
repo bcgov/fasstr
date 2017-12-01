@@ -14,6 +14,7 @@
 #'
 #' @description Add a column of daily cumulative runoff yield flows on an annual basis to a streamflow dataset. Adds the runoff yield 
 #'    discharge from each day with the previous day(s) for each year, in units of millimetres. The cumulative flows restart every year.
+#'    Converts cumulative discharge to a depth of water based on the upstream drainge basin area.
 #'
 #' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
 #'    YYYY-MM-DD, and a 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
