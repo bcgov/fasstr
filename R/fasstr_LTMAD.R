@@ -30,7 +30,7 @@
 #' @param end_year Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
 #'    year of the data provided.
 #' @param excluded_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).    
-#' @param percent_MAD Numeric. Factor to mulitply the MAD. Deafult 100 (i.e. 100%MAD)
+#' @param percent_MAD Numeric. Factor to mulitply the MAD. Deafult 100 (i.e. 100PctMAD)
 #'
 #' @examples
 #' \dontrun{

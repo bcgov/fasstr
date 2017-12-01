@@ -28,7 +28,7 @@ year of the data provided.}
 \item{end_year}{Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
 year of the data provided.}
 
-\item{percent_MAD}{Numeric. Factor to mulitply the MAD. Deafult 100 (i.e. 100%MAD)}
+\item{percent_MAD}{Numeric. Factor to mulitply the MAD. Deafult 100 (i.e. 100PctMAD)}
 
 \item{excluded_years}{Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).}
 }
