@@ -68,22 +68,24 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-fasstr_timeseries_plot <- function(flowdata=NULL,
-                                     HYDAT=NULL,
-                                     station_name="fasstr",
-                                     water_year=FALSE, #create another for own water year????
-                                     water_year_start=10,
-                                     start_year=NULL,
-                                     end_year=NULL,
-                                     exclude_years=NULL, # list of stations
-                                     rolling_days=1,
-                                     rolling_align="right",
-                                     write_plot=FALSE,        # write out statistics on calendar year
-                                     plot_type="pdf",        # write out statistics on calendar year
-                                     plot_by_year=FALSE,
-                                     log_discharge=FALSE,
-                                     plot_title=NA,
-                                     report_dir="."){
+fasstr_daily_flows_plot <- function(flowdata=NULL,
+                                   HYDAT=NULL,
+                                   station_name="fasstr",
+                                   water_year=FALSE, #create another for own water year????
+                                   water_year_start=10,
+                                   start_year=NULL,
+                                   end_year=NULL,
+                                   start_date=NULL,
+                                   end_date=NULL,
+                                   exclude_years=NULL, # list of stations
+                                   rolling_days=1,
+                                   rolling_align="right",
+                                   write_plot=FALSE,        # write out statistics on calendar year
+                                   plot_type="pdf",        # write out statistics on calendar year
+                                   plot_by_year=FALSE,
+                                   log_discharge=FALSE,
+                                   plot_title=NA,
+                                   report_dir="."){
   
   
   #
@@ -116,13 +118,25 @@ fasstr_timeseries_plot <- function(flowdata=NULL,
   if( !all(rolling_days==floor(rolling_days)))  {
     stop("rolling_days must be integers")}
   if ( !rolling_align %in% c("right","left","center")){
-    stop("rolling_align argument must be 'right', 'left', or 'center'.")}
+    stop("rolling_align argument m`ust be 'right', 'left', or 'center'.")}
   
   if( !is.logical(water_year))  {
     stop("water_year argument must be logical (TRUE/FALSE)")}
   if( !is.null(exclude_years) & !is.numeric(exclude_years)) {
     stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
   
+  if( !is.null(start_date)) {
+    if(class(try(as.Date(start_date)))=="try-error" ){
+    stop("start_date must be a date formatted YYYY-MM-DD")}
+  }
+  if( !is.null(end_date)) {
+    if(class(try(as.Date(end_date)))=="try-error" ){
+      stop("end_date must be a date formatted YYYY-MM-DD")}
+  }
+  if( !is.null(end_date) & !is.null(start_date) ) {
+    if( start_date>=end_date ) {
+      stop("start_date must be less than end_date")} 
+  }
   
   if( !is.logical(log_discharge))  {
     stop("log_discharge argument must be logical (TRUE/FALSE)")}
@@ -139,7 +153,7 @@ fasstr_timeseries_plot <- function(flowdata=NULL,
   
   if( !dir.exists(as.character(report_dir)))      {
     stop("directory for saved files does not exist")}
-
+  
   
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
@@ -163,7 +177,15 @@ fasstr_timeseries_plot <- function(flowdata=NULL,
   }
   flowdata <- dplyr::filter(flowdata, AnalysisYear >= start_year & AnalysisYear <= end_year)
   flowdata <- dplyr::filter(flowdata,!(AnalysisYear %in% exclude_years))
-
+  
+  if( !is.null(start_date)) {
+    flowdata <- dplyr::filter(flowdata, Date >= start_date)
+  }
+  if( !is.null(end_date)) {
+    flowdata <- dplyr::filter(flowdata, Date <= end_date)
+  }
+  
+  
   
   timeseries_plot <- ggplot2::ggplot(data=flowdata, ggplot2::aes(x=Date, y=RollingValue))+
     #ggtitle("Mean Daily Discharge")+
@@ -176,7 +198,7 @@ fasstr_timeseries_plot <- function(flowdata=NULL,
     {if (plot_by_year) ggplot2::scale_x_date(date_labels = "%b")} +
     {if (!plot_by_year) ggplot2::scale_x_date(breaks = scales::pretty_breaks(n = 12))} +
     ggplot2::theme( panel.border = ggplot2::element_rect(colour = "grey80", fill=NA, size=.5),
-           panel.grid.minor.y = ggplot2::element_blank())
+                    panel.grid.minor.y = ggplot2::element_blank())
   
   
   if (write_plot) {
@@ -189,7 +211,7 @@ fasstr_timeseries_plot <- function(flowdata=NULL,
                     width = 18)
   }
   
-
+  
   
   
   
