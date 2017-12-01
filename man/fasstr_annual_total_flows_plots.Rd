@@ -5,10 +5,10 @@
 \title{Compute basin annual summary statistics.}
 \usage{
 fasstr_annual_total_flows_plots(flowdata = NULL, HYDAT = NULL,
-  station_name = "fasstr", water_year = FALSE, water_year_start = 10,
+  station_name = NA, water_year = FALSE, water_year_start = 10,
   start_year = NULL, end_year = NULL, exclude_years = NULL,
-  basin_area = NA, write_plot = FALSE, plot_type = "pdf",
-  report_dir = ".", na.rm = list(na.rm.global = FALSE))
+  basin_area = NA, write_plot = FALSE, write_imgtype = "pdf",
+  write_dir = ".", na.rm = list(na.rm.global = FALSE))
 }
 \arguments{
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
@@ -39,7 +39,7 @@ year of the data provided.}
 \item{basin_area}{Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm).
 If no value provided, yield calculations will result in NA values.#'}
 
-\item{report_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
+\item{write_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
 
 \item{na.rm}{TBD}
 
@@ -48,7 +48,7 @@ If no value provided, yield calculations will result in NA values.#'}
 \item{transpose}{Logical. Switch the rows and columns of the results.}
 
 \item{write_table}{Logical. Should a file be created with the calendar year computed percentiles?
-The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
+The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
 
 \item{table_nddigits}{Numeric. Number of significant digits to round the results in the written tables. Default is 3.}
 }

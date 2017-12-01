@@ -36,9 +36,9 @@
 #' @param rolling_align Character. Specifies whether the date of the means should be left- (first day) or right (last day)-aligned 
 #'    or centered (middle day). Default right.
 #' @param write_plot Logical. Should a file be created with the calendar year computed percentiles?
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
-#' @param plot_type Character. pdf, png, bmp, jpeg, tiff. Default pdf.
-#' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
+#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
+#' @param write_imgtype Character. pdf, png, bmp, jpeg, tiff. Default pdf.
+#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
 #'
 #'
 #' @examples
@@ -55,7 +55,7 @@
 
 fasstr_data_screening_plots <- function(flowdata=NULL,
                                   HYDAT=NULL,
-                                  station_name="fasstr",
+                                  station_name=NA,
                                   water_year=FALSE, #create another for own water year????
                                   start_year=NULL,
                                   end_year=NULL,
@@ -63,8 +63,8 @@ fasstr_data_screening_plots <- function(flowdata=NULL,
                                   rolling_days=1,
                                   rolling_align="right",
                                   write_plot=FALSE,        # write out statistics on calendar year
-                                  plot_type="pdf",
-                                  report_dir="."){              # decimal digits for csv files for statistics
+                                  write_imgtype="pdf",
+                                  write_dir="."){              # decimal digits for csv files for statistics
 
   #############################################################
   
@@ -72,7 +72,6 @@ fasstr_data_screening_plots <- function(flowdata=NULL,
   #
   if( is.null(flowdata) & is.null(HYDAT)) {stop("flowdata or HYDAT parameters must be set")}
   if( !is.null(HYDAT) & !is.null(flowdata))  {stop("Must select either flowdata or HYDAT parameters, not both.")}
-  if( is.null(HYDAT) & !is.character(station_name))  {stop("station_name parameter must be a character string.")}
   if( is.null(HYDAT) & length(station_name)>1)        {stop("station_name parameter cannot have length > 1")}
   if( is.null(HYDAT) & !is.data.frame(flowdata))         {stop("flowdata parameter is not a data frame.")}
   if( is.null(HYDAT) & !all(c("Date","Value") %in% names(flowdata))){
@@ -84,6 +83,8 @@ fasstr_data_screening_plots <- function(flowdata=NULL,
   
   if( !is.logical(water_year))  {stop("water_year parameter must be logical (TRUE/FALSE)")}
 
+  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
+  
   if( !is.numeric(rolling_days))   {
     stop("rolling_days must be numeric")}
   if( length(rolling_days)>1 ) {
@@ -96,16 +97,16 @@ fasstr_data_screening_plots <- function(flowdata=NULL,
     stop("rolling_align parameter must be 'right', 'left', or 'center'.")}
   
   if( !is.logical(write_plot))  {stop("write_plot parameter must be logical (TRUE/FALSE)")}
-  if( length(plot_type)>1)        {
-    stop("plot_type argument cannot have length > 1")}
-  if( !is.na(plot_type) & !plot_type %in% c("pdf","png","jpeg","tiff","bmp"))  {
-    stop("plot_type argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
+  if( length(write_imgtype)>1)        {
+    stop("write_imgtype argument cannot have length > 1")}
+  if( !is.na(write_imgtype) & !write_imgtype %in% c("pdf","png","jpeg","tiff","bmp"))  {
+    stop("write_imgtype argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
   
-  if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
+  if( !dir.exists(as.character(write_dir)))      {stop("directory for saved files does not exist")}
 
   
   if (!is.null(HYDAT)) {
-    if (station_name=="fasstr") {station_name <- HYDAT}
+    if( is.na(station_name) ) {station_name <- HYDAT}
   }
   
   flow_summary <- fasstr::fasstr_data_screening(flowdata=flowdata,
@@ -119,8 +120,8 @@ fasstr_data_screening_plots <- function(flowdata=NULL,
                                                 rolling_align=rolling_align,
                                                 transpose=FALSE,
                                                 write_table=FALSE,
-                                                report_dir=report_dir,
-                                                table_nddigits=3)
+                                                write_dir=write_dir,
+                                                write_digits=3)
   
   summary_plotdata <- dplyr::select(flow_summary,Year,Minimum,Maximum,Mean,StandardDeviation)
   summary_plotdata <- tidyr::gather(summary_plotdata,Statistic,Value,2:5)
@@ -135,7 +136,7 @@ fasstr_data_screening_plots <- function(flowdata=NULL,
     ggplot2::xlab("Year")
   
   if (write_plot) {
-    file_summary_plot <- paste(report_dir,"/",station_name,"-annual-summary.",plot_type,sep = "")
+    file_summary_plot <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-summary.",write_imgtype,sep = "")
     ggplot2::ggsave(filename = file_summary_plot,
                     summary_plot,
                     height= 5.5,

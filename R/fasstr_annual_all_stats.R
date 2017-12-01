@@ -37,9 +37,9 @@
 #'    If no value provided, yield calculations will result in NA values.
 #' @param transpose Logical. Switch the rows and columns of the results.
 #' @param write_table Logical. Should a file be created with the calendar year computed percentiles?
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
-#' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
-#' @param table_nddigits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
+#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
+#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
+#' @param write_digits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
 #' @param na.rm TBD
 #'
 #'
@@ -62,7 +62,7 @@
 
 fasstr_annual_all_stats <- function(flowdata=NULL,
                                     HYDAT=NULL,
-                                    station_name="fasstr",
+                                    station_name=NA,
                                     water_year=FALSE,
                                     water_year_start=10,
                                     start_year=NULL,
@@ -74,9 +74,9 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
                                     timing_percent=c(25,33,50,75),
                                     transpose=FALSE,
                                     write_table=FALSE,
-                                    report_dir=".",
+                                    write_dir=".",
                                     na.rm=list(na.rm.global=FALSE),
-                                    table_nddigits=3){
+                                    write_digits=3){
   
   #############################################################
   
@@ -106,6 +106,8 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
   
   if( !is.logical(totalflow_seasons))  {stop("totalflow_seasons must be logical (TRUE/FALSE)")}
   
+  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
+  
   if( !is.numeric(timing_percent))   {
     stop("timing_percent must be numeric")}
   if( !all(timing_percent>0 & timing_percent<100))  {
@@ -122,9 +124,9 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
   if( !is.logical(transpose))  {stop("transpose parameter must be logical (TRUE/FALSE)")}
   if( !is.logical(write_table))  {stop("write_table parameter must be logical (TRUE/FALSE)")}
   
-  if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
-  if( !is.numeric(table_nddigits))  { stop("csv.ndddigits parameter needs to be numeric")}
-  table_nddigits <- round(table_nddigits[1])  # number of decimal digits for rounding in csv files
+  if( !dir.exists(as.character(write_dir)))      {stop("directory for saved files does not exist")}
+  if( !is.numeric(write_digits))  { stop("csv.ndddigits parameter needs to be numeric")}
+  write_digits <- round(write_digits[1])  # number of decimal digits for rounding in csv files
   
   if( !is.list(na.rm))              {stop("na.rm is not a list") }
   if(! is.logical(unlist(na.rm))){   stop("na.rm is list of logical (TRUE/FALSE) values only.")}
@@ -138,7 +140,7 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
-    if (station_name=="fasstr") {station_name <- HYDAT}
+    if( is.na(station_name) ) {station_name <- HYDAT}
     if (is.na(basin_area)) {basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = HYDAT)$DRAINAGE_AREA_GROSS)}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
@@ -195,9 +197,9 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
                                                percentiles=NA,
                                                transpose=FALSE,
                                                write_table=FALSE,
-                                               report_dir=report_dir,
+                                               write_dir=write_dir,
                                                na.rm=na.rm,
-                                               table_nddigits=3)
+                                               write_digits=3)
   Qannual_stats <- dplyr::rename(Qannual_stats,
                                  MIN_DAILY=Minimum,
                                  MAX_DAILY=Maximum,
@@ -216,9 +218,9 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
                                                      exclude_years=exclude_years,
                                                      rolling_days=lowflow_days,
                                                      write_table=F,
-                                                     report_dir=report_dir,
+                                                     write_dir=write_dir,
                                                      na.rm=na.rm,
-                                                     table_nddigits=3,
+                                                     write_digits=3,
                                                      transpose = F)
   Qannual_lowflows <- dplyr::select(Qannual_lowflows,-dplyr::contains("Date"))
   
@@ -237,9 +239,9 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
                                                           seasons=totalflow_seasons,
                                                           transpose=FALSE,
                                                           write_table=FALSE,
-                                                          report_dir=report_dir,
+                                                          write_dir=write_dir,
                                                           na.rm=list(na.rm.global=FALSE),
-                                                          table_nddigits=3)
+                                                          write_digits=3)
   
   
   Qannual_flowdates <- fasstr::fasstr_annual_flow_timing(flowdata=flowdata,
@@ -253,7 +255,7 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
                                                          timing_percent=timing_percent,
                                                          transpose=FALSE,
                                                          write_table=FALSE,
-                                                         report_dir=report_dir,
+                                                         write_dir=write_dir,
                                                          na.rm=list(na.rm.global=FALSE))
   Qannual_flowdates <- dplyr::select(Qannual_flowdates,Year,dplyr::contains("DoY"))
   
@@ -269,9 +271,9 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
                                                  spread=TRUE,
                                                  transpose=FALSE,
                                                  write_table=FALSE,
-                                                 report_dir=report_dir,
+                                                 write_dir=write_dir,
                                                  na.rm=na.rm,
-                                                 table_nddigits=3)
+                                                 write_digits=3)
   
   Qannual_normals <- fasstr::fasstr_annual_days_outside_normal(flowdata=flowdata,
                                                                HYDAT=NULL,
@@ -285,7 +287,7 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
                                                                normal_upper_ptile=75,
                                                                transpose=FALSE,
                                                                write_table=FALSE,
-                                                               report_dir=report_dir)
+                                                               write_dir=write_dir)
   
   
   # Combine all and label columns
@@ -308,7 +310,7 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
   if(transpose){
     options(scipen = 999)
     Qstat_tpose <- tidyr::gather(Qstat,Statistic,Value,-Year)
-    Qstat_tpose_temp <- dplyr::mutate(Qstat_tpose,Value=round(Value,table_nddigits)) # for writing to csv
+    Qstat_tpose_temp <- dplyr::mutate(Qstat_tpose,Value=round(Value,write_digits)) # for writing to csv
     Qstat <- tidyr::spread(Qstat_tpose,Year,Value)
   }
   
@@ -316,9 +318,9 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
   # See if you want to write out the summary tables?
   if(write_table){
     # Write out the summary table for comparison to excel spreadsheet for calendar year
-    file_Qstat_table <- file.path(report_dir, paste(station_name,"-all_annual-statistics.csv", sep=""))
+    file_Qstat_table <- file.path(write_dir, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-all_annual-statistics.csv", sep=""))
     temp <- Qstat
-    temp <- round(temp, table_nddigits)
+    temp <- round(temp, write_digits)
     if(transpose){
       temp <- tidyr::spread(Qstat_tpose_temp,Year,Value)
     }

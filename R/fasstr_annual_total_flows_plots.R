@@ -39,8 +39,8 @@
 #' @param exclude_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).    
 #' @param transpose Logical. Switch the rows and columns of the results.
 #' @param write_table Logical. Should a file be created with the calendar year computed percentiles?
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
-#' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
+#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
+#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
 #' @param table_nddigits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
 #' @param na.rm TBD
 #'
@@ -60,7 +60,7 @@
 
 fasstr_annual_total_flows_plots <- function(flowdata=NULL,
                                             HYDAT=NULL,
-                                            station_name="fasstr",
+                                            station_name=NA,
                                             water_year=FALSE,
                                             water_year_start=10,
                                             start_year=NULL,
@@ -68,8 +68,8 @@ fasstr_annual_total_flows_plots <- function(flowdata=NULL,
                                             exclude_years=NULL,
                                             basin_area=NA,
                                             write_plot=FALSE,
-                                            plot_type="pdf",        # write out statistics on calendar year
-                                            report_dir=".",
+                                            write_imgtype="pdf",        # write out statistics on calendar year
+                                            write_dir=".",
                                             na.rm=list(na.rm.global=FALSE)){
   
   #############################################################
@@ -95,13 +95,15 @@ fasstr_annual_total_flows_plots <- function(flowdata=NULL,
   
   if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
 
+  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
+  
   if( !is.logical(write_plot))  {stop("write_plot parameter must be logical (TRUE/FALSE)")}
-  if( length(plot_type)>1)        {
-    stop("plot_type argument cannot have length > 1")}
-  if( !is.na(plot_type) & !plot_type %in% c("pdf","png","jpeg","tiff","bmp"))  {
-    stop("plot_type argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
+  if( length(write_imgtype)>1)        {
+    stop("write_imgtype argument cannot have length > 1")}
+  if( !is.na(write_imgtype) & !write_imgtype %in% c("pdf","png","jpeg","tiff","bmp"))  {
+    stop("write_imgtype argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
 
-  if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
+  if( !dir.exists(as.character(write_dir)))      {stop("directory for saved files does not exist")}
   
   if( !is.list(na.rm))              {stop("na.rm is not a list") }
   if(! is.logical(unlist(na.rm))){   stop("na.rm is list of logical (TRUE/FALSE) values only.")}
@@ -114,7 +116,7 @@ fasstr_annual_total_flows_plots <- function(flowdata=NULL,
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
-    if (station_name=="fasstr") {station_name <- HYDAT}
+    if( is.na(station_name) ) {station_name <- HYDAT}
     if (is.na(basin_area)) {basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = HYDAT)$DRAINAGE_AREA_GROSS)}
   }
   
@@ -186,7 +188,7 @@ fasstr_annual_total_flows_plots <- function(flowdata=NULL,
       plots_list[[paste0(type,"_",title)]] <- plot
       
       if (write_plot) {
-        file_plot <- paste(report_dir,"/",station_name,"_",type,"_",title,".",plot_type,sep = "")
+        file_plot <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"_",type,"_",title,".",write_imgtype,sep = "")
         ggplot2::ggsave(filename =file_plot,plot,width=8.5,height=5)
       }
       

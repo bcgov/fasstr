@@ -4,12 +4,12 @@
 \alias{fasstr_daily_stats_plots}
 \title{Plot streamflow statistics for each day of the year.}
 \usage{
-fasstr_daily_stats_plots(flowdata = NULL, HYDAT = NULL,
-  station_name = "fasstr", water_year = FALSE, water_year_start = 10,
-  start_year = NULL, end_year = NULL, exclude_years = NULL,
-  rolling_days = 1, rolling_align = "right", write_plot = FALSE,
-  plot_type = "pdf", log_discharge = FALSE, plot_title = NA,
-  report_dir = ".", na.rm = list(na.rm.global = FALSE))
+fasstr_daily_stats_plots(flowdata = NULL, HYDAT = NULL, station_name = NA,
+  water_year = FALSE, water_year_start = 10, start_year = NULL,
+  end_year = NULL, exclude_years = NULL, rolling_days = 1,
+  rolling_align = "right", write_plot = FALSE, write_imgtype = "pdf",
+  log_discharge = FALSE, plot_title = NA, write_dir = ".",
+  na.rm = list(na.rm.global = FALSE))
 }
 \arguments{
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
@@ -41,15 +41,15 @@ year of the data provided.}
 (default) compared to the rolling window of observations#' @param transpose Logical. Switch the rows and columns of the results.}
 
 \item{write_plot}{Logical. Should a file be created with the calendar year computed percentiles?
-The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
+The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
 
-\item{plot_type}{Character. pdf, png, bmp, jpeg, tiff. Default pdf.}
+\item{write_imgtype}{Character. pdf, png, bmp, jpeg, tiff. Default pdf.}
 
 \item{log_discharge}{Logical. Place the discharge axis (Y) on log scale. Default FALSE (linear).}
 
 \item{plot_title}{Character. Text string of desired title for all plots. Default NA.}
 
-\item{report_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
+\item{write_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
 
 \item{na.rm}{TBD}
 

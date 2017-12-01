@@ -35,8 +35,8 @@
 #' @param excluded_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).    
 #' @param transpose Logical. Switch the rows and columns of the results.
 #' @param write_table Logical. Should a file be created with the calendar year computed percentiles?
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
-#' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
+#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
+#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
 #' @param table_nddigits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
 #' @param na.rm TBD
 #'
@@ -65,7 +65,7 @@
 
 fasstr_flow_duration_curves <- function(flowdata=NULL,
                                        HYDAT=NULL,
-                                       station_name="fasstr",
+                                       station_name=NA,
                                        water_year=FALSE, #create another for own water year????
                                        water_year_start=10,
                                        start_year=NULL,
@@ -75,8 +75,8 @@ fasstr_flow_duration_curves <- function(flowdata=NULL,
                                        percentiles=c(1:99),
                                        log_discharge=TRUE,
                                        write_plot=FALSE,        # write out statistics on calendar year
-                                       plot_type="pdf",        # write out statistics on calendar year
-                                       report_dir=".",
+                                       write_imgtype="pdf",        # write out statistics on calendar year
+                                       write_dir=".",
                                        na.rm=list(na.rm.global=FALSE)){
   
   
@@ -88,8 +88,6 @@ fasstr_flow_duration_curves <- function(flowdata=NULL,
     stop("flowdata or HYDAT parameters must be set")}
   if( !is.null(HYDAT) & !is.null(flowdata))  {
     stop("Must select either flowdata or HYDAT parameters, not both.")}
-  if( is.null(HYDAT) & !is.character(station_name))  {
-    stop("station_name parameter must be a character string.")}
   if( is.null(HYDAT) & length(station_name)>1)        {
     stop("station_name parameter cannot have length > 1")}
   if( is.null(HYDAT) & !is.data.frame(flowdata))         {
@@ -108,17 +106,19 @@ fasstr_flow_duration_curves <- function(flowdata=NULL,
   if( !is.null(exclude_years) & !is.numeric(exclude_years)) {
     stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
   
+  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
+  
   if( !is.logical(log_discharge))  {
     stop("log_discharge argument must be logical (TRUE/FALSE)")}
   
   if( !is.logical(write_plot))  {
     stop("write_plot parameter must be logical (TRUE/FALSE)")}
-  if( length(plot_type)>1)        {
-    stop("plot_type argument cannot have length > 1")}
-  if( !is.na(plot_type) & !plot_type %in% c("pdf","png","jpeg","tiff","bmp"))  {
-    stop("plot_type argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
+  if( length(write_imgtype)>1)        {
+    stop("write_imgtype argument cannot have length > 1")}
+  if( !is.na(write_imgtype) & !write_imgtype %in% c("pdf","png","jpeg","tiff","bmp"))  {
+    stop("write_imgtype argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
   
-  if( !dir.exists(as.character(report_dir)))      {
+  if( !dir.exists(as.character(write_dir)))      {
     stop("directory for saved files does not exist")}
   
   if( !is.list(na.rm))              {
@@ -144,9 +144,10 @@ fasstr_flow_duration_curves <- function(flowdata=NULL,
                                              percentiles=c(1:99),
                                              transpose=FALSE,
                                              write_table=FALSE,        # write out statistics on calendar year
-                                             report_dir=report_dir,
+                                             write_dir=write_dir,
                                              na.rm=list(na.rm.global=FALSE),
-                                             table_nddigits=3)
+                                             write_digits=3)
+  
   percentiles_data <- tidyr::gather(percentiles_data,Percentile,Value,-1)
   percentiles_data <- dplyr::mutate(percentiles_data,Percentile=100-as.numeric(gsub("P", "", Percentile)))
   
@@ -170,7 +171,7 @@ fasstr_flow_duration_curves <- function(flowdata=NULL,
   
   #  Write out summary tables for calendar years
   if (write_plot) {
-    file_flowduration_plot <- paste(report_dir,"/",station_name,"-flow_duration_curves.",plot_type,sep = "")
+    file_flowduration_plot <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-flow_duration_curves.",write_imgtype,sep = "")
     ggplot2::ggsave(filename = file_flowduration_plot,
                     flow_duration_plot,
                     height= 6,

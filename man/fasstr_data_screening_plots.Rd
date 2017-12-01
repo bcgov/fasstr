@@ -5,10 +5,10 @@
 \title{fasstr_data_screening_plots}
 \usage{
 fasstr_data_screening_plots(flowdata = NULL, HYDAT = NULL,
-  station_name = "fasstr", water_year = FALSE, start_year = NULL,
+  station_name = NA, water_year = FALSE, start_year = NULL,
   end_year = NULL, water_year_start = 10, rolling_days = 1,
-  rolling_align = "right", write_plot = FALSE, plot_type = "pdf",
-  report_dir = ".")
+  rolling_align = "right", write_plot = FALSE, write_imgtype = "pdf",
+  write_dir = ".")
 }
 \arguments{
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
@@ -38,11 +38,11 @@ year of the data provided.}
 or centered (middle day). Default right.}
 
 \item{write_plot}{Logical. Should a file be created with the calendar year computed percentiles?
-The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
+The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
 
-\item{plot_type}{Character. pdf, png, bmp, jpeg, tiff. Default pdf.}
+\item{write_imgtype}{Character. pdf, png, bmp, jpeg, tiff. Default pdf.}
 
-\item{report_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
+\item{write_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
 }
 \description{
 Compute summary statistics to review a streamflow dataset.

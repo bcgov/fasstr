@@ -39,9 +39,9 @@
 #' @param rolling_align Character. Specifies whether the date of the means should be left- (first day) or right (last day)-aligned 
 #'    or centered (middle day). Default right.
 #' @param write_plot Logical. Should a file be created with the calendar year computed percentiles?
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
-#' @param plot_type Character. pdf, png, bmp, jpeg, tiff. Default pdf.
-#' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
+#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
+#' @param write_imgtype Character. pdf, png, bmp, jpeg, tiff. Default pdf.
+#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
 #' @param na.rm TBD
 #'
 #'
@@ -59,7 +59,7 @@
 
 fasstr_annual_lowflows_plots <- function(flowdata=NULL,
                                          HYDAT=NULL,
-                                         station_name="fasstr",
+                                         station_name=NA,
                                          water_year=FALSE,
                                          water_year_start=10,
                                          start_year=NULL,
@@ -68,8 +68,8 @@ fasstr_annual_lowflows_plots <- function(flowdata=NULL,
                                          rolling_days=c(1,3,7,30),
                                          rolling_align="right",
                                          write_plot=FALSE,
-                                         plot_type="pdf",      
-                                         report_dir=".",
+                                         write_imgtype="pdf",      
+                                         write_dir=".",
                                          na.rm=list(na.rm.global=FALSE)){
   
   #############################################################
@@ -95,6 +95,8 @@ fasstr_annual_lowflows_plots <- function(flowdata=NULL,
   
   if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
   
+  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
+  
   if( !is.numeric(rolling_days))   {
     stop("rolling_days must be numeric")}
   if( !all(rolling_days>0 & rolling_days<=180))  {
@@ -105,12 +107,12 @@ fasstr_annual_lowflows_plots <- function(flowdata=NULL,
     stop("align rolling_align must be 'right', 'left', or 'center'.")}
   
   if( !is.logical(write_plot))  {stop("write_plot parameter must be logical (TRUE/FALSE)")}
-  if( length(plot_type)>1)        {
-    stop("plot_type argument cannot have length > 1")}
-  if( !is.na(plot_type) & !plot_type %in% c("pdf","png","jpeg","tiff","bmp"))  {
-    stop("plot_type argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
+  if( length(write_imgtype)>1)        {
+    stop("write_imgtype argument cannot have length > 1")}
+  if( !is.na(write_imgtype) & !write_imgtype %in% c("pdf","png","jpeg","tiff","bmp"))  {
+    stop("write_imgtype argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
   
-  if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
+  if( !dir.exists(as.character(write_dir)))      {stop("directory for saved files does not exist")}
   
   
   if( !is.list(na.rm))              {stop("na.rm is not a list") }
@@ -125,7 +127,7 @@ fasstr_annual_lowflows_plots <- function(flowdata=NULL,
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
-    if (station_name=="fasstr") {station_name <- HYDAT}
+    if( is.na(station_name) ) {station_name <- HYDAT}
   }
   
   
@@ -142,9 +144,9 @@ fasstr_annual_lowflows_plots <- function(flowdata=NULL,
                                                   rolling_align=rolling_align,
                                                   transpose=FALSE,
                                                   write_table=FALSE,
-                                                  report_dir=".",
+                                                  write_dir=".",
                                                   na.rm=list(na.rm.global=FALSE),
-                                                  table_nddigits=3)
+                                                  write_digits=3)
 
   
   # Gather data and plot the minimums day
@@ -187,10 +189,10 @@ fasstr_annual_lowflows_plots <- function(flowdata=NULL,
   
     # Save the plots if selected.
   if (write_plot) {
-    file_doy_plot <- paste(report_dir,"/",station_name,"_annual_lowflow_minimums.",plot_type,sep = "")
+    file_doy_plot <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"_annual_lowflow_minimums.",write_imgtype,sep = "")
     ggplot2::ggsave(filename =file_doy_plot,doy_plot,width=8.5,height=5)
     
-    file_min_plot <- paste(report_dir,"/",station_name,"_annual_lowflow_minimum_days.",plot_type,sep = "")
+    file_min_plot <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"_annual_lowflow_minimum_days.",write_imgtype,sep = "")
     ggplot2::ggsave(filename =file_min_plot,min_plot,width=8.5,height=5)
   }
   

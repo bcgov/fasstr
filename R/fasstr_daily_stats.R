@@ -39,9 +39,9 @@
 #'    (default) compared to the rolling window of observations#' 
 #' @param transpose Logical. Switch the rows and columns of the results.
 #' @param write_table Logical. Should a file be created with the calendar year computed percentiles?
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
-#' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
-#' @param table_nddigits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
+#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
+#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
+#' @param write_digits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
 #' @param na.rm TBD
 #'
 #'
@@ -69,7 +69,7 @@
 
 fasstr_daily_stats <- function(flowdata=NULL,
                                HYDAT=NULL,
-                               station_name="fasstr",
+                               station_name=NA,
                                water_year=FALSE, #create another for own water year????
                                water_year_start=10,
                                start_year=NULL,
@@ -80,9 +80,9 @@ fasstr_daily_stats <- function(flowdata=NULL,
                                rolling_align="right",
                                transpose=FALSE,
                                write_table=FALSE,        # write out statistics on calendar year
-                               report_dir=".",
+                               write_dir=".",
                                na.rm=list(na.rm.global=FALSE),
-                               table_nddigits=3){
+                               write_digits=3){
   
   
   #
@@ -107,6 +107,8 @@ fasstr_daily_stats <- function(flowdata=NULL,
     stop("Value column in flowdata dataframe is not numeric.")}
   if( is.null(HYDAT) & any(flowdata$Value <0, na.rm=TRUE))   {
     stop('flowdata cannot have negative values - check your data')}
+  
+  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
   
   if( !is.numeric(percentiles))   {
     stop("percentiles must be numeric")}
@@ -134,11 +136,11 @@ fasstr_daily_stats <- function(flowdata=NULL,
   if( !is.logical(write_table))  {
     stop("write_table parameter must be logical (TRUE/FALSE)")}
   
-  if( !dir.exists(as.character(report_dir)))      {
+  if( !dir.exists(as.character(write_dir)))      {
     stop("directory for saved files does not exist")}
-  if( !is.numeric(table_nddigits))  { 
+  if( !is.numeric(write_digits))  { 
     stop("csv.ndddigits parameter needs to be numeric")}
-  table_nddigits <- round(table_nddigits[1])  # number of decimal digits for rounding in csv files
+  write_digits <- round(write_digits[1])  # number of decimal digits for rounding in csv files
   
   if( !is.list(na.rm))              {
     stop("na.rm is not a list") }
@@ -155,7 +157,7 @@ fasstr_daily_stats <- function(flowdata=NULL,
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
-    if (station_name=="fasstr") {station_name <- HYDAT}
+    if( is.na(station_name) ) {station_name <- HYDAT}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
@@ -258,9 +260,9 @@ fasstr_daily_stats <- function(flowdata=NULL,
   
   #  Write the table
   if (write_table) {
-    file.stat.csv <-file.path(report_dir, paste(station_name,"-daily-summary-stat.csv", sep=""))
+    file.stat.csv <-file.path(write_dir, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-daily-summary-stat.csv", sep=""))
     temp <- Q_daily
-    temp[,2:ncol(temp)] <- round(temp[,2:ncol(temp)], table_nddigits)  # round the output
+    temp[,2:ncol(temp)] <- round(temp[,2:ncol(temp)], write_digits)  # round the output
     utils::write.csv(temp, file=file.stat.csv, row.names=FALSE)
   }
   

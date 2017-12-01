@@ -26,7 +26,7 @@
 #' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
 #' @param start_year Integer. First year to consider for analysis. Leave blank if all years are required.
 #' @param end_year Integer. Last year to consider for analysis. Leave blank if all years are required.
-#' @param excluded_years Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.    
+#' @param exclude_years Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.    
 #' @param percent_MAD Numeric. Percent of long-term mean annual discharge to output. Default \code{100} (i.e. 100pct. MAD).
 #'
 #' @return A numeric value of the long-term mean annual discharge.
@@ -36,7 +36,7 @@
 #' 
 #' fasstr_LTMAD(flowdata = data, start_year = 1980, end_year = 2010)
 #' 
-#' fasstr_LTMAD(HYDAT = "08NM116",water_year = TRUE, excluded_years = (1990, 1992:1994))
+#' fasstr_LTMAD(HYDAT = "08NM116",water_year = TRUE, exclude_years = (1990, 1992:1994))
 #' 
 #' fasstr_LTMAD(HYDAT = "08NM116", percent_MAD = 20)
 #' 
@@ -51,7 +51,7 @@ fasstr_LTMAD <- function(flowdata=NULL,
                          water_year_start=10,
                          start_year=NULL,
                          end_year=NULL,
-                         excluded_years=NULL,
+                         exclude_years=NULL,
                          percent_MAD=100){
   
   
@@ -78,10 +78,10 @@ fasstr_LTMAD <- function(flowdata=NULL,
   if( length(end_year)>1)     {stop("only one end_year value can be selected")}
   if( !is.null(end_year) )    {if( !end_year %in% c(0:5000) )  {stop("end_year must be an integer")}}
   
-  if( !is.null(excluded_years) ) {
-    if( !all(excluded_years %in% c(0:5000)) ) {stop("excluded_years must be integers (ex. 1999 or c(1999,2000))")}}
-  if ( (is.null(start_year) & is.null(end_year) & is.null(excluded_years)) & water_year ) {
-    message("water_year=TRUE ignored; no start_year, end_year, or excluded_years selected to filter dates")}
+  if( !is.null(exclude_years) ) {
+    if( !all(exclude_years %in% c(0:5000)) ) {stop("exclude_years must be integers (ex. 1999 or c(1999,2000))")}}
+  if ( (is.null(start_year) & is.null(end_year) & is.null(exclude_years)) & water_year ) {
+    message("water_year=TRUE ignored; no start_year, end_year, or exclude_years selected to filter dates")}
   
   if( length(percent_MAD)>1) {stop("percent_MAD must be a single number > 0")}
   if( percent_MAD <=0 )      {stop("percent_MAD must be a single number > 0")}
@@ -121,7 +121,7 @@ fasstr_LTMAD <- function(flowdata=NULL,
   
   # Filter for the selected year
   flowdata <- dplyr::filter(flowdata,AnalysisYear>=start_year & AnalysisYear <= end_year)
-  flowdata <- dplyr::filter(flowdata,!(AnalysisYear %in% excluded_years))
+  flowdata <- dplyr::filter(flowdata,!(AnalysisYear %in% exclude_years))
   
   
   #--------------------------------------------------------------

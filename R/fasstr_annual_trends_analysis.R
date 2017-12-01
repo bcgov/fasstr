@@ -35,12 +35,12 @@
 #' @param basin_area Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm).
 #'    If no value provided, yield calculations will result in NA values.
 #' @param write_table Logical. Should a file be created with the calendar year computed percentiles?
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
+#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
 #' @param write_transposed_table Logical. Should a file be created with the transposed of the annual statistics
 #'    (both calendar and water year)?
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-summary-stat-trans.csv'))}.
-#' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
-#' @param table_nddigits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
+#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-summary-stat-trans.csv'))}.
+#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
+#' @param write_digits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
 #' @param na.rm TBD
 #'
 #'
@@ -60,7 +60,7 @@ fasstr_annual_trends_analysis <- function(flowdata=NULL,
                                  HYDAT=NULL,
                                  trendsdata=NULL,
                                  zyp_method=NA,
-                                 station_name="fasstr",
+                                 station_name=NA,
                                  water_year=FALSE, #create another for own water year????
                                  water_year_start=10,
                                  start_year=NULL,
@@ -72,9 +72,9 @@ fasstr_annual_trends_analysis <- function(flowdata=NULL,
                                  timing_percent=c(25,33,50,75),
                                  write_trends_data=FALSE,        # write out statistics on calendar year
                                  write_trends_results=FALSE,  # write out statistics in transposed format (cy & wy)
-                                 report_dir=".",
+                                 write_dir=".",
                                  na.rm=list(na.rm.global=FALSE),
-                                 table_nddigits=3){              # decimal digits for csv files for statistics
+                                 write_digits=3){              # decimal digits for csv files for statistics
   
   
   
@@ -119,18 +119,19 @@ fasstr_annual_trends_analysis <- function(flowdata=NULL,
     if( length(basin_area)>1 )        {stop("basin_area parameter cannot have length > 1")}
   }
   
+  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
+  
   if( is.na(zyp_method) | !zyp_method %in% c("yuepilon","zhang") )   {
     stop('zyp_trending parameter must have either "yuepilon" or "zhang" listed')}
   
-  if( !is.character(station_name) )  {stop("station_name parameter must be a character string.")}
   if( length(station_name)>1 )        {stop("station_name parameter cannot have length > 1")}
 
   if( !is.logical(write_trends_data))  {stop("write_trends_data parameter must be logical (TRUE/FALSE)")}
   if( !is.logical(write_trends_results)){stop("write_trends_results parameter must be logical (TRUE/FALSE)")}
   
-  if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
-  if( !is.numeric(table_nddigits))  { stop("csv.ndddigits parameter needs to be numeric")}
-  table_nddigits <- round(table_nddigits[1])  # number of decimal digits for rounding in csv files
+  if( !dir.exists(as.character(write_dir)))      {stop("directory for saved files does not exist")}
+  if( !is.numeric(write_digits))  { stop("csv.ndddigits parameter needs to be numeric")}
+  write_digits <- round(write_digits[1])  # number of decimal digits for rounding in csv files
   
   if( !is.list(na.rm))              {stop("na.rm is not a list") }
   if(! is.logical(unlist(na.rm))){   stop("na.rm is list of logical (TRUE/FALSE) values only.")}
@@ -182,13 +183,13 @@ fasstr_annual_trends_analysis <- function(flowdata=NULL,
   
   
   if(write_trends_data){
-    file_trends_data <-file.path(report_dir,paste(station_name,"-annual-trends-data.csv",sep=""))
+    file_trends_data <-file.path(write_dir,paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-trends-data.csv",sep=""))
     temp <- trends_data
     utils::write.csv(temp, file=file_trends_data, row.names=FALSE)
   }
   
   if(write_trends_results){
-    file_trends_results <-file.path(report_dir,paste(station_name,"-annual-trends-results.csv",sep=""))
+    file_trends_results <-file.path(write_dir,paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-trends-results.csv",sep=""))
     utils::write.csv(trends_results, file=file_trends_results, row.names=FALSE)
   }
   

@@ -5,10 +5,10 @@
 \title{Compute the number of days for each year that flows are above/below normal.}
 \usage{
 fasstr_annual_days_outside_normal(flowdata = NULL, HYDAT = NULL,
-  station_name = "fasstr", water_year = FALSE, water_year_start = 10,
+  station_name = NA, water_year = FALSE, water_year_start = 10,
   start_year = NULL, end_year = NULL, exclude_years = NULL,
   normal_lower_ptile = 25, normal_upper_ptile = 75, transpose = FALSE,
-  write_table = FALSE, report_dir = ".")
+  write_table = FALSE, write_dir = ".")
 }
 \arguments{
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
@@ -39,9 +39,9 @@ year of the data provided.}
 \item{transpose}{Logical. Switch the rows and columns of the results. Dates excluded.}
 
 \item{write_table}{Logical.
-The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
+The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
 
-\item{report_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
+\item{write_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
 
 \item{normal_lower_ptile=25}{Numeric. Percentile indicating the lower limit of the normal range. Default 25.}
 

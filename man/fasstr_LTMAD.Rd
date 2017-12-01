@@ -6,7 +6,7 @@
 \usage{
 fasstr_LTMAD(flowdata = NULL, HYDAT = NULL, water_year = FALSE,
   water_year_start = 10, start_year = NULL, end_year = NULL,
-  excluded_years = NULL, percent_MAD = 100)
+  exclude_years = NULL, percent_MAD = 100)
 }
 \arguments{
 \item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
@@ -26,7 +26,7 @@ by the year in which they end. Default \code{FALSE}.}
 
 \item{end_year}{Integer. Last year to consider for analysis. Leave blank if all years are required.}
 
-\item{excluded_years}{Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.}
+\item{exclude_years}{Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.}
 
 \item{percent_MAD}{Numeric. Percent of long-term mean annual discharge to output. Default \code{100} (i.e. 100pct. MAD).}
 }
@@ -42,7 +42,7 @@ Calculates the long-term mean annual discharge of a streamflow dataset. Averages
 
 fasstr_LTMAD(flowdata = data, start_year = 1980, end_year = 2010)
 
-fasstr_LTMAD(HYDAT = "08NM116",water_year = TRUE, excluded_years = (1990, 1992:1994))
+fasstr_LTMAD(HYDAT = "08NM116",water_year = TRUE, exclude_years = (1990, 1992:1994))
 
 fasstr_LTMAD(HYDAT = "08NM116", percent_MAD = 20)
 

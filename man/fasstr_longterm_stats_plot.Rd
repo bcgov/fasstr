@@ -5,10 +5,10 @@
 \title{Compute long-term statistics.}
 \usage{
 fasstr_longterm_stats_plot(flowdata = NULL, HYDAT = NULL,
-  station_name = "fasstr", water_year = FALSE, water_year_start = 10,
+  station_name = NA, water_year = FALSE, water_year_start = 10,
   start_year = NULL, end_year = NULL, exclude_years = NULL,
-  write_plot = FALSE, log_discharge = FALSE, plot_type = "pdf",
-  report_dir = ".", na.rm = list(na.rm.global = FALSE))
+  write_plot = FALSE, log_discharge = FALSE, write_imgtype = "pdf",
+  write_dir = ".", na.rm = list(na.rm.global = FALSE))
 }
 \arguments{
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
@@ -34,11 +34,11 @@ year of the data provided.}
 \item{end_year}{Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
 year of the data provided.}
 
-\item{report_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
+\item{exclude_years}{Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).}
+
+\item{write_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
 
 \item{na.rm}{TBD}
-
-\item{excluded_years}{Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).}
 }
 \description{
 Computes long-term statistics of streamflow data.

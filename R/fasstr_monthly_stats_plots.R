@@ -36,8 +36,8 @@
 #' @param exclude_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).    
 #' @param percentiles Numeric. List of monthly percentiles to calculate. Default c(10,20).
 #' @param write_plot Logical. Should a file be created with the calendar year computed percentiles?
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
-#' @param plot_type Character. pdf, png, bmp, jpeg, tiff. Default pdf.
+#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
+#' @param write_imgtype Character. pdf, png, bmp, jpeg, tiff. Default pdf.
 #' @param log_discharge Logical. Place the discharge axis (Y) on log scale. Default FALSE (linear).
 #' @param na.rm TBD
 #'
@@ -58,7 +58,7 @@
 
 fasstr_monthly_stats_plots <- function(flowdata=NULL,
                                 HYDAT=NULL,
-                                station_name="fasstr",
+                                station_name=NA,
                                 water_year=FALSE,
                                 water_year_start=10,
                                 start_year=NULL,
@@ -66,9 +66,9 @@ fasstr_monthly_stats_plots <- function(flowdata=NULL,
                                 exclude_years=NULL, 
                                 percentiles=c(10,20),
                                 write_plots=FALSE,
-                                plot_type="pdf",
+                                write_imgtype="pdf",
                                 log_discharge=FALSE,
-                                report_dir=".",
+                                write_dir=".",
                                 na.rm=list(na.rm.global=FALSE)){
   
   #############################################################
@@ -77,7 +77,6 @@ fasstr_monthly_stats_plots <- function(flowdata=NULL,
   #
   if( is.null(flowdata) & is.null(HYDAT)) {stop("flowdata or HYDAT parameters must be set")}
   if( !is.null(HYDAT) & !is.null(flowdata))  {stop("Must select either flowdata or HYDAT parameters, not both.")}
-  if( is.null(HYDAT) & !is.character(station_name))  {stop("station_name parameter must be a character string.")}
   if( is.null(HYDAT) & length(station_name)>1)        {stop("station_name parameter cannot have length > 1")}
   if( is.null(HYDAT) & !is.data.frame(flowdata))         {stop("flowdata parameter is not a data frame.")}
   if( is.null(HYDAT) & !all(c("Date","Value") %in% names(flowdata))){
@@ -94,16 +93,18 @@ fasstr_monthly_stats_plots <- function(flowdata=NULL,
   
   if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
   
+  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
+  
   if( !is.numeric(percentiles))   {
     stop("percentiles must be numeric")}
   if( !all(percentiles>0 & percentiles<=100))  {
     stop("percentiles must be >0 and <=100)")}
   
   if( !is.logical(write_plots))  {stop("write_plots parameter must be logical (TRUE/FALSE)")}
-  if( length(plot_type)>1)        {
-    stop("plot_type argument cannot have length > 1")}
-  if( !is.na(plot_type) & !plot_type %in% c("pdf","png","jpeg","tiff","bmp"))  {
-    stop("plot_type argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
+  if( length(write_imgtype)>1)        {
+    stop("write_imgtype argument cannot have length > 1")}
+  if( !is.na(write_imgtype) & !write_imgtype %in% c("pdf","png","jpeg","tiff","bmp"))  {
+    stop("write_imgtype argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
   
   if( !is.logical(log_discharge))  {stop("log_discharge must be logical (TRUE/FALSE)")}
   
@@ -121,7 +122,7 @@ fasstr_monthly_stats_plots <- function(flowdata=NULL,
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
-    if (station_name=="fasstr") {station_name <- HYDAT}
+    if( is.na(station_name) ) {station_name <- HYDAT}
   }
   
   
@@ -137,13 +138,13 @@ fasstr_monthly_stats_plots <- function(flowdata=NULL,
                                    spread=FALSE,
                                    transpose=FALSE,
                                    write_table=FALSE,
-                                   report_dir=".",
+                                   write_dir=".",
                                    na.rm=list(na.rm.global=FALSE),
-                                   table_nddigits=3)
+                                   write_digits=3)
   monthly_data <- tidyr::gather(monthly_data,Statistic,Value,-(1:2))
   
   if (write_plots) {
-    file_stat_plot <- paste(report_dir,"/",station_name,"-monthly-summary-statistics",sep = "")
+    file_stat_plot <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-monthly-summary-statistics",sep = "")
     dir.create(file_stat_plot)
   }
   
@@ -175,7 +176,7 @@ fasstr_monthly_stats_plots <- function(flowdata=NULL,
     monthly_stats_plots[[paste0("Monthly_",stat)]] <- monthly_plot
     
     if (write_plots) {
-      file_plot <- paste(file_stat_plot,"/","Monthly_",stat,".",plot_type,sep = "")
+      file_plot <- paste(file_stat_plot,"/","Monthly_",stat,".",write_imgtype,sep = "")
       ggplot2::ggsave(filename =file_plot,monthly_plot,width=8.5,height=5.5)
     }
   }

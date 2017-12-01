@@ -32,8 +32,8 @@
 #'    year of the data provided.
 #' @param end_year Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
 #'    year of the data provided.
-#' @param excluded_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).    
-#' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
+#' @param exclude_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).    
+#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
 #' @param na.rm TBD
 #'
 #'
@@ -61,7 +61,7 @@
 
 fasstr_longterm_stats_plot <- function(flowdata=NULL,
                                   HYDAT=NULL,
-                                  station_name="fasstr",
+                                  station_name=NA,
                                   water_year=FALSE,
                                   water_year_start=10,
                                   start_year=NULL,
@@ -69,8 +69,8 @@ fasstr_longterm_stats_plot <- function(flowdata=NULL,
                                   exclude_years=NULL,
                                   write_plot=FALSE,
                                   log_discharge=FALSE,
-                                  plot_type="pdf",
-                                  report_dir=".",
+                                  write_imgtype="pdf",
+                                  write_dir=".",
                                   na.rm=list(na.rm.global=FALSE)){
   
   
@@ -82,8 +82,6 @@ fasstr_longterm_stats_plot <- function(flowdata=NULL,
     stop("flowdata or HYDAT parameters must be set")}
   if( !is.null(HYDAT) & !is.null(flowdata))  {
     stop("Must select either flowdata or HYDAT parameters, not both.")}
-  if( is.null(HYDAT) & !is.character(station_name))  {
-    stop("station_name parameter must be a character string.")}
   if( is.null(HYDAT) & length(station_name)>1)        {
     stop("station_name parameter cannot have length > 1")}
   if( is.null(HYDAT) & !is.data.frame(flowdata))         {
@@ -102,14 +100,16 @@ fasstr_longterm_stats_plot <- function(flowdata=NULL,
   if( !is.null(exclude_years) & !is.numeric(exclude_years)) {
     stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
   
+  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
+  
   if( !is.logical(write_plot))  {
     stop("write_plot argument must be logical (TRUE/FALSE)")}
-  if( length(plot_type)>1)        {
-    stop("plot_type argument cannot have length > 1")}
-  if( !is.na(plot_type) & !plot_type %in% c("pdf","png","jpeg","tiff","bmp"))  {
-    stop("plot_type argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
+  if( length(write_imgtype)>1)        {
+    stop("write_imgtype argument cannot have length > 1")}
+  if( !is.na(write_imgtype) & !write_imgtype %in% c("pdf","png","jpeg","tiff","bmp"))  {
+    stop("write_imgtype argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
   
-  if( !dir.exists(as.character(report_dir)))      {
+  if( !dir.exists(as.character(write_dir)))      {
     stop("directory for saved files does not exist")}
   
   if( !is.list(na.rm))              {
@@ -125,7 +125,7 @@ fasstr_longterm_stats_plot <- function(flowdata=NULL,
   
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
-    if (station_name=="fasstr") {station_name <- HYDAT}
+    if( is.na(station_name) ) {station_name <- HYDAT}
   }
   
   
@@ -140,9 +140,9 @@ fasstr_longterm_stats_plot <- function(flowdata=NULL,
                                                   percentiles=c(5,25,75,95),
                                                   transpose=FALSE,
                                                   write_table=FALSE,        # write out statistics on calendar year
-                                                  report_dir=".",
+                                                  write_dir=".",
                                                   na.rm=list(na.rm.global=FALSE),
-                                                  table_nddigits=3)
+                                                  write_digits=3)
   
   
   longterm_stats_months <- dplyr::filter(longterm_stats,Month!="Long-term")
@@ -180,7 +180,7 @@ fasstr_longterm_stats_plot <- function(flowdata=NULL,
   
   #  Write out summary tables for calendar years
   if (write_plot) {
-    file_longterm_plot <- paste(report_dir,"/",station_name,"-longterm-statistics.",plot_type,sep = "")
+    file_longterm_plot <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-longterm-statistics.",write_imgtype,sep = "")
     ggplot2::ggsave(filename = file_longterm_plot,
                     plot=longterm_plot,
                     height= 5,

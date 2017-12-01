@@ -5,7 +5,7 @@
 \title{Add calendar and water year date variables.}
 \usage{
 fasstr_write_daily_flows(flowdata = NULL, HYDAT = NULL,
-  station_name = "fasstr", report_dir = ".", fill_missing_dates = FALSE,
+  station_name = "fasstr", write_dir = ".", fill_missing_dates = FALSE,
   water_year = FALSE, water_year_start = 10, start_year = NULL,
   end_year = NULL, exclude_years = NULL, exclude_rm = FALSE, na = NA)
 }

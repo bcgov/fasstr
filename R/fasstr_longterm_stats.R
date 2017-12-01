@@ -10,34 +10,30 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Compute long-term statistics.
+#' @title Calculate the long-term and long-term monthly summary statistics
 #'
-#' @description Computes long-term statistics of streamflow data.
-#' Streamflow data can be supplied through the \code{flowdata} parameter or extracted from a 
-#' HYDAT database using the tidyhydat package and \code{HYDAT} parameter.
+#' @description Calculates the long-term and long-term monthly mean, median, maximum, minimum, and percentiles of daily flow values 
+#'    from a streamflow dataset. Calculate the statistics from all daily discharge values from all years, unless specified.
 #'
-#' @param flowdata Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-#'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
-#'    mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.
-#' @param HYDAT Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
-#'    tidyhydat package and a downloaded SQLite HYDAT required.
-#' @param station_name Character. Identifier name of the stream or station. Required when supplying data through \code{flowdata}.
-#'    The station name will be used in plots and filenames of exported tables and plot. If using \code{HYDAT} to supply
-#'    data and no \code{station_name} is provided, the HYDAT station number will be the identifier.
-#' @param water_year Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
-#'    default calendar year (Jan-Dec) (\code{water_year=FALSE}). Water years are designated by the year which they end in
-#'    (e.g. water year 2000 start on 1 Oct 1999 and ends on 30 Sep 2000).
-#' @param water_year_start Numeric. Month to start water year (1 to 12 for Jan to Dec).
-#' @param start_year Numeric. The first year of streamflow data to analyze. If unset, the default \code{start_year} is the first
-#'    year of the data provided.
-#' @param end_year Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
-#'    year of the data provided.
-#' @param excluded_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).    
+#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
+#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+#'    Not required if \code{HYDAT} argument is used.
+#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
+#'    database are required. Not required if \code{flowdata} argument is used.
+#' @param percentiles 
+#' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
+#'    by the year in which they end. Default \code{FALSE}.
+#' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
+#' @param start_year Integer. First year to consider for analysis. Leave blank if all years are required.
+#' @param end_year Integer. Last year to consider for analysis. Leave blank if all years are required.
+#' @param exclude_years Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.       
+#' @param percentiles 
 #' @param transpose Logical. Switch the rows and columns of the results.
 #' @param write_table Logical. Should a file be created with the calendar year computed percentiles?
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
-#' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
-#' @param table_nddigits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
+#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
+#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
+#' @param write_digits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
 #' @param na.rm TBD
 #'
 #'
@@ -48,75 +44,58 @@
 #' }
 #' @export
 
-#'
+#--------------------------------------------------------------
 
-
-# Copyright 2017 Province of British Columbia
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and limitations under the License.
 
 fasstr_longterm_stats <- function(flowdata=NULL,
                                   HYDAT=NULL,
-                                  station_name="fasstr",
-                                  water_year=FALSE, #create another for own water year????
+                                  percentiles=c(10,90),
+                                  water_year=FALSE,
                                   water_year_start=10,
                                   start_year=NULL,
                                   end_year=NULL,
-                                  exclude_years=NULL, # list of stations
-                                  percentiles=c(10,90),
+                                  exclude_years=NULL,
+                                  station_name=NA,
                                   transpose=FALSE,
-                                  write_table=FALSE,        # write out statistics on calendar year
-                                  report_dir=".",
-                                  na.rm=list(na.rm.global=FALSE),
-                                  table_nddigits=3){
+                                  write_table=FALSE,
+                                  write_digits=3,
+                                  write_dir=".",
+                                  na.rm=list(na.rm.global=FALSE)){
   
   
-  #
-  #############################################################
-  #  Some basic error checking on the input parameters
-  #
-  if( is.null(flowdata) & is.null(HYDAT)) {
-    stop("flowdata or HYDAT parameters must be set")}
-  if( !is.null(HYDAT) & !is.null(flowdata))  {
-    stop("Must select either flowdata or HYDAT parameters, not both.")}
-  if( is.null(HYDAT) & !is.character(station_name))  {
-    stop("station_name parameter must be a character string.")}
-  if( is.null(HYDAT) & length(station_name)>1)        {
-    stop("station_name parameter cannot have length > 1")}
-  if( is.null(HYDAT) & !is.data.frame(flowdata))         {
-    stop("flowdata parameter is not a data frame.")}
-  if( is.null(HYDAT) & !all(c("Date","Value") %in% names(flowdata))){
-    stop("flowdata dataframe doesn't contain the variables Date and Value.")}
-  if( is.null(HYDAT) & !inherits(flowdata$Date[1], "Date")){
-    stop("Date column in flowdata dataframe is not a date.")}
-  if( is.null(HYDAT) & !is.numeric(flowdata$Value))          {
-    stop("Value column in flowdata dataframe is not numeric.")}
-  if( is.null(HYDAT) & any(flowdata$Value <0, na.rm=TRUE))   {
-    stop('flowdata cannot have negative values - check your data')}
+  #--------------------------------------------------------------
+  #  Error checking on the input parameters
   
-  if( !is.logical(water_year))  {
-    stop("water_year parameter must be logical (TRUE/FALSE)")}
-  if( !is.null(exclude_years) & !is.numeric(exclude_years)) {
-    stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
+  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
+  if( is.null(HYDAT)) {
+    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
+    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
+    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
+    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
+    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
+    if( any(flowdata$Value <0, na.rm=TRUE))           {stop('flowdata cannot have negative values - check your data')}
+  }
   
-  if( !is.logical(transpose))  {
-    stop("transpose parameter must be logical (TRUE/FALSE)")}
-  if( !is.logical(write_table))  {
-    stop("write_table parameter must be logical (TRUE/FALSE)")}
+  if( !is.logical(water_year))         {stop("water_year argument must be logical (TRUE/FALSE)")}
+  if( !is.numeric(water_year_start) )  {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
+  if( length(water_year_start)>1)      {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
+  if( !water_year_start %in% c(1:12) ) {stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec)")}
   
-  if( !dir.exists(as.character(report_dir)))      {
-    stop("directory for saved files does not exist")}
-  if( !is.numeric(table_nddigits))  { 
+  if( length(start_year)>1)   {stop("only one start_year value can be selected")}
+  if( !is.null(start_year) )  {if( !start_year %in% c(0:5000) )  {stop("start_year must be an integer")}}
+  if( length(end_year)>1)     {stop("only one end_year value can be selected")}
+  if( !is.null(end_year) )    {if( !end_year %in% c(0:5000) )  {stop("end_year must be an integer")}}
+  
+  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
+  
+  if( !is.logical(transpose))    {stop("transpose parameter must be logical (TRUE/FALSE)")}
+  if( !is.logical(write_table))  {stop("write_table parameter must be logical (TRUE/FALSE)")}
+  
+  if( !dir.exists(as.character(write_dir))) {
+    message("directory for saved files does not exist")}
+  if( !is.numeric(write_digits))  { 
     stop("csv.ndddigits parameter needs to be numeric")}
-  table_nddigits <- round(table_nddigits[1])  # number of decimal digits for rounding in csv files
+  write_digits <- round(write_digits[1])
   
   if( !is.list(na.rm))              {
     stop("na.rm is not a list") }
@@ -131,9 +110,9 @@ fasstr_longterm_stats <- function(flowdata=NULL,
   
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
-    if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
-    if (station_name=="fasstr") {station_name <- HYDAT}
+    if( length(HYDAT)>1 ) {stop("only one HYDAT station can be selected")}
+    if( !HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist")}
+    if( is.na(station_name) ) {station_name <- HYDAT}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
@@ -245,14 +224,14 @@ fasstr_longterm_stats <- function(flowdata=NULL,
   
   #  Write out summary tables for calendar years
   if (write_table) {
-    file.stat.csv <-file.path(report_dir, paste(station_name,"-longterm-summary-stat.csv", sep=""))
+    file_stat_csv <-file.path(write_dir,paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr")),"-longterm-summary-stat.csv"))
     temp <- Q_longterm
-    temp[,2:ncol(temp)] <- round(temp[,2:ncol(temp)], table_nddigits)  # round the output
-    utils::write.csv(temp, file=file.stat.csv, row.names=FALSE)
+    temp[,2:ncol(temp)] <- round(temp[,2:ncol(temp)], write_digits)
+    utils::write.csv(temp, file=file_stat_csv, row.names=FALSE)
   }
   
   
   return(Q_longterm)
   
   
-} # end of function
+}

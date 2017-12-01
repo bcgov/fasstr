@@ -41,11 +41,11 @@
 #'    (default) compared to the rolling window of observations#' 
 #' @param transpose Logical. Switch the rows and columns of the results.
 #' @param write_plot Logical. Should a file be created with the calendar year computed percentiles?
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
-#' @param plot_type Character. pdf, png, bmp, jpeg, tiff. Default pdf.
+#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
+#' @param write_imgtype Character. pdf, png, bmp, jpeg, tiff. Default pdf.
 #' @param plot_title Character. Text string of desired title for all plots. Default NA.
 #' @param log_discharge Logical. Place the discharge axis (Y) on log scale. Default FALSE (linear).
-#' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
+#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
 #' @param na.rm TBD
 #'
 #'
@@ -73,7 +73,7 @@
 
 fasstr_daily_cumulative_plots <- function(flowdata=NULL,
                                           HYDAT=NULL,
-                                          station_name="fasstr",
+                                          station_name=NA,
                                           water_year=FALSE,
                                           water_year_start=10,
                                           start_year=NULL,
@@ -82,11 +82,11 @@ fasstr_daily_cumulative_plots <- function(flowdata=NULL,
                                           use_yield=FALSE,
                                           basin_area=NA,
                                           write_plot=FALSE,      
-                                          plot_type="pdf",    
+                                          write_imgtype="pdf",    
                                           #plot_all_years=TRUE,
                                           log_discharge=FALSE,
                                           plot_title=NA,
-                                          report_dir=".",
+                                          write_dir=".",
                                           na.rm=list(na.rm.global=FALSE)){
   
   
@@ -125,15 +125,17 @@ fasstr_daily_cumulative_plots <- function(flowdata=NULL,
   if( !is.na(basin_area) & !is.numeric(basin_area))    {stop("basin_area parameter must be numeric")}
   if( length(basin_area)>1)        {stop("basin_area parameter cannot have length > 1")}
   
+  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
+  
   
   if( !is.logical(write_plot))  {
     stop("write_plot argument must be logical (TRUE/FALSE)")}
-  if( length(plot_type)>1)        {
-    stop("plot_type argument cannot have length > 1")}
-  if( !is.na(plot_type) & !plot_type %in% c("pdf","png","jpeg","tiff","bmp"))  {
-    stop("plot_type argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
+  if( length(write_imgtype)>1)        {
+    stop("write_imgtype argument cannot have length > 1")}
+  if( !is.na(write_imgtype) & !write_imgtype %in% c("pdf","png","jpeg","tiff","bmp"))  {
+    stop("write_imgtype argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
   
-  if( !dir.exists(as.character(report_dir)))      {
+  if( !dir.exists(as.character(write_dir)))      {
     stop("directory for saved files does not exist")}
   
   if( !is.list(na.rm))              {
@@ -150,7 +152,7 @@ fasstr_daily_cumulative_plots <- function(flowdata=NULL,
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' argument does not exist.")}
-    if (station_name=="fasstr") {station_name <- HYDAT}
+    if( is.na(station_name) ) {station_name <- HYDAT}
     if (is.na(basin_area)) {basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = HYDAT)$DRAINAGE_AREA_GROSS)}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
@@ -228,9 +230,9 @@ fasstr_daily_cumulative_plots <- function(flowdata=NULL,
                                                          percentiles=c(5,25,75,95),
                                                          transpose=FALSE,
                                                          write_table=FALSE,        # write out statistics on calendar year
-                                                         report_dir=".",
+                                                         write_dir=".",
                                                          na.rm=list(na.rm.global=FALSE),
-                                                         table_nddigits=3)
+                                                         write_digits=3)
   
   # Add cumulative flows to original flow data
   if (use_yield){
@@ -249,12 +251,12 @@ fasstr_daily_cumulative_plots <- function(flowdata=NULL,
   daily_stats_plots <- list()
   
   if (write_plot) {
-    if (plot_type=="pdf"){
-      file_stat_plot <-file.path(report_dir, paste(station_name,"-daily-cumulative",ifelse(use_yield,paste0("-yield"),paste0("-volume")),"-stats.pdf", sep=""))
+    if (write_imgtype=="pdf"){
+      file_stat_plot <-file.path(write_dir, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-daily-cumulative",ifelse(use_yield,paste0("-yield"),paste0("-volume")),"-stats.pdf", sep=""))
       pdf(file = file_stat_plot,8.5,4)
     }
-    if (plot_type %in% c("png","jpeg","tiff","bmp")) {
-      file_stat_plot <- paste(report_dir,"/",station_name,"-daily-cumulative",ifelse(use_yield,paste0("-yield"),paste0("-volume")),"-stats",sep = "")
+    if (write_imgtype %in% c("png","jpeg","tiff","bmp")) {
+      file_stat_plot <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-daily-cumulative",ifelse(use_yield,paste0("-yield"),paste0("-volume")),"-stats",sep = "")
       dir.create(file_stat_plot)
     }
   }
@@ -302,13 +304,13 @@ fasstr_daily_cumulative_plots <- function(flowdata=NULL,
   daily_stats_plots[["cumulative_statistics"]] <- daily_stats_plot
   
   # Plot the plot to the PDF device if selected
-  if (write_plot & plot_type=="pdf") {
+  if (write_plot & write_imgtype=="pdf") {
     plot(daily_stats_plot)
   }
   
   # Save the plots if the png,jpeg,tiff,or bmp images are selected
-  if (write_plot & plot_type %in% c("png","jpeg","tiff","bmp")) {
-    summary_plot <- paste(file_stat_plot,"/","daily-cumulative-stat.",plot_type,sep = "")
+  if (write_plot & write_imgtype %in% c("png","jpeg","tiff","bmp")) {
+    summary_plot <- paste(file_stat_plot,"/","daily-cumulative-stat.",write_imgtype,sep = "")
     ggplot2::ggsave(filename =summary_plot,daily_stats_plot,width=8.5,height=4)
   }
   
@@ -322,19 +324,19 @@ fasstr_daily_cumulative_plots <- function(flowdata=NULL,
     daily_stats_plots[[paste0("cumulative_", yr)]] <- daily_stats_year
     
     # Plot the plots to the PDF device if selected
-    if (write_plot & plot_type=="pdf") {
+    if (write_plot & write_imgtype=="pdf") {
       plot(daily_stats_year)
     }
     
     # Save the plots if the png,jpeg,tiff,or bmp images are selected
-    if (write_plot & plot_type %in% c("png","jpeg","tiff","bmp")) {
-      annual_plot <- paste(file_stat_plot,"/","daily-cumulative-",yr,".",plot_type,sep = "")
+    if (write_plot & write_imgtype %in% c("png","jpeg","tiff","bmp")) {
+      annual_plot <- paste(file_stat_plot,"/","daily-cumulative-",yr,".",write_imgtype,sep = "")
       ggplot2::ggsave(filename =annual_plot,daily_stats_year,width=8.5,height=4)
     }
   }
   
   # End the PDF device if selected
-  if (write_plot & plot_type=="pdf") {
+  if (write_plot & write_imgtype=="pdf") {
     dev.off()
   }
   

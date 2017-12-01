@@ -5,10 +5,11 @@
 \title{Flow duration plots}
 \usage{
 fasstr_flow_duration_curves(flowdata = NULL, HYDAT = NULL,
-  station_name = "fasstr", water_year = FALSE, water_year_start = 10,
+  station_name = NA, water_year = FALSE, water_year_start = 10,
   start_year = NULL, end_year = NULL, exclude_years = NULL,
   percentiles = c(1:99), log_discharge = TRUE, write_plot = FALSE,
-  plot_type = "pdf", report_dir = ".", na.rm = list(na.rm.global = FALSE))
+  write_imgtype = "pdf", write_dir = ".", na.rm = list(na.rm.global =
+  FALSE))
 }
 \arguments{
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
@@ -34,7 +35,7 @@ year of the data provided.}
 \item{end_year}{Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
 year of the data provided.}
 
-\item{report_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
+\item{write_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
 
 \item{na.rm}{TBD}
 
@@ -43,7 +44,7 @@ year of the data provided.}
 \item{transpose}{Logical. Switch the rows and columns of the results.}
 
 \item{write_table}{Logical. Should a file be created with the calendar year computed percentiles?
-The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
+The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
 
 \item{table_nddigits}{Numeric. Number of significant digits to round the results in the written tables. Default is 3.}
 }

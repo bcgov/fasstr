@@ -40,7 +40,7 @@
 fasstr_write_daily_flows <- function(flowdata=NULL,
                                    HYDAT=NULL,
                                    station_name="fasstr",
-                                   report_dir=".",
+                                   write_dir=".",
                                    fill_missing_dates=FALSE,
                                    water_year=FALSE,
                                    water_year_start=10,
@@ -48,7 +48,7 @@ fasstr_write_daily_flows <- function(flowdata=NULL,
                                    end_year=NULL,
                                    exclude_years=NULL,
                                    exclude_rm=FALSE,
-                                   #table_nddigits=4,
+                                   #write_digits=4,
                                    na=NA){  
   
   
@@ -245,7 +245,7 @@ fasstr_write_daily_flows <- function(flowdata=NULL,
   #flowdata <- dplyr::mutate(flowdata,Value=round(Value,table_nddigits))
   flowdata[is.na(flowdata)] <- na
   
-  write.csv(flowdata,file = paste0(report_dir,"/",station_name,"-daily-flows.csv"),
+  write.csv(flowdata,file = paste0(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-daily-flows.csv"),
             row.names = F)
 }
 

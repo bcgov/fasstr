@@ -37,9 +37,9 @@
 #'    (default) compared to the rolling window of observations#'
 #' @param transpose Logical. Switch the rows and columns of the results.
 #' @param write_table Logical. Should a file be created with the calendar year computed percentiles?
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
-#' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
-#' @param table_nddigits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
+#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
+#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
+#' @param write_digits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
 #'
 #'
 #' @examples
@@ -56,7 +56,7 @@
 
 fasstr_data_screening <- function(flowdata=NULL,
                                   HYDAT=NULL,
-                                  station_name="fasstr",
+                                  station_name=NA,
                                   water_year=FALSE, 
                                   start_year=NULL,
                                   end_year=NULL,
@@ -65,8 +65,8 @@ fasstr_data_screening <- function(flowdata=NULL,
                                   rolling_align="right",
                                   transpose=FALSE,
                                   write_table=FALSE,      
-                                  report_dir=".",
-                                  table_nddigits=3){             
+                                  write_dir=".",
+                                  write_digits=3){             
 
   #############################################################
   
@@ -74,7 +74,6 @@ fasstr_data_screening <- function(flowdata=NULL,
   #
   if( is.null(flowdata) & is.null(HYDAT)) {stop("flowdata or HYDAT parameters must be set")}
   if( !is.null(HYDAT) & !is.null(flowdata))  {stop("Must select either flowdata or HYDAT parameters, not both.")}
-  if( is.null(HYDAT) & !is.character(station_name))  {stop("station_name parameter must be a character string.")}
   if( is.null(HYDAT) & length(station_name)>1)        {stop("station_name parameter cannot have length > 1")}
   if( is.null(HYDAT) & !is.data.frame(flowdata))         {stop("flowdata parameter is not a data frame.")}
   if( is.null(HYDAT) & !all(c("Date","Value") %in% names(flowdata))){
@@ -86,6 +85,8 @@ fasstr_data_screening <- function(flowdata=NULL,
   
   if( !is.logical(water_year))  {stop("water_year parameter must be logical (TRUE/FALSE)")}
 
+  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
+  
   if( !is.numeric(rolling_days))   {
     stop("rolling_days must be numeric")}
   if( length(rolling_days)>1 ) {
@@ -100,16 +101,16 @@ fasstr_data_screening <- function(flowdata=NULL,
   if( !is.logical(transpose))  {stop("transpose parameter must be logical (TRUE/FALSE)")}
   if( !is.logical(write_table))  {stop("write_table parameter must be logical (TRUE/FALSE)")}
 
-  if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
-  if( !is.numeric(table_nddigits))  { stop("csv.ndddigits parameter needs to be numeric")}
-  table_nddigits <- round(table_nddigits[1])  # number of decimal digits for rounding in csv files
+  if( !dir.exists(as.character(write_dir)))      {stop("directory for saved files does not exist")}
+  if( !is.numeric(write_digits))  { stop("csv.ndddigits parameter needs to be numeric")}
+  write_digits <- round(write_digits[1])  # number of decimal digits for rounding in csv files
   
   
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
-    if (station_name=="fasstr") {station_name <- HYDAT}
+    if( is.na(station_name) ) {station_name <- HYDAT}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
@@ -198,7 +199,7 @@ fasstr_data_screening <- function(flowdata=NULL,
 
   if(transpose){
     Q_summary_tpose <- tidyr::gather(Q_summary,Statistic,Value,-Year)
-    Q_summary_tpose_temp <- dplyr::mutate(Q_summary_tpose,Value=round(Value,table_nddigits)) # for writing to csv
+    Q_summary_tpose_temp <- dplyr::mutate(Q_summary_tpose,Value=round(Value,write_digits)) # for writing to csv
     Q_summary <- tidyr::spread(Q_summary_tpose,Year,Value)
     Q_summary <- Q_summary_[match(row_order, Q_summary_$Statistic),]
   }
@@ -206,9 +207,9 @@ fasstr_data_screening <- function(flowdata=NULL,
   # See if you want to write out the summary tables?
   if(write_table){
     # Write out the summary table for comparison to excel spreadsheet for calendar year
-    file_Q_summary_table <- file.path(report_dir, paste(station_name,"-annual-summary.csv", sep=""))
+    file_Q_summary_table <- file.path(write_dir, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-summary.csv", sep=""))
     temp <- Q_summary
-    temp <- round(temp, table_nddigits)
+    temp <- round(temp, write_digits)
     if(transpose){
       temp <- tidyr::spread(Q_summary_tpose_temp,Year,Value)
     }

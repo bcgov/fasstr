@@ -38,12 +38,12 @@
 #' @param rolling_align Character. Specifies whether the index of the result should be left- or right-aligned or centered 
 #'    (default) compared to the rolling window of observations#' @param transpose Logical. Switch the rows and columns of the results.
 #' @param write_plot Logical. Should a file be created with the calendar year computed percentiles?
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
-#' @param plot_type Character. pdf, png, bmp, jpeg, tiff. Default pdf.
+#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
+#' @param write_imgtype Character. pdf, png, bmp, jpeg, tiff. Default pdf.
 #' @param plot_title Character. Text string of desired title for all plots. Default NA.
 #' @param plot_by_year Logical. Plot each year of data individually. Default FALSE.
 #' @param log_discharge Logical. Place the discharge axis (Y) on log scale. Default FALSE (linear).
-#' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
+#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
 #'
 #'
 #' @examples
@@ -70,7 +70,7 @@
 
 fasstr_daily_flows_plot <- function(flowdata=NULL,
                                    HYDAT=NULL,
-                                   station_name="fasstr",
+                                   station_name=NA,
                                    water_year=FALSE, #create another for own water year????
                                    water_year_start=10,
                                    start_year=NULL,
@@ -81,11 +81,11 @@ fasstr_daily_flows_plot <- function(flowdata=NULL,
                                    rolling_days=1,
                                    rolling_align="right",
                                    write_plot=FALSE,        # write out statistics on calendar year
-                                   plot_type="pdf",        # write out statistics on calendar year
+                                   write_imgtype="pdf",        # write out statistics on calendar year
                                    plot_by_year=FALSE,
                                    log_discharge=FALSE,
                                    plot_title=NA,
-                                   report_dir="."){
+                                   write_dir="."){
   
   
   #
@@ -143,22 +143,23 @@ fasstr_daily_flows_plot <- function(flowdata=NULL,
   
   if( !is.logical(write_plot))  {
     stop("write_plot argument must be logical (TRUE/FALSE)")}
-  if( length(plot_type)>1)        {
-    stop("plot_type argument cannot have length > 1")}
-  if( !is.na(plot_type) & !plot_type %in% c("pdf","png","jpeg","tiff","bmp"))  {
-    stop("plot_type argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
+  if( length(write_imgtype)>1)        {
+    stop("write_imgtype argument cannot have length > 1")}
+  if( !is.na(write_imgtype) & !write_imgtype %in% c("pdf","png","jpeg","tiff","bmp"))  {
+    stop("write_imgtype argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
   if( !is.logical(plot_by_year))  {
     stop("plot_by_year argument must be logical (TRUE/FALSE)")}
   
+  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
   
-  if( !dir.exists(as.character(report_dir)))      {
+  if( !dir.exists(as.character(write_dir)))      {
     stop("directory for saved files does not exist")}
   
   
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' argument does not exist.")}
-    if (station_name=="fasstr") {station_name <- HYDAT}
+    if( is.na(station_name) ) {station_name <- HYDAT}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
@@ -202,9 +203,10 @@ fasstr_daily_flows_plot <- function(flowdata=NULL,
   
   
   if (write_plot) {
-    file_timeseries_plot <- paste(report_dir,"/",station_name,
+    file_timeseries_plot <- paste(write_dir,"/",
+                                  paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),
                                   ifelse(plot_by_year,paste0("-annual-daily-timeseries."),paste0("-longterm-daily-timeseries.")),
-                                  plot_type,sep = "")
+                                  write_imgtype,sep = "")
     ggplot2::ggsave(filename = file_timeseries_plot,
                     timeseries_plot,
                     height=ifelse(plot_by_year,11,6.35),

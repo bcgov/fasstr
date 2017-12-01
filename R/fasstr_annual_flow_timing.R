@@ -39,8 +39,8 @@
 #' @param exclude_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).    
 #' @param transpose Logical. Switch the rows and columns of the results. Dates excluded.
 #' @param write_table Logical. Should a file be created with the calendar year computed percentiles?
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
-#' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
+#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
+#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
 #' @param na.rm TBD
 #'
 #'
@@ -59,7 +59,7 @@
 
 fasstr_annual_flow_timing <- function(flowdata=NULL,
                                       HYDAT=NULL,
-                                      station_name="fasstr",
+                                      station_name=NA,
                                       water_year=FALSE,
                                       water_year_start=10,
                                       start_year=NULL,
@@ -68,7 +68,7 @@ fasstr_annual_flow_timing <- function(flowdata=NULL,
                                       timing_percent=c(25,33.3,50,75),
                                       transpose=FALSE,
                                       write_table=FALSE,
-                                      report_dir=".",
+                                      write_dir=".",
                                       na.rm=list(na.rm.global=FALSE)){
   
   #############################################################
@@ -94,6 +94,8 @@ fasstr_annual_flow_timing <- function(flowdata=NULL,
   
   if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
   
+  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
+  
   if( !is.numeric(timing_percent))   {
     stop("timing_percent must be numeric")}
   if( !all(timing_percent>0 & timing_percent<100))  {
@@ -102,7 +104,7 @@ fasstr_annual_flow_timing <- function(flowdata=NULL,
   if( !is.logical(transpose))  {stop("transpose parameter must be logical (TRUE/FALSE)")}
   if( !is.logical(write_table))  {stop("write_table parameter must be logical (TRUE/FALSE)")}
   
-  if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
+  if( !dir.exists(as.character(write_dir)))      {stop("directory for saved files does not exist")}
 
   if( !is.list(na.rm))              {stop("na.rm is not a list") }
   if(! is.logical(unlist(na.rm))){   stop("na.rm is list of logical (TRUE/FALSE) values only.")}
@@ -116,7 +118,7 @@ fasstr_annual_flow_timing <- function(flowdata=NULL,
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
-    if (station_name=="fasstr") {station_name <- HYDAT}
+    if( is.na(station_name) ) {station_name <- HYDAT}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
@@ -172,7 +174,7 @@ fasstr_annual_flow_timing <- function(flowdata=NULL,
   }
   
   if(write_table){
-    file_Qstat_table <- file.path(report_dir, paste(station_name,"-annual-date-of-flows.csv", sep=""))
+    file_Qstat_table <- file.path(write_dir, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-date-of-flows.csv", sep=""))
     temp <- Qstat
     utils::write.csv(temp,file=file_Qstat_table, row.names=FALSE)
   }

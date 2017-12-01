@@ -40,9 +40,9 @@
 #'    or centered (middle day). Default right.
 #' @param transpose Logical. Switch the rows and columns of the results. Dates excluded.
 #' @param write_table Logical. Should a file be created with the calendar year computed percentiles?
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
-#' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
-#' @param table_nddigits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
+#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
+#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
+#' @param write_digits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
 #' @param na.rm TBD
 #'
 #'
@@ -65,7 +65,7 @@
 
 fasstr_annual_lowflows <- function(flowdata=NULL,
                                    HYDAT=NULL,
-                                   station_name="fasstr",
+                                   station_name=NA,
                                    water_year=FALSE,
                                    water_year_start=10,
                                    start_year=NULL,
@@ -75,9 +75,9 @@ fasstr_annual_lowflows <- function(flowdata=NULL,
                                    rolling_align="right",
                                    transpose=FALSE,
                                    write_table=FALSE,
-                                   report_dir=".",
+                                   write_dir=".",
                                    na.rm=list(na.rm.global=FALSE),
-                                   table_nddigits=3){
+                                   write_digits=3){
   
   #############################################################
   
@@ -102,6 +102,8 @@ fasstr_annual_lowflows <- function(flowdata=NULL,
   
   if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
   
+  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
+  
   if( !is.numeric(rolling_days))   {
     stop("rolling_days must be numeric")}
   if( !all(rolling_days>0 & rolling_days<=180))  {
@@ -114,9 +116,9 @@ fasstr_annual_lowflows <- function(flowdata=NULL,
   
   if( !is.logical(write_table))  {stop("write_table parameter must be logical (TRUE/FALSE)")}
   
-  if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
-  if( !is.numeric(table_nddigits))  { stop("csv.ndddigits parameter needs to be numeric")}
-  table_nddigits <- round(table_nddigits[1])  # number of decimal digits for rounding in csv files
+  if( !dir.exists(as.character(write_dir)))      {stop("directory for saved files does not exist")}
+  if( !is.numeric(write_digits))  { stop("csv.ndddigits parameter needs to be numeric")}
+  write_digits <- round(write_digits[1])  # number of decimal digits for rounding in csv files
   
   if( !is.list(na.rm))              {stop("na.rm is not a list") }
   if(! is.logical(unlist(na.rm))){   stop("na.rm is list of logical (TRUE/FALSE) values only.")}
@@ -130,7 +132,7 @@ fasstr_annual_lowflows <- function(flowdata=NULL,
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
-    if (station_name=="fasstr") {station_name <- HYDAT}
+    if( is.na(station_name) ) {station_name <- HYDAT}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
@@ -223,14 +225,14 @@ fasstr_annual_lowflows <- function(flowdata=NULL,
   
   
   if(write_table){
-    file_Qlowflows_table <- file.path(report_dir, paste(station_name,"-annual-lowflows.csv", sep=""))
+    file_Qlowflows_table <- file.path(write_dir, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-lowflows.csv", sep=""))
     temp <- Q_lowflow
     # rounding just numeric columns
     if (transpose) {
-      temp[,2:ncol(temp)] <- round(temp[,2:ncol(temp)], table_nddigits)
+      temp[,2:ncol(temp)] <- round(temp[,2:ncol(temp)], write_digits)
     } else {
       numVars <- sapply(temp, is.numeric) 
-      temp[numVars] <- lapply(temp[numVars], round, digits = table_nddigits) 
+      temp[numVars] <- lapply(temp[numVars], round, digits = write_digits) 
     }
     utils::write.csv(temp,file=file_Qlowflows_table, row.names=FALSE)
   }

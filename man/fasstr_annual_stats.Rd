@@ -4,12 +4,11 @@
 \alias{fasstr_annual_stats}
 \title{Compute basin annual summary statistics.}
 \usage{
-fasstr_annual_stats(flowdata = NULL, HYDAT = NULL,
-  station_name = "fasstr", water_year = FALSE, water_year_start = 10,
-  start_year = NULL, end_year = NULL, exclude_years = NULL,
-  percentiles = NA, transpose = FALSE, write_table = FALSE,
-  report_dir = ".", na.rm = list(na.rm.global = FALSE),
-  table_nddigits = 3)
+fasstr_annual_stats(flowdata = NULL, HYDAT = NULL, station_name = NA,
+  water_year = FALSE, water_year_start = 10, start_year = NULL,
+  end_year = NULL, exclude_years = NULL, percentiles = NA,
+  transpose = FALSE, write_table = FALSE, write_dir = ".",
+  na.rm = list(na.rm.global = FALSE), write_digits = 3)
 }
 \arguments{
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
@@ -40,13 +39,13 @@ year of the data provided.}
 \item{transpose}{Logical. Switch the rows and columns of the results.}
 
 \item{write_table}{Logical. Should a file be created with the calendar year computed percentiles?
-The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
+The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
 
-\item{report_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
+\item{write_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
 
 \item{na.rm}{TBD}
 
-\item{table_nddigits}{Numeric. Number of significant digits to round the results in the written tables. Default is 3.}
+\item{write_digits}{Numeric. Number of significant digits to round the results in the written tables. Default is 3.}
 }
 \description{
 Computes annual statistics of streamflow data.

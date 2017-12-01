@@ -5,10 +5,10 @@
 \title{Plot the annual low flow minimums and the day they occur.}
 \usage{
 fasstr_annual_lowflows_plots(flowdata = NULL, HYDAT = NULL,
-  station_name = "fasstr", water_year = FALSE, water_year_start = 10,
+  station_name = NA, water_year = FALSE, water_year_start = 10,
   start_year = NULL, end_year = NULL, exclude_years = NULL,
   rolling_days = c(1, 3, 7, 30), rolling_align = "right",
-  write_plot = FALSE, plot_type = "pdf", report_dir = ".",
+  write_plot = FALSE, write_imgtype = "pdf", write_dir = ".",
   na.rm = list(na.rm.global = FALSE))
 }
 \arguments{
@@ -43,11 +43,11 @@ year of the data provided.}
 or centered (middle day). Default right.}
 
 \item{write_plot}{Logical. Should a file be created with the calendar year computed percentiles?
-The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
+The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
 
-\item{plot_type}{Character. pdf, png, bmp, jpeg, tiff. Default pdf.}
+\item{write_imgtype}{Character. pdf, png, bmp, jpeg, tiff. Default pdf.}
 
-\item{report_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
+\item{write_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
 
 \item{na.rm}{TBD}
 }

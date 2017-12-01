@@ -5,10 +5,10 @@
 \title{fasstr_annual_flow_timing}
 \usage{
 fasstr_annual_flow_timing(flowdata = NULL, HYDAT = NULL,
-  station_name = "fasstr", water_year = FALSE, water_year_start = 10,
+  station_name = NA, water_year = FALSE, water_year_start = 10,
   start_year = NULL, end_year = NULL, exclude_years = NULL,
   timing_percent = c(25, 33.3, 50, 75), transpose = FALSE,
-  write_table = FALSE, report_dir = ".", na.rm = list(na.rm.global =
+  write_table = FALSE, write_dir = ".", na.rm = list(na.rm.global =
   FALSE))
 }
 \arguments{
@@ -40,9 +40,9 @@ year of the data provided.}
 \item{transpose}{Logical. Switch the rows and columns of the results. Dates excluded.}
 
 \item{write_table}{Logical. Should a file be created with the calendar year computed percentiles?
-The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
+The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
 
-\item{report_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
+\item{write_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
 
 \item{na.rm}{TBD}
 

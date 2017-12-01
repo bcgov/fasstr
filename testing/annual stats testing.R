@@ -1,20 +1,22 @@
 
 devtools::document()
-#install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
-install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
+install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
+#install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
 
+
+fasstr::fasstr_LTMAD(HYDAT = "08HB048",excluded_years = T)
 data <- fasstr::fasstr_add_cumulative_volume(HYDAT = "08HB048")
 data <- fasstr::fasstr_add_cumulative_yield(data)
 
 
-
+data <- fasstr::fasstr_LTMAD(HYDAT = "08HB048",start_year = 1973)
 
 data <- fasstr::fasstr_add_daily_volume(HYDAT = "08HB048")
-data <- fasstr::fasstr_add_daily_yield(data)
+data <- fasstr::fasstr_add_daily_yield(HYDAT = "08NM116")
 data <- fasstr_add_date_vars(data,water_year = T, water_year_start = 6)
-data <- fasstr::fasstr_add_rolling_means(data, days = 3.5)
-data <- fasstr::fasstr_add_missing_dates(data)
+data <- fasstr::fasstr_add_rolling_means(data)
+data <- fasstr::fasstr_add_missing_dates(HYDAT = "08NM116")
 data <- fasstr::fasstr_add_cumulative_yield(data, basin_area = 10.3)
 
 
@@ -208,7 +210,7 @@ fasstr::fasstr_write_daily_flows(data)
 
 
 stn.number="08NM116"
-wt_yr=T
+wt_yr=F
 A <- fasstr::fasstr_add_cumulative_volume(HYDAT = stn.number,water_year = wt_yr)
 A <- fasstr::fasstr_add_cumulative_yield(HYDAT = stn.number,water_year = wt_yr)
 A <- fasstr::fasstr_add_daily_volume(HYDAT = stn.number)
@@ -242,7 +244,7 @@ A <- fasstr::fasstr_longterm_stats(HYDAT = stn.number,water_year = wt_yr)
 A <- fasstr::fasstr_longterm_stats_plot(HYDAT = stn.number,log_discharge = T,water_year = wt_yr)
 A <- fasstr::fasstr_monthly_stats(HYDAT = stn.number,water_year = wt_yr)
 A <- fasstr::fasstr_monthly_stats_plots(HYDAT = stn.number,log_discharge = T,water_year = wt_yr)
-A <- fasstr::fasstr_timeseries_plot(HYDAT = stn.number,water_year = wt_yr)
+A <- fasstr::fasstr_daily_flows_plot(HYDAT = stn.number,water_year = wt_yr)
 A <- fasstr::fasstr_write_daily_flows(HYDAT = stn.number,water_year = wt_yr)
 
 

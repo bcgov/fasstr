@@ -4,11 +4,11 @@
 \alias{fasstr_data_screening}
 \title{fasstr_annual_screening}
 \usage{
-fasstr_data_screening(flowdata = NULL, HYDAT = NULL,
-  station_name = "fasstr", water_year = FALSE, start_year = NULL,
-  end_year = NULL, water_year_start = 10, rolling_days = 1,
-  rolling_align = "right", transpose = FALSE, write_table = FALSE,
-  report_dir = ".", table_nddigits = 3)
+fasstr_data_screening(flowdata = NULL, HYDAT = NULL, station_name = NA,
+  water_year = FALSE, start_year = NULL, end_year = NULL,
+  water_year_start = 10, rolling_days = 1, rolling_align = "right",
+  transpose = FALSE, write_table = FALSE, write_dir = ".",
+  write_digits = 3)
 }
 \arguments{
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
@@ -40,11 +40,11 @@ year of the data provided.}
 \item{transpose}{Logical. Switch the rows and columns of the results.}
 
 \item{write_table}{Logical. Should a file be created with the calendar year computed percentiles?
-The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
+The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
 
-\item{report_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
+\item{write_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
 
-\item{table_nddigits}{Numeric. Number of significant digits to round the results in the written tables. Default is 3.}
+\item{write_digits}{Numeric. Number of significant digits to round the results in the written tables. Default is 3.}
 }
 \description{
 Computes annual statistics of streamflow data.

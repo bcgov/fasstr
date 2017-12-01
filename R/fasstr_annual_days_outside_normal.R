@@ -38,8 +38,8 @@
 #' @param normal_lower_ptile=25 Numeric. Percentile indicating the lower limit of the normal range. Default 25.
 #' @param normal_upper_ptile=25 Numeric. Percentile indicating the upper limit of the normal range. Default 75.
 #' @param write_table Logical.
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
-#' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
+#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
+#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
 #' @param na.rm TBD
 #'
 #'
@@ -58,7 +58,7 @@
 
 fasstr_annual_days_outside_normal <- function(flowdata=NULL,
                                       HYDAT=NULL,
-                                      station_name="fasstr",
+                                      station_name=NA,
                                       water_year=FALSE,
                                       water_year_start=10,
                                       start_year=NULL,
@@ -68,7 +68,7 @@ fasstr_annual_days_outside_normal <- function(flowdata=NULL,
                                       normal_upper_ptile=75,
                                       transpose=FALSE,
                                       write_table=FALSE,
-                                      report_dir="."){
+                                      write_dir="."){
   
   #############################################################
   
@@ -93,6 +93,8 @@ fasstr_annual_days_outside_normal <- function(flowdata=NULL,
   
   if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
   
+  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
+  
   if( !is.numeric(normal_lower_ptile))   {
     stop("normal_lower_ptile must be numeric")}
   if( !all(normal_lower_ptile>0 & normal_lower_ptile<100))  {
@@ -107,7 +109,7 @@ fasstr_annual_days_outside_normal <- function(flowdata=NULL,
   if( !is.logical(transpose))  {stop("transpose parameter must be logical (TRUE/FALSE)")}
   if( !is.logical(write_table))  {stop("write_table parameter must be logical (TRUE/FALSE)")}
   
-  if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
+  if( !dir.exists(as.character(write_dir)))      {stop("directory for saved files does not exist")}
 
   
   ## check about number of years of data
@@ -118,7 +120,7 @@ fasstr_annual_days_outside_normal <- function(flowdata=NULL,
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
-    if (station_name=="fasstr") {station_name <- HYDAT}
+    if( is.na(station_name) ) {station_name <- HYDAT}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
@@ -185,7 +187,7 @@ fasstr_annual_days_outside_normal <- function(flowdata=NULL,
   }
   
   if(write_table){
-    file_Qstat_table <- file.path(report_dir, paste(station_name,"-annual-days-outside-normal.csv", sep=""))
+    file_Qstat_table <- file.path(write_dir, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-days-outside-normal.csv", sep=""))
     temp <- Qstat
     utils::write.csv(temp,file=file_Qstat_table, row.names=FALSE)
   }

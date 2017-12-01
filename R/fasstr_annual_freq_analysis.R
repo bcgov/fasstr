@@ -35,16 +35,16 @@
 #' @param na.rm
 #'
 #' @param write_stat_table Should a file be created with the computed percentiles?
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,"-annual-vfa-stat.csv", sep=""))}.
+#'    The file name will be  \code{file.path(write_dir,paste(station_name,"-annual-vfa-stat.csv", sep=""))}.
 #' @param write_plotdata_table Should a file be created with the frequency plot data?
-#'    The file name will be  \code{file.path(report_dir, paste(station_name,"-annual-vfa-plotdata.csv", sep=""))}.
+#'    The file name will be  \code{file.path(write_dir, paste(station_name,"-annual-vfa-plotdata.csv", sep=""))}.
 #' @param write_quantiles_table Should a file be created with the fitted quantiles?.
-#'    The file name will be  \code{file.path(report_dir, paste(station_name,"-annual-vfa-quantiles.csv", sep=""))}.
+#'    The file name will be  \code{file.path(write_dir, paste(station_name,"-annual-vfa-quantiles.csv", sep=""))}.
 #' @param write_frequency_plot Should a file be created with the frequency plot..
-#'    The file name will be \code{file.path(report_dir, paste(station_name,"-annual-vfa-frequency-plot.",write_frequency_plot_type[1],sep=""))}
-#' @param write_frequency_plot_type Format of the frequency plot.
-#' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
-#' @param table_nddigits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
+#'    The file name will be \code{file.path(write_dir, paste(station_name,"-annual-vfa-frequency-plot.",write_frequency_imgtype[1],sep=""))}
+#' @param write_frequency_imgtype Format of the frequency plot.
+#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
+#' @param write_digits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
 #'
 #' @return A list with the following elements:
 #'   \item{Q.flow.summary}{Data frame with flow summary.}
@@ -100,7 +100,7 @@
 
 fasstr_annual_freq_analysis <- function(flowdata=NULL,
                                  HYDAT=NULL,
-                                 station_name="fasstr",
+                                 station_name=NA,
                                  HYDAT_peaks=NA,
                                  water_year=FALSE,
                                  water_year_start=10,
@@ -121,9 +121,9 @@ fasstr_annual_freq_analysis <- function(flowdata=NULL,
                                  write_plotdata_table=FALSE,  # write out the plotting data
                                  write_quantiles_table=FALSE, # write out the fitted quantiles
                                  write_frequency_plot=FALSE,  # write out the frequency plot
-                                 write_frequency_plot_type=c("pdf","png"),
-                                 report_dir='.',
-                                 table_nddigits=3)
+                                 write_frequency_imgtype=c("pdf","png"),
+                                 write_dir='.',
+                                 write_digits=3)
 # Input parameter - consult man-roxygen directory
 # Output list - see above.
 
@@ -151,13 +151,14 @@ if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
   if( water_year & HYDAT_peaks %in% c("MAX","MIN"))   {
     warning("water_year argument was ignored. HYDAT_peaks completed strictly using calendar years.")}
     
+  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
   
   if( !is.numeric(rolling_days))   {stop("rolling_days must be numeric")}
   if( !all(rolling_days>=0 & rolling_days<=180))
   {stop("rolling_days must be >0 and <=180)")}
   if( !all(rolling_days==floor(rolling_days)))
   {stop("rolling_days must be integers")}
-  if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exits")}
+  if( !dir.exists(as.character(write_dir)))      {stop("directory for saved files does not exits")}
   
   if( !is.list(na.rm))              {stop("na.rm is not a list") }
   if( !is.logical(write_stat_table))  {stop("write_stat_table must be logical (TRUE/FALSE")}
@@ -182,10 +183,10 @@ if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
   if( !is.logical(write_plotdata_table))  {stop("write_plotdata_table must be logical (TRUE/FALSE")}
   if( !is.logical(write_quantiles_table)) {stop("write_quantiles_table must be logical (TRUE/FALSE")}
   if( !is.logical(write_frequency_plot)) {stop("write_frequency_plot must be logical (TRUE/FALSE)")}
-  if( !write_frequency_plot_type[1] %in% c("pdf","png")){stop("write_frequency_plot_type must be pdf or png")}
+  if( !write_frequency_imgtype[1] %in% c("pdf","png")){stop("write_frequency_imgtype must be pdf or png")}
   
-  if( !is.numeric(table_nddigits)){      stop("table_nddigits must be numeric")}
-  table_nddigits = round(table_nddigits)[1]
+  if( !is.numeric(write_digits)){      stop("write_digits must be numeric")}
+  write_digits = round(write_digits)[1]
   
   # merge the specified na.rm options with my options
   my.na.rm <- list(na.rm.global=TRUE)
@@ -208,7 +209,7 @@ if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
-    if (station_name=="fasstr") {station_name <- HYDAT}
+    if( is.na(station_name) ) {station_name <- HYDAT}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
@@ -392,36 +393,36 @@ if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
   
   file_stat_csv <- NA
   if (write_overview | write_stat_table | write_plotdata_table | write_quantiles_table | write_frequency_plot) {
-  folder_stat <- paste(report_dir,"/",station_name,"-annual-frequency-analysis",sep = "")
+  folder_stat <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-frequency-analysis",sep = "")
   dir.create(folder_stat)
   }
   if(write_stat_table){
     # Write out the summary table for comparison to HEC spreadsheet
-    file_stat_csv <- file.path(folder_stat,paste(station_name,"-annual-vfa-annual-statistics.csv", sep=""))
+    file_stat_csv <- file.path(folder_stat,paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-vfa-annual-statistics.csv", sep=""))
     temp <- Q_stat_output
-    temp[,2:ncol(temp)] <- round(temp[,2:ncol(temp)], table_nddigits)  # round the output
+    temp[,2:ncol(temp)] <- round(temp[,2:ncol(temp)], write_digits)  # round the output
     utils::write.csv(temp,file=file_stat_csv, row.names=FALSE)
   }
   
   file_plotdata_csv <- NA
   if(write_plotdata_table){
     # Write out the plotdata for comparison with HEC output
-    file_plotdata_csv <- file.path(folder_stat, paste(station_name,"-annual-vfa-plotdata.csv", sep=""))
+    file_plotdata_csv <- file.path(folder_stat, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-vfa-plotdata.csv", sep=""))
     utils::write.csv(plotdata,file=file_plotdata_csv, row.names=FALSE)
   }
   
   file_quantile_csv <- NA
   if(write_quantiles_table){
     # Write out the summary table for comparison to HEC spreadsheet
-    file_quantile_csv<- file.path(folder_stat, paste(station_name,"-annual-vfa-quantiles.csv", sep=""))
+    file_quantile_csv<- file.path(folder_stat, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-vfa-quantiles.csv", sep=""))
     temp <- fitted_quantiles_output
-    temp[,3:ncol(temp)] <- round(temp[,3:ncol(temp)], table_nddigits)  # round the output
+    temp[,3:ncol(temp)] <- round(temp[,3:ncol(temp)], write_digits)  # round the output
     utils::write.csv(temp,file=file_quantile_csv, row.names=FALSE)
   }
   
   file_frequency_plot <- NA
   if(write_frequency_plot){
-    file_frequency_plot <- file.path(folder_stat, paste(station_name,"-annual-vfa-frequency-plot.",write_frequency_plot_type[1],sep=""))
+    file_frequency_plot <- file.path(folder_stat, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-vfa-frequency-plot.",write_frequency_imgtype[1],sep=""))
     ggplot2::ggsave(plot=freqplot, file=file_frequency_plot, h=4, w=6, units="in", dpi=300)
   }
   
@@ -440,7 +441,7 @@ if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
   
   # Write out the analysis options
   if (write_overview){
-  file_options_csv<- file.path(folder_stat, paste(station_name,"-annual-vfa-overview.csv", sep=""))
+  file_options_csv<- file.path(folder_stat, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-vfa-overview.csv", sep=""))
   utils::write.csv(analysis.options.df,file=file_options_csv, row.names=FALSE)
   }
   

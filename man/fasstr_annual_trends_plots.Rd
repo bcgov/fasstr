@@ -6,11 +6,11 @@
 \usage{
 fasstr_annual_trends_plots(flowdata = NULL, HYDAT = NULL,
   trendsdata = NULL, zyp_method = NA, zyp_alpha = 0.05,
-  station_name = "fasstr", water_year = FALSE, water_year_start = 10,
+  station_name = NA, water_year = FALSE, water_year_start = 10,
   start_year = NULL, end_year = NULL, exclude_years = NULL,
   basin_area = NA, lowflow_days = c(1, 3, 7, 30),
   totalflow_seasons = TRUE, timing_percent = c(25, 33, 50, 75),
-  write_plots = FALSE, plot_type = "pdf", report_dir = ".",
+  write_plots = FALSE, write_imgtype = "pdf", write_dir = ".",
   na.rm = list(na.rm.global = FALSE))
 }
 \arguments{
@@ -40,18 +40,18 @@ year of the data provided.}
 \item{basin_area}{Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm).
 If no value provided, yield calculations will result in NA values.}
 
-\item{report_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
+\item{write_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
 
 \item{na.rm}{TBD}
 
 \item{excluded.years}{Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).}
 
 \item{write_table}{Logical. Should a file be created with the calendar year computed percentiles?
-The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
+The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
 
 \item{write_transposed_table}{Logical. Should a file be created with the transposed of the annual statistics
 (both calendar and water year)?
-The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-summary-stat-trans.csv'))}.}
+The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-summary-stat-trans.csv'))}.}
 
 \item{table_nddigits}{Numeric. Number of significant digits to round the results in the written tables. Default is 3.}
 }

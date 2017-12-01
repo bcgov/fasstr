@@ -5,10 +5,10 @@
 \title{Compute basic monthly summary statistics.}
 \usage{
 fasstr_monthly_stats_plots(flowdata = NULL, HYDAT = NULL,
-  station_name = "fasstr", water_year = FALSE, water_year_start = 10,
+  station_name = NA, water_year = FALSE, water_year_start = 10,
   start_year = NULL, end_year = NULL, exclude_years = NULL,
-  percentiles = c(10, 20), write_plots = FALSE, plot_type = "pdf",
-  log_discharge = FALSE, report_dir = ".", na.rm = list(na.rm.global =
+  percentiles = c(10, 20), write_plots = FALSE, write_imgtype = "pdf",
+  log_discharge = FALSE, write_dir = ".", na.rm = list(na.rm.global =
   FALSE))
 }
 \arguments{
@@ -39,14 +39,14 @@ year of the data provided.}
 
 \item{percentiles}{Numeric. List of monthly percentiles to calculate. Default c(10,20).}
 
-\item{plot_type}{Character. pdf, png, bmp, jpeg, tiff. Default pdf.}
+\item{write_imgtype}{Character. pdf, png, bmp, jpeg, tiff. Default pdf.}
 
 \item{log_discharge}{Logical. Place the discharge axis (Y) on log scale. Default FALSE (linear).}
 
 \item{na.rm}{TBD}
 
 \item{write_plot}{Logical. Should a file be created with the calendar year computed percentiles?
-The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
+The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
 }
 \description{
 Compute basic monthly summary statistics.

@@ -38,8 +38,8 @@
 #' @param normal_lower_ptile=25 Numeric. Percentile indicating the lower limit of the normal range. Default 25.
 #' @param normal_upper_ptile=25 Numeric. Percentile indicating the upper limit of the normal range. Default 75.
 #' @param write_table Logical.
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
-#' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
+#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
+#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
 #' @param na.rm TBD
 #'
 #'
@@ -58,7 +58,7 @@
 
 fasstr_annual_days_outside_normal_plots <- function(flowdata=NULL,
                                       HYDAT=NULL,
-                                      station_name="fasstr",
+                                      station_name=NA,
                                       water_year=FALSE,
                                       water_year_start=10,
                                       start_year=NULL,
@@ -67,8 +67,8 @@ fasstr_annual_days_outside_normal_plots <- function(flowdata=NULL,
                                       normal_lower_ptile=25,
                                       normal_upper_ptile=75,
                                       write_plot=FALSE,
-                                      plot_type="pdf",        # write out statistics on calendar year
-                                      report_dir="."){
+                                      write_imgtype="pdf",        # write out statistics on calendar year
+                                      write_dir="."){
   
   #############################################################
   
@@ -93,6 +93,8 @@ fasstr_annual_days_outside_normal_plots <- function(flowdata=NULL,
   
   if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
   
+  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
+  
   if( !is.numeric(normal_lower_ptile))   {
     stop("normal_lower_ptile must be numeric")}
   if( !all(normal_lower_ptile>0 & normal_lower_ptile<100))  {
@@ -105,12 +107,12 @@ fasstr_annual_days_outside_normal_plots <- function(flowdata=NULL,
     stop("normal_lower_ptile must be < normal_upper_ptile")}
   
   if( !is.logical(write_plot))  {stop("write_plot parameter must be logical (TRUE/FALSE)")}
-  if( length(plot_type)>1)        {
-    stop("plot_type argument cannot have length > 1")}
-  if( !is.na(plot_type) & !plot_type %in% c("pdf","png","jpeg","tiff","bmp"))  {
-    stop("plot_type argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
+  if( length(write_imgtype)>1)        {
+    stop("write_imgtype argument cannot have length > 1")}
+  if( !is.na(write_imgtype) & !write_imgtype %in% c("pdf","png","jpeg","tiff","bmp"))  {
+    stop("write_imgtype argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
   
-  if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
+  if( !dir.exists(as.character(write_dir)))      {stop("directory for saved files does not exist")}
 
   
   
@@ -119,7 +121,7 @@ fasstr_annual_days_outside_normal_plots <- function(flowdata=NULL,
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
-    if (station_name=="fasstr") {station_name <- HYDAT}
+    if( is.na(station_name) ) {station_name <- HYDAT}
   }
   
   normal_data <- fasstr::fasstr_annual_days_outside_normal(flowdata=flowdata,
@@ -134,7 +136,7 @@ fasstr_annual_days_outside_normal_plots <- function(flowdata=NULL,
                                                            normal_upper_ptile=normal_upper_ptile,
                                                            transpose=FALSE,
                                                            write_table=FALSE,
-                                                           report_dir=".")
+                                                           write_dir=".")
   normal_data <- tidyr::gather(normal_data,Statistic,Value,-1)
   
   normal_plot <- ggplot2::ggplot(data=normal_data, ggplot2::aes(x=Year, y=Value))+
@@ -150,7 +152,7 @@ fasstr_annual_days_outside_normal_plots <- function(flowdata=NULL,
                    panel.grid = ggplot2::element_line(size=.2))
   
   if (write_plot) {
-    file_plot <- paste(report_dir,"/",station_name,"_days_outside_normal.",plot_type,sep = "")
+    file_plot <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"_days_outside_normal.",write_imgtype,sep = "")
     ggplot2::ggsave(filename =file_plot,normal_plot,width=8.5,height=6)
   }
   

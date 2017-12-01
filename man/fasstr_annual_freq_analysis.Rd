@@ -5,19 +5,19 @@
 \title{Perform a volume frequency analysis on annual statistics.}
 \usage{
 fasstr_annual_freq_analysis(flowdata = NULL, HYDAT = NULL,
-  station_name = "fasstr", HYDAT_peaks = NA, water_year = FALSE,
+  station_name = NA, HYDAT_peaks = NA, water_year = FALSE,
   water_year_start = 10, start_year = NULL, end_year = NULL,
   exclude_years = NULL, rolling_days = c(1, 3, 7, 30), use_log = FALSE,
   use_max = FALSE, prob_plot_position = c("weibull", "median", "hazen"),
   prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5, 0.2, 0.1, 0.02, 0.01,
-  0.001, 1e-04), fit_distr = c("PIII", "weibull"),
+  0.001, 0.0001), fit_distr = c("PIII", "weibull"),
   fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
   fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1, 0.05,
   0.01), na.rm = list(na.rm.global = TRUE), write_overview = FALSE,
   write_stat_table = FALSE, write_plotdata_table = FALSE,
   write_quantiles_table = FALSE, write_frequency_plot = FALSE,
-  write_frequency_plot_type = c("pdf", "png"), report_dir = ".",
-  table_nddigits = 3)
+  write_frequency_imgtype = c("pdf", "png"), write_dir = ".",
+  write_digits = 3)
 }
 \arguments{
 \item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics.
@@ -69,22 +69,22 @@ against  (i-a)/(n+1-a-b) where \code{i} is the rank of the value; \code{n} is th
 \item{na.rm}{}
 
 \item{write_stat_table}{Should a file be created with the computed percentiles?
-The file name will be  \code{file.path(report_dir,paste(station_name,"-annual-vfa-stat.csv", sep=""))}.}
+The file name will be  \code{file.path(write_dir,paste(station_name,"-annual-vfa-stat.csv", sep=""))}.}
 
 \item{write_plotdata_table}{Should a file be created with the frequency plot data?
-The file name will be  \code{file.path(report_dir, paste(station_name,"-annual-vfa-plotdata.csv", sep=""))}.}
+The file name will be  \code{file.path(write_dir, paste(station_name,"-annual-vfa-plotdata.csv", sep=""))}.}
 
 \item{write_quantiles_table}{Should a file be created with the fitted quantiles?.
-The file name will be  \code{file.path(report_dir, paste(station_name,"-annual-vfa-quantiles.csv", sep=""))}.}
+The file name will be  \code{file.path(write_dir, paste(station_name,"-annual-vfa-quantiles.csv", sep=""))}.}
 
 \item{write_frequency_plot}{Should a file be created with the frequency plot..
-The file name will be \code{file.path(report_dir, paste(station_name,"-annual-vfa-frequency-plot.",write_frequency_plot_type[1],sep=""))}}
+The file name will be \code{file.path(write_dir, paste(station_name,"-annual-vfa-frequency-plot.",write_frequency_imgtype[1],sep=""))}}
 
-\item{write_frequency_plot_type}{Format of the frequency plot.}
+\item{write_frequency_imgtype}{Format of the frequency plot.}
 
-\item{report_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
+\item{write_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
 
-\item{table_nddigits}{Numeric. Number of significant digits to round the results in the written tables. Default is 3.}
+\item{write_digits}{Numeric. Number of significant digits to round the results in the written tables. Default is 3.}
 }
 \value{
 A list with the following elements:

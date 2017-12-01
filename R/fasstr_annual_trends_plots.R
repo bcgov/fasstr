@@ -35,11 +35,11 @@
 #' @param basin_area Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm).
 #'    If no value provided, yield calculations will result in NA values.
 #' @param write_table Logical. Should a file be created with the calendar year computed percentiles?
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
+#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
 #' @param write_transposed_table Logical. Should a file be created with the transposed of the annual statistics
 #'    (both calendar and water year)?
-#'    The file name will be  \code{file.path(report_dir,paste(station_name,'-annual-summary-stat-trans.csv'))}.
-#' @param report_dir Character. Folder location of where to write tables and plots. Default is the working directory.
+#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-summary-stat-trans.csv'))}.
+#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
 #' @param table_nddigits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
 #' @param na.rm TBD
 #'
@@ -61,7 +61,7 @@ fasstr_annual_trends_plots <- function(flowdata=NULL,
                                  trendsdata=NULL,
                                  zyp_method=NA,
                                  zyp_alpha=0.05,
-                                 station_name="fasstr",
+                                 station_name=NA,
                                  water_year=FALSE,
                                  water_year_start=10,
                                  start_year=NULL,
@@ -72,8 +72,8 @@ fasstr_annual_trends_plots <- function(flowdata=NULL,
                                  totalflow_seasons=TRUE,
                                  timing_percent=c(25,33,50,75),
                                  write_plots=FALSE,      
-                                 plot_type="pdf",  
-                                 report_dir=".",
+                                 write_imgtype="pdf",  
+                                 write_dir=".",
                                  na.rm=list(na.rm.global=FALSE)){             
   
   
@@ -115,6 +115,8 @@ fasstr_annual_trends_plots <- function(flowdata=NULL,
     
     if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
     
+    if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
+    
     if( !is.na(basin_area) & !is.numeric(basin_area))    {stop("basin_area parameter must be numeric")}
     if( length(basin_area)>1 )        {stop("basin_area parameter cannot have length > 1")}
   }
@@ -122,17 +124,16 @@ fasstr_annual_trends_plots <- function(flowdata=NULL,
   if( is.na(zyp_method) | !zyp_method %in% c("yuepilon","zhang") )   {
     stop('zyp_trending parameter must have either "yuepilon" or "zhang" listed')}
   
-  if( !is.character(station_name) )  {stop("station_name parameter must be a character string.")}
-  if( length(station_name)>1 )        {stop("station_name parameter cannot have length > 1")}
+    if( length(station_name)>1 )        {stop("station_name parameter cannot have length > 1")}
   
   if( !is.logical(write_plots))  {
     stop("write_plots argument must be logical (TRUE/FALSE)")}
-  if( length(plot_type)>1)        {
-    stop("plot_type argument cannot have length > 1")}
-  if( !is.na(plot_type) & !plot_type %in% c("pdf","png","jpeg","tiff","bmp"))  {
-    stop("plot_type argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
+  if( length(write_imgtype)>1)        {
+    stop("write_imgtype argument cannot have length > 1")}
+  if( !is.na(write_imgtype) & !write_imgtype %in% c("pdf","png","jpeg","tiff","bmp"))  {
+    stop("write_imgtype argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
 
-  if( !dir.exists(as.character(report_dir)))      {stop("directory for saved files does not exist")}
+  if( !dir.exists(as.character(write_dir)))      {stop("directory for saved files does not exist")}
 
   if( !is.list(na.rm))              {stop("na.rm is not a list") }
   if(! is.logical(unlist(na.rm))){   stop("na.rm is list of logical (TRUE/FALSE) values only.")}
@@ -143,7 +144,7 @@ fasstr_annual_trends_plots <- function(flowdata=NULL,
   
   
   if (!is.null(HYDAT)) {
-    if (station_name=="fasstr") {station_name <- HYDAT}
+    if( is.na(station_name) ) {station_name <- HYDAT}
   }
   
   trends_data <- trendsdata
@@ -181,7 +182,7 @@ fasstr_annual_trends_plots <- function(flowdata=NULL,
                                                           #basin_area=basin_area,
                                                           #write_trends_data=FALSE,      
                                                           #write_trends_results=FALSE,
-                                                          #report_dir=".",
+                                                          #write_dir=".",
                                                           #na.rm=list(na.rm.global=FALSE),
                                                           #table_nddigits=3
   )
@@ -191,12 +192,12 @@ fasstr_annual_trends_plots <- function(flowdata=NULL,
   trends_plots <- list()
   
   if (write_plots) {
-    if (plot_type=="pdf"){
-      file_trends_plot <-file.path(report_dir, paste(station_name,"-annual-trends-plots.pdf", sep=""))
+    if (write_imgtype=="pdf"){
+      file_trends_plot <-file.path(write_dir, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-trends-plots.pdf", sep=""))
       pdf(file = file_trends_plot,8.5,4)
     }
-    if (plot_type %in% c("png","jpeg","tiff","bmp")) {
-      file_trends_plot <- paste(report_dir,"/",station_name,"-annual-trends-plots",sep = "")
+    if (write_imgtype %in% c("png","jpeg","tiff","bmp")) {
+      file_trends_plot <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-trends-plots",sep = "")
       dir.create(file_trends_plot)
     }
   }
@@ -239,13 +240,13 @@ fasstr_annual_trends_plots <- function(flowdata=NULL,
     trends_plots[[paste0(stat,"-trends")]] <- trends_plot
     
     
-    if (write_plots & plot_type=="pdf") {
+    if (write_plots & write_imgtype=="pdf") {
       plot(trends_plot)
     }
     
     # Save the plots if the png,jpeg,tiff,or bmp images are selected
-    if (write_plots & plot_type %in% c("png","jpeg","tiff","bmp")) {
-      file_trendstat_plot <- paste(file_trends_plot,"/",stat,"-annual-trends.",plot_type,sep = "")
+    if (write_plots & write_imgtype %in% c("png","jpeg","tiff","bmp")) {
+      file_trendstat_plot <- paste(file_trends_plot,"/",stat,"-annual-trends.",write_imgtype,sep = "")
       ggplot2::ggsave(filename =file_trendstat_plot,trends_plot,width=8.5,height=4)
     }
     
@@ -253,7 +254,7 @@ fasstr_annual_trends_plots <- function(flowdata=NULL,
   }
   
   # End the PDF device if selected
-  if (write_plots & plot_type=="pdf") {
+  if (write_plots & write_imgtype=="pdf") {
     dev.off()
   }
   
