@@ -2,31 +2,43 @@
 % Please edit documentation in R/fasstr_add_cumulative_yield.R
 \name{fasstr_add_cumulative_yield}
 \alias{fasstr_add_cumulative_yield}
-\title{Add cumulative volumetric flows on an annual basis.}
+\title{Add daily cumulative runoff yield flows on an annual basis}
 \usage{
 fasstr_add_cumulative_yield(flowdata = NULL, HYDAT = NULL,
-  water_year = FALSE, water_year_start = 10, basin_area = NA)
+  basin_area = NA, water_year = FALSE, water_year_start = 10)
 }
 \arguments{
-\item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
-mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.}
+\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
+YYYY-MM-DD, and a 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+Not required if \code{HYDAT} argument is used.}
 
-\item{HYDAT}{Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
-tidyhydat package and a downloaded SQLite HYDAT required.}
+\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
+database are required. Not required if \code{flowdata} argument is used.}
 
-\item{water_year}{Logical (TRUE/FALSE). Choose to fill to the start of the first/last water years.}
+\item{basin_area}{Numeric. Upstream drainage basin area of the hydrometric station, in sq. km. Leave blank if \code{HYDAT} is used or a column in 
+\code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the basin area will be extracted from HYDAT. Setting the basin
+area will replace the HYDAT basin area.}
 
-\item{water_year_start}{Numeric. Month to start water year (1 to 12 for Jan to Dec). Default 10 (Oct).}
+\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
+by the year in which they end. Default \code{FALSE}.}
 
-\item{basin_area}{Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm)}
+\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
+}
+\value{
+A column of cumulative runoff yield flows for each day for each year specific called 'Cumul_Yield' added to the flowdata 
+   data frame input or HYDAT dataset, in units of millimetres.
 }
 \description{
-Add cumulative volumetric flows on an annual basis.
+Add a column of daily cumulative runoff yield flows on an annual basis to a streamflow dataset. Adds the runoff yield 
+   discharge from each day with the previous day(s) for each year, in units of millimetres. The cumulative flows restart every year.
 }
 \examples{
 \dontrun{
 
-set example :)
+fasstr_add_cumulative_yield(flowdata = flowdata, basin_area = 105.6)
+
+fasstr_add_cumulative_yield(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+
 }
 }

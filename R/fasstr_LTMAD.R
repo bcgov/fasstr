@@ -12,7 +12,7 @@
 
 #' @title Calculate the long-term mean annual discharge
 #'
-#' @description Calculates the long-term mean annual discharge of a streamflow dataset. Averages all discharge values from all years
+#' @description Calculates the long-term mean annual discharge of a streamflow dataset. Averages all daily discharge values from all years,
 #'   unless specified.
 #'
 #' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
@@ -43,18 +43,7 @@
 #' }
 #' @export
 
-
-# Copyright 2017 Province of British Columbia
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and limitations under the License.
+#--------------------------------------------------------------
 
 fasstr_LTMAD <- function(flowdata=NULL,
                          HYDAT=NULL,
@@ -65,7 +54,8 @@ fasstr_LTMAD <- function(flowdata=NULL,
                          excluded_years=NULL,
                          percent_MAD=100){
   
-  #############################################################
+  
+  #--------------------------------------------------------------
   #  Error checking on the input parameters
   
   if( !is.null(HYDAT) & !is.null(flowdata))  {
@@ -83,7 +73,7 @@ fasstr_LTMAD <- function(flowdata=NULL,
   if( !is.numeric(water_year_start) ) {stop("water_year_start must be a number between 1 and 12 (Jan-Dec)")}
   if( length(water_year_start)>1) {stop("water_year_start must be a number between 1 and 12 (Jan-Dec)")}
   if( !water_year_start %in% c(1:12) ) {stop("water_year_start must be an integer between 1 and 12 (Jan-Dec)")}
-
+  
   if( length(start_year)>1) {stop("only one start_year integer can be selected")}
   if( !is.null(start_year) ) {if( !start_year %in% c(0:5000) )  {stop("start_year must be an integer")}}
   if( length(end_year)>1) {stop("only one end_year integer can be selected")}
@@ -97,7 +87,7 @@ fasstr_LTMAD <- function(flowdata=NULL,
   if( percent_MAD <=0 ) {stop("percent_MAD must be a single number > 0")}
   
   
-  #############################################################
+  #--------------------------------------------------------------
   # If HYDAT station is listed, check if it exists and make it the flowdata
   
   if (!is.null(HYDAT)) {
@@ -107,8 +97,8 @@ fasstr_LTMAD <- function(flowdata=NULL,
   }
   
   
-  #############################################################
-  # Add date variables to filter data, if required
+  #--------------------------------------------------------------
+  # Set the flowdata for analysis
   
   # add date variables to determine the min/max cal/water years
   flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
@@ -138,7 +128,7 @@ fasstr_LTMAD <- function(flowdata=NULL,
   flowdata <- dplyr::filter(flowdata,!(AnalysisYear %in% excluded_years))
   
   
-  #############################################################
+  #--------------------------------------------------------------
   # Complete the analysis
   
   # Calculate the long-term mean annual discharge

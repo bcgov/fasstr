@@ -34,7 +34,7 @@ by the year in which they end. Default \code{FALSE}.}
 A numeric value of the long-term mean annual discharge.
 }
 \description{
-Calculates the long-term mean annual discharge of a streamflow dataset. Averages all discharge values from all years
+Calculates the long-term mean annual discharge of a streamflow dataset. Averages all daily discharge values from all years,
   unless specified.
 }
 \examples{
