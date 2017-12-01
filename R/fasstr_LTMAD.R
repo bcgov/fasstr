@@ -10,35 +10,36 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Compute long-term mean annual discharge.
+#' @title Calculate the long-term mean annual discharge
 #'
-#' @description Computes long-term statistics of streamflow data.
-#' Streamflow data can be supplied through the \code{flowdata} parameter or extracted from a 
-#' HYDAT database using the tidyhydat package and \code{HYDAT} parameter.
+#' @description Calculates the long-term mean annual discharge of a streamflow dataset. Averages all discharge values from all years
+#'   unless specified.
 #'
-#' @param flowdata Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-#'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
-#'    mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.
-#' @param HYDAT Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
-#'    tidyhydat package and a downloaded SQLite HYDAT required.
-#' @param water_year Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
-#'    default calendar year (Jan-Dec) (\code{water_year=FALSE}). Water years are designated by the year which they end in
-#'    (e.g. water year 2000 start on 1 Oct 1999 and ends on 30 Sep 2000).
-#' @param water_year_start Numeric. Month to start water year (1 to 12 for Jan to Dec).
-#' @param start_year Numeric. The first year of streamflow data to analyze. If unset, the default \code{start_year} is the first
-#'    year of the data provided.
-#' @param end_year Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
-#'    year of the data provided.
-#' @param excluded_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).    
-#' @param percent_MAD Numeric. Factor to mulitply the MAD. Deafult 100 (i.e. 100PctMAD)
+#' @param flowdata Data frame. A data frame of daily mean flow data that include two columns: a 'Date' column with dates formatted 
+#'    YYYY-MM-DD, and a 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+#'    Not required if \code{HYDAT} argument is used.
+#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. "08NM116") of which to extract daily streamflow 
+#'    data from a HYDAT database. [Installation](https://github.com/ropensci/tidyhydat) of the \code{tidyhydat} package and a HYDAT 
+#'    database are required. Not required if \code{HYDAT} argument is used.
+#' @param water_year Logical. Use a water year to group flow data instead of calendar year. Water years are designated
+#'    by the year in which they end. Default \code{FALSE}.
+#' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE} Default \code{10}.
+#' @param start_year Integer. First year to consider for analysis. Leave blank if all years are required.
+#' @param end_year Integer. Last year to consider for analysis. Leave blank if all years are required.
+#' @param excluded_years Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.    
+#' @param percent_MAD Numeric. Percent of long-term mean annual discharge to output. Default \code{100} (i.e. 100pct. MAD).
 #'
 #' @examples
 #' \dontrun{
 #' 
-#' coming soon :)
+#' fasstr_LTMAD(flowdata = data, start_year = 1980, end_year = 2010)
+#' 
+#' fasstr_LTMAD(HYDAT = "08NM116",water_year = TRUE, exclude_years = (1990, 1992:1994))
+#' 
+#' fasstr_LTMAD(HYDAT = "08NM116")
+#' 
 #' }
 #' @export
-
 #'
 
 
@@ -63,11 +64,9 @@ fasstr_LTMAD <- function(flowdata=NULL,
                          exclude_years=NULL,
                          percent_MAD=100){
   
-  
-  #
   #############################################################
-  #  Some basic error checking on the input parameters
-  #
+  #  Error checking on the input parameters
+
   if( is.null(flowdata) & is.null(HYDAT)) {
     stop("flowdata or HYDAT parameters must be set")}
   if( !is.null(HYDAT) & !is.null(flowdata))  {
@@ -98,13 +97,18 @@ fasstr_LTMAD <- function(flowdata=NULL,
   if( percent_MAD <=0 ) {stop("percent_MAD must be a number >0")}
   
   
-  
+  #############################################################
   # If HYDAT station is listed, check if it exists and make it the flowdata
+  
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
     if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
+  
+  
+  #############################################################
+  # Add date variables to filter data, if required
   
   # add date variables to determine the min/max cal/water years
   flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
@@ -133,9 +137,15 @@ fasstr_LTMAD <- function(flowdata=NULL,
   flowdata <- dplyr::filter(flowdata,AnalysisYear>=start_year & AnalysisYear <= end_year)
   flowdata <- dplyr::filter(flowdata,!(AnalysisYear %in% exclude_years))
   
+  
+  #############################################################
+  # Complete the analysis
+  
+  # Calculate the long-term mean annual discharge
   LTMAD <- mean(flowdata$Value,na.rm =T)*(percent_MAD/100)
   
-  return(LTMAD)
   
+  
+  return(LTMAD)
   
 }
