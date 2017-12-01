@@ -9,7 +9,7 @@ fasstr_add_cumulative_yield(flowdata = NULL, HYDAT = NULL,
 }
 \arguments{
 \item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
 Not required if \code{HYDAT} argument is used.}
 
 \item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 

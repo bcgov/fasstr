@@ -2,29 +2,39 @@
 % Please edit documentation in R/fasstr_add_missing_dates.R
 \name{fasstr_add_missing_dates}
 \alias{fasstr_add_missing_dates}
-\title{Fill missing dates with NA.}
+\title{Fill dates of missing flow values with NA}
 \usage{
 fasstr_add_missing_dates(flowdata = NULL, HYDAT = NULL,
   water_year = FALSE, water_year_start = 10)
 }
 \arguments{
-\item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
-mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.}
+\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
+YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+Not required if \code{HYDAT} argument is used.}
 
-\item{HYDAT}{Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
-tidyhydat package and a downloaded SQLite HYDAT required.}
+\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
+database are required. Not required if \code{flowdata} argument is used.}
 
-\item{water_year}{Logical (TRUE/FALSE). Choose to fill to the start of the first/last water years.}
+\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
+by the year in which they end. Default \code{FALSE}.}
 
-\item{water_year_start}{Numeric. Month to start water year (1 to 12 for Jan to Dec). Default 10 (Oct).}
+\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
+}
+\value{
+Additional rows of streamflow data to the flowdata data frame input or HYDAT dataset with flow values of NA where flow values 
+   were missing.
 }
 \description{
-Fill missing dates with NA.
+Adds rows of dates with missing flow values to a streamflow dataset with daily flow values of NA. Missing dates will 
+   be filled in gaps between data and compeltely fill the first and last years (calendar or water year if selected).
 }
 \examples{
 \dontrun{
 
-set example :)
+fasstr_add_missing_dates(flowdata = flowdata)
+
+fasstr_add_missing_dates(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+
 }
 }

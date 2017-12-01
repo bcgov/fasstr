@@ -2,32 +2,41 @@
 % Please edit documentation in R/fasstr_add_date_vars.R
 \name{fasstr_add_date_vars}
 \alias{fasstr_add_date_vars}
-\title{Add calendar and water year date variables.}
+\title{Add year, month, and day of year variables}
 \usage{
 fasstr_add_date_vars(flowdata = NULL, HYDAT = NULL, water_year = FALSE,
   water_year_start = 10)
 }
 \arguments{
-\item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
-mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.}
+\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
+YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+Not required if \code{HYDAT} argument is used.}
 
-\item{HYDAT}{Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
-tidyhydat package and a downloaded SQLite HYDAT required.}
+\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
+database are required. Not required if \code{flowdata} argument is used.}
 
-\item{water_year}{Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
-default calendar year (Jan-Dec) (\code{water_year=FALSE}). Water years are designated by the year which they end in
-(e.g. water year 2000 start on 1 Oct 1999 and ends on 30 Sep 2000).}
+\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
+by the year in which they end. Default \code{FALSE}.}
 
-\item{water_year_start}{Numeric. Month to start water year (1 to 12 for Jan to Dec).}
+\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
+}
+\value{
+Additional columns of Year, Month, MonthText, and DayofYear; and WaterYear and WaterDayofYear if selected; to the flowdata 
+   data frame input or HYDAT dataset.
 }
 \description{
-Adds mulitple date variables to a dataframe from a column of dates, including
-  year, month (numeric and text), day of years, and water years and day of water years.
+Add columns of Year (YYYY), Month (MM), MonthText (e.g. 'Jan'), and DayofYear (1-365 or 366); and WaterYear (YYYY) and 
+   WaterDayofYear (1-365 or 366) if selected; to a data frame with a column of dates called 'Date'. Water years are designated by 
+   the year in which they end. For example, Water Year 1999 (starting Oct) is from 1 Oct 1998 (WaterDayofYear 1) to 30 Sep 1999
+   (WaterDayofYear 365)).
 }
 \examples{
 \dontrun{
 
-set example :)
+fasstr_add_date_vars(flowdata = flowdata)
+
+fasstr_add_date_vars(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+
 }
 }

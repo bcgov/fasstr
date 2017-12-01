@@ -10,67 +10,71 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Add calendar and water year date variables.
+#' @title Add year, month, and day of year variables
+#' 
+#' @description Add columns of Year (YYYY), Month (MM), MonthText (e.g. 'Jan'), and DayofYear (1-365 or 366); and WaterYear (YYYY) and 
+#'    WaterDayofYear (1-365 or 366) if selected; to a data frame with a column of dates called 'Date'. Water years are designated by 
+#'    the year in which they end. For example, Water Year 1999 (starting Oct) is from 1 Oct 1998 (WaterDayofYear 1) to 30 Sep 1999
+#'    (WaterDayofYear 365)).
 #'
-#' @description Adds mulitple date variables to a dataframe from a column of dates, including
-#'   year, month (numeric and text), day of years, and water years and day of water years.
-#'
-#' @param flowdata Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-#'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
-#'    mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.
-#' @param HYDAT Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
-#'    tidyhydat package and a downloaded SQLite HYDAT required.
-#' @param water_year Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
-#'    default calendar year (Jan-Dec) (\code{water_year=FALSE}). Water years are designated by the year which they end in
-#'    (e.g. water year 2000 start on 1 Oct 1999 and ends on 30 Sep 2000).
-#' @param water_year_start Numeric. Month to start water year (1 to 12 for Jan to Dec).
+#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
+#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+#'    Not required if \code{HYDAT} argument is used.
+#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
+#'    database are required. Not required if \code{flowdata} argument is used.
+#' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
+#'    by the year in which they end. Default \code{FALSE}.
+#' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
+#' 
+#' @return Additional columns of Year, Month, MonthText, and DayofYear; and WaterYear and WaterDayofYear if selected; to the flowdata 
+#'    data frame input or HYDAT dataset.
 #'
 #' @examples
 #' \dontrun{
 #' 
-#' set example :)
+#'fasstr_add_date_vars(flowdata = flowdata)
+#' 
+#'fasstr_add_date_vars(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+#'
 #' }
 #' @export
 
-#'
+
+
 #--------------------------------------------------------------
-# Compute the statistics on an (calendar and water) year basis
 
 fasstr_add_date_vars <- function(flowdata=NULL,
                                  HYDAT=NULL,
                                  water_year=FALSE,
                                  water_year_start=10){  
   
-
-
-  #############################################################
+  #--------------------------------------------------------------
   #  Some basic error checking on the input parameters
-  #
   
-  if( is.null(flowdata) & is.null(HYDAT)) {
-    stop("flowdata or HYDAT parameters must be set")}
-  if( !is.null(HYDAT) & !is.null(flowdata))  {
-    stop("Must select either flowdata or HYDAT parameters, not both.")}
-  if( is.null(HYDAT) & !is.data.frame(flowdata))         {
-    stop("flowdata parameter is not a data frame.")}
-  if( is.null(HYDAT) & !"Date" %in% names(flowdata)){
-    stop("flowdata dataframe doesn't contain a Date variable.")}
-  if( is.null(HYDAT) & !inherits(flowdata$Date[1], "Date")){
-    stop("Date column in flowdata dataframe is not a date.")}
-  if( !is.logical(water_year))  {stop("water_year parameter must be logical (TRUE/FALSE)")}
-  if( !is.numeric(water_year_start))  {
-    stop("water_year_start parameter must be numeric between 1 and 12 (Jan-Dec)")}
-  if( water_year_start<1 & water_year_start>12 )  {
-    stop("water_year_start parameter must be numeric between 1 and 12 (Jan-Dec)")}
+  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
+  if( is.null(HYDAT)) {
+    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
+    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
+    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
+    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
+    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
+    if( any(flowdata$Value <0, na.rm=TRUE))           {stop('flowdata cannot have negative values - check your data')}
+  }
   
+  if( !is.logical(water_year))         {stop("water_year argument must be logical (TRUE/FALSE)")}
+  if( !is.numeric(water_year_start) )  {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
+  if( length(water_year_start)>1)      {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
+  if( !water_year_start %in% c(1:12) ) {stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec)")}
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
-    if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
+    if( length(HYDAT)>1 )                                  {stop("Only one HYDAT station can be selected.")}
+    if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' arguement does not exist.")}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
-  
+  #--------------------------------------------------------------
+  #  Add dates and water_year dates if selected
   
   # Calculate each date variable
   flowdata$Year  <- lubridate::year(flowdata$Date)
@@ -80,17 +84,17 @@ fasstr_add_date_vars <- function(flowdata=NULL,
   
   if (water_year){
     # Create values used to calculate the water year day of year
-    if (water_year_start==2) {doy.temp <- c(31,31)}
-    if (water_year_start==3) {doy.temp <- c(61,62)}
-    if (water_year_start==4) {doy.temp <- c(90,91)}
-    if (water_year_start==5) {doy.temp <- c(120,121)}
-    if (water_year_start==6) {doy.temp <- c(151,152)}
-    if (water_year_start==7) {doy.temp <- c(181,182)}
-    if (water_year_start==8) {doy.temp <- c(212,213)}
-    if (water_year_start==9) {doy.temp <- c(243,244)}
-    if (water_year_start==10) {doy.temp <- c(273,274)}
-    if (water_year_start==11) {doy.temp <- c(304,305)}
-    if (water_year_start==12) {doy.temp <- c(334,335)}
+    if (water_year_start==2) {doy_temp <- c(31,31)}
+    if (water_year_start==3) {doy_temp <- c(61,62)}
+    if (water_year_start==4) {doy_temp <- c(90,91)}
+    if (water_year_start==5) {doy_temp <- c(120,121)}
+    if (water_year_start==6) {doy_temp <- c(151,152)}
+    if (water_year_start==7) {doy_temp <- c(181,182)}
+    if (water_year_start==8) {doy_temp <- c(212,213)}
+    if (water_year_start==9) {doy_temp <- c(243,244)}
+    if (water_year_start==10) {doy_temp <- c(273,274)}
+    if (water_year_start==11) {doy_temp <- c(304,305)}
+    if (water_year_start==12) {doy_temp <- c(334,335)}
     
     if (water_year_start==1) {
       flowdata$WaterYear <- flowdata$Year
@@ -100,20 +104,14 @@ fasstr_add_date_vars <- function(flowdata=NULL,
                                               flowdata$Year+1,
                                               flowdata$Year))
       flowdata$WaterDayofYear <- ifelse(flowdata$Month<water_year_start,
-                                        flowdata$DayofYear+(365-doy.temp[1]),
+                                        flowdata$DayofYear+(365-doy_temp[1]),
                                         ifelse((as.Date(with(flowdata, paste(Year+1,01,01,sep="-")),"%Y-%m-%d")
                                                 -as.Date(with(flowdata, paste(Year,01,01,sep="-")),"%Y-%m-%d"))==366,
-                                               flowdata$DayofYear-doy.temp[2],
-                                               flowdata$DayofYear-doy.temp[1]))
+                                               flowdata$DayofYear-doy_temp[2],
+                                               flowdata$DayofYear-doy_temp[1]))
     }
   }
-  
-  
-  
-  
-  # ADD SEASONS?
-  
-  
+
   return(flowdata)
-} # end of function
+}
 

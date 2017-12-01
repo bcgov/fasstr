@@ -2,30 +2,41 @@
 % Please edit documentation in R/fasstr_add_rolling_means.R
 \name{fasstr_add_rolling_means}
 \alias{fasstr_add_rolling_means}
-\title{Add rolling means.}
+\title{Add rolling n-day averages}
 \usage{
 fasstr_add_rolling_means(flowdata = NULL, HYDAT = NULL, days = c(3, 7,
   30), align = "right")
 }
 \arguments{
-\item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
-mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.}
+\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
+YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+Not required if \code{HYDAT} argument is used.}
 
-\item{HYDAT}{Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
-tidyhydat package and a downloaded SQLite HYDAT required.}
+\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
+database are required. Not required if \code{flowdata} argument is used.}
 
-\item{days}{Numeric. The number of days to apply the rolling mean. Default c(3,7,30).}
+\item{days}{Numeric. The number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
 
-\item{align}{Character. specifyies whether the index of the result should be left- or right-aligned or centered 
-(default) compared to the rolling window of observations}
+\item{align}{Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),
+or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.}
+}
+\value{
+Additional column(s) of rolling means for each n-day specific, each called 'QnDay', n being the n-day (ex. Q7Day), to the flowdata 
+   data frame input or HYDAT dataset, in units of the Value.
 }
 \description{
-Adds n-day rolling means. Ensures rolling means
+Adds selected n-day rolling means to a streamflow dataset. Based on selected n-days and alignment, the rolling mean for
+  a given day is obtained by averaging the adjacent dates of daily mean values. For example, rolling days of '7' and 'right' alignment 
+  would obtain a mean of the given and previous 6 days of daily mean flow. Rolling mean values will not be calculated if there is less 
+  than the n-days provided.
 }
 \examples{
 \dontrun{
 
-set example :)
+fasstr_add_rolling_means(flowdata = flowdata, days = 7, align = 'centre')
+
+fasstr_add_rolling_means(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+
 }
 }

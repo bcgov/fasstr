@@ -11,66 +11,76 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 
-#' @title Fill missing dates with NA.
+#' @title Fill dates of missing flow values with NA
 #'
-#' @description Fill missing dates with NA.
+#' @description Adds rows of dates with missing flow values to a streamflow dataset with daily flow values of NA. Missing dates will 
+#'    be filled in gaps between data and compeltely fill the first and last years (calendar or water year if selected).
 #'
-#' @param flowdata Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-#'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
-#'    mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.
-#' @param HYDAT Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
-#'    tidyhydat package and a downloaded SQLite HYDAT required.
-#' @param water_year Logical (TRUE/FALSE). Choose to fill to the start of the first/last water years.
-#' @param water_year_start Numeric. Month to start water year (1 to 12 for Jan to Dec). Default 10 (Oct).
+#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
+#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+#'    Not required if \code{HYDAT} argument is used.
+#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
+#'    database are required. Not required if \code{flowdata} argument is used.
+#' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
+#'    by the year in which they end. Default \code{FALSE}.
+#' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
+#' 
+#' @return Additional rows of streamflow data to the flowdata data frame input or HYDAT dataset with flow values of NA where flow values 
+#'    were missing.
 #'
 #' @examples
 #' \dontrun{
 #' 
-#' set example :)
+#'fasstr_add_missing_dates(flowdata = flowdata)
+#' 
+#'fasstr_add_missing_dates(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+#'
 #' }
 #' @export
 
-#'
 #--------------------------------------------------------------
-# Compute the statistics on an (calendar and water) year basis
+
 
 fasstr_add_missing_dates <- function(flowdata=NULL,
                                       HYDAT=NULL,
                                       water_year=FALSE,
                                       water_year_start=10){
   
-  #  Some basic error checking on the input parameters
-  if( is.null(flowdata) & is.null(HYDAT)) {
-    stop("flowdata or HYDAT parameters must be set")}
-  if( !is.null(HYDAT) & !is.null(flowdata))  {
-    stop("Must select either flowdata or HYDAT parameters, not both.")}
-  if( is.null(HYDAT) & !is.data.frame(flowdata))         {
-    stop("flowdata parameter is not a data frame.")}
-  if( is.null(HYDAT) & !all(c("Date","Value") %in% names(flowdata))){
-    stop("flowdata dataframe doesn't contain date or flow columns (labeled 'Value')")}
-  if( is.null(HYDAT) & !is.numeric(flowdata$Value))          {
-    stop("Flow data ('Value') column in flowdata dataframe is not numeric.")}
-  if( is.null(HYDAT) & any(flowdata$Value <0, na.rm=TRUE))   {
-    stop('flowdata cannot have negative values - check your data')}
-  if( is.null(HYDAT) & !inherits(flowdata$Date[1], "Date")){
-    stop("Date column in flowdata dataframe is not a date.")}
-  if( !is.numeric(water_year_start))  {
-    stop("water_year_start parameter must be numeric between 1 and 12 (Jan-Dec)")}
-  if( water_year_start<1 & water_year_start>12 )  {
-    stop("water_year_start parameter must be numeric between 1 and 12 (Jan-Dec)")}
   
+  
+  #--------------------------------------------------------------
+  #  Some basic error checking on the input parameters
+  
+  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
+  if( is.null(HYDAT)) {
+    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
+    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
+    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
+    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
+    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
+    if( any(flowdata$Value <0, na.rm=TRUE))           {stop('flowdata cannot have negative values - check your data')}
+  }
+  
+  if( !is.logical(water_year))         {stop("water_year argument must be logical (TRUE/FALSE)")}
+  if( !is.numeric(water_year_start) )  {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
+  if( length(water_year_start)>1)      {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
+  if( !water_year_start %in% c(1:12) ) {stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec)")}
   
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
-    if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
+    if( length(HYDAT)>1 )                                  {stop("Only one HYDAT station can be selected.")}
+    if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' arguement does not exist.")}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
-  #Get the station_number and Parameter from flowdata if used HYDAT in a previous fasstr function
+  # If STATION_NUMBER and Parameter column is in flowdata, save the values for filling in the missing dates
   if ("STATION_NUMBER" %in% names(flowdata)){STATION_NUMBER <- flowdata$STATION_NUMBER[1]}
   if ("Parameter" %in% names(flowdata)){Parameter <- flowdata$Parameter[1]}
   
+  
+  #--------------------------------------------------------------
+  # Set the flowdata for filling
   
   flowdata <- flowdata[ order(flowdata$Date),]
   col_order <- names(flowdata)
@@ -84,7 +94,6 @@ fasstr_add_missing_dates <- function(flowdata=NULL,
                                                   water_year_start = water_year_start)
     min_wateryear <- ifelse(water_year,min(flowdata_temp$WaterYear),min(flowdata_temp$Year))
     max_wateryear <- ifelse(water_year,max(flowdata_temp$WaterYear),max(flowdata_temp$Year))
-    
     
     # Extend the flowdata to well before the start and end dates (will filter to water years)
     flowdata_temp <- merge(flowdata_temp, 
@@ -104,7 +113,6 @@ fasstr_add_missing_dates <- function(flowdata=NULL,
     flowdata_temp <- dplyr::select(flowdata_temp,Date,Value)
     
     flowdata <- merge(flowdata,flowdata_temp,all.y = T)
-    
     
     # If not water year, or January is chosen as water year start  
   } else {
@@ -136,4 +144,4 @@ fasstr_add_missing_dates <- function(flowdata=NULL,
   
   
   return(flowdata)
-} # end of function
+} 
