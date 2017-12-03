@@ -10,119 +10,130 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-
-#' @title Compute basin annual summary statistics.
+#' @title Calculate annual summary statistics
 #'
-#' @description Computes annual statistics of streamflow data.
-#' Streamflow data can be supplied through the \code{flowdata} parameter or extracted from a 
-#' HYDAT database using the tidyhydat package and \code{HYDAT} parameter.
+#' @description Calculates annual monthly mean, median, maximum, minimum, and percentiles of daily flow values from a streamflow 
+#'    dataset. Calculates the statistics from all daily discharge values from all years, unless specified.
 #'
-#' @param flowdata Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-#'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
-#'    mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.
-#' @param HYDAT Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
-#'    tidyhydat package and a downloaded SQLite HYDAT required.
-#' @param station_name Character. Identifier name of the stream or station. Required when supplying data through \code{flowdata}.
-#'    The station name will be used in plots and filenames of exported tables and plot. If using \code{HYDAT} to supply
-#'    data and no \code{station_name} is provided, the HYDAT station number will be the identifier.
-#' @param water_year Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
-#'    default calendar year (Jan-Dec) (\code{water_year=FALSE}). Water years are designated by the year which they end in
-#'    (e.g. water year 2000 start on 1 Oct 1999 and ends on 30 Sep 2000).
-#' @param water_year_start Numeric. Month to start water year (1 to 12 for Jan to Dec).
-#' @param start_year Numeric. The first year of streamflow data to analyze. If unset, the default \code{start_year} is the first
-#'    year of the data provided.
-#' @param end_year Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
-#'    year of the data provided.
-#' @param exclude_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).    
-#' @param transpose Logical. Switch the rows and columns of the results.
-#' @param write_table Logical. Should a file be created with the calendar year computed percentiles?
-#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
-#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
-#' @param write_digits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
+#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
+#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+#'    Not required if \code{HYDAT} argument is used.
+#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
+#'    database are required. Not required if \code{flowdata} argument is used.
+#' @param percentiles Numeric. Vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}
+#' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
+#'    by the year in which they end. Default \code{FALSE}.
+#' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
+#' @param start_year Integer. First year to consider for analysis. Leave blank if all years are required.
+#' @param end_year Integer. Last year to consider for analysis. Leave blank if all years are required.
+#' @param exclude_years Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.       
+#' @param months Integer. Vector of months to consider for analysis (ex. \code{6:8} for Jun-Aug). Leave blank if all months
+#'    are required. Default \code{1:12}.
+#' @param transpose Logical. Switch the rows and columns of the results table. Default \code{FALSE}.
+#' @param station_name Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
+#'    files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
+#'    will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number. 
+#' @param write_table Logical. Write the table as a .csv file to specified directory. Default \code{FALSE}.
+#' @param write_digits Numeric. Number of significant digits to round the results in the written table. Default \code{3}.
+#' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
+#'    Default is the working directory.
 #' @param na.rm TBD
-#'
+#' 
+#' @return A data frame of annual summary statistics and percentiles
 #'
 #' @examples
 #' \dontrun{
-#' stat.annual <- annual_stats(HYDAT="08HB048",
-#'                             basin_area    = 10.1)
 #' 
-#' stat.annual <- annual_stats(station_name  ='Mission Creek',
-#'                                flowdata     = flow,
-#'                                water_year    = TRUE,
-#'                                start_year    = 1967,
-#'                                end_year      = 2014)
+#'fasstr_annual_stats(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
+#' 
+#'fasstr_annual_stats(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
+#'
+#'fasstr_annual_stats(HYDAT = "08NM116", months = 7:9)
+#'
 #' }
 #' @export
 
-#'
 #--------------------------------------------------------------
-# Compute the statistics on an (calendar and water) year basis
-
 fasstr_annual_stats <- function(flowdata=NULL,
                                 HYDAT=NULL,
-                                station_name=NA,
+                                percentiles=NA,
                                 water_year=FALSE,
                                 water_year_start=10,
                                 start_year=NULL,
                                 end_year=NULL,
                                 exclude_years=NULL, 
-                                percentiles=NA,
+                                months=1:12,
                                 transpose=FALSE,
+                                station_name=NA,
                                 write_table=FALSE,
+                                write_digits=3,
                                 write_dir=".",
-                                na.rm=list(na.rm.global=FALSE),
-                                write_digits=3){
+                                na.rm=list(na.rm.global=FALSE)){
   
-  #############################################################
   
-  #  Some basic error checking on the input parameters
-  #
-  if( is.null(flowdata) & is.null(HYDAT)) {stop("flowdata or HYDAT parameters must be set")}
-  if( !is.null(HYDAT) & !is.null(flowdata))  {stop("Must select either flowdata or HYDAT parameters, not both.")}
-  if( is.null(HYDAT) & !is.character(station_name))  {stop("station_name parameter must be a character string.")}
-  if( is.null(HYDAT) & length(station_name)>1)        {stop("station_name parameter cannot have length > 1")}
-  if( is.null(HYDAT) & !is.data.frame(flowdata))         {stop("flowdata parameter is not a data frame.")}
-  if( is.null(HYDAT) & !all(c("Date","Value") %in% names(flowdata))){
-    stop("flowdata dataframe doesn't contain the variables Date and Value.")}
-  if( is.null(HYDAT) & !inherits(flowdata$Date[1], "Date")){
-    stop("Date column in flowdata dataframe is not a date.")}
-  if( is.null(HYDAT) & !is.numeric(flowdata$Value))          {stop("Value column in flowdata dataframe is not numeric.")}
-  if( is.null(HYDAT) & any(flowdata$Value <0, na.rm=TRUE))   {stop('flowdata cannot have negative values - check your data')}
+  #--------------------------------------------------------------
+  #  Error checking on the input parameters
   
-  if( !is.logical(water_year))  {stop("water_year parameter must be logical (TRUE/FALSE)")}
-  if( length(water_year_start)>1) {stop("water_year_start must be a number between 1 and 12 (Jan-Dec)")}
-  if( water_year_start <1 | water_year_start >12 ) {stop("water_year_start must be an integer between 1 and 12 (Jan-Dec)")}
-  if( !(water_year_start==floor(water_year_start)))  {stop("water_year_start must be an integer between 1 and 12 (Jan-Dec)")}
+  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
+  if( is.null(HYDAT)) {
+    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
+    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
+    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
+    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
+    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
+    if( any(flowdata$Value <0, na.rm=TRUE))           {stop('flowdata cannot have negative values - check your data')}
+  }
   
-  if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
+  if( !is.logical(water_year))         {stop("water_year argument must be logical (TRUE/FALSE)")}
+  if( !is.numeric(water_year_start) )  {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
+  if( length(water_year_start)>1)      {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
+  if( !water_year_start %in% c(1:12) ) {stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec)")}
+  
+  if( length(start_year)>1)   {stop("only one start_year value can be selected")}
+  if( !is.null(start_year) )  {if( !start_year %in% c(0:5000) )  {stop("start_year must be an integer")}}
+  if( length(end_year)>1)     {stop("only one end_year value can be selected")}
+  if( !is.null(end_year) )    {if( !end_year %in% c(0:5000) )  {stop("end_year must be an integer")}}
+  if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("list of exclude_years must be numeric - ex. 1999 or c(1999,2000)")}
+  
+  if( !is.numeric(custom_months) )        {stop("custom_months argument must be integers")}
+  if( !all(custom_months %in% c(1:12)) )  {stop("custom_months argument must be integers between 1 and 12 (Jan-Dec)")}
+  
+  if( !all(is.na(percentiles)) & !is.numeric(percentiles) )                 {stop("percentiles argument must be numeric")}
+  if( !all(is.na(percentiles)) & (!all(percentiles>0 & percentiles<100)) )  {stop("percentiles must be >0 and <100)")}
   
   if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
   
-  if( !is.logical(transpose))  {stop("transpose parameter must be logical (TRUE/FALSE)")}
+  if( !is.logical(transpose))    {stop("transpose parameter must be logical (TRUE/FALSE)")}
   if( !is.logical(write_table))  {stop("write_table parameter must be logical (TRUE/FALSE)")}
+  if( !is.numeric(write_digits))  {stop("csv.ndddigits parameter needs to be numeric")}
+  write_digits <- round(write_digits[1])
   
-  if( !dir.exists(as.character(write_dir)))      {stop("directory for saved files does not exist")}
-  if( !is.numeric(write_digits))  { stop("csv.ndddigits parameter needs to be numeric")}
-  write_digits <- round(write_digits[1])  # number of decimal digits for rounding in csv files
+  if( !dir.exists(as.character(write_dir))) {
+    message("directory for saved files does not exist, new directory will be created")
+    if( write_table & write_dir!="." ) {dir.create(write_dir)}
+  }
   
-  if( !is.list(na.rm))              {stop("na.rm is not a list") }
-  if(! is.logical(unlist(na.rm))){   stop("na.rm is list of logical (TRUE/FALSE) values only.")}
+  if( !is.list(na.rm))                        {stop("na.rm is not a list") }
+  if(! is.logical(unlist(na.rm)))             {stop("na.rm is list of logical (TRUE/FALSE) values only.")}
   my.na.rm <- list(na.rm.global=FALSE)
   if( !all(names(na.rm) %in% names(my.na.rm))){stop("Illegal element in na.rm")}
   my.na.rm[names(na.rm)]<- na.rm
   na.rm <- my.na.rm  # set the na.rm for the rest of the function.
   
-  
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
-    if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
+    if( length(HYDAT)>1 ) {stop("only one HYDAT station can be selected")}
+    if( !HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist")}
     if( is.na(station_name) ) {station_name <- HYDAT}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
+  #--------------------------------------------------------------
+  # Set the flowdata for analysis
+  
   # add date variables to determine the min/max cal/water years
+  flowdata <- dplyr::select(flowdata,Date,Value)
   flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
   min_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))
   max_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))
@@ -139,23 +150,22 @@ fasstr_annual_stats <- function(flowdata=NULL,
   # Set selected year-type column for analysis
   if (water_year) {
     flowdata$AnalysisYear <- flowdata$WaterYear
-    flowdata$AnalysisDoY <- flowdata$WaterDayofYear
   }  else {
     flowdata$AnalysisYear <- flowdata$Year
-    flowdata$AnalysisDoY <- flowdata$DayofYear
   }
   
   
   # FILTER FLOWDATA FOR SELECTED YEARS FOR REMAINDER OF CALCS
   flowdata <- dplyr::filter(flowdata, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  flowdata <- dplyr::filter(flowdata, Month %in% months)
   
   
   ## Compute remaining statistics on  year basis
   Qstat_annual <-   dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear),
-                                     Mean    = mean(Value, na.rm=na.rm$na.rm.global),     # CY Mean Discharge (Based on Daily avgs)
-                                     Median  = median(Value, na.rm=na.rm$na.rm.global),  # CY median Discharge (Based on Daily avgs)
-                                     Maximum	    = max (Value, na.rm=na.rm$na.rm.global),      # CY Max Daily Q
-                                     Minimum     = min (Value, na.rm=na.rm$na.rm.global)#,	    # CY Min Daily Q 	CY Min Daily Q
+                                     Mean    = mean(Value, na.rm=TRUE),  
+                                     Median  = median(Value, na.rm=TRUE), 
+                                     Maximum	    = max (Value, na.rm=TRUE),    
+                                     Minimum     = min (Value, na.rm=TRUE)
   )
   
   if (!all(is.na(percentiles))){

@@ -13,7 +13,7 @@
 #' @title Calculate the long-term and long-term monthly summary statistics
 #'
 #' @description Calculates the long-term and long-term monthly mean, median, maximum, minimum, and percentiles of daily flow values 
-#'    from a streamflow dataset. Calculate the statistics from all daily discharge values from all years, unless specified.
+#'    from a streamflow dataset. Calculates the statistics from all daily discharge values from all years, unless specified.
 #'
 #' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
 #'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 

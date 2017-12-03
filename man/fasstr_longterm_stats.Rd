@@ -55,7 +55,7 @@ A data frame of long-term and monthly long-term summary statistics and percentil
 }
 \description{
 Calculates the long-term and long-term monthly mean, median, maximum, minimum, and percentiles of daily flow values 
-   from a streamflow dataset. Calculate the statistics from all daily discharge values from all years, unless specified.
+   from a streamflow dataset. Calculates the statistics from all daily discharge values from all years, unless specified.
 }
 \examples{
 \dontrun{

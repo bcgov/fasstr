@@ -5,6 +5,24 @@ install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "sour
 
 
 
+data <- tidyhydat::hy_daily_flows(station_number = "08HB048")
+ltmad <- fasstr::fasstr_LTMAD(data,percent_MAD = 20)
+
+round(ecdf(data$Value)(0.0361400),3)
+
+percentiles <- fasstr::fasstr_longterm_stats(HYDAT = "08HB048",percentiles = 1:99,transpose = T,custom_months = 1:5)
+
+fasstr::fasstr_percentile_rank(HYDAT = "08HB048",flowvalue = 0.0361400,months = 1)
+fasstr::fasstr_percentile_rank(HYDAT = "08HB048",flowvalue = fasstr::fasstr_LTMAD(HYDAT = "08HB048",percent_MAD = 20),months = 1:5)
+
+fasstr::fasstr_longterm_stats(HYDAT = "08HB048",custom_months = 7:8)
+fasstr::fasstr_longterm_stats_plot(HYDAT = "08HB048",write_plot = T,write_imgsize = c(5,11))
+fasstr::fasstr_daily_stats_plots(HYDAT = "08NM116",start_year = 1980)[2]
+fasstr::fasstr_flow_duration_curves(HYDAT = "08HB048",incl_months = NA,incl_longterm = F,custom_months = 4:7)
+fasstr::fasstr_daily_flows_plot(HYDAT = "08HB048",start_year = 2000,plot_by_year = T,
+                                log_discharge = F)
+
+
 fasstr::fasstr_LTMAD(HYDAT = "08HB048",excluded_years = T)
 data <- fasstr::fasstr_add_cumulative_volume(HYDAT = "08HB048")
 data <- fasstr::fasstr_add_cumulative_yield(data)
@@ -94,7 +112,7 @@ months2 <- with(months, months[order(Year, Month),])
 
 flowdata=NULL
 HYDAT="08HB048"
-station_name="fasstr"
+station_name=NA
 water_year=T
 water_year_start=10
 start_year=NULL
@@ -116,7 +134,7 @@ fasstr::fasstr_add_date_vars(HYDAT = "08HB048")
 
 flowdata=NULL
 HYDAT="08HB048"
-station_name="fasstr"
+station_name=NA
 water_year=FALSE
 water_year_start=10
 start_year=NULL
@@ -227,7 +245,8 @@ A <- fasstr::fasstr_annual_freq_analysis(HYDAT = stn.number,water_year = wt_yr)
 A <- fasstr::fasstr_annual_lowflows(HYDAT = stn.number,water_year = wt_yr)
 A <- fasstr::fasstr_annual_lowflows_plots(HYDAT = stn.number,water_year = wt_yr)
 A <- fasstr::fasstr_annual_missing_plots(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_annual_stats(HYDAT = stn.number,water_year = wt_yr)
+A <- fasstr::fasstr_annual_stats(HYDAT = stn.number,water_year = wt_yr,custom_months = 6:8)
+fasstr::fasstr_annual_stats_plots(HYDAT = stn.number,water_year = wt_yr,months = 8:10)
 A <- fasstr::fasstr_annual_total_flows(HYDAT = stn.number,water_year = wt_yr)
 A <- fasstr::fasstr_annual_total_flows_plots(HYDAT = stn.number,water_year = wt_yr)
 A <- fasstr::fasstr_annual_trends_analysis(HYDAT = stn.number,zyp_method = "yuepilon",water_year = wt_yr)
@@ -252,7 +271,15 @@ A <- fasstr::fasstr_write_daily_flows(HYDAT = stn.number,water_year = wt_yr)
 
 
 
-
+# Compute daily percentiles (if 10 or more years of data)
+if (!all(is.na(percentiles))){
+  for (ptile in percentiles) {
+    Q_daily_ptile <- dplyr::summarise(dplyr::group_by(flowdata,AnalysisDate,AnalysisDoY),
+                                      Percentile=ifelse(sum(!is.na(RollingValue))>=10,quantile(RollingValue,ptile/100, na.rm=TRUE),NA))
+    colnames(Q_daily_ptile)[3] <- paste0("P",ptile)
+    Q_daily <- merge(Q_daily,Q_daily_ptile,by=c("AnalysisDate","AnalysisDoY"))
+  }
+}
 
 
 
