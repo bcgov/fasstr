@@ -6,9 +6,9 @@
 \usage{
 fasstr_longterm_stats(flowdata = NULL, HYDAT = NULL, percentiles = c(10,
   90), water_year = FALSE, water_year_start = 10, start_year = NULL,
-  end_year = NULL, exclude_years = NULL, station_name = NA,
-  transpose = FALSE, write_table = FALSE, write_digits = 3,
-  write_dir = ".", na.rm = list(na.rm.global = FALSE))
+  end_year = NULL, exclude_years = NULL, custom_months = NULL,
+  transpose = FALSE, station_name = NA, write_table = FALSE,
+  write_digits = 3, write_dir = ".", na.rm = list(na.rm.global = FALSE))
 }
 \arguments{
 \item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
@@ -19,7 +19,7 @@ Not required if \code{HYDAT} argument is used.}
 data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
 database are required. Not required if \code{flowdata} argument is used.}
 
-\item{percentiles}{}
+\item{percentiles}{Numeric. Vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}}
 
 \item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
 by the year in which they end. Default \code{FALSE}.}
@@ -32,18 +32,26 @@ by the year in which they end. Default \code{FALSE}.}
 
 \item{exclude_years}{Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.}
 
-\item{transpose}{Logical. Switch the rows and columns of the results.}
+\item{custom_months}{Integer. Vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Adds results to the end of table.
+Leave blank for no custom month summary.}
 
-\item{write_table}{Logical. Should a file be created with the calendar year computed percentiles?
-The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
+\item{transpose}{Logical. Switch the rows and columns of the results table. Default \code{FALSE}.}
 
-\item{write_digits}{Numeric. Number of significant digits to round the results in the written tables. Default is 3.}
+\item{station_name}{Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
+files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
+will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number.}
 
-\item{write_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
+\item{write_table}{Logical. Write the table as a .csv file to specified directory. Default \code{FALSE}.}
+
+\item{write_digits}{Numeric. Number of significant digits to round the results in the written table. Default \code{3}.}
+
+\item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
+Default is the working directory.}
 
 \item{na.rm}{TBD}
-
-\item{percentiles}{}
+}
+\value{
+A data frame of long-term and monthly long-term summary statistics and percentiles
 }
 \description{
 Calculates the long-term and long-term monthly mean, median, maximum, minimum, and percentiles of daily flow values 
@@ -52,6 +60,11 @@ Calculates the long-term and long-term monthly mean, median, maximum, minimum, a
 \examples{
 \dontrun{
 
-coming soon :)
+fasstr_longterm_stats(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
+
+fasstr_longterm_stats(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
+
+fasstr_longterm_stats(HYDAT = "08NM116", custom_months = c(5:9))
+
 }
 }

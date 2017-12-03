@@ -26,7 +26,7 @@ Additional columns of Year, Month, MonthText, and DayofYear; and WaterYear and W
    data frame input or HYDAT dataset.
 }
 \description{
-Add columns of Year (YYYY), Month (MM), MonthText (e.g. 'Jan'), and DayofYear (1-365 or 366); and WaterYear (YYYY) and 
+Add columns of Year (YYYY), Month (MM), MonthName (e.g. 'Jan'), and DayofYear (1-365 or 366); and WaterYear (YYYY) and 
    WaterDayofYear (1-365 or 366) if selected; to a data frame with a column of dates called 'Date'. Water years are designated by 
    the year in which they end. For example, Water Year 1999 (starting Oct) is from 1 Oct 1998 (WaterDayofYear 1) to 30 Sep 1999
    (WaterDayofYear 365)).

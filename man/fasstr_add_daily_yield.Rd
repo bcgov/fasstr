@@ -15,7 +15,9 @@ Not required if \code{HYDAT} argument is used.}
 data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
 database are required. Not required if \code{flowdata} argument is used.}
 
-\item{basin_area}{Numeric. Upstream drainage basin area of the hydrometric station, in sq. km. Leave blank if \code{HYDAT} is used or a column in}
+\item{basin_area}{Numeric. Upstream drainage basin area of the hydrometric station, in sq. km. Leave blank if \code{HYDAT} is used or 
+a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the basin area will be extracted from HYDAT. 
+Setting the basin area will replace the HYDAT basin area.}
 }
 \value{
 A column of runoff yield flows for each day called 'Yield_mm' added to the flowdata data frame input or HYDAT dataset, 

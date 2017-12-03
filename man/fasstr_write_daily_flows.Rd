@@ -2,36 +2,60 @@
 % Please edit documentation in R/fasstr_write_daily_flows.R
 \name{fasstr_write_daily_flows}
 \alias{fasstr_write_daily_flows}
-\title{Add calendar and water year date variables.}
+\title{Write a streamflow dataset as a .csv}
 \usage{
 fasstr_write_daily_flows(flowdata = NULL, HYDAT = NULL,
-  station_name = "fasstr", write_dir = ".", fill_missing_dates = FALSE,
   water_year = FALSE, water_year_start = 10, start_year = NULL,
-  end_year = NULL, exclude_years = NULL, exclude_rm = FALSE, na = NA)
+  end_year = NULL, exclude_years = NULL, exclude_rm = FALSE,
+  fill_missing_dates = FALSE, station_name = "fasstr", write_dir = ".",
+  na = NA)
 }
 \arguments{
-\item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
-mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.}
+\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
+YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+Not required if \code{HYDAT} argument is used.}
 
-\item{HYDAT}{Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
-tidyhydat package and a downloaded SQLite HYDAT required.}
+\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
+database are required. Not required if \code{flowdata} argument is used.}
 
-\item{fill_missing_dates}{Logical.}
+\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
+by the year in which they end. Default \code{FALSE}.}
 
-\item{water_year}{Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
-default calendar year (Jan-Dec) (\code{water_year=FALSE}). Water years are designated by the year which they end in
-(e.g. water year 2000 start on 1 Oct 1999 and ends on 30 Sep 2000).}
+\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
 
-\item{water_year_start}{Numeric. Month to start water year (1 to 12 for Jan to Dec).}
+\item{start_year}{Integer. First year to consider for writing to csv. Leave blank if all years are required.}
+
+\item{end_year}{Integer. Last year to consider for writing to csv. Leave blank if all years are required.}
+
+\item{exclude_years}{Integer. Single year or vector of years to exclude from writing to csv. Leave blank if all years are required.}
+
+\item{exclude_rm}{Logical. Will remove the excluded data if \code{TRUE}, otherwise excluded data remain as NA. Default \code{FALSE}.}
+
+\item{fill_missing_dates}{Logical. Fill dates with missing flow data with NA. Default \code{FALSE}.}
+
+\item{station_name}{Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
+files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
+will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number.}
+
+\item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
+Default is the working directory.}
+
+\item{na}{Character. String to use for missing values in the data. Default \code{NA}.}
+}
+\value{
+A .csv file of streamflow data in a selected directory.
 }
 \description{
-Adds mulitple date variables to a dataframe from a column of dates, including
-  year, month (numeric and text), day of years, and water years and day of water years.
+Write a streamflow dataset as a .csv file to a directory. Can add missing dates or filter data by years before writing
+   using given arguments. Just list flowdata data frame or HYDAT station number to write its entirety.
 }
 \examples{
 \dontrun{
 
-set example :)
+fasstr_write_daily_flows(flowdata = flowdata, station_name = "MissionCreek", na="")
+
+fasstr_write_daily_flows(HYDAT = "08NM116")
+
 }
 }

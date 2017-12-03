@@ -10,10 +10,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Calculate the long-term mean annual discharge
+#' @title Calculate the percentile rank of a flow value
 #'
-#' @description Calculates the long-term mean annual discharge of a streamflow dataset. Averages all daily discharge values from all years,
-#'   unless specified.
+#' @description Calculates the percentile rank, or percentile, of a discharge value compared to all flow values of a streamflow dataset. 
+#'    Looks up the value in the distribution (stats::ecdf() function) of all daily discharge values from all years, unless specified.
 #'
 #' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
 #'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
@@ -21,13 +21,15 @@
 #' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
 #'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
 #'    database are required. Not required if \code{flowdata} argument is used.
+#' @param flowvalue Numeric. Flow value of which to determine the percentile rank. Required.
 #' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
 #'    by the year in which they end. Default \code{FALSE}.
 #' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
 #' @param start_year Integer. First year to consider for analysis. Leave blank if all years are required.
 #' @param end_year Integer. Last year to consider for analysis. Leave blank if all years are required.
 #' @param exclude_years Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.    
-#' @param percent_MAD Numeric. Percent of long-term mean annual discharge to output. Default \code{100} (i.e. 100pct. MAD).
+#' @param months Integer. Vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Leave blank for all months. 
+#'    Default \code{1:12}.
 #'
 #' @return A numeric value of the long-term mean annual discharge.
 #' 
@@ -45,14 +47,15 @@
 
 #--------------------------------------------------------------
 
-fasstr_LTMAD <- function(flowdata=NULL,
-                         HYDAT=NULL,
-                         water_year=FALSE, 
-                         water_year_start=10,
-                         start_year=NULL,
-                         end_year=NULL,
-                         exclude_years=NULL,
-                         percent_MAD=100){
+fasstr_percentile_rank <- function(flowdata=NULL,
+                                   HYDAT=NULL,
+                                   flowvalue=NA,
+                                   water_year=FALSE, 
+                                   water_year_start=10,
+                                   start_year=NULL,
+                                   end_year=NULL,
+                                   exclude_years=NULL,
+                                   months=1:12){
   
   
   #--------------------------------------------------------------
@@ -83,9 +86,11 @@ fasstr_LTMAD <- function(flowdata=NULL,
   if( (is.null(start_year) & is.null(end_year) & is.null(exclude_years)) & water_year ) {
     message("water_year=TRUE ignored; no start_year, end_year, or exclude_years selected to filter dates")}
   
-  if( length(percent_MAD)>1) {stop("only one percent_MAD value can be chosen")}
-  if( percent_MAD <=0 )      {stop("percent_MAD must be a single number > 0")}
-
+  if( !is.na(flowvalue) & !is.numeric(flowvalue) )  {stop("flowvalue argument must be numeric")}
+  
+  if( !is.null(months) & !is.numeric(months) )  {stop("months argument must be integers")}
+  if( !all(months %in% c(1:12)) )                      {stop("months argument must be integers between 1 and 12 (Jan-Dec)")}
+  
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 )                                  {stop("Only one HYDAT station can be selected.")}
@@ -123,16 +128,16 @@ fasstr_LTMAD <- function(flowdata=NULL,
   # Filter for the selected year
   flowdata <- dplyr::filter(flowdata,AnalysisYear>=start_year & AnalysisYear <= end_year)
   flowdata <- dplyr::filter(flowdata,!(AnalysisYear %in% exclude_years))
+  flowdata <- dplyr::filter(flowdata,Month %in% months)
   
-  
+
   #--------------------------------------------------------------
   # Complete the analysis
   
   # Calculate the long-term mean annual discharge
-  LTMAD <- mean(flowdata$Value,na.rm =T)*(percent_MAD/100)
+  ptile_rank <- round(ecdf(flowdata$Value)(flowvalue),3)*100
   
   
-  
-  return(LTMAD)
+  return(ptile_rank)
   
 }

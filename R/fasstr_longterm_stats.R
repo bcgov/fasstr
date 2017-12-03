@@ -21,26 +21,36 @@
 #' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
 #'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
 #'    database are required. Not required if \code{flowdata} argument is used.
-#' @param percentiles 
+#' @param percentiles Numeric. Vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}
 #' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
 #'    by the year in which they end. Default \code{FALSE}.
 #' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
 #' @param start_year Integer. First year to consider for analysis. Leave blank if all years are required.
 #' @param end_year Integer. Last year to consider for analysis. Leave blank if all years are required.
 #' @param exclude_years Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.       
-#' @param percentiles 
-#' @param transpose Logical. Switch the rows and columns of the results.
-#' @param write_table Logical. Should a file be created with the calendar year computed percentiles?
-#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
-#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
-#' @param write_digits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
+#' @param custom_months Integer. Vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Adds results to the end of table.
+#'    Leave blank for no custom month summary.
+#' @param transpose Logical. Switch the rows and columns of the results table. Default \code{FALSE}.
+#' @param station_name Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
+#'    files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
+#'    will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number. 
+#' @param write_table Logical. Write the table as a .csv file to specified directory. Default \code{FALSE}.
+#' @param write_digits Numeric. Number of significant digits to round the results in the written table. Default \code{3}.
+#' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
+#'    Default is the working directory.
 #' @param na.rm TBD
-#'
+#' 
+#' @return A data frame of long-term and monthly long-term summary statistics and percentiles
 #'
 #' @examples
 #' \dontrun{
 #' 
-#' coming soon :)
+#'fasstr_longterm_stats(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
+#' 
+#'fasstr_longterm_stats(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
+#'
+#'fasstr_longterm_stats(HYDAT = "08NM116", custom_months = c(5:9))
+#'
 #' }
 #' @export
 
@@ -55,8 +65,9 @@ fasstr_longterm_stats <- function(flowdata=NULL,
                                   start_year=NULL,
                                   end_year=NULL,
                                   exclude_years=NULL,
-                                  station_name=NA,
+                                  custom_months=NULL,
                                   transpose=FALSE,
+                                  station_name=NA,
                                   write_table=FALSE,
                                   write_digits=3,
                                   write_dir=".",
@@ -85,28 +96,32 @@ fasstr_longterm_stats <- function(flowdata=NULL,
   if( !is.null(start_year) )  {if( !start_year %in% c(0:5000) )  {stop("start_year must be an integer")}}
   if( length(end_year)>1)     {stop("only one end_year value can be selected")}
   if( !is.null(end_year) )    {if( !end_year %in% c(0:5000) )  {stop("end_year must be an integer")}}
+  if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("list of exclude_years must be numeric - ex. 1999 or c(1999,2000)")}
+  
+  if( !is.null(custom_months) & !is.numeric(custom_months) )  {stop("custom_months argument must be integers")}
+  if( !all(custom_months %in% c(1:12)) )                      {stop("custom_months argument must be integers between 1 and 12 (Jan-Dec)")}
+  
+  if( !is.numeric(percentiles))                 {stop("percentiles argument must be numeric")}
+  if( !all(percentiles>0 & percentiles<100))    {stop("percentiles must be >0 and <100)")}
   
   if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
   
   if( !is.logical(transpose))    {stop("transpose parameter must be logical (TRUE/FALSE)")}
   if( !is.logical(write_table))  {stop("write_table parameter must be logical (TRUE/FALSE)")}
-  
-  if( !dir.exists(as.character(write_dir))) {
-    message("directory for saved files does not exist")}
-  if( !is.numeric(write_digits))  { 
-    stop("csv.ndddigits parameter needs to be numeric")}
+  if( !is.numeric(write_digits))  {stop("csv.ndddigits parameter needs to be numeric")}
   write_digits <- round(write_digits[1])
   
-  if( !is.list(na.rm))              {
-    stop("na.rm is not a list") }
-  if(! is.logical(unlist(na.rm))){   
-    stop("na.rm is list of logical (TRUE/FALSE) values only.")}
+  if( !dir.exists(as.character(write_dir))) {
+    message("directory for saved files does not exist, new directory will be created")
+    if( write_table & write_dir!="." ) {dir.create(write_dir)}
+  }
+  
+  if( !is.list(na.rm))                        {stop("na.rm is not a list") }
+  if(! is.logical(unlist(na.rm)))             {stop("na.rm is list of logical (TRUE/FALSE) values only.")}
   my.na.rm <- list(na.rm.global=FALSE)
-  if( !all(names(na.rm) %in% names(my.na.rm))){
-    stop("Illegal element in na.rm")}
+  if( !all(names(na.rm) %in% names(my.na.rm))){stop("Illegal element in na.rm")}
   my.na.rm[names(na.rm)]<- na.rm
   na.rm <- my.na.rm  # set the na.rm for the rest of the function.
-  
   
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
@@ -116,35 +131,35 @@ fasstr_longterm_stats <- function(flowdata=NULL,
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
-  # add date variables to determine the min/max cal/water years
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
-  min_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))
-  max_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))
+  #--------------------------------------------------------------
+  # Set the flowdata for analysis
   
-  # If start/end years are not select, set them as the min/max dates
-  if (is.null(start_year)) {start_year <- min_year}
-  if (is.null(end_year)) {end_year <- max_year}
+  # add date variables to determine the min/max cal/water years
+  flowdata <- dplyr::select(flowdata,Date,Value)
+  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = TRUE,water_year_start = water_year_start)
+  if (is.null(start_year))    {start_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))}
+  if (is.null(end_year))      {end_year   <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))}
   if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
   
   #  Fill in the missing dates and the add the date variables again
   flowdata <- fasstr::fasstr_add_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
+  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = water_year,water_year_start = water_year_start)
   
   # Set selected year-type column for analysis
   if (water_year) {
     flowdata$AnalysisYear <- flowdata$WaterYear
-    flowdata$AnalysisDoY <- flowdata$WaterDayofYear
   }  else {
     flowdata$AnalysisYear <- flowdata$Year
-    flowdata$AnalysisDoY <- flowdata$DayofYear
   }
   
   # Filter for the selected year
   flowdata <- dplyr::filter(flowdata,AnalysisYear>=start_year & AnalysisYear <= end_year)
   flowdata <- dplyr::filter(flowdata,!(AnalysisYear %in% exclude_years))
   
+  #--------------------------------------------------------------
+  # Complete analysis
   
-  #  Compute calendar year long-term stats
+  # Calculate the monthly and longterm stats
   Q_month_longterm <-   dplyr::summarize(dplyr::group_by(flowdata,MonthName),
                                          Mean = mean(Value,na.rm=TRUE),
                                          Median = median(Value,na.rm=TRUE),
@@ -158,7 +173,7 @@ fasstr_longterm_stats <- function(flowdata=NULL,
   Q_all_longterm <- dplyr::mutate(Q_all_longterm,MonthName="Long-term")
   Q_longterm <- rbind(Q_month_longterm, Q_all_longterm)
   
-  # Calculate some percentiles
+  # Calculate the monthly and longterm percentiles
   if (!all(is.na(percentiles))){
     for (ptile in percentiles) {
       
@@ -176,51 +191,40 @@ fasstr_longterm_stats <- function(flowdata=NULL,
     }
   }
   
-  
-  
-  
+  # Rename Month column and reorder to proper levels (set in add_date_vars)
   Q_longterm <- dplyr::rename(Q_longterm,Month=MonthName)
-  if (water_year) {
-    if (water_year_start==1) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Long-term"))
-    } else if (water_year_start==2) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan","Long-term"))
-    } else if (water_year_start==3) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Long-term"))
-    } else if (water_year_start==4) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Long-term"))
-    } else if (water_year_start==5) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "Long-term"))
-    } else if (water_year_start==6) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Long-term"))
-    } else if (water_year_start==7) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Long-term"))
-    } else if (water_year_start==8) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Long-term"))
-    } else if (water_year_start==9) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Long-term"))
-    } else if (water_year_start==10) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Long-term"))
-    } else if (water_year_start==11) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Long-term"))
-    } else if (water_year_start==12) {
-      Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Long-term"))
-    }
-    
-  } else {           
-    Q_longterm$Month <- factor(Q_longterm$Month, levels=c("Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Long-term"))
-  }
   Q_longterm <- with(Q_longterm, Q_longterm[order(Month),])
   row.names(Q_longterm) <- c(1:nrow(Q_longterm))
   
-  
-  
-  if (transpose) {
-    Q_longterm_tpose <- tidyr::gather(Q_longterm,Statistic,Value,-Month)
-    Q_longterm <- tidyr::spread(Q_longterm_tpose,Month,Value)
+  # If custom_months are selected, append a row on the bottom
+  if( is.numeric(custom_months) & all(custom_months %in% c(1:12)) ) {
+    flowdata_temp <- dplyr::filter(flowdata,Month %in% custom_months)
+    Q_month_custom <-   dplyr::summarize(dplyr::group_by(flowdata_temp),
+                                         Mean = mean(Value,na.rm=TRUE),
+                                         Median = median(Value,na.rm=TRUE),
+                                         Maximum = max(Value,na.rm=TRUE),
+                                         Minimum = min(Value,na.rm=TRUE))
+    Q_month_custom <- dplyr::mutate(Q_month_custom,Month="Custom-Months")
+    
+    if (!all(is.na(percentiles))){
+      for (ptile in percentiles) {
+        Q_ptile_custom <- dplyr::summarise(flowdata_temp,Percentile=quantile(Value,ptile/100, na.rm=TRUE))
+        Q_ptile_custom <- dplyr::mutate(Q_ptile_custom,Month="Custom-Months")
+        
+        colnames(Q_ptile_custom)[1] <- paste0("P",ptile)
+        Q_month_custom <- merge(Q_month_custom,Q_ptile_custom,by=c("Month"))
+      }
+    }
+    Q_longterm <- rbind(Q_longterm, Q_month_custom)
   }
   
   
+  
+  # Switch columns and rows
+  if (transpose) {
+    Q_longterm <- tidyr::gather(Q_longterm,Statistic,Value,-Month)
+    Q_longterm <- tidyr::spread(Q_longterm,Month,Value)
+  }
   
   #  Write out summary tables for calendar years
   if (write_table) {

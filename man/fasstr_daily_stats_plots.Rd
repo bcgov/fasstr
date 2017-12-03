@@ -2,69 +2,73 @@
 % Please edit documentation in R/fasstr_daily_stats_plots.R
 \name{fasstr_daily_stats_plots}
 \alias{fasstr_daily_stats_plots}
-\title{Plot streamflow statistics for each day of the year.}
+\title{Plot the daily summary statistics}
 \usage{
-fasstr_daily_stats_plots(flowdata = NULL, HYDAT = NULL, station_name = NA,
-  water_year = FALSE, water_year_start = 10, start_year = NULL,
-  end_year = NULL, exclude_years = NULL, rolling_days = 1,
-  rolling_align = "right", write_plot = FALSE, write_imgtype = "pdf",
-  log_discharge = FALSE, plot_title = NA, write_dir = ".",
+fasstr_daily_stats_plots(flowdata = NULL, HYDAT = NULL, rolling_days = 1,
+  rolling_align = "right", water_year = FALSE, water_year_start = 10,
+  start_year = NULL, end_year = NULL, exclude_years = NULL,
+  log_discharge = TRUE, station_name = NA, write_plot = FALSE,
+  write_imgtype = "pdf", write_imgsize = c(4, 8.5), write_dir = ".",
   na.rm = list(na.rm.global = FALSE))
 }
 \arguments{
-\item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
-mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.}
+\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
+YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+Not required if \code{HYDAT} argument is used.}
 
-\item{HYDAT}{Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
-tidyhydat package and a downloaded SQLite HYDAT required.}
+\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
+database are required. Not required if \code{flowdata} argument is used.}
 
-\item{station_name}{Character. Identifier name of the stream or station. Required when supplying data through \code{flowdata}.
-The station name will be used in plots and filenames of exported tables and plot. If using \code{HYDAT} to supply
-data and no \code{station_name} is provided, the HYDAT station number will be the identifier.}
+\item{rolling_days}{Numeric. The number of days to apply a rolling mean. Default \code{1}.}
 
-\item{water_year}{Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
-default calendar year (Jan-Dec) (\code{water_year=FALSE}). Water years are designated by the year which they end in
-(e.g. water year 2000 start on 1 Oct 1999 and ends on 30 Sep 2000).}
+\item{rolling_align}{Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),
+or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.
+by the year in which they end. Default \code{FALSE}.}
 
-\item{water_year_start}{Numeric. Month to start water year (1 to 12 for Jan to Dec).}
+\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
+by the year in which they end. Default \code{FALSE}.}
 
-\item{start_year}{Numeric. The first year of streamflow data to analyze. If unset, the default \code{start_year} is the first
-year of the data provided.}
+\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
 
-\item{end_year}{Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
-year of the data provided.}
+\item{start_year}{Integer. First year to consider for analysis. Leave blank if all years are required.}
 
-\item{rolling_days}{Numeric. Rolling days. Default 1.}
+\item{end_year}{Integer. Last year to consider for analysis. Leave blank if all years are required.}
 
-\item{rolling_align}{Character. Specifies whether the index of the result should be left- or right-aligned or centered 
-(default) compared to the rolling window of observations#' @param transpose Logical. Switch the rows and columns of the results.}
+\item{exclude_years}{Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.}
 
-\item{write_plot}{Logical. Should a file be created with the calendar year computed percentiles?
-The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
+\item{log_discharge}{Logical. Place the discharge axis (Y) on log scale. Default \code{TRUE}.}
 
-\item{write_imgtype}{Character. pdf, png, bmp, jpeg, tiff. Default pdf.}
+\item{station_name}{Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
+files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
+will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number.}
 
-\item{log_discharge}{Logical. Place the discharge axis (Y) on log scale. Default FALSE (linear).}
+\item{write_plot}{Logical. Write the plot to specified directory. Default \code{FALSE}.}
 
-\item{plot_title}{Character. Text string of desired title for all plots. Default NA.}
+\item{write_imgtype}{Character. One of "pdf","png","jpeg","tiff", or "bmp" image types to write the plot as. Default \code{"pdf"}.}
 
-\item{write_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
+\item{write_imgsize}{Numeric. Height and width, respectively, of saved plot. Default \code{c(5,11)}.}
+
+\item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
+Default is the working directory.}
 
 \item{na.rm}{TBD}
-
-\item{excluded_years}{Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).}
-
-\item{percentiles}{Numeric. List of numbers to calculate percentiles (5 = 5th percentile). Default c(5,25,75,95).}
+}
+\value{
+List of plots of daily summary statistics, and each year's daily flows for comparison
 }
 \description{
-Compute streamflow statistics for each day of the year.
-Streamflow data can be supplied through the \code{flowdata} parameter or extracted from a 
-HYDAT database using the tidyhydat package and \code{HYDAT} parameter.
+Plot the daily mean, median, maximum, minimum, and percentiles for each day of the year of daily flow values 
+   from a streamflow dataset. Plots the statistics from all daily discharge values from all years, unless specified. Can determine
+   statistics of rolling mean days (e.g. 7-day flows) using the rolling_days argument. Data calculated using fasstr_longterm_stats()
+   function.
 }
 \examples{
 \dontrun{
 
-coming soon :)
+fasstr_daily_stats_plot(flowdata = flowdata, station_name = "MissionCreek", write_plot = TRUE)
+
+fasstr_daily_stats_plot(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+
 }
 }
