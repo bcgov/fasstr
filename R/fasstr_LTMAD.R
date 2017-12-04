@@ -89,8 +89,7 @@ fasstr_LTMAD <- function(flowdata=NULL,
   if( !is.numeric(months) )         {stop("months argument must be integers")}
   if( !all(months %in% c(1:12)) )   {stop("months argument must be integers between 1 and 12 (Jan-Dec)")}
   
-  if( length(percent_MAD)>1) {stop("only one percent_MAD value can be chosen")}
-  if( percent_MAD <=0 )      {stop("percent_MAD must be a single number > 0")}
+  if( all(percent_MAD <=0) )      {stop("percent_MAD must be a single number > 0")}
 
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {

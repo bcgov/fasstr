@@ -82,11 +82,11 @@ fasstr_percentile_rank <- function(flowdata=NULL,
   if( !is.null(end_year) )    {if( !end_year %in% c(0:5000) )  {stop("end_year must be an integer")}}
   
   if( !is.null(exclude_years) ) {
-    if( !all(exclude_years %in% c(0:5000)) ) {stop("exclude_years must be integers (ex. 1999 or c(1999,2000))")}}
+  if( !all(exclude_years %in% c(0:5000)) ) {stop("exclude_years must be integers (ex. 1999 or c(1999,2000))")}}
   if( (is.null(start_year) & is.null(end_year) & is.null(exclude_years)) & water_year ) {
     message("water_year=TRUE ignored; no start_year, end_year, or exclude_years selected to filter dates")}
   
-  if( !is.na(flowvalue) & !is.numeric(flowvalue) )  {stop("flowvalue argument must be numeric")}
+  if( !all(is.na(flowvalue)) & !is.numeric(flowvalue) )  {stop("flowvalue argument must be numeric")}
   
   if( !is.null(months) & !is.numeric(months) )  {stop("months argument must be integers")}
   if( !all(months %in% c(1:12)) )               {stop("months argument must be integers between 1 and 12 (Jan-Dec)")}
