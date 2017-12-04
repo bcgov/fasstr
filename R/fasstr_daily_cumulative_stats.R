@@ -222,10 +222,10 @@ fasstr_daily_cumulative_stats <- function(flowdata=NULL,
   # Add cumulative flows
   if (use_yield){
     flowdata <- fasstr::fasstr_add_cumulative_yield(flowdata,water_year = water_year, water_year_start = water_year_start, basin_area = basin_area)
-    flowdata$Cumul_Flow <- flowdata$Cumul_Yield
+    flowdata$Cumul_Flow <- flowdata$Cumul_Yield_mm
   } else {
     flowdata <- fasstr::fasstr_add_cumulative_volume(flowdata,water_year = water_year, water_year_start = water_year_start)
-    flowdata$Cumul_Flow <- flowdata$Cumul_Volume
+    flowdata$Cumul_Flow <- flowdata$Cumul_Volume_m3
   }
   
   

@@ -92,13 +92,13 @@ fasstr_add_cumulative_volume <- function(flowdata=NULL,
   # Add column to flowdata
   
   # Add cumulative volumes
-  flowdata_temp <- dplyr::mutate(dplyr::group_by(flowdata_temp,AnalysisYear),Cumul_Volume=cumsum(Value)*86400)
+  flowdata_temp <- dplyr::mutate(dplyr::group_by(flowdata_temp,AnalysisYear),Cumul_Volume_m3=cumsum(Value)*86400)
   
   # Return flowdata to original dates
-  flowdata_temp <- dplyr::select(dplyr::ungroup(flowdata_temp),Date,Cumul_Volume)
+  flowdata_temp <- dplyr::select(dplyr::ungroup(flowdata_temp),Date,Cumul_Volume_m3)
   
   flowdata <- merge(flowdata,flowdata_temp,by="Date",all.x = T)
-  flowdata <-  flowdata[,c(col_ord,paste("Cumul_Volume"))]
+  flowdata <-  flowdata[,c(col_ord,paste("Cumul_Volume_m3"))]
   
   
   return(flowdata)

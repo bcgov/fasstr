@@ -154,8 +154,8 @@ fasstr_annual_flow_timing <- function(flowdata=NULL,
   Qstat <-   dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear))
   for (percent in timing_percent) {
     Qstat_pcnt <-   dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear),
-                               TOTALQ_DAY  =  AnalysisDoY[ match(TRUE, Cumul_Volume > percent/100  * ((mean(Value, na.rm=na.rm$na.rm.global))*length(Value)*60*60*24))],
-                               TOTALQ_DATE =  Date[ match(TRUE, Cumul_Volume > percent/100  * ((mean(Value, na.rm=na.rm$na.rm.global))*length(Value)*60*60*24))])
+                               TOTALQ_DAY  =  AnalysisDoY[ match(TRUE, Cumul_Volume_m3 > percent/100  * ((mean(Value, na.rm=na.rm$na.rm.global))*length(Value)*60*60*24))],
+                               TOTALQ_DATE =  Date[ match(TRUE, Cumul_Volume_m3 > percent/100  * ((mean(Value, na.rm=na.rm$na.rm.global))*length(Value)*60*60*24))])
     names(Qstat_pcnt)[names(Qstat_pcnt) == "TOTALQ_DAY"] <- paste0("DoY_",percent,"pct_TotalQ")
     names(Qstat_pcnt)[names(Qstat_pcnt) == "TOTALQ_DATE"] <- paste0("Date_",percent,"pct_TotalQ")
     Qstat <- merge(Qstat,Qstat_pcnt,by="AnalysisYear",all=T)

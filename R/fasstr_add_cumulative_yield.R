@@ -108,13 +108,13 @@ fasstr_add_cumulative_yield <- function(flowdata=NULL,
   # Add column to flowdata
   
   # Add cumulative yields
-  flowdata_temp <- dplyr::mutate(dplyr::group_by(flowdata_temp,AnalysisYear),Cumul_Yield=cumsum(Value)*86400/(basin_area*1000))
+  flowdata_temp <- dplyr::mutate(dplyr::group_by(flowdata_temp,AnalysisYear),Cumul_Yield_mm=cumsum(Value)*86400/(basin_area*1000))
   
   # Return flowdata to original dates
-  flowdata_temp <- dplyr::select(dplyr::ungroup(flowdata_temp),Date,Cumul_Yield)
+  flowdata_temp <- dplyr::select(dplyr::ungroup(flowdata_temp),Date,Cumul_Yield_mm)
   
   flowdata <- merge(flowdata,flowdata_temp,by="Date",all.x = T)
-  flowdata <-  flowdata[,c(col_ord,paste("Cumul_Yield"))]
+  flowdata <-  flowdata[,c(col_ord,paste("Cumul_Yield_mm"))]
   
   
   return(flowdata)
