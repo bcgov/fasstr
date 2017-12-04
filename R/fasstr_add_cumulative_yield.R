@@ -29,7 +29,7 @@
 #'    by the year in which they end. Default \code{FALSE}.
 #' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
 #' 
-#' @return A column of cumulative runoff yield flows for each day for each year specific called 'Cumul_Yield' added to the flowdata 
+#' @return A column of cumulative runoff yield flows for each day for each year specific called 'Cumul_Yield_mm' added to the flowdata 
 #'    data frame input or HYDAT dataset, in units of millimetres.
 #'
 #' @examples
