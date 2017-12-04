@@ -96,8 +96,8 @@ fasstr_annual_stats <- function(flowdata=NULL,
   if( !is.null(end_year) )    {if( !end_year %in% c(0:5000) )  {stop("end_year must be an integer")}}
   if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("list of exclude_years must be numeric - ex. 1999 or c(1999,2000)")}
   
-  if( !is.numeric(custom_months) )        {stop("custom_months argument must be integers")}
-  if( !all(custom_months %in% c(1:12)) )  {stop("custom_months argument must be integers between 1 and 12 (Jan-Dec)")}
+  if( !is.numeric(months) )        {stop("months argument must be integers")}
+  if( !all(months %in% c(1:12)) )  {stop("months argument must be integers between 1 and 12 (Jan-Dec)")}
   
   if( !all(is.na(percentiles)) & !is.numeric(percentiles) )                 {stop("percentiles argument must be numeric")}
   if( !all(is.na(percentiles)) & (!all(percentiles>0 & percentiles<100)) )  {stop("percentiles must be >0 and <100)")}
@@ -186,11 +186,14 @@ fasstr_annual_stats <- function(flowdata=NULL,
   Qstat_annual[Qstat_annual$Year %in% exclude_years,-1] <- NA
   
   
+  col_names <- names(Qstat_annual[-1])
   
   if(transpose){
     Qstat_tpose <- tidyr::gather(Qstat_annual,Statistic,Value,-Year)
     Qstat_tpose_temp <- dplyr::mutate(Qstat_tpose,Value=round(Value,write_digits))
     Qstat_annual <- tidyr::spread(Qstat_tpose,Year,Value)
+    Qstat_annual <- Qstat_annual[match(col_names, Qstat_annual$Statistic),]
+    row.names(Qstat_annual) <- c(1:nrow(Qstat_annual))
   }
   
   if(write_table){

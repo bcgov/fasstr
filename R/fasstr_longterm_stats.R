@@ -217,13 +217,14 @@ fasstr_longterm_stats <- function(flowdata=NULL,
     }
     Q_longterm <- rbind(Q_longterm, Q_month_custom)
   }
-  
+  col_names <- names(Q_longterm[-1])
   
   
   # Switch columns and rows
   if (transpose) {
     Q_longterm <- tidyr::gather(Q_longterm,Statistic,Value,-Month)
     Q_longterm <- tidyr::spread(Q_longterm,Month,Value)
+    Q_longterm <- Q_longterm[match(col_names, Q_longterm$Statistic),]
   }
   
   #  Write out summary tables for calendar years

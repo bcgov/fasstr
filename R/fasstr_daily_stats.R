@@ -205,6 +205,8 @@ fasstr_daily_stats <- function(flowdata=NULL,
   Q_daily <- dplyr::rename(Q_daily,"DayofYear"=AnalysisDoY,Date=AnalysisDate)
   Q_daily$Date <- format(as.Date(Q_daily$Date),format="%b-%d")
   col_order <- Q_daily$Date
+  col_names <- names(Q_daily[-1])
+  
   
   
   # If transpose==TRUE
@@ -212,6 +214,8 @@ fasstr_daily_stats <- function(flowdata=NULL,
     Q_daily <- tidyr::gather(Q_daily,Statistic,Value,-Date)
     Q_daily <- tidyr::spread(Q_daily,Date,Value)
     Q_daily <-  Q_daily[,c("Statistic",col_order)]
+    Q_daily <- Q_daily[match(col_names, Q_daily$Statistic),]
+    row.names(Q_daily) <- c(1:nrow(Q_daily))
   }
   
   #  Write the table

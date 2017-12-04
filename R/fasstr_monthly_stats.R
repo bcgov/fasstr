@@ -219,17 +219,37 @@ fasstr_monthly_stats <- function(flowdata=NULL,
   
   # Transform data to chosen format
   if (spread) {
-    Qstat_monthly <- tidyr::gather(Qstat_monthly,Statistic,Value,3:ncol(Qstat_monthly))
-    Qstat_monthly <- dplyr::mutate(Qstat_monthly,StatMonth=paste0(Month,"_",Statistic))
-    Qstat_monthly <- dplyr::select(Qstat_monthly,-Statistic,-Month)
-    Qstat_monthly <- tidyr::spread(Qstat_monthly,StatMonth,Value)
-  }  
+    Qstat_monthly_spread <- dplyr::summarise(dplyr::group_by(Qstat_monthly,Year))
+    for (mnth in unique(Qstat_monthly$Month)) {
+      Qstat_monthly_month <- dplyr::filter(Qstat_monthly,Month==mnth)
+      Qstat_monthly_month <- tidyr::gather(Qstat_monthly_month,Statistic,Value,3:ncol(Qstat_monthly_month))
+      Qstat_monthly_month <- dplyr::mutate(Qstat_monthly_month,StatMonth=paste0(Month,"_",Statistic))
+      Qstat_monthly_month <- dplyr::select(Qstat_monthly_month,-Statistic,-Month)
+      Qstat_order <- unique(Qstat_monthly_month$StatMonth)
+      Qstat_monthly_month <- tidyr::spread(Qstat_monthly_month,StatMonth,Value)
+      Qstat_monthly_month <-  Qstat_monthly_month[,c("Year",Qstat_order)]
+      Qstat_monthly_spread <- merge(Qstat_monthly_spread,Qstat_monthly_month,by="Year",all = TRUE)
+    }  
+    Qstat_monthly <- Qstat_monthly_spread
+  }
+  
   if (transpose) {
-    Qstat_monthly <- tidyr::gather(Qstat_monthly,Stat,Value,3:ncol(Qstat_monthly))
-    Qstat_monthly <- dplyr::mutate(Qstat_monthly,Statistic=paste0(Month,"_",Stat))
-    Qstat_monthly <- dplyr::select(Qstat_monthly,-Stat,-Month)
-    Qstat_monthly <- tidyr::spread(Qstat_monthly,Year,Value)
-  }  
+    Qstat_monthly_tpose_names <- c("Statistic",unique(Qstat_monthly$Year))
+    Qstat_monthly_tpose <- data.frame(matrix(ncol = length(Qstat_monthly_tpose_names), nrow = 0))
+    colnames(Qstat_monthly_tpose) <- Qstat_monthly_tpose_names
+    
+    for (mnth in unique(Qstat_monthly$Month)) {
+      Qstat_monthly_month <- dplyr::filter(Qstat_monthly,Month==mnth)
+      Qstat_monthly_month <- tidyr::gather(Qstat_monthly_month,Statistic,Value,3:ncol(Qstat_monthly_month))
+      Qstat_monthly_month <- dplyr::mutate(Qstat_monthly_month,Statistic=paste0(Month,"_",Statistic))
+      Qstat_monthly_month <- dplyr::select(Qstat_monthly_month,-Month)
+      Qstat_order <- unique(Qstat_monthly_month$Statistic)
+      Qstat_monthly_month <- tidyr::spread(Qstat_monthly_month,Year,Value)
+      Qstat_monthly_month <- Qstat_monthly_month[match(Qstat_order, Qstat_monthly_month$Statistic),]
+            Qstat_monthly_tpose <- dplyr::bind_rows(Qstat_monthly_tpose,Qstat_monthly_month)
+    }  
+    Qstat_monthly <- Qstat_monthly_tpose
+  }
   
 
   # Save the table if selected
