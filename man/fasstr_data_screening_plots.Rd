@@ -2,13 +2,13 @@
 % Please edit documentation in R/fasstr_data_screening_plots.R
 \name{fasstr_data_screening_plots}
 \alias{fasstr_data_screening_plots}
-\title{Plot annual summary and missing data statistics}
+\title{Plot annual summary statistics for data screening}
 \usage{
 fasstr_data_screening_plots(flowdata = NULL, HYDAT = NULL,
   rolling_days = 1, rolling_align = "right", water_year = FALSE,
   water_year_start = 10, start_year = NULL, end_year = NULL,
   station_name = NA, write_plot = FALSE, write_imgtype = "pdf",
-  write_imgsize = c(5.5, 8.5), write_dir = ".")
+  write_imgsize = c(6, 8.5), write_dir = ".")
 }
 \arguments{
 \item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
@@ -42,18 +42,17 @@ will be the \code{HYDAT} value provided in the argument or column. Setting the s
 
 \item{write_imgtype}{Character. One of "pdf","png","jpeg","tiff", or "bmp" image types to write the plot as. Default \code{"pdf"}.}
 
-\item{write_imgsize}{Numeric. Height and width, respectively, of saved plot. Default \code{c(5,11)}.}
+\item{write_imgsize}{Numeric. Height and width, respectively, of saved plot. Default \code{c(6,8.5)}.}
 
 \item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
 Default is the working directory.}
 }
 \value{
-A plot of annual and annual-month summary missing data statistics
+A plot of annual data statistics for screening
 }
 \description{
-Plots the mean, median, maximum, minimum, standard deviation of annual flows and data availability and missing data
-   statistics for each year and month of each year. Plots the statistics from all daily discharge values from all years, 
-   unless specified. Data calculated using fasstr_data_screening() function.
+Plots the mean, median, maximum, minimum, standard deviation of annual flows. Plots the statistics from all daily 
+   discharge values from all years, unless specified. Data calculated using fasstr_data_screening() function.
 }
 \examples{
 \dontrun{

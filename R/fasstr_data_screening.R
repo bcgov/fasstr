@@ -13,7 +13,7 @@
 #' @title Calculate annual summary and missing data statistics
 #'
 #' @description Calculates mean, median, maximum, minimum, standard deviation of annual flows and data availability and missing data
-#'    statistics for each year and month of each year. Calculate the statistics from all daily discharge values from all years, 
+#'    statistics for each year and month of each year. Calculates the statistics from all daily discharge values from all years, 
 #'    unless specified.
 #'
 #' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 

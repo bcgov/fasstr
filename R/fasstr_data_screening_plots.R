@@ -11,11 +11,10 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 
-#' @title Plot annual summary and missing data statistics
+#' @title Plot annual summary statistics for data screening
 #'
-#' @description Plots the mean, median, maximum, minimum, standard deviation of annual flows and data availability and missing data
-#'    statistics for each year and month of each year. Plots the statistics from all daily discharge values from all years, 
-#'    unless specified. Data calculated using fasstr_data_screening() function.
+#' @description Plots the mean, median, maximum, minimum, standard deviation of annual flows. Plots the statistics from all daily 
+#'    discharge values from all years, unless specified. Data calculated using fasstr_data_screening() function.
 #'
 #' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
 #'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
@@ -37,11 +36,11 @@
 #'    will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number. 
 #' @param write_plot Logical. Write the plot to specified directory. Default \code{FALSE}.
 #' @param write_imgtype Character. One of "pdf","png","jpeg","tiff", or "bmp" image types to write the plot as. Default \code{"pdf"}.
-#' @param write_imgsize Numeric. Height and width, respectively, of saved plot. Default \code{c(5,11)}.
+#' @param write_imgsize Numeric. Height and width, respectively, of saved plot. Default \code{c(6,8.5)}.
 #' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
 #'    Default is the working directory.
 #'
-#' @return A plot of annual and annual-month summary missing data statistics
+#' @return A plot of annual data statistics for screening
 #'
 #' @examples
 #' \dontrun{
@@ -67,7 +66,7 @@ fasstr_data_screening_plots <- function(flowdata=NULL,
                                         station_name=NA,
                                         write_plot=FALSE,
                                         write_imgtype="pdf",
-                                        write_imgsize=c(5.5,8.5),
+                                        write_imgsize=c(6,8.5),
                                         write_dir="."){ 
   
   
@@ -122,7 +121,7 @@ fasstr_data_screening_plots <- function(flowdata=NULL,
   #--------------------------------------------------------------
   # Complete analysis
   
-  flow_summary <- fasstr::fasstr_annual_stats(flowdata=flowdata,
+  flow_summary <- fasstr::fasstr_data_screening(flowdata=flowdata,
                                                 HYDAT=HYDAT,
                                                 rolling_days=rolling_days,
                                                 rolling_align=rolling_align,

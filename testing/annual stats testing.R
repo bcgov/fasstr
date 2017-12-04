@@ -6,9 +6,9 @@ install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "sour
 
 
 data <- tidyhydat::hy_daily_flows(station_number = "08HB048")
-ltmad <- fasstr::fasstr_LTMAD(data,percent_MAD = 20)
-
-round(ecdf(data$Value)(0.0361400),3)
+fasstr::fasstr_LTMAD(HYDAT = "08HB048",months = 11)
+fasstr::fasstr_percentile_rank(HYDAT = "08HB048", flowvalue = .8109)
+fasstr::fasstr_annual_missing_plots(HYDAT = "08HB048")
 
 percentiles <- fasstr::fasstr_longterm_stats(HYDAT = "08HB048",percentiles = 1:99,transpose = T,custom_months = 1:5)
 

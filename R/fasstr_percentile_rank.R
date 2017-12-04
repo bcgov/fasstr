@@ -89,7 +89,7 @@ fasstr_percentile_rank <- function(flowdata=NULL,
   if( !is.na(flowvalue) & !is.numeric(flowvalue) )  {stop("flowvalue argument must be numeric")}
   
   if( !is.null(months) & !is.numeric(months) )  {stop("months argument must be integers")}
-  if( !all(months %in% c(1:12)) )                      {stop("months argument must be integers between 1 and 12 (Jan-Dec)")}
+  if( !all(months %in% c(1:12)) )               {stop("months argument must be integers between 1 and 12 (Jan-Dec)")}
   
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
