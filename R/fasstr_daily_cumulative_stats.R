@@ -260,13 +260,15 @@ fasstr_daily_cumulative_stats <- function(flowdata=NULL,
   Q_total <- dplyr::rename(Q_total,"DayofYear"=AnalysisDoY,Date=AnalysisDate)
   Q_total$Date <- format(as.Date(Q_total$Date),format="%b-%d")
   col_order <- Q_total$Date
-  
+  col_names <- names(Q_total[-1])
   
   # If transpose==TRUE
   if (transpose) {
-    Q_total_tpose <- tidyr::gather(Q_daily,Statistic,Value,-Date)
-    Q_total <- tidyr::spread(Q_total_tpose,Date,Value)
+    Q_total <- tidyr::gather(Q_total,Statistic,Value,-Date)
+    Q_total <- tidyr::spread(Q_total,Date,Value)
     Q_total <-  Q_total[,c("Statistic",col_order)]
+    Q_total <- Q_total[match(col_names, Q_total$Statistic),]
+    row.names(Q_total) <- c(1:nrow(Q_total))
   }
   
   #  Write the table
