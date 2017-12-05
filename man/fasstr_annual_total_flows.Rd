@@ -2,7 +2,7 @@
 % Please edit documentation in R/fasstr_annual_total_flows.R
 \name{fasstr_annual_total_flows}
 \alias{fasstr_annual_total_flows}
-\title{Calculate annual summary statistics}
+\title{Calculate annual and seasonal total flows}
 \usage{
 fasstr_annual_total_flows(flowdata = NULL, HYDAT = NULL, basin_area = NA,
   water_year = FALSE, water_year_start = 10, start_year = NULL,
@@ -54,8 +54,8 @@ Default is the working directory.}
 A data frame of annual and seasonal total flows (volumetric and yield)
 }
 \description{
-Calculates annual monthly mean, median, maximum, minimum, and percentiles of daily flow values from a streamflow 
-   dataset. Calculates the statistics from all daily discharge values from all years, unless specified.
+Calculates annual and seasonal total flows, volumetric and runoff yield flows, from a streamflow dataset. Calculates 
+   the statistics from all daily discharge values from all years, unless specified.
 }
 \examples{
 \dontrun{

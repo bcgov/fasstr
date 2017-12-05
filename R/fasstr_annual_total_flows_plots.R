@@ -10,10 +10,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Calculate annual summary statistics
-#'
-#' @description Calculates annual monthly mean, median, maximum, minimum, and percentiles of daily flow values from a streamflow 
-#'    dataset. Calculates the statistics from all daily discharge values from all years, unless specified.
+#' @title Plot annual and seasonal total flows
+#' 
+#' @description Plots annual and seasonal total flows, volumetric and runoff yield flows, from a streamflow dataset. Calculates 
+#'    the statistics from all daily discharge values from all years, unless specified. Data calculated from
+#'    fasstr_annual_total_flows() function.
 #'
 #' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
 #'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
