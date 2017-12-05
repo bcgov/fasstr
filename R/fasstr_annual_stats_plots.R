@@ -23,10 +23,6 @@
 #' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
 #'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
 #'    database are required. Not required if \code{flowdata} argument is used.
-#' @param rolling_days  Numeric. The number of days to apply a rolling mean. Default \code{1}.
-#' @param rolling_align Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),
-#'    or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.
-#'    by the year in which they end. Default \code{FALSE}.
 #' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
 #'    by the year in which they end. Default \code{FALSE}.
 #' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
@@ -106,10 +102,6 @@ fasstr_annual_stats_plots <- function(flowdata=NULL,
   
   if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
   
-  if( !is.numeric(rolling_days))                       {stop("rolling_days argument must be numeric")}
-  if( !all(rolling_days %in% c(1:180)) )               {stop("rolling_days argument must be integers > 0 and <= 180)")}
-  if( !rolling_align %in% c("right","left","center"))  {stop("rolling_align argument must be 'right', 'left', or 'center'")}
-  
   if( !is.logical(log_discharge))         {stop("log_discharge argument must be logical (TRUE/FALSE)")}
   
   if( !is.logical(write_plot))      {stop("write_plot argument must be logical (TRUE/FALSE)")}
@@ -137,7 +129,7 @@ fasstr_annual_stats_plots <- function(flowdata=NULL,
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("only one HYDAT station can be selected")}
-    if( !HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist")}
+    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
     if( is.na(station_name) ) {station_name <- HYDAT}
   }
   

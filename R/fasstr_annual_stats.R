@@ -21,7 +21,7 @@
 #' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
 #'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
 #'    database are required. Not required if \code{flowdata} argument is used.
-#' @param percentiles Numeric. Vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}
+#' @param percentiles Numeric. Vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.
 #' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
 #'    by the year in which they end. Default \code{FALSE}.
 #' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
@@ -57,7 +57,7 @@
 #--------------------------------------------------------------
 fasstr_annual_stats <- function(flowdata=NULL,
                                 HYDAT=NULL,
-                                percentiles=NA,
+                                percentiles=c(10,90),
                                 water_year=FALSE,
                                 water_year_start=10,
                                 start_year=NULL,
@@ -124,7 +124,7 @@ fasstr_annual_stats <- function(flowdata=NULL,
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("only one HYDAT station can be selected")}
-    if( !HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist")}
+    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
     if( is.na(station_name) ) {station_name <- HYDAT}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
@@ -162,11 +162,10 @@ fasstr_annual_stats <- function(flowdata=NULL,
   
   ## Compute remaining statistics on  year basis
   Qstat_annual <-   dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear),
-                                     Mean    = mean(Value, na.rm=TRUE),  
-                                     Median  = median(Value, na.rm=TRUE), 
-                                     Maximum	    = max (Value, na.rm=TRUE),    
-                                     Minimum     = min (Value, na.rm=TRUE)
-  )
+                                     Mean    = mean(Value, na.rm=na.rm$na.rm.global ),  
+                                     Median  = median(Value, na.rm=na.rm$na.rm.global ), 
+                                     Maximum	    = max (Value, na.rm=na.rm$na.rm.global ),    
+                                     Minimum     = min (Value, na.rm=na.rm$na.rm.global ))
   
   if (!all(is.na(percentiles))){
     for (ptile in percentiles) {
@@ -176,6 +175,7 @@ fasstr_annual_stats <- function(flowdata=NULL,
       colnames(Q_annual_ptile)[2] <- paste0("P",ptile)
       
       Qstat_annual <- merge(Qstat_annual,Q_annual_ptile,by=c("AnalysisYear"))
+      Qstat_annual[,ncol(Qstat_annual)] <- ifelse(is.na(Qstat_annual$Mean),NA,Qstat_annual[,ncol(Qstat_annual)]) # remove ptile if mean is na
     }
   }
   # Rename year column

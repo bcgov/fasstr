@@ -1,7 +1,8 @@
 
+
 devtools::document()
-install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
-#install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
+#install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
+install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
 test <- fasstr::fasstr_annual_total_flows_plots(HYDAT = "08HB048")
 
@@ -9,6 +10,47 @@ test <- fasstr::fasstr_annual_total_flows_plots(HYDAT = "08HB048")
 fasstr::fasstr_LTMAD(HYDAT = "08HB048",percent_MAD = c(100,50))
 fasstr::fasstr_percentile_rank(HYDAT = "08HB048", flowvalue = c(.8109,.1))
 fasstr::fasstr_annual_missing_plots(HYDAT = "08HB048")
+
+test <- fasstr::fasstr_annual_all_stats(HYDAT = "08NM116", water_year = T, water_year_start = 5)
+
+
+
+
+flowdata=NULL
+HYDAT="08HB048"
+basin_area=NA
+water_year=FALSE
+water_year_start=10
+start_year=NULL
+end_year=NULL
+exclude_years=NULL
+annual_percentiles=c(10,90)
+monthly_percentiles=c(10,90)
+lowflow_days=c(1,3,7,30)
+lowflow_align="right"
+totalflow_seasons=TRUE
+timing_percent=c(25,33,50,75)
+normal_percentiles=c(25,75)
+transpose=FALSE
+station_name=NA
+write_table=FALSE
+write_digits=3
+write_dir="."
+na.rm=list(na.rm.global=FALSE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # MEANS MEDIAN RATIO
 ########
@@ -309,7 +351,7 @@ A <- fasstr::fasstr_add_date_vars(HYDAT = stn.number,water_year = wt_yr)
 A <- fasstr::fasstr_add_missing_dates(HYDAT = stn.number,water_year = wt_yr)
 A <- fasstr::fasstr_add_rolling_means(HYDAT = stn.number)
 A <- fasstr::fasstr_annual_all_stats(HYDAT = stn.number,water_year = wt_yr,transpose = T)
-A <- fasstr::fasstr_annual_days_outside_normal(HYDAT = stn.number,water_year = wt_yr,transpose = T)
+A <- fasstr::fasstr_annual_days_outside_normal(HYDAT = stn.number,water_year = wt_yr)
 A <- fasstr::fasstr_annual_days_outside_normal_plots(HYDAT = stn.number,water_year = wt_yr)
 A <- fasstr::fasstr_annual_flow_timing(HYDAT = stn.number,water_year = wt_yr,transpose = T)
 A <- fasstr::fasstr_annual_flow_timing_plots(HYDAT = stn.number,water_year = wt_yr)
@@ -317,8 +359,8 @@ A <- fasstr::fasstr_annual_freq_analysis(HYDAT = stn.number,water_year = wt_yr)
 A <- fasstr::fasstr_annual_lowflows(HYDAT = stn.number,water_year = wt_yr,transpose = T)
 A <- fasstr::fasstr_annual_lowflows_plots(HYDAT = stn.number,water_year = wt_yr)
 A <- fasstr::fasstr_annual_missing_plots(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_annual_stats(HYDAT = stn.number,water_year = wt_yr,custom_months = 6:8)
-fasstr::fasstr_annual_stats_plots(HYDAT = stn.number,water_year = wt_yr,months = 8:10)
+A <- fasstr::fasstr_annual_stats(HYDAT = stn.number,water_year = wt_yr,months = 6:8)
+fasstr::fasstr_annual_stats_plots(HYDAT = stn.number,water_year = wt_yr,months = 8:10, percentiles = 3:4)
 A <- fasstr::fasstr_annual_total_flows(HYDAT = stn.number,water_year = wt_yr,transpose = T)
 A <- fasstr::fasstr_annual_total_flows_plots(HYDAT = stn.number,water_year = wt_yr)
 A <- fasstr::fasstr_annual_trends_analysis(HYDAT = stn.number,zyp_method = "yuepilon",water_year = wt_yr)

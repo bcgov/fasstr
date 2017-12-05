@@ -23,8 +23,8 @@
 #' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
 #'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
 #'    database are required. Not required if \code{flowdata} argument is used.
-#' @param lower_percentile Numeric. Percentile indicating the lower limit of the normal range. Default \code{25}.
-#' @param upper_percentile Numeric. Percentile indicating the upper limit of the normal range. Default \code{75}.
+#' @param normal_percentiles Numeric. Lower and upper percentiles, respectively indicating the limits of the normal range. 
+#'    Default \code{c(25,75)}.
 #' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
 #'    by the year in which they end. Default \code{FALSE}.
 #' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
@@ -58,8 +58,7 @@
 
 fasstr_annual_days_outside_normal_plots <- function(flowdata=NULL,
                                                     HYDAT=NULL,
-                                                    lower_percentile=25,
-                                                    upper_percentile=75,
+                                                    normal_percentiles=c(25,75),
                                                     water_year=FALSE,
                                                     water_year_start=10,
                                                     start_year=NULL,
@@ -98,11 +97,11 @@ fasstr_annual_days_outside_normal_plots <- function(flowdata=NULL,
   
   if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
   
-  if( !is.numeric(lower_percentile))                      {stop("lower_percentile must be numeric")}
-  if( !all(lower_percentile>0 & lower_percentile<100))    {stop("lower_percentile must be >0 and <100")}
-  if( !is.numeric(upper_percentile))                      {stop("upper_percentile must be numeric")}
-  if( !all(upper_percentile>0 & upper_percentile<100))    {stop("upper_percentile must be >0 and <100")}
-  if( lower_percentile >= upper_percentile )              {stop("lower_percentile must be < upper_percentile")}
+  if( !is.numeric(normal_percentiles) )                {stop("normal_percentiles must be numeric")}
+  if( length(normal_percentiles)!=2 )                  {stop("normal_percentiles must be two percentile values (ex. c(25,75))")}
+  if( normal_percentiles[1] >= normal_percentiles[2] ) {stop("normal_percentiles[1] must be < normal_percentiles[2]")}
+  if( !all(is.na(normal_percentiles)) & (!all(normal_percentiles>0 & normal_percentiles<100)) )  {stop("normal_percentiles must be >0 and <100)")}
+  
   
   if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
   
@@ -121,7 +120,7 @@ fasstr_annual_days_outside_normal_plots <- function(flowdata=NULL,
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
-    if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist.")}
+    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
     if( is.na(station_name) ) {station_name <- HYDAT}
   }
   
@@ -130,8 +129,7 @@ fasstr_annual_days_outside_normal_plots <- function(flowdata=NULL,
   
   normal_data <- fasstr::fasstr_annual_days_outside_normal(flowdata=flowdata,
                                                            HYDAT=HYDAT,
-                                                           lower_percentile=lower_percentile,
-                                                           upper_percentile=upper_percentile,
+                                                           normal_percentiles=normal_percentiles,
                                                            water_year=water_year,
                                                            water_year_start=water_year_start,
                                                            start_year=start_year,

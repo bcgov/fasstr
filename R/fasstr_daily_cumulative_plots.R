@@ -120,7 +120,7 @@ fasstr_daily_cumulative_plots <- function(flowdata=NULL,
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("only one HYDAT station can be selected")}
-    if( !HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' parameter does not exist")}
+    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
     if( is.na(station_name) ) {station_name <- HYDAT}
     if (is.na(basin_area)) {basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = HYDAT)$DRAINAGE_AREA_GROSS)}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))

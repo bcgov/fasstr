@@ -48,12 +48,6 @@ will be the \code{HYDAT} value provided in the argument or column. Setting the s
 
 \item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
 Default is the working directory.}
-
-\item{rolling_days}{Numeric. The number of days to apply a rolling mean. Default \code{1}.}
-
-\item{rolling_align}{Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),
-or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.
-by the year in which they end. Default \code{FALSE}.}
 }
 \value{
 A plot of annual and annual-month summary missing data statistics

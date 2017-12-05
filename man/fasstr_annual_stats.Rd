@@ -4,8 +4,8 @@
 \alias{fasstr_annual_stats}
 \title{Calculate annual summary statistics}
 \usage{
-fasstr_annual_stats(flowdata = NULL, HYDAT = NULL, percentiles = NA,
-  water_year = FALSE, water_year_start = 10, start_year = NULL,
+fasstr_annual_stats(flowdata = NULL, HYDAT = NULL, percentiles = c(10,
+  90), water_year = FALSE, water_year_start = 10, start_year = NULL,
   end_year = NULL, exclude_years = NULL, months = 1:12,
   transpose = FALSE, station_name = NA, write_table = FALSE,
   write_digits = 3, write_dir = ".", na.rm = list(na.rm.global = FALSE))
@@ -19,7 +19,7 @@ Not required if \code{HYDAT} argument is used.}
 data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
 database are required. Not required if \code{flowdata} argument is used.}
 
-\item{percentiles}{Numeric. Vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}}
+\item{percentiles}{Numeric. Vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.}
 
 \item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
 by the year in which they end. Default \code{FALSE}.}

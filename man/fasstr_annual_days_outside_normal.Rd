@@ -5,7 +5,7 @@
 \title{Calculate annual days above and below normal}
 \usage{
 fasstr_annual_days_outside_normal(flowdata = NULL, HYDAT = NULL,
-  lower_percentile = 25, upper_percentile = 75, water_year = FALSE,
+  normal_percentiles = c(25, 75), water_year = FALSE,
   water_year_start = 10, start_year = NULL, end_year = NULL,
   exclude_years = NULL, transpose = FALSE, station_name = NA,
   write_table = FALSE, write_dir = ".")
@@ -18,6 +18,9 @@ Not required if \code{HYDAT} argument is used.}
 \item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
 data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
 database are required. Not required if \code{flowdata} argument is used.}
+
+\item{normal_percentiles}{Numeric. Lower and upper percentiles, respectively indicating the limits of the normal range. 
+Default \code{c(25,75)}.}
 
 \item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
 by the year in which they end. Default \code{FALSE}.}
@@ -40,10 +43,6 @@ will be the \code{HYDAT} value provided in the argument or column. Setting the s
 
 \item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
 Default is the working directory.}
-
-\item{lower_percentile=25}{Numeric. Percentile indicating the lower limit of the normal range. Default \code{25}.}
-
-\item{upper_percentile=25}{Numeric. Percentile indicating the upper limit of the normal range. Default \code{75}.}
 }
 \value{
 A data frame of annual days above and below normal

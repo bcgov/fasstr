@@ -5,7 +5,7 @@
 \title{Plot annual days above and below normal}
 \usage{
 fasstr_annual_days_outside_normal_plots(flowdata = NULL, HYDAT = NULL,
-  lower_percentile = 25, upper_percentile = 75, water_year = FALSE,
+  normal_percentiles = c(25, 75), water_year = FALSE,
   water_year_start = 10, start_year = NULL, end_year = NULL,
   exclude_years = NULL, station_name = NA, write_plot = FALSE,
   write_imgtype = "pdf", write_imgsize = c(6, 8.5), write_dir = ".")
@@ -19,9 +19,8 @@ Not required if \code{HYDAT} argument is used.}
 data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
 database are required. Not required if \code{flowdata} argument is used.}
 
-\item{lower_percentile}{Numeric. Percentile indicating the lower limit of the normal range. Default \code{25}.}
-
-\item{upper_percentile}{Numeric. Percentile indicating the upper limit of the normal range. Default \code{75}.}
+\item{normal_percentiles}{Numeric. Lower and upper percentiles, respectively indicating the limits of the normal range. 
+Default \code{c(25,75)}.}
 
 \item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
 by the year in which they end. Default \code{FALSE}.}

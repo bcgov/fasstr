@@ -75,7 +75,7 @@ fasstr_add_cumulative_yield <- function(flowdata=NULL,
   # If HYDAT station is listed, check if it exists and extract the flowdata and basin_area
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 )                                  {stop("Only one HYDAT station can be selected.")}
-    if (!HYDAT %in% tidyhydat::allstations$STATION_NUMBER) {stop("Station in 'HYDAT' arguement does not exist.")}
+    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
     if (is.na(basin_area)) {basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = HYDAT)$DRAINAGE_AREA_GROSS)}
   }
