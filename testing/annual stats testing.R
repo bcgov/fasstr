@@ -68,7 +68,7 @@ ggplot()+geom_point(data = results,aes(x=Station,y=Ratio))
 
 percentiles <- fasstr::fasstr_longterm_stats(HYDAT = "08HB048",percentiles = 1:99,transpose = T)
 percentiles <- fasstr::fasstr_daily_stats(HYDAT = "08HB048",percentiles = 1:10,transpose = T)
-percentiles <- fasstr::fasstr_monthly_stats(HYDAT = "08HB048",percentiles = 1:10,water_year = T,transpose = T)
+percentiles <- fasstr::fasstr_monthly_stats(HYDAT = "08HB048",months = c(1,5), transpose = T)
 percentiles <- fasstr::fasstr_annual_stats(HYDAT = "08HB048",percentiles = 1:10,water_year = T,transpose = T)
 
 
