@@ -2,63 +2,66 @@
 % Please edit documentation in R/fasstr_annual_days_outside_normal_plots.R
 \name{fasstr_annual_days_outside_normal_plots}
 \alias{fasstr_annual_days_outside_normal_plots}
-\title{Compute the number of days for each year that flows are above/below normal.}
+\title{Plot annual days above and below normal}
 \usage{
 fasstr_annual_days_outside_normal_plots(flowdata = NULL, HYDAT = NULL,
-  station_name = NA, water_year = FALSE, water_year_start = 10,
-  start_year = NULL, end_year = NULL, exclude_years = NULL,
-  normal_lower_ptile = 25, normal_upper_ptile = 75, write_plot = FALSE,
-  write_imgtype = "pdf", write_dir = ".")
+  lower_percentile = 25, upper_percentile = 75, water_year = FALSE,
+  water_year_start = 10, start_year = NULL, end_year = NULL,
+  exclude_years = NULL, station_name = NA, write_plot = FALSE,
+  write_imgtype = "pdf", write_imgsize = c(6, 8.5), write_dir = ".")
 }
 \arguments{
-\item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
-mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.}
+\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
+YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+Not required if \code{HYDAT} argument is used.}
 
-\item{HYDAT}{Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
-tidyhydat package and a downloaded SQLite HYDAT required.}
+\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
+database are required. Not required if \code{flowdata} argument is used.}
 
-\item{station_name}{Character. Identifier name of the stream or station. Required when supplying data through \code{flowdata}.
-The station name will be used in plots and filenames of exported tables and plot. If using \code{HYDAT} to supply
-data and no \code{station_name} is provided, the HYDAT station number will be the identifier.}
+\item{lower_percentile}{Numeric. Percentile indicating the lower limit of the normal range. Default \code{25}.}
 
-\item{water_year}{Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
-default calendar year (Jan-Dec) (\code{water_year=FALSE}). Water years are designated by the year which they end in
-(e.g. water year 2000 start on 1 Oct 1999 and ends on 30 Sep 2000).}
+\item{upper_percentile}{Numeric. Percentile indicating the upper limit of the normal range. Default \code{75}.}
 
-\item{water_year_start}{Numeric. Month to start water year (1 to 12 for Jan to Dec).}
+\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
+by the year in which they end. Default \code{FALSE}.}
 
-\item{start_year}{Numeric. The first year of streamflow data to analyze. If unset, the default \code{start_year} is the first
-year of the data provided.}
+\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
 
-\item{end_year}{Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
-year of the data provided.}
+\item{start_year}{Integer. First year to consider for analysis. Leave blank if all years are required.}
 
-\item{exclude_years}{Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).}
+\item{end_year}{Integer. Last year to consider for analysis. Leave blank if all years are required.}
 
-\item{write_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
+\item{exclude_years}{Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.}
 
-\item{transpose}{Logical. Switch the rows and columns of the results. Dates excluded.}
+\item{station_name}{Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
+files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
+will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number.}
 
-\item{normal_lower_ptile=25}{Numeric. Percentile indicating the lower limit of the normal range. Default 25.}
+\item{write_plot}{Logical. Write the plot to specified directory. Default \code{FALSE}.}
 
-\item{normal_upper_ptile=25}{Numeric. Percentile indicating the upper limit of the normal range. Default 75.}
+\item{write_imgtype}{Character. One of "pdf","png","jpeg","tiff", or "bmp" image types to write the plot as. Default \code{"pdf"}.}
 
-\item{write_table}{Logical.
-The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
+\item{write_imgsize}{Numeric. Height and width, respectively, of saved plot. Default \code{c(5,11)}.}
 
-\item{na.rm}{TBD}
+\item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
+Default is the working directory.}
+}
+\value{
+A plot of annual days above and below normal
 }
 \description{
-Computes annual statistics of streamflow data.
-Streamflow data can be supplied through the \code{flowdata} parameter or extracted from a 
-HYDAT database using the tidyhydat package and \code{HYDAT} parameter.
+Plots the number of days per year outside of the 'normal' range (typically between 25 and 75th percentiles) for
+   each day of the year. Upper and lower-range percentiles are calcuated for each day of the year of from all years, and then each 
+   daily flow value for each year is compared. All days above or below the normal range are included. Calculates the statistics 
+   from all daily discharge values from all years, unless specified.
 }
 \examples{
 \dontrun{
 
-coming soon :)
+fasstr_annual_days_outside_normal_plots(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
 
+fasstr_annual_days_outside_normal_plots(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
 
 }
 }

@@ -46,9 +46,9 @@
 #' @examples
 #' \dontrun{
 #' 
-#'fasstr_longterm_stats(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
+#'fasstr_daily_stats(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
 #' 
-#'fasstr_longterm_stats(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
+#'fasstr_daily_stats(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
 #'
 #' }
 #' @export

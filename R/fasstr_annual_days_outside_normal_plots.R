@@ -10,45 +10,45 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-
-#' @title Compute the number of days for each year that flows are above/below normal.
+#' @title Plot annual days above and below normal
 #'
-#' @description Computes annual statistics of streamflow data.
-#' Streamflow data can be supplied through the \code{flowdata} parameter or extracted from a 
-#' HYDAT database using the tidyhydat package and \code{HYDAT} parameter.
+#' @description Plots the number of days per year outside of the 'normal' range (typically between 25 and 75th percentiles) for
+#'    each day of the year. Upper and lower-range percentiles are calcuated for each day of the year of from all years, and then each 
+#'    daily flow value for each year is compared. All days above or below the normal range are included. Calculates the statistics 
+#'    from all daily discharge values from all years, unless specified.
 #'
-#' @param flowdata Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-#'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
-#'    mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.
-#' @param HYDAT Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
-#'    tidyhydat package and a downloaded SQLite HYDAT required.
-#' @param station_name Character. Identifier name of the stream or station. Required when supplying data through \code{flowdata}.
-#'    The station name will be used in plots and filenames of exported tables and plot. If using \code{HYDAT} to supply
-#'    data and no \code{station_name} is provided, the HYDAT station number will be the identifier.
-#' @param water_year Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
-#'    default calendar year (Jan-Dec) (\code{water_year=FALSE}). Water years are designated by the year which they end in
-#'    (e.g. water year 2000 start on 1 Oct 1999 and ends on 30 Sep 2000).
-#' @param water_year_start Numeric. Month to start water year (1 to 12 for Jan to Dec).
-#' @param start_year Numeric. The first year of streamflow data to analyze. If unset, the default \code{start_year} is the first
-#'    year of the data provided.
-#' @param end_year Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
-#'    year of the data provided.
-#' @param exclude_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).    
-#' @param transpose Logical. Switch the rows and columns of the results. Dates excluded.
-#' @param normal_lower_ptile=25 Numeric. Percentile indicating the lower limit of the normal range. Default 25.
-#' @param normal_upper_ptile=25 Numeric. Percentile indicating the upper limit of the normal range. Default 75.
-#' @param write_table Logical.
-#'    The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.
-#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
-#' @param na.rm TBD
-#'
+#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
+#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+#'    Not required if \code{HYDAT} argument is used.
+#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
+#'    database are required. Not required if \code{flowdata} argument is used.
+#' @param lower_percentile Numeric. Percentile indicating the lower limit of the normal range. Default \code{25}.
+#' @param upper_percentile Numeric. Percentile indicating the upper limit of the normal range. Default \code{75}.
+#' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
+#'    by the year in which they end. Default \code{FALSE}.
+#' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
+#' @param start_year Integer. First year to consider for analysis. Leave blank if all years are required.
+#' @param end_year Integer. Last year to consider for analysis. Leave blank if all years are required.
+#' @param exclude_years Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.      
+#' @param station_name Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
+#'    files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
+#'    will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number. 
+#' @param write_plot Logical. Write the plot to specified directory. Default \code{FALSE}.
+#' @param write_imgtype Character. One of "pdf","png","jpeg","tiff", or "bmp" image types to write the plot as. Default \code{"pdf"}.
+#' @param write_imgsize Numeric. Height and width, respectively, of saved plot. Default \code{c(5,11)}.
+#' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
+#'    Default is the working directory.
+#' 
+#' @return A plot of annual days above and below normal
 #'
 #' @examples
 #' \dontrun{
 #' 
-#' coming soon :)
+#'fasstr_annual_days_outside_normal_plots(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
 #' 
-#' 
+#'fasstr_annual_days_outside_normal_plots(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+#'
 #' }
 #' @export
 
@@ -57,65 +57,66 @@
 
 
 fasstr_annual_days_outside_normal_plots <- function(flowdata=NULL,
-                                      HYDAT=NULL,
-                                      station_name=NA,
-                                      water_year=FALSE,
-                                      water_year_start=10,
-                                      start_year=NULL,
-                                      end_year=NULL,
-                                      exclude_years=NULL,
-                                      normal_lower_ptile=25,
-                                      normal_upper_ptile=75,
-                                      write_plot=FALSE,
-                                      write_imgtype="pdf",        # write out statistics on calendar year
-                                      write_dir="."){
+                                                    HYDAT=NULL,
+                                                    lower_percentile=25,
+                                                    upper_percentile=75,
+                                                    water_year=FALSE,
+                                                    water_year_start=10,
+                                                    start_year=NULL,
+                                                    end_year=NULL,
+                                                    exclude_years=NULL,
+                                                    station_name=NA,
+                                                    write_plot=FALSE,
+                                                    write_imgtype="pdf",
+                                                    write_imgsize=c(6,8.5),
+                                                    write_dir="."){
   
-  #############################################################
   
-  #  Some basic error checking on the input parameters
-  #
-  if( is.null(flowdata) & is.null(HYDAT)) {stop("flowdata or HYDAT parameters must be set")}
-  if( !is.null(HYDAT) & !is.null(flowdata))  {stop("Must select either flowdata or HYDAT parameters, not both.")}
-  if( is.null(HYDAT) & !is.character(station_name))  {stop("station_name parameter must be a character string.")}
-  if( is.null(HYDAT) & length(station_name)>1)        {stop("station_name parameter cannot have length > 1")}
-  if( is.null(HYDAT) & !is.data.frame(flowdata))         {stop("flowdata parameter is not a data frame.")}
-  if( is.null(HYDAT) & !all(c("Date","Value") %in% names(flowdata))){
-    stop("flowdata dataframe doesn't contain the variables Date and Value.")}
-  if( is.null(HYDAT) & !inherits(flowdata$Date[1], "Date")){
-    stop("Date column in flowdata dataframe is not a date.")}
-  if( is.null(HYDAT) & !is.numeric(flowdata$Value))          {stop("Value column in flowdata dataframe is not numeric.")}
-  if( is.null(HYDAT) & any(flowdata$Value <0, na.rm=TRUE))   {warning('flowdata cannot have negative values - check your data')}
+  #--------------------------------------------------------------
+  #  Error checking on the input parameters
   
-  if( !is.logical(water_year))  {stop("water_year parameter must be logical (TRUE/FALSE)")}
-  if( length(water_year_start)>1) {stop("water_year_start must be a number between 1 and 12 (Jan-Dec)")}
-  if( water_year_start <1 | water_year_start >12 ) {stop("water_year_start must be an integer between 1 and 12 (Jan-Dec)")}
-  if( !(water_year_start==floor(water_year_start)))  {stop("water_year_start must be an integer between 1 and 12 (Jan-Dec)")}
+  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
+  if( is.null(HYDAT)) {
+    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
+    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
+    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
+    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
+    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
+    if( any(flowdata$Value <0, na.rm=TRUE))           {warning('flowdata cannot have negative values - check your data')}
+  }
   
-  if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("List of years must be numeric. Ex. 1999 or c(1999,2000)")}
+  if( !is.logical(water_year))         {stop("water_year argument must be logical (TRUE/FALSE)")}
+  if( !is.numeric(water_year_start) )  {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
+  if( length(water_year_start)>1)      {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
+  if( !water_year_start %in% c(1:12) ) {stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec)")}
+  
+  if( length(start_year)>1)   {stop("only one start_year value can be selected")}
+  if( !is.null(start_year) )  {if( !start_year %in% c(0:5000) )  {stop("start_year must be an integer")}}
+  if( length(end_year)>1)     {stop("only one end_year value can be selected")}
+  if( !is.null(end_year) )    {if( !end_year %in% c(0:5000) )  {stop("end_year must be an integer")}}
+  if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("list of exclude_years must be numeric - ex. 1999 or c(1999,2000)")}
   
   if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
   
-  if( !is.numeric(normal_lower_ptile))   {
-    stop("normal_lower_ptile must be numeric")}
-  if( !all(normal_lower_ptile>0 & normal_lower_ptile<100))  {
-    stop("normal_lower_ptile must be >0 and <100")}
-  if( !is.numeric(normal_upper_ptile))   {
-    stop("normal_upper_ptile must be numeric")}
-  if( !all(normal_upper_ptile>0 & normal_upper_ptile<100))  {
-    stop("normal_upper_ptile must be >0 and <100")}
-  if( normal_lower_ptile >= normal_upper_ptile ) {
-    stop("normal_lower_ptile must be < normal_upper_ptile")}
+  if( !is.numeric(lower_percentile))                      {stop("lower_percentile must be numeric")}
+  if( !all(lower_percentile>0 & lower_percentile<100))    {stop("lower_percentile must be >0 and <100")}
+  if( !is.numeric(upper_percentile))                      {stop("upper_percentile must be numeric")}
+  if( !all(upper_percentile>0 & upper_percentile<100))    {stop("upper_percentile must be >0 and <100")}
+  if( lower_percentile >= upper_percentile )              {stop("lower_percentile must be < upper_percentile")}
   
-  if( !is.logical(write_plot))  {stop("write_plot parameter must be logical (TRUE/FALSE)")}
-  if( length(write_imgtype)>1)        {
-    stop("write_imgtype argument cannot have length > 1")}
+  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
+  
+  if( !is.logical(write_plot))      {stop("write_plot argument must be logical (TRUE/FALSE)")}
+  if( length(write_imgtype)>1)      {stop("write_imgtype argument cannot have length > 1")} 
   if( !is.na(write_imgtype) & !write_imgtype %in% c("pdf","png","jpeg","tiff","bmp"))  {
     stop("write_imgtype argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
+  if( !is.numeric(write_imgsize) )   {stop("write_imgsize must be two numbers for height and width, respectively")}
+  if( length(write_imgsize)!=2 )   {stop("write_imgsize must be two numbers for height and width, respectively")}
   
-  if( !dir.exists(as.character(write_dir)))      {stop("directory for saved files does not exist")}
-
-  
-  
+  if( !dir.exists(as.character(write_dir))) {
+    message("directory for saved files does not exist, new directory will be created")
+    if( write_table & write_dir!="." ) {dir.create(write_dir)}
+  }
   
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
@@ -124,20 +125,22 @@ fasstr_annual_days_outside_normal_plots <- function(flowdata=NULL,
     if( is.na(station_name) ) {station_name <- HYDAT}
   }
   
+  #--------------------------------------------------------------
+  # Complete analysis
+  
   normal_data <- fasstr::fasstr_annual_days_outside_normal(flowdata=flowdata,
                                                            HYDAT=HYDAT,
-                                                           station_name=station_name,
+                                                           lower_percentile=lower_percentile,
+                                                           upper_percentile=upper_percentile,
                                                            water_year=water_year,
                                                            water_year_start=water_year_start,
                                                            start_year=start_year,
                                                            end_year=end_year,
-                                                           exclude_years=exclude_years,
-                                                           normal_lower_ptile=normal_lower_ptile,
-                                                           normal_upper_ptile=normal_upper_ptile,
-                                                           transpose=FALSE,
-                                                           write_table=FALSE,
-                                                           write_dir=".")
+                                                           exclude_years=exclude_years)
   normal_data <- tidyr::gather(normal_data,Statistic,Value,-1)
+  
+  #--------------------------------------------------------------
+  # Complete plotting
   
   normal_plot <- ggplot2::ggplot(data=normal_data, ggplot2::aes(x=Year, y=Value))+
     ggplot2::geom_line(ggplot2::aes(colour=Statistic))+
@@ -151,13 +154,14 @@ fasstr_annual_days_outside_normal_plots <- function(flowdata=NULL,
     ggplot2::theme(panel.border = ggplot2::element_rect(colour = "grey80", fill=NA, size=.1),
                    panel.grid = ggplot2::element_line(size=.2))
   
+  # Write plot if selected
   if (write_plot) {
-    file_plot <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"_days_outside_normal.",write_imgtype,sep = "")
-    ggplot2::ggsave(filename =file_plot,normal_plot,width=8.5,height=6)
+    file_plot <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),
+                       "_days_outside_normal.",write_imgtype,sep = "")
+    ggplot2::ggsave(filename =file_plot,normal_plot,width=write_imgsize[2],height=write_imgsize[1])
   }
   
-  
-  
   return(normal_plot)
+  
 }
 

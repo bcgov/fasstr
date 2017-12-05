@@ -138,17 +138,20 @@ fasstr_daily_stats_plots <- function(flowdata=NULL,
   #--------------------------------------------------------------
   # Set the flowdata for analysis (required for plotting daily values)
   
+  # Select just Date and Value for analysis
   flowdata <- dplyr::select(flowdata,Date,Value)
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata = flowdata,water_year = T,water_year_start=water_year_start)
+  
+  # add date variables to determine the min/max cal/water years
+  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
+  if (is.null(start_year)) {start_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))}
+  if (is.null(end_year)) {end_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))}
+  if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
+  
+  #  Fill in the missing dates and the add the date variables again
+  flowdata <- fasstr::fasstr_add_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
+  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
   flowdata <- fasstr::fasstr_add_rolling_means(flowdata,days = rolling_days,align = rolling_align)
   colnames(flowdata)[ncol(flowdata)] <- "RollingValue"
-  
-  # determine the min/max cal/water years
-  min_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))
-  max_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))
-  # If start/end years are not select, set them as the min/max dates
-  if (is.null(start_year)) {start_year <- min_year}
-  if (is.null(end_year)) {end_year <- max_year}
   
   # Set selected year-type and day of year, and date columns for analysis
   if (water_year) {
@@ -168,17 +171,14 @@ fasstr_daily_stats_plots <- function(flowdata=NULL,
     } else if (water_year_start==10) {origin_date <- as.Date("1899-09-30")
     } else if (water_year_start==11) {origin_date <- as.Date("1899-10-31")
     } else if (water_year_start==12) {origin_date <- as.Date("1899-11-30")}
-    
-    flowdata <- dplyr::mutate(flowdata,AnalysisDate=as.Date(AnalysisDoY, origin = origin_date))
-    
   }  else {
     flowdata$AnalysisYear <- flowdata$Year
     flowdata$AnalysisDoY <- flowdata$DayofYear
     
     # Create origin date to apply to flowdata and Q_daily later on
     origin_date <- as.Date("1899-12-31")
-    flowdata <- dplyr::mutate(flowdata,AnalysisDate=as.Date(AnalysisDoY, origin = origin_date))
   }
+  flowdata <- dplyr::mutate(flowdata,AnalysisDate=as.Date(AnalysisDoY, origin = origin_date))
   
   # Filter for the selected and excluded years and leap year values (last day)
   flowdata <- dplyr::filter(flowdata, AnalysisDoY <366)
@@ -213,7 +213,7 @@ fasstr_daily_stats_plots <- function(flowdata=NULL,
     if (write_imgtype=="pdf"){
       file_stat_plot <-file.path(write_dir, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),
                                                   "-daily-summary-statistics.pdf", sep=""))
-      pdf(file = file_stat_plot,write_imgsize[2],write_imgsize[1])
+      pdf(file = file_stat_plot,width=write_imgsize[2],height=write_imgsize[1])
     }
     if (write_imgtype %in% c("png","jpeg","tiff","bmp")) {
       file_stat_plot <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),
@@ -250,7 +250,7 @@ fasstr_daily_stats_plots <- function(flowdata=NULL,
                    panel.grid.minor = ggplot2::element_blank(),
                    panel.grid.major = ggplot2::element_line(size=.1),
                    panel.background = ggplot2::element_rect(fill = "grey94"),
-                   legend.title = ggplot2::element_blank(),         #legend.position = "top",
+                   legend.title = ggplot2::element_blank(),
                    legend.text = ggplot2::element_text(size=7, colour="grey25"),
                    legend.box = "vertical",legend.justification = "top",
                    legend.key.size = ggplot2::unit(0.4,"cm"),
@@ -287,7 +287,7 @@ fasstr_daily_stats_plots <- function(flowdata=NULL,
     # Save the plots if the png,jpeg,tiff,or bmp images are selected
     if (write_plot & write_imgtype %in% c("png","jpeg","tiff","bmp")) {
         annual_plot <- paste(file_stat_plot,"/","daily-summary-",yr,".",write_imgtype,sep = "")
-        ggplot2::ggsave(filename =annual_plot,daily_stats_year,width=8.5,height=4)
+        ggplot2::ggsave(filename =annual_plot,daily_stats_year,width=write_imgsize[2],height=write_imgsize[1])
     }
   }
 

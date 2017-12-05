@@ -8,7 +8,8 @@ fasstr_annual_stats_plots(flowdata = NULL, HYDAT = NULL, percentiles = NA,
   water_year = FALSE, water_year_start = 10, start_year = NULL,
   end_year = NULL, exclude_years = NULL, months = 1:12,
   log_discharge = FALSE, station_name = NA, write_plot = FALSE,
-  write_imgtype = "pdf", write_imgsize = c(4, 8.5), write_dir = ".")
+  write_imgtype = "pdf", write_imgsize = c(4, 8.5), write_dir = ".",
+  na.rm = list(na.rm.global = FALSE))
 }
 \arguments{
 \item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 

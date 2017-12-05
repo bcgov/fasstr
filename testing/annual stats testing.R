@@ -1,9 +1,9 @@
 
 devtools::document()
-#install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
-install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
+install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
+#install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
-
+test <- fasstr::fasstr_annual_total_flows_plots(HYDAT = "08HB048")
 
 
 fasstr::fasstr_LTMAD(HYDAT = "08HB048",percent_MAD = c(100,50))
@@ -68,6 +68,7 @@ ggplot()+geom_point(data = results,aes(x=Station,y=Ratio))
 
 percentiles <- fasstr::fasstr_longterm_stats(HYDAT = "08HB048",percentiles = 1:99,transpose = T)
 percentiles <- fasstr::fasstr_daily_stats(HYDAT = "08HB048",percentiles = 1:10,transpose = T)
+percentiles <- fasstr::fasstr_daily_cumulative_stats(HYDAT = "08HB048",percentiles = 1:10, transpose = T)
 percentiles <- fasstr::fasstr_monthly_stats(HYDAT = "08HB048",months = c(1,5), transpose = T)
 percentiles <- fasstr::fasstr_annual_stats(HYDAT = "08HB048",percentiles = 1:10,water_year = T,transpose = T)
 
@@ -322,10 +323,10 @@ A <- fasstr::fasstr_annual_total_flows(HYDAT = stn.number,water_year = wt_yr,tra
 A <- fasstr::fasstr_annual_total_flows_plots(HYDAT = stn.number,water_year = wt_yr)
 A <- fasstr::fasstr_annual_trends_analysis(HYDAT = stn.number,zyp_method = "yuepilon",water_year = wt_yr)
 A <- fasstr::fasstr_annual_trends_plots(HYDAT = stn.number,zyp_method = "yuepilon",water_year = wt_yr)
-A <- fasstr::fasstr_daily_cumulative_plots(HYDAT = stn.number, use_yield = T,water_year = wt_yr)
+A <- fasstr::fasstr_daily_cumulative_plots(HYDAT = stn.number, use_yield = T,water_year = wt_yr)[1]
 A <- fasstr::fasstr_daily_cumulative_stats(HYDAT = stn.number,use_yield = T,water_year = wt_yr, transpose = T, percentiles = 1:12)
 A <- fasstr::fasstr_daily_stats(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_daily_stats_plots(HYDAT = stn.number,water_year = wt_yr)
+A <- fasstr::fasstr_daily_stats_plots(HYDAT = stn.number,water_year = wt_yr, rolling_days = 7)[1]
 A <- fasstr::fasstr_data_screening(HYDAT = stn.number,water_year = wt_yr)
 A <- fasstr::fasstr_data_screening_plots(HYDAT = stn.number,water_year = wt_yr)
 A <- fasstr::fasstr_flow_duration_curves(HYDAT = stn.number,water_year = wt_yr)

@@ -194,7 +194,7 @@ fasstr_annual_stats <- function(flowdata=NULL,
     row.names(Qstat_annual) <- c(1:nrow(Qstat_annual))
   }
   
-  # Write the table is selected
+  # Write the table if selected
   if(write_table){
     file_Qstat_table <- file.path(write_dir, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),
                                                    "-annual-statistics.csv", sep=""))

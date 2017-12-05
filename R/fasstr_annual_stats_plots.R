@@ -76,7 +76,8 @@ fasstr_annual_stats_plots <- function(flowdata=NULL,
                                       write_plot=FALSE,
                                       write_imgtype="pdf",
                                       write_imgsize=c(4,8.5),
-                                      write_dir="."){ 
+                                      write_dir=".",
+                                      na.rm=list(na.rm.global=FALSE)){ 
   
   
   #--------------------------------------------------------------
@@ -126,6 +127,13 @@ fasstr_annual_stats_plots <- function(flowdata=NULL,
   if( !all(is.na(percentiles)) & !is.numeric(percentiles) )                 {stop("percentiles argument must be numeric")}
   if( !all(is.na(percentiles)) & (!all(percentiles>0 & percentiles<100)) )  {stop("percentiles must be >0 and <100)")}
   
+  if( !is.list(na.rm))                        {stop("na.rm is not a list") }
+  if(! is.logical(unlist(na.rm)))             {stop("na.rm is list of logical (TRUE/FALSE) values only.")}
+  my.na.rm <- list(na.rm.global=FALSE)
+  if( !all(names(na.rm) %in% names(my.na.rm))){stop("Illegal element in na.rm")}
+  my.na.rm[names(na.rm)]<- na.rm
+  na.rm <- my.na.rm  # set the na.rm for the rest of the function.
+  
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
     if( length(HYDAT)>1 ) {stop("only one HYDAT station can be selected")}
@@ -145,7 +153,8 @@ fasstr_annual_stats_plots <- function(flowdata=NULL,
                                               end_year=end_year,
                                               months = months,
                                               exclude_years=exclude_years, 
-                                              percentiles=percentiles)
+                                              percentiles=percentiles,
+                                              na.rm=na.rm)
   annual_stats <- tidyr::gather(annual_stats,Statistic,Value,-1)
   
   
