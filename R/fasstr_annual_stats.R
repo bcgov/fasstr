@@ -132,15 +132,13 @@ fasstr_annual_stats <- function(flowdata=NULL,
   #--------------------------------------------------------------
   # Set the flowdata for analysis
   
-  # add date variables to determine the min/max cal/water years
+  # Select just Date and Value for analysis
   flowdata <- dplyr::select(flowdata,Date,Value)
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
-  min_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))
-  max_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))
   
-  # If start/end years are not select, set them as the min/max dates
-  if (is.null(start_year)) {start_year <- min_year}
-  if (is.null(end_year)) {end_year <- max_year}
+  # add date variables to determine the min/max cal/water years
+  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
+  if (is.null(start_year)) {start_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))}
+  if (is.null(end_year)) {end_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))}
   if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
   
   #  Fill in the missing dates and the add the date variables again
@@ -154,11 +152,13 @@ fasstr_annual_stats <- function(flowdata=NULL,
     flowdata$AnalysisYear <- flowdata$Year
   }
   
-  
-  # FILTER FLOWDATA FOR SELECTED YEARS FOR REMAINDER OF CALCS
+  # Filter the data for the start and end years
   flowdata <- dplyr::filter(flowdata, AnalysisYear >= start_year & AnalysisYear <= end_year)
   flowdata <- dplyr::filter(flowdata, Month %in% months)
   
+  
+  #--------------------------------------------------------------
+  # Complete analysis
   
   ## Compute remaining statistics on  year basis
   Qstat_annual <-   dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear),
@@ -178,16 +178,14 @@ fasstr_annual_stats <- function(flowdata=NULL,
       Qstat_annual <- merge(Qstat_annual,Q_annual_ptile,by=c("AnalysisYear"))
     }
   }
-  
+  # Rename year column
   Qstat_annual <-   dplyr::rename(Qstat_annual,Year=AnalysisYear)
   
-  
-  # Remove excluded years
+  # Make excluded years data NA
   Qstat_annual[Qstat_annual$Year %in% exclude_years,-1] <- NA
   
-  
+  # Transpose data if selected
   col_names <- names(Qstat_annual[-1])
-  
   if(transpose){
     Qstat_tpose <- tidyr::gather(Qstat_annual,Statistic,Value,-Year)
     Qstat_tpose_temp <- dplyr::mutate(Qstat_tpose,Value=round(Value,write_digits))
@@ -196,8 +194,10 @@ fasstr_annual_stats <- function(flowdata=NULL,
     row.names(Qstat_annual) <- c(1:nrow(Qstat_annual))
   }
   
+  # Write the table is selected
   if(write_table){
-    file_Qstat_table <- file.path(write_dir, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-statistics.csv", sep=""))
+    file_Qstat_table <- file.path(write_dir, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),
+                                                   "-annual-statistics.csv", sep=""))
     temp <- Qstat_annual
     temp <- round(temp, write_digits)
     if(transpose){
@@ -207,8 +207,7 @@ fasstr_annual_stats <- function(flowdata=NULL,
   }
   
   
-  
-  
   return(Qstat_annual)
-} # end of function
+  
+}
 

@@ -10,9 +10,60 @@ fasstr::fasstr_LTMAD(HYDAT = "08HB048",percent_MAD = c(100,50))
 fasstr::fasstr_percentile_rank(HYDAT = "08HB048", flowvalue = c(.8109,.1))
 fasstr::fasstr_annual_missing_plots(HYDAT = "08HB048")
 
+# MEANS MEDIAN RATIO
+########
+library(dplyr)
+stations <- tidyhydat::hy_stn_data_range(prov_terr_state_loc = "BC") %>%
+  filter(DATA_TYPE == "Q") %>%
+  pull(STATION_NUMBER)
+results <- data.frame(Station=as.character(),Ratio=as.numeric())
+for (stn in stations){
+  data <- fasstr::fasstr_annual_stats(HYDAT = stn)
+  data$ratio <- data$Mean / data$Median
+  data$Station <- stn
+  Mean_ratio <- dplyr::summarize(dplyr::group_by(data,Station,Ratio=mean(data$ratio,na.rm = T)))
+  results <- dplyr::bind_rows(results,Mean_ratio)
+}
+library(ggplot2)
+ggplot()+geom_point(data = results,aes(x=Station,y=Ratio))
+########
+
+# MEANS MEDIAN RATIO
+########
+library(dplyr)
+stations <- tidyhydat::hy_stn_data_range(prov_terr_state_loc = "BC") %>%
+  filter(DATA_TYPE == "Q") %>%
+  pull(STATION_NUMBER)
+results <- data.frame(Station=as.character(),Mean=as.numeric(),P10=as.numeric(),Ratio=as.numeric())
+for (stn in stations){
+  data <- fasstr::fasstr_longterm_stats(HYDAT = stn,percentiles = 10) %>% 
+    filter(Month=="Long-term")
+  data$Ratio <- data$Mean*.1 / data$P10
+  data$Station <- stn
+  data <- select(data,Station,Mean,P10,Ratio)
+  results <- dplyr::bind_rows(results,data)
+}
+library(ggplot2)
+ggplot()+geom_point(data = results,aes(x=Mean,y=Ratio))+
+  scale_x_log10()+
+  scale_y_log10()
+########
 
 
 
+
+carn <- fasstr::fasstr_annual_stats(HYDAT = "08HB048")
+carn$ratio <- carn$Mean / carn$Median
+mission <- fasstr::fasstr_annual_stats(HYDAT = "08NM116")
+mission$ratio <- mission$Mean / mission$Median
+
+library(ggplot2)
+ggplot()+
+  geom_point(data = carn,aes(x=Mean,y=ratio))+
+  geom_point(data = mission,aes(x=Mean,y=ratio))
+  
+library(ggplot2)
+ggplot()+geom_point(data = results,aes(x=Station,y=Ratio))
 
 
 percentiles <- fasstr::fasstr_longterm_stats(HYDAT = "08HB048",percentiles = 1:99,transpose = T)

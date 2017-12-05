@@ -2,64 +2,71 @@
 % Please edit documentation in R/fasstr_monthly_stats.R
 \name{fasstr_monthly_stats}
 \alias{fasstr_monthly_stats}
-\title{Compute basic monthly summary statistics.}
+\title{Calculate monthly summary statistics}
 \usage{
-fasstr_monthly_stats(flowdata = NULL, HYDAT = NULL, station_name = NA,
-  water_year = FALSE, water_year_start = 10, start_year = NULL,
-  end_year = NULL, exclude_years = NULL, percentiles = c(10, 20),
-  spread = FALSE, transpose = FALSE, write_table = FALSE,
-  write_dir = ".", na.rm = list(na.rm.global = FALSE), write_digits = 3)
+fasstr_monthly_stats(flowdata = NULL, HYDAT = NULL, percentiles = c(10,
+  20), water_year = FALSE, water_year_start = 10, start_year = NULL,
+  end_year = NULL, exclude_years = NULL, months = 1:12, spread = FALSE,
+  transpose = FALSE, station_name = NA, write_table = FALSE,
+  write_digits = 3, write_dir = ".", na.rm = list(na.rm.global = FALSE))
 }
 \arguments{
-\item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
-mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.}
+\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
+YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+Not required if \code{HYDAT} argument is used.}
 
-\item{HYDAT}{Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
-tidyhydat package and a downloaded SQLite HYDAT required.}
+\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
+database are required. Not required if \code{flowdata} argument is used.}
 
-\item{station_name}{Character. Identifier name of the stream or station. Required when supplying data through \code{flowdata}.
-The station name will be used in plots and filenames of exported tables and plot. If using \code{HYDAT} to supply
-data and no \code{station_name} is provided, the HYDAT station number will be the identifier.}
+\item{percentiles}{Numeric. Vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,20)}}
 
-\item{water_year}{Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
-default calendar year (Jan-Dec) (\code{water_year=FALSE}). Water years are designated by the year which they end in
-(e.g. water year 2000 start on 1 Oct 1999 and ends on 30 Sep 2000).}
+\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
+by the year in which they end. Default \code{FALSE}.}
 
-\item{water_year_start}{Numeric. Month to start water year (1 to 12 for Jan to Dec).}
+\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
 
-\item{start_year}{Numeric. The first year of streamflow data to analyze. If unset, the default \code{start_year} is the first
-year of the data provided.}
+\item{start_year}{Integer. First year to consider for analysis. Leave blank if all years are required.}
 
-\item{end_year}{Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
-year of the data provided.}
+\item{end_year}{Integer. Last year to consider for analysis. Leave blank if all years are required.}
 
-\item{exclude_years}{Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).}
+\item{exclude_years}{Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.}
 
-\item{spread}{Logical. Spread all monthly values under columns named by the month and stat (e.g. 'Apr_Mean')}
+\item{months}{Integer. Vector of months to consider for analysis (ex. \code{6:8} for Jun-Aug). Leave blank if all months
+are required. Default \code{1:12}.}
 
-\item{transpose}{Logical. Switch the rows and columns of the 'spread' values.}
+\item{spread}{Logical. All monthly statistics as column names. Default \code{FALSE}.}
 
-\item{write_table}{Logical. Should a file be created with the calendar year computed percentiles?
-The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
+\item{transpose}{Logical. All monthly statistics as row names. Default \code{FALSE}.}
 
-\item{write_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
+\item{station_name}{Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
+files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
+will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number.}
+
+\item{write_table}{Logical. Write the table as a .csv file to specified directory. Default \code{FALSE}.}
+
+\item{write_digits}{Numeric. Number of significant digits to round the results in the written table. Default \code{3}.}
+
+\item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
+Default is the working directory.}
 
 \item{na.rm}{TBD}
-
-\item{write_digits}{Numeric. Number of significant digits to round the results in the written tables. Default is 3.}
+}
+\value{
+A data frame of summary statistics and percentiles for each month of all years
 }
 \description{
-Compute basic monthly summary statistics.
-Streamflow data can be supplied through the \code{flowdata} parameter or extracted from a 
-HYDAT database using the tidyhydat package and \code{HYDAT} parameter.
+Calculates monthly mean, median, maximum, minimum, and percentiles for each month of all years of daily flow values 
+   from a streamflow dataset. Calculates the statistics from all daily discharge values from all years, unless specified.
 }
 \examples{
 \dontrun{
 
+fasstr_monthly_stats(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
 
-Coming soon :)
+fasstr_monthly_stats(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
 
+fasstr_monthly_stats(HYDAT = "08NM116", months = 7:9)
 
 }
 }

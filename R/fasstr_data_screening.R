@@ -121,15 +121,13 @@ fasstr_data_screening <- function(flowdata=NULL,
   #--------------------------------------------------------------
   # Set the flowdata for analysis
   
-  # add date variables to determine the min/max cal/water years
+  # Select just Date and Value for analysis
   flowdata <- dplyr::select(flowdata,Date,Value)
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
-  min_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))
-  max_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))
   
-  # If start/end years are not select, set them as the min/max dates
-  if (is.null(start_year)) {start_year <- min_year}
-  if (is.null(end_year)) {end_year <- max_year}
+  # add date variables to determine the min/max cal/water years
+  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
+  if (is.null(start_year)) {start_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))}
+  if (is.null(end_year)) {end_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))}
   if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
   
   #  Fill in the missing dates and the add the date variables again
