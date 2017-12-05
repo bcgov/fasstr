@@ -89,7 +89,7 @@ fasstr_annual_stats_plots <- function(flowdata=NULL,
     if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
     if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
     if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
-    if( any(flowdata$Value <0, na.rm=TRUE))           {stop('flowdata cannot have negative values - check your data')}
+    if( any(flowdata$Value <0, na.rm=TRUE))           {warning('flowdata cannot have negative values - check your data')}
   }
   
   if( !is.logical(water_year))         {stop("water_year argument must be logical (TRUE/FALSE)")}

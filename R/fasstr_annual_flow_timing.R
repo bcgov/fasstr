@@ -85,7 +85,7 @@ fasstr_annual_flow_timing <- function(flowdata=NULL,
   if( is.null(HYDAT) & !inherits(flowdata$Date[1], "Date")){
     stop("Date column in flowdata dataframe is not a date.")}
   if( is.null(HYDAT) & !is.numeric(flowdata$Value))          {stop("Value column in flowdata dataframe is not numeric.")}
-  if( is.null(HYDAT) & any(flowdata$Value <0, na.rm=TRUE))   {stop('flowdata cannot have negative values - check your data')}
+  if( is.null(HYDAT) & any(flowdata$Value <0, na.rm=TRUE))   {warning('flowdata cannot have negative values - check your data')}
   
   if( !is.logical(water_year))  {stop("water_year parameter must be logical (TRUE/FALSE)")}
   if( length(water_year_start)>1) {stop("water_year_start must be a number between 1 and 12 (Jan-Dec)")}

@@ -104,8 +104,8 @@ fasstr_annual_trends_plots <- function(flowdata=NULL,
       stop("Date column in flowdata dataframe is not a date.")}
     if( is.null(HYDAT) & !is.numeric(flowdata$Value))          {
       stop("Flow data ('Value') column in flowdata dataframe is not numeric.")}
-    if( is.null(HYDAT) & any(flowdata$Value <0, na.rm=TRUE))   {
-      stop('flowdata cannot have negative values - check your data')}
+    if( is.null(HYDAT) & any(flowdata$Value <0, na.rm=TRUE))   {warning('flowdata cannot have negative values - check your data')}
+    
     
     if( !is.logical(water_year))  {stop("water_year parameter must be logical (TRUE/FALSE)")}
     
