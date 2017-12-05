@@ -55,7 +55,9 @@ A data frame of annual and seasonal total flows (volumetric and yield)
 }
 \description{
 Calculates annual and seasonal total flows, volumetric and runoff yield flows, from a streamflow dataset. Calculates 
-   the statistics from all daily discharge values from all years, unless specified.
+   the statistics from all daily discharge values from all years, unless specified. For water year and seasonal data, the designated
+   year is the year in which the year or season ends. For example, if using water years with a start month of 11, the OND season is
+   designated by the water year which starts in November (designated by the calendar year in which it ends).
 }
 \examples{
 \dontrun{

@@ -14,7 +14,9 @@
 #' 
 #' @description Plots annual and seasonal total flows, volumetric and runoff yield flows, from a streamflow dataset. Calculates 
 #'    the statistics from all daily discharge values from all years, unless specified. Data calculated from
-#'    fasstr_annual_total_flows() function.
+#'    fasstr_annual_total_flows() function. For water year and seasonal data, the designated
+#'    year is the year in which the year or season ends. For example, if using water years with a start month of 11, the OND season is
+#'    designated by the water year which starts in November (designated by the calendar year in which it ends).
 #'
 #' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
 #'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
