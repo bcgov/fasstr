@@ -14,7 +14,8 @@
 #' @title Perform a volume frequency analysis on annual statistics
 #'
 #' @description Performs a volume frequency analysis on annual statistics from a streamflow dataset. Calculates the statistics from all 
-#' daily discharge values from all years, unless specified. Results are similar to HEC-SSP. Defaults....TO BE FINISHED
+#'    daily discharge values from all years, unless specified. Analysis methodology replicates that from 
+#'    \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
 #'
 #' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
 #'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
@@ -26,6 +27,20 @@
 #' @param rolling_days  Numeric. The number of days to apply a rolling mean. Default \code{1}.
 #' @param rolling_align Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),
 #'    or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.
+#' @param use_max  Logical. Analyze the annual maximums rather than the minimums. Default \code{FALSE}.
+#' @param use_log  Logical. Transform flow data to log-scale before analysis. Default \code{FALSE}.
+#' @param prob_plot_position Character. Plotting positions used in the frequency plots, one of "weibull","median", or "hazen". 
+#'    Points are plotted against  (i-a)/(n+1-a-b) where \code{i} is the rank of the value; \code{n} is the sample size and \code{a} and 
+#'    \code{b} are defined as: (a=0, b=0) for Weibull plotting positions; (a=.2; b=.3) for Median plotting postions; and (a=.5; b=.5) 
+#'    for Hazen plotting positions. Default \code{"weibull"}.
+#' @param prob_scale_points  Numeric. Vector of points to be plotted along the X axis in the frequency plot. Inverse of return period. 
+#'    Default \code{c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001)}.
+#' @param fit_distr Character. Distribution to fit annual data, one of "PIII" (Pearson Log III distribution) or "weibull" 
+#'    (Weibull distribution). Default \code{"PIII"}.
+#' @param fit_distr_method  Character. Method used to fit the distribution, one of  "MOM" (method of moments) or "MLE" (maximum
+#'     likelihood estimation). Selected as \code{"MOM"} if \code{fit_distr}=="PIII" (default) or \code{"MLE"} if \code{fit_distr}=="weibull".
+#' @param fit_quantiles Numeric. Vector of quantiles to be estimated from the fitted distribution. 
+#'    Default \code{c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)}.
 #' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
 #'    by the year in which they end. Default \code{FALSE}.
 #' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
@@ -34,18 +49,6 @@
 #' @param exclude_years Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.       
 #' @param months Integer. Vector of months to consider for analysis (ex. \code{6:8} for Jun-Aug). Leave blank if all months
 #'    are required. Default \code{1:12}.
-#' @param use_log  Transfrom to log-scale before analysis?
-#' @param use_max  Analyze the maximums rather than the minimums.
-#' @param prob_plot_position Which plotting positions should be used in the frequency plots. Points are plotted
-#'       against  (i-a)/(n+1-a-b) where \code{i} is the rank of the value; \code{n} is the sample size and
-#'       \code{a} and \code{b} are defined as:
-#'       (a=0, b=0) for Weibull plotting positions;
-#'       (a=.2; b=.3) for Median plotting postions;
-#'       (a=.5; b=.5) for Hazen plotting positions.
-#' @param prob_scale_points  What points should be plotted along the $X$ axis in the frequency plot.
-#' @param fit_distr Which distribution should be fit? PIII = Pearson Log III distribution; weibull=Weibull distribution.
-#' @param fit_distr_method Which method used to fit the distribution. MOM=Method of moments; MLE=maximum likelihood estimation.
-#' @param fit_quantiles Which quantiles should be estimated from the fitted distribution?
 #' @param station_name Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
 #'    files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
 #'    will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number. 
@@ -88,19 +91,19 @@ fasstr_annual_freq_analysis <- function(flowdata=NULL,
                                         HYDAT_peaks=NA,
                                         rolling_days=c(1,3,7,30),
                                         rolling_align="right",
+                                        use_max=FALSE,
+                                        use_log=FALSE,
+                                        prob_plot_position=c("weibull","median","hazen"),
+                                        prob_scale_points=c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001),
+                                        fit_distr=c("PIII","weibull"),
+                                        fit_distr_method=ifelse(fit_distr=="PIII","MOM","MLE"),
+                                        fit_quantiles=c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),
                                         water_year=FALSE,
                                         water_year_start=10,
                                         start_year=NULL,
                                         end_year=NULL,
                                         exclude_years=NULL,
                                         months=1:12,
-                                        use_log=FALSE,
-                                        use_max=FALSE,
-                                        prob_plot_position=c("weibull","median","hazen"),
-                                        prob_scale_points=c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001),
-                                        fit_distr=c("PIII","weibull"),
-                                        fit_distr_method=ifelse(fit_distr=="PIII","MOM","MLE"),
-                                        fit_quantiles=c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),
                                         station_name=NA,
                                         write_table_overview=FALSE,
                                         write_table_stats=FALSE,
@@ -119,74 +122,87 @@ fasstr_annual_freq_analysis <- function(flowdata=NULL,
   #--------------------------------------------------------------
   #  Error checking on the input parameters
   
-  if( !is.null(HYDAT) & !is.null(flowdata))  {stop("Must select either flowdata or HYDAT parameters, not both.")}
-  if( is.null(HYDAT) & is.null(station_name))  {stop("station_name required with flowdata parameter.")}
-  if( is.null(HYDAT) & !is.character(station_name))  {stop("station_name must be a character string.")}
-  if( is.null(HYDAT) & !is.data.frame(flowdata))         {stop("flowdata is not a data frame.")}
-  if( is.null(HYDAT) & !all(c("Date","Value") %in% names(flowdata))){
-    stop("flowdata dataframe doesn't contain the variables Date and Value.")}
-  if( is.null(HYDAT) & !inherits(flowdata$Date[1], "Date")){
-    stop("Date column in flowdata data frame is not a date.")}
-  if( is.null(HYDAT) & !is.numeric(flowdata$Value))          {stop("Value column in flowdata dataframe is not numeric.")}
-  if( is.null(HYDAT) & any(flowdata$Value <0, na.rm=TRUE))   {stop('flowdata cannot have negative values - check your data')}
+  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
+  if( is.null(HYDAT)) {
+    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
+    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
+    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
+    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
+    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
+    if( any(flowdata$Value <0, na.rm=TRUE))           {warning('flowdata cannot have negative values - check your data')}
+  }
   
-  if( !HYDAT_peaks %in% c("MAX","MIN") & !is.na(HYDAT_peaks) ) {
-    stop("HYDAT_peaks argument must be 'MAX', 'MIN', or NA.")}
-  if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
-    stop('Station in HYDAT argument must be selected with HYDAT_peaks.')}
-  if( !is.logical(water_year))  {stop("water_year must be logical (TRUE/FALSE")}
-  if( water_year & HYDAT_peaks %in% c("MAX","MIN"))   {
-    warning("water_year argument was ignored. HYDAT_peaks completed strictly using calendar years.")}
+  if( !is.logical(water_year))         {stop("water_year argument must be logical (TRUE/FALSE)")}
+  if( !is.numeric(water_year_start) )  {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
+  if( length(water_year_start)>1)      {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
+  if( !water_year_start %in% c(1:12) ) {stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec)")}
   
-  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
-  
-  if( !is.numeric(rolling_days))   {stop("rolling_days must be numeric")}
-  if( !all(rolling_days>=0 & rolling_days<=180))
-  {stop("rolling_days must be >0 and <=180)")}
-  if( !all(rolling_days==floor(rolling_days)))
-  {stop("rolling_days must be integers")}
-  if( !rolling_align %in% c("right","left","center"))  {stop("rolling_align argument must be 'right', 'left', or 'center'")}
+  if( length(start_year)>1)   {stop("only one start_year value can be selected")}
+  if( !is.null(start_year) )  {if( !start_year %in% c(0:5000) )  {stop("start_year must be an integer")}}
+  if( length(end_year)>1)     {stop("only one end_year value can be selected")}
+  if( !is.null(end_year) )    {if( !end_year %in% c(0:5000) )  {stop("end_year must be an integer")}}
+  if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("list of exclude_years must be numeric - ex. 1999 or c(1999,2000)")}
   
   if( !is.numeric(months) )        {stop("months argument must be integers")}
   if( !all(months %in% c(1:12)) )  {stop("months argument must be integers between 1 and 12 (Jan-Dec)")}
   
-  if( !dir.exists(as.character(write_dir)))      {stop("directory for saved files does not exits")}
+  if( !is.numeric(rolling_days))                       {stop("rolling_days argument must be numeric")}
+  if( !all(rolling_days %in% c(1:180)) )               {stop("rolling_days argument must be integers > 0 and <= 180)")}
+  if( !rolling_align %in% c("right","left","center"))  {stop("rolling_align argument must be 'right', 'left', or 'center'")}
   
-  if( !is.list(na.rm))              {stop("na.rm is not a list") }
-  if( !is.logical(write_table_stats))  {stop("write_table_stats must be logical (TRUE/FALSE")}
-  if( !is.logical(unlist(na.rm))){  {stop("na.rm is list of logical (TRUE/FALSE) values only.")}
+  if( !HYDAT_peaks %in% c("MAX","MIN") & !is.na(HYDAT_peaks) ) {stop("HYDAT_peaks argument must be 'MAX', 'MIN', or NA.")}
+  if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))        {stop('Station in HYDAT argument must be selected with HYDAT_peaks.')}
+  if( water_year & HYDAT_peaks %in% c("MAX","MIN"))            {warning("water_year argument was ignored. 
+                                                               HYDAT_peaks completed strictly using calendar years.")}
+  
+  if( !is.list(na.rm))                {stop("na.rm is not a list") }
+  if( !is.logical(unlist(na.rm))){    {stop("na.rm is list of logical (TRUE/FALSE) values only.")}
     if( !is.logical(use_log))         {stop("use_log must be logical (TRUE/FALSE)")}
     if( !is.logical(use_max))         {stop("use_max must be logical (TRUE/FALSE)")}
-    if( !all(prob_plot_position %in% c("weibull","median","hazen"))){}
-    stop("prob_plot_position must be one of weibull, median, or hazen")}
-  if( !is.numeric(prob_scale_points)){stop("prob_scale_points must be numeric and between 0 and 1 (not inclusive)")}
-  if( !all(prob_scale_points>0 & prob_scale_points<1)){
-    stop("prob_scale_points must be numeric and between 0 and 1 (not inclusive)")}
-  if( !all(fit_distr %in% c("weibull","PIII"))){
-    stop("fit_distr must be one of weibull or PIII")}
-  if( !is.numeric(fit_quantiles))  {stop("fit_quantiles must be numeric and between 0 and 1 (not inclusive)")}
-  if( !all(fit_quantiles >0 & fit_quantiles < 1)){
-    stop("fit_quantiles must be numeric and between 0 and 1 (not inclusive)")}
-  if(  fit_distr[1]=='weibull' & use_log){stop("Cannot fit Weibull distribution on log-scale")}
-  if(  is.null(HYDAT) & fit_distr[1]=='weibull' & any(flowdata$Value<0, na.rm=TRUE)){stop("cannot fit weibull distribution with negative flow values")}
-  if(  fit_distr[1]!="PIII" & fit_distr_method[1]=="MOM"){stop('MOM only can be used with PIII distribution')}
+    if( !all(prob_plot_position %in% c("weibull","median","hazen")))  stop("prob_plot_position must be one of weibull, 
+                                                                           median, or hazen")}
+  if( !is.numeric(prob_scale_points)) {stop("prob_scale_points must be numeric and between 0 and 1 (not inclusive)")}
+  if( !all(prob_scale_points>0 & prob_scale_points<1)){stop("prob_scale_points must be numeric and between 0 and 1 (not inclusive)")}
+  if( !all(fit_distr %in% c("weibull","PIII")))       {stop("fit_distr must be one of weibull or PIII")}
+  if( !is.numeric(fit_quantiles))                     {stop("fit_quantiles must be numeric and between 0 and 1 (not inclusive)")}
+  if( !all(fit_quantiles >0 & fit_quantiles < 1))     {stop("fit_quantiles must be numeric and between 0 and 1 (not inclusive)")}
+  if( fit_distr[1]=='weibull' & use_log)              {stop("Cannot fit Weibull distribution on log-scale")}
+  if( is.null(HYDAT) & fit_distr[1]=='weibull' & any(flowdata$Value<0, na.rm=TRUE)){stop("cannot fit weibull distribution with 
+                                                                                         negative flow values")}
+  if( fit_distr[1]!="PIII" & fit_distr_method[1]=="MOM"){stop('MOM only can be used with PIII distribution')}
   
-  if( !is.logical(write_table_stats))      {stop("write_table_stats must be logical (TRUE/FALSE")}
-  if( !is.logical(write_table_plotdata))  {stop("write_table_plotdata must be logical (TRUE/FALSE")}
-  if( !is.logical(write_table_quantiles)) {stop("write_table_quantiles must be logical (TRUE/FALSE")}
-  if( !is.logical(write_plot_frequency)) {stop("write_plot_frequency must be logical (TRUE/FALSE)")}
-  if( !write_imgtype[1] %in% c("pdf","png")){stop("write_imgtype must be pdf or png")}
-  if( !is.numeric(write_imgsize) )   {stop("write_imgsize must be two numbers for height and width, respectively")}
-  if( length(write_imgsize)!=2 )   {stop("write_imgsize must be two numbers for height and width, respectively")}
   
-  if( !is.numeric(write_digits)){      stop("write_digits must be numeric")}
+  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
+  
+  if( !is.logical(write_table_overview))     {stop("write_table_overview must be logical (TRUE/FALSE")}
+  if( !is.logical(write_table_stats))        {stop("write_table_stats must be logical (TRUE/FALSE")}
+  if( !is.logical(write_table_plotdata))     {stop("write_table_plotdata must be logical (TRUE/FALSE")}
+  if( !is.logical(write_table_quantiles))    {stop("write_table_quantiles must be logical (TRUE/FALSE")}
+  if( !is.logical(write_plot_frequency))     {stop("write_plot_frequency must be logical (TRUE/FALSE)")}
+  if( !write_imgtype[1] %in% c("pdf","png")) {stop("write_imgtype must be pdf or png")}
+  if( !is.numeric(write_imgsize) )           {stop("write_imgsize must be two numbers for height and width, respectively")}
+  if( length(write_imgsize)!=2 )             {stop("write_imgsize must be two numbers for height and width, respectively")}
+  if( !is.numeric(write_digits))             {stop("write_digits must be numeric")}
   write_digits = round(write_digits)[1]
+  if( !dir.exists(as.character(write_dir))) {
+    message("directory for saved files does not exist, new directory will be created")
+    if( write_table & write_dir!="." ) {dir.create(write_dir)}
+  }
   
-  # merge the specified na.rm options with my options
-  my.na.rm <- list(na.rm.global=TRUE)
+  my.na.rm <- list(na.rm.global=FALSE)
   if( !all(names(na.rm) %in% names(my.na.rm))){stop("Illegal element in na.rm")}
   my.na.rm[names(na.rm)]<- na.rm
   na.rm <- my.na.rm  # set the na.rm for the rest of the function.
+  
+  if (!is.null(HYDAT)) {
+    if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
+    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
+    if( is.na(station_name) ) {station_name <- HYDAT}
+    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
+  }
+  
+  #--------------------------------------------------------------
+  # Define functions for analysis
   
   # Define the log=Pearson III function needed for fitting at the GLOBAL environment level
   dPIII <<-function(x, shape, location, scale) PearsonDS::dpearsonIII(x, shape, location, scale, log=FALSE)
@@ -200,12 +216,9 @@ fasstr_annual_freq_analysis <- function(flowdata=NULL,
     if(order==3) return(2/sqrt(shape)*sign(scale))
   }
   
-  if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
-    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
-    if( is.na(station_name) ) {station_name <- HYDAT}
-    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
-  }
+  
+  #--------------------------------------------------------------
+  # Gather annual data for analysis
   
   # If HYDAT_peaks is FALSE, then calculate the annual values to plot
   if ( is.na(HYDAT_peaks) ) {
@@ -221,7 +234,7 @@ fasstr_annual_freq_analysis <- function(flowdata=NULL,
     if (is.null(start_year)) {start_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))}
     if (is.null(end_year)) {end_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))}
     if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
- 
+    
     # Set selected year-type column for analysis
     if (water_year) {
       flowdata$AnalysisYear <- flowdata$WaterYear
@@ -229,7 +242,7 @@ fasstr_annual_freq_analysis <- function(flowdata=NULL,
       flowdata$AnalysisYear <- flowdata$Year
     }
     
-   # Loop through each rolling_days and add customized names of rolling means to flowdata
+    # Loop through each rolling_days and add customized names of rolling means to flowdata
     for (day in rolling_days) {
       flowdata_temp <- dplyr::select(flowdata,Date,Value)
       flowdata_temp <- fasstr::fasstr_add_rolling_means(flowdata_temp,days = day,align = rolling_align)
@@ -247,10 +260,10 @@ fasstr_annual_freq_analysis <- function(flowdata=NULL,
     flowdata <- flowdata[,-(1:8)]
     flowdata <- tidyr::gather(flowdata,Measure,value,-1)
     Q_stat <- dplyr::summarise(dplyr::group_by(flowdata,AnalysisYear,Measure),
-                              value=ifelse(use_max, max(value,na.rm=na.rm$na.rm.global), min(value,na.rm=na.rm$na.rm.global)))
+                               value=ifelse(use_max, max(value,na.rm=na.rm$na.rm.global), min(value,na.rm=na.rm$na.rm.global)))
     Q_stat <- dplyr::rename(Q_stat,Year=AnalysisYear)
     
-   }
+  }
   
   # If HYDAT_peaks is TRUE, then grab the data from HYDAT
   if ( !is.na(HYDAT_peaks)) {
@@ -268,6 +281,10 @@ fasstr_annual_freq_analysis <- function(flowdata=NULL,
     inst_peaks <- dplyr::filter(inst_peaks,!(Year %in% exclude_years))
     Q_stat <- inst_peaks
   }
+  
+  
+  #--------------------------------------------------------------
+  # Plot the data on the distrubtion
   
   # Compute the summary table for output
   Q_stat_output <- tidyr::spread(Q_stat,Measure,value)
@@ -319,8 +336,9 @@ fasstr_annual_freq_analysis <- function(flowdata=NULL,
   if(!use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab("Annual Max. Flow (cms)")}
   if(!use_log & !use_max){freqplot <- freqplot + ggplot2::ylab("Annual Min. Flow (cms)")}
   
-  
+  #--------------------------------------------------------------
   # fit the distribution to each measure
+  
   # log-Pearson III implies that the log(x) has a 3-parameter gamma distribution
   ePIII <- function(x,order){
     # compute (centered) empirical centered moments of the data
@@ -365,7 +383,9 @@ fasstr_annual_freq_analysis <- function(flowdata=NULL,
   }, distr=fit_distr[1], fit_method=fit_distr_method[1])
   
   
+  #--------------------------------------------------------------
   # extracted the fitted quantiles from the fitted distribution
+  
   fitted_quantiles <- plyr::ldply(names(fit), function (measure, prob,fit, use_max, use_log){
     # get the quantiles for each model
     x <- fit[[measure]]
@@ -389,7 +409,7 @@ fasstr_annual_freq_analysis <- function(flowdata=NULL,
                                            Probability=prob,
                                            "Return Period"=Return)
   
-  file_stat_csv <- NA
+  
   if (write_table_overview | write_table_stats | write_table_plotdata | write_table_quantiles | write_plot_frequency) {
     folder_stat <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-frequency-analysis",sep = "")
     dir.create(folder_stat)
@@ -402,14 +422,12 @@ fasstr_annual_freq_analysis <- function(flowdata=NULL,
     utils::write.csv(temp,file=file_stat_csv, row.names=FALSE)
   }
   
-  file_plotdata_csv <- NA
   if(write_table_plotdata){
     # Write out the plotdata for comparison with HEC output
     file_plotdata_csv <- file.path(folder_stat, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-vfa-plotdata.csv", sep=""))
     utils::write.csv(plotdata,file=file_plotdata_csv, row.names=FALSE)
   }
   
-  file_quantile_csv <- NA
   if(write_table_quantiles){
     # Write out the summary table for comparison to HEC spreadsheet
     file_quantile_csv<- file.path(folder_stat, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-vfa-quantiles.csv", sep=""))
@@ -418,7 +436,6 @@ fasstr_annual_freq_analysis <- function(flowdata=NULL,
     utils::write.csv(temp,file=file_quantile_csv, row.names=FALSE)
   }
   
-  file_frequency_plot <- NA
   if(write_plot_frequency){
     file_frequency_plot <- file.path(folder_stat, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-vfa-frequency-plot.",write_imgtype[1],sep=""))
     ggplot2::ggsave(plot=freqplot, file=file_frequency_plot, h=write_imgsize[1], w=write_imgsize[2], units="in", dpi=300)

@@ -1,8 +1,8 @@
 
 
 devtools::document()
-#install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
-install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
+install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
+#install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
 test <- fasstr::fasstr_annual_freq_analysis(HYDAT = "08HB048")
 

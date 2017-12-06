@@ -6,15 +6,15 @@
 \usage{
 fasstr_annual_freq_analysis(flowdata = NULL, HYDAT = NULL,
   HYDAT_peaks = NA, rolling_days = c(1, 3, 7, 30),
-  rolling_align = "right", water_year = FALSE, water_year_start = 10,
-  start_year = NULL, end_year = NULL, exclude_years = NULL,
-  months = 1:12, use_log = FALSE, use_max = FALSE,
+  rolling_align = "right", use_max = FALSE, use_log = FALSE,
   prob_plot_position = c("weibull", "median", "hazen"),
   prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5, 0.2, 0.1, 0.02, 0.01,
   0.001, 1e-04), fit_distr = c("PIII", "weibull"),
   fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
   fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1, 0.05,
-  0.01), station_name = NA, write_table_overview = FALSE,
+  0.01), water_year = FALSE, water_year_start = 10, start_year = NULL,
+  end_year = NULL, exclude_years = NULL, months = 1:12,
+  station_name = NA, write_table_overview = FALSE,
   write_table_stats = FALSE, write_table_plotdata = FALSE,
   write_table_quantiles = FALSE, write_plot_frequency = FALSE,
   write_imgtype = c("pdf", "png"), write_imgsize = c(4, 6),
@@ -36,6 +36,27 @@ database are required. Not required if \code{flowdata} argument is used.}
 \item{rolling_align}{Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),
 or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.}
 
+\item{use_max}{Logical. Analyze the annual maximums rather than the minimums. Default \code{FALSE}.}
+
+\item{use_log}{Logical. Transform flow data to log-scale before analysis. Default \code{FALSE}.}
+
+\item{prob_plot_position}{Character. Plotting positions used in the frequency plots, one of "weibull","median", or "hazen". 
+Points are plotted against  (i-a)/(n+1-a-b) where \code{i} is the rank of the value; \code{n} is the sample size and \code{a} and 
+\code{b} are defined as: (a=0, b=0) for Weibull plotting positions; (a=.2; b=.3) for Median plotting postions; and (a=.5; b=.5) 
+for Hazen plotting positions. Default \code{"weibull"}.}
+
+\item{prob_scale_points}{Numeric. Vector of points to be plotted along the X axis in the frequency plot. Inverse of return period. 
+Default \code{c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001)}.}
+
+\item{fit_distr}{Character. Distribution to fit annual data, one of "PIII" (Pearson Log III distribution) or "weibull" 
+(Weibull distribution). Default \code{"PIII"}.}
+
+\item{fit_distr_method}{Character. Method used to fit the distribution, one of  "MOM" (method of moments) or "MLE" (maximum
+likelihood estimation). Selected as \code{"MOM"} if \code{fit_distr}=="PIII" (default) or \code{"MLE"} if \code{fit_distr}=="weibull".}
+
+\item{fit_quantiles}{Numeric. Vector of quantiles to be estimated from the fitted distribution. 
+Default \code{c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)}.}
+
 \item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
 by the year in which they end. Default \code{FALSE}.}
 
@@ -49,25 +70,6 @@ by the year in which they end. Default \code{FALSE}.}
 
 \item{months}{Integer. Vector of months to consider for analysis (ex. \code{6:8} for Jun-Aug). Leave blank if all months
 are required. Default \code{1:12}.}
-
-\item{use_log}{Transfrom to log-scale before analysis?}
-
-\item{use_max}{Analyze the maximums rather than the minimums.}
-
-\item{prob_plot_position}{Which plotting positions should be used in the frequency plots. Points are plotted
-against  (i-a)/(n+1-a-b) where \code{i} is the rank of the value; \code{n} is the sample size and
-\code{a} and \code{b} are defined as:
-(a=0, b=0) for Weibull plotting positions;
-(a=.2; b=.3) for Median plotting postions;
-(a=.5; b=.5) for Hazen plotting positions.}
-
-\item{prob_scale_points}{What points should be plotted along the $X$ axis in the frequency plot.}
-
-\item{fit_distr}{Which distribution should be fit? PIII = Pearson Log III distribution; weibull=Weibull distribution.}
-
-\item{fit_distr_method}{Which method used to fit the distribution. MOM=Method of moments; MLE=maximum likelihood estimation.}
-
-\item{fit_quantiles}{Which quantiles should be estimated from the fitted distribution?}
 
 \item{station_name}{Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
 files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
@@ -107,7 +109,8 @@ A list with the following elements:
 }
 \description{
 Performs a volume frequency analysis on annual statistics from a streamflow dataset. Calculates the statistics from all 
-daily discharge values from all years, unless specified. Results are similar to HEC-SSP. Defaults....TO BE FINISHED
+   daily discharge values from all years, unless specified. Analysis methodology replicates that from 
+   \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
 }
 \examples{
 \dontrun{
