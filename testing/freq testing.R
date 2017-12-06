@@ -42,11 +42,16 @@ test2 <- test$fit$`Q003-day Min`
 
 flowdata=NULL
 HYDAT="08HB048"
+station_name=NA
+HYDAT_peaks=NA
 water_year=FALSE
+water_year_start=10
 start_year=1980
 end_year=2000
 exclude_years=NULL
-rolling_days=c(3,7,30)
+months=1:4
+rolling_days=c(1,3,7,30)
+rolling_align="right"
 use_log=FALSE
 use_max=FALSE
 prob_plot_position=c("weibull","median","hazen")
@@ -55,15 +60,14 @@ fit_distr=c("PIII","weibull")
 fit_distr_method=ifelse(fit_distr=="PIII","MOM","MLE")
 fit_quantiles=c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)
 na.rm=list(na.rm.global=TRUE)
-write_stat_table=TRUE
-write_stat_transposed_table=TRUE
-write_plotdata_table=FALSE  # write out the plotting data
-write_quantiles_table=TRUE # write out the fitted quantiles
-write_quantiles_transposed_table=TRUE
-write_frequency_plot=TRUE  # write out the frequency plot
-write_frequency_plot_type=c("pdf","png")
-report_dir='.'
-table_nddigits=3
+write_overview=FALSE
+write_stat_table=FALSE
+write_plotdata_table=FALSE
+write_quantiles_table=FALSE
+write_frequency_plot=FALSE
+write_frequency_imgtype=c("pdf","png")
+write_dir='.'
+write_digits=3
 
 
 

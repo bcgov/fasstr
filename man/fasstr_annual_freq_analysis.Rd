@@ -2,50 +2,53 @@
 % Please edit documentation in R/fasstr_annual_freq_analysis.R
 \name{fasstr_annual_freq_analysis}
 \alias{fasstr_annual_freq_analysis}
-\title{Perform a volume frequency analysis on annual statistics.}
+\title{Perform a volume frequency analysis on annual statistics}
 \usage{
 fasstr_annual_freq_analysis(flowdata = NULL, HYDAT = NULL,
-  station_name = NA, HYDAT_peaks = NA, water_year = FALSE,
-  water_year_start = 10, start_year = NULL, end_year = NULL,
-  exclude_years = NULL, rolling_days = c(1, 3, 7, 30), use_log = FALSE,
-  use_max = FALSE, prob_plot_position = c("weibull", "median", "hazen"),
+  HYDAT_peaks = NA, rolling_days = c(1, 3, 7, 30),
+  rolling_align = "right", water_year = FALSE, water_year_start = 10,
+  start_year = NULL, end_year = NULL, exclude_years = NULL,
+  months = 1:12, use_log = FALSE, use_max = FALSE,
+  prob_plot_position = c("weibull", "median", "hazen"),
   prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5, 0.2, 0.1, 0.02, 0.01,
-  0.001, 0.0001), fit_distr = c("PIII", "weibull"),
+  0.001, 1e-04), fit_distr = c("PIII", "weibull"),
   fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
   fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1, 0.05,
-  0.01), na.rm = list(na.rm.global = TRUE), write_overview = FALSE,
-  write_stat_table = FALSE, write_plotdata_table = FALSE,
-  write_quantiles_table = FALSE, write_frequency_plot = FALSE,
-  write_frequency_imgtype = c("pdf", "png"), write_dir = ".",
-  write_digits = 3)
+  0.01), station_name = NA, write_table_overview = FALSE,
+  write_table_stats = FALSE, write_table_plotdata = FALSE,
+  write_table_quantiles = FALSE, write_plot_frequency = FALSE,
+  write_imgtype = c("pdf", "png"), write_imgsize = c(4, 6),
+  write_digits = 3, write_dir = ".", na.rm = list(na.rm.global = TRUE))
 }
 \arguments{
-\item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics.
-Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily
-mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.}
+\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
+YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+Not required if \code{HYDAT} argument is used.}
 
-\item{HYDAT}{Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
-tidyhydat package and a downloaded SQLite HYDAT required.}
+\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
+database are required. Not required if \code{flowdata} argument is used.}
 
-\item{station_name}{Character. Identifier name of the stream or station. Required when supplying data through \code{flowdata}.
-The station name will be used in plots and filenames of exported tables and plot. If using \code{HYDAT} to supply
-data and no \code{station_name} is provided, the HYDAT station number will be the identifier.}
+\item{HYDAT_peaks}{Character. "MAX" or "MIN" instantaneous peaks pulled from HYDAT for analysis. Leave blank if not required.}
 
-\item{HYDAT_peaks}{Character. "MAX" or "MIN" instantaneous peaks pulled from HYDAT}
+\item{rolling_days}{Numeric. The number of days to apply a rolling mean. Default \code{1}.}
 
-\item{water_year}{Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
-default calendar year (Jan-Dec) (\code{water_year=FALSE}). Water years are designated by the year which they end in
-(e.g. water year 2000 start on 1 Oct 1999 and ends on 30 Sep 2000).}
+\item{rolling_align}{Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),
+or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.}
 
-\item{start_year}{Numeric. The first year of streamflow data to analyze. If unset, the default \code{start_year} is the first
-year of the data provided.}
+\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
+by the year in which they end. Default \code{FALSE}.}
 
-\item{end_year}{Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
-year of the data provided.}
+\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
 
-\item{exclude_years}{Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).}
+\item{start_year}{Integer. First year to consider for analysis. Leave blank if all years are required.}
 
-\item{rolling_days}{Volume frequency analysis conducted on these rolling averages.}
+\item{end_year}{Integer. Last year to consider for analysis. Leave blank if all years are required.}
+
+\item{exclude_years}{Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.}
+
+\item{months}{Integer. Vector of months to consider for analysis (ex. \code{6:8} for Jun-Aug). Leave blank if all months
+are required. Default \code{1:12}.}
 
 \item{use_log}{Transfrom to log-scale before analysis?}
 
@@ -66,61 +69,52 @@ against  (i-a)/(n+1-a-b) where \code{i} is the rank of the value; \code{n} is th
 
 \item{fit_quantiles}{Which quantiles should be estimated from the fitted distribution?}
 
-\item{na.rm}{}
+\item{station_name}{Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
+files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
+will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number.}
 
-\item{write_stat_table}{Should a file be created with the computed percentiles?
-The file name will be  \code{file.path(write_dir,paste(station_name,"-annual-vfa-stat.csv", sep=""))}.}
+\item{write_table_overview}{Logical. Write the overview table as a .csv file to specified directory. Default \code{FALSE}.}
 
-\item{write_plotdata_table}{Should a file be created with the frequency plot data?
-The file name will be  \code{file.path(write_dir, paste(station_name,"-annual-vfa-plotdata.csv", sep=""))}.}
+\item{write_table_stats}{Logical. Write the annual statistics (used for analysis) table as a .csv file to specified directory. 
+Default \code{FALSE}.}
 
-\item{write_quantiles_table}{Should a file be created with the fitted quantiles?.
-The file name will be  \code{file.path(write_dir, paste(station_name,"-annual-vfa-quantiles.csv", sep=""))}.}
+\item{write_table_plotdata}{Logical. Write the plotting data (used for analysis) table as a .csv file to specified directory. 
+Default \code{FALSE}.}
 
-\item{write_frequency_plot}{Should a file be created with the frequency plot..
-The file name will be \code{file.path(write_dir, paste(station_name,"-annual-vfa-frequency-plot.",write_frequency_imgtype[1],sep=""))}}
+\item{write_table_quantiles}{Logical. Write the results table as a .csv file to specified directory. Default \code{FALSE}.}
 
-\item{write_frequency_imgtype}{Format of the frequency plot.}
+\item{write_plot_frequency}{Logical. Write the frequency plot to specified directory. Default \code{FALSE}.}
 
-\item{write_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
+\item{write_imgtype}{Character. One of "pdf","png","jpeg","tiff", or "bmp" image types to write the plot as. Default \code{"pdf"}.}
 
-\item{write_digits}{Numeric. Number of significant digits to round the results in the written tables. Default is 3.}
+\item{write_imgsize}{Numeric. Height and width, respectively, of saved plot. Default \code{c(5,11)}.}
+
+\item{write_digits}{Numeric. Number of significant digits to round the results in the written table. Default \code{3}.}
+
+\item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
+Default is the working directory.}
+
+\item{na.rm}{TBD}
 }
 \value{
 A list with the following elements:
-  \item{Q.flow.summary}{Data frame with flow summary.}
-  \item{start_year}{Start year of the analysis}
-  \item{end_year}{End year of the analysis}
-  \item{water_year}{Were computations done on water year?}
-  \item{use_max}{Were computations done on maximum values.}
-  \item{rolling_days}{Rolling average days on which statistics computed.}
   \item{Q_stat}{Data frame with Computed annual summary statistics used in analysis}
-  \item{Q_stat_trans}{Data frame with Computed annual summary statistics (transposed) used in analysis.}
   \item{plotdata}{Data frame with Co-ordinates used in frequency plot.}
-  \item{prob_plot_position}{Which plotting position was used in frequency plot?}
   \item{freqplot}{ggplot2 object with frequency plot}
-  \item{fit_distr}{Which distribution was fit to the data}
   \item{fit}{List of fitted objects from fitdistrplus.}
   \item{fitted_quantiles}{Data frame with fitted quantiles.}
-  \item{fitted_quantiles_trans}{Data frame with fitted quantiles (transposed)}
-  \item{file_stat_csv}{Object with file name of *.csv file with flow summary}
-  \item{ file_stat_trans_csv}{Object with file name of *.csv file with flow summary (transposed)}
-  \item{file_plotdata_csv}{Object with file name of *.csv file with plotting information for frequency plot.}
-  \item{file_quantile_csv}{Object with file name of fitted quantiles.}
-  \item{file_quantile_trans_csv}{Object with file name of fitted quantiles (transposed)}
-  \item{file_frequency_plot}{Object with file name of *.pdf or *.png file with frequency plot}
-  \item{Version}{Version of this function.}
-  \item{Date}{Date function was run.}
+  \item{overview}{Data frame overview of parameters used in analysis.}
 }
 \description{
-Performs a volume frequency analysis on annual statistics similar to HEC-SSP.
+Performs a volume frequency analysis on annual statistics from a streamflow dataset. Calculates the statistics from all 
+daily discharge values from all years, unless specified. Results are similar to HEC-SSP. Defaults....TO BE FINISHED
 }
 \examples{
 \dontrun{
-vfa.analysis <- compute.volume.frequency.analysis(
-                     station_name ='XXX',
-                     flowdata         =flow,
-                     start_year   =1960,
-                     end_year     =2014)
+
+fasstr_annual_freq_analysis(HYDAT="08NM116",
+                            start_year = 1980,
+                            end_year = 2010)
+                            
 }
 }

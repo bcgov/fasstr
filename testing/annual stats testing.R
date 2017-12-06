@@ -4,16 +4,15 @@ devtools::document()
 #install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
 install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
-test <- fasstr::fasstr_annual_total_flows_plots(HYDAT = "08HB048")
-
+test <- fasstr::fasstr_annual_freq_analysis(HYDAT = "08HB048")
 
 fasstr::fasstr_LTMAD(HYDAT = "08HB048",percent_MAD = c(100,50))
 fasstr::fasstr_percentile_rank(HYDAT = "08HB048", flowvalue = c(.8109,.1))
 fasstr::fasstr_annual_missing_plots(HYDAT = "08HB048")
 
-test <- fasstr::fasstr_annual_all_stats(HYDAT = "08NM116", water_year = T, water_year_start = 5, transpose = T)
+test <- fasstr::fasstr_annual_all_stats(HYDAT = "08HB048", water_year = T, water_year_start = 5, transpose = T)
 
-fasstr::fasstr_annual_trends_plots(trendsdata = test,zyp_method = "zhang")[1]
+fasstr::fasstr_annual_trends_plots(trendsdata = test,zyp_method = "zhang", zyp_alpha = NA)[17]
 fasstr::fasstr_annual_trends_plots(HYDAT = "08NM116", water_year = T, water_year_start = 5,zyp_method = "zhang")[1]
 
 test <- fasstr::fasstr_annual_trends_analysis(HYDAT="fdf",flowdata = "08NM116",zyp_method = "zhang")

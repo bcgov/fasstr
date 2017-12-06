@@ -1,25 +1,39 @@
-#' @title Perform a volume frequency analysis on annual statistics.
+# Copyright 2017 Province of British Columbia
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+# http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and limitations under the License.
+
+
+#' @title Perform a volume frequency analysis on annual statistics
 #'
-#' @description Performs a volume frequency analysis on annual statistics similar to HEC-SSP.
+#' @description Performs a volume frequency analysis on annual statistics from a streamflow dataset. Calculates the statistics from all 
+#' daily discharge values from all years, unless specified. Results are similar to HEC-SSP. Defaults....TO BE FINISHED
 #'
-#' @param flowdata Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics.
-#'    Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily
-#'    mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.
-#' @param HYDAT Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
-#'    tidyhydat package and a downloaded SQLite HYDAT required.
-#' @param HYDAT_peaks Character. "MAX" or "MIN" instantaneous peaks pulled from HYDAT
-#' @param station_name Character. Identifier name of the stream or station. Required when supplying data through \code{flowdata}.
-#'    The station name will be used in plots and filenames of exported tables and plot. If using \code{HYDAT} to supply
-#'    data and no \code{station_name} is provided, the HYDAT station number will be the identifier.
-#' @param water_year Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
-#'    default calendar year (Jan-Dec) (\code{water_year=FALSE}). Water years are designated by the year which they end in
-#'    (e.g. water year 2000 start on 1 Oct 1999 and ends on 30 Sep 2000).
-#' @param start_year Numeric. The first year of streamflow data to analyze. If unset, the default \code{start_year} is the first
-#'    year of the data provided.
-#' @param end_year Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
-#'    year of the data provided.
-#' @param exclude_years Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).
-#' @param rolling_days Volume frequency analysis conducted on these rolling averages.
+#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
+#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+#'    Not required if \code{HYDAT} argument is used.
+#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
+#'    database are required. Not required if \code{flowdata} argument is used.
+#' @param HYDAT_peaks Character. "MAX" or "MIN" instantaneous peaks pulled from HYDAT for analysis. Leave blank if not required.
+#' @param rolling_days  Numeric. The number of days to apply a rolling mean. Default \code{1}.
+#' @param rolling_align Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),
+#'    or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.
+#' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
+#'    by the year in which they end. Default \code{FALSE}.
+#' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
+#' @param start_year Integer. First year to consider for analysis. Leave blank if all years are required.
+#' @param end_year Integer. Last year to consider for analysis. Leave blank if all years are required.
+#' @param exclude_years Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.       
+#' @param months Integer. Vector of months to consider for analysis (ex. \code{6:8} for Jun-Aug). Leave blank if all months
+#'    are required. Default \code{1:12}.
 #' @param use_log  Transfrom to log-scale before analysis?
 #' @param use_max  Analyze the maximums rather than the minimums.
 #' @param prob_plot_position Which plotting positions should be used in the frequency plots. Points are plotted
@@ -32,106 +46,79 @@
 #' @param fit_distr Which distribution should be fit? PIII = Pearson Log III distribution; weibull=Weibull distribution.
 #' @param fit_distr_method Which method used to fit the distribution. MOM=Method of moments; MLE=maximum likelihood estimation.
 #' @param fit_quantiles Which quantiles should be estimated from the fitted distribution?
-#' @param na.rm
-#'
-#' @param write_stat_table Should a file be created with the computed percentiles?
-#'    The file name will be  \code{file.path(write_dir,paste(station_name,"-annual-vfa-stat.csv", sep=""))}.
-#' @param write_plotdata_table Should a file be created with the frequency plot data?
-#'    The file name will be  \code{file.path(write_dir, paste(station_name,"-annual-vfa-plotdata.csv", sep=""))}.
-#' @param write_quantiles_table Should a file be created with the fitted quantiles?.
-#'    The file name will be  \code{file.path(write_dir, paste(station_name,"-annual-vfa-quantiles.csv", sep=""))}.
-#' @param write_frequency_plot Should a file be created with the frequency plot..
-#'    The file name will be \code{file.path(write_dir, paste(station_name,"-annual-vfa-frequency-plot.",write_frequency_imgtype[1],sep=""))}
-#' @param write_frequency_imgtype Format of the frequency plot.
-#' @param write_dir Character. Folder location of where to write tables and plots. Default is the working directory.
-#' @param write_digits Numeric. Number of significant digits to round the results in the written tables. Default is 3.
-#'
+#' @param station_name Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
+#'    files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
+#'    will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number. 
+#' @param write_table_overview Logical. Write the overview table as a .csv file to specified directory. Default \code{FALSE}.
+#' @param write_table_stats Logical. Write the annual statistics (used for analysis) table as a .csv file to specified directory. 
+#'    Default \code{FALSE}.
+#' @param write_table_plotdata Logical. Write the plotting data (used for analysis) table as a .csv file to specified directory. 
+#'    Default \code{FALSE}.
+#' @param write_table_quantiles Logical. Write the results table as a .csv file to specified directory. Default \code{FALSE}.
+#' @param write_plot_frequency Logical. Write the frequency plot to specified directory. Default \code{FALSE}.
+#' @param write_imgtype Character. One of "pdf","png","jpeg","tiff", or "bmp" image types to write the plot as. Default \code{"pdf"}.
+#' @param write_imgsize Numeric. Height and width, respectively, of saved plot. Default \code{c(5,11)}.
+#' @param write_digits Numeric. Number of significant digits to round the results in the written table. Default \code{3}.
+#' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
+#'    Default is the working directory.
+#' @param na.rm TBD
+#' 
 #' @return A list with the following elements:
-#'   \item{Q.flow.summary}{Data frame with flow summary.}
-#'   \item{start_year}{Start year of the analysis}
-#'   \item{end_year}{End year of the analysis}
-#'   \item{water_year}{Were computations done on water year?}
-#'   \item{use_max}{Were computations done on maximum values.}
-#'   \item{rolling_days}{Rolling average days on which statistics computed.}
 #'   \item{Q_stat}{Data frame with Computed annual summary statistics used in analysis}
-#'   \item{Q_stat_trans}{Data frame with Computed annual summary statistics (transposed) used in analysis.}
 #'   \item{plotdata}{Data frame with Co-ordinates used in frequency plot.}
-#'   \item{prob_plot_position}{Which plotting position was used in frequency plot?}
 #'   \item{freqplot}{ggplot2 object with frequency plot}
-#'   \item{fit_distr}{Which distribution was fit to the data}
 #'   \item{fit}{List of fitted objects from fitdistrplus.}
 #'   \item{fitted_quantiles}{Data frame with fitted quantiles.}
-#'   \item{fitted_quantiles_trans}{Data frame with fitted quantiles (transposed)}
-#'   \item{file_stat_csv}{Object with file name of *.csv file with flow summary}
-#'   \item{ file_stat_trans_csv}{Object with file name of *.csv file with flow summary (transposed)}
-#'   \item{file_plotdata_csv}{Object with file name of *.csv file with plotting information for frequency plot.}
-#'   \item{file_quantile_csv}{Object with file name of fitted quantiles.}
-#'   \item{file_quantile_trans_csv}{Object with file name of fitted quantiles (transposed)}
-#'   \item{file_frequency_plot}{Object with file name of *.pdf or *.png file with frequency plot}
-#'   \item{Version}{Version of this function.}
-#'   \item{Date}{Date function was run.}
-
+#'   \item{overview}{Data frame overview of parameters used in analysis.}
+#'   
+#'   
 #' @examples
 #' \dontrun{
-#' vfa.analysis <- compute.volume.frequency.analysis(
-#'                      station_name ='XXX',
-#'                      flowdata         =flow,
-#'                      start_year   =1960,
-#'                      end_year     =2014)
+#' 
+#' fasstr_annual_freq_analysis(HYDAT="08NM116",
+#'                             start_year = 1980,
+#'                             end_year = 2010)
+#'                             
 #' }
 #' @export
 
 
-# Copyright 2017 Province of British Columbia
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and limitations under the License.
-
-# Compute the volume frequency analysis - similar to the HEC-SSP program
-# The key difference lies in how the PIII distribuition is fit. I use MLE while
-# HEC-SSP appears to use method of moments.
-
 fasstr_annual_freq_analysis <- function(flowdata=NULL,
-                                 HYDAT=NULL,
-                                 station_name=NA,
-                                 HYDAT_peaks=NA,
-                                 water_year=FALSE,
-                                 water_year_start=10,
-                                 start_year=NULL,
-                                 end_year=NULL,
-                                 exclude_years=NULL,
-                                 rolling_days=c(1,3,7,30),
-                                 use_log=FALSE,
-                                 use_max=FALSE,
-                                 prob_plot_position=c("weibull","median","hazen"),
-                                 prob_scale_points=c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001),
-                                 fit_distr=c("PIII","weibull"),
-                                 fit_distr_method=ifelse(fit_distr=="PIII","MOM","MLE"),
-                                 fit_quantiles=c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),
-                                 na.rm=list(na.rm.global=TRUE),
-                                 write_overview=FALSE,
-                                 write_stat_table=FALSE,
-                                 write_plotdata_table=FALSE,  # write out the plotting data
-                                 write_quantiles_table=FALSE, # write out the fitted quantiles
-                                 write_frequency_plot=FALSE,  # write out the frequency plot
-                                 write_frequency_imgtype=c("pdf","png"),
-                                 write_dir='.',
-                                 write_digits=3)
-# Input parameter - consult man-roxygen directory
-# Output list - see above.
-
-{
+                                        HYDAT=NULL,
+                                        HYDAT_peaks=NA,
+                                        rolling_days=c(1,3,7,30),
+                                        rolling_align="right",
+                                        water_year=FALSE,
+                                        water_year_start=10,
+                                        start_year=NULL,
+                                        end_year=NULL,
+                                        exclude_years=NULL,
+                                        months=1:12,
+                                        use_log=FALSE,
+                                        use_max=FALSE,
+                                        prob_plot_position=c("weibull","median","hazen"),
+                                        prob_scale_points=c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001),
+                                        fit_distr=c("PIII","weibull"),
+                                        fit_distr_method=ifelse(fit_distr=="PIII","MOM","MLE"),
+                                        fit_quantiles=c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),
+                                        station_name=NA,
+                                        write_table_overview=FALSE,
+                                        write_table_stats=FALSE,
+                                        write_table_plotdata=FALSE,  # write out the plotting data
+                                        write_table_quantiles=FALSE, # write out the fitted quantiles
+                                        write_plot_frequency=FALSE,  # write out the frequency plot
+                                        write_imgtype=c("pdf","png"),
+                                        write_imgsize=c(4,6),
+                                        write_digits=3,
+                                        write_dir='.',
+                                        na.rm=list(na.rm.global=TRUE)){
+  
   # replicate the frequency analysis of the HEC-SSP program
   # refer to Chapter 7 of the user manual
   
-  # data checks
+  #--------------------------------------------------------------
+  #  Error checking on the input parameters
+  
   if( !is.null(HYDAT) & !is.null(flowdata))  {stop("Must select either flowdata or HYDAT parameters, not both.")}
   if( is.null(HYDAT) & is.null(station_name))  {stop("station_name required with flowdata parameter.")}
   if( is.null(HYDAT) & !is.character(station_name))  {stop("station_name must be a character string.")}
@@ -145,12 +132,12 @@ fasstr_annual_freq_analysis <- function(flowdata=NULL,
   
   if( !HYDAT_peaks %in% c("MAX","MIN") & !is.na(HYDAT_peaks) ) {
     stop("HYDAT_peaks argument must be 'MAX', 'MIN', or NA.")}
-if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
+  if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
     stop('Station in HYDAT argument must be selected with HYDAT_peaks.')}
   if( !is.logical(water_year))  {stop("water_year must be logical (TRUE/FALSE")}
   if( water_year & HYDAT_peaks %in% c("MAX","MIN"))   {
     warning("water_year argument was ignored. HYDAT_peaks completed strictly using calendar years.")}
-    
+  
   if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
   
   if( !is.numeric(rolling_days))   {stop("rolling_days must be numeric")}
@@ -158,10 +145,15 @@ if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
   {stop("rolling_days must be >0 and <=180)")}
   if( !all(rolling_days==floor(rolling_days)))
   {stop("rolling_days must be integers")}
+  if( !rolling_align %in% c("right","left","center"))  {stop("rolling_align argument must be 'right', 'left', or 'center'")}
+  
+  if( !is.numeric(months) )        {stop("months argument must be integers")}
+  if( !all(months %in% c(1:12)) )  {stop("months argument must be integers between 1 and 12 (Jan-Dec)")}
+  
   if( !dir.exists(as.character(write_dir)))      {stop("directory for saved files does not exits")}
   
   if( !is.list(na.rm))              {stop("na.rm is not a list") }
-  if( !is.logical(write_stat_table))  {stop("write_stat_table must be logical (TRUE/FALSE")}
+  if( !is.logical(write_table_stats))  {stop("write_table_stats must be logical (TRUE/FALSE")}
   if( !is.logical(unlist(na.rm))){  {stop("na.rm is list of logical (TRUE/FALSE) values only.")}
     if( !is.logical(use_log))         {stop("use_log must be logical (TRUE/FALSE)")}
     if( !is.logical(use_max))         {stop("use_max must be logical (TRUE/FALSE)")}
@@ -179,11 +171,13 @@ if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
   if(  is.null(HYDAT) & fit_distr[1]=='weibull' & any(flowdata$Value<0, na.rm=TRUE)){stop("cannot fit weibull distribution with negative flow values")}
   if(  fit_distr[1]!="PIII" & fit_distr_method[1]=="MOM"){stop('MOM only can be used with PIII distribution')}
   
-  if( !is.logical(write_stat_table))      {stop("write_stat_table must be logical (TRUE/FALSE")}
-  if( !is.logical(write_plotdata_table))  {stop("write_plotdata_table must be logical (TRUE/FALSE")}
-  if( !is.logical(write_quantiles_table)) {stop("write_quantiles_table must be logical (TRUE/FALSE")}
-  if( !is.logical(write_frequency_plot)) {stop("write_frequency_plot must be logical (TRUE/FALSE)")}
-  if( !write_frequency_imgtype[1] %in% c("pdf","png")){stop("write_frequency_imgtype must be pdf or png")}
+  if( !is.logical(write_table_stats))      {stop("write_table_stats must be logical (TRUE/FALSE")}
+  if( !is.logical(write_table_plotdata))  {stop("write_table_plotdata must be logical (TRUE/FALSE")}
+  if( !is.logical(write_table_quantiles)) {stop("write_table_quantiles must be logical (TRUE/FALSE")}
+  if( !is.logical(write_plot_frequency)) {stop("write_plot_frequency must be logical (TRUE/FALSE)")}
+  if( !write_imgtype[1] %in% c("pdf","png")){stop("write_imgtype must be pdf or png")}
+  if( !is.numeric(write_imgsize) )   {stop("write_imgsize must be two numbers for height and width, respectively")}
+  if( length(write_imgsize)!=2 )   {stop("write_imgsize must be two numbers for height and width, respectively")}
   
   if( !is.numeric(write_digits)){      stop("write_digits must be numeric")}
   write_digits = round(write_digits)[1]
@@ -213,63 +207,66 @@ if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
-  # add date variables to determine the min/max cal/water years
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
-  min_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))
-  max_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))
+  # If HYDAT_peaks is FALSE, then calculate the annual values to plot
+  if ( is.na(HYDAT_peaks) ) {
+    
+    #--------------------------------------------------------------
+    # Set the flowdata for analysis
+    
+    # Select just Date and Value for analysis
+    flowdata <- dplyr::select(flowdata,Date,Value)
+    
+    # add date variables to determine the min/max cal/water years
+    flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
+    if (is.null(start_year)) {start_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))}
+    if (is.null(end_year)) {end_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))}
+    if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
+ 
+    # Set selected year-type column for analysis
+    if (water_year) {
+      flowdata$AnalysisYear <- flowdata$WaterYear
+    }  else {
+      flowdata$AnalysisYear <- flowdata$Year
+    }
+    
+   # Loop through each rolling_days and add customized names of rolling means to flowdata
+    for (day in rolling_days) {
+      flowdata_temp <- dplyr::select(flowdata,Date,Value)
+      flowdata_temp <- fasstr::fasstr_add_rolling_means(flowdata_temp,days = day,align = rolling_align)
+      names(flowdata_temp)[names(flowdata_temp) == paste0("Q",day,"Day")] <- paste("Q", formatC(day, width=3, format="d", flag="0"),"-day-Avg",sep="")
+      flowdata_temp <- dplyr::select(flowdata_temp,-Value)
+      flowdata <- merge(flowdata,flowdata_temp,by="Date",all = T)
+    }
+    
+    # Truncate the data between the start and end year, excluded years, and months selected
+    flowdata <- flowdata[ flowdata$AnalysisYear >=start_year & flowdata$AnalysisYear <= end_year,]
+    flowdata <- dplyr::filter(flowdata,!(AnalysisYear %in% exclude_years))
+    flowdata <- dplyr::filter(flowdata, Month %in% months)
+    
+    # Calculate the min or max of the rolling means for each year
+    flowdata <- flowdata[,-(1:8)]
+    flowdata <- tidyr::gather(flowdata,Measure,value,-1)
+    Q_stat <- dplyr::summarise(dplyr::group_by(flowdata,AnalysisYear,Measure),
+                              value=ifelse(use_max, max(value,na.rm=na.rm$na.rm.global), min(value,na.rm=na.rm$na.rm.global)))
+    Q_stat <- dplyr::rename(Q_stat,Year=AnalysisYear)
+    
+   }
   
-  # If start/end years are not select, set them as the min/max dates
-  if (is.null(start_year)) {start_year <- min_year}
-  if (is.null(end_year)) {end_year <- max_year}
-  if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
-  
-  #  Fill in the missing dates and the add the date variables again
-  flowdata <- fasstr::fasstr_add_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
-  
-  # Set selected year-type column for analysis
-  if (water_year) {
-    flowdata$AnalysisYear <- flowdata$WaterYear
-    flowdata$AnalysisDoY <- flowdata$WaterDayofYear
-  }  else {
-    flowdata$AnalysisYear <- flowdata$Year
-    flowdata$AnalysisDoY <- flowdata$DayofYear
-  }
-  
-  
-  # Compute the rolling averagw of interest
-  flowdata <- flowdata[ order(flowdata$Date),]
-  flowdata <- plyr::ldply(rolling_days, function (x, flowdata){
-    # compute the rolling average of x days
-    # create a variable to be attached to the statistic
-    flowdata$Measure <- paste("Q", formatC(x, width=3, format="d", flag="0"),"-day-Avg",sep="")
-    flowdata$Q       <- zoo::rollapply( flowdata$Value,  x, mean, fill=NA, align="right")
-    flowdata
-  }, flowdata=flowdata)
-  
-  # Truncate the data between the start and end year
-  flowdata <- flowdata[ flowdata$AnalysisYear >=start_year & flowdata$AnalysisYear <= end_year,]
-  flowdata <- dplyr::filter(flowdata,!(AnalysisYear %in% exclude_years))
-  
-  # Compute the yearly min (unless max flag is set)
-  Q_stat <- plyr::ddply(flowdata, c("AnalysisYear","Measure"), function(x,use_max=FALSE, na.rm){
-    # compute min or max of Q for the year-measure combination
-    value <- ifelse(use_max, max(x$Q,na.rm=na.rm$na.rm.global), min(x$Q,na.rm=na.rm$na.rm.global) )
-    data.frame(value=value)
-  },use_max=use_max, na.rm=na.rm)
-  if(nrow(Q_stat)==0){stop("start_year and end_year eliminated ALL data values")}
-  Q_stat <- dplyr::rename(Q_stat,Year=AnalysisYear)
-  
-  
+  # If HYDAT_peaks is TRUE, then grab the data from HYDAT
   if ( !is.na(HYDAT_peaks)) {
-  inst_peaks <- suppressMessages(tidyhydat::hy_annual_instant_peaks(HYDAT))
-  inst_peaks <- dplyr::filter(inst_peaks,Parameter=="Flow")
-  inst_peaks <- dplyr::filter(inst_peaks,PEAK_CODE==HYDAT_peaks)
-  inst_peaks <- dplyr::select(inst_peaks,Year=YEAR,Measure=PEAK_CODE,value=Value)
-  inst_peaks <- dplyr::mutate(inst_peaks,Measure=paste0("INST_",Measure))
-  inst_peaks <- inst_peaks[ inst_peaks$Year >=start_year & inst_peaks$Year <= end_year,]
-  inst_peaks <- dplyr::filter(inst_peaks,!(Year %in% exclude_years))
-  Q_stat <- inst_peaks
+    inst_peaks <- suppressMessages(tidyhydat::hy_annual_instant_peaks(HYDAT))
+    inst_peaks <- dplyr::filter(inst_peaks,Parameter=="Flow")
+    inst_peaks <- dplyr::filter(inst_peaks,PEAK_CODE==HYDAT_peaks)
+    inst_peaks <- dplyr::select(inst_peaks,Year=YEAR,Measure=PEAK_CODE,value=Value)
+    inst_peaks <- dplyr::mutate(inst_peaks,Measure=paste0("INST_",Measure))
+    
+    if (is.null(start_year)) {start_year <- min(inst_peaks$Year)}
+    if (is.null(end_year)) {end_year <- max(inst_peaks$Year)}
+    if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
+    
+    inst_peaks <- inst_peaks[ inst_peaks$Year >=start_year & inst_peaks$Year <= end_year,]
+    inst_peaks <- dplyr::filter(inst_peaks,!(Year %in% exclude_years))
+    Q_stat <- inst_peaks
   }
   
   # Compute the summary table for output
@@ -296,6 +293,7 @@ if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
     x$dist.prob <- stats::qnorm(1-x$prob)
     x
   }, a=a, b=b, use_max=use_max)
+  
   # change the measure labels in the plot
   plotdata2<- plotdata
   if (is.na(HYDAT_peaks)) {plotdata2$Measure <- paste(formatC(as.numeric(substr(plotdata2$Measure,2,4)),width=3),"-day Avg",sep="")}
@@ -392,11 +390,11 @@ if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
                                            "Return Period"=Return)
   
   file_stat_csv <- NA
-  if (write_overview | write_stat_table | write_plotdata_table | write_quantiles_table | write_frequency_plot) {
-  folder_stat <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-frequency-analysis",sep = "")
-  dir.create(folder_stat)
+  if (write_table_overview | write_table_stats | write_table_plotdata | write_table_quantiles | write_plot_frequency) {
+    folder_stat <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-frequency-analysis",sep = "")
+    dir.create(folder_stat)
   }
-  if(write_stat_table){
+  if(write_table_stats){
     # Write out the summary table for comparison to HEC spreadsheet
     file_stat_csv <- file.path(folder_stat,paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-vfa-annual-statistics.csv", sep=""))
     temp <- Q_stat_output
@@ -405,14 +403,14 @@ if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
   }
   
   file_plotdata_csv <- NA
-  if(write_plotdata_table){
+  if(write_table_plotdata){
     # Write out the plotdata for comparison with HEC output
     file_plotdata_csv <- file.path(folder_stat, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-vfa-plotdata.csv", sep=""))
     utils::write.csv(plotdata,file=file_plotdata_csv, row.names=FALSE)
   }
   
   file_quantile_csv <- NA
-  if(write_quantiles_table){
+  if(write_table_quantiles){
     # Write out the summary table for comparison to HEC spreadsheet
     file_quantile_csv<- file.path(folder_stat, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-vfa-quantiles.csv", sep=""))
     temp <- fitted_quantiles_output
@@ -421,9 +419,9 @@ if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
   }
   
   file_frequency_plot <- NA
-  if(write_frequency_plot){
-    file_frequency_plot <- file.path(folder_stat, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-vfa-frequency-plot.",write_frequency_imgtype[1],sep=""))
-    ggplot2::ggsave(plot=freqplot, file=file_frequency_plot, h=4, w=6, units="in", dpi=300)
+  if(write_plot_frequency){
+    file_frequency_plot <- file.path(folder_stat, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-vfa-frequency-plot.",write_imgtype[1],sep=""))
+    ggplot2::ggsave(plot=freqplot, file=file_frequency_plot, h=write_imgsize[1], w=write_imgsize[2], units="in", dpi=300)
   }
   
   analysis.options <- list("station name"= station_name,
@@ -435,14 +433,14 @@ if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))   {
                            fit_distr=fit_distr[1],  # distributions fit to the data
                            fit_distr_method=fit_distr_method[1],
                            prob_plot_position=prob_plot_position[1]
-                           )
+  )
   analysis.options.df <- data.frame("Option"=names(analysis.options),
-                   "Selection"=unlist(analysis.options,use.names = F))
+                                    "Selection"=unlist(analysis.options,use.names = F))
   
   # Write out the analysis options
-  if (write_overview){
-  file_options_csv<- file.path(folder_stat, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-vfa-overview.csv", sep=""))
-  utils::write.csv(analysis.options.df,file=file_options_csv, row.names=FALSE)
+  if (write_table_overview){
+    file_options_csv<- file.path(folder_stat, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-vfa-overview.csv", sep=""))
+    utils::write.csv(analysis.options.df,file=file_options_csv, row.names=FALSE)
   }
   
   
