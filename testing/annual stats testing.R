@@ -12,7 +12,7 @@ wt_yr=T
 
 
 A <- fasstr::fasstr_data_screening(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_longterm_stats(HYDAT = stn.number,water_year = F, custom_months = 7:12, custom_months_label = "FUNNNNNN")
+A <- fasstr::fasstr_longterm_stats(HYDAT = stn.number,water_year = F, custom_months = 7:12, custom_months_label = "Jul-Dec")
 A <- fasstr::fasstr_LTMAD(HYDAT = stn.number,water_year = wt_yr, start_year = 1982)
 A <- fasstr::fasstr_flow_duration_curves(HYDAT = stn.number,water_year = T, start_year = 1980, end_year = 2013)
 A <- fasstr::fasstr_annual_stats(HYDAT = stn.number,water_year = wt_yr, start_year = 1982)

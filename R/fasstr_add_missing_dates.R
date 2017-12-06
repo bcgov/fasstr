@@ -26,8 +26,7 @@
 #'    by the year in which they end. Default \code{FALSE}.
 #' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
 #' 
-#' @return Additional rows of streamflow data to the flowdata data frame input or HYDAT dataset with flow values of NA where flow values 
-#'    were missing.
+#' @return A data frame of the original flowdata or HYDAT data with additional rows of filled values of missing dates with NA
 #'
 #' @examples
 #' \dontrun{

@@ -20,8 +20,8 @@ a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station numbe
 Setting the basin area will replace the HYDAT basin area.}
 }
 \value{
-A column of runoff yield flows for each day called 'Yield_mm' added to the flowdata data frame input or HYDAT dataset, 
-   in units of millimetres.
+A data frame of the original flowdata or HYDAT data with an additional column:
+  \item{Yield_MM}{daily runoff yield flow, in units of millimetres}
 }
 \description{
 Add a column of daily runoff yields to a streamflow dataset, in units of millimetres. Converts the discharge to a depth

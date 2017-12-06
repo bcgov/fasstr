@@ -26,8 +26,8 @@ by the year in which they end. Default \code{FALSE}.}
 \item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
 }
 \value{
-A column of cumulative runoff yield flows for each day for each year specific called 'Cumul_Yield_mm' added to the flowdata 
-   data frame input or HYDAT dataset, in units of millimetres.
+A data frame of the original flowdata or HYDAT data with an additional column:
+  \item{Cumul_Yield_mm}{cumulative yield flows for each day for each year, in units of millimetres}
 }
 \description{
 Add a column of daily cumulative runoff yield flows on an annual basis to a streamflow dataset. Adds the runoff yield 

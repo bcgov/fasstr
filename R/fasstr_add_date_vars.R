@@ -27,8 +27,13 @@
 #'    by the year in which they end. Default \code{FALSE}.
 #' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
 #' 
-#' @return Additional columns of Year, Month, MonthText, and DayofYear; and WaterYear and WaterDayofYear if selected; to the flowdata 
-#'    data frame input or HYDAT dataset.
+#' @return A data frame of the original flowdata or HYDAT data with additional columns:
+#'   \item{Year}{calendar year}
+#'   \item{Month}{numeric month (1 to 12)}
+#'   \item{MonthName}{month name (Jan-Dec)}
+#'   \item{DayofYear}{day of the year (1-365 or 366)}
+#'   \item{WaterYear}{(optional) water year, designated by the calendar year in which it ends}
+#'   \item{WaterDayofYear}{(optional) day of the water year (1-365 or 366), starting in the first month of the water year}
 #'
 #' @examples
 #' \dontrun{

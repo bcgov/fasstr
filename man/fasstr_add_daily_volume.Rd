@@ -16,8 +16,8 @@ data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Install
 database are required. Not required if \code{flowdata} argument is used.}
 }
 \value{
-A column of volumetric flows for each day called 'Volume_m3' added to the flowdata data frame input or HYDAT dataset, 
-   in units of cubic metres.
+A data frame of the original flowdata or HYDAT data with an additional column:
+  \item{Volume_m3}{daily total volumetric flow, in units of cubic metres}
 }
 \description{
 Add a column of daily volumetric flows to a streamflow dataset, in units of cubic metres. Converts the discharge to a volume.

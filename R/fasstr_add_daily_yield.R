@@ -24,8 +24,9 @@
 #' @param basin_area Numeric. Upstream drainage basin area of the hydrometric station, in sq. km. Leave blank if \code{HYDAT} is used or 
 #'    a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the basin area will be extracted from HYDAT. 
 #'    Setting the basin area will replace the HYDAT basin area. 
-#' @return A column of runoff yield flows for each day called 'Yield_mm' added to the flowdata data frame input or HYDAT dataset, 
-#'    in units of millimetres.
+#'    
+#' @return A data frame of the original flowdata or HYDAT data with an additional column:
+#'   \item{Yield_MM}{daily runoff yield flow, in units of millimetres}
 #'
 #' @examples
 #' \dontrun{

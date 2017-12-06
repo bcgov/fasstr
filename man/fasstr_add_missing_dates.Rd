@@ -22,8 +22,7 @@ by the year in which they end. Default \code{FALSE}.}
 \item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
 }
 \value{
-Additional rows of streamflow data to the flowdata data frame input or HYDAT dataset with flow values of NA where flow values 
-   were missing.
+A data frame of the original flowdata or HYDAT data with additional rows of filled values of missing dates with NA
 }
 \description{
 Adds rows of dates with missing flow values to a streamflow dataset with daily flow values of NA. Missing dates will 

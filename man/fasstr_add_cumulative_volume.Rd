@@ -22,8 +22,8 @@ by the year in which they end. Default \code{FALSE}.}
 \item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
 }
 \value{
-A column of cumulative volumetric flows for each day for each year specific called 'Cumul_Volume_m3' added to the flowdata 
-   data frame input or HYDAT dataset, in units of cubic metres.
+A data frame of the original flowdata or HYDAT data with an additional column:
+  \item{Cumul_Volume_m3}{cumulative volumetric flows for each day for each year, in units of cubic metres}
 }
 \description{
 Add a column of daily cumulative volumetric flows on an annual basis to a streamflow dataset. Adds the volumetric discharge 
