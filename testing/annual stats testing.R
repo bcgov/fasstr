@@ -1,10 +1,24 @@
 
 
 devtools::document()
-install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
-#install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
+#install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
+install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
-test <- fasstr::fasstr_annual_freq_analysis(HYDAT = "08HB048")
+
+
+
+data <- tidyhydat::hy_daily_flows(station_number = "08HB048")
+data2 <- dplyr::rename(data,Q=Value)
+
+fasstr <- fasstr::fasstr_annual_freq_analysis(flowdata = data, start_year = 1973,
+                                              end_year = 2010)
+bcwda <- BCWaterDischargeAnalysis::compute.volume.frequency.analysis(Station.Code = "Carn",
+                                                                     flow = data2,
+                                                                     start.year = 1973,
+                                                                     end.year = 2010,
+                                                                     roll.avg.days = c(1,3,7,30) )
+
+
 
 fasstr::fasstr_LTMAD(HYDAT = "08HB048",percent_MAD = c(100,50))
 fasstr::fasstr_percentile_rank(HYDAT = "08HB048", flowvalue = c(.8109,.1))

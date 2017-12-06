@@ -110,7 +110,7 @@ fasstr_annual_freq_analysis <- function(flowdata=NULL,
                                         write_table_plotdata=FALSE,  # write out the plotting data
                                         write_table_quantiles=FALSE, # write out the fitted quantiles
                                         write_plot_frequency=FALSE,  # write out the frequency plot
-                                        write_imgtype=c("pdf","png"),
+                                        write_imgtype=c("pdf"),
                                         write_imgsize=c(4,6),
                                         write_digits=3,
                                         write_dir='.',
@@ -329,12 +329,12 @@ fasstr_annual_freq_analysis <- function(flowdata=NULL,
   
   if(!use_max){ freqplot <- freqplot+ggplot2::theme(legend.justification=c(1,1), legend.position=c(1,1))}
   if( use_max){ freqplot <- freqplot+ggplot2::theme(legend.justification=c(1,0), legend.position=c(1,0))}
-  if(!use_log){ freqplot <- freqplot + ggplot2::scale_y_log10(breaks=scales::pretty_breaks(n=20))}
-  if( use_log){ freqplot <- freqplot + ggplot2::scale_y_continuous(breaks=scales::pretty_breaks(n=20))}
-  if( use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab("ln(Annual Max. Flow (cms))")}  # adjust the Y axis label
-  if( use_log & !use_max){freqplot <- freqplot + ggplot2::ylab("ln(Annual Min. Flow (cms))")}
-  if(!use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab("Annual Max. Flow (cms)")}
-  if(!use_log & !use_max){freqplot <- freqplot + ggplot2::ylab("Annual Min. Flow (cms)")}
+  if(!use_log){ freqplot <- freqplot + ggplot2::scale_y_log10(breaks=scales::pretty_breaks(n=10))}
+  if( use_log){ freqplot <- freqplot + ggplot2::scale_y_continuous(breaks=scales::pretty_breaks(n=10))}
+  if( use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab("ln(Annual Maximum Flow (cms))")}  # adjust the Y axis label
+  if( use_log & !use_max){freqplot <- freqplot + ggplot2::ylab("ln(Annual Minimum Flow (cms))")}
+  if(!use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab("Annual Maximum Flow (cms)")}
+  if(!use_log & !use_max){freqplot <- freqplot + ggplot2::ylab("Annual Minimum Flow (cms)")}
   
   #--------------------------------------------------------------
   # fit the distribution to each measure
