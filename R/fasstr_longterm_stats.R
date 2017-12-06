@@ -30,6 +30,8 @@
 #' @param exclude_years Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.       
 #' @param custom_months Integer. Vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Adds results to the end of table.
 #'    Leave blank for no custom month summary.
+#' @param custom_months_label Character. Label of custom months. For example, if choosing months 7:9  you may choose "Summer" or "Jul-Sep".
+#'    Default \code{"Custom-Months"}.
 #' @param transpose Logical. Switch the rows and columns of the results table. Default \code{FALSE}.
 #' @param station_name Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
 #'    files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
@@ -66,6 +68,7 @@ fasstr_longterm_stats <- function(flowdata=NULL,
                                   end_year=NULL,
                                   exclude_years=NULL,
                                   custom_months=NULL,
+                                  custom_months_label="Custom-Months",
                                   transpose=FALSE,
                                   station_name=NA,
                                   write_table=FALSE,
@@ -100,6 +103,8 @@ fasstr_longterm_stats <- function(flowdata=NULL,
   
   if( !is.null(custom_months) & !is.numeric(custom_months) )  {stop("custom_months argument must be integers")}
   if( !all(custom_months %in% c(1:12)) )                      {stop("custom_months argument must be integers between 1 and 12 (Jan-Dec)")}
+  if( !is.na(custom_months_label) & !is.character(custom_months_label) )  {stop("custom_months_label argument must be a character string.")}
+  
   
   if( !is.numeric(percentiles))                 {stop("percentiles argument must be numeric")}
   if( !all(percentiles>0 & percentiles<100))    {stop("percentiles must be >0 and <100)")}
@@ -138,14 +143,14 @@ fasstr_longterm_stats <- function(flowdata=NULL,
   flowdata <- dplyr::select(flowdata,Date,Value)
   
   # add date variables to determine the min/max cal/water years
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
+  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = water_year,water_year_start = water_year_start)
   if (is.null(start_year)) {start_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))}
   if (is.null(end_year)) {end_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))}
   if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
   
   #  Fill in the missing dates and the add the date variables again
   flowdata <- fasstr::fasstr_add_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
-  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = T,water_year_start = water_year_start)
+  flowdata <- fasstr::fasstr_add_date_vars(flowdata,water_year = water_year,water_year_start = water_year_start)
   
   # Set selected year-type column for analysis
   if (water_year) {
@@ -206,12 +211,12 @@ fasstr_longterm_stats <- function(flowdata=NULL,
                                          Median = median(Value,na.rm=TRUE),
                                          Maximum = max(Value,na.rm=TRUE),
                                          Minimum = min(Value,na.rm=TRUE))
-    Q_month_custom <- dplyr::mutate(Q_month_custom,Month="Custom-Months")
+    Q_month_custom <- dplyr::mutate(Q_month_custom,Month=paste0(custom_months_label))
     
     if (!all(is.na(percentiles))){
       for (ptile in percentiles) {
         Q_ptile_custom <- dplyr::summarise(flowdata_temp,Percentile=quantile(Value,ptile/100, na.rm=TRUE))
-        Q_ptile_custom <- dplyr::mutate(Q_ptile_custom,Month="Custom-Months")
+        Q_ptile_custom <- dplyr::mutate(Q_ptile_custom,Month=paste0(custom_months_label))
         
         colnames(Q_ptile_custom)[1] <- paste0("P",ptile)
         Q_month_custom <- merge(Q_month_custom,Q_ptile_custom,by=c("Month"))
@@ -220,7 +225,7 @@ fasstr_longterm_stats <- function(flowdata=NULL,
     Q_longterm <- rbind(Q_longterm, Q_month_custom)
   }
   col_names <- names(Q_longterm[-1])
-  
+
   
   # Switch columns and rows
   if (transpose) {

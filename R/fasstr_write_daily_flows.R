@@ -34,7 +34,7 @@
 #'    will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number. 
 #' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
 #'    Default is the working directory.
-#' @param na Character. String to use for missing values in the data. Default \code{NA}.
+#' @param na Character. String to use for missing values in the data. Default \code{""} (blank).
 #' 
 #' @return A .csv file of streamflow data in a selected directory.
 #'
@@ -62,7 +62,7 @@ fasstr_write_daily_flows <- function(flowdata=NULL,
                                      station_name="fasstr",
                                      write_dir=".",
                                      #write_digits=4,
-                                     na=NA){  
+                                     na=""){  
   
   #--------------------------------------------------------------
   #  Error checking on the input parameters

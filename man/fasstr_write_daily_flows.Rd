@@ -8,7 +8,7 @@ fasstr_write_daily_flows(flowdata = NULL, HYDAT = NULL,
   water_year = FALSE, water_year_start = 10, start_year = NULL,
   end_year = NULL, exclude_years = NULL, exclude_rm = FALSE,
   fill_missing_dates = FALSE, station_name = "fasstr", write_dir = ".",
-  na = NA)
+  na = "")
 }
 \arguments{
 \item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
@@ -41,7 +41,7 @@ will be the \code{HYDAT} value provided in the argument or column. Setting the s
 \item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
 Default is the working directory.}
 
-\item{na}{Character. String to use for missing values in the data. Default \code{NA}.}
+\item{na}{Character. String to use for missing values in the data. Default \code{""} (blank).}
 }
 \value{
 A .csv file of streamflow data in a selected directory.

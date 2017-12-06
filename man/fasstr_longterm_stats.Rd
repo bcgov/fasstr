@@ -7,8 +7,9 @@
 fasstr_longterm_stats(flowdata = NULL, HYDAT = NULL, percentiles = c(10,
   90), water_year = FALSE, water_year_start = 10, start_year = NULL,
   end_year = NULL, exclude_years = NULL, custom_months = NULL,
-  transpose = FALSE, station_name = NA, write_table = FALSE,
-  write_digits = 3, write_dir = ".", na.rm = list(na.rm.global = FALSE))
+  custom_months_label = "Custom-Months", transpose = FALSE,
+  station_name = NA, write_table = FALSE, write_digits = 3,
+  write_dir = ".", na.rm = list(na.rm.global = FALSE))
 }
 \arguments{
 \item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
@@ -34,6 +35,9 @@ by the year in which they end. Default \code{FALSE}.}
 
 \item{custom_months}{Integer. Vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Adds results to the end of table.
 Leave blank for no custom month summary.}
+
+\item{custom_months_label}{Character. Label of custom months. For example, if choosing months 7:9  you may choose "Summer" or "Jul-Sep".
+Default \code{"Custom-Months"}.}
 
 \item{transpose}{Logical. Switch the rows and columns of the results table. Default \code{FALSE}.}
 

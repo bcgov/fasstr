@@ -185,7 +185,7 @@ fasstr_annual_lowflows <- function(flowdata=NULL,
   Q_lowflow <-   dplyr::rename(Q_lowflow,Year=AnalysisYear)
   
   # Filter for start and end years and make excluded years data NA
-  flowdata <- dplyr::filter(flowdata, Year >= start_year & Year <= end_year)
+  Q_lowflow <- dplyr::filter(Q_lowflow, Year >= start_year & Year <= end_year)
   Q_lowflow[Q_lowflow$Year %in% exclude_years,-1] <- NA
   
   # Transpose data if selected (exludes date values)

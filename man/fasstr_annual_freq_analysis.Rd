@@ -9,7 +9,7 @@ fasstr_annual_freq_analysis(flowdata = NULL, HYDAT = NULL,
   rolling_align = "right", use_max = FALSE, use_log = FALSE,
   prob_plot_position = c("weibull", "median", "hazen"),
   prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5, 0.2, 0.1, 0.02, 0.01,
-  0.001, 1e-04), fit_distr = c("PIII", "weibull"),
+  0.001, 0.0001), fit_distr = c("PIII", "weibull"),
   fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
   fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1, 0.05,
   0.01), water_year = FALSE, water_year_start = 10, start_year = NULL,
@@ -17,8 +17,8 @@ fasstr_annual_freq_analysis(flowdata = NULL, HYDAT = NULL,
   station_name = NA, write_table_overview = FALSE,
   write_table_stats = FALSE, write_table_plotdata = FALSE,
   write_table_quantiles = FALSE, write_plot_frequency = FALSE,
-  write_imgtype = c("pdf", "png"), write_imgsize = c(4, 6),
-  write_digits = 3, write_dir = ".", na.rm = list(na.rm.global = TRUE))
+  write_imgtype = c("pdf"), write_imgsize = c(4, 6), write_digits = 3,
+  write_dir = ".", na.rm = list(na.rm.global = TRUE))
 }
 \arguments{
 \item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
