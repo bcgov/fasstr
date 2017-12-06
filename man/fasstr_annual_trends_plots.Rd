@@ -2,66 +2,112 @@
 % Please edit documentation in R/fasstr_annual_trends_plots.R
 \name{fasstr_annual_trends_plots}
 \alias{fasstr_annual_trends_plots}
-\title{Compute annual trends.}
+\title{Plot prewhitened nonlinear trends on streamflow data}
 \usage{
 fasstr_annual_trends_plots(flowdata = NULL, HYDAT = NULL,
-  trendsdata = NULL, zyp_method = NA, zyp_alpha = 0.05,
-  station_name = NA, water_year = FALSE, water_year_start = 10,
-  start_year = NULL, end_year = NULL, exclude_years = NULL,
-  basin_area = NA, lowflow_days = c(1, 3, 7, 30),
-  totalflow_seasons = TRUE, timing_percent = c(25, 33, 50, 75),
-  write_plots = FALSE, write_imgtype = "pdf", write_dir = ".",
-  na.rm = list(na.rm.global = FALSE))
+  trendsdata = NULL, zyp_method = NA, zyp_alpha = 0.05, basin_area = NA,
+  water_year = FALSE, water_year_start = 10, start_year = NULL,
+  end_year = NULL, exclude_years = NULL, annual_percentiles = c(10, 90),
+  monthly_percentiles = c(10, 20), lowflow_days = c(1, 3, 7, 30),
+  lowflow_align = "right", totalflow_seasons = TRUE,
+  timing_percent = c(25, 33, 50, 75), normal_percentiles = c(25, 75),
+  station_name = NA, write_plot = FALSE, write_imgtype = "pdf",
+  write_imgsize = c(5, 8.5), write_dir = ".", na.rm = list(na.rm.global =
+  FALSE))
 }
 \arguments{
-\item{flowdata}{Dataframe. A dataframe of daily mean streamflow data used to calculate the annual statistics. 
-Two columns are required: a 'Date' column with dates formatted YYYY-MM-DD and a 'Value' column with the daily 
-mean streamflow values in units of cubic metres per second. \code{flowdata} not required if \code{HYDAT} is used.}
+\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
+YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
+Not required if \code{HYDAT} argument is used.}
 
-\item{HYDAT}{Character. A HYDAT station number (e.g. "08NM116") of which to extract daily streamflow data from the HYDAT database.
-tidyhydat package and a downloaded SQLite HYDAT required.}
+\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
+database are required. Not required if \code{flowdata} argument is used.}
 
-\item{trendsdata}{Dataframe. Annual data with column names of years and rows of annual statistics.}
+\item{trendsdata}{Data frame. Annual data with column names of years and rows of annual statistics. Leave blank if using \code{HYDAT}}
 
-\item{station_name}{Character. Identifier name of the stream or station. Required when supplying data through \code{flowdata}.
-The station name will be used in plots and filenames of exported tables and plot. If using \code{HYDAT} to supply
-data and no \code{station_name} is provided, the HYDAT station number will be the identifier.}
+\item{zyp_method}{Character. The prewhitened trend method to use from 'zyp', either "zhang' or "yuepilon". Required.}
 
-\item{water_year}{Logical. Set to \code{TRUE} if data should be summarized by water year (Oct-Sep) instead of the
-default calendar year (Jan-Dec) (\code{water_year=FALSE}). Water years are designated by the year which they end in
-(e.g. water year 2000 start on 1 Oct 1999 and ends on 30 Sep 2000).}
+\item{zyp_alpha}{Numeric. Significance level of when to plot a trend line. Set to NA if no line required. Default \code{0.05}.}
 
-\item{start_year}{Numeric. The first year of streamflow data to analyze. If unset, the default \code{start_year} is the first
-year of the data provided.}
+\item{basin_area}{Numeric. Upstream drainage basin area of the hydrometric station, in sq. km. Leave blank if \code{HYDAT} is used or 
+a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the basin area will be extracted from HYDAT. 
+Setting the basin area will replace the HYDAT basin area.}
 
-\item{end_year}{Numeric. The last year of streamflow data to analyze. If unset, the default \code{end_year} is the last
-year of the data provided.}
+\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
+by the year in which they end. Default \code{FALSE}.}
 
-\item{basin_area}{Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm).
-If no value provided, yield calculations will result in NA values.}
+\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
 
-\item{write_dir}{Character. Folder location of where to write tables and plots. Default is the working directory.}
+\item{start_year}{Integer. First year to consider for analysis. Leave blank if all years are required.}
+
+\item{end_year}{Integer. Last year to consider for analysis. Leave blank if all years are required.}
+
+\item{exclude_years}{Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.}
+
+\item{annual_percentiles}{Numeric. Vector of percentiles to calculate annually. Set to NA if none required. Used for fasstr_annual_stats()
+function. Default \code{c(10,90)}.}
+
+\item{monthly_percentiles}{Numeric. Vector of percentiles to calculate monthly for each year. Set to NA if none required. Used for 
+fasstr_monthly_stats() function. Default \code{c(10,90)}.}
+
+\item{lowflow_days}{Numeric. The number of days to apply a rolling mean. Used for fasstr_annual_lowflows() function. Default \code{1}.}
+
+\item{lowflow_align}{Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),
+or middle ('center') of the rolling n-day group of observations. Used for fasstr_annual_lowflows() function. Default \code{'right'}.}
+
+\item{totalflow_seasons}{Logical. Include seasonal yields and total discharges.Used for fasstr_annual_total_flows() function. 
+Default \code{TRUE}.}
+
+\item{timing_percent}{Numeric. Percents of annual total flows to determine dates. Used for fasstr_annual_flow_timing() function. 
+Default \code{c(25,33.3,50,75)}.}
+
+\item{normal_percentiles}{Numeric. Lower and upper percentiles, respectively indicating the limits of the normal range. 
+Used for fasstr_annual_days_outside_normal() function. Default \code{c(25,75)}.}
+
+\item{station_name}{Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
+files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
+will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number.}
+
+\item{write_plot}{Logical. Write the plot to specified directory. Default \code{FALSE}.}
+
+\item{write_imgtype}{Character. One of "pdf","png","jpeg","tiff", or "bmp" image types to write the plot as. Default \code{"pdf"}.}
+
+\item{write_imgsize}{Numeric. Height and width, respectively, of saved plot. Default \code{c(5,8.5)}.}
+
+\item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
+Default is the working directory.}
 
 \item{na.rm}{TBD}
-
-\item{excluded.years}{Numeric. List of years to exclude final results from. Ex. 1990 or c(1990,1995:2000).}
-
-\item{write_table}{Logical. Should a file be created with the calendar year computed percentiles?
-The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-cy-summary-stat.csv'))}.}
-
-\item{write_transposed_table}{Logical. Should a file be created with the transposed of the annual statistics
-(both calendar and water year)?
-The file name will be  \code{file.path(write_dir,paste(station_name,'-annual-summary-stat-trans.csv'))}.}
-
-\item{table_nddigits}{Numeric. Number of significant digits to round the results in the written tables. Default is 3.}
+}
+\value{
+Plots of results of a trends analysis
 }
 \description{
-Computes annual trends.
+Plots prewhitened nonlinear trends on annual streamflow data. Uses the
+   \href{https://cran.r-project.org/web/packages/zyp/index.html}{'zyp'} package to trend. Review 'zyp' to understand its methology.
+   Use \code{trendsdata} if providing your own data frame of statistics to trend. If using \code{HYDAT} or \code{flowdata}, then all
+   annual statistics will be calculated using the fasstr_annual_all_stats() function which uses the following fasstr functions:
+\itemize{
+ \item{fasstr_annual_stats()}
+ \item{fasstr_annual_lowflows()}
+ \item{fasstr_annual_total_flows()}
+ \item{fasstr_annual_flow_timing()}
+ \item{fasstr_monthly_stats()}
+ \item{fasstr_annual_days_outside_normal()}
+ }
+}
+\details{
+If using \code{HYDAT} or \code{flowdata} then proper units will be displayed on each plot. If using \code{trendsdata} then the 
+  units will be displayed as "Units". To label units on your plots when using \code{trendsdata}, create the plot and use 
+  \code{+ggplot2::ylab()} to customize.
 }
 \examples{
 \dontrun{
 
-Coming
+fasstr_annual_trends_plots(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
+
+fasstr_annual_trends_plots(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
 
 }
 }

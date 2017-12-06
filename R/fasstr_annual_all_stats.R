@@ -12,9 +12,19 @@
 
 
 
-#' @title Calculate all annual statistics
+#' @title Calculate all fasstr annual statistics
 #'
-#' @description Calculates all annual statistics from functions from fasstr
+#' @description Calculates all annual statistics of daily flow values from a streamflow dataset from all annual fasstr functions. 
+#'    Calculates the statistics from all daily discharge values from all years, unless specified. Data is ideally long-term and continuous 
+#'    with minimal missing/seasonal data as annual statistics are calculated. Data calculated using the folling functions:
+#' \itemize{
+#'  \item{fasstr_annual_stats()}
+#'  \item{fasstr_annual_lowflows()}
+#'  \item{fasstr_annual_total_flows()}
+#'  \item{fasstr_annual_flow_timing()}
+#'  \item{fasstr_monthly_stats()}
+#'  \item{fasstr_annual_days_outside_normal()}
+#'  }
 #'    
 #' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
 #'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
@@ -136,13 +146,12 @@ fasstr_annual_all_stats <- function(flowdata=NULL,
   if( length(normal_percentiles)!=2 )                  {stop("normal_percentiles must be two percentile values (ex. c(25,75))")}
   if( normal_percentiles[1] >= normal_percentiles[2] ) {stop("normal_percentiles[1] must be < normal_percentiles[2]")}
   if( !all(is.na(normal_percentiles)) & (!all(normal_percentiles>0 & normal_percentiles<100)) )  {stop("normal_percentiles must be >0 and <100)")}
-  
-  
+
   if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
   
   if( !is.logical(transpose))    {stop("transpose parameter must be logical (TRUE/FALSE)")}
   if( !is.logical(write_table))  {stop("write_table parameter must be logical (TRUE/FALSE)")}
-  if( !is.numeric(write_digits))  {stop("csv.ndddigits parameter needs to be numeric")}
+  if( !is.numeric(write_digits))  {stop("write_digits parameter needs to be numeric")}
   write_digits <- round(write_digits[1])
   
   if( !dir.exists(as.character(write_dir))) {

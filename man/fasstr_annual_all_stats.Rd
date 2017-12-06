@@ -2,7 +2,7 @@
 % Please edit documentation in R/fasstr_annual_all_stats.R
 \name{fasstr_annual_all_stats}
 \alias{fasstr_annual_all_stats}
-\title{Calculate all annual statistics}
+\title{Calculate all fasstr annual statistics}
 \usage{
 fasstr_annual_all_stats(flowdata = NULL, HYDAT = NULL, basin_area = NA,
   water_year = FALSE, water_year_start = 10, start_year = NULL,
@@ -76,7 +76,17 @@ Default is the working directory.}
 A data frame of various annual summary statistics and percentiles
 }
 \description{
-Calculates all annual statistics from functions from fasstr
+Calculates all annual statistics of daily flow values from a streamflow dataset from all annual fasstr functions. 
+   Calculates the statistics from all daily discharge values from all years, unless specified. Data is ideally long-term and continuous 
+   with minimal missing/seasonal data as annual statistics are calculated. Data calculated using the folling functions:
+\itemize{
+ \item{fasstr_annual_stats()}
+ \item{fasstr_annual_lowflows()}
+ \item{fasstr_annual_total_flows()}
+ \item{fasstr_annual_flow_timing()}
+ \item{fasstr_monthly_stats()}
+ \item{fasstr_annual_days_outside_normal()}
+ }
 }
 \examples{
 \dontrun{
