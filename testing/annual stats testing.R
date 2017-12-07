@@ -1,12 +1,17 @@
 
 
 devtools::document()
-install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
+#install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
 install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
 
 
 library(fasstr)
+
+
+data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+test <- fasstr_annual_freq_stat(HYDAT = "08NM116", return_period = 20, HYDAT_peaks = "MAX")
+
 
 stn.number="08NM116"
 wt_yr=F

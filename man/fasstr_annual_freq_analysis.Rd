@@ -5,7 +5,7 @@
 \title{Perform a volume frequency analysis on annual statistics}
 \usage{
 fasstr_annual_freq_analysis(flowdata = NULL, HYDAT = NULL,
-  HYDAT_peaks = NA, rolling_days = c(1, 3, 7, 30),
+  HYDAT_peaks = NULL, rolling_days = c(1, 3, 7, 30),
   rolling_align = "right", use_max = FALSE, use_log = FALSE,
   prob_plot_position = c("weibull", "median", "hazen"),
   prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5, 0.2, 0.1, 0.02, 0.01,

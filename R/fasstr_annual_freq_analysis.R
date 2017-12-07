@@ -88,7 +88,7 @@
 
 fasstr_annual_freq_analysis <- function(flowdata=NULL,
                                         HYDAT=NULL,
-                                        HYDAT_peaks=NA,
+                                        HYDAT_peaks=NULL,
                                         rolling_days=c(1,3,7,30),
                                         rolling_align="right",
                                         use_max=FALSE,
@@ -146,14 +146,18 @@ fasstr_annual_freq_analysis <- function(flowdata=NULL,
   if( !is.numeric(months) )        {stop("months argument must be integers")}
   if( !all(months %in% c(1:12)) )  {stop("months argument must be integers between 1 and 12 (Jan-Dec)")}
   
-  if( !is.numeric(rolling_days))                       {stop("rolling_days argument must be numeric")}
-  if( !all(rolling_days %in% c(1:180)) )               {stop("rolling_days argument must be integers > 0 and <= 180)")}
+  if( is.null(HYDAT_peaks) ) {
+    if(is.na(rolling_days) )     {stop("rolling_days argument must be provided")}
+    if( !is.numeric(rolling_days) )                      {stop("rolling_days argument must be numeric")}
+    if( !all(rolling_days %in% c(1:180)) )                    {stop("rolling_days argument must be integers > 0 and <= 180)")}
+  }
   if( !rolling_align %in% c("right","left","center"))  {stop("rolling_align argument must be 'right', 'left', or 'center'")}
   
-  if( !HYDAT_peaks %in% c("MAX","MIN") & !is.na(HYDAT_peaks) ) {stop("HYDAT_peaks argument must be 'MAX', 'MIN', or NA.")}
-  if( is.null(HYDAT) & HYDAT_peaks %in% c("MAX","MIN"))        {stop('Station in HYDAT argument must be selected with HYDAT_peaks.')}
-  if( water_year & HYDAT_peaks %in% c("MAX","MIN"))            {warning("water_year argument was ignored. 
-                                                               HYDAT_peaks completed strictly using calendar years.")}
+  if( !is.null(HYDAT_peaks)) {if(!HYDAT_peaks %in% c("MAX","MIN") ) {stop("HYDAT_peaks argument must be 'MAX', 'MIN', or leave blank")}}
+  if( is.null(HYDAT) & !is.null(HYDAT_peaks) )        {stop('station in HYDAT argument must be selected with HYDAT_peaks')}
+  if( !is.null(HYDAT_peaks) ) {
+    if(water_year)           warning("water_year argument was ignored - HYDAT_peaks is based on calendar years")
+  }
   
   if( !is.list(na.rm))                {stop("na.rm is not a list") }
   if( !is.logical(unlist(na.rm))){    {stop("na.rm is list of logical (TRUE/FALSE) values only.")}
@@ -221,7 +225,7 @@ fasstr_annual_freq_analysis <- function(flowdata=NULL,
   # Gather annual data for analysis
   
   # If HYDAT_peaks is FALSE, then calculate the annual values to plot
-  if ( is.na(HYDAT_peaks) ) {
+  if ( is.null(HYDAT_peaks) ) {
     
     #--------------------------------------------------------------
     # Set the flowdata for analysis
@@ -266,7 +270,7 @@ fasstr_annual_freq_analysis <- function(flowdata=NULL,
   }
   
   # If HYDAT_peaks is TRUE, then grab the data from HYDAT
-  if ( !is.na(HYDAT_peaks)) {
+  if ( !is.null(HYDAT_peaks)) {
     inst_peaks <- suppressMessages(tidyhydat::hy_annual_instant_peaks(HYDAT))
     inst_peaks <- dplyr::filter(inst_peaks,Parameter=="Flow")
     inst_peaks <- dplyr::filter(inst_peaks,PEAK_CODE==HYDAT_peaks)
@@ -313,7 +317,7 @@ fasstr_annual_freq_analysis <- function(flowdata=NULL,
   
   # change the measure labels in the plot
   plotdata2<- plotdata
-  if (is.na(HYDAT_peaks)) {plotdata2$Measure <- paste(formatC(as.numeric(substr(plotdata2$Measure,2,4)),width=3),"-day Avg",sep="")}
+  if (is.null(HYDAT_peaks)) {plotdata2$Measure <- paste(formatC(as.numeric(substr(plotdata2$Measure,2,4)),width=3),"-day Avg",sep="")}
   freqplot <- ggplot2::ggplot(data=plotdata2, ggplot2::aes(x=prob, y=value, group=Measure, color=Measure),environment=environment())+
     #ggplot2::ggtitle(paste(station_name, " Volume Frequency Analysis"))+
     ggplot2::geom_point()+
