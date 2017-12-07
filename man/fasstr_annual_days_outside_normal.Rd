@@ -45,7 +45,12 @@ will be the \code{HYDAT} value provided in the argument or column. Setting the s
 Default is the working directory.}
 }
 \value{
-A data frame of annual days above and below normal
+A data frame with the following columns:
+  \item{Year}{calendar or water year selected}
+  \item{Days_Below_Normal}{number of days per year below the daily normal (default 25th percentile)}
+  \item{Days_Above_Normal}{number of days per year above the daily normal (default 75th percentile)}
+  \item{Days_Outside_Normal}{number of days per year below and above the daily normal (default 25/75th percentile)}
+  Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 }
 \description{
 Calculates the number of days per year outside of the 'normal' range (typically between 25 and 75th percentiles) for

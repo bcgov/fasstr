@@ -22,12 +22,13 @@ database are required. Not required if \code{flowdata} argument is used.}
 or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.}
 }
 \value{
-A data frame of the original flowdata or HYDAT data with additional column(s):
+A data frame of the original flowdata or HYDAT data with additional column(s) of:
   \item{QnDay}{rolling means of the n-day flow values of the designated date and adjacent dates, direction of mean specified by align}
-  \item{Q1Day}{(default) rolling means of the 1-day flow values of the designated date}
-  \item{Q3Day}{(default) rolling means of the 3-day flow values of the designated date and previous 2 days (align="right")}
-  \item{Q7Day}{(default) rolling means of the 7-day flow values of the designated date and previous 6 days (align="right")}
-  \item{Q30Day}{(default) rolling means of the 30-day flow values of the designated date and previous 29 days (align="right")}
+  Default additional columns:
+  \item{Q1Day}{rolling means of the 1-day flow values of the designated date}
+  \item{Q3Day}{rolling means of the 3-day flow values of the designated date and previous 2 days (align="right")}
+  \item{Q7Day}{rolling means of the 7-day flow values of the designated date and previous 6 days (align="right")}
+  \item{Q30Day}{rolling means of the 30-day flow values of the designated date and previous 29 days (align="right")}
 }
 \description{
 Adds selected n-day rolling means to a streamflow dataset. Based on selected n-days and alignment, the rolling mean for

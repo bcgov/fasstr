@@ -42,8 +42,25 @@
 #'    Default is the working directory.
 #' @param na.rm TBD
 #' 
-#' @return A data frame of annual and seasonal total flows (volumetric and yield)
-#'
+#' @return A data frame with the following columns:
+#'   \item{Year}{calendar or water year selected}
+#'   \item{Annual_TotalQ_m3}{annual total volumetric discharge, in cubic metres}
+#'   \item{Annual_Yield_mm}{annual runoff yield, in millimetres}
+#'   Default seasonal columns:
+#'   \item{AMJJAS_TotalQ_m3}{Apr-Sep total volumetric discharge, in cubic metres}
+#'   \item{AMJJAS_Yield_mm}{Apr-Sep runoff yield, in millimetres}
+#'   \item{ONDJFM_TotalQ_m3}{Oct-Mar total volumetric discharge, in cubic metres}
+#'   \item{ONDJFM__Yield_mm}{Oct-Mar runoff yield, in millimetres}   
+#'   \item{AMJ_TotalQ_m3}{Apr-Jun total volumetric discharge, in cubic metres}
+#'   \item{AMJ__Yield_mm}{Apr-Jun runoff yield, in millimetres}  
+#'   \item{JAS_TotalQ_m3}{Jul-Sep total volumetric discharge, in cubic metres}
+#'   \item{JAS__Yield_mm}{Jul-Sep runoff yield, in millimetres}  
+#'   \item{JFM_TotalQ_m3}{Jan-Mar total volumetric discharge, in cubic metres}
+#'   \item{JFM__Yield_mm}{Jan-Mar runoff yield, in millimetres}  
+#'   \item{OND_TotalQ_m3}{Oct-Dec total volumetric discharge, in cubic metres}
+#'   \item{OND__Yield_mm}{Oct-Dec runoff yield, in millimetres}
+#'   Transposing data creates a column of "Statistics" and subsequent columns for each year selected. 
+#'   
 #' @examples
 #' \dontrun{
 #' 

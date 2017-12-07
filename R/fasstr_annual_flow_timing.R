@@ -36,7 +36,20 @@
 #' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
 #'    Default is the working directory.
 #' 
-#' @return A data frame of annual flow timing dates
+#' @return A data frame with the following columns:
+#'   \item{Year}{calendar or water year selected}
+#'   \item{DoY_'n'pct_TotalQ}{day of year for each n-percent of total volumetric discharge}
+#'   \item{Date_'n'pct_TotalQ}{date (YYYY-MM-DD) for each n-percent of total volumetric discharge}
+#'   Default columns:
+#'   \item{DoY_25pct_TotalQ}{day of year of 25-percent of total volumetric discharge}
+#'   \item{Date_25pct_TotalQ}{date (YYYY-MM-DD) of 25-percent of total volumetric discharge}
+#'   \item{DoY_33.3pct_TotalQ}{day of year of 33.3-percent of total volumetric discharge}
+#'   \item{Date_33.3pct_TotalQ}{date (YYYY-MM-DD) of 33.3-percent of total volumetric discharge}
+#'   \item{DoY_50pct_TotalQ}{day of year of 50-percent of total volumetric discharge}
+#'   \item{Date_50pct_TotalQ}{date (YYYY-MM-DD) of 50-percent of total volumetric discharge}
+#'   \item{DoY_75pct_TotalQ}{day of year of 75-percent of total volumetric discharge}
+#'   \item{Date_75pct_TotalQ}{date (YYYY-MM-DD) of 75-percent of total volumetric discharge}
+#'   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 #'
 #' @examples
 #' \dontrun{

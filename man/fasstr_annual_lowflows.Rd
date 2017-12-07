@@ -55,7 +55,26 @@ Default is the working directory.}
 \item{na.rm}{TBD}
 }
 \value{
-A data frame of summary statistics and percentiles for each day of the year
+A data frame with the following columns:
+  \item{Year}{calendar or water year selected}
+  \item{Min_'n'_Day}{annual minimum for each n-day rolling mean, direction of mean specified by rolling_align}
+  \item{Min_'n'_Day_DoY}{day of year for each annual minimum of n-day rolling mean}
+  \item{Min_'n'_Day_Date}{date (YYYY-MM-DD) for each annual minimum of n-day rolling mean}
+  Default columns:
+  \item{Min_1_Day}{annual 1-day mean minimum (rolling_align=right)}
+  \item{Min_1_Day_DoY}{day of year of annual 1-day mean minimum}
+  \item{Min_1_Day_Date}{date (YYYY-MM-DD) of annual 1-day mean minimum}
+  \item{Min_3_Day}{annual 3-day mean minimum (rolling_align=right)}
+  \item{Min_3_Day_DoY}{day of year of annual 3-day mean minimum}
+  \item{Min_3_Day_Date}{date (YYYY-MM-DD) of annual 3-day mean minimum}   
+  \item{Min_7_Day}{annual 7-day mean minimum (rolling_align=right)}
+  \item{Min_7_Day_DoY}{day of year of annual 7-day mean minimum}
+  \item{Min_7_Day_Date}{date (YYYY-MM-DD) of annual 7-day mean minimum}
+  \item{Min_30_Day}{annual 30-day mean minimum (rolling_align=right)}
+  \item{Min_30_Day_DoY}{day of year of annual 30-day mean minimum}
+  \item{Min_30_Day_Date}{date (YYYY-MM-DD) of annual 30-day mean minimum}
+  Transposing data creates a column of "Statistics" and subsequent columns for each year selected. "Date" statistics
+  not transposed.
 }
 \description{
 Calculates annual n-day minimum values, and the day of year and date of occurrence of daily flow values from a 

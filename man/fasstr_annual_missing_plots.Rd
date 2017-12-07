@@ -48,7 +48,7 @@ will be the \code{HYDAT} value provided in the argument or column. Setting the s
 Default is the working directory.}
 }
 \value{
-A plot of annual data statistics for screening
+A ggplot2 object with plots for each month counting the number of missing dates for each year
 }
 \description{
 Plots the number of missing data for each month of each year. Calculates the statistics from all daily discharge 

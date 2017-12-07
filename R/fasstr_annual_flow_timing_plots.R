@@ -37,8 +37,14 @@
 #' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
 #'    Default is the working directory.
 #' 
-#' @return A data frame of annual flow timing dates
-#'
+#' @return A ggplot2 object with the following plots:
+#'   \item{DoY_'n'pct_TotalQ}{day of year for each n-percent of total volumetric discharge}
+#'   Default plots:   
+#'   \item{DoY_25pct_TotalQ}{day of year of 25-percent of total volumetric discharge}
+#'   \item{DoY_33.3pct_TotalQ}{day of year of 33.3-percent of total volumetric discharge}
+#'   \item{DoY_50pct_TotalQ}{day of year of 50-percent of total volumetric discharge}
+#'   \item{DoY_75pct_TotalQ}{day of year of 75-percent of total volumetric discharge}
+#'   
 #' @examples
 #' \dontrun{
 #' 

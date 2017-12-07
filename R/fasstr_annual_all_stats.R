@@ -64,7 +64,9 @@
 #'    Default is the working directory.
 #' @param na.rm TBD
 #' 
-#' @return A data frame of various annual summary statistics and percentiles
+#' @return A data frame with column "Year" and then 107 (default) variables from the fasstr annual functions.
+#'    See listed functions above for default variables. Transposing data creates a column of "Statistics" and subsequent
+#'    columns for each year selected.
 #'
 #' @examples
 #' \dontrun{

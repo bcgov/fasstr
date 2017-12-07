@@ -39,7 +39,12 @@
 #' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
 #'    Default is the working directory.
 #' 
-#' @return A data frame of annual days above and below normal
+#' @return A data frame with the following columns:
+#'   \item{Year}{calendar or water year selected}
+#'   \item{Days_Below_Normal}{number of days per year below the daily normal (default 25th percentile)}
+#'   \item{Days_Above_Normal}{number of days per year above the daily normal (default 75th percentile)}
+#'   \item{Days_Outside_Normal}{number of days per year below and above the daily normal (default 25/75th percentile)}
+#'   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 #'
 #' @examples
 #' \dontrun{

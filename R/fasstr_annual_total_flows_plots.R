@@ -41,8 +41,13 @@
 #' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
 #'    Default is the working directory.
 #'    
-#' @return Plots of annual and seasonal total flows (volumetric and yield)
-#'
+#' @return A list of the following ggplot2 objects:
+#'   \item{Annual_Minimums}{ggplot2 object of annual minimums of selected n-day rolling means}
+#'   \item{Annual_Minimums_Days}{ggplot2 object of the day of years of annual minimums of selected n-day rolling means}
+#'   
+#'   
+#'   
+#'   
 #' @examples
 #' \dontrun{
 #' 

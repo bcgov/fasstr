@@ -41,8 +41,12 @@
 #' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
 #'    Default is the working directory.
 #'
-#' @return A plot of annual and annual-month summary missing data statistics
-#'
+#' @return A ggplot2 object with the following plots (percentile plots optional):
+#'   \item{Mean}{annual mean of all daily flows}
+#'   \item{Median}{annual median of all daily flows}
+#'   \item{Maximum}{annual maximum of all daily flows}
+#'   \item{Minimum}{annual minimum of all daily flows}
+#' 
 #' @examples
 #' \dontrun{
 #' 

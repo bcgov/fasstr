@@ -46,7 +46,13 @@ will be the \code{HYDAT} value provided in the argument or column. Setting the s
 Default is the working directory.}
 }
 \value{
-A data frame of annual flow timing dates
+A ggplot2 object with the following plots:
+  \item{DoY_'n'pct_TotalQ}{day of year for each n-percent of total volumetric discharge}
+  Default plots:   
+  \item{DoY_25pct_TotalQ}{day of year of 25-percent of total volumetric discharge}
+  \item{DoY_33.3pct_TotalQ}{day of year of 33.3-percent of total volumetric discharge}
+  \item{DoY_50pct_TotalQ}{day of year of 50-percent of total volumetric discharge}
+  \item{DoY_75pct_TotalQ}{day of year of 75-percent of total volumetric discharge}
 }
 \description{
 Calculates annual the timing (day of year) and date of occurrence of portions of total annual flow of daily flow 

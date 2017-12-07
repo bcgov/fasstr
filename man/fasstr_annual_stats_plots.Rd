@@ -50,7 +50,11 @@ will be the \code{HYDAT} value provided in the argument or column. Setting the s
 Default is the working directory.}
 }
 \value{
-A plot of annual and annual-month summary missing data statistics
+A ggplot2 object with the following plots (percentile plots optional):
+  \item{Mean}{annual mean of all daily flows}
+  \item{Median}{annual median of all daily flows}
+  \item{Maximum}{annual maximum of all daily flows}
+  \item{Minimum}{annual minimum of all daily flows}
 }
 \description{
 Plots annual monthly mean, median, maximum, minimum, and percentiles of daily flow values from a streamflow 

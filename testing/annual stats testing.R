@@ -1,14 +1,14 @@
 
 
 devtools::document()
-#install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
+install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
 install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
 
 
 
 stn.number="08NM116"
-wt_yr=T
+wt_yr=F
 
 
 A <- fasstr::fasstr_data_screening(HYDAT = stn.number,water_year = wt_yr)
@@ -16,15 +16,15 @@ A <- fasstr::fasstr_longterm_stats(HYDAT = stn.number,water_year = F, custom_mon
 A <- fasstr::fasstr_LTMAD(HYDAT = stn.number,water_year = wt_yr, start_year = 1982)
 A <- fasstr::fasstr_flow_duration_curves(HYDAT = stn.number,water_year = T, start_year = 1980, end_year = 2013)
 A <- fasstr::fasstr_annual_stats(HYDAT = stn.number,water_year = wt_yr, start_year = 1982)
-A2 <- fasstr::fasstr_annual_total_flows(HYDAT = stn.number,water_year = wt_yr, start_year = 1982, end_year = 2013)
+A <- fasstr::fasstr_annual_total_flows(HYDAT = stn.number,water_year = wt_yr, start_year = 1982, end_year = 2013)
 A <- fasstr::fasstr_annual_flow_timing(HYDAT = stn.number,water_year = wt_yr, start_year = 1982)
-A2 <- fasstr::fasstr_annual_lowflows(HYDAT = stn.number,water_year = wt_yr, start_year = 1982, end_year = 2013)
+A <- fasstr::fasstr_annual_lowflows(HYDAT = stn.number,water_year = wt_yr, start_year = 1982, end_year = 2013)
 A <- fasstr::fasstr_annual_freq_analysis(HYDAT = stn.number,water_year = wt_yr,start_year = 1982,end_year = 2013, fit_quantiles = c(.5,.2,.1,.04,.02,.01,.005),
                                          rolling_days = 3, months = 7:12)$fitted_quantiles
 A <- fasstr::fasstr_monthly_stats(HYDAT = stn.number,water_year = F, start_year = 1981)
 A <- fasstr::fasstr_daily_stats(HYDAT = stn.number,water_year = wt_yr, start_year = 1982, end_year = 2013)
 A <- fasstr::fasstr_daily_cumulative_stats(HYDAT = stn.number,water_year = wt_yr, start_year = 1982, end_year = 2013)
-A <- fasstr::fasstr_annual_all_stats(HYDAT = stn.number,water_year = F, start_year = 1982, end_year = 2013)
+A <- fasstr::fasstr_annual_all_stats(HYDAT = stn.number,water_year = F, start_year = 1982, end_year = 2013, write_table = T)
 
 
 

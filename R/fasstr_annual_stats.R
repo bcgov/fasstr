@@ -40,8 +40,18 @@
 #'    Default is the working directory.
 #' @param na.rm TBD
 #' 
-#' @return A data frame of annual summary statistics and percentiles
-#'
+#' @return A data frame with the following columns:
+#'   \item{Year}{calendar or water year selected}
+#'   \item{Mean}{annual mean of all daily flows}
+#'   \item{Median}{annual median of all daily flows}
+#'   \item{Maximum}{annual maximum of all daily flows}
+#'   \item{Minimum}{annual minimum of all daily flows}
+#'   \item{P'n'}{each annual n-th percentile selected of all daily flows}
+#'   Default percentile columns:
+#'   \item{P10}{annual 10th percentile of all daily flows}
+#'   \item{P90}{annual 90th percentile of all daily flows}
+#'   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
+#'   
 #' @examples
 #' \dontrun{
 #' 

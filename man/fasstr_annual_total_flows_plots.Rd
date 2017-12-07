@@ -48,7 +48,9 @@ will be the \code{HYDAT} value provided in the argument or column. Setting the s
 Default is the working directory.}
 }
 \value{
-Plots of annual and seasonal total flows (volumetric and yield)
+A list of the following ggplot2 objects:
+  \item{Annual_Minimums}{ggplot2 object of annual minimums of selected n-day rolling means}
+  \item{Annual_Minimums_Days}{ggplot2 object of the day of years of annual minimums of selected n-day rolling means}
 }
 \description{
 Plots annual and seasonal total flows, volumetric and runoff yield flows, from a streamflow dataset. Calculates 
