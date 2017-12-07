@@ -6,6 +6,7 @@ install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
 
 
+library(fasstr)
 
 stn.number="08NM116"
 wt_yr=F

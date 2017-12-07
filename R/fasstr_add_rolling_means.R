@@ -30,7 +30,6 @@
 #' @return A data frame of the original flowdata or HYDAT data with additional column(s) of:
 #'   \item{QnDay}{rolling means of the n-day flow values of the designated date and adjacent dates, direction of mean specified by align}
 #'   Default additional columns:
-#'   \item{Q1Day}{rolling means of the 1-day flow values of the designated date}
 #'   \item{Q3Day}{rolling means of the 3-day flow values of the designated date and previous 2 days (align="right")}
 #'   \item{Q7Day}{rolling means of the 7-day flow values of the designated date and previous 6 days (align="right")}
 #'   \item{Q30Day}{rolling means of the 30-day flow values of the designated date and previous 29 days (align="right")}

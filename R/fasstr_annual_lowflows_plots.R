@@ -44,13 +44,9 @@
 #'    Default is the working directory.
 #' @param na.rm TBD
 #'    
-#' @return A list of the following ggplot2 objects (yield plots unavailable if no basin_area):
-#'   \item{TotalQ_Annual}{ggplot2 object of annual total volumetric discharge, in cubic metres}
-#'   \item{TotalQ_Two_Seasons}{ggplot2 object of Oct-Mar and Apr-Sep total volumetric discharges, in cubic metres}
-#'   \item{TotalQ_Four_Seasons}{ggplot2 object of Jan-Mar, Apr-Jun, Jul-Sep, Oct-Dec total volumetric discharges, in cubic metres}
-#'   \item{Yield_Annual}{ggplot2 object of annual runoff yield, in millimetres}
-#'   \item{Yield_Two_Seasons}{ggplot2 object of Oct-Mar and Apr-Sep runoff yields, in millimetres}
-#'   \item{Yield_Four_Seasons}{ggplot2 object of Jan-Mar, Apr-Jun, Jul-Sep, Oct-Dec runoff yields, in millimetres}
+#' @return A list of the following ggplot2 objects:
+#'   \item{Annual_Minimums}{ggplot2 object of annual minimums of selected n-day rolling means}
+#'   \item{Annual_Minimums_Days}{ggplot2 object of the day of years of annual minimums of selected n-day rolling means}
 #'   
 #' @examples
 #' \dontrun{
