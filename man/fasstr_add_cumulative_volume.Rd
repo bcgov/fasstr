@@ -12,7 +12,7 @@ fasstr_add_cumulative_volume(flowdata = NULL, HYDAT = NULL,
 YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
 Not required if \code{HYDAT} argument is used.}
 
-\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+\item{HYDAT}{Character. Seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
 data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
 database are required. Not required if \code{flowdata} argument is used.}
 

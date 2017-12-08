@@ -20,7 +20,7 @@
 #' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
 #'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
 #'    Not required if \code{HYDAT} argument is used.
-#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+#' @param HYDAT Character. Seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
 #'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
 #'    database are required. Not required if \code{flowdata} argument is used.
 #' @param days  Numeric. The number of days to apply the rolling mean. Default \code{c(3,7,30)}.
@@ -72,30 +72,39 @@ fasstr_add_rolling_means <- function(flowdata=NULL,
   
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 )                                  {stop("Only one HYDAT station can be selected.")}
-    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
+    if( !all(HYDAT %in% dplyr::pull(tidyhydat::allstations[1])) ) {stop("one or more stations in 'HYDAT' argument do not exist")}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
   #--------------------------------------------------------------
   # Set the flowdata for analysis
   
+  # Add a station number column if none
+  if ( !"STATION_NUMBER" %in% names(flowdata) ){ flowdata$STATION_NUMBER <- "00AA000" }
+  
   # get list of dates in flowdata
-  flowdata <- flowdata[ order(flowdata$Date),]
-  dates_list <- c(flowdata$Date)
+  flowdata <- flowdata[ order(flowdata$STATION_NUMBER,flowdata$Date),]
+  orig_rows <- dplyr::select(flowdata,STATION_NUMBER,Date)
   
   # fill in missing dates to ensure means roll over consecutive days
   flowdata <- fasstr::fasstr_add_missing_dates(flowdata=flowdata)
-  
+
   #--------------------------------------------------------------
   # Add rolling means
   for (x in days) {
-    flowdata[, paste0("Q",x,"Day")] <- zoo::rollapply( flowdata$Value,  x, mean, fill=NA, align=align)
+    flowdata <- dplyr::mutate(dplyr::group_by(flowdata, STATION_NUMBER),
+                              RollingMean=zoo::rollapply( Value,  x, mean, fill=NA, align=align))
+    colnames(flowdata)[which(names(flowdata) == "RollingMean")] <- paste0("Q",x,"Day")
+    flowdata <- dplyr::ungroup(flowdata)
   }
   
   # Return flowdata to original dates
-  flowdata <- dplyr::filter(flowdata,Date %in% dates_list)
+  flowdata <- merge(orig_rows,flowdata,by=c("STATION_NUMBER","Date"),all.x = T)
   
+  if( all(flowdata$STATION_NUMBER=="00AA000") ) {
+    flowdata <- flowdata[,-1]
+  }
+
   
   return(flowdata)
 } 

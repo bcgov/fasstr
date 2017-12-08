@@ -18,7 +18,7 @@
 #' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
 #'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
 #'    Not required if \code{HYDAT} argument is used.
-#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+#' @param HYDAT Character. Seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
 #'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
 #'    database are required. Not required if \code{flowdata} argument is used.
 #' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
@@ -65,21 +65,25 @@ fasstr_add_cumulative_volume <- function(flowdata=NULL,
   
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 )                                  {stop("Only one HYDAT station can be selected.")}
-    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
+    if( !all(HYDAT %in% dplyr::pull(tidyhydat::allstations[1])) ) {stop("one or more stations in 'HYDAT' argument do not exist")}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
   #--------------------------------------------------------------
   # Set the flowdata for analysis
   
-  # Get the list/order of dates to eventually return to the same order
-  flowdata <- flowdata[ order(flowdata$Date),]
   col_ord <- names(flowdata)
   
+  # Add a station number column if none
+  if ( !"STATION_NUMBER" %in% names(flowdata) ){  flowdata$STATION_NUMBER <- "00AA000"   }
+  
+  # get list of dates in flowdata
+  flowdata <- flowdata[ order(flowdata$STATION_NUMBER,flowdata$Date),]
+  orig_rows <- dplyr::select(flowdata,STATION_NUMBER,Date)
+
   # Fill in missing dates to ensure all years are covered
   flowdata_temp <- fasstr::fasstr_add_missing_dates(flowdata=flowdata)
-  flowdata_temp <- fasstr::fasstr_add_date_vars(flowdata=flowdata_temp,water_year = T,water_year_start = water_year_start)
+  flowdata_temp <- fasstr::fasstr_add_date_vars(flowdata=flowdata_temp,water_year = water_year,water_year_start = water_year_start)
   
   # Set selected year-type column for analysis
   if (water_year) {
@@ -92,12 +96,11 @@ fasstr_add_cumulative_volume <- function(flowdata=NULL,
   # Add column to flowdata
   
   # Add cumulative volumes
-  flowdata_temp <- dplyr::mutate(dplyr::group_by(flowdata_temp,AnalysisYear),Cumul_Volume_m3=cumsum(Value)*86400)
+  flowdata_temp <- dplyr::mutate(dplyr::group_by(flowdata_temp,STATION_NUMBER,AnalysisYear),Cumul_Volume_m3=cumsum(Value)*86400)
+  flowdata_temp <- dplyr::select(dplyr::ungroup(flowdata_temp),STATION_NUMBER,Date,Cumul_Volume_m3)
   
   # Return flowdata to original dates
-  flowdata_temp <- dplyr::select(dplyr::ungroup(flowdata_temp),Date,Cumul_Volume_m3)
-  
-  flowdata <- merge(flowdata,flowdata_temp,by="Date",all.x = T)
+  flowdata <- merge(flowdata,flowdata_temp,by=c("STATION_NUMBER","Date"),all.x = T)
   flowdata <-  flowdata[,c(col_ord,paste("Cumul_Volume_m3"))]
   
   
