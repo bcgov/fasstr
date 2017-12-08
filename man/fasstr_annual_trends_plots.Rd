@@ -81,7 +81,8 @@ Default is the working directory.}
 \item{na.rm}{TBD}
 }
 \value{
-Plots of results of a trends analysis
+A list of ggplot2 objects with plots of trended annual statistics, as the name of each object, with a trend line
+   plotted if less than the zyp_alpha provided.
 }
 \description{
 Plots prewhitened nonlinear trends on annual streamflow data. Uses the

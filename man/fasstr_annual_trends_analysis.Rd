@@ -79,7 +79,29 @@ Default is the working directory.}
 \item{na.rm}{TBD}
 }
 \value{
-A data frame of results of a trends analysis
+A data frame containing trends with the following outputs from the zyp package:
+  \item{Statistic}{the annual statistic used for trending.}
+  \item{lbound}{the lower bound of the trend's confidence interval}
+  \item{trend}{the Sens' slope (trend) per unit time}
+  \item{trendp}{the Sen's slope (trend) over the time period}
+  \item{ubound}{the upper bound of the trend's confidence interval}
+  \item{tau}{Kendall's tau statistic computed on the final detrended timeseries}
+  \item{sig}{Kendall's P-value computed for the final detrended timeseries}
+  \item{nruns}{the number of runs required to converge upon a trend}
+  \item{autocor}{the autocorrelation of the final detrended timeseries}
+  \item{valid_frac}{the fraction of the data which is valid (not NA) once autocorrelation is removed}
+  \item{linear}{the least squares fit trend on the same dat}
+  \item{intercept}{the lower bound of the trend's confidence interval}
+  \item{lbound}{the intercept of the Sen's slope (trend)}
+  and the following additional columns:
+  \item{min_year}{the minimum year used in the trending}
+  \item{max_year}{the maximum year used in the trending}
+  \item{n_years}{the number of years with data for trending}
+  \item{mean}{the mean of all values used for trending}
+  \item{median}{the median of all values used for trending}
+  \item{min}{the minimum of all values used for trending}
+  \item{max}{the maximum of all values used for trending}
+  Transposing data creates a column of "Trends_Statistics" and subsequent columns of each trends statistic for each annual statistic.
 }
 \description{
 Calculates prewhitened nonlinear trends on annual streamflow data. Uses the

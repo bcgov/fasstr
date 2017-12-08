@@ -41,8 +41,21 @@
 #' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
 #'    Default is the working directory.
 #'    
-#' @return A data frame of summary statistics and percentiles for each day of the year
-#'
+#' @return A data frame with the following columns:
+#'   \item{Date}{date (MMM-DD) of daily statistics}
+#'   \item{DayofYear}{day of year of daily statistics}
+#'   \item{Mean}{daily mean of all flows for a given day of the year}
+#'   \item{Median}{daily mean of all flows for a given day of the year}
+#'   \item{Maximum}{daily mean of all flows for a given day of the year}
+#'   \item{Minimum}{daily mean of all flows for a given day of the year}
+#'   \item{P'n'}{each daily n-th percentile selected of all flows for a given day of the year}
+#'   Default percentile columns:
+#'   \item{P5}{daily 5th percentile of all flows for a given day of the year}
+#'   \item{P25}{daily 25th percentile of all flows for a given day of the year}
+#'   \item{P75}{daily 75th percentile of all flows for a given day of the year}
+#'   \item{P95}{daily 95th percentile of all flows for a given day of the year}
+#'   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
+#'   
 #' @examples
 #' \dontrun{
 #' 

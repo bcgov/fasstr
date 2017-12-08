@@ -52,7 +52,20 @@ will be the \code{HYDAT} value provided in the argument or column. Setting the s
 Default is the working directory.}
 }
 \value{
-A data frame of summary statistics and percentiles for each day of the year
+A data frame with the following columns:
+  \item{Date}{date (MMM-DD) of daily statistics}
+  \item{DayofYear}{day of year of daily statistics}
+  \item{Mean}{daily mean of all flows for a given day of the year}
+  \item{Median}{daily mean of all flows for a given day of the year}
+  \item{Maximum}{daily mean of all flows for a given day of the year}
+  \item{Minimum}{daily mean of all flows for a given day of the year}
+  \item{P'n'}{each daily n-th percentile selected of all flows for a given day of the year}
+  Default percentile columns:
+  \item{P5}{daily 5th percentile of all flows for a given day of the year}
+  \item{P25}{daily 25th percentile of all flows for a given day of the year}
+  \item{P75}{daily 75th percentile of all flows for a given day of the year}
+  \item{P95}{daily 95th percentile of all flows for a given day of the year}
+  Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 }
 \description{
 Calculates the daily mean, median, maximum, minimum, and percentiles for each day of the year of daily flow values 

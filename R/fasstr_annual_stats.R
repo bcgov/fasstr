@@ -22,6 +22,8 @@
 #'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
 #'    database are required. Not required if \code{flowdata} argument is used.
 #' @param percentiles Numeric. Vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.
+#' @param rolling_days  Numeric. The number of days to apply a rolling mean. Default \code{1}.
+#' @param rolling_align Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),
 #' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
 #'    by the year in which they end. Default \code{FALSE}.
 #' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
@@ -42,14 +44,14 @@
 #' 
 #' @return A data frame with the following columns:
 #'   \item{Year}{calendar or water year selected}
-#'   \item{Mean}{annual mean of all daily flows}
-#'   \item{Median}{annual median of all daily flows}
-#'   \item{Maximum}{annual maximum of all daily flows}
-#'   \item{Minimum}{annual minimum of all daily flows}
+#'   \item{Mean}{annual mean of all daily flows for a given year}
+#'   \item{Median}{annual median of all daily flows for a given year}
+#'   \item{Maximum}{annual maximum of all daily flows for a given year}
+#'   \item{Minimum}{annual minimum of all daily flows for a given year}
 #'   \item{P'n'}{each annual n-th percentile selected of all daily flows}
 #'   Default percentile columns:
-#'   \item{P10}{annual 10th percentile of all daily flows}
-#'   \item{P90}{annual 90th percentile of all daily flows}
+#'   \item{P10}{annual 10th percentile of all daily flows for a given year}
+#'   \item{P90}{annual 90th percentile of all daily flows for a given year}
 #'   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 #'   
 #' @examples
@@ -68,6 +70,8 @@
 fasstr_annual_stats <- function(flowdata=NULL,
                                 HYDAT=NULL,
                                 percentiles=c(10,90),
+                                rolling_days=1,
+                                rolling_align="right",
                                 water_year=FALSE,
                                 water_year_start=10,
                                 start_year=NULL,
@@ -111,6 +115,10 @@ fasstr_annual_stats <- function(flowdata=NULL,
   
   if( !all(is.na(percentiles)) & !is.numeric(percentiles) )                 {stop("percentiles argument must be numeric")}
   if( !all(is.na(percentiles)) & (!all(percentiles>0 & percentiles<100)) )  {stop("percentiles must be >0 and <100)")}
+  
+  if( !is.numeric(rolling_days))                       {stop("rolling_days argument must be numeric")}
+  if( !all(rolling_days %in% c(1:180)) )               {stop("rolling_days argument must be integers > 0 and <= 180)")}
+  if( !rolling_align %in% c("right","left","center"))  {stop("rolling_align argument must be 'right', 'left', or 'center'")}
   
   if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
   
@@ -162,6 +170,10 @@ fasstr_annual_stats <- function(flowdata=NULL,
     flowdata$AnalysisYear <- flowdata$Year
   }
   
+  # Apply rolling mean if designated, default of 1
+  flowdata <- fasstr::fasstr_add_rolling_means(flowdata,days = rolling_days,align = rolling_align)
+  colnames(flowdata)[ncol(flowdata)] <- "RollingValue"
+  
   # Filter the data for the start and end years
   flowdata <- dplyr::filter(flowdata, AnalysisYear >= start_year & AnalysisYear <= end_year)
   flowdata <- dplyr::filter(flowdata, Month %in% months)
@@ -172,16 +184,16 @@ fasstr_annual_stats <- function(flowdata=NULL,
   
   ## Compute remaining statistics on  year basis
   Qstat_annual <-   dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear),
-                                     Mean    = mean(Value, na.rm=na.rm$na.rm.global ),  
-                                     Median  = median(Value, na.rm=na.rm$na.rm.global ), 
-                                     Maximum	    = max (Value, na.rm=na.rm$na.rm.global ),    
-                                     Minimum     = min (Value, na.rm=na.rm$na.rm.global ))
+                                     Mean    = mean(RollingValue, na.rm=na.rm$na.rm.global ),  
+                                     Median  = median(RollingValue, na.rm=na.rm$na.rm.global ), 
+                                     Maximum	    = max (RollingValue, na.rm=na.rm$na.rm.global ),    
+                                     Minimum     = min (RollingValue, na.rm=na.rm$na.rm.global ))
   
   if (!all(is.na(percentiles))){
     for (ptile in percentiles) {
       
       Q_annual_ptile <- dplyr::summarise(dplyr::group_by(flowdata,AnalysisYear),
-                                         Percentile=quantile(Value,ptile/100, na.rm=TRUE))
+                                         Percentile=quantile(RollingValue,ptile/100, na.rm=TRUE))
       colnames(Q_annual_ptile)[2] <- paste0("P",ptile)
       
       Qstat_annual <- merge(Qstat_annual,Q_annual_ptile,by=c("AnalysisYear"))

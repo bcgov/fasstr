@@ -41,8 +41,18 @@
 #' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
 #'    Default is the working directory.
 #'    
-#' @return A plot of cumulative summary statistics and percentiles for each day of the year
-#'
+#' @return A list of ggplot2 objects, the first the daily cumulative statistics plot containing the listed plots below, and the sebsequent 
+#'    plots for each year of data provided containing the first plot plus the daily cumulative flow data for each year. Default units in
+#'    cubic metres, millimetres if use_yield and basin_area provided.
+#'   \item{Mean}{daily cumulative mean}
+#'   \item{Median}{daily cumulative median}
+#'   \item{Min-5 Percentile Range}{a ribbon showing the range of data between the daily cumulative minimum and 5th percentile}
+#'   \item{5-25 Percentiles Range}{a ribbon showing the range of data between the daily cumulative 5th and 25th percentiles}
+#'   \item{25-75 Percentiles Range}{a ribbon showing the range of data between the daily cumulative 25th and 75th percentiles}
+#'   \item{75-95 Percentiles Range}{a ribbon showing the range of data between the daily cumulative 75th and 95th percentiles}
+#'   \item{95 Percentile-Max Range}{a ribbon showing the range of data between the daily cumulative 95th percentile and the maximum}
+#'   \item{'Year' Flows}{(on annual plots) the daily cumulative flows for the designated year}
+#'   
 #' @examples
 #' \dontrun{
 #' 

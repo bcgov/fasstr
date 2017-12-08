@@ -55,7 +55,14 @@ Default is the working directory.}
 \item{na.rm}{TBD}
 }
 \value{
-List of plots of daily summary statistics, and each year's daily flows for comparison
+A list of ggplot2 objects, the first the daily statistics plot containing the listed plots below, and the sebsequent plots for each
+   year of data provided containing the first plot plus the daily flow data for each year.
+  \item{Mean}{daily mean}
+  \item{Median}{daily median}
+  \item{25-75 Percentiles Range}{a ribbon showing the range of data between the daily 25th and 75th percentiles}
+  \item{5-95 Percentiles Range}{a ribbon showing the range of data between the daily 5th and 95th percentiles}
+  \item{Max-Min Range}{a ribbon showing the range of data between the daily minimum and maximums}
+  \item{'Year' Flows}{(on annual plots) the daily flows for the designated year}
 }
 \description{
 Plot the daily mean, median, maximum, minimum, and percentiles for each day of the year of daily flow values 

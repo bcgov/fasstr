@@ -71,7 +71,8 @@
 #'   units will be displayed as "Units". To label units on your plots when using \code{trendsdata}, create the plot and use 
 #'   \code{+ggplot2::ylab()} to customize.
 #' 
-#' @return Plots of results of a trends analysis 
+#' @return A list of ggplot2 objects with plots of trended annual statistics, as the name of each object, with a trend line
+#'    plotted if less than the zyp_alpha provided.
 #'
 #' @examples
 #' \dontrun{

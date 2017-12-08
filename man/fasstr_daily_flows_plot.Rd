@@ -62,7 +62,7 @@ Default is the working directory.}
 \item{log_discharge}{Logical. Place the discharge axis (Y) on log scale. Default \code{FALSE} (linear).}
 }
 \value{
-A plot of a daily mean streamflow dataset
+A ggplot2 object of daily flows from flowdata or HYDAT flow data provided
 }
 \description{
 Plot the daily mean flow values from a streamflow dataset. Plots the statistics from all daily discharge values from all 

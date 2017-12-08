@@ -72,6 +72,7 @@ fasstr_annual_flow_timing <- function(flowdata=NULL,
                                       end_year=NULL,
                                       exclude_years=NULL,
                                       transpose=FALSE,
+                                      station_name=NA,
                                       write_table=FALSE,
                                       write_dir="."){
   

@@ -31,7 +31,7 @@
 #'    Default \code{1:12}.
 #' @param percent_MAD Numeric. Percent of long-term mean annual discharge to output. Default \code{100} (i.e. 100pct. MAD).
 #'
-#' @return A numeric value of the long-term mean annual discharge.
+#' @return A numeric value of a long-term mean of selected years and months.
 #' 
 #' @examples
 #' \dontrun{

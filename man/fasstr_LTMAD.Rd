@@ -34,7 +34,7 @@ Default \code{1:12}.}
 \item{percent_MAD}{Numeric. Percent of long-term mean annual discharge to output. Default \code{100} (i.e. 100pct. MAD).}
 }
 \value{
-A numeric value of the long-term mean annual discharge.
+A numeric value of a long-term mean of selected years and months.
 }
 \description{
 Calculates the long-term mean annual discharge of a streamflow dataset. Averages all daily discharge values from all years,

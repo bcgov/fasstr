@@ -45,7 +45,7 @@
 #' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
 #'    Default is the working directory. 
 #' 
-#' @return A plot of a daily mean streamflow dataset
+#' @return A ggplot2 object of daily flows from flowdata or HYDAT flow data provided
 #'
 #' @examples
 #' \dontrun{

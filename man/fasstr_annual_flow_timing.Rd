@@ -7,8 +7,8 @@
 fasstr_annual_flow_timing(flowdata = NULL, HYDAT = NULL,
   percent_total = c(25, 33.3, 50, 75), water_year = FALSE,
   water_year_start = 10, start_year = NULL, end_year = NULL,
-  exclude_years = NULL, transpose = FALSE, write_table = FALSE,
-  write_dir = ".")
+  exclude_years = NULL, transpose = FALSE, station_name = NA,
+  write_table = FALSE, write_dir = ".")
 }
 \arguments{
 \item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
@@ -34,14 +34,14 @@ by the year in which they end. Default \code{FALSE}.}
 
 \item{transpose}{Logical. Switch the rows and columns of the results table. Dates not transposed. Default \code{FALSE}.}
 
+\item{station_name}{Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
+files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
+will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number.}
+
 \item{write_table}{Logical. Write the table as a .csv file to specified directory. Default \code{FALSE}.}
 
 \item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
 Default is the working directory.}
-
-\item{station_name}{Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
-files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
-will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number.}
 }
 \value{
 A data frame with the following columns:

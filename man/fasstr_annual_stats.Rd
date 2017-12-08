@@ -5,10 +5,11 @@
 \title{Calculate annual summary statistics}
 \usage{
 fasstr_annual_stats(flowdata = NULL, HYDAT = NULL, percentiles = c(10,
-  90), water_year = FALSE, water_year_start = 10, start_year = NULL,
-  end_year = NULL, exclude_years = NULL, months = 1:12,
-  transpose = FALSE, station_name = NA, write_table = FALSE,
-  write_digits = 3, write_dir = ".", na.rm = list(na.rm.global = FALSE))
+  90), rolling_days = 1, rolling_align = "right", water_year = FALSE,
+  water_year_start = 10, start_year = NULL, end_year = NULL,
+  exclude_years = NULL, months = 1:12, transpose = FALSE,
+  station_name = NA, write_table = FALSE, write_digits = 3,
+  write_dir = ".", na.rm = list(na.rm.global = FALSE))
 }
 \arguments{
 \item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
@@ -20,6 +21,10 @@ data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Install
 database are required. Not required if \code{flowdata} argument is used.}
 
 \item{percentiles}{Numeric. Vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.}
+
+\item{rolling_days}{Numeric. The number of days to apply a rolling mean. Default \code{1}.}
+
+\item{rolling_align}{Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),}
 
 \item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
 by the year in which they end. Default \code{FALSE}.}
@@ -53,14 +58,14 @@ Default is the working directory.}
 \value{
 A data frame with the following columns:
   \item{Year}{calendar or water year selected}
-  \item{Mean}{annual mean of all daily flows}
-  \item{Median}{annual median of all daily flows}
-  \item{Maximum}{annual maximum of all daily flows}
-  \item{Minimum}{annual minimum of all daily flows}
+  \item{Mean}{annual mean of all daily flows for a given year}
+  \item{Median}{annual median of all daily flows for a given year}
+  \item{Maximum}{annual maximum of all daily flows for a given year}
+  \item{Minimum}{annual minimum of all daily flows for a given year}
   \item{P'n'}{each annual n-th percentile selected of all daily flows}
   Default percentile columns:
-  \item{P10}{annual 10th percentile of all daily flows}
-  \item{P90}{annual 90th percentile of all daily flows}
+  \item{P10}{annual 10th percentile of all daily flows for a given year}
+  \item{P90}{annual 90th percentile of all daily flows for a given year}
   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 }
 \description{

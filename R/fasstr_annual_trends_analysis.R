@@ -67,8 +67,30 @@
 #'    Default is the working directory.
 #' @param na.rm TBD
 #' 
-#' @return A data frame of results of a trends analysis 
-#'
+#' @return A data frame containing trends with the following outputs from the zyp package:
+#'   \item{Statistic}{the annual statistic used for trending.}
+#'   \item{lbound}{the lower bound of the trend's confidence interval}
+#'   \item{trend}{the Sens' slope (trend) per unit time}
+#'   \item{trendp}{the Sen's slope (trend) over the time period}
+#'   \item{ubound}{the upper bound of the trend's confidence interval}
+#'   \item{tau}{Kendall's tau statistic computed on the final detrended timeseries}
+#'   \item{sig}{Kendall's P-value computed for the final detrended timeseries}
+#'   \item{nruns}{the number of runs required to converge upon a trend}
+#'   \item{autocor}{the autocorrelation of the final detrended timeseries}
+#'   \item{valid_frac}{the fraction of the data which is valid (not NA) once autocorrelation is removed}
+#'   \item{linear}{the least squares fit trend on the same dat}
+#'   \item{intercept}{the lower bound of the trend's confidence interval}
+#'   \item{lbound}{the intercept of the Sen's slope (trend)}
+#'   and the following additional columns:
+#'   \item{min_year}{the minimum year used in the trending}
+#'   \item{max_year}{the maximum year used in the trending}
+#'   \item{n_years}{the number of years with data for trending}
+#'   \item{mean}{the mean of all values used for trending}
+#'   \item{median}{the median of all values used for trending}
+#'   \item{min}{the minimum of all values used for trending}
+#'   \item{max}{the maximum of all values used for trending}
+#'   Transposing data creates a column of "Trends_Statistics" and subsequent columns of each trends statistic for each annual statistic.
+#'   
 #' @examples
 #' \dontrun{
 #' 
@@ -163,8 +185,6 @@ fasstr_annual_trends_analysis <- function(flowdata=NULL,
   if( !is.logical(write_table_results)){stop("write_table_results parameter must be logical (TRUE/FALSE)")}
   
   if( !is.logical(transpose))    {stop("transpose parameter must be logical (TRUE/FALSE)")}
-  if( !is.numeric(write_digits))  {stop("write_digits parameter needs to be numeric")}
-  write_digits <- round(write_digits[1])
   
   if( !dir.exists(as.character(write_dir))) {
     message("directory for saved files does not exist, new directory will be created")
@@ -202,6 +222,7 @@ fasstr_annual_trends_analysis <- function(flowdata=NULL,
   }
   
   # Compute some summary stats on the input data
+  colnames(trends_data)[1] <- "Statistic"
   trends_data_summary <- tidyr::gather(trends_data,Year,Value,2:ncol(trends_data))
   trends_data_summary <- dplyr::summarise(dplyr::group_by(trends_data_summary,Statistic),
                                           min_year=min(Year),
@@ -222,6 +243,16 @@ fasstr_annual_trends_analysis <- function(flowdata=NULL,
   # merge all inputdata at end for dataframe? (incl_data=TRUE)
   
   
+  # Transpose data if selected
+  if(transpose){
+    col_names <- names(trends_results[-1])
+    trends_results <- tidyr::gather(trends_results,Trends_Statistic,Value,-Statistic)
+    trends_results <- tidyr::spread(trends_results,Statistic,Value)
+    trends_results <- trends_results[match(col_names, trends_results$Trends_Statistic),]
+    row.names(trends_results) <- c(1:nrow(trends_results))
+  }
+  
+  # Write the data if selected
   if(write_table_data){
     file_trends_data <-file.path(write_dir,paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-trends-data.csv",sep=""))
     temp <- trends_data
