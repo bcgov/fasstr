@@ -19,7 +19,7 @@
 #' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
 #'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
 #'    Not required if \code{HYDAT} argument is used.
-#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+#' @param HYDAT Character. Seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
 #'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
 #'    database are required. Not required if \code{flowdata} argument is used.
 #' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
@@ -42,9 +42,9 @@
 
 
 fasstr_add_missing_dates <- function(flowdata=NULL,
-                                      HYDAT=NULL,
-                                      water_year=FALSE,
-                                      water_year_start=10){
+                                     HYDAT=NULL,
+                                     water_year=FALSE,
+                                     water_year_start=10){
   
   
   
@@ -68,78 +68,86 @@ fasstr_add_missing_dates <- function(flowdata=NULL,
   
   # If HYDAT station is listed, check if it exists and make it the flowdata
   if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 )                                  {stop("Only one HYDAT station can be selected.")}
-    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
+    if( !all(HYDAT %in% dplyr::pull(tidyhydat::allstations[1])) ) {stop("one or more stations in 'HYDAT' argument do not exist")}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
-  
-  # If STATION_NUMBER and Parameter column is in flowdata, save the values for filling in the missing dates
-  if ("STATION_NUMBER" %in% names(flowdata)){STATION_NUMBER <- flowdata$STATION_NUMBER[1]}
-  if ("Parameter" %in% names(flowdata)){Parameter <- flowdata$Parameter[1]}
   
   
   #--------------------------------------------------------------
   # Set the flowdata for filling
   
-  flowdata <- flowdata[ order(flowdata$Date),]
-  col_order <- names(flowdata)
+  # Save the original columns from the flowdata to remove added columns
+  orig_cols <- names(flowdata)
   
-  # If water year is TRUE and month is not January
-  if (water_year & water_year_start>1) {
-    
-    #Create a temp file to determine the min/max water years (cant affect flowdata yet)
-    flowdata_temp <- fasstr::fasstr_add_date_vars(dplyr::select(flowdata,Date,Value),
-                                                  water_year = T,
-                                                  water_year_start = water_year_start)
-    min_wateryear <- ifelse(water_year,min(flowdata_temp$WaterYear),min(flowdata_temp$Year))
-    max_wateryear <- ifelse(water_year,max(flowdata_temp$WaterYear),max(flowdata_temp$Year))
-    
-    # Extend the flowdata to well before the start and end dates (will filter to water years)
-    flowdata_temp <- merge(flowdata_temp, 
-                      data.frame(Date=seq(as.Date(paste(min(flowdata_temp$Year)-1,'01-01',sep='-'),
-                                                  "%Y-%m-%d"),
-                                          as.Date(paste(max(flowdata_temp$Year)+1,'12-31',sep='-'),
-                                                  '%Y-%m-%d'), 1)),
-                      all.y=TRUE)
-    
-    # Add Water year to be able to filter it
-    flowdata_temp <- fasstr::fasstr_add_date_vars(flowdata_temp,
-                                                  water_year = T,
-                                                  water_year_start = water_year_start)
-    
-    # Filter flowdata for the min and max water years and remove date columns
-    flowdata_temp <- dplyr::filter(flowdata_temp,WaterYear>=min_wateryear & WaterYear<=max_wateryear)
-    flowdata_temp <- dplyr::select(flowdata_temp,Date,Value)
-    
-    flowdata <- merge(flowdata,flowdata_temp,all.y = T)
-    
-    # If not water year, or January is chosen as water year start  
-  } else {
-    min_year <- lubridate::year(min(flowdata$Date))
-    max_year <- lubridate::year(max(flowdata$Date))
-    
-    flowdata <- merge(flowdata, 
-                      data.frame(Date=seq(as.Date(paste(min_year,'01-01',sep='-'),
-                                                  "%Y-%m-%d"),
-                                          as.Date(paste(max_year  ,'12-31',sep='-'),
-                                                  '%Y-%m-%d'), 1)),
-                      all.y=TRUE)
-  }
+  # Add a station number column if none
+  if ( !"STATION_NUMBER" %in% names(flowdata) ){ flowdata$STATION_NUMBER <- "00AA000" }
   
-  # Return columns to original order
-  flowdata <-  flowdata[,col_order]
+  #--------------------------------------------------------------
+  # Loop through each station number, fill in gaps and append
   
-  
-  # Fill in STATION_NUMBER and Parameter if HYDAT selected
-  if (!is.null(HYDAT)) {
-    flowdata$STATION_NUMBER <- HYDAT
-    flowdata$Parameter <- "FLOW"
-  }
+  flowdata_new <- flowdata[0,]
+  for (stn in unique(flowdata$STATION_NUMBER)) {
+    
+    # Filter for station number
+    flowdata_stn <- dplyr::filter(flowdata,STATION_NUMBER==stn)
+    flowdata_stn <- flowdata_stn[ order(flowdata_stn$Date),]
+    
+    
+    # Fill if water year is TRUE and month is not January
+    if (water_year & water_year_start>1) {
+      
+      # Determine the min months and years to set the start_date
+      # If the month in the data is less than the water_year_start, the water year will begin in the previous calendar year
+      min_month_wy <- lubridate::month(min(flowdata_stn$Date))
+      min_year_wy <- lubridate::year(min(flowdata_stn$Date))
+      if (min_month_wy < water_year_start) {
+        start_date=as.Date(paste(min_year_wy-1,water_year_start,'01',sep='-'),"%Y-%m-%d")
+      } else {
+        start_date=as.Date(paste(min_year_wy,water_year_start,'01',sep='-'),"%Y-%m-%d")
+      }
+      
+      # Determine the max months and years to set the start_date
+      # If the month in the data is greater than the water_year_start, the water year will end in the next calendar year
+      max_month_wy <- lubridate::month(max(flowdata_stn$Date))
+      max_year_wy <- lubridate::year(max(flowdata_stn$Date))
+      if (max_month_wy > water_year_start) {
+        end_date=as.Date(paste(max_year_wy+1,water_year_start,'01',sep='-'),"%Y-%m-%d")-1
+      } else {
+        end_date=as.Date(paste(max_year_wy,water_year_start,'01',sep='-'),"%Y-%m-%d")-1
+      }
+      
+      # Fill in missing dates
+      flowdata_stn <- merge(flowdata_stn, 
+                            data.frame(Date=seq(start_date,end_date, 1)),
+                            all.y=TRUE)
 
-  # If flowdata was from HYDAT in a previous function
-  if ("STATION_NUMBER" %in% names(flowdata)){flowdata$STATION_NUMBER <- STATION_NUMBER}
-  if ("Parameter" %in% names(flowdata)){flowdata$Parameter <- Parameter}
+      
+   # Fill not water year, or January is chosen as water year start  
+    } else {
+      min_year <- lubridate::year(min(flowdata_stn$Date))
+      max_year <- lubridate::year(max(flowdata_stn$Date))
+      
+      # Fill in missing dates
+      flowdata_stn <- merge(flowdata_stn, 
+                            data.frame(Date=seq(as.Date(paste(min_year,'01-01',sep='-'),
+                                                        "%Y-%m-%d"),
+                                                as.Date(paste(max_year  ,'12-31',sep='-'),
+                                                        '%Y-%m-%d'), 1)),
+                            all.y=TRUE)
+    }
+    
+    # Fill in station number and parameter gaps (removed if not originally there)
+    flowdata_stn$STATION_NUMBER <- stn
+    flowdata_stn$Parameter <- "FLOW"
+    
+    # Append to flowdata
+    flowdata_new <- dplyr::bind_rows(flowdata_new,flowdata_stn)
+    
+  }
+  flowdata <- flowdata_new
   
+  #Return columns to original order
+  flowdata <-  flowdata[,orig_cols]
   
   
   return(flowdata)
