@@ -18,7 +18,7 @@
 #' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
 #'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
 #'    Not required if \code{HYDAT} argument is used.
-#' @param HYDAT Character. Seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
 #'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
 #'    database are required. Not required if \code{flowdata} argument is used.
 #' @param basin_area Numeric. Upstream drainage basin area of the hydrometric station, in sq. km. Leave blank if \code{HYDAT} is used or 
@@ -64,42 +64,23 @@ fasstr_add_daily_yield <- function(flowdata=NULL,
   
   # If HYDAT station is listed, check if it exists and extract the flowdata and basin_area
   if (!is.null(HYDAT)) {
-    if( !all(HYDAT %in% dplyr::pull(tidyhydat::allstations[1])) ) {stop("one or more stations in 'HYDAT' argument do not exist")}
+    if( length(HYDAT)>1 )                                  {stop("Only one HYDAT station can be selected.")}
+    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
-    if (is.na(basin_area)) {
-      basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = unique(flowdata$STATION_NUMBER)))
-      basin_area <- dplyr::select(basin_area,STATION_NUMBER,Basin_Area_m3=DRAINAGE_AREA_GROSS)
-    }
+    if (is.na(basin_area)) {basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = HYDAT)$DRAINAGE_AREA_GROSS)}
   }
   
   # If STATION_NUMBER column is in flowdata, extract the basin_area
-  if ( is.null(HYDAT) ) {if( all(is.na(basin_area)) & "STATION_NUMBER" %in% names(flowdata) ){
-    basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = unique(flowdata$STATION_NUMBER)))
-    basin_area <- dplyr::select(basin_area,STATION_NUMBER,Basin_Area_m3=DRAINAGE_AREA_GROSS)
-  }}
-  if( all(is.na(basin_area)) )  {stop("no basin_area provided")}
+  if ( is.null(HYDAT) & is.na(basin_area) & "STATION_NUMBER" %in% names(flowdata) ){
+    basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = flowdata$STATION_NUMBER[1])$DRAINAGE_AREA_GROSS)
+  }
+  if( is.na(basin_area) )  {stop("no basin_area provided")}
   
-  #----------------
-  
-  # Remove basin_area_m3 in flowdata if it exists
-  if ( "Basin_Area_m3" %in% names(flowdata) ) {flowdata <- dplyr::select(flowdata,-Basin_Area_m3)}
-  
-  col_ord <- names(flowdata)
-  
-  
-  # Add a station number column if none
-  if ( !"STATION_NUMBER" %in% names(flowdata) ){
-    flowdata$STATION_NUMBER <- "00AA000" 
-    basin_area <- data.frame(STATION_NUMBER="00AA000",Basin_Area_m3=basin_area)
-    }
   
   #--------------------------------------------------------------
   # Add column to flowdata
-  flowdata <- merge(flowdata,basin_area,by="STATION_NUMBER",all.x = T)
-  flowdata <- dplyr::mutate(flowdata,Yield_mm=Value*86400 /(Basin_Area_m3*1000))
   
-  # Return flowdata to original columns with just new ones
-  flowdata <-  flowdata[,c(col_ord,paste("Yield_mm"),paste("Basin_Area_m3"))]
+  flowdata <- dplyr::mutate(flowdata,Yield_mm=Value*86400 /(basin_area*1000))
   
   
   

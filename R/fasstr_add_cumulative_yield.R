@@ -19,7 +19,7 @@
 #' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
 #'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
 #'    Not required if \code{HYDAT} argument is used.
-#' @param HYDAT Character. Seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
 #'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
 #'    database are required. Not required if \code{flowdata} argument is used.
 #' @param basin_area Numeric. Upstream drainage basin area of the hydrometric station, in sq. km. Leave blank if \code{HYDAT} is used or 
@@ -74,43 +74,28 @@ fasstr_add_cumulative_yield <- function(flowdata=NULL,
   
   # If HYDAT station is listed, check if it exists and extract the flowdata and basin_area
   if (!is.null(HYDAT)) {
-    if( !all(HYDAT %in% dplyr::pull(tidyhydat::allstations[1])) ) {stop("one or more stations in 'HYDAT' argument do not exist")}
+    if( length(HYDAT)>1 )                                  {stop("Only one HYDAT station can be selected.")}
+    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
-    if (is.na(basin_area)) {
-      basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = unique(flowdata$STATION_NUMBER)))
-      basin_area <- dplyr::select(basin_area,STATION_NUMBER,Basin_Area_m3=DRAINAGE_AREA_GROSS)
-      }
+    if (is.na(basin_area)) {basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = HYDAT)$DRAINAGE_AREA_GROSS)}
   }
   
   # If STATION_NUMBER column is in flowdata, extract the basin_area
-  if ( is.null(HYDAT) ) {if( all(is.na(basin_area)) & "STATION_NUMBER" %in% names(flowdata) ){
-    basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = unique(flowdata$STATION_NUMBER)))
-    basin_area <- dplyr::select(basin_area,STATION_NUMBER,Basin_Area_m3=DRAINAGE_AREA_GROSS)
-  }}
-  if( all(is.na(basin_area)) )  {stop("no basin_area provided")}
+  if ( is.null(HYDAT) & is.na(basin_area) & "STATION_NUMBER" %in% names(flowdata) ){
+    basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = flowdata$STATION_NUMBER[1])$DRAINAGE_AREA_GROSS)
+  }
+  if( is.na(basin_area) )  {stop("no basin_area provided")}
   
   #--------------------------------------------------------------
   # Set the flowdata for analysis
-
-  # Remove basin_area_m3 in flowdata if it exists
-  if ( "Basin_Area_m3" %in% names(flowdata) ) {flowdata <- dplyr::select(flowdata,-Basin_Area_m3)}
   
+  # Get the list/order of dates to eventually return to the same order
+  flowdata <- flowdata[ order(flowdata$Date),]
   col_ord <- names(flowdata)
-  
-  
-  # Add a station number column if none
-  if ( !"STATION_NUMBER" %in% names(flowdata) ){
-    flowdata$STATION_NUMBER <- "00AA000" 
-    basin_area <- data.frame(STATION_NUMBER="00AA000",Basin_Area_m3=basin_area)
-  }
-  
-  # get list of dates in flowdata
-  flowdata <- flowdata[ order(flowdata$STATION_NUMBER,flowdata$Date),]
-  orig_rows <- dplyr::select(flowdata,STATION_NUMBER,Date)
   
   # Fill in missing dates to ensure all years are covered
   flowdata_temp <- fasstr::fasstr_add_missing_dates(flowdata=flowdata)
-  flowdata_temp <- fasstr::fasstr_add_date_vars(flowdata=flowdata_temp,water_year = water_year,water_year_start = water_year_start)
+  flowdata_temp <- fasstr::fasstr_add_date_vars(flowdata=flowdata_temp,water_year = T,water_year_start = water_year_start)
   
   # Set selected year-type column for analysis
   if (water_year) {
@@ -123,16 +108,13 @@ fasstr_add_cumulative_yield <- function(flowdata=NULL,
   # Add column to flowdata
   
   # Add cumulative yields
-  flowdata_temp <- merge(flowdata_temp,basin_area,by="STATION_NUMBER",all.x = T)
-  flowdata_temp <- dplyr::mutate(dplyr::group_by(flowdata_temp,STATION_NUMBER,AnalysisYear),Cumul_Yield_mm=cumsum(Value)*86400/(Basin_Area_m3*1000))
-  flowdata_temp <- dplyr::select(dplyr::ungroup(flowdata_temp),STATION_NUMBER,Date,Cumul_Yield_mm,Basin_Area_m3)
-  
-  
+  flowdata_temp <- dplyr::mutate(dplyr::group_by(flowdata_temp,AnalysisYear),Cumul_Yield_mm=cumsum(Value)*86400/(basin_area*1000))
   
   # Return flowdata to original dates
-  # Return flowdata to original dates
-  flowdata <- merge(flowdata,flowdata_temp,by=c("STATION_NUMBER","Date"),all.x = T)
-  flowdata <-  flowdata[,c(col_ord,paste("Cumul_Yield_mm"),paste("Basin_Area_m3"))]
+  flowdata_temp <- dplyr::select(dplyr::ungroup(flowdata_temp),Date,Cumul_Yield_mm)
+  
+  flowdata <- merge(flowdata,flowdata_temp,by="Date",all.x = T)
+  flowdata <-  flowdata[,c(col_ord,paste("Cumul_Yield_mm"))]
   
   
   return(flowdata)

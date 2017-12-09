@@ -98,7 +98,7 @@ fasstr_LTMAD <- function(flowdata=NULL,
     flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
-  #--------------------------------------------------------------
+  #-------------------------------------------------------------
   # Set the flowdata for analysis
   
   # Select just Date and Value for analysis
