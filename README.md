@@ -22,7 +22,7 @@ install.packages("devtools")
 devtools::install_github("bcgov/fasstr")
 ```
 
-Then to call the `fasstr` functions you can either load the package using the `library()` function or access a specific function using a double-colon (e.g. `fasstr::fasstr_daily_stats()`). Several other packages will be installed in addition to this package including [zyp](https://cran.r-project.org/web/packages/zyp/index.html) for trending, [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html) for creating plots, and [dplyr](https://cran.r-project.org/web/packages/dplyr/index.html) and [tidyr](https://cran.r-project.org/web/packages/tidyr/index.html) for various data wrangling and summarizing functions, amongst others.
+Then to call the `fasstr` functions you can either load the package using the `library()` function or access a specific function using a double-colon (e.g. `fasstr::calc_daily_stats()`). Several other packages will be installed in addition to this package including [zyp](https://cran.r-project.org/web/packages/zyp/index.html) for trending, [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html) for creating plots, and [dplyr](https://cran.r-project.org/web/packages/dplyr/index.html) and [tidyr](https://cran.r-project.org/web/packages/tidyr/index.html) for various data wrangling and summarizing functions, amongst others.
 
 ``` r
 library(fasstr)
@@ -73,10 +73,10 @@ Examples
 
 ### Summary statistics example: long-term statistics
 
-To determine the summary statistics of an entire dataset and by month (mean, median, maximum, minimum, and some percentiles) you can use the `fasstr_longterm_stats()` function. If the 'Mission Creek near East Kelowna' hydrometric station is of interest you can list the station number in the `HYDAT` argument to obtain the data (if `tidyhydat` and HYDAT are installed).
+To determine the summary statistics of an entire dataset and by month (mean, median, maximum, minimum, and some percentiles) you can use the `calc_longterm_stats()` function. If the 'Mission Creek near East Kelowna' hydrometric station is of interest you can list the station number in the `HYDAT` argument to obtain the data (if `tidyhydat` and HYDAT are installed).
 
 ``` r
-fasstr_longterm_stats(HYDAT = "08NM116")
+calc_longterm_stats(HYDAT = "08NM116")
 #>        Month      Mean Median Maximum Minimum    P10    P90
 #> 1        Jan  1.085907  0.878    9.50   0.160 0.5200  1.700
 #> 2        Feb  1.043398  0.879    4.41   0.140 0.4970  1.775
@@ -95,13 +95,13 @@ fasstr_longterm_stats(HYDAT = "08NM116")
 
 ### Plotting example 1: daily summary statistics
 
-To visualize the daily streamflow patterns on an annual basis, the `fasstr_daily_stats_plots()` function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the `start_year` and `end_year` arguments. Multiple plots are produced with this function, so this example plots just the summary statistics (`[1]`).
+To visualize the daily streamflow patterns on an annual basis, the `plot_daily_stats()` function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the `start_year` and `end_year` arguments. Multiple plots are produced with this function, so this example plots just the summary statistics (`[1]`).
 
 ``` r
-fasstr_daily_stats_plots(HYDAT = "08NM116",
-                         start_year = 1981,
-                         end_year = 2010,
-                         log_discharge = TRUE)[1]
+plot_daily_stats(HYDAT = "08NM116",
+                 start_year = 1981,
+                 end_year = 2010,
+                 log_discharge = TRUE)[1]
 #> $daily_statisitics
 ```
 
@@ -109,25 +109,25 @@ fasstr_daily_stats_plots(HYDAT = "08NM116",
 
 ### Plotting example 2: flow duration curves
 
-Flow duration curves can be produced using the `fasstr_flow_duration_plots()` function.
+Flow duration curves can be produced using the `plot_flow_duration()` function.
 
 ``` r
-fasstr_flow_duration_curves(HYDAT = "08NM116",
-                           start_year = 1981,
-                           end_year = 2010)
+plot_flow_duration(HYDAT = "08NM116",
+                   start_year = 1981,
+                   end_year = 2010)
 ```
 
 ![](README-plot2-1.png)
 
 ### Analysis example: low-flow frequency analysis
 
-This package also provides a function, `fasstr_annual_freq_analysis()`, to complete frequency analyses (using the same methods as [HEC-SSP](http://www.hec.usace.army.mil/software/hec-ssp/)). The default fitting distribution is 'log-Pearson Type III', but the 'weibull' distribution can also be used. Other default plotting and fitting methods are described in the function documentation. For this example, the 7-day low-flow (low-flow is default) quantiles are calculated for the Mission Creek hydrometric station using the 'log-Pearson Type III' distribution. With this, several low-flow indicators can be determined (i.e. 7Q5, 7Q10).
+This package also provides a function, `compute_frequency_analysis()`, to complete frequency analyses (using the same methods as [HEC-SSP](http://www.hec.usace.army.mil/software/hec-ssp/)). The default fitting distribution is 'log-Pearson Type III', but the 'weibull' distribution can also be used. Other default plotting and fitting methods are described in the function documentation. For this example, the 7-day low-flow (low-flow is default) quantiles are calculated for the Mission Creek hydrometric station using the 'log-Pearson Type III' distribution. With this, several low-flow indicators can be determined (i.e. 7Q5, 7Q10).
 
 ``` r
-fasstr_annual_freq_analysis(HYDAT = "08NM116",
-                            start_year = 1981,
-                            end_year = 2010,
-                            rolling_days=7)[5]
+compute_frequency_analysis(HYDAT = "08NM116",
+                           start_year = 1981,
+                           end_year = 2010,
+                           rolling_days=7)[5]
 #> $fitted_quantiles
 #>    Distribution Probability Return Period Q007-day-Avg
 #> 1          PIII       0.010    100.000000    0.1929445
