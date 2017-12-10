@@ -1,8 +1,8 @@
 
 
 devtools::document()
-#install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
-install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
+install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
+#install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
 
 
@@ -303,7 +303,7 @@ all_ann <- fasstr::fasstr_annual_all_stats(HYDAT = "08NM116")
 plots <- fasstr::fasstr_annual_trends_plots(HYDAT = "08HB048",zyp_method = "yuepilon",write_plots = T)
 
 
-fasstr::fasstr_flow_duration_plots(HYDAT="08HB048")
+fasstr::plot_flow_duration(HYDAT="08HB048", incl_months = NA, custom_months = 1:4)
 
 
 
@@ -435,44 +435,42 @@ fasstr::fasstr_write_daily_flows(data)
 
 stn.number="08NM116"
 wt_yr=F
-A <- fasstr::fasstr_add_cumulative_volume(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_add_cumulative_yield(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_add_daily_volume(HYDAT = stn.number)
-A <- fasstr::fasstr_add_daily_yield(HYDAT = stn.number)
-A <- fasstr::fasstr_add_date_vars(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_add_missing_dates(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_add_rolling_means(HYDAT = stn.number)
-A <- fasstr::fasstr_annual_all_stats(HYDAT = stn.number,water_year = wt_yr,transpose = T)
-A <- fasstr::fasstr_annual_days_outside_normal(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_annual_days_outside_normal_plots(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_annual_flow_timing(HYDAT = stn.number,water_year = wt_yr,transpose = T)
-A <- fasstr::fasstr_annual_flow_timing_plots(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_annual_freq_analysis(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_annual_lowflows(HYDAT = stn.number,water_year = wt_yr,transpose = T)
-A <- fasstr::fasstr_annual_lowflows_plots(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_annual_missing_plots(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_annual_stats(HYDAT = stn.number,water_year = wt_yr,months = 6:8)
-fasstr::fasstr_annual_stats_plots(HYDAT = stn.number,water_year = wt_yr,months = 8:10, percentiles = 3:4)
-A <- fasstr::fasstr_annual_total_flows(HYDAT = stn.number,water_year = wt_yr,transpose = T)
-A <- fasstr::fasstr_annual_total_flows_plots(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_annual_trends_analysis(HYDAT = stn.number,zyp_method = "yuepilon",water_year = wt_yr)
-A <- fasstr::fasstr_annual_trends_plots(HYDAT = stn.number,zyp_method = "yuepilon",water_year = wt_yr)
-A <- fasstr::fasstr_daily_cumulative_plots(HYDAT = stn.number, use_yield = T,water_year = wt_yr)[1]
-A <- fasstr::fasstr_daily_cumulative_stats(HYDAT = stn.number,use_yield = T,water_year = wt_yr, transpose = T, percentiles = 1:12)
-A <- fasstr::fasstr_daily_stats(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_daily_stats_plots(HYDAT = stn.number,water_year = wt_yr, rolling_days = 7)[1]
-A <- fasstr::fasstr_data_screening(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_data_screening_plots(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_flow_duration_curves(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_longterm_percentiles(HYDAT = stn.number,water_year = wt_yr)
+A <- fasstr::add_cumulative_volume(HYDAT = stn.number,water_year = wt_yr)
+A <- fasstr::add_cumulative_yield(HYDAT = stn.number,water_year = wt_yr)
+A <- fasstr::add_daily_volume(HYDAT = stn.number)
+A <- fasstr::add_cumulative_yield(HYDAT = stn.number)
+A <- fasstr::add_date_variables(HYDAT = stn.number,water_year = wt_yr)
+A <- fasstr::fill_missing_dates(HYDAT = stn.number,water_year = wt_yr)
+A <- fasstr::add_rolling_means(HYDAT = stn.number)
+A <- fasstr::calc_all_annual_stats(HYDAT = stn.number,water_year = wt_yr,transpose = T)
+A <- fasstr::calc_annual_outside_normal(HYDAT = stn.number,water_year = wt_yr)
+A <- fasstr::plot_annual_outside_normal(HYDAT = stn.number,water_year = wt_yr)
+A <- fasstr::calc_annual_flow_timing(HYDAT = stn.number,water_year = wt_yr,transpose = T)
+A <- fasstr::plot_annual_flow_timing(HYDAT = stn.number,water_year = wt_yr)
+A <- fasstr::compute_frequency_analysis(HYDAT = stn.number,water_year = wt_yr)
+A <- fasstr::calc_annual_lowflows(HYDAT = stn.number,water_year = wt_yr)
+A <- fasstr::plot_annual_lowflows(HYDAT = stn.number,water_year = wt_yr)
+A <- fasstr::plot_missing_dates(HYDAT = stn.number,water_year = wt_yr)
+A <- fasstr::calc_annual_stats(HYDAT = stn.number,water_year = wt_yr,months = 6:8)
+fasstr::plot_annual_stats(HYDAT = stn.number,water_year = wt_yr,months = 8:10, percentiles = 3:4)
+A <- fasstr::calc_annual_total_flows(HYDAT = stn.number,water_year = wt_yr,transpose = T)
+A <- fasstr::plot_annual_total_flows(HYDAT = stn.number,water_year = wt_yr)
+A <- fasstr::compute_annual_trends(HYDAT = stn.number,zyp_method = "yuepilon",water_year = wt_yr)
+A <- fasstr::plot_annual_trends(HYDAT = stn.number,zyp_method = "yuepilon",water_year = wt_yr)
+A <- fasstr::plot_daily_cumulative_stats(HYDAT = stn.number, use_yield = T,water_year = wt_yr)
+A <- fasstr::calc_daily_cumulative_stats(HYDAT = stn.number,use_yield = T,water_year = wt_yr, transpose = T, percentiles = 1:12)
+A <- fasstr::calc_daily_stats(HYDAT = stn.number,water_year = wt_yr, transpose = T)
+A <- fasstr::plot_daily_stats(HYDAT = stn.number,water_year = wt_yr, rolling_days = 7)[1]
+A <- fasstr::screen_flow_data(HYDAT = stn.number,water_year = wt_yr)
+A <- fasstr::plot_data_screening(HYDAT = stn.number,water_year = wt_yr)
 
-A <- fasstr::fasstr_longterm_stats(HYDAT = stn.number,water_year = wt_yr, custom_months = 7:12, percentiles = c(1,2,5,55,98,99), transpose = T, start_year = 1982)
+A <- fasstr::calc_longterm_stats(HYDAT = stn.number,water_year = wt_yr)
 
-A <- fasstr::fasstr_longterm_stats_plot(HYDAT = stn.number,log_discharge = T,water_year = wt_yr)
-A <- fasstr::fasstr_monthly_stats(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_monthly_stats_plots(HYDAT = stn.number,log_discharge = T,water_year = wt_yr)
-A <- fasstr::fasstr_daily_flows_plot(HYDAT = stn.number,water_year = wt_yr)
-A <- fasstr::fasstr_write_daily_flows(HYDAT = stn.number,water_year = wt_yr)
+A <- fasstr::plot_longterm_stats(HYDAT = stn.number,log_discharge = T,water_year = wt_yr)
+A <- fasstr::calc_monthly_stats(HYDAT = stn.number,water_year = wt_yr)
+A <- fasstr::plot_monthly_stats(HYDAT = stn.number,log_discharge = T,water_year = wt_yr)
+A <- fasstr::plot_flow_data(HYDAT = stn.number,water_year = wt_yr)
+A <- fasstr::write_flow_data(HYDAT = stn.number,water_year = wt_yr)
 
 
 
