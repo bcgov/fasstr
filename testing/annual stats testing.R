@@ -5,6 +5,18 @@ install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "sour
 #install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
 
+flowdata <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116"))
+data <- fasstr::calc_longterm_stats_2(flowdata)
+data <- fasstr::calc_longterm_stats_2(HYDAT = c("08HB048","08NM116"), write_table = T)
+
+
+
+longest_record_data <- tidyhydat::hy_stn_data_range(prov_terr_state_loc = "BC") %>%
+  filter(DATA_TYPE == "Q") %>%
+  pull(STATION_NUMBER)
+data <- fasstr::calc_longterm_stats_2(HYDAT = longest_record_data)
+
+
 
 library(fasstr)
 
