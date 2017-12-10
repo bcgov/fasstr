@@ -39,8 +39,15 @@
 #'    Default is the working directory.
 #' @param na.rm TBD
 #'
-#' @return A plot of long-term and monthly long-term summary statistics and percentiles
-#'
+#' @return A ggplot2 object with the following plots:
+#'   \item{Long-term Mean}{mean of all daily flows over all years}
+#'   \item{Long-term Median}{median of all daily flows over all years}
+#'   \item{Monthly Mean}{mean of all daily flows for each month over all years}
+#'   \item{Monthly Median}{median of all daily flows for each month over all years}
+#'   \item{25-75 Percentiles Range}{a ribbon showing the range of data between the monthly 25th and 75th percentiles}
+#'   \item{5-95 Percentiles Range}{a ribbon showing the range of data between the monthly 5th and 95th percentiles}
+#'   \item{Max-Min Range}{a ribbon showing the range of data between the monthly minimum and maximums}
+#'   
 #' @examples
 #' \dontrun{
 #' 

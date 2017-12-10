@@ -40,7 +40,11 @@
 #' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
 #'    Default is the working directory.
 #'
-#' @return A plot of annual data statistics for screening
+#' @return A ggplot2 object with the following plots:
+#'   \item{Minimum}{annual minimum of all daily flows for a given year}
+#'   \item{Maximum}{annual maximum of all daily flows for a given year}
+#'   \item{Mean}{annual mean of all daily flows for a given year}
+#'   \item{StandardDeviation}{annual 1 standard deviation of all daily flows for a given year}
 #'
 #' @examples
 #' \dontrun{

@@ -48,7 +48,11 @@ will be the \code{HYDAT} value provided in the argument or column. Setting the s
 Default is the working directory.}
 }
 \value{
-A plot of annual data statistics for screening
+A ggplot2 object with the following plots:
+  \item{Minimum}{annual minimum of all daily flows for a given year}
+  \item{Maximum}{annual maximum of all daily flows for a given year}
+  \item{Mean}{annual mean of all daily flows for a given year}
+  \item{StandardDeviation}{annual 1 standard deviation of all daily flows for a given year}
 }
 \description{
 Plots the mean, median, maximum, minimum, standard deviation of annual flows. Plots the statistics from all daily 

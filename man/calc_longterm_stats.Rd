@@ -55,7 +55,17 @@ Default is the working directory.}
 \item{na.rm}{TBD}
 }
 \value{
-A data frame of long-term and monthly long-term summary statistics and percentiles
+A data frame with the following columns:
+  \item{Month}{month of the year, included Long-term for all months, and Custom-Months if selected}
+  \item{Mean}{mean of all daily flows for a given month and longterm over all years}
+  \item{Median}{median of all daily flows for a given month and longterm over all years}
+  \item{Maximum}{maximum of all daily flows for a given month and longterm over all years}
+  \item{Minimum}{minimum of all daily flows for a given month and longterm over all years}
+  \item{P'n'}{each  n-th percentile selected for a given month and longterm over all years}
+  Default percentile columns:
+  \item{P10}{annual 10th percentile selected for a given month and longterm over all years}
+  \item{P90}{annual 90th percentile selected for a given month and longterm over all years}
+  Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 }
 \description{
 Calculates the long-term and long-term monthly mean, median, maximum, minimum, and percentiles of daily flow values 

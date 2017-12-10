@@ -31,7 +31,7 @@
 #' @param months Integer. Vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Leave blank for all months. 
 #'    Default \code{1:12}.
 #'
-#' @return A numeric value of the long-term mean annual discharge.
+#' @return A numeric value of the percentile rank of a given flow value.
 #' 
 #' @examples
 #' \dontrun{

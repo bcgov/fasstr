@@ -42,8 +42,16 @@
 #'    Default is the working directory.
 #' @param na.rm TBD
 #' 
-#' @return Plots of summary statistics and percentiles for each month of all years
-#'
+#' @return A list of ggplot2 objects for each monthly statistic:
+#'   \item{Monthly Mean Flows}{mean of all daily flows for a given month and year}
+#'   \item{Monthly Median Flows}{median of all daily flows for a given month and year}
+#'   \item{Monthly Maximum Flows}{maximum of all daily flows for a given month and year}
+#'   \item{Monthly Minimum Flows}{minimum of all daily flows for a given month and year}
+#'   \item{Monthly P'n' Flows}{each n-th percentile selected for a given month and year}
+#'   Default percentile plots:
+#'   \item{Monthly P10 Flows}{10th percentile of all daily flows for a given month and year}
+#'   \item{Monthl P20 Flows}{20th percentile of all daily flows for a given month and year}
+#'   
 #' @examples
 #' \dontrun{
 #' 

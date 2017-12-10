@@ -55,7 +55,8 @@ Default is the working directory.}
 \item{na.rm}{TBD}
 }
 \value{
-A plot of flow duration curves for specified long-term months and long-term flow data.
+A ggplot2 object with plots for each month, long-term, and custom months showing the percentage of time that 
+   flows are likely equal or exceeded for each time period.
 }
 \description{
 Plots flow duration curves, percent time a flow value is equalled or exceeded, for a streamflow dataset. Plots 

@@ -48,7 +48,30 @@ will be the \code{HYDAT} value provided in the argument or column. Setting the s
 Default is the working directory.}
 }
 \value{
-A data frame of annual and annual-month summary missing data statistics
+A data frame with the following columns:
+  \item{Year}{calendar or water year selected}
+  \item{n_days}{number of days per year}
+  \item{n_Q}{number of days per year with flow data}
+  \item{n_missing_Q}{number of days per year with no flow data}
+  \item{Minimum}{annual minimum of all daily flows for a given year}
+  \item{Maximum}{annual maximum of all daily flows for a given year}
+  \item{Mean}{annual mean of all daily flows for a given year}
+  \item{Median}{annual median of all daily flows for a given year}
+  \item{StandardDeviation}{annual 1 standard deviation of all daily flows for a given year}
+  and the following monthly missing columns (order will depend on water_year_month):
+  \item{Jan_missing_Q}{number of Jan days per year with no flow data}
+  \item{Feb_missing_Q}{number of Feb days per year with no flow data}
+  \item{Mar_missing_Q}{number of Mar days per year with no flow data}
+  \item{Apr_missing_Q}{number of Apr days per year with no flow data}
+  \item{May_missing_Q}{number of May days per year with no flow data}
+  \item{Jun_missing_Q}{number of Jun days per year with no flow data}
+  \item{Jul_missing_Q}{number of Jul days per year with no flow data}
+  \item{Aug_missing_Q}{number of Aug days per year with no flow data}
+  \item{Sep_missing_Q}{number of Sep days per year with no flow data}
+  \item{Oct_missing_Q}{number of Oct days per year with no flow data}
+  \item{Nov_missing_Q}{number of Nov days per year with no flow data}
+  \item{Dec_missing_Q}{number of Dec days per year with no flow data}
+  Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 }
 \description{
 Calculates mean, median, maximum, minimum, standard deviation of annual flows and data availability and missing data

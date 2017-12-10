@@ -34,7 +34,7 @@ by the year in which they end. Default \code{FALSE}.}
 Default \code{1:12}.}
 }
 \value{
-A numeric value of the long-term mean annual discharge.
+A numeric value of the percentile rank of a given flow value.
 }
 \description{
 Calculates the percentile rank, or percentile, of a discharge value compared to all flow values of a streamflow dataset. 

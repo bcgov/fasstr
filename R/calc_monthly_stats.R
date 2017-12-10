@@ -41,8 +41,21 @@
 #'    Default is the working directory.
 #' @param na.rm TBD
 #' 
-#' @return A data frame of summary statistics and percentiles for each month of all years
-#'
+#' @return A data frame with the following columns:
+#'   \item{Year}{calendar or water year selected}
+#'   \item{Month}{month of the year}
+#'   \item{Mean}{mean of all daily flows for a given month and year}
+#'   \item{Median}{median of all daily flows for a given month and year}
+#'   \item{Maximum}{maximum of all daily flows for a given month and year}
+#'   \item{Minimum}{minimum of all daily flows for a given month and year}
+#'   \item{P'n'}{each n-th percentile selected for a given month and year}
+#'   Default percentile columns:
+#'   \item{P10}{10th percentile of all daily flows for a given month and year}
+#'   \item{P20}{20th percentile of all daily flows for a given month and year}
+#'   Transposing data creates a column of "Statistics" for each month, labeled as "Month-Statistic" (ex "Jan-Mean"),
+#'   and subsequent columns for each year selected.
+#'   Spreading data creates columns of Year and subsequent columns of Month-Statistics  (ex "Jan-Mean").
+#'   
 #' @examples
 #' \dontrun{
 #' 

@@ -44,8 +44,9 @@
 #'    Default is the working directory.
 #' @param na.rm TBD
 #'
-#' @return A plot of flow duration curves for specified long-term months and long-term flow data.
-#'
+#' @return A ggplot2 object with plots for each month, long-term, and custom months showing the percentage of time that 
+#'    flows are likely equal or exceeded for each time period.
+#'   
 #' @examples
 #' \dontrun{
 #' 
