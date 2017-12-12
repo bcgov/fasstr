@@ -24,7 +24,10 @@ Imports:
     tidyr,
     zoo,
     zyp
-Remotes: 
+Remotes:
     ropensci/tidyhydat
 LazyData: true
 RoxygenNote: 6.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
