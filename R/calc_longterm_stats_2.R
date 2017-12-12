@@ -15,9 +15,10 @@
 #' @description Calculates the long-term and long-term monthly mean, median, maximum, minimum, and percentiles of daily flow values 
 #'    from a streamflow dataset. Calculates the statistics from all daily discharge values from all years, unless specified.
 #'
-#' @param flow_data Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-#'    Not required if \code{HYDAT} argument is used.
+#' @param flow_data Data frame. A data frame of daily mean flow data. Not required if \code{HYDAT} argument is used.
+#' @param flow_dates A column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Default \code{Date}.
+#' @param flow_values A column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
+#'    Default \code{Value}.
 #' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
 #'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
 #'    database are required. Not required if \code{flow_data} argument is used.
@@ -66,8 +67,6 @@
 #' }
 #' @export
 
-#--------------------------------------------------------------
-
 
 calc_longterm_stats_2 <- function(flow_data=NULL,
                                   flow_dates=Date,
@@ -112,9 +111,9 @@ calc_longterm_stats_2 <- function(flow_data=NULL,
   # Get the just STATION_NUMBER, Date, and Value columns
   # This method allows the user to select the Date or Value columns if the column names are different
   if(!as.character(substitute(flow_dates)) %in% names(flow_data))  
-    stop("Flow dates not found. Rename flow dates column to 'Date' or name the column using 'flow_dates' argument.")
+    stop("Flow dates not found. Rename flow dates column to 'Date' or identify the column using 'flow_dates' argument.")
   if(!as.character(substitute(flow_values)) %in% names(flow_data)) 
-    stop("Flow values not found. Rename flow values column to 'Value' or name the column using 'flow_values' argument.")
+    stop("Flow values not found. Rename flow values column to 'Value' or identify the column using 'flow_values' argument.")
   
   # Gather required columns
   flow_data <- flow_data[,c("STATION_NUMBER",

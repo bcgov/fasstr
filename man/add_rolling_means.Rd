@@ -4,17 +4,21 @@
 \alias{add_rolling_means}
 \title{Add rolling n-day averages}
 \usage{
-add_rolling_means(flowdata = NULL, HYDAT = NULL, days = c(3, 7, 30),
+add_rolling_means(flow_data = NULL, flow_dates = Date,
+  flow_values = Value, HYDAT = NULL, days = c(3, 7, 30),
   align = "right")
 }
 \arguments{
-\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
+\item{flow_data}{Data frame. A data frame of daily mean flow data. Not required if \code{HYDAT} argument is used.}
+
+\item{flow_dates}{A column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Default \code{Date}.}
+
+\item{flow_values}{A column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
+Default \code{Value}.}
 
 \item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
 data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flowdata} argument is used.}
+database are required. Not required if \code{flow_data} argument is used.}
 
 \item{days}{Numeric. The number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
 
@@ -22,7 +26,7 @@ database are required. Not required if \code{flowdata} argument is used.}
 or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.}
 }
 \value{
-A data frame of the original flowdata or HYDAT data with additional column(s) of:
+A data frame of the original flow_data or HYDAT data with additional column(s) of:
   \item{QnDay}{rolling means of the n-day flow values of the designated date and adjacent dates, direction of mean specified by align}
   Default additional columns:
   \item{Q3Day}{rolling means of the 3-day flow values of the designated date and previous 2 days (align="right")}
@@ -38,7 +42,7 @@ Adds selected n-day rolling means to a streamflow dataset. Based on selected n-d
 \examples{
 \dontrun{
 
-add_rolling_means(flowdata = flowdata, days = 7, align = 'centre')
+add_rolling_means(flow_data = flow_data, days = 7, align = 'centre')
 
 add_rolling_means(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
 

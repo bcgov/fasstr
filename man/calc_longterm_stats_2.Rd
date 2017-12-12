@@ -13,9 +13,12 @@ calc_longterm_stats_2(flow_data = NULL, flow_dates = Date,
   write_dir = ".", na.rm = list(na.rm.global = FALSE))
 }
 \arguments{
-\item{flow_data}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
+\item{flow_data}{Data frame. A data frame of daily mean flow data. Not required if \code{HYDAT} argument is used.}
+
+\item{flow_dates}{A column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Default \code{Date}.}
+
+\item{flow_values}{A column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
+Default \code{Value}.}
 
 \item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
 data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 

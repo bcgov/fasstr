@@ -16,139 +16,154 @@
 #' @description Adds rows of dates with missing flow values to a streamflow dataset with daily flow values of NA. Missing dates will 
 #'    be filled in gaps between data and compeltely fill the first and last years (calendar or water year if selected).
 #'
-#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-#'    Not required if \code{HYDAT} argument is used.
+#' @param flow_data Data frame. A data frame of daily mean flow data. Not required if \code{HYDAT} argument is used.
+#' @param flow_dates A column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Default \code{Date}.
+#' @param flow_values A column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
+#'    Default \code{Value}.
 #' @param HYDAT Character. Seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
 #'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-#'    database are required. Not required if \code{flowdata} argument is used.
+#'    database are required. Not required if \code{flow_data} argument is used.
 #' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
 #'    by the year in which they end. Default \code{FALSE}.
 #' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
 #' 
-#' @return A data frame of the original flowdata or HYDAT data with additional rows of filled values of missing dates with NA
+#' @return A data frame of the original flow_data or HYDAT data with additional rows of filled values of missing dates with NA
 #'
 #' @examples
 #' \dontrun{
 #' 
-#'fill_missing_dates(flowdata = flowdata)
+#'fill_missing_dates(flow_data = flow_data)
 #' 
 #'fill_missing_dates(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
 #'
 #' }
 #' @export
 
-#--------------------------------------------------------------
 
-
-fill_missing_dates <- function(flowdata=NULL,
+fill_missing_dates <- function(flow_data=NULL,
+                               flow_dates=Date,
+                               flow_values=Value,
                                HYDAT=NULL,
                                water_year=FALSE,
                                water_year_start=10){
   
+  ## CHECKS ON FLOW DATA
+  ## -------------------
   
+  # Check if data is provided
+  if(is.null(flow_data) & is.null(HYDAT))   stop("No flow data provided, must use flow_data or HYDAT arguments.")
+  if(!is.null(flow_data) & !is.null(HYDAT)) stop("Only one of flow_data or HYDAT arguments can be used.")
   
-  #--------------------------------------------------------------
-  #  Some basic error checking on the input parameters
-  
-  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
-  if( is.null(HYDAT)) {
-    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
-    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
-    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
-    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
-    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
-    if( any(flowdata$Value <0, na.rm=TRUE))           {warning('flowdata cannot have negative values - check your data')}
+  # Get HYDAT data if selected and stations exist
+  if(!is.null(HYDAT)) {
+    if(!all(HYDAT %in% dplyr::pull(tidyhydat::allstations[1]))) stop("One or more stations listed in 'HYDAT' do not exist.")
+    flow_data <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
-  if( !is.logical(water_year))         {stop("water_year argument must be logical (TRUE/FALSE)")}
-  if( !is.numeric(water_year_start) )  {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( length(water_year_start)>1)      {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( !water_year_start %in% c(1:12) ) {stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec)")}
+  # Save the original columns from the flow_data to remove added columns
+  orig_cols <- names(flow_data)
   
-  # If HYDAT station is listed, check if it exists and make it the flowdata
-  if (!is.null(HYDAT)) {
-    if( !all(HYDAT %in% dplyr::pull(tidyhydat::allstations[1])) ) {stop("one or more stations in 'HYDAT' argument do not exist")}
-    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
+  # If no STATION_NUMBER in flow_data, make it so (required for grouping)
+  if(!"STATION_NUMBER" %in% colnames(flow_data)) {
+    flow_data$STATION_NUMBER <- "XXXXXXX"
   }
   
+  # Get the just STATION_NUMBER, Date, and Value columns
+  # This method allows the user to select the Date or Value columns if the column names are different
+  if(!as.character(substitute(flow_dates)) %in% names(flow_data))  
+    stop("Flow dates not found. Rename flow dates column to 'Date' or identify the column using 'flow_dates' argument.")
+  if(!as.character(substitute(flow_values)) %in% names(flow_data)) 
+    stop("Flow values not found. Rename flow values column to 'Value' or identify the column using 'flow_values' argument.")
   
-  #--------------------------------------------------------------
-  # Set the flowdata for filling
+  # Temporarily rename the Date and Value columns
+  names(flow_data)[names(flow_data) == as.character(substitute(flow_dates))] <- "Date"
+  names(flow_data)[names(flow_data) == as.character(substitute(flow_values))] <- "Value"
   
-  # Save the original columns from the flowdata to remove added columns
-  orig_cols <- names(flowdata)
+  # Check columns are in proper formats
+  if(!inherits(flow_data$Date[1], "Date"))  stop("'Date' column in flow_data data frame does not contain dates.")
+  if(!is.numeric(flow_data$Value))          stop("'Value' column in flow_data data frame does not contain numeric values.")
   
-  # Add a station number column if none
-  if ( !"STATION_NUMBER" %in% names(flowdata) ){ flowdata$STATION_NUMBER <- "00AA000" }
   
-  #--------------------------------------------------------------
+  ## CHECKS ON OTHER ARGUMENTS
+  ## -------------------------
+  
+  if(!is.logical(water_year))         stop("water_year argument must be logical (TRUE/FALSE).")
+  if(!is.numeric(water_year_start))   stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec).")
+  if(length(water_year_start)>1)      stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec).")
+  if(!water_year_start %in% c(1:12))  stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec).")
+  
+  
+  ## FILL IN GAPS
+  ## ------------
+  
   # Loop through each station number, fill in gaps and append
-  
-  flowdata_new <- flowdata[0,]
-  for (stn in unique(flowdata$STATION_NUMBER)) {
+  flow_data_new <- flow_data[0,]
+  for (stn in unique(flow_data$STATION_NUMBER)) {
     
     # Filter for station number
-    flowdata_stn <- dplyr::filter(flowdata,STATION_NUMBER==stn)
-    flowdata_stn <- flowdata_stn[ order(flowdata_stn$Date),]
-    
+    flow_data_stn <- dplyr::filter(flow_data, STATION_NUMBER == stn)
+    flow_data_stn <- flow_data_stn[order(flow_data_stn$Date), ]
     
     # Fill if water year is TRUE and month is not January
-    if (water_year & water_year_start>1) {
+    if (water_year & water_year_start > 1) {
       
       # Determine the min months and years to set the start_date
       # If the month in the data is less than the water_year_start, the water year will begin in the previous calendar year
-      min_month_wy <- lubridate::month(min(flowdata_stn$Date))
-      min_year_wy <- lubridate::year(min(flowdata_stn$Date))
+      min_month_wy <- lubridate::month(min(flow_data_stn$Date))
+      min_year_wy <- lubridate::year(min(flow_data_stn$Date))
       if (min_month_wy < water_year_start) {
-        start_date=as.Date(paste(min_year_wy-1,water_year_start,'01',sep='-'),"%Y-%m-%d")
+        start_date=as.Date(paste(min_year_wy - 1, water_year_start, '01', sep='-'), "%Y-%m-%d")
       } else {
-        start_date=as.Date(paste(min_year_wy,water_year_start,'01',sep='-'),"%Y-%m-%d")
+        start_date=as.Date(paste(min_year_wy, water_year_start, '01', sep='-'), "%Y-%m-%d")
       }
       
       # Determine the max months and years to set the start_date
       # If the month in the data is greater than the water_year_start, the water year will end in the next calendar year
-      max_month_wy <- lubridate::month(max(flowdata_stn$Date))
-      max_year_wy <- lubridate::year(max(flowdata_stn$Date))
+      max_month_wy <- lubridate::month(max(flow_data_stn$Date))
+      max_year_wy <- lubridate::year(max(flow_data_stn$Date))
       if (max_month_wy > water_year_start) {
-        end_date=as.Date(paste(max_year_wy+1,water_year_start,'01',sep='-'),"%Y-%m-%d")-1
+        end_date=as.Date(paste(max_year_wy + 1, water_year_start, '01', sep='-'), "%Y-%m-%d") - 1
       } else {
-        end_date=as.Date(paste(max_year_wy,water_year_start,'01',sep='-'),"%Y-%m-%d")-1
+        end_date=as.Date(paste(max_year_wy, water_year_start, '01', sep='-'), "%Y-%m-%d") - 1
       }
       
       # Fill in missing dates
-      flowdata_stn <- merge(flowdata_stn, 
-                            data.frame(Date=seq(start_date,end_date, 1)),
-                            all.y=TRUE)
+      flow_data_stn <- merge(flow_data_stn, 
+                             data.frame(Date=seq(start_date, end_date, 1)),
+                             all.y = TRUE)
       
       
       # Fill not water year, or January is chosen as water year start  
     } else {
-      min_year <- lubridate::year(min(flowdata_stn$Date))
-      max_year <- lubridate::year(max(flowdata_stn$Date))
+      min_year <- lubridate::year(min(flow_data_stn$Date))
+      max_year <- lubridate::year(max(flow_data_stn$Date))
       
       # Fill in missing dates
-      flowdata_stn <- merge(flowdata_stn, 
-                            data.frame(Date=seq(as.Date(paste(min_year,'01-01',sep='-'),
-                                                        "%Y-%m-%d"),
-                                                as.Date(paste(max_year  ,'12-31',sep='-'),
-                                                        '%Y-%m-%d'), 1)),
-                            all.y=TRUE)
+      flow_data_stn <- merge(flow_data_stn, 
+                             data.frame(Date=seq(as.Date(paste(min_year, '01-01', sep='-'), "%Y-%m-%d"),
+                                                 as.Date(paste(max_year  ,'12-31',sep='-'), '%Y-%m-%d'), 
+                                                 1)),
+                             all.y = TRUE)
     }
     
     # Fill in station number and parameter gaps (removed if not originally there)
-    flowdata_stn$STATION_NUMBER <- stn
-    flowdata_stn$Parameter <- "FLOW"
+    flow_data_stn$STATION_NUMBER <- stn
+    flow_data_stn$Parameter <- "FLOW"
     
-    # Append to flowdata
-    flowdata_new <- dplyr::bind_rows(flowdata_new,flowdata_stn)
+    # Append to flow_data
+    flow_data_new <- dplyr::bind_rows(flow_data_new, flow_data_stn)
     
   }
-  flowdata <- flowdata_new
+  flow_data <- flow_data_new
+  
+  # Return the original names of the Date and Value columns
+  names(flow_data)[names(flow_data) == "Date"] <- as.character(substitute(flow_dates))
+  names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(flow_values))
   
   #Return columns to original order
-  flowdata <-  flowdata[,orig_cols]
+  flow_data <-  flow_data[,orig_cols]
   
   
-  return(flowdata)
+  flow_data
+  
 } 

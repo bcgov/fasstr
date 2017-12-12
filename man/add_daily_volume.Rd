@@ -4,19 +4,20 @@
 \alias{add_daily_volume}
 \title{Add daily volumetric flows}
 \usage{
-add_daily_volume(flowdata = NULL, HYDAT = NULL)
+add_daily_volume(flow_data = NULL, flow_values = Value, HYDAT = NULL)
 }
 \arguments{
-\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
+\item{flow_data}{Data frame. A data frame of daily mean flow data. Not required if \code{HYDAT} argument is used.}
+
+\item{flow_values}{A column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
+Default \code{Value}.}
 
 \item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
 data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flowdata} argument is used.}
+database are required. Not required if \code{flow_data} argument is used.}
 }
 \value{
-A data frame of the original flowdata or HYDAT data with an additional column:
+A data frame of the original flow_data or HYDAT data with an additional column:
   \item{Volume_m3}{daily total volumetric flow, in units of cubic metres}
 }
 \description{
@@ -25,7 +26,7 @@ Add a column of daily volumetric flows to a streamflow dataset, in units of cubi
 \examples{
 \dontrun{
 
-add_daily_volume(flowdata = flowdata)
+add_daily_volume(flow_data = flow_data)
 
 add_daily_volume(HYDAT = "08NM116")
 
