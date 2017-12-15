@@ -68,7 +68,7 @@ flow_data <- add_daily_volume(HYDAT = "08HB048")
 flow_data <- add_cumulative_volume(HYDAT = "08HB048")
 flow_data <- add_daily_yield(HYDAT = "08HB048")
 flow_data <- add_cumulative_yield(HYDAT = "08HB048")
-
+flow_data <- calc_longterm_stats_2(HYDAT = "08HB048")
 
 # Multiple stations
 flow_data <- fill_missing_dates(HYDAT = c("08HB048","08NM116"))
@@ -79,6 +79,7 @@ flow_data <- add_daily_volume(HYDAT = c("08HB048","08NM116"))
 flow_data <- add_cumulative_volume(HYDAT = c("08HB048","08NM116"))
 flow_data <- add_daily_yield(HYDAT = c("08HB048","08NM116"))
 flow_data <- add_cumulative_yield(HYDAT = c("08HB048","08NM116"), basin_area = c("08HB048"=10.2))
+flow_data <- calc_longterm_stats_2(HYDAT = c("08HB048","08NM116"))
 
 
 
