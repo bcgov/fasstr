@@ -1,0 +1,109 @@
+# Copyright 2017 Province of British Columbia
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+# http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and limitations under the License.
+
+#' @title Add a basin area column to daily flows
+#'
+#' @description Add a column of basin areas to a streamflow dataset, in units of square kilometres.
+#'
+#' @param flow_data Data frame. A data frame of daily mean flow data. Not required if \code{HYDAT} argument is used.
+#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
+#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
+#'    database are required. Not required if \code{flow_data} argument is used.
+#' @param basin_area Numeric. Upstream drainage basin area of the hydrometric station, in sq. km. Leave blank if \code{HYDAT} is used or 
+#'    a column in \code{flow_data} called 'STATION_NUMBER' contains a WSC station number, as the basin area will be extracted from HYDAT. 
+#'    Using \code{basin_area} will replace the HYDAT basin area. If setting basin areas for multiple stations without HYDAT, set them using 
+#'    \code{basin_area = c("08NM116" = 795, "08NM242" = 10)}; stations not listed will result in NA basin areas.
+#'    
+#' @return A data frame of the original flow_data or HYDAT data with an additional column:
+#'   \item{Basin_Area_sqkm}{area of upstream drainage basin area, in square kilometres}
+#'
+#' @examples
+#' \dontrun{
+#' 
+#'add_basin_area(flow_data = flow_data, basin_area = 104.5)
+#' 
+#'add_basin_area(HYDAT = "08NM116")
+#'
+#' }
+#' @export
+
+
+#--------------------------------------------------------------
+
+add_basin_area <- function(flow_data=NULL,
+                           HYDAT=NULL,
+                           basin_area=NA){
+  
+  
+  
+  ## CHECKS ON FLOW DATA
+  ## -------------------
+  
+  # Check if data is provided
+  if(is.null(flow_data) & is.null(HYDAT))   stop("No flow data provided, must use flow_data or HYDAT arguments.")
+  if(!is.null(flow_data) & !is.null(HYDAT)) stop("Only one of flow_data or HYDAT arguments can be used.")
+  
+  # Get HYDAT data if selected and stations exist
+  if(!is.null(HYDAT)) {
+    if(!all(HYDAT %in% dplyr::pull(tidyhydat::allstations[1]))) stop("One or more stations listed in 'HYDAT' do not exist.")
+    flow_data <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
+  }
+  
+  # Save the original columns from the flow_data to remove added columns
+  orig_cols <- names(flow_data)
+  
+  # If no STATION_NUMBER in flow_data, make it so (required for grouping)
+  if(!"STATION_NUMBER" %in% colnames(flow_data)) {
+    flow_data$STATION_NUMBER <- "XXXXXXX"
+  }
+  
+  
+  ## CHECKS ON BASIN AREA
+  ## --------------------
+  
+  
+  # Extract basin_area for HYDAT stations if basin_area=NA 
+  if(all(is.na(basin_area))){
+    basin_stations <- data.frame(STATION_NUMBER = unique(flow_data$STATION_NUMBER))
+    basin_HYDAT <- suppressMessages(tidyhydat::hy_stations(station_number = basin_stations$STATION_NUMBER))
+    basin_HYDAT <- dplyr::select(basin_HYDAT, STATION_NUMBER, Basin_Area_sqkm = DRAINAGE_AREA_GROSS)
+    basin_area_table <- merge(basin_HYDAT, basin_stations, by = "STATION_NUMBER", all.y = TRUE)
+  }
+  
+  # Apply basin_areas to matching STATION_NUMBERS
+  if(!all(is.na(basin_area))){
+    if(!is.numeric(basin_area)) stop("basin_area arguments must be numeric.")
+    if(is.null(names(basin_area)) & length(basin_area) == 1) {
+      if(length(unique(flow_data$STATION_NUMBER)) > 1) warning("Just one basin_area area applied without a corresponding STATION_NUMBER, the basin_area will be applied to all stations.")
+      basin_area_table <- data.frame(STATION_NUMBER = unique(flow_data$STATION_NUMBER), Basin_Area_sqkm = basin_area)
+    } else {
+      if(length(basin_area)!=length(unique(flow_data$STATION_NUMBER)) | !all(names(basin_area) %in% unique(flow_data$STATION_NUMBER))) 
+        warning("The number/names of STATION_NUMBERS and basin_area values provided do not match the number/names of STATION_NUMBERS in the flow data. Only those that match will be applied.")
+      #if(!all(names(basin_area) %in% unique(flow_data$STATION_NUMBER))) warning("All STATION_NUMBERS listed in basin_area do not match those in the flow data. Only those that match will be applied.")
+      basin_area_table <- data.frame(STATION_NUMBER = names(basin_area), Basin_Area_sqkm = basin_area)
+    }
+  }
+  if(all(is.na(basin_area_table$Basin_Area_sqkm))) warning("No basin_area values provided or extracted from HYDAT. All values will be NA.")
+  
+  
+  # Add basin_area column
+  flow_data <- merge(flow_data, basin_area_table, by = "STATION_NUMBER", all.x = TRUE)
+  
+  
+  # Return columns to original order plus new column
+  flow_data <-  flow_data[,c(orig_cols, paste("Basin_Area_sqkm"))]
+  
+  
+  flow_data
+  
+}
+

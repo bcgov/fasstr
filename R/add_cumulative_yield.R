@@ -16,26 +16,33 @@
 #'    discharge from each day with the previous day(s) for each year, in units of millimetres. The cumulative flows restart every year.
 #'    Converts cumulative discharge to a depth of water based on the upstream drainge basin area.
 #'
-#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
+#' @param flow_data Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
 #'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
 #'    Not required if \code{HYDAT} argument is used.
+#' @param flow_dates A column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Default \code{Date}.
+#' @param flow_values A column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
+#'    Default \code{Value}.
+#' @param flow_basin_areas A column in flow_data of upstream drainage basin areas used to calculate the daily yield. If not provided 
+#'    this function will create one based on \code{basin_area} values.
 #' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
 #'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-#'    database are required. Not required if \code{flowdata} argument is used.
-#' @param basin_area Numeric. Upstream drainage basin area of the hydrometric station, in sq. km. Leave blank if \code{HYDAT} is used or 
-#'    a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the basin area will be extracted from HYDAT. 
-#'    Setting the basin area will replace the HYDAT basin area. 
+#'    database are required. Not required if \code{flow_data} argument is used.
+#' @param basin_area Numeric. If no \code{flow_basin_area} provided in flow_data, used to determine basin areas. Leave blank if \code{HYDAT}
+#'    is used or a column in \code{flow_data} called 'STATION_NUMBER' contains a WSC station number, as the basin area will be extracted from HYDAT. 
+#'    Using \code{basin_area} will replace the HYDAT basin area. If setting basin areas for multiple stations without HYDAT, set them using 
+#'    \code{basin_area = c("08NM116" = 795, "08NM242" = 10)}; stations not listed will result in NA basin areas.
 #' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
 #'    by the year in which they end. Default \code{FALSE}.
 #' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
 #' 
-#' @return A data frame of the original flowdata or HYDAT data with an additional column:
+#' @return A data frame of the original flow_data or HYDAT data with an additional column:
+#'   \item{Basin_Area_sqkm}{(if doesn't exist in data) area of upstream drainage basin area, in square kilometres}
 #'   \item{Cumul_Yield_mm}{cumulative yield flows for each day for each year, in units of millimetres}
 #'
 #' @examples
 #' \dontrun{
 #' 
-#'add_cumulative_yield(flowdata = flowdata, basin_area = 105.6)
+#'add_cumulative_yield(flow_data = flow_data, basin_area = 105.6)
 #' 
 #'add_cumulative_yield(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
 #'
@@ -44,79 +51,127 @@
 
 #--------------------------------------------------------------
 
-add_cumulative_yield <- function(flowdata=NULL,
-                                        HYDAT=NULL,
-                                        basin_area=NA,
-                                        water_year=FALSE,
-                                        water_year_start=10){
+add_cumulative_yield <- function(flow_data=NULL,
+                                 flow_dates=Date,
+                                 flow_values=Value,
+                                 flow_basin_areas=Basin_Area_sqkm,
+                                 HYDAT=NULL,
+                                 basin_area=NA,
+                                 water_year=FALSE,
+                                 water_year_start=10){
   
   
-  #--------------------------------------------------------------
-  #  Some basic error checking on the input parameters
   
-  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
-  if( is.null(HYDAT)) {
-    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
-    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
-    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
-    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
-    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
-    if( any(flowdata$Value <0, na.rm=TRUE))           {warning('flowdata cannot have negative values - check your data')}
+  ## CHECKS ON FLOW DATA
+  ## -------------------
+  
+  # Check if data is provided
+  if(is.null(flow_data) & is.null(HYDAT))   stop("No flow data provided, must use flow_data or HYDAT arguments.")
+  if(!is.null(flow_data) & !is.null(HYDAT)) stop("Only one of flow_data or HYDAT arguments can be used.")
+  
+  # Get HYDAT data if selected and stations exist
+  if(!is.null(HYDAT)) {
+    if(!all(HYDAT %in% dplyr::pull(tidyhydat::allstations[1]))) stop("One or more stations listed in 'HYDAT' do not exist.")
+    flow_data <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
-  if( !is.logical(water_year))         {stop("water_year argument must be logical (TRUE/FALSE)")}
-  if( !is.numeric(water_year_start) )  {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( length(water_year_start)>1)      {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( !water_year_start %in% c(1:12) ) {stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec)")}
+  # Save the original columns from the flow_data to remove added columns
+  orig_cols <- names(flow_data)
   
-  if( !is.na(basin_area) & !is.numeric(basin_area)) {stop("basin_area argument must be numeric")}
-  if( length(basin_area)>1)                         {stop("basin_area argument cannot have length > 1")}
-  
-  # If HYDAT station is listed, check if it exists and extract the flowdata and basin_area
-  if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 )                                  {stop("Only one HYDAT station can be selected.")}
-    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
-    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
-    if (is.na(basin_area)) {basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = HYDAT)$DRAINAGE_AREA_GROSS)}
+  # If no STATION_NUMBER in flow_data, make it so (required for grouping)
+  if(!"STATION_NUMBER" %in% colnames(flow_data)) {
+    flow_data$STATION_NUMBER <- "XXXXXXX"
   }
   
-  # If STATION_NUMBER column is in flowdata, extract the basin_area
-  if ( is.null(HYDAT) & is.na(basin_area) & "STATION_NUMBER" %in% names(flowdata) ){
-    basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = flowdata$STATION_NUMBER[1])$DRAINAGE_AREA_GROSS)
+  # Get the just STATION_NUMBER, Date, and Value columns
+  # This method allows the user to select the Date or Value columns if the column names are different
+  if(!as.character(substitute(flow_dates)) %in% names(flow_data))  
+    stop("Flow dates not found. Rename flow dates column to 'Date' or identify the column using 'flow_dates' argument.")
+  if(!as.character(substitute(flow_values)) %in% names(flow_data)) 
+    stop("Flow values not found. Rename flow values column to 'Value' or identify the column using 'flow_values' argument.")
+  
+  # Temporarily rename the Date and Value columns
+  names(flow_data)[names(flow_data) == as.character(substitute(flow_dates))] <- "Date"
+  names(flow_data)[names(flow_data) == as.character(substitute(flow_values))] <- "Value"
+  
+  # Check columns are in proper formats
+  if(!inherits(flow_data$Date[1], "Date"))  stop("'Date' column in flow_data data frame does not contain dates.")
+  if(!is.numeric(flow_data$Value))          stop("'Value' column in flow_data data frame does not contain numeric values.")
+  
+  
+  ## SET UP BASIN AREA
+  ## -----------------
+  
+  # If there is no basin_area column provided, create one
+  if(!as.character(substitute(flow_basin_areas)) %in% names(flow_data)){
+    flow_data <- fasstr::add_basin_area(flow_data, basin_area = basin_area)
   }
-  if( is.na(basin_area) )  {stop("no basin_area provided")}
   
-  #--------------------------------------------------------------
-  # Set the flowdata for analysis
+  # Temporarily rename the basin areas column (if "Basin_Area_sqkm" is in the dataframe but is not chosen as the basin area column, also
+  # change the name temporarily)
+  if("Basin_Area_sqkm" %in% names(flow_data) & as.character(substitute(flow_basin_areas))!="Basin_Area_sqkm"){
+    names(flow_data)[names(flow_data) == "Basin_Area_sqkm"] <- "Basin_Area_sqkm_temp"
+    names(flow_data)[names(flow_data) == as.character(substitute(flow_basin_areas))] <- "Basin_Area_sqkm"
+  }
+  if(!is.numeric(flow_data$Basin_Area_sqkm))          stop("Basin area column in flow_data data frame does not contain numeric values.")
   
-  # Get the list/order of dates to eventually return to the same order
-  flowdata <- flowdata[ order(flowdata$Date),]
-  col_ord <- names(flowdata)
+  
+  ## CHECKS ON OTHER ARGUMENTS
+  ## -------------------------
+  
+  if(!is.logical(water_year))         stop("water_year argument must be logical (TRUE/FALSE).")
+  if(!is.numeric(water_year_start))   stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec).")
+  if(length(water_year_start)>1)      stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec).")
+  if(!water_year_start %in% c(1:12))  stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec).")
+  
+  
+  
+  ## PREP FLOW_DATA
+  ## -----------------
   
   # Fill in missing dates to ensure all years are covered
-  flowdata_temp <- fasstr::fill_missing_dates(flowdata=flowdata)
-  flowdata_temp <- fasstr::add_date_variables(flowdata=flowdata_temp,water_year = T,water_year_start = water_year_start)
+  flow_data_temp <- fasstr::fill_missing_dates(flow_data = flow_data)
+  flow_data_temp <- fasstr::add_date_variables(flow_data = flow_data_temp, water_year = TRUE, water_year_start = water_year_start)
+  
   
   # Set selected year-type column for analysis
   if (water_year) {
-    flowdata_temp$AnalysisYear <- flowdata_temp$WaterYear
+    flow_data_temp$AnalysisYear <- flow_data_temp$WaterYear
   }  else {
-    flowdata_temp$AnalysisYear <- flowdata_temp$Year
+    flow_data_temp$AnalysisYear <- flow_data_temp$Year
   }
   
-  #--------------------------------------------------------------
-  # Add column to flowdata
+  ## ADD YIELD COLUMN
+  ## -----------------
   
-  # Add cumulative yields
-  flowdata_temp <- dplyr::mutate(dplyr::group_by(flowdata_temp,AnalysisYear),Cumul_Yield_mm=cumsum(Value)*86400/(basin_area*1000))
+  # Caluclate yields
+  flow_data_temp <- dplyr::mutate(dplyr::group_by(flow_data_temp, STATION_NUMBER, AnalysisYear), Cumul_Yield_mm = cumsum(Value) * 86400 / (Basin_Area_sqkm * 1000))
+  flow_data_temp <- dplyr::select(dplyr::ungroup(flow_data_temp), STATION_NUMBER, Date, Cumul_Yield_mm)
   
-  # Return flowdata to original dates
-  flowdata_temp <- dplyr::select(dplyr::ungroup(flowdata_temp),Date,Cumul_Yield_mm)
-  
-  flowdata <- merge(flowdata,flowdata_temp,by="Date",all.x = T)
-  flowdata <-  flowdata[,c(col_ord,paste("Cumul_Yield_mm"))]
+  # Add column
+  flow_data <- merge(flow_data, flow_data_temp, by = c("STATION_NUMBER", "Date"), all.x = TRUE)
   
   
-  return(flowdata)
+  ## ---------------
+  
+  # Return the original names of the Date and Value columns
+  names(flow_data)[names(flow_data) == "Date"] <- as.character(substitute(flow_dates))
+  names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(flow_values))
+  names(flow_data)[names(flow_data) == "Basin_Area_sqkm"] <- as.character(substitute(flow_basin_areas))
+  if("Basin_Area_sqkm_temp" %in% names(flow_data)) {
+    names(flow_data)[names(flow_data) == "Basin_Area_sqkm_temp"] <- "Basin_Area_sqkm"
+  }
+  
+  
+  # Return columns to original order plus new column
+  if(as.character(substitute(flow_basin_areas)) %in% orig_cols) {
+    flow_data <-  flow_data[,c(orig_cols, paste("Cumul_Yield_mm"))]
+  } else {
+    flow_data <-  flow_data[,c(orig_cols, paste("Basin_Area_sqkm"), paste("Cumul_Yield_mm"))]
+  }
+  
+  
+  flow_data
+  
 }
 

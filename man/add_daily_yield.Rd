@@ -4,24 +4,31 @@
 \alias{add_daily_yield}
 \title{Add daily volumetric runoff yields}
 \usage{
-add_daily_yield(flowdata = NULL, HYDAT = NULL, basin_area = NA)
+add_daily_yield(flow_data = NULL, flow_values = Value,
+  flow_basin_areas = Basin_Area_sqkm, HYDAT = NULL, basin_area = NA)
 }
 \arguments{
-\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
+\item{flow_data}{Data frame. A data frame of daily mean flow data. Not required if \code{HYDAT} argument is used.}
+
+\item{flow_values}{A column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
+Default \code{Value}.}
+
+\item{flow_basin_areas}{A column in flow_data of upstream drainage basin areas used to calculate the daily yield. If not provided 
+this function will create one based on \code{basin_area} values.}
 
 \item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
 data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flowdata} argument is used.}
+database are required. Not required if \code{flow_data} argument is used.}
 
-\item{basin_area}{Numeric. Upstream drainage basin area of the hydrometric station, in sq. km. Leave blank if \code{HYDAT} is used or 
-a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the basin area will be extracted from HYDAT. 
-Setting the basin area will replace the HYDAT basin area.}
+\item{basin_area}{Numeric. If no \code{flow_basin_area} provided in flow_data, used to determine basin areas. Leave blank if \code{HYDAT}
+is used or a column in \code{flow_data} called 'STATION_NUMBER' contains a WSC station number, as the basin area will be extracted from HYDAT. 
+Using \code{basin_area} will replace the HYDAT basin area. If setting basin areas for multiple stations without HYDAT, set them using 
+\code{basin_area = c("08NM116" = 795, "08NM242" = 10)}; stations not listed will result in NA basin areas.}
 }
 \value{
-A data frame of the original flowdata or HYDAT data with an additional column:
-  \item{Yield_MM}{daily runoff yield flow, in units of millimetres}
+A data frame of the original flow_data or HYDAT data with an additional columns:
+  \item{Basin_Area_sqkm}{(if doesn't exist in data) area of upstream drainage basin area, in square kilometres}
+  \item{Yield_mm}{daily runoff yield flow, in units of millimetres}
 }
 \description{
 Add a column of daily runoff yields to a streamflow dataset, in units of millimetres. Converts the discharge to a depth
@@ -30,7 +37,7 @@ Add a column of daily runoff yields to a streamflow dataset, in units of millime
 \examples{
 \dontrun{
 
-add_daily_yield(flowdata = flowdata, basin_area = 104.5)
+add_daily_yield(flow_data = flow_data, basin_area = 104.5)
 
 add_daily_yield(HYDAT = "08NM116")
 

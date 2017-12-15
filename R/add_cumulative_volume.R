@@ -99,8 +99,8 @@ add_cumulative_volume <- function(flow_data=NULL,
   ## -----------------
   
   # Fill in missing dates to ensure all years are covered
-  flow_data_temp <- fasstr::fill_missing_dates(flow_data=flow_data)
-  flow_data_temp <- fasstr::add_date_variables(flow_data=flow_data_temp,water_year = T,water_year_start = water_year_start)
+  flow_data_temp <- fasstr::fill_missing_dates(flow_data = flow_data)
+  flow_data_temp <- fasstr::add_date_variables(flow_data = flow_data_temp, water_year = TRUE, water_year_start = water_year_start)
   
   # Set selected year-type column for analysis
   if (water_year) {
