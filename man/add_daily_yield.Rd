@@ -5,7 +5,7 @@
 \title{Add daily volumetric runoff yields}
 \usage{
 add_daily_yield(flow_data = NULL, flow_values = Value,
-  flow_basin_areas = Basin_Area_sqkm, HYDAT = NULL, basin_area = NA)
+  flow_basin_areas = flow_basin_areas, HYDAT = NULL, basin_area = NA)
 }
 \arguments{
 \item{flow_data}{Data frame. A data frame of daily mean flow data. Not required if \code{HYDAT} argument is used.}
@@ -27,7 +27,6 @@ Using \code{basin_area} will replace the HYDAT basin area. If setting basin area
 }
 \value{
 A data frame of the original flow_data or HYDAT data with an additional columns:
-  \item{Basin_Area_sqkm}{(if doesn't exist in data) area of upstream drainage basin area, in square kilometres}
   \item{Yield_mm}{daily runoff yield flow, in units of millimetres}
 }
 \description{

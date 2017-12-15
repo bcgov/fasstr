@@ -2,8 +2,8 @@
 
 
 devtools::document()
-#install.packages("/Users/jongoetz/Documents/R/fasstr devel",repos = NULL, type = "source")
-install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
+install.packages("/Users/jongoetz/Documents/R/fasstr devel",repos = NULL, type = "source")
+#install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
 library(fasstr)
 library(dplyr)
@@ -18,10 +18,10 @@ library(dplyr)
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% 
   fill_missing_dates() %>% 
   add_date_variables(water_year = T) %>% 
-  add_rolling_means() %>% 
+  add_rolling_means(days = 7) %>% 
   add_daily_volume() %>% 
   add_cumulative_volume() %>% 
-  add_daily_yield() %>% 
+  add_daily_yield() %>%
   add_cumulative_yield()
 
 
@@ -43,7 +43,7 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) 
 # Station no STATION_NUMBER
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% 
   select(Date,Value) %>% 
- # fill_missing_dates() %>% 
+  # fill_missing_dates() %>% 
   add_date_variables(water_year = T) %>% 
   add_rolling_means() %>% 
   add_daily_volume() %>% 
@@ -84,9 +84,15 @@ flowdata <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) %
   add_cumulative_yield(water_year = T, water_year_start = 12)
 
 
-  add_basin_area(basin=10)
+add_basin_area(basin=10)
 
-flow_data <- add_basin_area(HYD="08HB048")
+#  flow_data <- add_basin_area(HYD=c("08HB048","08NM116"), basin_area = c("08HB048"=100,"08NM116"=1)) %>% 
+flow_data <- add_basin_area(HYD=c("08HB048","08NM116")) %>% 
+  add_daily_yield(flow_basin_areas = BA, basin_area = 10)
+
+
+
+
 flow
 
 

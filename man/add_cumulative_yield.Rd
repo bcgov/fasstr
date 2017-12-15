@@ -5,7 +5,7 @@
 \title{Add daily cumulative runoff yield flows on an annual basis}
 \usage{
 add_cumulative_yield(flow_data = NULL, flow_dates = Date,
-  flow_values = Value, flow_basin_areas = Basin_Area_sqkm, HYDAT = NULL,
+  flow_values = Value, flow_basin_areas = flow_basin_areas, HYDAT = NULL,
   basin_area = NA, water_year = FALSE, water_year_start = 10)
 }
 \arguments{
