@@ -155,6 +155,14 @@ Q_months <- dplyr::summarize(dplyr::group_by(flow_data,MonthName,STATION_NUMBER)
 
 
 
+#Examples
+
+#single station
+Q_data <- tidyhydat::hy_daily_flows(station_number = "08HB048")
+longterm <- calc_longterm_stats_3(flow_data = Q_data)
+
+#mulitple stations
+Q_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116"))
 
 
 
