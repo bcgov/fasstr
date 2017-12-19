@@ -4,48 +4,47 @@
 \alias{plot_longterm_stats}
 \title{Plot the long-term and long-term monthly summary statistics}
 \usage{
-plot_longterm_stats(flowdata = NULL, HYDAT = NULL, water_year = FALSE,
-  water_year_start = 10, start_year = NULL, end_year = NULL,
-  exclude_years = NULL, log_discharge = TRUE, station_name = NA,
-  write_plot = FALSE, write_imgtype = "pdf", write_imgsize = c(5, 11),
-  write_dir = ".", na.rm = list(na.rm.global = FALSE))
+plot_longterm_stats(flow_data = NULL, flow_dates = Date,
+  flow_values = Value, flow_stations = STATION_NUMBER, HYDAT = NULL,
+  plot_station = NULL, water_year = FALSE, water_year_start = 10,
+  start_year = 0, end_year = 9999, exclude_years = NULL,
+  log_discharge = TRUE, ignore_missing = TRUE)
 }
 \arguments{
-\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
+\item{flow_data}{a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
+names/numbers. Leave blank if using \code{HYDAT} argument.}
 
-\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flowdata} argument is used.}
+\item{flow_dates}{a column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Leave blank if using \code{HYDAT} 
+argument. Default \code{Date}.}
 
-\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
-by the year in which they end. Default \code{FALSE}.}
+\item{flow_values}{a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
+Leave blank if using \code{HYDAT} argument. Default \code{Value}.}
 
-\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
+\item{flow_stations}{a column in flow_data that contains station identifiers for each flow data set.
+Removing 'STATION_NUMBER' column in flow_data or incorrectly identifying will calculate statistics on all flow values from all stations.
+If using \code{HYDAT} argument, setting \code{flow_stations} to anything besides \code{STATION_NUMBER} will have similar effects.
+Default \code{STATION_NUMBER}. Must select just one station to plot using \code{plot_station} argument.}
 
-\item{start_year}{Integer. First year to consider for analysis. Leave blank if all years are required.}
+\item{HYDAT}{a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
+\code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.}
 
-\item{end_year}{Integer. Last year to consider for analysis. Leave blank if all years are required.}
+\item{plot_station}{a character string identifying the station listed in the flow data/HYDAT data to plot if multiple stations are 
+provided.}
 
-\item{exclude_years}{Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.}
+\item{water_year}{a logical value indicating whether to use water years to group flow data instead of calendar years. Water years 
+are designated by the year in which they end. Default \code{FALSE}.}
 
-\item{log_discharge}{Logical. Plot the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.}
+\item{water_year_start}{a numeric value indicating the month of the start of the water year. Used if \code{water_year=TRUE}. 
+Default \code{10}.}
 
-\item{station_name}{Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
-files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
-will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number.}
+\item{start_year}{a numeric value of the first year to consider for analysis. Leave blank if all years are required.}
 
-\item{write_plot}{Logical. Write the plot to specified directory. Default \code{FALSE}.}
+\item{end_year}{a numeric value of the last year to consider for analysis. Leave blank if all years are required.}
 
-\item{write_imgtype}{Character. One of "pdf","png","jpeg","tiff", or "bmp" image types to write the plot as. Default \code{"pdf"}.}
+\item{exclude_years}{a numeric vector of years to exclude from analysis. Leave blank if all years are required.}
 
-\item{write_imgsize}{Numeric. Height and width, respectively, of saved plot. Default \code{c(5,11)}.}
-
-\item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
-Default is the working directory.}
-
-\item{na.rm}{TBD}
+\item{log_discharge}{a logical value to indicate plotting thedischarge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.}
 }
 \value{
 A ggplot2 object with the following plots:
@@ -59,13 +58,13 @@ A ggplot2 object with the following plots:
 }
 \description{
 Plots the long-term and long-term monthly mean, median, maximum, minimum, and 5, 25, 75, and 95 percentiles of daily 
-   flow values from a streamflow dataset. Plots statistics from all daily discharge values from all years, unless specified. Data 
-   calculated using calc_longterm_stats() function.
+   flow values from a single streamflow dataset. Plots statistics from all daily discharge values from all years, unless specified. 
+   Data calculated using calc_longterm_stats() function.
 }
 \examples{
 \dontrun{
 
-plot_longterm_stats(flowdata = flowdata, station_name = "MissionCreek", write_plot = TRUE)
+plot_longterm_stats(flow_data = flow_data)
 
 plot_longterm_stats(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
 
