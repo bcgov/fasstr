@@ -2,8 +2,8 @@
 
 
 devtools::document()
-install.packages("/Users/jongoetz/Documents/R/fasstr devel",repos = NULL, type = "source")
-#install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
+#install.packages("/Users/jongoetz/Documents/R/fasstr devel",repos = NULL, type = "source")
+install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
 library(fasstr)
 library(dplyr)
@@ -79,7 +79,62 @@ flow_data <- add_daily_volume(HYDAT = c("08HB048","08NM116"))
 flow_data <- add_cumulative_volume(HYDAT = c("08HB048","08NM116"))
 flow_data <- add_daily_yield(HYDAT = c("08HB048","08NM116"))
 flow_data <- add_cumulative_yield(HYDAT = c("08HB048","08NM116"), basin_area = c("08HB048"=10.2))
-flow_data <- calc_longterm_stats_2(HYDAT = c("08HB048","08NM116"))
+flow_data <- calc_longterm_stats_2(HYDAT = c("08HB048"))
+
+
+
+
+
+
+
+
+
+
+
+flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) %>% 
+  #group_by(STATION_NUMBER) %>% 
+  mutate(MonthName=month.abb[lubridate::month(Date)])
+flow_data <-   
+  dplyr::summarize(flow_data,
+                   Mean = mean(Value, na.rm = TRUE),
+                   Median = median(Value, na.rm = TRUE),
+                   Maximum = max(Value, na.rm = TRUE),
+                   Minimum = min(Value, na.rm = TRUE))
+
+results <- data.frame()
+for (month in unique(flow_data$MonthName)) {
+  flow_data_month <- dplyr::filter(flow_data,MonthName==month)
+  results_month <-       dplyr::summarize(flow_data_month,
+                     Mean = mean(Value, na.rm = TRUE),
+                     Median = median(Value, na.rm = TRUE),
+                     Maximum = max(Value, na.rm = TRUE),
+                     Minimum = min(Value, na.rm = TRUE))
+  results_month$Month <- month
+  results <- rbind(results,results_month)
+}
+
+
+flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) %>% 
+  group_by(STATION_NUMBER) 
+
+calc_longterm_stats_2(flow_data )
+
+Q_months <- dplyr::summarize(dplyr::group_by(flow_data,MonthName,STATION_NUMBER),
+                             Mean = mean(Value, na.rm = TRUE),
+                             Median = median(Value, na.rm = TRUE),
+                             Maximum = max(Value, na.rm = TRUE),
+                             Minimum = min(Value, na.rm = TRUE))
+
+
+
+
+
+
+
+
+
+
+
 
 
 

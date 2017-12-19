@@ -105,7 +105,7 @@ plot_daily_stats(HYDAT = "08NM116",
 #> $daily_statisitics
 ```
 
-![](README-plot1-1.png)
+![](tools/readme/README-plot1-1.png)
 
 ### Plotting example 2: flow duration curves
 
@@ -117,7 +117,7 @@ plot_flow_duration(HYDAT = "08NM116",
                    end_year = 2010)
 ```
 
-![](README-plot2-1.png)
+![](tools/readme/README-plot2-1.png)
 
 ### Analysis example: low-flow frequency analysis
 

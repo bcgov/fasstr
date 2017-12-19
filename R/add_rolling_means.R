@@ -67,6 +67,10 @@ add_rolling_means <- function(flow_data=NULL,
     flow_data <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
+  # Get groups of flow_data to return after
+  grouping <- group_vars(flow_data)
+  flow_data <- ungroup(flow_data)
+  
   # If no STATION_NUMBER in flow_data, make it so (required for grouping)
   if(!"STATION_NUMBER" %in% colnames(flow_data)) {
     flow_data$STATION_NUMBER <- "XXXXXXX"
@@ -113,7 +117,7 @@ add_rolling_means <- function(flow_data=NULL,
     
     # Add rolling means
     for (x in days) {
-      flow_data_stn[, paste0("Q", x, "Day")] <- zoo::rollapply(flow_data_stn$Value,  x, mean, fill=NA, align = align)
+      flow_data_stn[, paste0("Q", x, "Day")] <- RcppRoll::roll_mean(flow_data_stn$Value,  n=x, fill=NA, align = align)
     }
     
     # Return flow_data_stn to original dates
@@ -133,6 +137,9 @@ add_rolling_means <- function(flow_data=NULL,
   # Return the original names of the Date and Value columns
   names(flow_data)[names(flow_data) == "Date"] <- as.character(substitute(flow_dates))
   names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(flow_values))
+  
+  # Regroup by the original groups
+  flow_data <- dplyr::group_by_at(flow_data,vars(grouping))
   
   flow_data
   

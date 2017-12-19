@@ -20,14 +20,15 @@ Imports:
     lubridate,
     PearsonDS,
     plyr,
+    RcppRoll,
     scales,
     tidyr,
-    zoo,
     zyp
 Remotes:
     ropensci/tidyhydat
 LazyData: true
 RoxygenNote: 6.0.1
 Suggests: knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr

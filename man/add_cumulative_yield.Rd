@@ -18,16 +18,17 @@ Not required if \code{HYDAT} argument is used.}
 \item{flow_values}{A column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
 Default \code{Value}.}
 
-\item{flow_basin_areas}{A column in flow_data of upstream drainage basin areas used to calculate the daily yield. If not provided 
-this function will create one based on \code{basin_area} values.}
+\item{flow_basin_areas}{A column in flow_data of upstream drainage basin areas used to calculate the daily yield. If left blank
+this function will use basin areas provided by the fasstr::add_basin_areas() function using the \code{basin_area} argument.}
 
 \item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
 data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
 database are required. Not required if \code{flow_data} argument is used.}
 
-\item{basin_area}{Numeric. If no \code{flow_basin_area} provided in flow_data, used to determine basin areas. Leave blank if \code{HYDAT}
-is used or a column in \code{flow_data} called 'STATION_NUMBER' contains a WSC station number, as the basin area will be extracted from HYDAT. 
-Using \code{basin_area} will replace the HYDAT basin area. If setting basin areas for multiple stations without HYDAT, set them using 
+\item{basin_area}{Numeric. If no \code{flow_basin_area} provided in flow_data, used to determine basin areas from the
+fasstr::add_basin_areas() function. Leave blank if \code{HYDAT} is used or a column in \code{flow_data} called 'STATION_NUMBER' 
+contains a WSC station number, as the basin area will be extracted from HYDAT. Using \code{basin_area} will replace the HYDAT basin 
+area. If setting basin areas for multiple stations without HYDAT, set them using 
 \code{basin_area = c("08NM116" = 795, "08NM242" = 10)}; stations not listed will result in NA basin areas.}
 
 \item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
@@ -37,7 +38,6 @@ by the year in which they end. Default \code{FALSE}.}
 }
 \value{
 A data frame of the original flow_data or HYDAT data with an additional column:
-  \item{Basin_Area_sqkm}{(if doesn't exist in data) area of upstream drainage basin area, in square kilometres}
   \item{Cumul_Yield_mm}{cumulative yield flows for each day for each year, in units of millimetres}
 }
 \description{

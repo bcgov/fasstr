@@ -65,6 +65,9 @@ add_cumulative_volume <- function(flow_data=NULL,
   # Save the original columns from the flow_data to remove added columns
   orig_cols <- names(flow_data)
   
+  # Get groups of flow_data to return after
+  grouping <- group_vars(flow_data)
+  
   # If no STATION_NUMBER in flow_data, make it so (required for grouping)
   if(!"STATION_NUMBER" %in% colnames(flow_data)) {
     flow_data$STATION_NUMBER <- "XXXXXXX"
@@ -111,14 +114,32 @@ add_cumulative_volume <- function(flow_data=NULL,
   
   ## ADD VOLUME COLUMN
   ## -----------------
+
   
-  # Caluclate volumes
-  flow_data_temp <- dplyr::mutate(dplyr::group_by(flow_data_temp, STATION_NUMBER, AnalysisYear), Cumul_Volume_m3 = cumsum(Value) * 86400)
-  flow_data_temp <- dplyr::select(dplyr::ungroup(flow_data_temp), STATION_NUMBER, Date, Cumul_Volume_m3)
+  # Create cumsum function to not create cumsum if any NA's in a given year
+  cumsum_na <- function(x) {
+    if (any(is.na(x))) {
+      return(rep(NA, length(x)))
+    } else {
+      cumsum(x)
+    }
+  }
   
-  # Add column
-  flow_data <- merge(flow_data, flow_data_temp, by = c("STATION_NUMBER", "Date"), all.x = TRUE)
+  # Add cumulative volume column and ungroup (remove analysisyear group)
+  flow_data_temp <- dplyr::ungroup(flow_data_temp)
+  flow_data_temp <- dplyr::mutate(dplyr::group_by(flow_data_temp,STATION_NUMBER,AnalysisYear, add = TRUE), Cumul_Volume_m3 = cumsum_na(Value)*86400)
+  flow_data_temp <- dplyr::ungroup(flow_data_temp)
   
+  # Get new column and merge back with
+  flow_data_temp <- dplyr::select(flow_data_temp, STATION_NUMBER, Date, Cumul_Volume_m3)
+  if("Cumul_Volume_m3" %in% orig_cols){
+    flow_data <- merge(flow_data, flow_data_temp, by = c("STATION_NUMBER", "Date"), all.x = TRUE)
+    flow_data$Cumul_Volume_m3 <- flow_data$Cumul_Volume_m3.y
+    flow_data <- dplyr::select(flow_data,-Cumul_Volume_m3.y,-Cumul_Volume_m3.x)
+  } else {
+    flow_data <- merge(flow_data, flow_data_temp, by = c("STATION_NUMBER", "Date"), all.x = TRUE)
+  }
+
   
   ## ---------------
   
@@ -127,8 +148,14 @@ add_cumulative_volume <- function(flow_data=NULL,
   names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(flow_values))
   
   # Return columns to original order plus new column
-  flow_data <-  flow_data[,c(orig_cols,paste("Cumul_Volume_m3"))]
+  if("Cumul_Volume_m3" %in% orig_cols){
+    flow_data <-  flow_data[,c(orig_cols)]
+  } else {
+    flow_data <-  flow_data[,c(orig_cols, paste("Cumul_Volume_m3"))]
+  }
   
+  # Regroup by the original groups
+  flow_data <- dplyr::group_by_at(flow_data,vars(grouping))
   
   flow_data
   

@@ -78,6 +78,9 @@ add_cumulative_yield <- function(flow_data=NULL,
   # Save the original columns from the flow_data to remove added columns
   orig_cols <- names(flow_data)
   
+  # Get groups of flow_data to return after
+  grouping <- group_vars(flow_data)
+  
   # If no STATION_NUMBER in flow_data, make it so (required for grouping)
   if(!"STATION_NUMBER" %in% colnames(flow_data)) {
     flow_data$STATION_NUMBER <- "XXXXXXX"
@@ -134,14 +137,12 @@ add_cumulative_yield <- function(flow_data=NULL,
   if(!water_year_start %in% c(1:12))  stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec).")
   
   
-  
   ## PREP FLOW_DATA
   ## -----------------
   
   # Fill in missing dates to ensure all years are covered
   flow_data_temp <- fasstr::fill_missing_dates(flow_data = flow_data)
   flow_data_temp <- fasstr::add_date_variables(flow_data = flow_data_temp, water_year = TRUE, water_year_start = water_year_start)
-  
   
   # Set selected year-type column for analysis
   if (water_year) {
@@ -150,33 +151,52 @@ add_cumulative_yield <- function(flow_data=NULL,
     flow_data_temp$AnalysisYear <- flow_data_temp$Year
   }
   
-  ## ADD YIELD COLUMN
+  ## ADD VOLUME COLUMN
   ## -----------------
   
-  # Caluclate yields
-  flow_data_temp <- dplyr::mutate(dplyr::group_by(flow_data_temp, STATION_NUMBER, AnalysisYear), Cumul_Yield_mm = cumsum(Value) * 86400 / (Basin_Area_sqkm_temp * 1000))
-  flow_data_temp <- dplyr::select(dplyr::ungroup(flow_data_temp), STATION_NUMBER, Date, Cumul_Yield_mm)
+  # Create cumsum function to not create cumsum if any NA's in a given year
+  cumsum_na <- function(x) {
+    if (any(is.na(x))) {
+      return(rep(NA, length(x)))
+    } else {
+      cumsum(x)
+    }
+  }
   
-  # Add column
-  flow_data <- merge(flow_data, flow_data_temp, by = c("STATION_NUMBER", "Date"), all.x = TRUE)
+  # Add cumulative volume column and ungroup (remove analysisyear group)
+  flow_data_temp <- dplyr::ungroup(flow_data_temp)
+  flow_data_temp <- dplyr::mutate(dplyr::group_by(flow_data_temp,STATION_NUMBER,AnalysisYear, add = TRUE), Cumul_Yield_mm = cumsum_na(Value) * 86400 / (Basin_Area_sqkm_temp * 1000))
+  flow_data_temp <- dplyr::ungroup(flow_data_temp)
   
+  # Get new column and merge back with
+  flow_data_temp <- dplyr::select(flow_data_temp, STATION_NUMBER, Date, Cumul_Yield_mm)
+  if("Cumul_Yield_mm" %in% orig_cols){
+    flow_data <- merge(flow_data, flow_data_temp, by = c("STATION_NUMBER", "Date"), all.x = TRUE)
+    flow_data$Cumul_Yield_mm <- flow_data$Cumul_Yield_mm.y
+    flow_data <- dplyr::select(flow_data,-Cumul_Yield_mm.y,-Cumul_Yield_mm.x)
+  } else {
+    flow_data <- merge(flow_data, flow_data_temp, by = c("STATION_NUMBER", "Date"), all.x = TRUE)
+  }
+
   
   ## ---------------
   
   # Return the original names of the Date and Value columns
   names(flow_data)[names(flow_data) == "Date"] <- as.character(substitute(flow_dates))
   names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(flow_values))
-
+  
   # Return columns to original order plus new column
   if("Cumul_Yield_mm" %in% orig_cols){
     flow_data <-  flow_data[,c(orig_cols)]
   } else {
     flow_data <-  flow_data[,c(orig_cols, paste("Cumul_Yield_mm"))]
   }
-
   
+  # Regroup by the original groups
+  flow_data <- dplyr::group_by_at(flow_data,vars(grouping))
   
   flow_data
+
   
 }
 
