@@ -112,10 +112,28 @@ for (month in unique(flow_data$MonthName)) {
 
 
 flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) %>% 
-  rename(Station=STATION_NUMBER) %>% 
-  group_by(Station) %>% 
-  calc_longterm_stats_2(water_year = T, custom_months = 1:4, custom_months_label = "WINTER", transpose = T)
+  select(Date,Value,Station=STATION_NUMBER) %>% 
+  fill_missing_dates(flow_stations = Station) %>% 
+  add_basin_area(flow_stations = Station)
 
+
+flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) %>% 
+  fill_missing_dates() %>% 
+  add_basin_area() %>% 
+  add_cumulative_volume() %>% 
+  add_cumulative_yield() %>% 
+  add_daily_volume() %>% 
+  add_daily_yield() %>% 
+  add_rolling_means()
+
+
+
+  calc_longterm_stats_3(water_year = T,custom_months = 1:4,custom_months_label = "WINTER", ignore_missing = T, start_year = 1973)
+
+  calc_longterm_stats_2(water_year = T, custom_months = 1:4, custom_months_label = "WINTER", transpose = T, start_year = 1971)
+
+  test <- calc_longterm_stats_3(HYDAT = c("08HB048","08NM116"),flow_stations = 44,custom_months = 1:4,custom_months_label = "WINTER", ignore_missing = T, start_year = 1973)
+  
   add_basin_area() %>% 
   group_by(Basin_Area_sqkm) %>% 
   add_cumulative_volume() %>% 

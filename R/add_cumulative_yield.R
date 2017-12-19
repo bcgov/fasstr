@@ -16,27 +16,30 @@
 #'    discharge from each day with the previous day(s) for each year, in units of millimetres. The cumulative flows restart every year.
 #'    Converts cumulative discharge to a depth of water based on the upstream drainge basin area.
 #'
-#' @param flow_data Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-#'    Not required if \code{HYDAT} argument is used.
-#' @param flow_dates A column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Default \code{Date}.
-#' @param flow_values A column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
-#'    Default \code{Value}.
-#' @param flow_basin_areas A column in flow_data of upstream drainage basin areas used to calculate the daily yield. If left blank
+#' @param flow_data a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
+#'    names/numbers. Leave blank if using \code{HYDAT} argument.
+#' @param flow_dates a column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Leave blank if using \code{HYDAT} 
+#'    argument. Default \code{Date}. 
+#' @param flow_values a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
+#'    Leave blank if using \code{HYDAT} argument. Default \code{Value}.
+#' @param flow_stations a column in flow_data that contains station identifiers for each flow data set, if required. Default 
+#'    \code{STATION_NUMBER}. 
+#' @param flow_basin_areas a column in flow_data of numeric upstream drainage basin areas used to calculate the daily yield. If left blank
 #'    this function will use basin areas provided by the fasstr::add_basin_areas() function using the \code{basin_area} argument.
-#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-#'    database are required. Not required if \code{flow_data} argument is used.
-#' @param basin_area Numeric. If no \code{flow_basin_area} provided in flow_data, used to determine basin areas from the
+#' @param HYDAT a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+#'    extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
+#'    \code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.
+#' @param basin_area a numeric vector of basin areas. If no \code{flow_basin_area} provided in flow_data, used to determine basin areas from the
 #'    fasstr::add_basin_areas() function. Leave blank if \code{HYDAT} is used or a column in \code{flow_data} called 'STATION_NUMBER' 
 #'    contains a WSC station number, as the basin area will be extracted from HYDAT. Using \code{basin_area} will replace the HYDAT basin 
 #'    area. If setting basin areas for multiple stations without HYDAT, set them using 
 #'    \code{basin_area = c("08NM116" = 795, "08NM242" = 10)}; stations not listed will result in NA basin areas.
-#' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
-#'    by the year in which they end. Default \code{FALSE}.
-#' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
+#' @param water_year a logical value indicating whether to use water years to group flow data instead of calendar years. Water years 
+#'    are designated by the year in which they end. Default \code{FALSE}.
+#' @param water_year_start a numeric value indicating the month of the start of the water year. Used if \code{water_year=TRUE}. 
+#'    Default \code{10}.
 #' 
-#' @return A data frame of the original flow_data or HYDAT data with an additional column:
+#' @return A tibble data frame of the original flow_data or HYDAT data with an additional column:
 #'   \item{Cumul_Yield_mm}{cumulative yield flows for each day for each year, in units of millimetres}
 #'
 #' @examples
@@ -54,6 +57,7 @@
 add_cumulative_yield <- function(flow_data=NULL,
                                  flow_dates=Date,
                                  flow_values=Value,
+                                 flow_stations=STATION_NUMBER,
                                  flow_basin_areas=flow_basin_areas,
                                  HYDAT=NULL,
                                  basin_area=NA,
@@ -81,9 +85,9 @@ add_cumulative_yield <- function(flow_data=NULL,
   # Get groups of flow_data to return after
   grouping <- group_vars(flow_data)
   
-  # If no STATION_NUMBER in flow_data, make it so (required for grouping)
-  if(!"STATION_NUMBER" %in% colnames(flow_data)) {
-    flow_data$STATION_NUMBER <- "XXXXXXX"
+  # If no STATION_NUMBER in flow_data, make it so (required for station grouping)
+  if(!as.character(substitute(flow_stations)) %in% colnames(flow_data)) {
+    flow_data[, as.character(substitute(flow_stations))] <- "XXXXXXX"
   }
   
   # Get the just STATION_NUMBER, Date, and Value columns
@@ -94,6 +98,7 @@ add_cumulative_yield <- function(flow_data=NULL,
     stop("Flow values not found. Rename flow values column to 'Value' or identify the column using 'flow_values' argument.")
   
   # Temporarily rename the Date and Value columns
+  names(flow_data)[names(flow_data) == as.character(substitute(flow_stations))] <- "STATION_NUMBER"
   names(flow_data)[names(flow_data) == as.character(substitute(flow_dates))] <- "Date"
   names(flow_data)[names(flow_data) == as.character(substitute(flow_values))] <- "Value"
   
@@ -182,6 +187,7 @@ add_cumulative_yield <- function(flow_data=NULL,
   ## ---------------
   
   # Return the original names of the Date and Value columns
+  names(flow_data)[names(flow_data) == "STATION_NUMBER"] <- as.character(substitute(flow_stations))
   names(flow_data)[names(flow_data) == "Date"] <- as.character(substitute(flow_dates))
   names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(flow_values))
   
@@ -195,8 +201,8 @@ add_cumulative_yield <- function(flow_data=NULL,
   # Regroup by the original groups
   flow_data <- dplyr::group_by_at(flow_data,vars(grouping))
   
-  flow_data
-
+  dplyr::as_tibble(flow_data)
+  
   
 }
 

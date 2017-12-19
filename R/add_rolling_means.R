@@ -17,16 +17,20 @@
 #'   would obtain a mean of the given and previous 6 days of daily mean flow. Rolling mean values will not be calculated if there is less 
 #'   than the n-days provided.
 #'
-#' @param flow_data Data frame. A data frame of daily mean flow data. Not required if \code{HYDAT} argument is used.
-#' @param flow_dates A column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Default \code{Date}.
-#' @param flow_values A column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
-#'    Default \code{Value}.
-#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-#'    database are required. Not required if \code{flow_data} argument is used.
-#' @param days  Numeric. The number of days to apply the rolling mean. Default \code{c(3,7,30)}.
-#' @param align Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),
-#'    or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.
+#' @param flow_data a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
+#'    names/numbers. Leave blank if using \code{HYDAT} argument.
+#' @param flow_dates a column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Leave blank if using \code{HYDAT} 
+#'    argument. Default \code{Date}. 
+#' @param flow_values a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
+#'    Leave blank if using \code{HYDAT} argument. Default \code{Value}.
+#' @param flow_stations a column in flow_data that contains station identifiers for each flow data set, if required. Default 
+#'    \code{STATION_NUMBER}. 
+#' @param HYDAT a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+#'    extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
+#'    \code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.
+#' @param daysa a numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.
+#' @param align a character identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+#'    ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.
 #' 
 #' @return A data frame of the original flow_data or HYDAT data with additional column(s) of:
 #'   \item{QnDay}{rolling means of the n-day flow values of the designated date and adjacent dates, direction of mean specified by align}
@@ -49,6 +53,7 @@
 add_rolling_means <- function(flow_data=NULL,
                               flow_dates=Date,
                               flow_values=Value,
+                              flow_stations=STATION_NUMBER,
                               HYDAT=NULL,
                               days=c(3,7,30),
                               align="right"){
@@ -71,9 +76,9 @@ add_rolling_means <- function(flow_data=NULL,
   grouping <- group_vars(flow_data)
   flow_data <- ungroup(flow_data)
   
-  # If no STATION_NUMBER in flow_data, make it so (required for grouping)
-  if(!"STATION_NUMBER" %in% colnames(flow_data)) {
-    flow_data$STATION_NUMBER <- "XXXXXXX"
+  # If no STATION_NUMBER in flow_data, make it so (required for station grouping)
+  if(!as.character(substitute(flow_stations)) %in% colnames(flow_data)) {
+    flow_data[, as.character(substitute(flow_stations))] <- "XXXXXXX"
   }
   
   # Get the just STATION_NUMBER, Date, and Value columns
@@ -84,6 +89,7 @@ add_rolling_means <- function(flow_data=NULL,
     stop("Flow values not found. Rename flow values column to 'Value' or identify the column using 'flow_values' argument.")
   
   # Temporarily rename the Date and Value columns
+  names(flow_data)[names(flow_data) == as.character(substitute(flow_stations))] <- "STATION_NUMBER"
   names(flow_data)[names(flow_data) == as.character(substitute(flow_dates))] <- "Date"
   names(flow_data)[names(flow_data) == as.character(substitute(flow_values))] <- "Value"
   
@@ -135,6 +141,7 @@ add_rolling_means <- function(flow_data=NULL,
   }
   
   # Return the original names of the Date and Value columns
+  names(flow_data)[names(flow_data) == "STATION_NUMBER"] <- as.character(substitute(flow_stations))
   names(flow_data)[names(flow_data) == "Date"] <- as.character(substitute(flow_dates))
   names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(flow_values))
   

@@ -5,28 +5,34 @@
 \title{Add daily cumulative volumetric flows on an annual basis}
 \usage{
 add_cumulative_volume(flow_data = NULL, flow_dates = Date,
-  flow_values = Value, HYDAT = NULL, water_year = FALSE,
-  water_year_start = 10)
+  flow_values = Value, flow_stations = STATION_NUMBER, HYDAT = NULL,
+  water_year = FALSE, water_year_start = 10)
 }
 \arguments{
-\item{flow_data}{Data frame. A data frame of daily mean flow data. Not required if \code{HYDAT} argument is used.}
+\item{flow_data}{a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
+names/numbers. Leave blank if using \code{HYDAT} argument.}
 
-\item{flow_dates}{A column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Default \code{Date}.}
+\item{flow_dates}{a column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Leave blank if using \code{HYDAT} 
+argument. Default \code{Date}.}
 
-\item{flow_values}{A column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
-Default \code{Value}.}
+\item{flow_values}{a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
+Leave blank if using \code{HYDAT} argument. Default \code{Value}.}
 
-\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flow_data} argument is used.}
+\item{flow_stations}{a column in flow_data that contains station identifiers for each flow data set, if required. Default 
+\code{STATION_NUMBER}.}
 
-\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
-by the year in which they end. Default \code{FALSE}.}
+\item{HYDAT}{a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
+\code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.}
 
-\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
+\item{water_year}{a logical value indicating whether to use water years to group flow data instead of calendar years. Water years 
+are designated by the year in which they end. Default \code{FALSE}.}
+
+\item{water_year_start}{a numeric value indicating the month of the start of the water year. Used if \code{water_year=TRUE}. 
+Default \code{10}.}
 }
 \value{
-A data frame of the original flow_data or HYDAT data with an additional column:
+A tibble data frame of the original flow_data or HYDAT data with an additional column:
   \item{Cumul_Volume_m3}{cumulative volumetric flows for each day for each year, in units of cubic metres}
 }
 \description{

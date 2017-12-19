@@ -16,18 +16,23 @@
 #' @description Adds rows of dates with missing flow values to a streamflow dataset with daily flow values of NA. Missing dates will 
 #'    be filled in gaps between data and compeltely fill the first and last years (calendar or water year if selected).
 #'
-#' @param flow_data Data frame. A data frame of daily mean flow data. Not required if \code{HYDAT} argument is used.
-#' @param flow_dates A column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Default \code{Date}.
-#' @param flow_values A column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
-#'    Default \code{Value}.
-#' @param HYDAT Character. Seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-#'    database are required. Not required if \code{flow_data} argument is used.
-#' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
-#'    by the year in which they end. Default \code{FALSE}.
-#' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
+#' @param flow_data a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
+#'    names/numbers. Leave blank if using \code{HYDAT} argument.
+#' @param flow_dates a column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Leave blank if using \code{HYDAT} 
+#'    argument. Default \code{Date}. 
+#' @param flow_values a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
+#'    Leave blank if using \code{HYDAT} argument. Default \code{Value}.
+#' @param flow_stations a column in flow_data that contains station identifiers for each flow data set, if required. Default 
+#'    \code{STATION_NUMBER}. 
+#' @param HYDAT a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+#'    extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
+#'    \code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.
+#' @param water_year a logical value indicating whether to use water years to group flow data instead of calendar years. Water years 
+#'    are designated by the year in which they end. Default \code{FALSE}.
+#' @param water_year_start a numeric value indicating the month of the start of the water year. Used if \code{water_year=TRUE}. 
+#'    Default \code{10}.
 #' 
-#' @return A data frame of the original flow_data or HYDAT data with additional rows of filled values of missing dates with NA
+#' @return A tibble data frame of the original flow_data or HYDAT data with additional rows of filled values of missing dates
 #'
 #' @examples
 #' \dontrun{
@@ -43,6 +48,7 @@
 fill_missing_dates <- function(flow_data=NULL,
                                flow_dates=Date,
                                flow_values=Value,
+                               flow_stations=STATION_NUMBER,
                                HYDAT=NULL,
                                water_year=FALSE,
                                water_year_start=10){
@@ -63,9 +69,9 @@ fill_missing_dates <- function(flow_data=NULL,
   # Save the original columns from the flow_data to remove added columns
   orig_cols <- names(flow_data)
   
-  # If no STATION_NUMBER in flow_data, make it so (required for grouping)
-  if(!"STATION_NUMBER" %in% colnames(flow_data)) {
-    flow_data$STATION_NUMBER <- "XXXXXXX"
+  # If no STATION_NUMBER in flow_data, make it so (required for station grouping)
+  if(!as.character(substitute(flow_stations)) %in% colnames(flow_data)) {
+    flow_data[, as.character(substitute(flow_stations))] <- "XXXXXXX"
   }
   
   # Get the just STATION_NUMBER, Date, and Value columns
@@ -76,6 +82,7 @@ fill_missing_dates <- function(flow_data=NULL,
     stop("Flow values not found. Rename flow values column to 'Value' or identify the column using 'flow_values' argument.")
   
   # Temporarily rename the Date and Value columns
+  names(flow_data)[names(flow_data) == as.character(substitute(flow_stations))] <- "STATION_NUMBER"
   names(flow_data)[names(flow_data) == as.character(substitute(flow_dates))] <- "Date"
   names(flow_data)[names(flow_data) == as.character(substitute(flow_values))] <- "Value"
   
@@ -156,7 +163,8 @@ fill_missing_dates <- function(flow_data=NULL,
   }
   flow_data <- flow_data_new
   
-  # Return the original names of the Date and Value columns
+  # Return the original names of the columns
+  names(flow_data)[names(flow_data) == "STATION_NUMBER"] <- as.character(substitute(flow_stations))
   names(flow_data)[names(flow_data) == "Date"] <- as.character(substitute(flow_dates))
   names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(flow_values))
   
@@ -164,6 +172,7 @@ fill_missing_dates <- function(flow_data=NULL,
   flow_data <-  flow_data[,orig_cols]
   
   
-  flow_data
+  dplyr::as_tibble(flow_data)
+  
   
 } 

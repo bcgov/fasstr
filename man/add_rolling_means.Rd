@@ -5,25 +5,30 @@
 \title{Add rolling n-day averages}
 \usage{
 add_rolling_means(flow_data = NULL, flow_dates = Date,
-  flow_values = Value, HYDAT = NULL, days = c(3, 7, 30),
-  align = "right")
+  flow_values = Value, flow_stations = STATION_NUMBER, HYDAT = NULL,
+  days = c(3, 7, 30), align = "right")
 }
 \arguments{
-\item{flow_data}{Data frame. A data frame of daily mean flow data. Not required if \code{HYDAT} argument is used.}
+\item{flow_data}{a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
+names/numbers. Leave blank if using \code{HYDAT} argument.}
 
-\item{flow_dates}{A column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Default \code{Date}.}
+\item{flow_dates}{a column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Leave blank if using \code{HYDAT} 
+argument. Default \code{Date}.}
 
-\item{flow_values}{A column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
-Default \code{Value}.}
+\item{flow_values}{a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
+Leave blank if using \code{HYDAT} argument. Default \code{Value}.}
 
-\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flow_data} argument is used.}
+\item{flow_stations}{a column in flow_data that contains station identifiers for each flow data set, if required. Default 
+\code{STATION_NUMBER}.}
 
-\item{days}{Numeric. The number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
+\item{HYDAT}{a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
+\code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.}
 
-\item{align}{Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),
-or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.}
+\item{align}{a character identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
+
+\item{daysa}{a numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
 }
 \value{
 A data frame of the original flow_data or HYDAT data with additional column(s) of:

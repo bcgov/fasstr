@@ -15,20 +15,22 @@
 #' @description Add a column of daily runoff yields to a streamflow dataset, in units of millimetres. Converts the discharge to a depth
 #'   of water based on the upstream drainge basin area.
 #'
-#' @param flow_data Data frame. A data frame of daily mean flow data. Not required if \code{HYDAT} argument is used.
-#' @param flow_values A column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
-#'    Default \code{Value}.
-#' @param flow_basin_areas A column in flow_data of upstream drainage basin areas used to calculate the daily yield. If left blank
+#' @param flow_data a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
+#'    names/numbers. Leave blank if using \code{HYDAT} argument.
+#' @param flow_values a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
+#'    Leave blank if using \code{HYDAT} argument. Default \code{Value}.
+#' @param flow_basin_areas a column in flow_data of numeric upstream drainage basin areas used to calculate the daily yield. If left blank
 #'    this function will use basin areas provided by the fasstr::add_basin_areas() function using the \code{basin_area} argument.
-#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-#'    database are required. Not required if \code{flow_data} argument is used.
-#' @param basin_area Numeric. If no \code{flow_basin_area} provided in flow_data, used to determine basin areas from the
+#' @param HYDAT a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+#'    extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
+#'    \code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.
+#' @param basin_area a numeric vector of basin areas. If no \code{flow_basin_area} provided in flow_data, used to determine basin areas from the
 #'    fasstr::add_basin_areas() function. Leave blank if \code{HYDAT} is used or a column in \code{flow_data} called 'STATION_NUMBER' 
 #'    contains a WSC station number, as the basin area will be extracted from HYDAT. Using \code{basin_area} will replace the HYDAT basin 
 #'    area. If setting basin areas for multiple stations without HYDAT, set them using 
 #'    \code{basin_area = c("08NM116" = 795, "08NM242" = 10)}; stations not listed will result in NA basin areas.
-#' @return A data frame of the original flow_data or HYDAT data with an additional columns:
+#'    
+#' @return A tibble data frame of the original flow_data or HYDAT data with an additional columns:
 #'   \item{Yield_mm}{daily runoff yield flow, in units of millimetres}
 #'
 #' @examples
@@ -127,7 +129,7 @@ add_daily_yield <- function(flow_data=NULL,
   }
   
   
-  flow_data
+  dplyr::as_tibble(flow_data)
   
 }
 
