@@ -22,14 +22,11 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>%
   add_daily_volume() %>% 
   add_cumulative_volume() %>% 
   add_daily_yield() %>%
-  add_cumulative_yield() %>% 
-  calc_longterm_stats_2()
-
-
+  add_cumulative_yield() 
 # Multiple stations and custom Date and Value column names
 flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) %>% 
   rename(Datesss=Date, Valuesss=Value) %>% 
-  fill_missing_dates(flow_dates = Datesss, flow_values = Valuesss) %>% 
+  fill_missing_dates(flow_dates = Datesss, flow_values = Q) %>% 
   add_date_variables(flow_dates = Datesss, water_year = T) %>% 
   add_rolling_means(flow_dates = Datesss, flow_values = Valuesss) %>% 
   add_daily_volume(flow_values = Valuesss) %>% 
@@ -115,9 +112,20 @@ for (month in unique(flow_data$MonthName)) {
 
 
 flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) %>% 
-  group_by(STATION_NUMBER) 
+  rename(Station=STATION_NUMBER) %>% 
+  group_by(Station) %>% 
+  calc_longterm_stats_2(water_year = T, custom_months = 1:4, custom_months_label = "WINTER", transpose = T)
 
-calc_longterm_stats_2(flow_data )
+  add_basin_area() %>% 
+  group_by(Basin_Area_sqkm) %>% 
+  add_cumulative_volume() %>% 
+  add_cumulative_yield() %>% 
+  add_cumulative_volume() %>% 
+  add_daily_yield() %>% 
+  add_daily_volume() %>% 
+  fill_missing_dates() %>% 
+  add_date_variables() %>% 
+  add_rolling_means()
 
 Q_months <- dplyr::summarize(dplyr::group_by(flow_data,MonthName,STATION_NUMBER),
                              Mean = mean(Value, na.rm = TRUE),

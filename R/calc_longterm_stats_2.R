@@ -103,10 +103,8 @@ calc_longterm_stats_2 <- function(flow_data=NULL,
     if(is.na(station_name & length(HYDAT)>=1)) {station_name <- "fasstr"}
   }
   
-  # If no STATION_NUMBER in flow_data, make it so (required for grouping)
-  if(!"STATION_NUMBER" %in% colnames(flow_data)) {
-    flow_data$STATION_NUMBER <- "XXXXXXX"
-  }
+  # Get groups of flow_data to return after
+  grouping <- group_vars(flow_data)
   
   # Get the just STATION_NUMBER, Date, and Value columns
   # This method allows the user to select the Date or Value columns if the column names are different
@@ -116,10 +114,10 @@ calc_longterm_stats_2 <- function(flow_data=NULL,
     stop("Flow values not found. Rename flow values column to 'Value' or identify the column using 'flow_values' argument.")
   
   # Gather required columns
-  flow_data <- flow_data[,c("STATION_NUMBER",
-                            as.character(substitute(flow_dates)),
-                            as.character(substitute(flow_values)))]
-  colnames(flow_data) <- c("STATION_NUMBER","Date","Value")
+  flow_data <- flow_data[,c(as.character(substitute(flow_dates)),
+                            as.character(substitute(flow_values)),
+                            grouping)]
+  colnames(flow_data) <- c("Date","Value",grouping)
   
   # Check columns are in proper formats
   if(!inherits(flow_data$Date[1], "Date"))  stop("'Date' column in flow_data data frame does not contain dates.")
@@ -192,18 +190,19 @@ calc_longterm_stats_2 <- function(flow_data=NULL,
   flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
   flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
   
+  flow_data$MonthName <- factor(flow_data$MonthName, levels = c(levels(flow_data$MonthName),"Long-term"))  
   
   ## CALCULATE STATISTICS
   ## --------------------
   
   # Calculate the monthly and longterm stats
-  Q_months <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, MonthName),
+  Q_months <- dplyr::summarize(dplyr::group_by(flow_data, MonthName, add = TRUE),
                                Mean = mean(Value, na.rm = TRUE),
                                Median = median(Value, na.rm = TRUE),
                                Maximum = max(Value, na.rm = TRUE),
                                Minimum = min(Value, na.rm = TRUE))
   Q_months <- dplyr::ungroup(Q_months)
-  Q_longterm   <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER),
+  Q_longterm   <- dplyr::summarize(dplyr::group_by(flow_data, add = TRUE),
                                    Mean = mean(Value, na.rm = TRUE),
                                    Median = median(Value, na.rm = TRUE),
                                    Maximum = max(Value, na.rm = TRUE),
@@ -217,27 +216,27 @@ calc_longterm_stats_2 <- function(flow_data=NULL,
   if(!all(is.na(percentiles))) {
     for (ptile in percentiles) {
       
-      Q_months_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, MonthName),
+      Q_months_ptile <- dplyr::summarise(dplyr::group_by(flow_data, MonthName, add = TRUE),
                                          Percentile = quantile(Value, ptile / 100, na.rm = TRUE))
       Q_months_ptile <- dplyr::ungroup(Q_months_ptile)
-      Q_longterm_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER),
+      Q_longterm_ptile <- dplyr::summarise(dplyr::group_by(flow_data, add = TRUE),
                                            Percentile = quantile(Value, ptile / 100, na.rm = TRUE))
       Q_longterm_ptile <- dplyr::ungroup(Q_longterm_ptile)
-      Q_longterm_ptile <- dplyr::mutate(Q_longterm_ptile, MonthName = "Long-term")
-      colnames(Q_months_ptile)[3] <- paste0("P", ptile)
-      colnames(Q_longterm_ptile)[2] <- paste0("P", ptile)
+      Q_longterm_ptile <- dplyr::mutate(Q_longterm_ptile, MonthName = as.factor("Long-term"))
+      names(Q_months_ptile)[names(Q_months_ptile) == "Percentile"] <- paste0("P", ptile)
+      names(Q_longterm_ptile)[names(Q_longterm_ptile) == "Percentile"] <- paste0("P", ptile)
       
       Q_longterm_ptile <- rbind(Q_months_ptile, Q_longterm_ptile)
       
       # Merge with Q_longterm
-      Q_longterm <- merge(Q_longterm,Q_longterm_ptile,by=c("STATION_NUMBER", "MonthName"))
+      Q_longterm <- dplyr::full_join(Q_longterm,Q_longterm_ptile,by=c("MonthName",grouping))
     }
   }
   
   # If custom_months are selected, append a row on the bottom
   if(is.numeric(custom_months) & all(custom_months %in% c(1:12))) {
     flow_data_temp <- dplyr::filter(flow_data, Month %in% custom_months)
-    Q_months_custom <-   dplyr::summarize(dplyr::group_by(flow_data_temp,STATION_NUMBER),
+    Q_months_custom <-   dplyr::summarize(dplyr::group_by(flow_data_temp, add = TRUE),
                                           Mean = mean(Value, na.rm = TRUE),
                                           Median = median(Value, na.rm = TRUE),
                                           Maximum = max(Value,na.rm = TRUE),
@@ -247,12 +246,12 @@ calc_longterm_stats_2 <- function(flow_data=NULL,
     
     if (!all(is.na(percentiles))){
       for (ptile in percentiles) {
-        Q_ptile_custom <- dplyr::summarize(dplyr::group_by(flow_data_temp, STATION_NUMBER),
+        Q_ptile_custom <- dplyr::summarize(dplyr::group_by(flow_data_temp, add = TRUE),
                                            Percentile = quantile(Value, ptile / 100, na.rm = TRUE))
         Q_ptile_custom <- dplyr::ungroup(Q_ptile_custom)
         Q_ptile_custom <- dplyr::mutate(Q_ptile_custom, MonthName = paste0(custom_months_label))
-        colnames(Q_ptile_custom)[2] <- paste0("P",ptile)
-        Q_months_custom <- merge(Q_months_custom, Q_ptile_custom, by = c("STATION_NUMBER", "MonthName"))
+        names(Q_ptile_custom)[names(Q_ptile_custom) == "Percentile"] <- paste0("P", ptile)
+        Q_months_custom <- merge(Q_months_custom, Q_ptile_custom, by = c("MonthName", grouping))
       }
     }
     Q_longterm <- rbind(Q_longterm, Q_months_custom)
@@ -260,8 +259,13 @@ calc_longterm_stats_2 <- function(flow_data=NULL,
   
   # Rename Month column and reorder to proper levels (set in add_date_vars)
   Q_longterm <- dplyr::rename(Q_longterm, Month = MonthName)
-  Q_longterm <- with(Q_longterm, Q_longterm[order(STATION_NUMBER, Month),])
-  row.names(Q_longterm) <- c(1:nrow(Q_longterm))
+  
+  if(identical(grouping, character(0))){
+    Q_longterm <- dplyr::arrange(Q_longterm, Month)
+  } else {
+    Q_longterm <- dplyr::group_by_at(Q_longterm,vars(grouping))
+    Q_longterm <- dplyr::arrange(Q_longterm, Month ,.by_group=TRUE)
+  }
   
   
   ## OTHER STUFF
@@ -270,22 +274,26 @@ calc_longterm_stats_2 <- function(flow_data=NULL,
   # Switch columns and rows
   if (transpose) {
     # Get list of columns to order the Statistic column after transposing
-    stat_levels <- names(Q_longterm[-(1:2)])
-    
+    stat_levels <- names(Q_longterm)
+    stat_levels <- stat_levels[!stat_levels %in% c("Month",grouping)]
+
     # Transpose the columns for rows
-    Q_longterm <- tidyr::gather(Q_longterm, Statistic, Value, -STATION_NUMBER, -Month)
+    Q_longterm <- tidyr::gather(Q_longterm, Statistic, Value, stat_levels)
     Q_longterm <- tidyr::spread(Q_longterm, Month, Value)
     
     # Order the columns
     Q_longterm$Statistic <- as.factor(Q_longterm$Statistic)
     levels(Q_longterm$Statistic) <- stat_levels
-    Q_longterm <- with(Q_longterm, Q_longterm[order(STATION_NUMBER, Statistic),])
+    
+    if(identical(grouping, character(0))){
+      Q_longterm <- dplyr::arrange(Q_longterm, Statistic)
+    } else {
+      #Q_longterm <- dplyr::group_by_at(Q_longterm, vars(grouping))
+      Q_longterm <- dplyr::arrange(Q_longterm, Statistic ,.by_group=TRUE)
+    }
   }
   
-  # Remove the STATION_NUMBER columns if one wasn't in flowdata originally
-  if(all(flow_data$STATION_NUMBER=="XXXXXXX")) {
-    Q_longterm <- dplyr::select(Q_longterm, -STATION_NUMBER)
-  }
+  
   
   #  Write out summary tables for calendar years
   if (write_table) {
