@@ -8,7 +8,7 @@ plot_longterm_stats(flow_data = NULL, flow_dates = Date,
   flow_values = Value, flow_stations = STATION_NUMBER, HYDAT = NULL,
   plot_station = NULL, water_year = FALSE, water_year_start = 10,
   start_year = 0, end_year = 9999, exclude_years = NULL,
-  log_discharge = TRUE, ignore_missing = TRUE)
+  log_discharge = TRUE)
 }
 \arguments{
 \item{flow_data}{a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 

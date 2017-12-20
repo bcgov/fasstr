@@ -59,8 +59,6 @@
 #' }
 #' @export
 
-#--------------------------------------------------------------
-
 
 plot_longterm_stats <- function(flow_data=NULL,
                                 flow_dates=Date,
@@ -73,8 +71,7 @@ plot_longterm_stats <- function(flow_data=NULL,
                                 start_year=0,
                                 end_year=9999,
                                 exclude_years=NULL,
-                                log_discharge=TRUE,
-                                ignore_missing=TRUE){
+                                log_discharge=TRUE){
   
   
   ## SETUP FLOW DATA
@@ -201,7 +198,6 @@ plot_longterm_stats <- function(flow_data=NULL,
                    panel.grid.major.x = ggplot2::element_blank()) +
     ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(linetype = c(2,2,1,1), shape = c(NA,NA,16,16))))
  
-  
   
   longterm_plot
   
