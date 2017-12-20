@@ -118,6 +118,7 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) 
 
 
 flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) %>% 
+  rename(datess=Date)
   fill_missing_dates() %>% 
   add_basin_area() %>% 
   add_cumulative_volume() %>% 
@@ -125,6 +126,31 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) 
   add_daily_volume() %>% 
   add_daily_yield() %>% 
   add_rolling_means()
+
+testin <- plot_longterm_stats(flow_data, flow_dates = Datesssss)
+plot_longterm_stats(flow_data = flow_data,flow_dates = datess,plot_station = "08HB048", water_year = T, water_year_start = 5)
+
+
+
+
+
+flow_data=NULL
+flow_dates=Date
+flow_values=Value
+flow_stations=STATION_NUMBER
+HYDAT="08HB048"
+station=NULL##################################
+water_year=FALSE
+water_year_start=10
+start_year=NULL
+end_year=NULL
+exclude_years=NULL
+log_discharge=TRUE
+ignore_missing=TRUE
+
+
+
+
 
 
 
@@ -169,6 +195,10 @@ Q_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116"))
 
 
 
+
+devtools::document()
+#install.packages("/Users/jongoetz/Documents/R/fasstr devel",repos = NULL, type = "source")
+install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
 
 
