@@ -113,11 +113,9 @@ calc_longterm_stats_2 <- function(flow_data=NULL,
   if(!as.character(substitute(flow_values)) %in% names(flow_data)) 
     stop("Flow values not found. Rename flow values column to 'Value' or identify the column using 'flow_values' argument.")
   
-  # Gather required columns
-  flow_data <- flow_data[,c(as.character(substitute(flow_dates)),
-                            as.character(substitute(flow_values)),
-                            grouping)]
-  colnames(flow_data) <- c("Date","Value",grouping)
+  # Rename the designated the Date and Value columns
+  names(flow_data)[names(flow_data) == as.character(substitute(flow_dates))] <- "Date"
+  names(flow_data)[names(flow_data) == as.character(substitute(flow_values))] <- "Value"
   
   # Check columns are in proper formats
   if(!inherits(flow_data$Date[1], "Date"))  stop("'Date' column in flow_data data frame does not contain dates.")
