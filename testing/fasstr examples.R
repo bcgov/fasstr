@@ -2,8 +2,8 @@
 
 
 devtools::document()
-#install.packages("/Users/jongoetz/Documents/R/fasstr devel",repos = NULL, type = "source")
-install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
+install.packages("/Users/jongoetz/Documents/R/fasstr devel",repos = NULL, type = "source")
+#install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
 library(fasstr)
 library(dplyr)
@@ -16,17 +16,20 @@ library(dplyr)
 
 # One station with Date and Value
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% 
-  fill_missing_dates() %>% 
-  add_date_variables() %>% 
-  add_rolling_means(days = 7) %>% 
-  add_daily_volume() %>% 
-  add_cumulative_volume() %>% 
+  add_basin_area() %>%
+  fill_missing_dates() %>%
+  add_date_variables() %>%
+  add_rolling_means(days = 7) %>%
+  add_daily_volume() %>%
+  add_cumulative_volume() %>%
   add_daily_yield() %>%
-  add_cumulative_yield() 
+  add_cumulative_yield() %>% 
+  calc_annual_stats(transpose = T)
+
 # Multiple stations and custom Date and Value column names
 flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) %>% 
   rename(Datesss=Date, Valuesss=Value) %>% 
-  fill_missing_dates(flow_dates = Datesss, flow_values = Q) %>% 
+  fill_missing_dates(flow_dates = Datesss, flow_values = Valuesss) %>% 
   add_date_variables(flow_dates = Datesss, water_year = T) %>% 
   add_rolling_means(flow_dates = Datesss, flow_values = Valuesss) %>% 
   add_daily_volume(flow_values = Valuesss) %>% 
@@ -34,8 +37,8 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) 
   add_basin_area() %>% 
   rename(BASINAREA=Basin_Area_sqkm) %>% 
   add_daily_yield(flow_values = Valuesss) %>% 
-  add_cumulative_yield(flow_dates = Datesss, flow_values = Valuesss,flow_basin_areas = BASINAREA) %>% 
-  calc_longterm_stats_2(flow_dates = Datesss, flow_values = Valuesss)
+  add_cumulative_yield(flow_dates = Datesss, flow_values = Valuesss,flow_basin_areas = BASINAREA)  %>% 
+  calc_annual_stats(flow_dates = Datesss, flow_values = Valuesss, transpose = T)
 
 
 
@@ -49,9 +52,15 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>%
   add_cumulative_volume() %>% 
   add_daily_yield(basin_area = 10.3) %>%
   add_cumulative_yield(basin_area = 10.3) %>% 
-  calc_longterm_stats_2()
+  calc_annual_stats()
 
 
+
+# flow_data[, as.character(substitute(STATION_NUMBER))] <- "XXXXXXX"
+# flow_data <- flow_data[,c(as.character(substitute(STATION_NUMBER)),
+#                           as.character(substitute(Date)),
+#                           as.character(substitute(Value)))]
+# colnames(flow_data) <- c("STATION_NUMBER","Date","Value")
 
 
 ### HYDAT
@@ -65,7 +74,9 @@ flow_data <- add_daily_volume(HYDAT = "08HB048")
 flow_data <- add_cumulative_volume(HYDAT = "08HB048")
 flow_data <- add_daily_yield(HYDAT = "08HB048")
 flow_data <- add_cumulative_yield(HYDAT = "08HB048")
-flow_data <- calc_longterm_stats_2(HYDAT = "08HB048")
+flow_data <- calc_longterm_stats(HYDAT = "08HB048")
+flow_data <- calc_annual_stats(HYDAT = "08HB048")
+
 
 # Multiple stations
 flow_data <- fill_missing_dates(HYDAT = c("08HB048","08NM116"))
@@ -76,7 +87,8 @@ flow_data <- add_daily_volume(HYDAT = c("08HB048","08NM116"))
 flow_data <- add_cumulative_volume(HYDAT = c("08HB048","08NM116"))
 flow_data <- add_daily_yield(HYDAT = c("08HB048","08NM116"))
 flow_data <- add_cumulative_yield(HYDAT = c("08HB048","08NM116"), basin_area = c("08HB048"=10.2))
-flow_data <- calc_longterm_stats_2(HYDAT = c("08HB048"))
+flow_data <- calc_longterm_stats(HYDAT = c("08HB048","08NM116"))
+flow_data <- calc_annual_stats(HYDAT = c("08HB048","08NM116"), months = 8)
 
 
 
@@ -102,10 +114,10 @@ results <- data.frame()
 for (month in unique(flow_data$MonthName)) {
   flow_data_month <- dplyr::filter(flow_data,MonthName==month)
   results_month <-       dplyr::summarize(flow_data_month,
-                     Mean = mean(Value, na.rm = TRUE),
-                     Median = median(Value, na.rm = TRUE),
-                     Maximum = max(Value, na.rm = TRUE),
-                     Minimum = min(Value, na.rm = TRUE))
+                                          Mean = mean(Value, na.rm = TRUE),
+                                          Median = median(Value, na.rm = TRUE),
+                                          Maximum = max(Value, na.rm = TRUE),
+                                          Minimum = min(Value, na.rm = TRUE))
   results_month$Month <- month
   results <- rbind(results,results_month)
 }
@@ -119,7 +131,7 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) 
 
 flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) %>% 
   rename(datess=Date)
-  fill_missing_dates() %>% 
+fill_missing_dates() %>% 
   add_basin_area() %>% 
   add_cumulative_volume() %>% 
   add_cumulative_yield() %>% 
@@ -154,13 +166,13 @@ ignore_missing=TRUE
 
 
 
-  calc_longterm_stats_3(water_year = T,custom_months = 1:4,custom_months_label = "WINTER", ignore_missing = T, start_year = 1973)
+calc_longterm_stats_3(water_year = T,custom_months = 1:4,custom_months_label = "WINTER", ignore_missing = T, start_year = 1973)
 
-  calc_longterm_stats_2(water_year = T, custom_months = 1:4, custom_months_label = "WINTER", transpose = T, start_year = 1971)
+calc_longterm_stats_2(water_year = T, custom_months = 1:4, custom_months_label = "WINTER", transpose = T, start_year = 1971)
 
-  test <- calc_longterm_stats_3(HYDAT = c("08HB048","08NM116"),flow_stations = 44,custom_months = 1:4,custom_months_label = "WINTER", ignore_missing = T, start_year = 1973)
-  
-  add_basin_area() %>% 
+test <- calc_longterm_stats_3(HYDAT = c("08HB048","08NM116"),flow_stations = 44,custom_months = 1:4,custom_months_label = "WINTER", ignore_missing = T, start_year = 1973)
+
+add_basin_area() %>% 
   group_by(Basin_Area_sqkm) %>% 
   add_cumulative_volume() %>% 
   add_cumulative_yield() %>% 

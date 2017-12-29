@@ -4,56 +4,60 @@
 \alias{calc_annual_stats}
 \title{Calculate annual summary statistics}
 \usage{
-calc_annual_stats(flowdata = NULL, HYDAT = NULL, percentiles = c(10, 90),
-  rolling_days = 1, rolling_align = "right", water_year = FALSE,
-  water_year_start = 10, start_year = NULL, end_year = NULL,
-  exclude_years = NULL, months = 1:12, transpose = FALSE,
-  station_name = NA, write_table = FALSE, write_digits = 3,
-  write_dir = ".", na.rm = list(na.rm.global = FALSE))
+calc_annual_stats(flow_data = NULL, flow_dates = Date,
+  flow_values = Value, flow_stations = STATION_NUMBER, HYDAT = NULL,
+  percentiles = c(10, 90), rolling_days = 1, rolling_align = "right",
+  water_year = FALSE, water_year_start = 10, start_year = 0,
+  end_year = 9999, exclude_years = NULL, months = 1:12,
+  transpose = FALSE, ignore_missing = FALSE)
 }
 \arguments{
-\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
+\item{flow_data}{a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
+names/numbers. Leave blank if using \code{HYDAT} argument.}
 
-\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flowdata} argument is used.}
+\item{flow_dates}{a column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Leave blank if using \code{HYDAT} 
+argument. Default \code{Date}.}
 
-\item{percentiles}{Numeric. Vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.}
+\item{flow_values}{a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
+Leave blank if using \code{HYDAT} argument. Default \code{Value}.}
 
-\item{rolling_days}{Numeric. The number of days to apply a rolling mean. Default \code{1}.}
+\item{flow_stations}{a column in flow_data that contains station identifiers for each flow data set.
+Removing 'STATION_NUMBER' column in flow_data or incorrectly identifying will calculate statistics on all flow values from all stations.
+If using \code{HYDAT} argument, setting \code{flow_stations} to anything besides \code{STATION_NUMBER} will have similar effects.
+Default \code{STATION_NUMBER}.}
 
-\item{rolling_align}{Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),}
+\item{HYDAT}{a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
+\code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.}
 
-\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
-by the year in which they end. Default \code{FALSE}.}
+\item{percentiles}{a numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.}
 
-\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
+\item{rolling_days}{a numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
 
-\item{start_year}{Integer. First year to consider for analysis. Leave blank if all years are required.}
+\item{rolling_align}{a character identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
-\item{end_year}{Integer. Last year to consider for analysis. Leave blank if all years are required.}
+\item{water_year}{a logical value indicating whether to use water years to group flow data instead of calendar years. Water years 
+are designated by the year in which they end. Default \code{FALSE}.}
 
-\item{exclude_years}{Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.}
+\item{water_year_start}{a numeric value indicating the month of the start of the water year. Used if \code{water_year=TRUE}. 
+Default \code{10}.}
 
-\item{months}{Integer. Vector of months to consider for analysis (ex. \code{6:8} for Jun-Aug). Leave blank if all months
-are required. Default \code{1:12}.}
+\item{start_year}{a numeric value of the first year to consider for analysis. Leave blank if all years are required.}
 
-\item{transpose}{Logical. Switch the rows and columns of the results table. Default \code{FALSE}.}
+\item{end_year}{a numeric value of the last year to consider for analysis. Leave blank if all years are required.}
 
-\item{station_name}{Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
-files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
-will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number.}
+\item{exclude_years}{a numeric vector of years to exclude from analysis. Leave blank if all years are required.}
 
-\item{write_table}{Logical. Write the table as a .csv file to specified directory. Default \code{FALSE}.}
+\item{transpose}{a logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.}
 
-\item{write_digits}{Numeric. Number of significant digits to round the results in the written table. Default \code{3}.}
+\item{ignore_missing}{a logical value indicating whether dates with missing flow values should be included in the calculation. If
+\code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
+with no missing dates will be returned. Default \code{TRUE}.}
 
-\item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
-Default is the working directory.}
-
-\item{na.rm}{TBD}
+\item{custom_months}{a numeric vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Adds results to the end of table.
+If wanting months that overlap calendar years (ex. Oct-Mar), choose water_year and a water_year_month that begins before the first 
+month listed. Leave blank for no custom month summary.}
 }
 \value{
 A data frame with the following columns:
@@ -75,7 +79,7 @@ Calculates annual monthly mean, median, maximum, minimum, and percentiles of dai
 \examples{
 \dontrun{
 
-calc_annual_stats(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
+calc_annual_stats(flow_data = flow_data)
 
 calc_annual_stats(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
 
