@@ -71,21 +71,21 @@
 #' @export
 
 
-calc_longterm_stats <- function(flow_data=NULL,
-                                flow_dates=Date,
-                                flow_values=Value,
-                                flow_stations=STATION_NUMBER,
-                                HYDAT=NULL,
-                                percentiles=c(10,90),
-                                water_year=FALSE,
-                                water_year_start=10,
-                                start_year=0,
-                                end_year=9999,
-                                exclude_years=NULL,
-                                custom_months=NULL,
-                                custom_months_label="Custom-Months",
-                                transpose=FALSE,
-                                ignore_missing=TRUE){
+calc_longterm_stats <- function(flow_data = NULL,
+                                flow_dates = Date,
+                                flow_values = Value,
+                                flow_stations = STATION_NUMBER,
+                                HYDAT = NULL,
+                                percentiles = c(10,90),
+                                water_year = FALSE,
+                                water_year_start = 10,
+                                start_year = 0,
+                                end_year = 9999,
+                                exclude_years = NULL,
+                                custom_months = NULL,
+                                custom_months_label = "Custom-Months",
+                                transpose = FALSE,
+                                ignore_missing = TRUE){
   
   
   ## CHECKS ON FLOW DATA
