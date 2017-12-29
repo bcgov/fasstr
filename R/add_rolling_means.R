@@ -28,7 +28,7 @@
 #' @param HYDAT a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
 #'    extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
 #'    \code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.
-#' @param daysa a numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.
+#' @param days a numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.
 #' @param align a character identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
 #'    ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.
 #' 
@@ -50,13 +50,13 @@
 #' @export
 
 
-add_rolling_means <- function(flow_data=NULL,
-                              flow_dates=Date,
-                              flow_values=Value,
-                              flow_stations=STATION_NUMBER,
-                              HYDAT=NULL,
-                              days=c(3,7,30),
-                              align="right"){
+add_rolling_means <- function(flow_data = NULL,
+                              flow_dates = Date,
+                              flow_values = Value,
+                              flow_stations = STATION_NUMBER,
+                              HYDAT = NULL,
+                              days = c(3,7,30),
+                              align = "right"){
   
   
   ## CHECKS ON FLOW DATA
@@ -72,9 +72,12 @@ add_rolling_means <- function(flow_data=NULL,
     flow_data <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
+  # Save the original columns from the flow_data to remove added columns
+  orig_cols <- names(flow_data)
+  
   # Get groups of flow_data to return after
-  grouping <- group_vars(flow_data)
-  flow_data <- ungroup(flow_data)
+  grouping <- dplyr::group_vars(flow_data)
+  flow_data <- dplyr::ungroup(flow_data)
   
   # If no STATION_NUMBER in flow_data, make it so (required for station grouping)
   if(!as.character(substitute(flow_stations)) %in% colnames(flow_data)) {
@@ -135,18 +138,19 @@ add_rolling_means <- function(flow_data=NULL,
   }
   flow_data <- flow_data_new
   
-  # Remove the STATION_NUMBER columns if one wasn't in flowdata originally
-  if(all(flow_data$STATION_NUMBER == "XXXXXXX")) {
-    flow_data <- dplyr::select(flow_data, -STATION_NUMBER)
-  }
   
   # Return the original names of the Date and Value columns
   names(flow_data)[names(flow_data) == "STATION_NUMBER"] <- as.character(substitute(flow_stations))
   names(flow_data)[names(flow_data) == "Date"] <- as.character(substitute(flow_dates))
   names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(flow_values))
   
+  # Remove the STATION_NUMBER columns if one wasn't in flowdata originally
+  if(!as.character(substitute(flow_stations)) %in% orig_cols) {
+    flow_data <- dplyr::select(flow_data, -STATION_NUMBER)
+  }
+  
   # Regroup by the original groups
-  flow_data <- dplyr::group_by_at(flow_data,vars(grouping))
+  flow_data <- dplyr::group_by_at(flow_data,dplyr::vars(grouping))
   
   flow_data
   

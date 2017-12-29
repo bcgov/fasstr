@@ -52,17 +52,16 @@
 #' }
 #' @export
 
-#--------------------------------------------------------------
 
-add_cumulative_yield <- function(flow_data=NULL,
-                                 flow_dates=Date,
-                                 flow_values=Value,
-                                 flow_stations=STATION_NUMBER,
-                                 flow_basin_areas=flow_basin_areas,
-                                 HYDAT=NULL,
-                                 basin_area=NA,
-                                 water_year=FALSE,
-                                 water_year_start=10){
+add_cumulative_yield <- function(flow_data = NULL,
+                                 flow_dates = Date,
+                                 flow_values = Value,
+                                 flow_stations = STATION_NUMBER,
+                                 flow_basin_areas = flow_basin_areas,
+                                 HYDAT = NULL,
+                                 basin_area = NA,
+                                 water_year = FALSE,
+                                 water_year_start = 10){
   
   
   
@@ -83,7 +82,7 @@ add_cumulative_yield <- function(flow_data=NULL,
   orig_cols <- names(flow_data)
   
   # Get groups of flow_data to return after
-  grouping <- group_vars(flow_data)
+  grouping <- dplyr::group_vars(flow_data)
   
   # If no STATION_NUMBER in flow_data, make it so (required for station grouping)
   if(!as.character(substitute(flow_stations)) %in% colnames(flow_data)) {
@@ -122,7 +121,7 @@ add_cumulative_yield <- function(flow_data=NULL,
       stop("'",paste(as.character(substitute(flow_basin_areas))),"' is not a column in the flow_data data frame.")
     
     # Create the column name
-    flow_data$Basin_Area_sqkm_temp <- flow_data[,as.character(substitute(flow_basin_areas))]
+    flow_data$Basin_Area_sqkm_temp <- dplyr::pull(flow_data[,as.character(substitute(flow_basin_areas))])
     
     # Check if the basin areas are numeric
     if(!is.numeric(flow_data$Basin_Area_sqkm_temp)) stop("Basin area column in flow_data data frame does not contain numeric values.")
@@ -199,7 +198,7 @@ add_cumulative_yield <- function(flow_data=NULL,
   }
   
   # Regroup by the original groups
-  flow_data <- dplyr::group_by_at(flow_data,vars(grouping))
+  flow_data <- dplyr::group_by_at(flow_data,dplyr::vars(grouping))
   
   dplyr::as_tibble(flow_data)
   

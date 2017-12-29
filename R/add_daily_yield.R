@@ -44,13 +44,11 @@
 #' @export
 
 
-#--------------------------------------------------------------
-
-add_daily_yield <- function(flow_data=NULL,
-                            flow_values=Value,
-                            flow_basin_areas=flow_basin_areas,
-                            HYDAT=NULL,
-                            basin_area=NA){
+add_daily_yield <- function(flow_data = NULL,
+                            flow_values = Value,
+                            flow_basin_areas = flow_basin_areas,
+                            HYDAT = NULL,
+                            basin_area = NA){
   
   
   
@@ -101,7 +99,7 @@ add_daily_yield <- function(flow_data=NULL,
       stop("'",paste(as.character(substitute(flow_basin_areas))),"' is not a column in the flow_data data frame.")
     
     # Create the column name
-    flow_data$Basin_Area_sqkm_temp <- flow_data[,as.character(substitute(flow_basin_areas))]
+    flow_data$Basin_Area_sqkm_temp <- dplyr::pull(flow_data[,as.character(substitute(Basin_Area_sqkm))])
     
     # Check if the basin areas are numeric
     if(!is.numeric(flow_data$Basin_Area_sqkm_temp)) stop("Basin area column in flow_data data frame does not contain numeric values.")

@@ -25,10 +25,10 @@ Leave blank if using \code{HYDAT} argument. Default \code{Value}.}
 extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
 \code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.}
 
+\item{days}{a numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
+
 \item{align}{a character identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
 ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
-
-\item{daysa}{a numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
 }
 \value{
 A data frame of the original flow_data or HYDAT data with additional column(s) of:

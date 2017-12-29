@@ -45,13 +45,13 @@
 #' @export
 
 
-add_cumulative_volume <- function(flow_data=NULL,
-                                  flow_dates=Date,
-                                  flow_values=Value,
-                                  flow_stations=STATION_NUMBER,
-                                  HYDAT=NULL,
-                                  water_year=FALSE,
-                                  water_year_start=10){
+add_cumulative_volume <- function(flow_data = NULL,
+                                  flow_dates = Date,
+                                  flow_values = Value,
+                                  flow_stations = STATION_NUMBER,
+                                  HYDAT = NULL,
+                                  water_year = FALSE,
+                                  water_year_start = 10){
   
   
   
@@ -72,7 +72,7 @@ add_cumulative_volume <- function(flow_data=NULL,
   orig_cols <- names(flow_data)
   
   # Get groups of flow_data to return after
-  grouping <- group_vars(flow_data)
+  grouping <- dplyr::group_vars(flow_data)
   
   # If no STATION_NUMBER in flow_data, make it so (required for station grouping)
   if(!as.character(substitute(flow_stations)) %in% colnames(flow_data)) {
@@ -163,7 +163,7 @@ add_cumulative_volume <- function(flow_data=NULL,
   }
   
   # Regroup by the original groups
-  flow_data <- dplyr::group_by_at(flow_data,vars(grouping))
+  flow_data <- dplyr::group_by_at(flow_data,dplyr::vars(grouping))
   
   dplyr::as_tibble(flow_data)
   

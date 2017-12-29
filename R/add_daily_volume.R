@@ -35,11 +35,10 @@
 #' }
 #' @export
 
-#--------------------------------------------------------------
 
-add_daily_volume <- function(flow_data=NULL,
-                             flow_values=Value,
-                             HYDAT=NULL){
+add_daily_volume <- function(flow_data = NULL,
+                             flow_values = Value,
+                             HYDAT = NULL){
   
   
   
