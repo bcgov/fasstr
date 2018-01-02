@@ -10,6 +10,13 @@ library(dplyr)
 
 
 
+flow_data <- flow_data[,c(as.character(substitute(Date)),
+                          as.character(substitute(Value)))]
+
+
+flow_data <- flow_data[,c(as.character(substitute(STATION_NUMBER)),
+                          as.character(substitute(Date)),
+                          as.character(substitute(Value)))]
 ### FLOW_DATA
 ### ----------
 
@@ -24,7 +31,12 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>%
   add_cumulative_volume() %>%
   add_daily_yield() %>%
   add_cumulative_yield() %>% 
-  calc_annual_stats(transpose = T)
+  #calc_annual_stats(transpose = T)
+  #calc_longterm_stats()
+  #plot_longterm_stats()
+  #plot_annual_stats(log_discharge = T)
+  calc_lt_mad()
+
 
 # Multiple stations and custom Date and Value column names
 flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) %>% 
@@ -38,7 +50,12 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) 
   rename(BASINAREA=Basin_Area_sqkm) %>% 
   add_daily_yield(flow_values = Valuesss) %>% 
   add_cumulative_yield(flow_dates = Datesss, flow_values = Valuesss,flow_basin_areas = BASINAREA)  %>% 
-  calc_annual_stats(flow_dates = Datesss, flow_values = Valuesss, transpose = T)
+ # calc_annual_stats(flow_dates = Datesss, flow_values = Valuesss, exclude_years = 1980)
+  #calc_longterm_stats(flow_dates = Datesss, flow_values = Valuesss)
+ # plot_longterm_stats(flow_dates = Datesss, flow_values = Valuesss)
+  #plot_annual_stats(flow_dates = Datesss, flow_values = Valuesss)
+  calc_lt_mad(flow_dates = Datesss, flow_values = Valuesss,percent_MAD = c(5,10,20))
+
 
 
 
@@ -52,7 +69,12 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>%
   add_cumulative_volume() %>% 
   add_daily_yield(basin_area = 10.3) %>%
   add_cumulative_yield(basin_area = 10.3) %>% 
-  calc_annual_stats()
+  #calc_longterm_stats()
+  #calc_annual_stats()
+  #plot_longterm_stats()
+  #plot_annual_stats(percentiles = 99)
+  calc_lt_mad()
+
 
 
 
@@ -66,7 +88,7 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>%
 ### HYDAT
 ### ----------
 
-# Multiple stations
+# Single stations
 flow_data <- fill_missing_dates(HYDAT = "08HB048")
 flow_data <- add_date_variables(HYDAT = "08HB048", water_year = T)
 flow_data <- add_rolling_means(HYDAT = "08HB048")
@@ -76,6 +98,9 @@ flow_data <- add_daily_yield(HYDAT = "08HB048")
 flow_data <- add_cumulative_yield(HYDAT = "08HB048")
 flow_data <- calc_longterm_stats(HYDAT = "08HB048")
 flow_data <- calc_annual_stats(HYDAT = "08HB048")
+plot_longterm_stats(HYDAT = "08HB048")
+plot_annual_stats(HYDAT = "08HB048")
+calc_lt_mad(HYDAT = "08HB048", percent_MAD = c(5,10,20))
 
 
 # Multiple stations
@@ -89,6 +114,10 @@ flow_data <- add_daily_yield(HYDAT = c("08HB048","08NM116"))
 flow_data <- add_cumulative_yield(HYDAT = c("08HB048","08NM116"), basin_area = c("08HB048"=10.2))
 flow_data <- calc_longterm_stats(HYDAT = c("08HB048","08NM116"))
 flow_data <- calc_annual_stats(HYDAT = c("08HB048","08NM116"), months = 8)
+plot_longterm_stats(HYDAT = c("08HB048","08NM116"))
+plot_annual_stats(HYDAT = c("08HB048","08NM116"))
+calc_lt_mad(HYDAT = c("08HB048","08NM116"), percent_MAD = c(5,10,20))
+
 
 
 

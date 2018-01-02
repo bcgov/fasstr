@@ -4,37 +4,50 @@
 \alias{calc_lt_mad}
 \title{Calculate the long-term mean annual discharge}
 \usage{
-calc_lt_mad(flowdata = NULL, HYDAT = NULL, water_year = FALSE,
-  water_year_start = 10, start_year = NULL, end_year = NULL,
-  exclude_years = NULL, months = 1:12, percent_MAD = 100)
+calc_lt_mad(flow_data = NULL, flow_dates = Date, flow_values = Value,
+  flow_stations = STATION_NUMBER, HYDAT = NULL, water_year = FALSE,
+  water_year_start = 10, start_year = 0, end_year = 9999,
+  exclude_years = NULL, months = 1:12, percent_MAD = NA)
 }
 \arguments{
-\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
+\item{flow_data}{a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
+names/numbers. Leave blank if using \code{HYDAT} argument.}
 
-\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flowdata} argument is used.}
+\item{flow_dates}{a column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Leave blank if using \code{HYDAT} 
+argument. Default \code{Date}.}
 
-\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
-by the year in which they end. Default \code{FALSE}.}
+\item{flow_values}{a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
+Leave blank if using \code{HYDAT} argument. Default \code{Value}.}
 
-\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
+\item{flow_stations}{a column in flow_data that contains station identifiers for each flow data set.
+Removing 'STATION_NUMBER' column in flow_data or incorrectly identifying will calculate statistics on all flow values from all stations.
+If using \code{HYDAT} argument, setting \code{flow_stations} to anything besides \code{STATION_NUMBER} will have similar effects.
+Default \code{STATION_NUMBER}.}
 
-\item{start_year}{Integer. First year to consider for analysis. Leave blank if all years are required.}
+\item{HYDAT}{a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
+\code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.}
 
-\item{end_year}{Integer. Last year to consider for analysis. Leave blank if all years are required.}
+\item{water_year}{a logical value indicating whether to use water years to group flow data instead of calendar years. Water years 
+are designated by the year in which they end. Default \code{FALSE}.}
 
-\item{exclude_years}{Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.}
+\item{water_year_start}{a numeric value indicating the month of the start of the water year. Used if \code{water_year=TRUE}. 
+Default \code{10}.}
 
-\item{months}{Integer. Vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Leave blank for all months. 
-Default \code{1:12}.}
+\item{start_year}{a numeric value of the first year to consider for analysis. Leave blank if all years are required.}
 
-\item{percent_MAD}{Numeric. Percent of long-term mean annual discharge to output. Default \code{100} (i.e. 100pct. MAD).}
+\item{end_year}{a numeric value of the last year to consider for analysis. Leave blank if all years are required.}
+
+\item{exclude_years}{a numeric vector of years to exclude from analysis. Leave blank if all years are required.}
+
+\item{months}{a numeric vector of months to include in analysis (ex. \code{6:8} for Jun-Aug). Leave blank to summarize 
+all months (default \code{1:12}).}
+
+\item{percent_MAD}{a numeric vector of percents of long-term mean annual discharge to add to the table (ex. 20 for 20 percent MAD).
+Leave blank for no values to be calculated.}
 }
 \value{
-A numeric value of a long-term mean of selected years and months.
+A tibble of numeric values of a long-term mean (and percent of long-term mean if selected) of selected years and months.
 }
 \description{
 Calculates the long-term mean annual discharge of a streamflow dataset. Averages all daily discharge values from all years,
@@ -43,7 +56,7 @@ Calculates the long-term mean annual discharge of a streamflow dataset. Averages
 \examples{
 \dontrun{
 
-calc_lt_mad(flowdata = data, start_year = 1980, end_year = 2010)
+calc_lt_mad(flow_data = data, start_year = 1980, end_year = 2010)
 
 calc_lt_mad(HYDAT = "08NM116",water_year = TRUE, exclude_years = (1990, 1992:1994))
 

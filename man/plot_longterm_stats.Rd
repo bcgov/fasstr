@@ -5,10 +5,9 @@
 \title{Plot the long-term and long-term monthly summary statistics}
 \usage{
 plot_longterm_stats(flow_data = NULL, flow_dates = Date,
-  flow_values = Value, flow_stations = STATION_NUMBER, HYDAT = NULL,
-  plot_station = NULL, water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, exclude_years = NULL,
-  log_discharge = TRUE)
+  flow_values = Value, HYDAT = NULL, water_year = FALSE,
+  water_year_start = 10, start_year = 0, end_year = 9999,
+  exclude_years = NULL, log_discharge = TRUE)
 }
 \arguments{
 \item{flow_data}{a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
@@ -20,17 +19,9 @@ argument. Default \code{Date}.}
 \item{flow_values}{a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
 Leave blank if using \code{HYDAT} argument. Default \code{Value}.}
 
-\item{flow_stations}{a column in flow_data that contains station identifiers for each flow data set.
-Removing 'STATION_NUMBER' column in flow_data or incorrectly identifying will calculate statistics on all flow values from all stations.
-If using \code{HYDAT} argument, setting \code{flow_stations} to anything besides \code{STATION_NUMBER} will have similar effects.
-Default \code{STATION_NUMBER}. Must select just one station to plot using \code{plot_station} argument.}
-
 \item{HYDAT}{a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
 extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
 \code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.}
-
-\item{plot_station}{a character string identifying the station listed in the flow data/HYDAT data to plot if multiple stations are 
-provided.}
 
 \item{water_year}{a logical value indicating whether to use water years to group flow data instead of calendar years. Water years 
 are designated by the year in which they end. Default \code{FALSE}.}

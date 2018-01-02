@@ -22,15 +22,9 @@
 #'    argument. Default \code{Date}. 
 #' @param flow_values a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
 #'    Leave blank if using \code{HYDAT} argument. Default \code{Value}.
-#' @param flow_stations a column in flow_data that contains station identifiers for each flow data set.
-#'    Removing 'STATION_NUMBER' column in flow_data or incorrectly identifying will calculate statistics on all flow values from all stations.
-#'    If using \code{HYDAT} argument, setting \code{flow_stations} to anything besides \code{STATION_NUMBER} will have similar effects.
-#'    Default \code{STATION_NUMBER}. Must select just one station to plot using \code{plot_station} argument.
 #' @param HYDAT a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
 #'    extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
 #'    \code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.
-#' @param plot_station a character string identifying the station listed in the flow data/HYDAT data to plot if multiple stations are 
-#'    provided.
 #' @param water_year a logical value indicating whether to use water years to group flow data instead of calendar years. Water years 
 #'    are designated by the year in which they end. Default \code{FALSE}.
 #' @param water_year_start a numeric value indicating the month of the start of the water year. Used if \code{water_year=TRUE}. 
@@ -60,18 +54,16 @@
 #' @export
 
 
-plot_longterm_stats <- function(flow_data=NULL,
-                                flow_dates=Date,
-                                flow_values=Value,
-                                flow_stations=STATION_NUMBER,
-                                HYDAT=NULL,
-                                plot_station=NULL,
-                                water_year=FALSE,
-                                water_year_start=10,
-                                start_year=0,
-                                end_year=9999,
-                                exclude_years=NULL,
-                                log_discharge=TRUE){
+plot_longterm_stats <- function(flow_data = NULL,
+                                flow_dates = Date,
+                                flow_values = Value,
+                                HYDAT = NULL,
+                                water_year = FALSE,
+                                water_year_start = 10,
+                                start_year = 0,
+                                end_year = 9999,
+                                exclude_years = NULL,
+                                log_discharge = TRUE){
   
   
   ## SETUP FLOW DATA
@@ -87,16 +79,10 @@ plot_longterm_stats <- function(flow_data=NULL,
     flow_data <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
   }
   
-  # Save the original columns (to check for STATION_NUMBER later) and ungroup
-  orig_cols <- names(flow_data)
+  # Ungroup data if grouped
   flow_data <- dplyr::ungroup(flow_data)
-  
-  # If no STATION_NUMBER in flow_data, make it so (required for station grouping)
-  if(!as.character(substitute(flow_stations)) %in% colnames(flow_data)) {
-    flow_data[, as.character(substitute(flow_stations))] <- "XXXXXXX"
-  }
-  
-  # Get the just STATION_NUMBER, Date, and Value columns
+
+  # Get the just Date, and Value columns
   # This method allows the user to select the Station, Date or Value columns if the column names are different
   if(!as.character(substitute(flow_dates)) %in% names(flow_data))  
     stop("Flow dates not found. Rename flow dates column to 'Date' or identify the column using 'flow_dates' argument.")
@@ -104,10 +90,9 @@ plot_longterm_stats <- function(flow_data=NULL,
     stop("Flow values not found. Rename flow values column to 'Value' or identify the column using 'flow_values' argument.")
   
   # Gather required columns
-  flow_data <- flow_data[,c(as.character(substitute(flow_stations)),
-                            as.character(substitute(flow_dates)),
+  flow_data <- flow_data[,c(as.character(substitute(flow_dates)),
                             as.character(substitute(flow_values)))]
-  colnames(flow_data) <- c("STATION_NUMBER","Date","Value")
+  colnames(flow_data) <- c("Date","Value")
   
   # Check columns are in proper formats
   if(!inherits(flow_data$Date[1], "Date"))  stop("'Date' column in flow_data data frame does not contain dates.")
@@ -130,37 +115,25 @@ plot_longterm_stats <- function(flow_data=NULL,
   
   if(!is.null(exclude_years) & !is.numeric(exclude_years)) stop("List of exclude_years must be numeric - ex. 1999 or c(1999,2000).")
   if(!all(exclude_years %in% c(0:9999)))  stop("Years listed in exclude_years must be integers.")
-
-  ## Check for multiple stations in flow_data and filter for select station if required
-  if(is.null(plot_station) & length(unique(flow_data$STATION_NUMBER)) > 1) 
-    stop("Cannot plot multiple stations. Have just one station in the flow_data/HYDAT or identify the station using the 'plot_station' argument.")
-  if(!is.null(plot_station)){
-    if(!plot_station %in% unique(flow_data$STATION_NUMBER)) 
-      stop("Station in plot_station argument is not listed in flow_data stations. Select one listed in flow_data.")
-    flow_data <- dplyr::filter(flow_data, STATION_NUMBER==plot_station)
-  }
+  
+  if(!is.logical(log_discharge))  stop("log_discharge argument must be logical (TRUE/FALSE).")
 
   
   ## CALC STATS
   ## ----------
   
-  longterm_stats <- fasstr::calc_longterm_stats(flow_data=flow_data,
-                                                flow_dates=Date,
-                                                flow_values=Value,
-                                                flow_stations=STATION_NUMBER,
-                                                HYDAT=NULL,
-                                                water_year=water_year, 
-                                                water_year_start=water_year_start,
-                                                start_year=start_year,
-                                                end_year=end_year,
-                                                exclude_years=exclude_years, 
-                                                percentiles=c(5,25,75,95),
+  longterm_stats <- fasstr::calc_longterm_stats(flow_data = flow_data,
+                                                flow_dates = Date,
+                                                flow_values = Value,
+                                                HYDAT = NULL,
+                                                water_year = water_year, 
+                                                water_year_start = water_year_start,
+                                                start_year = start_year,
+                                                end_year = end_year,
+                                                exclude_years = exclude_years, 
+                                                percentiles = c(5,25,75,95),
                                                 ignore_missing = TRUE)
-  
 
-
-  
-  
   ## PLOT STATS
   ## ----------
 

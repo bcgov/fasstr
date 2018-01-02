@@ -39,9 +39,8 @@
 #' @param start_year a numeric value of the first year to consider for analysis. Leave blank if all years are required.
 #' @param end_year a numeric value of the last year to consider for analysis. Leave blank if all years are required.
 #' @param exclude_years a numeric vector of years to exclude from analysis. Leave blank if all years are required.       
-#' @param custom_months a numeric vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Adds results to the end of table.
-#'    If wanting months that overlap calendar years (ex. Oct-Mar), choose water_year and a water_year_month that begins before the first 
-#'    month listed. Leave blank for no custom month summary.
+#' @param months a numeric vector of months to include in analysis (ex. \code{6:8} for Jun-Aug). Leave blank to summarize 
+#'    all months (default \code{1:12}).
 #' @param transpose a logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.
 #' @param ignore_missing a logical value indicating whether dates with missing flow values should be included in the calculation. If
 #'    \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
@@ -214,8 +213,13 @@ calc_annual_stats <- function(flow_data = NULL,
   # Rename year column
   Q_annual <-   dplyr::rename(Q_annual,Year=AnalysisYear)
   
+  
   # Make excluded years data NA
-  Q_annual[Q_annual$Year %in% exclude_years,-1] <- NA
+  if(as.character(substitute(flow_stations)) %in% orig_cols) {
+    Q_annual[Q_annual$Year %in% exclude_years,-(1:2)] <- NA
+  } else {
+    Q_annual[Q_annual$Year %in% exclude_years,-1] <- NA
+  }
   
   # If transpose if selected, switch columns and rows
   if (transpose) {
