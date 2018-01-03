@@ -35,7 +35,8 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>%
   #calc_longterm_stats()
   #plot_longterm_stats()
   #plot_annual_stats(log_discharge = T)
-  calc_lt_mad(percent_MAD = c(1:4))
+  #calc_lt_mad(percent_MAD = c(1:4))
+  calc_annual_flow_timing()
 
 
 # Multiple stations and custom Date and Value column names
@@ -54,7 +55,9 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) 
   #calc_longterm_stats(flow_dates = Datesss, flow_values = Valuesss)
  # plot_longterm_stats(flow_dates = Datesss, flow_values = Valuesss)
   #plot_annual_stats(flow_dates = Datesss, flow_values = Valuesss)
-  calc_lt_mad(flow_dates = Datesss, flow_values = Valuesss,percent_MAD = c(5,10,20))
+  #calc_lt_mad(flow_dates = Datesss, flow_values = Valuesss,percent_MAD = c(5,10,20))
+  calc_annual_flow_timing(flow_dates = Datesss, flow_values = Valuesss)
+
 
 
 
@@ -73,7 +76,9 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>%
   #calc_annual_stats()
   #plot_longterm_stats()
   #plot_annual_stats(percentiles = 99)
-  calc_lt_mad()
+  #calc_lt_mad()
+  calc_annual_flow_timing()
+
 
 
 
@@ -101,6 +106,7 @@ flow_data <- calc_annual_stats(HYDAT = "08HB048")
 plot_longterm_stats(HYDAT = "08HB048")
 plot_annual_stats(HYDAT = "08HB048")
 calc_lt_mad(HYDAT = "08HB048", percent_MAD = c(5,10,20))
+data <- calc_annual_flow_timing(HYDAT = "08NM116")
 
 
 # Multiple stations
@@ -117,6 +123,7 @@ flow_data <- calc_annual_stats(HYDAT = c("08HB048","08NM116"), months = 8)
 plot_longterm_stats(HYDAT = c("08HB048","08NM116"))
 plot_annual_stats(HYDAT = c("08HB048","08NM116"))
 calc_lt_mad(HYDAT = c("08HB048","08NM116"), percent_MAD = c(5,10,20))
+data <- calc_annual_flow_timing(HYDAT = c("08HB048","08NM116"), percent_total = 1:5, transpose = T)
 
 
 

@@ -4,44 +4,46 @@
 \alias{calc_annual_flow_timing}
 \title{Calculate annual flow timing}
 \usage{
-calc_annual_flow_timing(flowdata = NULL, HYDAT = NULL,
+calc_annual_flow_timing(flow_data = NULL, flow_dates = Date,
+  flow_values = Value, flow_stations = STATION_NUMBER, HYDAT = NULL,
   percent_total = c(25, 33.3, 50, 75), water_year = FALSE,
-  water_year_start = 10, start_year = NULL, end_year = NULL,
-  exclude_years = NULL, transpose = FALSE, station_name = NA,
-  write_table = FALSE, write_dir = ".")
+  water_year_start = 10, start_year = 0, end_year = 9999,
+  exclude_years = NULL, transpose = FALSE)
 }
 \arguments{
-\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
+\item{flow_data}{a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
+names/numbers. Leave blank if using \code{HYDAT} argument.}
 
-\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flowdata} argument is used.}
+\item{flow_dates}{a column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Leave blank if using \code{HYDAT} 
+argument. Default \code{Date}.}
 
-\item{percent_total}{Numeric. Percents of annual total flows to determine dates. Default \code{c(25,33.3,50,75)}.}
+\item{flow_values}{a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
+Leave blank if using \code{HYDAT} argument. Default \code{Value}.}
 
-\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
-by the year in which they end. Default \code{FALSE}.}
+\item{flow_stations}{a column in flow_data that contains station identifiers (names or numbers) for each flow data set, required if 
+calculating results for multiple stations. Removing 'STATION_NUMBER' column in flow_data or incorrectly identifying will calculate 
+statistics on all flow values from all stations. If using \code{HYDAT} argument, setting \code{flow_stations} to anything besides 
+\code{STATION_NUMBER} will have similar effects. Default \code{STATION_NUMBER}.}
 
-\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
+\item{HYDAT}{a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
+\code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.}
 
-\item{start_year}{Integer. First year to consider for analysis. Leave blank if all years are required.}
+\item{percent_total}{a numeric vector of percents of total annual flows to determine dates. Default \code{c(25,33.3,50,75)}.}
 
-\item{end_year}{Integer. Last year to consider for analysis. Leave blank if all years are required.}
+\item{water_year}{a logical value indicating whether to use water years to group flow data instead of calendar years. Water years 
+are designated by the year in which they end. Default \code{FALSE}.}
 
-\item{exclude_years}{Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.}
+\item{water_year_start}{a numeric value indicating the month of the start of the water year. Used if \code{water_year=TRUE}. 
+Default \code{10}.}
 
-\item{transpose}{Logical. Switch the rows and columns of the results table. Dates not transposed. Default \code{FALSE}.}
+\item{start_year}{a numeric value of the first year to consider for analysis. Leave blank if all years are required.}
 
-\item{station_name}{Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
-files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
-will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number.}
+\item{end_year}{a numeric value of the last year to consider for analysis. Leave blank if all years are required.}
 
-\item{write_table}{Logical. Write the table as a .csv file to specified directory. Default \code{FALSE}.}
+\item{exclude_years}{a numeric vector of years to exclude from analysis. Leave blank if all years are required.}
 
-\item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
-Default is the working directory.}
+\item{transpose}{a logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.}
 }
 \value{
 A data frame with the following columns:
@@ -57,7 +59,7 @@ A data frame with the following columns:
   \item{Date_50pct_TotalQ}{date (YYYY-MM-DD) of 50-percent of total volumetric discharge}
   \item{DoY_75pct_TotalQ}{day of year of 75-percent of total volumetric discharge}
   \item{Date_75pct_TotalQ}{date (YYYY-MM-DD) of 75-percent of total volumetric discharge}
-  Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
+  Transposing data creates a column of "Statistics" (just DoY, not Date values) and subsequent columns for each year selected.
 }
 \description{
 Calculates annual the timing (day of year) and date of occurrence of portions of total annual flow of daily flow 
@@ -66,7 +68,7 @@ Calculates annual the timing (day of year) and date of occurrence of portions of
 \examples{
 \dontrun{
 
-calc_annual_flow_timing(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
+calc_annual_flow_timing(flow_data = flow_data)
 
 calc_annual_flow_timing(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8, percent_total = 50)
 
