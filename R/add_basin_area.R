@@ -16,8 +16,8 @@
 #'
 #' @param flow_data a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
 #'    names/numbers. Leave blank if using \code{HYDAT} argument.
-#' @param flow_stations a column in flow_data that contains station identifiers for each flow data set, if required. Default 
-#'    \code{STATION_NUMBER}. 
+#' @param flow_stations a column in flow_data that contains station identifiers (names or numbers) for each flow data set. Required 
+#'    if flow_data contains multiple stations. Default \code{STATION_NUMBER}. 
 #' @param HYDAT a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
 #'    extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
 #'    \code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.

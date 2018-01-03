@@ -2,8 +2,8 @@
 
 
 devtools::document()
-install.packages("/Users/jongoetz/Documents/R/fasstr devel",repos = NULL, type = "source")
-#install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
+#install.packages("/Users/jongoetz/Documents/R/fasstr devel",repos = NULL, type = "source")
+install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
 library(fasstr)
 library(dplyr)
@@ -35,7 +35,7 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>%
   #calc_longterm_stats()
   #plot_longterm_stats()
   #plot_annual_stats(log_discharge = T)
-  calc_lt_mad()
+  calc_lt_mad(percent_MAD = c(1:4))
 
 
 # Multiple stations and custom Date and Value column names
@@ -117,12 +117,6 @@ flow_data <- calc_annual_stats(HYDAT = c("08HB048","08NM116"), months = 8)
 plot_longterm_stats(HYDAT = c("08HB048","08NM116"))
 plot_annual_stats(HYDAT = c("08HB048","08NM116"))
 calc_lt_mad(HYDAT = c("08HB048","08NM116"), percent_MAD = c(5,10,20))
-
-
-
-
-
-
 
 
 
@@ -241,5 +235,17 @@ devtools::document()
 #install.packages("/Users/jongoetz/Documents/R/fasstr devel",repos = NULL, type = "source")
 install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
+
+# 
+# test <- tidyhydat::hy_stations(station_number = "08HA011")$DRAINAGE_AREA_GROSS
+# screening <- fasstr::screen_flow_data(HYDAT = "08HA011")
+# 
+# 
+# devtools::install_github("bcgov/fasstr")
+# trends <- fasstr::compute_annual_trends(HYDAT = "08HA011", start_year = 1965, end_year = 2015, zyp_method = "yuepilon")
+# lowflows <- fasstr::calc_annual_lowflows(HYDAT = "08HA002", start_year = 1965, end_year = 2015)
+# trends2 <- fasstr::compute_annual_trends(trendsdata = lowflows, zyp_method = "yuepilon")
+# 
+# total <- fasstr::calc_annual_total_flows(HYDAT = "08HA002", incl_seasons = T, start_year = 1965, end_year = 2015)
 
 

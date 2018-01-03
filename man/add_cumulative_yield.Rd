@@ -19,8 +19,8 @@ argument. Default \code{Date}.}
 \item{flow_values}{a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
 Leave blank if using \code{HYDAT} argument. Default \code{Value}.}
 
-\item{flow_stations}{a column in flow_data that contains station identifiers for each flow data set, if required. Default 
-\code{STATION_NUMBER}.}
+\item{flow_stations}{a column in flow_data that contains station identifiers (names or numbers) for each flow data set. Required 
+if flow_data contains multiple stations. Default \code{STATION_NUMBER}.}
 
 \item{flow_basin_areas}{a column in flow_data of numeric upstream drainage basin areas used to calculate the daily yield. If left blank
 this function will use basin areas provided by the fasstr::add_basin_areas() function using the \code{basin_area} argument.}

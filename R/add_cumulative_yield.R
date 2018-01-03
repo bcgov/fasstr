@@ -22,8 +22,8 @@
 #'    argument. Default \code{Date}. 
 #' @param flow_values a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
 #'    Leave blank if using \code{HYDAT} argument. Default \code{Value}.
-#' @param flow_stations a column in flow_data that contains station identifiers for each flow data set, if required. Default 
-#'    \code{STATION_NUMBER}. 
+#' @param flow_stations a column in flow_data that contains station identifiers (names or numbers) for each flow data set. Required 
+#'    if flow_data contains multiple stations. Default \code{STATION_NUMBER}.  
 #' @param flow_basin_areas a column in flow_data of numeric upstream drainage basin areas used to calculate the daily yield. If left blank
 #'    this function will use basin areas provided by the fasstr::add_basin_areas() function using the \code{basin_area} argument.
 #' @param HYDAT a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
