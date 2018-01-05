@@ -10,7 +10,7 @@ The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http:
 Features
 --------
 
-Useful features of this package include the utilization of the [tidyhydat](https://github.com/ropensci/tidyhydat) package to extract Water Survey of Canada historical streamflow data from a locally saved [HYDAT](https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html) database for analyses, the filtering of years included in analyses (start and end years, excluded years), option to choose water years for analyses instead of calendar years, streamflow data preparation functions, options to save/write plots directly to your computer within the functions, and customizing how missing dates are handled.
+Useful features of this package include the utilization of the [tidyhydat](https://github.com/ropensci/tidyhydat) package to extract Water Survey of Canada historical streamflow data from a locally saved [HYDAT](https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html) database for analyses, the filtering of years included in analyses (start and end years, excluded years), option to choose water years for analyses instead of calendar years, streamflow data preparation functions (use in a tidy fashion), and customizing how missing dates are handled.
 
 Installation
 ------------
@@ -19,7 +19,7 @@ To install the `fasstr` package, you need to install the `devtools` package then
 
 ``` r
 install.packages("devtools")
-devtools::install_github("bcgov/fasstr")
+devtools::install_github("bcgov/fasstr", ref = "devel")
 ```
 
 Then to call the `fasstr` functions you can either load the package using the `library()` function or access a specific function using a double-colon (e.g. `fasstr::calc_daily_stats()`). Several other packages will be installed in addition to this package including [zyp](https://cran.r-project.org/web/packages/zyp/index.html) for trending, [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html) for creating plots, and [dplyr](https://cran.r-project.org/web/packages/dplyr/index.html) and [tidyr](https://cran.r-project.org/web/packages/tidyr/index.html) for various data wrangling and summarizing functions, amongst others.
@@ -35,18 +35,24 @@ Usage
 
 ### Flow Data Input
 
-All functions in `fasstr` require a record of daily mean streamflow from a hydrometric station. Long-term and continuous datasets are preferred for most analyses, but seasonal and partial data can be used.
+All functions in `fasstr` require a data frame of daily mean streamflow from a hydrometric station. Long-term and continuous datasets are preferred for most analyses, but seasonal and partial data can be used. A data frame can be provided to the functions through either the `flow_data` or `HYDAT` arguments.
 
-Flow data can be provided to the functions through either the `HYDAT` or `flowdata` arguments. When using the `HYDAT` argument, a Water Survey of Canada station number is required (e.g. `HYDAT="08NM116"`) and its corresponding historical daily streamflow record is extracted from HYDAT using `tidyhydat`. [Installation](https://github.com/ropensci/tidyhydat) of both `tidyhydat` and a HYDAT database is required to use this argument.
-
-Data can alternatively be provided using the `flowdata` argument as a dataframe with columns of 'Date' (YYYY-MM-DD in date format) and 'Value' (mean daily discharge in cubic metres per second in numeric format). The dataframe can have other columns with other names as the functions will looks for 'Date' and 'Value'. The `fasstr` functions will not recognize your dates and flow data if the columns are not appropriately named 'Date' and 'Value'. The following is an example of an appropriate flowdata dataframe:
+Using the `flow_data` argument, a data frame of flow data containing columns of dates (YYYY-MM-DD in date format), flow values (mean daily discharge in cubic metres per second in numeric format), and, optionally, station identifiers (character string of station name or numbers) is called. By default the functions will look for columns identified as 'Date', 'Value', and 'STATION\_NUMBER', respectively (as matching the HYDAT format), but columns of different names can be identified using the `flow_dates`, `flow_values`, `flow_stations` column arguments (PROVIDE EXAMPLE), respectively. The following is an example of an appropriate flow\_data dataframe:
 
 ``` r
-str(flowdata)
+str(flow_data)
 #> Classes 'tbl_df', 'tbl' and 'data.frame':    16102 obs. of  2 variables:
 #>  $ Date : Date, format: "1972-12-01" "1972-12-02" ...
 #>  $ Value: num  3 0.94 0.385 0.241 0.207 ...
 ```
+
+Alternatively, you can directly extract a HYDAT flow data frame from a HYDAT database When using the `HYDAT` argument. This requires Water Survey of Canada station numbers (e.g. `HYDAT="08NM116"`) to be listed and their corresponding historical daily streamflow record will be extracted from HYDAT using `tidyhydat`. [Installation](https://github.com/ropensci/tidyhydat) of both `tidyhydat` and a HYDAT database is required to use this argument.
+
+### Multiple Stations
+
+This package allows for multiple stations to be analyzed in the `calc` functions provided station identifiers are provided using the `flow_stations` column argument (defaults to STATION\_NUMBER). If station identifier column doesn't exist or is improperly named, then all flow values listed in the `flow_values` column (unless filtered out using the filtering arguments) will be summarized (regardless of one or more stations).
+
+Plotting functions only produce one plot.....so all flow values used
 
 ### Year Options
 
@@ -56,17 +62,13 @@ To group analyses by water, or hydrologic, years instead of calendar years, if d
 
 ### Drainage Basin Area
 
-For annual yield runoff statistics calculated in the annual statistics functions, an upstream drainage basin area (in sq. km) is required with the `basin_area` argument. If no area is supplied with `flowdata` all yield results will be `NA`. If using the `HYDAT` argument to supply streamflow data, the function will automatically use the basin area of the station provided in HYDAT, if available, so `basin_area` is not required. To override the basin area from HYDAT, set the `basin_area` to your choosing and it will replace the HYDAT number.
+For annual yield runoff statistics calculated in the annual statistics functions, an upstream drainage basin area (in sq. km) is required with the `basin_area` argument. If no area is supplied with `flow_data` all yield results will be `NA`. If using the `HYDAT` argument to supply streamflow data, the function will automatically use the basin area of the station provided in HYDAT, if available, so `basin_area` is not required. To override the basin area from HYDAT, set the `basin_area` to your choosing and it will replace the HYDAT number.
 
-If not using `HYDAT` and your `flowdata` dataframe contains a column called `STATION_NUMBER` (HYDAT originated) the functions will look up the station number listed and grab the corresponding basin area from HYDAT, if it exists, without setting the `basin_area` argument. This allows you to use a `flowdata` dataframe that originated from HYDAT without having to look up a basin area.
+If not using `HYDAT` and your `flow_data` dataframe contains a column called `STATION_NUMBER` (HYDAT originated) the functions will look up the station number listed and grab the corresponding basin area from HYDAT, if it exists, without setting the `basin_area` argument. This allows you to use a `flow_data` dataframe that originated from HYDAT without having to look up a basin area.
 
 ### Handling Missing Dates
 
-Coming soon.
-
-### Writing/saving plots and tables
-
-In most functions that compute statistics or create plots, there is an option to directly write or save the tables and plots to your computer without additional functions. The default directory is your working directory, but you can choose your directory using the `report_dir` argument. Tables are saved in '.csv' format and plots can be saved several formats (including '.pdf','.png','.jpeg','.tiff', or '.bmp'), with the default being '.pdf'.
+Coming soon. ignore\_missing argument. different functions have different defaults....
 
 Examples
 --------
@@ -77,20 +79,22 @@ To determine the summary statistics of an entire dataset and by month (mean, med
 
 ``` r
 calc_longterm_stats(HYDAT = "08NM116")
-#>        Month      Mean Median Maximum Minimum    P10    P90
-#> 1        Jan  1.085907  0.878    9.50   0.160 0.5200  1.700
-#> 2        Feb  1.043398  0.879    4.41   0.140 0.4970  1.775
-#> 3        Mar  1.606463  1.180    9.86   0.380 0.7050  3.246
-#> 4        Apr  6.702245  4.250   42.40   0.340 1.1700 15.600
-#> 5        May 23.419247 21.200   87.50   0.821 8.8720 40.200
-#> 6        Jun 22.436086 20.300   86.20   0.450 6.2000 40.800
-#> 7        Jul  5.981690  3.720   76.80   0.332 0.9946 13.300
-#> 8        Aug  2.082254  1.480   22.40   0.311 0.6990  4.022
-#> 9        Sep  2.415459  1.560   18.30   0.354 0.6908  5.010
-#> 10       Oct  2.121410  1.650   15.20   0.025 0.7797  4.130
-#> 11       Nov  1.841419  1.560   11.70   0.260 0.5987  3.291
-#> 12       Dec  1.248250  1.080    7.30   0.342 0.5288  2.210
-#> 13 Long-term  6.553322  1.840   87.50   0.025 0.6930 21.000
+#> # A tibble: 13 x 8
+#>    STATION_NUMBER     Month      Mean Median Maximum Minimum    P10    P90
+#>  *          <chr>    <fctr>     <dbl>  <dbl>   <dbl>   <dbl>  <dbl>  <dbl>
+#>  1        08NM116       Jan  1.085907  0.878    9.50   0.160 0.5200  1.700
+#>  2        08NM116       Feb  1.043398  0.879    4.41   0.140 0.4970  1.775
+#>  3        08NM116       Mar  1.606463  1.180    9.86   0.380 0.7050  3.246
+#>  4        08NM116       Apr  6.702245  4.250   42.40   0.340 1.1700 15.600
+#>  5        08NM116       May 23.419247 21.200   87.50   0.821 8.8720 40.200
+#>  6        08NM116       Jun 22.436086 20.300   86.20   0.450 6.2000 40.800
+#>  7        08NM116       Jul  5.981690  3.720   76.80   0.332 0.9946 13.300
+#>  8        08NM116       Aug  2.082254  1.480   22.40   0.311 0.6990  4.022
+#>  9        08NM116       Sep  2.415459  1.560   18.30   0.354 0.6908  5.010
+#> 10        08NM116       Oct  2.121410  1.650   15.20   0.025 0.7797  4.130
+#> 11        08NM116       Nov  1.841419  1.560   11.70   0.260 0.5987  3.291
+#> 12        08NM116       Dec  1.248250  1.080    7.30   0.342 0.5288  2.210
+#> 13        08NM116 Long-term  6.553322  1.840   87.50   0.025 0.6930 21.000
 ```
 
 ### Plotting example 1: daily summary statistics
@@ -98,49 +102,31 @@ calc_longterm_stats(HYDAT = "08NM116")
 To visualize the daily streamflow patterns on an annual basis, the `plot_daily_stats()` function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the `start_year` and `end_year` arguments. Multiple plots are produced with this function, so this example plots just the summary statistics (`[1]`).
 
 ``` r
-plot_daily_stats(HYDAT = "08NM116",
-                 start_year = 1981,
-                 end_year = 2010,
-                 log_discharge = TRUE)[1]
-#> $daily_statisitics
+#plot_daily_stats(HYDAT = "08NM116",
+#                 start_year = 1981,
+#                 end_year = 2010,
+#                 log_discharge = TRUE)[1]
 ```
-
-![](tools/readme/README-plot1-1.png)
 
 ### Plotting example 2: flow duration curves
 
 Flow duration curves can be produced using the `plot_flow_duration()` function.
 
 ``` r
-plot_flow_duration(HYDAT = "08NM116",
-                   start_year = 1981,
-                   end_year = 2010)
+#plot_flow_duration(HYDAT = "08NM116",
+#                   start_year = 1981,
+#                   end_year = 2010)
 ```
-
-![](tools/readme/README-plot2-1.png)
 
 ### Analysis example: low-flow frequency analysis
 
 This package also provides a function, `compute_frequency_analysis()`, to complete frequency analyses (using the same methods as [HEC-SSP](http://www.hec.usace.army.mil/software/hec-ssp/)). The default fitting distribution is 'log-Pearson Type III', but the 'weibull' distribution can also be used. Other default plotting and fitting methods are described in the function documentation. For this example, the 7-day low-flow (low-flow is default) quantiles are calculated for the Mission Creek hydrometric station using the 'log-Pearson Type III' distribution. With this, several low-flow indicators can be determined (i.e. 7Q5, 7Q10).
 
 ``` r
-compute_frequency_analysis(HYDAT = "08NM116",
-                           start_year = 1981,
-                           end_year = 2010,
-                           rolling_days=7)[5]
-#> $fitted_quantiles
-#>    Distribution Probability Return Period Q007-day-Avg
-#> 1          PIII       0.010    100.000000    0.1929445
-#> 2          PIII       0.050     20.000000    0.2770067
-#> 3          PIII       0.100     10.000000    0.3318582
-#> 4          PIII       0.200      5.000000    0.4084737
-#> 5          PIII       0.500      2.000000    0.5881156
-#> 6          PIII       0.800      1.250000    0.8122160
-#> 7          PIII       0.900      1.111111    0.9463443
-#> 8          PIII       0.950      1.052632    1.0651498
-#> 9          PIII       0.975      1.025641    1.1735280
-#> 10         PIII       0.980      1.020408    1.2066583
-#> 11         PIII       0.990      1.010101    1.3050198
+#compute_frequency_analysis(HYDAT = "08NM116",
+#                           start_year = 1981,
+#                           end_year = 2010,
+#                           rolling_days=7)[5]
 ```
 
 Project Status

@@ -72,12 +72,13 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>%
   add_cumulative_volume() %>% 
   add_daily_yield(basin_area = 10.3) %>%
   add_cumulative_yield(basin_area = 10.3) %>% 
+  fasstr::plot_annual_flow_timing(HYDAT = "08HB048")
   #calc_longterm_stats()
   #calc_annual_stats()
   #plot_longterm_stats()
   #plot_annual_stats(percentiles = 99)
   #calc_lt_mad()
-  calc_annual_flow_timing()
+ # calc_annual_flow_timing()
 
 
 
@@ -107,6 +108,8 @@ plot_longterm_stats(HYDAT = "08HB048")
 plot_annual_stats(HYDAT = "08HB048")
 calc_lt_mad(HYDAT = "08HB048", percent_MAD = c(5,10,20))
 data <- calc_annual_flow_timing(HYDAT = "08NM116")
+data <- calc_annual_flow_timing(HYDAT = "08NM116")
+plot_annual_flow_timing(HYDAT = "08HB048")
 
 
 # Multiple stations
