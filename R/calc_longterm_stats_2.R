@@ -98,23 +98,24 @@ calc_longterm_stats_2 <- function(data = NULL,
   if(is.vector(data)) {
     if(!all(data %in% dplyr::pull(tidyhydat::allstations[1]))) 
       stop("One or more stations numbers listed in data argument do not exist in HYDAT. Re-check numbers or provide a data frame of data.")
-    flow_data <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  data))
+    flow_data <- suppressMessages(tidyhydat::hy_daily_flows(station_number = data))
   } else {
     flow_data <- data
   }
   
   if(!is.data.frame(flow_data)) stop("Incorrect selection for data argument, must provide a data frame or HYDAT station number(s).")
+  flow_data <- as.data.frame(flow_data) # Getting random 'Unknown or uninitialised column:' warnings if using tibble
   
-  # Save the original columns (to check for STATION_NUMBER later) and ungroup
+  # Save the original columns (to check for grouping column later) and ungroup
   orig_cols <- names(flow_data)
   flow_data <- dplyr::ungroup(flow_data)
   
-  # If no STATION_NUMBER in flow_data, make it so (required for station grouping)
+  # If no grouping (default STATION_NUMBER) in data, make it so (required)
   if(!as.character(substitute(grouping)) %in% colnames(flow_data)) {
     flow_data[, as.character(substitute(grouping))] <- "XXXXXXX"
   }
   
-  # Get the just STATION_NUMBER, Date, and Value columns
+  # Get the just grouping (default STATION_NUMBER), Date, and Value columns
   # This method allows the user to select the Station, Date or Value columns if the column names are different
   if(!as.character(substitute(values)) %in% names(flow_data) & !as.character(substitute(dates)) %in% names(flow_data)) 
     stop("Dates and values not found in data frame. Rename dates and values columns to 'Date' and 'Value' or identify the columns using
@@ -124,7 +125,7 @@ calc_longterm_stats_2 <- function(data = NULL,
   if(!as.character(substitute(values)) %in% names(flow_data)) 
     stop("Values not found in data frame. Rename values column to 'Value' or identify the column using 'values' argument.")
   
-  # Gather required columns
+  # Gather required columns (will temporarily rename grouping column as STATION_NUMBER if isn't already)
   flow_data <- flow_data[,c(as.character(substitute(grouping)),
                             as.character(substitute(dates)),
                             as.character(substitute(values)))]

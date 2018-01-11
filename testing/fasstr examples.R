@@ -9,9 +9,11 @@ library(fasstr)
 library(dplyr)
 
 
-calc_longterm_stats_2(c("08HB048","08NM116"))
+flow_data <- calc_longterm_stats_2(c("08HB048","08NM116"))
 calc_longterm_stats_2(1)
 
+flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% 
+  calc_longterm_stats_2(grouping = )
 
 
 # flow_data <- flow_data[,c(as.character(substitute(Date)),
