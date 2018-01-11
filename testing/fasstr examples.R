@@ -9,14 +9,18 @@ library(fasstr)
 library(dplyr)
 
 
+calc_longterm_stats_2(c("08HB048","08NM116"))
+calc_longterm_stats_2(1)
 
-flow_data <- flow_data[,c(as.character(substitute(Date)),
-                          as.character(substitute(Value)))]
 
 
-flow_data <- flow_data[,c(as.character(substitute(STATION_NUMBER)),
-                          as.character(substitute(Date)),
-                          as.character(substitute(Value)))]
+# flow_data <- flow_data[,c(as.character(substitute(Date)),
+#                           as.character(substitute(Value)))]
+# 
+# 
+# flow_data <- flow_data[,c(as.character(substitute(STATION_NUMBER)),
+#                           as.character(substitute(Date)),
+#                           as.character(substitute(Value)))]
 ### FLOW_DATA
 ### ----------
 

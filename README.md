@@ -70,6 +70,8 @@ If not using `HYDAT` and your `flow_data` dataframe contains a column called `ST
 
 Coming soon. ignore\_missing argument. different functions have different defaults....
 
+Mention that other vairables (PPT, temp, water levels, etc) can be used in calc and pltting
+
 Examples
 --------
 
