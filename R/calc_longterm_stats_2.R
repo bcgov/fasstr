@@ -15,7 +15,7 @@
 #' @description Calculates the long-term and long-term monthly mean, median, maximum, minimum, and percentiles of daily flow values 
 #'    from a streamflow dataset. Calculates the statistics from all daily values from all years, unless specified.
 #'
-#' @param data Daily data to be analyzed. There are two options:
+#' @param data Daily data to be analyzed. Options:
 #' 
 #'    A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
 #'    names/numbers).
@@ -94,7 +94,6 @@ calc_longterm_stats_2 <- function(data = NULL,
   
   # Check if data is provided
   if(is.null(data))   stop("No data provided, must provide a data frame or HYDAT station number(s).")
-  
   if(is.vector(data)) {
     if(!all(data %in% dplyr::pull(tidyhydat::allstations[1]))) 
       stop("One or more stations numbers listed in data argument do not exist in HYDAT. Re-check numbers or provide a data frame of data.")
@@ -102,7 +101,6 @@ calc_longterm_stats_2 <- function(data = NULL,
   } else {
     flow_data <- data
   }
-  
   if(!is.data.frame(flow_data)) stop("Incorrect selection for data argument, must provide a data frame or HYDAT station number(s).")
   flow_data <- as.data.frame(flow_data) # Getting random 'Unknown or uninitialised column:' warnings if using tibble
   

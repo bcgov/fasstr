@@ -12,7 +12,7 @@ calc_longterm_stats_2(data = NULL, dates = Date, values = Value,
   ignore_missing = TRUE)
 }
 \arguments{
-\item{data}{Daily data to be analyzed. There are two options:
+\item{data}{Daily data to be analyzed. Options:
 
    A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
    names/numbers).

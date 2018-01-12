@@ -17,16 +17,21 @@
 #'    the year in which they end. For example, Water Year 1999 (starting Oct) is from 1 Oct 1998 (WaterDayofYear 1) to 30 Sep 1999
 #'    (WaterDayofYear 365)).
 #'
-#' @param flow_data Data frame. A data frame of daily mean flow data. Not required if \code{HYDAT} argument is used.
-#' @param flow_dates A column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Default \code{Date}.
-#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-#'    database are required. Not required if \code{flow_data} argument is used.
-#' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
-#'    by the year in which they end. Default \code{FALSE}.
-#' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
+#' @param data Daily data to be analyzed. Options:
 #' 
-#' @return A data frame of the original flow_data or HYDAT data with additional columns:
+#'    A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
+#'    names/numbers).
+#'    
+#'    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+#'    extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.   
+#' @param dates Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
+#'    using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}. 
+#' @param water_year Logical value indicating whether to use water years to group data instead of calendar years. Water years 
+#'    are designated by the year in which they end. Default \code{FALSE}.
+#' @param water_year_start Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
+#'    Default \code{10}.
+#' 
+#' @return A data frame of the source data with additional columns:
 #'   \item{Year}{calendar year}
 #'   \item{Month}{numeric month (1 to 12)}
 #'   \item{MonthName}{month name (Jan-Dec)}
@@ -37,17 +42,16 @@
 #' @examples
 #' \dontrun{
 #' 
-#'add_date_variables(flow_data = flow_data)
+#'add_date_variables(data = flow_data)
 #' 
-#'add_date_variables(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+#'add_date_variables(data = "08NM116", water_year = TRUE, water_year_start = 8)
 #'
 #' }
 #' @export
 
 
-add_date_variables <- function(flow_data=NULL,
-                               flow_dates=Date,
-                               HYDAT=NULL,
+add_date_variables <- function(data = NULL,
+                               dates = Date,
                                water_year=FALSE,
                                water_year_start=10){  
   
@@ -56,24 +60,28 @@ add_date_variables <- function(flow_data=NULL,
   ## -------------------
   
   # Check if data is provided
-  if(is.null(flow_data) & is.null(HYDAT))   stop("No flow data provided, must use flow_data or HYDAT arguments.")
-  if(!is.null(flow_data) & !is.null(HYDAT)) stop("Only one of flow_data or HYDAT arguments can be used.")
+  if(is.null(data))   stop("No data provided, must provide a data frame or HYDAT station number(s).")
   
-  # Get HYDAT data if selected and stations exist
-  if(!is.null(HYDAT)) {
-    if(!all(HYDAT %in% dplyr::pull(tidyhydat::allstations[1]))) stop("One or more stations listed in 'HYDAT' do not exist.")
-    flow_data <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
+  if(is.vector(data)) {
+    if(!all(data %in% dplyr::pull(tidyhydat::allstations[1]))) 
+      stop("One or more stations numbers listed in data argument do not exist in HYDAT. Re-check numbers or provide a data frame of data.")
+    flow_data <- suppressMessages(tidyhydat::hy_daily_flows(station_number = data))
+  } else {
+    flow_data <- data
   }
+  
+  if(!is.data.frame(flow_data)) stop("Incorrect selection for data argument, must provide a data frame or HYDAT station number(s).")
+  flow_data <- as.data.frame(flow_data) # Getting random 'Unknown or uninitialised column:' warnings if using tibble
   
   # Get the Date column set up
   # This method allows the user to select the Date column if the column names are different
-  if(!as.character(substitute(flow_dates)) %in% names(flow_data))  
-    stop("Flow dates not found. Rename flow dates column to 'Date' or identify the column using 'flow_dates' argument.")
+  if(!as.character(substitute(dates)) %in% names(flow_data))  
+    stop("Dates not found in data frame. Rename dates column to 'Date' or identify the column using 'dates' argument.")
   # Temporarily rename the Date column
-  names(flow_data)[names(flow_data) == as.character(substitute(flow_dates))] <- "Date"
+  names(flow_data)[names(flow_data) == as.character(substitute(dates))] <- "Date"
   
   # Check columns are in proper formats
-  if(!inherits(flow_data$Date[1], "Date"))  stop("'Date' column in flow_data data frame does not contain dates.")
+  if(!inherits(flow_data$Date[1], "Date"))  stop("'Date' column in data frame does not contain dates.")
   
   
   ## CHECKS ON OTHER ARGUMENTS
@@ -175,7 +183,7 @@ add_date_variables <- function(flow_data=NULL,
   }
   
   # Return the original names of the Date column
-  names(flow_data)[names(flow_data) == "Date"] <- as.character(substitute(flow_dates))
+  names(flow_data)[names(flow_data) == "Date"] <- as.character(substitute(dates))
   
   flow_data
   

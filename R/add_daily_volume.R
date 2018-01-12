@@ -14,31 +14,32 @@
 #'
 #' @description Add a column of daily volumetric flows to a streamflow dataset, in units of cubic metres. Converts the discharge to a volume.
 #'
-#' @param flow_data a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
-#'    names/numbers. Leave blank if using \code{HYDAT} argument.
-#' @param flow_values a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
-#'    Leave blank if using \code{HYDAT} argument. Default \code{Value}.
-#' @param HYDAT a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-#'    extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
-#'    \code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.
+#' @param data Daily data to be analyzed. Options:
 #' 
-#' @return A tibble data frame of the original flow_data or HYDAT data with an additional column:
+#'    A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
+#'    names/numbers).
+#'    
+#'    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+#'    extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.   
+#' @param values Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
+#'    Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}. 
+#' 
+#' @return A data frame of the source data with an additional column:
 #'   \item{Volume_m3}{daily total volumetric flow, in units of cubic metres}
 #'
 #' @examples
 #' \dontrun{
 #' 
-#'add_daily_volume(flow_data = flow_data)
+#'add_daily_volume(data = flow_data)
 #' 
-#'add_daily_volume(HYDAT = "08NM116")
+#'add_daily_volume(data = "08NM116")
 #'
 #' }
 #' @export
 
 
-add_daily_volume <- function(flow_data = NULL,
-                             flow_values = Value,
-                             HYDAT = NULL){
+add_daily_volume <- function(data = NULL,
+                             values = Value){
   
   
   
@@ -46,23 +47,25 @@ add_daily_volume <- function(flow_data = NULL,
   ## -------------------
   
   # Check if data is provided
-  if(is.null(flow_data) & is.null(HYDAT))   stop("No flow data provided, must use flow_data or HYDAT arguments.")
-  if(!is.null(flow_data) & !is.null(HYDAT)) stop("Only one of flow_data or HYDAT arguments can be used.")
-  
-  # Get HYDAT data if selected and stations exist
-  if(!is.null(HYDAT)) {
-    if(!all(HYDAT %in% dplyr::pull(tidyhydat::allstations[1]))) stop("One or more stations listed in 'HYDAT' do not exist.")
-    flow_data <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
+  if(is.null(data))   stop("No data provided, must provide a data frame or HYDAT station number(s).")
+  if(is.vector(data)) {
+    if(!all(data %in% dplyr::pull(tidyhydat::allstations[1]))) 
+      stop("One or more stations numbers listed in data argument do not exist in HYDAT. Re-check numbers or provide a data frame of data.")
+    flow_data <- suppressMessages(tidyhydat::hy_daily_flows(station_number = data))
+  } else {
+    flow_data <- data
   }
+  if(!is.data.frame(flow_data)) stop("Incorrect selection for data argument, must provide a data frame or HYDAT station number(s).")
+  flow_data <- as.data.frame(flow_data) # Getting random 'Unknown or uninitialised column:' warnings if using tibble
   
   # This method allows the user to select the Value column if the column name is different
-  if(!as.character(substitute(flow_values)) %in% names(flow_data)) 
-    stop("Flow values not found. Rename flow values column to 'Value' or identify the column using 'flow_values' argument.")
+  if(!as.character(substitute(values)) %in% names(flow_data)) 
+    stop("Flow values not found. Rename flow values column to 'Value' or identify the column using 'values' argument.")
   # Temporarily rename the Value column
-  names(flow_data)[names(flow_data) == as.character(substitute(flow_values))] <- "Value"
+  names(flow_data)[names(flow_data) == as.character(substitute(values))] <- "Value"
   
   # Check columns are in proper formats
-  if(!is.numeric(flow_data$Value))          stop("'Value' column in flow_data data frame does not contain numeric values.")
+  if(!is.numeric(flow_data$Value))          stop("'Value' column in data frame does not contain numeric values.")
   
   
   
@@ -73,7 +76,7 @@ add_daily_volume <- function(flow_data = NULL,
   
   
   # Return the original names Value column
-  names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(flow_values))
+  names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(values))
   
   
   dplyr::as_tibble(flow_data)

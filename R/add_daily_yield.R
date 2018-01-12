@@ -15,22 +15,25 @@
 #' @description Add a column of daily runoff yields to a streamflow dataset, in units of millimetres. Converts the discharge to a depth
 #'   of water based on the upstream drainge basin area.
 #'
-#' @param flow_data a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
-#'    names/numbers. Leave blank if using \code{HYDAT} argument.
-#' @param flow_values a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
-#'    Leave blank if using \code{HYDAT} argument. Default \code{Value}.
-#' @param flow_basin_areas a column in flow_data of numeric upstream drainage basin areas used to calculate the daily yield. If left blank
-#'    this function will use basin areas provided by the fasstr::add_basin_areas() function using the \code{basin_area} argument.
-#' @param HYDAT a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-#'    extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
-#'    \code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.
-#' @param basin_area a numeric vector of basin areas. If no \code{flow_basin_area} provided in flow_data, used to determine basin areas from the
-#'    fasstr::add_basin_areas() function. Leave blank if \code{HYDAT} is used or a column in \code{flow_data} called 'STATION_NUMBER' 
-#'    contains a WSC station number, as the basin area will be extracted from HYDAT. Using \code{basin_area} will replace the HYDAT basin 
-#'    area. If setting basin areas for multiple stations without HYDAT, set them using 
-#'    \code{basin_area = c("08NM116" = 795, "08NM242" = 10)}; stations not listed will result in NA basin areas.
+#' @param data Daily data to be analyzed. Options:
+#' 
+#'    A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
+#'    names/numbers).
 #'    
-#' @return A tibble data frame of the original flow_data or HYDAT data with an additional columns:
+#'    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+#'    extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.   
+#' @param values Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
+#'    Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}. 
+#' @param basin_area Upstream drainage basin area to apply to daily observations. Options:
+#'    
+#'    Leave blank if \code{grouping} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
+#'    
+#'    Single numeric value to apply to all observations.
+#'    
+#'    List each basin area for each grouping factor (can override HYDAT value) as such \code{c("08NM116" = 795, "08NM242" = 10)}.
+#'    Factors not listed will result in NA basin areas.
+#'    
+#' @return A data frame of the source data with an additional column:
 #'   \item{Yield_mm}{daily runoff yield flow, in units of millimetres}
 #'
 #' @examples
@@ -44,10 +47,8 @@
 #' @export
 
 
-add_daily_yield <- function(flow_data = NULL,
-                            flow_values = Value,
-                            flow_basin_areas = flow_basin_areas,
-                            HYDAT = NULL,
+add_daily_yield <- function(data = NULL,
+                            values = Value,
                             basin_area = NA){
   
   
@@ -56,14 +57,16 @@ add_daily_yield <- function(flow_data = NULL,
   ## -------------------
   
   # Check if data is provided
-  if(is.null(flow_data) & is.null(HYDAT))   stop("No flow data provided, must use flow_data or HYDAT arguments.")
-  if(!is.null(flow_data) & !is.null(HYDAT)) stop("Only one of flow_data or HYDAT arguments can be used.")
-  
-  # Get HYDAT data if selected and stations exist
-  if(!is.null(HYDAT)) {
-    if(!all(HYDAT %in% dplyr::pull(tidyhydat::allstations[1]))) stop("One or more stations listed in 'HYDAT' do not exist.")
-    flow_data <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
+  if(is.null(data))   stop("No data provided, must provide a data frame or HYDAT station number(s).")
+  if(is.vector(data)) {
+    if(!all(data %in% dplyr::pull(tidyhydat::allstations[1]))) 
+      stop("One or more stations numbers listed in data argument do not exist in HYDAT. Re-check numbers or provide a data frame of data.")
+    flow_data <- suppressMessages(tidyhydat::hy_daily_flows(station_number = data))
+  } else {
+    flow_data <- data
   }
+  if(!is.data.frame(flow_data)) stop("Incorrect selection for data argument, must provide a data frame or HYDAT station number(s).")
+  flow_data <- as.data.frame(flow_data) # Getting random 'Unknown or uninitialised column:' warnings if using tibble
   
   # Save the original columns from the flow_data to remove added columns
   orig_cols <- names(flow_data)
@@ -74,41 +77,20 @@ add_daily_yield <- function(flow_data = NULL,
   }
   
   # This method allows the user to select the Value column if the column name is different
-  if(!as.character(substitute(flow_values)) %in% names(flow_data)) 
-    stop("Flow values not found. Rename flow values column to 'Value' or identify the column using 'flow_values' argument.")
-  
-  # Temporarily rename the value area column
-  names(flow_data)[names(flow_data) == as.character(substitute(flow_values))] <- "Value"
+  if(!as.character(substitute(values)) %in% names(flow_data)) 
+    stop("Flow values not found. Rename flow values column to 'Value' or identify the column using 'values' argument.")
+  # Temporarily rename the Value column
+  names(flow_data)[names(flow_data) == as.character(substitute(values))] <- "Value"
   
   # Check columns are in proper formats
-  if(!is.numeric(flow_data$Value))          stop("'Value' column in flow_data data frame does not contain numeric values.")
+  if(!is.numeric(flow_data$Value))          stop("'Value' column in data frame does not contain numeric values.")
   
   
   ## SET UP BASIN AREA
   ## -----------------
-  
-  # Check methods
-  if(as.character(substitute(flow_basin_areas)) != "flow_basin_areas" & !is.na(basin_area)) 
-    stop("Both flow_basin_areas and basin_area arguments cannot be used. Select one.")
-    
-  # If there is basin area column provided use it, otherwise create one
-  if(as.character(substitute(flow_basin_areas)) != "flow_basin_areas"){
-    
-    #Check if the column is a name in flow_data
-    if(!as.character(substitute(flow_basin_areas)) %in% names(flow_data)) 
-      stop("'",paste(as.character(substitute(flow_basin_areas))),"' is not a column in the flow_data data frame.")
-    
-    # Create the column name
-    flow_data$Basin_Area_sqkm_temp <- dplyr::pull(flow_data[,as.character(substitute(Basin_Area_sqkm))])
-    
-    # Check if the basin areas are numeric
-    if(!is.numeric(flow_data$Basin_Area_sqkm_temp)) stop("Basin area column in flow_data data frame does not contain numeric values.")
-    
-  } else {
-    # Get the basin areas using fasstr::add_basin_area if no column provided
-    suppressWarnings(flow_data <- fasstr::add_basin_area(flow_data, basin_area = basin_area))
-    flow_data$Basin_Area_sqkm_temp <- flow_data$Basin_Area_sqkm
-  }
+
+  suppressWarnings(flow_data <- fasstr::add_basin_area(flow_data, basin_area = basin_area))
+  flow_data$Basin_Area_sqkm_temp <- flow_data$Basin_Area_sqkm
   
   ## ADD YIELD COLUMN
   ## ----------------
@@ -116,14 +98,14 @@ add_daily_yield <- function(flow_data = NULL,
   flow_data <- dplyr::mutate(flow_data, Yield_mm = Value * 86400 / (Basin_Area_sqkm_temp * 1000))
   
   # Return the original names of the Date and Value columns
-  names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(flow_values))
+  names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(values))
   
   
   # Return columns to original order plus new column
   if("Yield_mm" %in% orig_cols){
-    flow_data <-  flow_data[,c(orig_cols)]
+    flow_data <-  flow_data[, c(orig_cols)]
   } else {
-    flow_data <-  flow_data[,c(orig_cols, paste("Yield_mm"))]
+    flow_data <-  flow_data[, c(orig_cols, paste("Yield_mm"))]
   }
   
   

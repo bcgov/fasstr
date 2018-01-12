@@ -4,84 +4,85 @@
 \alias{calc_longterm_stats}
 \title{Calculate the long-term and long-term monthly summary statistics}
 \usage{
-calc_longterm_stats(flow_data = NULL, flow_dates = Date,
-  flow_values = Value, flow_stations = STATION_NUMBER, HYDAT = NULL,
-  percentiles = c(10, 90), water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, exclude_years = NULL,
-  custom_months = NULL, custom_months_label = "Custom-Months",
-  transpose = FALSE, ignore_missing = TRUE)
+calc_longterm_stats(data = NULL, dates = Date, values = Value,
+  grouping = STATION_NUMBER, percentiles = c(10, 90), water_year = FALSE,
+  water_year_start = 10, start_year = 0, end_year = 9999,
+  exclude_years = NULL, custom_months = NULL,
+  custom_months_label = "Custom-Months", transpose = FALSE,
+  ignore_missing = TRUE)
 }
 \arguments{
-\item{flow_data}{a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
-names/numbers. Leave blank if using \code{HYDAT} argument.}
+\item{data}{Daily data to be analyzed. Options:
 
-\item{flow_dates}{a column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Leave blank if using \code{HYDAT} 
-argument. Default \code{Date}.}
+   A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
+   names/numbers).
+   
+   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
 
-\item{flow_values}{a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
-Leave blank if using \code{HYDAT} argument. Default \code{Value}.}
+\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
+using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
 
-\item{flow_stations}{a column in flow_data that contains station identifiers (names or numbers) for each flow data set, required if 
-calculating results for multiple stations. Removing 'STATION_NUMBER' column in flow_data or incorrectly identifying will calculate 
-statistics on all flow values from all stations. If using \code{HYDAT} argument, setting \code{flow_stations} to anything besides 
-\code{STATION_NUMBER} will have similar effects. Default \code{STATION_NUMBER}.}
+\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
+Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
 
-\item{HYDAT}{a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
-\code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.}
+\item{grouping}{Column in the \code{data} data frame that contains unique identifiers for different data sets. 
+Only required if using the data frame option of \code{data} and grouping column is not named 'STATION_NUMBER'.
+Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
+another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
 
-\item{percentiles}{a numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.}
+\item{percentiles}{Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.}
 
-\item{water_year}{a logical value indicating whether to use water years to group flow data instead of calendar years. Water years 
+\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
 are designated by the year in which they end. Default \code{FALSE}.}
 
-\item{water_year_start}{a numeric value indicating the month of the start of the water year. Used if \code{water_year=TRUE}. 
+\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
 Default \code{10}.}
 
-\item{start_year}{a numeric value of the first year to consider for analysis. Leave blank if all years are required.}
+\item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
-\item{end_year}{a numeric value of the last year to consider for analysis. Leave blank if all years are required.}
+\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
 
-\item{exclude_years}{a numeric vector of years to exclude from analysis. Leave blank if all years are required.}
+\item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 
-\item{custom_months}{a numeric vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Adds results to the end of table.
+\item{custom_months}{Numeric vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Adds results to the end of table.
 If wanting months that overlap calendar years (ex. Oct-Mar), choose water_year and a water_year_month that begins before the first 
 month listed. Leave blank for no custom month summary.}
 
-\item{custom_months_label}{a character string to use as a label of custom months. For example, if choosing months 7:9  you may choose 
+\item{custom_months_label}{Character string to use as a label of custom months. For example, if choosing months 7:9  you may choose 
 "Summer" or "Jul-Sep". Default \code{"Custom-Months"}.}
 
-\item{transpose}{a logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.}
+\item{transpose}{Logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.}
 
-\item{ignore_missing}{a logical value indicating whether dates with missing flow values should be included in the calculation. If
+\item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
 with no missing dates will be returned. Default \code{TRUE}.}
 }
 \value{
-A tibble data frame with the following columns:
-  \item{Month}{month of the year, included Long-term for all months, and Custom-Months if selected}
-  \item{Mean}{mean of all daily flows for a given month and longterm over all years}
-  \item{Median}{median of all daily flows for a given month and longterm over all years}
-  \item{Maximum}{maximum of all daily flows for a given month and longterm over all years}
-  \item{Minimum}{minimum of all daily flows for a given month and longterm over all years}
-  \item{P'n'}{each  n-th percentile selected for a given month and longterm over all years}
+A data frame with the following columns:
+  \item{Month}{month of the year, included 'Long-term' for all months, and 'Custom-Months' if selected}
+  \item{Mean}{mean of all daily data for a given month and long-term over all years}
+  \item{Median}{median of all daily data for a given month and long-term over all years}
+  \item{Maximum}{maximum of all daily data for a given month and long-term over all years}
+  \item{Minimum}{minimum of all daily data for a given month and long-term over all years}
+  \item{P'n'}{each  n-th percentile selected for a given month and long-term over all years}
   Default percentile columns:
-  \item{P10}{annual 10th percentile selected for a given month and longterm over all years}
-  \item{P90}{annual 90th percentile selected for a given month and longterm over all years}
+  \item{P10}{annual 10th percentile selected for a given month and long-term over all years}
+  \item{P90}{annual 90th percentile selected for a given month and long-term over all years}
   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 }
 \description{
 Calculates the long-term and long-term monthly mean, median, maximum, minimum, and percentiles of daily flow values 
-   from a streamflow dataset. Calculates the statistics from all daily discharge values from all years, unless specified.
+   from a streamflow dataset. Calculates the statistics from all daily values from all years, unless specified.
 }
 \examples{
 \dontrun{
 
-calc_longterm_stats(flow_data = flow_data)
+calc_longterm_stats(data = flow_data)
 
-calc_longterm_stats(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
+calc_longterm_stats(data = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
 
-calc_longterm_stats(HYDAT = c("08NM116","08NM242"), custom_months = c(5:9))
+calc_longterm_stats(data = c("08NM116","08NM242"), custom_months = c(5:9))
 
 }
 }

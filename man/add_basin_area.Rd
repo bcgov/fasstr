@@ -4,27 +4,33 @@
 \alias{add_basin_area}
 \title{Add a basin area column to daily flows}
 \usage{
-add_basin_area(flow_data = NULL, flow_stations = STATION_NUMBER,
-  HYDAT = NULL, basin_area = NA)
+add_basin_area(data = NULL, grouping = STATION_NUMBER, basin_area = NA)
 }
 \arguments{
-\item{flow_data}{a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
-names/numbers. Leave blank if using \code{HYDAT} argument.}
+\item{data}{Daily data to be analyzed. Options:
 
-\item{flow_stations}{a column in flow_data that contains station identifiers (names or numbers) for each flow data set. Required 
-if flow_data contains multiple stations. Default \code{STATION_NUMBER}.}
+   A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
+   names/numbers).
+   
+   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
 
-\item{HYDAT}{a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
-\code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.}
+\item{grouping}{Column in the \code{data} data frame that contains unique identifiers for different data sets. 
+Only required if using the data frame option of \code{data} and grouping column is not named 'STATION_NUMBER'.
+Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
+another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
 
-\item{basin_area}{a numeric vector of basin areas. Leave blank if \code{HYDAT} is used or a column in \code{flow_data} called 
-'STATION_NUMBER' contains a WSC station number, as the basin area will be extracted from HYDAT. Using \code{basin_area} will
- replace the HYDAT basin rea. If setting basin areas for multiple stations without HYDAT, set them using \code{basin_area = 
- c("08NM116" = 795, "08NM242" = 10)}; stations not listed will result in NA basin areas.}
+\item{basin_area}{Upstream drainage basin area to apply to daily observations. Options:
+
+Leave blank if \code{grouping} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
+
+Single numeric value to apply to all observations.
+
+List each basin area for each grouping factor (can override HYDAT value) as such \code{c("08NM116" = 795, "08NM242" = 10)}.
+Factors not listed will result in NA basin areas.}
 }
 \value{
-A tibble data frame of the original flow_data or HYDAT data with an additional column:
+A data frame of the original source data with an additional column:
   \item{Basin_Area_sqkm}{area of upstream drainage basin area, in square kilometres}
 }
 \description{
@@ -33,9 +39,9 @@ Add a column of basin areas to a streamflow dataset, in units of square kilometr
 \examples{
 \dontrun{
 
-add_basin_area(flow_data = flow_data, basin_area = 104.5)
+add_basin_area(data = flow_data, area = 104.5)
 
-add_basin_area(HYDAT = "08NM116")
+add_basin_area(data = "08NM116")
 
 }
 }

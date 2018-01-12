@@ -4,31 +4,31 @@
 \alias{add_daily_yield}
 \title{Add daily volumetric runoff yields}
 \usage{
-add_daily_yield(flow_data = NULL, flow_values = Value,
-  flow_basin_areas = flow_basin_areas, HYDAT = NULL, basin_area = NA)
+add_daily_yield(data = NULL, values = Value, basin_area = NA)
 }
 \arguments{
-\item{flow_data}{a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
-names/numbers. Leave blank if using \code{HYDAT} argument.}
+\item{data}{Daily data to be analyzed. Options:
 
-\item{flow_values}{a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
-Leave blank if using \code{HYDAT} argument. Default \code{Value}.}
+   A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
+   names/numbers).
+   
+   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
 
-\item{flow_basin_areas}{a column in flow_data of numeric upstream drainage basin areas used to calculate the daily yield. If left blank
-this function will use basin areas provided by the fasstr::add_basin_areas() function using the \code{basin_area} argument.}
+\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
+Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
 
-\item{HYDAT}{a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
-\code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.}
+\item{basin_area}{Upstream drainage basin area to apply to daily observations. Options:
 
-\item{basin_area}{a numeric vector of basin areas. If no \code{flow_basin_area} provided in flow_data, used to determine basin areas from the
-fasstr::add_basin_areas() function. Leave blank if \code{HYDAT} is used or a column in \code{flow_data} called 'STATION_NUMBER' 
-contains a WSC station number, as the basin area will be extracted from HYDAT. Using \code{basin_area} will replace the HYDAT basin 
-area. If setting basin areas for multiple stations without HYDAT, set them using 
-\code{basin_area = c("08NM116" = 795, "08NM242" = 10)}; stations not listed will result in NA basin areas.}
+Leave blank if \code{grouping} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
+
+Single numeric value to apply to all observations.
+
+List each basin area for each grouping factor (can override HYDAT value) as such \code{c("08NM116" = 795, "08NM242" = 10)}.
+Factors not listed will result in NA basin areas.}
 }
 \value{
-A tibble data frame of the original flow_data or HYDAT data with an additional columns:
+A data frame of the source data with an additional column:
   \item{Yield_mm}{daily runoff yield flow, in units of millimetres}
 }
 \description{

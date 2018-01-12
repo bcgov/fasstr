@@ -4,26 +4,28 @@
 \alias{add_rolling_means}
 \title{Add rolling n-day averages}
 \usage{
-add_rolling_means(flow_data = NULL, flow_dates = Date,
-  flow_values = Value, flow_stations = STATION_NUMBER, HYDAT = NULL,
-  days = c(3, 7, 30), align = "right")
+add_rolling_means(data = NULL, dates = Date, values = Value,
+  grouping = STATION_NUMBER, days = c(3, 7, 30), align = "right")
 }
 \arguments{
-\item{flow_data}{a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
-names/numbers. Leave blank if using \code{HYDAT} argument.}
+\item{data}{Daily data to be analyzed. Options:
 
-\item{flow_dates}{a column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Leave blank if using \code{HYDAT} 
-argument. Default \code{Date}.}
+   A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
+   names/numbers).
+   
+   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
 
-\item{flow_values}{a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
-Leave blank if using \code{HYDAT} argument. Default \code{Value}.}
+\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
+using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
 
-\item{flow_stations}{a column in flow_data that contains station identifiers (names or numbers) for each flow data set. Required 
-if flow_data contains multiple stations. Default \code{STATION_NUMBER}.}
+\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
+Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
 
-\item{HYDAT}{a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
-\code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.}
+\item{grouping}{Column in the \code{data} data frame that contains unique identifiers for different data sets. 
+Only required if using the data frame option of \code{data} and grouping column is not named 'STATION_NUMBER'.
+Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
+another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
 
 \item{days}{a numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
 
@@ -31,7 +33,7 @@ extract daily streamflow data from a HYDAT database. \href{https://github.com/ro
 ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 }
 \value{
-A data frame of the original flow_data or HYDAT data with additional column(s) of:
+A data frame of the source data with an additional column(s):
   \item{QnDay}{rolling means of the n-day flow values of the designated date and adjacent dates, direction of mean specified by align}
   Default additional columns:
   \item{Q3Day}{rolling means of the 3-day flow values of the designated date and previous 2 days (align="right")}
@@ -47,9 +49,9 @@ Adds selected n-day rolling means to a streamflow dataset. Based on selected n-d
 \examples{
 \dontrun{
 
-add_rolling_means(flow_data = flow_data, days = 7, align = 'centre')
+add_rolling_means(data = flow_data, days = 7, align = 'centre')
 
-add_rolling_means(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+add_rolling_means(data = "08NM116", water_year = TRUE, water_year_start = 8)
 
 }
 }

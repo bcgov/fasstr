@@ -4,35 +4,37 @@
 \alias{add_cumulative_volume}
 \title{Add daily cumulative volumetric flows on an annual basis}
 \usage{
-add_cumulative_volume(flow_data = NULL, flow_dates = Date,
-  flow_values = Value, flow_stations = STATION_NUMBER, HYDAT = NULL,
-  water_year = FALSE, water_year_start = 10)
+add_cumulative_volume(data = NULL, dates = Date, values = Value,
+  grouping = STATION_NUMBER, water_year = FALSE, water_year_start = 10)
 }
 \arguments{
-\item{flow_data}{a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
-names/numbers. Leave blank if using \code{HYDAT} argument.}
+\item{data}{Daily data to be analyzed. Options:
 
-\item{flow_dates}{a column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Leave blank if using \code{HYDAT} 
-argument. Default \code{Date}.}
+   A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
+   names/numbers).
+   
+   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
 
-\item{flow_values}{a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
-Leave blank if using \code{HYDAT} argument. Default \code{Value}.}
+\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
+using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
 
-\item{flow_stations}{a column in flow_data that contains station identifiers (names or numbers) for each flow data set. Required 
-if flow_data contains multiple stations. Default \code{STATION_NUMBER}.}
+\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
+Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
 
-\item{HYDAT}{a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
-\code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.}
+\item{grouping}{Column in the \code{data} data frame that contains unique identifiers for different data sets. 
+Only required if using the data frame option of \code{data} and grouping column is not named 'STATION_NUMBER'.
+Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
+another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
 
-\item{water_year}{a logical value indicating whether to use water years to group flow data instead of calendar years. Water years 
+\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
 are designated by the year in which they end. Default \code{FALSE}.}
 
-\item{water_year_start}{a numeric value indicating the month of the start of the water year. Used if \code{water_year=TRUE}. 
+\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
 Default \code{10}.}
 }
 \value{
-A tibble data frame of the original flow_data or HYDAT data with an additional column:
+A data frame of the source data with an additional column:
   \item{Cumul_Volume_m3}{cumulative volumetric flows for each day for each year, in units of cubic metres}
 }
 \description{
@@ -42,9 +44,9 @@ Add a column of daily cumulative volumetric flows on an annual basis to a stream
 \examples{
 \dontrun{
 
-add_cumulative_volume(flow_data = flow_data)
+add_cumulative_volume(data = flow_data)
 
-add_cumulative_volume(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+add_cumulative_volume(data = "08NM116", water_year = TRUE, water_year_start = 8)
 
 }
 }
