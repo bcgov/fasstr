@@ -41,12 +41,12 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>%
   add_cumulative_volume() %>%
   add_daily_yield() %>%
   add_cumulative_yield() %>% 
-  #calc_annual_stats(transpose = T)
+  calc_annual_stats()
   #calc_longterm_stats()
   #plot_longterm_stats()
   #plot_annual_stats(log_discharge = T)
   #calc_lt_mad(percent_MAD = c(1:4))
-  calc_annual_flow_timing()
+  #calc_annual_flow_timing()
 
 
 # Multiple stations and custom Date and Value column names
@@ -60,12 +60,12 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) 
   add_basin_area() %>% 
   add_daily_yield(values = Valuesss) %>% 
   add_cumulative_yield(dates = Datesss, values = Valuesss)  %>% 
- # calc_annual_stats(dates = Datesss, values = Valuesss, exclude_years = 1980)
-  #calc_longterm_stats(dates = Datesss, values = Valuesss)
+  calc_annual_stats(dates = Datesss, values = Valuesss, exclude_years = 1980)
+ # calc_longterm_stats(dates = Datesss, values = Valuesss)
  # plot_longterm_stats(dates = Datesss, values = Valuesss)
   #plot_annual_stats(dates = Datesss, values = Valuesss)
   #calc_lt_mad(dates = Datesss, values = Valuesss,percent_MAD = c(5,10,20))
-  calc_annual_flow_timing(dates = Datesss, values = Valuesss)
+  #calc_annual_flow_timing(dates = Datesss, values = Valuesss)
 
 
 
@@ -81,9 +81,9 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>%
   add_cumulative_volume() %>% 
   add_daily_yield(basin_area = 10.3) %>%
   add_cumulative_yield(basin_area = 10.3) %>% 
-  fasstr::plot_annual_flow_timing(HYDAT = "08HB048")
+  #fasstr::plot_annual_flow_timing(HYDAT = "08HB048")
   #calc_longterm_stats()
-  #calc_annual_stats()
+  calc_annual_stats()
   #plot_longterm_stats()
   #plot_annual_stats(percentiles = 99)
   #calc_lt_mad()
@@ -130,12 +130,12 @@ flow_data <- add_daily_volume(data = c("08HB048","08NM116"))
 flow_data <- add_cumulative_volume(data = c("08HB048","08NM116"))
 flow_data <- add_daily_yield(data = c("08HB048","08NM116"))
 flow_data <- add_cumulative_yield(data = c("08HB048","08NM116"), basin_area = c("08HB048"=10.2))
-flow_data <- calc_longterm_stats(HYDAT = c("08HB048","08NM116"))
-flow_data <- calc_annual_stats(HYDAT = c("08HB048","08NM116"), months = 8)
-plot_longterm_stats(HYDAT = c("08HB048","08NM116"))
-plot_annual_stats(HYDAT = c("08HB048","08NM116"))
-calc_lt_mad(HYDAT = c("08HB048","08NM116"), percent_MAD = c(5,10,20))
-data <- calc_annual_flow_timing(HYDAT = c("08HB048","08NM116"), percent_total = 1:5, transpose = T)
+flow_data <- calc_longterm_stats(data = c("08HB048","08NM116"))
+flow_data <- calc_annual_stats(data = c("08HB048","08NM116"))
+plot_longterm_stats(data = c("08HB048","08NM116"))
+plot_annual_stats(data = c("08HB048","08NM116"))
+calc_lt_mad(data = c("08HB048","08NM116"), percent_MAD = c(5,10,20))
+data <- calc_annual_flow_timing(data = c("08HB048","08NM116"), percent_total = 1:5, transpose = T)
 
 
 

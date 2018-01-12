@@ -32,8 +32,8 @@
 #'    Only required if using the data frame option of \code{data} and grouping column is not named 'STATION_NUMBER'.
 #'    Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
 #'    another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}. 
-#' @param days a numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.
-#' @param align a character identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+#' @param days Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.
+#' @param align Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
 #'    ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.
 #' 
 #' @return A data frame of the source data with an additional column(s):

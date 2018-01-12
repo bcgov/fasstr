@@ -15,34 +15,36 @@
 #' @description Calculates annual monthly mean, median, maximum, minimum, and percentiles of daily flow values from a streamflow 
 #'    dataset. Calculates the statistics from all daily discharge values from all years, unless specified.
 #'
-#' @param flow_data a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
-#'    names/numbers. Leave blank if using \code{HYDAT} argument.
-#' @param flow_dates a column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Leave blank if using \code{HYDAT} 
-#'    argument. Default \code{Date}. 
-#' @param flow_values a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
-#'    Leave blank if using \code{HYDAT} argument. Default \code{Value}.
-#' @param flow_stations a column in flow_data that contains station identifiers (names or numbers) for each flow data set, required if 
-#'    calculating results for multiple stations. Removing 'STATION_NUMBER' column in flow_data or incorrectly identifying will calculate 
-#'    statistics on all flow values from all stations. If using \code{HYDAT} argument, setting \code{flow_stations} to anything besides 
-#'    \code{STATION_NUMBER} will have similar effects. Default \code{STATION_NUMBER}. 
-#' @param HYDAT a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-#'    extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
-#'    \code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.
-#' @param percentiles a numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.
-#' @param rolling_days a numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.
-#' @param rolling_align a character identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+#' @param data Daily data to be analyzed. Options:
+#' 
+#'    A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
+#'    names/numbers).
+#'    
+#'    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+#'    extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.   
+#' @param dates Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
+#'    using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}. 
+#' @param values Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
+#'    Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}. 
+#' @param grouping Column in the \code{data} data frame that contains unique identifiers for different data sets. 
+#'    Only required if using the data frame option of \code{data} and grouping column is not named 'STATION_NUMBER'.
+#'    Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
+#'    another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}. 
+#' @param percentiles Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.
+#' @param rolling_days Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.
+#' @param rolling_align Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
 #'    ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.
-#' @param water_year a logical value indicating whether to use water years to group flow data instead of calendar years. Water years 
+#' @param water_year Logical value indicating whether to use water years to group data instead of calendar years. Water years 
 #'    are designated by the year in which they end. Default \code{FALSE}.
-#' @param water_year_start a numeric value indicating the month of the start of the water year. Used if \code{water_year=TRUE}. 
+#' @param water_year_start Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
 #'    Default \code{10}.
-#' @param start_year a numeric value of the first year to consider for analysis. Leave blank if all years are required.
-#' @param end_year a numeric value of the last year to consider for analysis. Leave blank if all years are required.
-#' @param exclude_years a numeric vector of years to exclude from analysis. Leave blank if all years are required.       
-#' @param months a numeric vector of months to include in analysis (ex. \code{6:8} for Jun-Aug). Leave blank to summarize 
+#' @param start_year Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.
+#' @param end_year Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.
+#' @param exclude_years Numeric vector of years to exclude from analysis. Leave blank to include all years.             
+#' @param months Numeric vector of months to include in analysis (ex. \code{6:8} for Jun-Aug). Leave blank to summarize 
 #'    all months (default \code{1:12}).
-#' @param transpose a logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.
-#' @param ignore_missing a logical value indicating whether dates with missing flow values should be included in the calculation. If
+#' @param transpose Logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.
+#' @param ignore_missing Logical value indicating whether dates with missing values should be included in the calculation. If
 #'    \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
 #'    with no missing dates will be returned. Default \code{TRUE}.
 #' 
@@ -61,20 +63,20 @@
 #' @examples
 #' \dontrun{
 #' 
-#'calc_annual_stats(flow_data = flow_data)
+#'calc_annual_stats(data = flow_data)
 #' 
-#'calc_annual_stats(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
+#'calc_annual_stats(data = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
 #'
-#'calc_annual_stats(HYDAT = "08NM116", months = 7:9)
+#'calc_annual_stats(data = "08NM116", months = 7:9)
 #'
 #' }
 #' @export
 
 
-calc_annual_stats <- function(flow_data = NULL,
-                              flow_dates = Date,
-                              flow_values = Value,
-                              flow_stations = STATION_NUMBER,
+calc_annual_stats <- function(data = NULL,
+                              dates = Date,
+                              values = Value,
+                              grouping = STATION_NUMBER,
                               HYDAT = NULL,
                               percentiles = c(10,90),
                               rolling_days = 1,
@@ -90,44 +92,46 @@ calc_annual_stats <- function(flow_data = NULL,
   
   
   
-  ## CHECKS ON FLOW DATA
-  ## -------------------
-  
   # Check if data is provided
-  if(is.null(flow_data) & is.null(HYDAT))   stop("No flow data provided, must use flow_data or HYDAT arguments.")
-  if(!is.null(flow_data) & !is.null(HYDAT)) stop("Only one of flow_data or HYDAT arguments can be used.")
-  
-  # Get HYDAT data if selected and stations exist
-  if(!is.null(HYDAT)) {
-    if(!all(HYDAT %in% dplyr::pull(tidyhydat::allstations[1]))) stop("One or more stations listed in 'HYDAT' do not exist.")
-    flow_data <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
+  if(is.null(data))   stop("No data provided, must provide a data frame or HYDAT station number(s).")
+  if(is.vector(data)) {
+    if(!all(data %in% dplyr::pull(tidyhydat::allstations[1]))) 
+      stop("One or more stations numbers listed in data argument do not exist in HYDAT. Re-check numbers or provide a data frame of data.")
+    flow_data <- suppressMessages(tidyhydat::hy_daily_flows(station_number = data))
+  } else {
+    flow_data <- data
   }
+  if(!is.data.frame(flow_data)) stop("Incorrect selection for data argument, must provide a data frame or HYDAT station number(s).")
+  flow_data <- as.data.frame(flow_data) # Getting random 'Unknown or uninitialised column:' warnings if using tibble
   
-  # Save the original columns (to check for STATION_NUMBER later) and ungroup
+  # Save the original columns (to check for grouping column later) and ungroup
   orig_cols <- names(flow_data)
   flow_data <- dplyr::ungroup(flow_data)
   
-  # If no STATION_NUMBER in flow_data, make it so (required for station grouping)
-  if(!as.character(substitute(flow_stations)) %in% colnames(flow_data)) {
-    flow_data[, as.character(substitute(flow_stations))] <- "XXXXXXX"
+  # If no grouping (default STATION_NUMBER) in data, make it so (required)
+  if(!as.character(substitute(grouping)) %in% colnames(flow_data)) {
+    flow_data[, as.character(substitute(grouping))] <- "XXXXXXX"
   }
   
-  # Get the just STATION_NUMBER, Date, and Value columns
+  # Get the just grouping (default STATION_NUMBER), Date, and Value columns
   # This method allows the user to select the Station, Date or Value columns if the column names are different
-  if(!as.character(substitute(flow_dates)) %in% names(flow_data))  
-    stop("Flow dates not found. Rename flow dates column to 'Date' or identify the column using 'flow_dates' argument.")
-  if(!as.character(substitute(flow_values)) %in% names(flow_data)) 
-    stop("Flow values not found. Rename flow values column to 'Value' or identify the column using 'flow_values' argument.")
+  if(!as.character(substitute(values)) %in% names(flow_data) & !as.character(substitute(dates)) %in% names(flow_data)) 
+    stop("Dates and values not found in data frame. Rename dates and values columns to 'Date' and 'Value' or identify the columns using
+         'dates' and 'values' arguments.")
+  if(!as.character(substitute(dates)) %in% names(flow_data))  
+    stop("Dates not found in data frame. Rename dates column to 'Date' or identify the column using 'dates' argument.")
+  if(!as.character(substitute(values)) %in% names(flow_data)) 
+    stop("Values not found in data frame. Rename values column to 'Value' or identify the column using 'values' argument.")
   
-  # Gather required columns
-  flow_data <- flow_data[,c(as.character(substitute(flow_stations)),
-                            as.character(substitute(flow_dates)),
-                            as.character(substitute(flow_values)))]
+  # Gather required columns (will temporarily rename grouping column as STATION_NUMBER if isn't already)
+  flow_data <- flow_data[,c(as.character(substitute(grouping)),
+                            as.character(substitute(dates)),
+                            as.character(substitute(values)))]
   colnames(flow_data) <- c("STATION_NUMBER","Date","Value")
   
   # Check columns are in proper formats
-  if(!inherits(flow_data$Date[1], "Date"))  stop("'Date' column in flow_data data frame does not contain dates.")
-  if(!is.numeric(flow_data$Value))          stop("'Value' column in flow_data data frame does not contain numeric values.")
+  if(!inherits(flow_data$Date[1], "Date"))  stop("'Date' column in provided data frame does not contain dates.")
+  if(!is.numeric(flow_data$Value))          stop("'Value' column in provided data frame does not contain numeric values.")
   
   
   ## CHECKS ON OTHER ARGUMENTS
@@ -166,8 +170,8 @@ calc_annual_stats <- function(flow_data = NULL,
   ## -----------------
   
   # Fill in the missing dates and the add the date variables again
-  flow_data <- fasstr::fill_missing_dates(flow_data, water_year = water_year, water_year_start = water_year_start)
-  flow_data <- fasstr::add_date_variables(flow_data, water_year = water_year, water_year_start = water_year_start)
+  flow_data <- fill_missing_dates(data = flow_data, water_year = water_year, water_year_start = water_year_start)
+  flow_data <- add_date_variables(data = flow_data, water_year = water_year, water_year_start = water_year_start)
   
   # Set selected year-type column for analysis
   if (water_year) {
@@ -177,7 +181,7 @@ calc_annual_stats <- function(flow_data = NULL,
   }
   
   # Apply rolling mean if designated, default of 1
-  flow_data <- fasstr::add_rolling_means(flow_data, days = rolling_days, align = rolling_align)
+  flow_data <- add_rolling_means(data = flow_data, days = rolling_days, align = rolling_align)
   colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
   
   # Filter for the selected year (remove excluded years after)
@@ -215,7 +219,7 @@ calc_annual_stats <- function(flow_data = NULL,
   
   
   # Make excluded years data NA
-  if(as.character(substitute(flow_stations)) %in% orig_cols) {
+  if(as.character(substitute(grouping)) %in% orig_cols) {
     Q_annual[Q_annual$Year %in% exclude_years,-(1:2)] <- NA
   } else {
     Q_annual[Q_annual$Year %in% exclude_years,-1] <- NA
@@ -237,8 +241,8 @@ calc_annual_stats <- function(flow_data = NULL,
   }
   
   # Recheck if station_number was in original flow_data and rename or remove as necessary
-  if(as.character(substitute(flow_stations)) %in% orig_cols) {
-    names(Q_annual)[names(Q_annual) == "STATION_NUMBER"] <- as.character(substitute(flow_stations))
+  if("STATION_NUMBER" %in% orig_cols) {
+    names(Q_annual)[names(Q_annual) == "STATION_NUMBER"] <- as.character(substitute(grouping))
   } else {
     Q_annual <- dplyr::select(Q_annual, -STATION_NUMBER)
   }
