@@ -22,10 +22,9 @@ Imports:
     plyr,
     RcppRoll,
     scales,
+    tidyhydat,
     tidyr,
     zyp
-Remotes:
-    ropensci/tidyhydat
 LazyData: true
 RoxygenNote: 6.0.1
 Suggests: knitr,
