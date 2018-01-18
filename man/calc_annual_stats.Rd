@@ -5,7 +5,7 @@
 \title{Calculate annual summary statistics}
 \usage{
 calc_annual_stats(data = NULL, dates = Date, values = Value,
-  grouping = STATION_NUMBER, HYDAT = NULL, percentiles = c(10, 90),
+  groups = STATION_NUMBER, HYDAT = NULL, percentiles = c(10, 90),
   rolling_days = 1, rolling_align = "right", water_year = FALSE,
   water_year_start = 10, start_year = 0, end_year = 9999,
   exclude_years = NULL, months = 1:12, transpose = FALSE,
@@ -14,7 +14,7 @@ calc_annual_stats(data = NULL, dates = Date, values = Value,
 \arguments{
 \item{data}{Daily data to be analyzed. Options:
 
-   A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
+   A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
    names/numbers).
    
    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
@@ -26,8 +26,8 @@ using the data frame option of \code{data} and dates column is not named 'Date'.
 \item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
 Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
 
-\item{grouping}{Column in the \code{data} data frame that contains unique identifiers for different data sets. 
-Only required if using the data frame option of \code{data} and grouping column is not named 'STATION_NUMBER'.
+\item{groups}{Column in the \code{data} data frame that contains unique identifiers for different data sets. 
+Only required if using the data frame option of \code{data} and groups column is not named 'STATION_NUMBER'.
 Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
 another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
 

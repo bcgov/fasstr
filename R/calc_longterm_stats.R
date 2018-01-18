@@ -17,7 +17,7 @@
 #'
 #' @param data Daily data to be analyzed. Options:
 #' 
-#'    A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
+#'    A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
 #'    names/numbers).
 #'    
 #'    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
@@ -26,8 +26,8 @@
 #'    using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}. 
 #' @param values Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
 #'    Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}. 
-#' @param grouping Column in the \code{data} data frame that contains unique identifiers for different data sets. 
-#'    Only required if using the data frame option of \code{data} and grouping column is not named 'STATION_NUMBER'.
+#' @param groups Column in the \code{data} data frame that contains unique identifiers for different data sets. 
+#'    Only required if using the data frame option of \code{data} and groups column is not named 'STATION_NUMBER'.
 #'    Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
 #'    another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}. 
 #' @param percentiles Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.
@@ -76,7 +76,7 @@
 calc_longterm_stats <- function(data = NULL,
                                 dates = Date,
                                 values = Value,
-                                grouping = STATION_NUMBER,
+                                groups = STATION_NUMBER,
                                 percentiles = c(10,90),
                                 water_year = FALSE,
                                 water_year_start = 10,
@@ -104,16 +104,16 @@ calc_longterm_stats <- function(data = NULL,
   if(!is.data.frame(flow_data)) stop("Incorrect selection for data argument, must provide a data frame or HYDAT station number(s).")
   flow_data <- as.data.frame(flow_data) # Getting random 'Unknown or uninitialised column:' warnings if using tibble
   
-  # Save the original columns (to check for grouping column later) and ungroup
+  # Save the original columns (to check for groups column later) and ungroup
   orig_cols <- names(flow_data)
   flow_data <- dplyr::ungroup(flow_data)
   
-  # If no grouping (default STATION_NUMBER) in data, make it so (required)
-  if(!as.character(substitute(grouping)) %in% colnames(flow_data)) {
-    flow_data[, as.character(substitute(grouping))] <- "XXXXXXX"
+  # If no groups (default STATION_NUMBER) in data, make it so (required)
+  if(!as.character(substitute(groups)) %in% colnames(flow_data)) {
+    flow_data[, as.character(substitute(groups))] <- "XXXXXXX"
   }
   
-  # Get the just grouping (default STATION_NUMBER), Date, and Value columns
+  # Get the just groups (default STATION_NUMBER), Date, and Value columns
   # This method allows the user to select the Station, Date or Value columns if the column names are different
   if(!as.character(substitute(values)) %in% names(flow_data) & !as.character(substitute(dates)) %in% names(flow_data)) 
     stop("Dates and values not found in data frame. Rename dates and values columns to 'Date' and 'Value' or identify the columns using
@@ -123,8 +123,8 @@ calc_longterm_stats <- function(data = NULL,
   if(!as.character(substitute(values)) %in% names(flow_data)) 
     stop("Values not found in data frame. Rename values column to 'Value' or identify the column using 'values' argument.")
   
-  # Gather required columns (will temporarily rename grouping column as STATION_NUMBER if isn't already)
-  flow_data <- flow_data[,c(as.character(substitute(grouping)),
+  # Gather required columns (will temporarily rename groups column as STATION_NUMBER if isn't already)
+  flow_data <- flow_data[,c(as.character(substitute(groups)),
                             as.character(substitute(dates)),
                             as.character(substitute(values)))]
   colnames(flow_data) <- c("STATION_NUMBER","Date","Value")
@@ -170,8 +170,8 @@ calc_longterm_stats <- function(data = NULL,
   ## -----------------
   
   # Fill in the missing dates and the add the date variables again
-  flow_data <- fasstr::fill_missing_dates(flow_data, water_year = water_year, water_year_start = water_year_start)
-  flow_data <- fasstr::add_date_variables(flow_data, water_year = water_year, water_year_start = water_year_start)
+  flow_data <- fill_missing_dates(flow_data, water_year = water_year, water_year_start = water_year_start)
+  flow_data <- add_date_variables(flow_data, water_year = water_year, water_year_start = water_year_start)
   
   # Set selected year-type column for analysis
   if (water_year) {
@@ -277,8 +277,8 @@ calc_longterm_stats <- function(data = NULL,
   }
   
   # Recheck if station_number was in original flow_data and rename or remove as necessary
-  if(as.character(substitute(grouping)) %in% orig_cols) {
-    names(Q_longterm)[names(Q_longterm) == "STATION_NUMBER"] <- as.character(substitute(grouping))
+  if(as.character(substitute(groups)) %in% orig_cols) {
+    names(Q_longterm)[names(Q_longterm) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
     Q_longterm <- dplyr::select(Q_longterm, -STATION_NUMBER)
   }

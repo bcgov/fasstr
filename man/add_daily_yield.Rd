@@ -4,12 +4,13 @@
 \alias{add_daily_yield}
 \title{Add daily volumetric runoff yields}
 \usage{
-add_daily_yield(data = NULL, values = Value, basin_area = NA)
+add_daily_yield(data = NULL, values = Value, groups = STATION_NUMBER,
+  basin_area = NA)
 }
 \arguments{
 \item{data}{Daily data to be analyzed. Options:
 
-   A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
+   A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
    names/numbers).
    
    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
@@ -20,7 +21,7 @@ Only required if using the data frame option of \code{data} and values column is
 
 \item{basin_area}{Upstream drainage basin area to apply to daily observations. Options:
 
-Leave blank if \code{grouping} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
+Leave blank if \code{groups} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
 
 Single numeric value to apply to all observations.
 

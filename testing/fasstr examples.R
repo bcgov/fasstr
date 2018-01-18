@@ -9,6 +9,8 @@ library(fasstr)
 library(dplyr)
 
 
+
+data <- add_daily_yield(flow_data, groups = SN)
 flow_data <- calc_longterm_stats_2(c("08HB048","08NM116"))
 calc_longterm_stats_2(1)
 
@@ -51,7 +53,7 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>%
 
 # Multiple stations and custom Date and Value column names
 flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) %>% 
-  rename(Datesss=Date, Valuesss=Value) %>% 
+  rename(SN=STATION_NUMBER) %>% 
   fill_missing_dates(dates = Datesss, values = Valuesss) %>% 
   add_date_variables(dates = Datesss, water_year = T) %>% 
   add_rolling_means(dates = Datesss, values = Valuesss) %>% 

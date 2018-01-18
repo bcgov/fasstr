@@ -4,29 +4,29 @@
 \alias{add_basin_area}
 \title{Add a basin area column to daily flows}
 \usage{
-add_basin_area(data = NULL, grouping = STATION_NUMBER, basin_area = NA)
+add_basin_area(data = NULL, groups = STATION_NUMBER, basin_area = NA)
 }
 \arguments{
 \item{data}{Daily data to be analyzed. Options:
 
-   A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
+   A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
    names/numbers).
    
    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
    extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
 
-\item{grouping}{Column in the \code{data} data frame that contains unique identifiers for different data sets. 
-Only required if using the data frame option of \code{data} and grouping column is not named 'STATION_NUMBER'.
+\item{groups}{Column in the \code{data} data frame that contains unique identifiers for different data sets. 
+Only required if using the data frame option of \code{data} and groups column is not named 'STATION_NUMBER'.
 Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
 another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
 
 \item{basin_area}{Upstream drainage basin area to apply to daily observations. Options:
 
-Leave blank if \code{grouping} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
+Leave blank if \code{groups} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
 
 Single numeric value to apply to all observations.
 
-List each basin area for each grouping factor (can override HYDAT value) as such \code{c("08NM116" = 795, "08NM242" = 10)}.
+List each basin area for each groups factor (can override HYDAT value) as such \code{c("08NM116" = 795, "08NM242" = 10)}.
 Factors not listed will result in NA basin areas.}
 }
 \value{

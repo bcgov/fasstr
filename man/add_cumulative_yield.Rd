@@ -5,13 +5,13 @@
 \title{Add daily cumulative runoff yield flows on an annual basis}
 \usage{
 add_cumulative_yield(data = NULL, dates = Date, values = Value,
-  grouping = STATION_NUMBER, basin_area = NA, water_year = FALSE,
+  groups = STATION_NUMBER, basin_area = NA, water_year = FALSE,
   water_year_start = 10)
 }
 \arguments{
 \item{data}{Daily data to be analyzed. Options:
 
-   A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
+   A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
    names/numbers).
    
    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
@@ -23,18 +23,18 @@ using the data frame option of \code{data} and dates column is not named 'Date'.
 \item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
 Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
 
-\item{grouping}{Column in the \code{data} data frame that contains unique identifiers for different data sets. 
-Only required if using the data frame option of \code{data} and grouping column is not named 'STATION_NUMBER'.
+\item{groups}{Column in the \code{data} data frame that contains unique identifiers for different data sets. 
+Only required if using the data frame option of \code{data} and groups column is not named 'STATION_NUMBER'.
 Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
 another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
 
 \item{basin_area}{Upstream drainage basin area to apply to daily observations. Options:
 
-Leave blank if \code{grouping} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
+Leave blank if \code{groups} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
 
 Single numeric value to apply to all observations.
 
-List each basin area for each grouping factor (can override HYDAT value) as such \code{c("08NM116" = 795, "08NM242" = 10)}.
+List each basin area for each groups factor (can override HYDAT value) as such \code{c("08NM116" = 795, "08NM242" = 10)}.
 Factors not listed will result in NA basin areas.}
 
 \item{water_year}{a logical value indicating whether to use water years to group flow data instead of calendar years. Water years 

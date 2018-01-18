@@ -16,7 +16,7 @@
 #'
 #' @param data Daily data to be analyzed. Options:
 #' 
-#'    A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
+#'    A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
 #'    names/numbers).
 #'    
 #'    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 

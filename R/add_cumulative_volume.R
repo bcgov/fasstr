@@ -17,7 +17,7 @@
 #'
 #' @param data Daily data to be analyzed. Options:
 #' 
-#'    A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
+#'    A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
 #'    names/numbers).
 #'    
 #'    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
@@ -26,8 +26,8 @@
 #'    using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}. 
 #' @param values Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
 #'    Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}. 
-#' @param grouping Column in the \code{data} data frame that contains unique identifiers for different data sets. 
-#'    Only required if using the data frame option of \code{data} and grouping column is not named 'STATION_NUMBER'.
+#' @param groups Column in the \code{data} data frame that contains unique identifiers for different data sets. 
+#'    Only required if using the data frame option of \code{data} and groups column is not named 'STATION_NUMBER'.
 #'    Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
 #'    another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}. 
 #' @param water_year Logical value indicating whether to use water years to group data instead of calendar years. Water years 
@@ -52,7 +52,7 @@
 add_cumulative_volume <- function(data = NULL,
                                   dates = Date,
                                   values = Value,
-                                  grouping = STATION_NUMBER,
+                                  groups = STATION_NUMBER,
                                   water_year = FALSE,
                                   water_year_start = 10){
   
@@ -79,12 +79,12 @@ add_cumulative_volume <- function(data = NULL,
   # Get groups of flow_data to return after
   flow_data_groups <- dplyr::group_vars(flow_data)
   
-  # If no grouping (default STATION_NUMBER) in data, make it so (required)
-  if(!as.character(substitute(grouping)) %in% colnames(flow_data)) {
-    flow_data[, as.character(substitute(grouping))] <- "XXXXXXX"
+  # If no groups (default STATION_NUMBER) in data, make it so (required)
+  if(!as.character(substitute(groups)) %in% colnames(flow_data)) {
+    flow_data[, as.character(substitute(groups))] <- "XXXXXXX"
   }
   
-  # Get the just grouping (default STATION_NUMBER), Date, and Value columns
+  # Get the just groups (default STATION_NUMBER), Date, and Value columns
   # This method allows the user to select the Station, Date or Value columns if the column names are different
   if(!as.character(substitute(values)) %in% names(flow_data) & !as.character(substitute(dates)) %in% names(flow_data)) 
     stop("Dates and values not found in data frame. Rename dates and values columns to 'Date' and 'Value' or identify the columns using
@@ -95,7 +95,7 @@ add_cumulative_volume <- function(data = NULL,
     stop("Values not found in data frame. Rename values column to 'Value' or identify the column using 'values' argument.")
   
   # Temporarily rename the Date and Value columns
-  names(flow_data)[names(flow_data) == as.character(substitute(grouping))] <- "STATION_NUMBER"
+  names(flow_data)[names(flow_data) == as.character(substitute(groups))] <- "STATION_NUMBER"
   names(flow_data)[names(flow_data) == as.character(substitute(dates))] <- "Date"
   names(flow_data)[names(flow_data) == as.character(substitute(values))] <- "Value"
   
@@ -159,7 +159,7 @@ add_cumulative_volume <- function(data = NULL,
   ## ---------------
   
   # Return the original names of the Date and Value columns
-  names(flow_data)[names(flow_data) == "STATION_NUMBER"] <- as.character(substitute(grouping))
+  names(flow_data)[names(flow_data) == "STATION_NUMBER"] <- as.character(substitute(groups))
   names(flow_data)[names(flow_data) == "Date"] <- as.character(substitute(dates))
   names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(values))
   

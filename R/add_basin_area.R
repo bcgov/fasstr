@@ -16,22 +16,22 @@
 #'
 #' @param data Daily data to be analyzed. Options:
 #' 
-#'    A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
+#'    A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
 #'    names/numbers).
 #'    
 #'    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
 #'    extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.   
-#' @param grouping Column in the \code{data} data frame that contains unique identifiers for different data sets. 
-#'    Only required if using the data frame option of \code{data} and grouping column is not named 'STATION_NUMBER'.
+#' @param groups Column in the \code{data} data frame that contains unique identifiers for different data sets. 
+#'    Only required if using the data frame option of \code{data} and groups column is not named 'STATION_NUMBER'.
 #'    Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
 #'    another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}. 
 #' @param basin_area Upstream drainage basin area to apply to daily observations. Options:
 #'    
-#'    Leave blank if \code{grouping} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
+#'    Leave blank if \code{groups} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
 #'    
 #'    Single numeric value to apply to all observations.
 #'    
-#'    List each basin area for each grouping factor (can override HYDAT value) as such \code{c("08NM116" = 795, "08NM242" = 10)}.
+#'    List each basin area for each groups factor (can override HYDAT value) as such \code{c("08NM116" = 795, "08NM242" = 10)}.
 #'    Factors not listed will result in NA basin areas.
 #'    
 #' @return A data frame of the original source data with an additional column:
@@ -49,7 +49,7 @@
 
 
 add_basin_area <- function(data = NULL,
-                           grouping = STATION_NUMBER,
+                           groups = STATION_NUMBER,
                            basin_area = NA){
   
   
@@ -77,11 +77,11 @@ add_basin_area <- function(data = NULL,
   # Get groups of flow_data to return after
   flow_data_groups <- dplyr::group_vars(flow_data)
   
-  # If no STATION_NUMBER in flow_data, make it so (required for station grouping)
-  if(!as.character(substitute(grouping)) %in% colnames(flow_data)) {
-    flow_data[, as.character(substitute(grouping))] <- "XXXXXXX"
+  # If no STATION_NUMBER in flow_data, make it so (required for station groups)
+  if(!as.character(substitute(groups)) %in% colnames(flow_data)) {
+    flow_data[, as.character(substitute(groups))] <- "XXXXXXX"
   }
-  names(flow_data)[names(flow_data) == as.character(substitute(grouping))] <- "STATION_NUMBER"
+  names(flow_data)[names(flow_data) == as.character(substitute(groups))] <- "STATION_NUMBER"
   
   
   ## CHECKS ON BASIN AREA
@@ -125,7 +125,7 @@ add_basin_area <- function(data = NULL,
   }
   
   # Return the original names of the columns
-  names(flow_data)[names(flow_data) == "STATION_NUMBER"] <- as.character(substitute(grouping))
+  names(flow_data)[names(flow_data) == "STATION_NUMBER"] <- as.character(substitute(groups))
   
   # Return columns to original order plus new column
   if("Basin_Area_sqkm" %in% orig_cols){

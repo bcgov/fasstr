@@ -19,7 +19,7 @@
 #'
 #' @param data Daily data to be analyzed. Options:
 #' 
-#'    A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
+#'    A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
 #'    names/numbers).
 #'    
 #'    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
@@ -28,8 +28,8 @@
 #'    using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}. 
 #' @param values Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
 #'    Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}. 
-#' @param grouping Column in the \code{data} data frame that contains unique identifiers for different data sets. 
-#'    Only required if using the data frame option of \code{data} and grouping column is not named 'STATION_NUMBER'.
+#' @param groups Column in the \code{data} data frame that contains unique identifiers for different data sets. 
+#'    Only required if using the data frame option of \code{data} and groups column is not named 'STATION_NUMBER'.
 #'    Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
 #'    another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}. 
 #' @param days Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.
@@ -57,7 +57,7 @@
 add_rolling_means <- function(data = NULL,
                               dates = Date,
                               values = Value,
-                              grouping = STATION_NUMBER,
+                              groups = STATION_NUMBER,
                               days = c(3,7,30),
                               align = "right"){
   
@@ -84,9 +84,9 @@ add_rolling_means <- function(data = NULL,
   flow_data_groups <- dplyr::group_vars(flow_data)
   flow_data <- dplyr::ungroup(flow_data)
   
-  # If no STATION_NUMBER in flow_data, make it so (required for station grouping)
-  if(!as.character(substitute(grouping)) %in% colnames(flow_data)) {
-    flow_data[, as.character(substitute(grouping))] <- "XXXXXXX"
+  # If no STATION_NUMBER in flow_data, make it so (required for station groups)
+  if(!as.character(substitute(groups)) %in% colnames(flow_data)) {
+    flow_data[, as.character(substitute(groups))] <- "XXXXXXX"
   }
   
   # Get the just STATION_NUMBER, Date, and Value columns
@@ -100,7 +100,7 @@ add_rolling_means <- function(data = NULL,
     stop("Values not found in data frame. Rename values column to 'Value' or identify the column using 'values' argument.")
   
   # Temporarily rename the Date and Value columns
-  names(flow_data)[names(flow_data) == as.character(substitute(grouping))] <- "STATION_NUMBER"
+  names(flow_data)[names(flow_data) == as.character(substitute(groups))] <- "STATION_NUMBER"
   names(flow_data)[names(flow_data) == as.character(substitute(dates))] <- "Date"
   names(flow_data)[names(flow_data) == as.character(substitute(values))] <- "Value"
   
@@ -148,7 +148,7 @@ add_rolling_means <- function(data = NULL,
   
   
   # Return the original names of the Date and Value columns
-  names(flow_data)[names(flow_data) == "STATION_NUMBER"] <- as.character(substitute(grouping))
+  names(flow_data)[names(flow_data) == "STATION_NUMBER"] <- as.character(substitute(groups))
   names(flow_data)[names(flow_data) == "Date"] <- as.character(substitute(dates))
   names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(values))
   

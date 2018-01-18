@@ -17,7 +17,7 @@
 #'
 #' @param data Daily data to be analyzed. Options:
 #' 
-#'    A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
+#'    A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
 #'    names/numbers).
 #'    
 #'    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
@@ -26,7 +26,7 @@
 #'    Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}. 
 #' @param basin_area Upstream drainage basin area to apply to daily observations. Options:
 #'    
-#'    Leave blank if \code{grouping} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
+#'    Leave blank if \code{groups} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
 #'    
 #'    Single numeric value to apply to all observations.
 #'    
@@ -49,6 +49,7 @@
 
 add_daily_yield <- function(data = NULL,
                             values = Value,
+                            groups = STATION_NUMBER,
                             basin_area = NA){
   
   
@@ -72,14 +73,15 @@ add_daily_yield <- function(data = NULL,
   orig_cols <- names(flow_data)
   
   # If no STATION_NUMBER in flow_data, make it so (required for grouping)
-  if(!"STATION_NUMBER" %in% colnames(flow_data)) {
-    flow_data$STATION_NUMBER <- "XXXXXXX"
+  if(!as.character(substitute(groups)) %in% colnames(flow_data)) {
+    flow_data[, as.character(substitute(groups))] <- "XXXXXXX"
   }
   
   # This method allows the user to select the Value column if the column name is different
   if(!as.character(substitute(values)) %in% names(flow_data)) 
     stop("Flow values not found. Rename flow values column to 'Value' or identify the column using 'values' argument.")
   # Temporarily rename the Value column
+  names(flow_data)[names(flow_data) == as.character(substitute(groups))] <- "STATION_NUMBER"
   names(flow_data)[names(flow_data) == as.character(substitute(values))] <- "Value"
   
   # Check columns are in proper formats
@@ -89,7 +91,7 @@ add_daily_yield <- function(data = NULL,
   ## SET UP BASIN AREA
   ## -----------------
 
-  suppressWarnings(flow_data <- fasstr::add_basin_area(flow_data, basin_area = basin_area))
+  suppressWarnings(flow_data <- add_basin_area(flow_data, basin_area = basin_area))
   flow_data$Basin_Area_sqkm_temp <- flow_data$Basin_Area_sqkm
   
   ## ADD YIELD COLUMN
@@ -99,6 +101,7 @@ add_daily_yield <- function(data = NULL,
   
   # Return the original names of the Date and Value columns
   names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(values))
+  names(flow_data)[names(flow_data) == "STATION_NUMBER"] <- as.character(substitute(groups))
   
   
   # Return columns to original order plus new column

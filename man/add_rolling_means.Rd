@@ -5,12 +5,12 @@
 \title{Add rolling n-day averages}
 \usage{
 add_rolling_means(data = NULL, dates = Date, values = Value,
-  grouping = STATION_NUMBER, days = c(3, 7, 30), align = "right")
+  groups = STATION_NUMBER, days = c(3, 7, 30), align = "right")
 }
 \arguments{
 \item{data}{Daily data to be analyzed. Options:
 
-   A data frame of daily data that contains columns of dates, values, and (optional) groupings (ex. station 
+   A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
    names/numbers).
    
    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
@@ -22,8 +22,8 @@ using the data frame option of \code{data} and dates column is not named 'Date'.
 \item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
 Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
 
-\item{grouping}{Column in the \code{data} data frame that contains unique identifiers for different data sets. 
-Only required if using the data frame option of \code{data} and grouping column is not named 'STATION_NUMBER'.
+\item{groups}{Column in the \code{data} data frame that contains unique identifiers for different data sets. 
+Only required if using the data frame option of \code{data} and groups column is not named 'STATION_NUMBER'.
 Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
 another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
 
