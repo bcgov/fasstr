@@ -5,11 +5,11 @@
 \title{Calculate the long-term and long-term monthly summary statistics}
 \usage{
 calc_longterm_stats(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, percentiles = c(10, 90), water_year = FALSE,
-  water_year_start = 10, start_year = 0, end_year = 9999,
-  exclude_years = NULL, custom_months = NULL,
-  custom_months_label = "Custom-Months", transpose = FALSE,
-  ignore_missing = TRUE)
+  groups = STATION_NUMBER, percentiles = c(10, 90), rolling_days = 1,
+  rolling_align = "right", water_year = FALSE, water_year_start = 10,
+  start_year = 0, end_year = 9999, exclude_years = NULL,
+  custom_months = NULL, custom_months_label = "Custom-Months",
+  transpose = FALSE, ignore_missing = FALSE)
 }
 \arguments{
 \item{data}{Daily data to be analyzed. Options:
@@ -32,6 +32,11 @@ Function will automatically group by a column named 'STATION_NUMBER' if present.
 another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
 
 \item{percentiles}{Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.}
+
+\item{rolling_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
+
+\item{rolling_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
 \item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
 are designated by the year in which they end. Default \code{FALSE}.}

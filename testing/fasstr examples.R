@@ -10,25 +10,25 @@ library(dplyr)
 
 
 
-data <- add_daily_yield(flow_data, groups = SN)
-flow_data <- calc_longterm_stats_2(c("08HB048","08NM116"))
-calc_longterm_stats_2(1)
-
-flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% 
-  calc_longterm_stats_2(grouping = )
+data <- fasstr::calc_lt_mad(flow_data)
+data <- fasstr::calc_lt_percentile(flow_data, percentiles = 1)
 
 
-testing <- add_rolling_means("08HB048")
-testing <- add_cumulative_yield(flow_data)
 
+
+if(nrow(data) == 1 & ncol(data) == 1){
+  dplyr::pull(data[1,1])
+} else {
+  dplyr::as_tibble(data)
+}
 
 # flow_data <- flow_data[,c(as.character(substitute(Date)),
 #                           as.character(substitute(Value)))]
 # 
 # 
-# flow_data <- flow_data[,c(as.character(substitute(STATION_NUMBER)),
-#                           as.character(substitute(Date)),
-#                           as.character(substitute(Value)))]
+ flow_data <- flow_data[,c(as.character(substitute(STATION_NUMBER)),
+                           as.character(substitute(Date)),
+                           as.character(substitute(Value)))]
 ### FLOW_DATA
 ### ----------
 

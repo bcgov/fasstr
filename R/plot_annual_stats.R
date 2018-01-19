@@ -129,8 +129,10 @@ plot_annual_stats <- function(flow_data = NULL,
   if(!is.null(months) & !is.numeric(months)) stop("months argument must be numbers between 1 and 12 (Jan-Dec).")
   if(!all(months %in% c(1:12)))              stop("months argument must be numbers between 1 and 12 (Jan-Dec).")
   
-  if(!is.numeric(percentiles))               stop("percentiles argument must be numeric.")
-  if(!all(percentiles>0 & percentiles<100))  stop("percentiles must be > 0 and < 100.")
+  if(!is.na(percentiles)){
+    if(!is.numeric(percentiles))               stop("percentiles argument must be numeric.")
+    if(!all(percentiles>0 & percentiles<100))  stop("percentiles must be > 0 and < 100.")
+  }
   
   if(!is.logical(log_discharge))  stop("log_discharge argument must be logical (TRUE/FALSE).")
   

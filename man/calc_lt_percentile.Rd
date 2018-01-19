@@ -4,37 +4,58 @@
 \alias{calc_lt_percentile}
 \title{Calculate the long-term percentiles}
 \usage{
-calc_lt_percentile(flowdata = NULL, HYDAT = NULL, percentiles = NA,
-  water_year = FALSE, water_year_start = 10, start_year = NULL,
-  end_year = NULL, exclude_years = NULL, months = 1:12)
+calc_lt_percentile(data = NULL, dates = Date, values = Value,
+  groups = STATION_NUMBER, percentiles = NA, rolling_days = 1,
+  rolling_align = "right", water_year = FALSE, water_year_start = 10,
+  start_year = 0, end_year = 9999, exclude_years = NULL,
+  complete_years = FALSE, months = 1:12, transpose = FALSE)
 }
 \arguments{
-\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
+\item{data}{Daily data to be analyzed. Options:
 
-\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flowdata} argument is used.}
+   A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
+   names/numbers).
+   
+   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
 
-\item{percentiles}{Numeric. Long-term percentile(s) to calculate. Required.}
+\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
+using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
 
-\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
-by the year in which they end. Default \code{FALSE}.}
+\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
+Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
 
-\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
+\item{groups}{Column in the \code{data} data frame that contains unique identifiers for different data sets. 
+Only required if using the data frame option of \code{data} and groups column is not named 'STATION_NUMBER'.
+Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
+another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
 
-\item{start_year}{Integer. First year to consider for analysis. Leave blank if all years are required.}
+\item{percentiles}{Numeric vector of percentiles to calculate.}
 
-\item{end_year}{Integer. Last year to consider for analysis. Leave blank if all years are required.}
+\item{rolling_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
 
-\item{exclude_years}{Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.}
+\item{rolling_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
-\item{months}{Integer. Vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Leave blank for all months. 
-Default \code{1:12}.}
+\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
+are designated by the year in which they end. Default \code{FALSE}.}
+
+\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
+Default \code{10}.}
+
+\item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
+
+\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
+
+\item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
+
+\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
+
+\item{months}{Numeric vector of months to include in analysis (ex. \code{6:8} for Jun-Aug). Leave blank to summarize 
+all months (default \code{1:12}).}
 }
 \value{
-A numeric value of a long-term percentile of selected years and months.
+A data frame of a long-term percentile of selected years and months.
 }
 \description{
 Calculates the long-term percentiles discharge of a streamflow dataset. Averages all daily discharge values from all years,
@@ -43,9 +64,9 @@ Calculates the long-term percentiles discharge of a streamflow dataset. Averages
 \examples{
 \dontrun{
 
-calc_lt_percentile(flowdata = data, start_year = 1980, end_year = 2010, percentile = 90)
+calc_lt_percentile(data = data, start_year = 1980, end_year = 2010, percentile = 90)
 
-calc_lt_percentile(HYDAT = "08NM116", percentile = 20)
+calc_lt_percentile(data = "08NM116", percentile = 20)
 
 }
 }

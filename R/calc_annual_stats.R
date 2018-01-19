@@ -77,7 +77,6 @@ calc_annual_stats <- function(data = NULL,
                               dates = Date,
                               values = Value,
                               groups = STATION_NUMBER,
-                              HYDAT = NULL,
                               percentiles = c(10,90),
                               rolling_days = 1,
                               rolling_align = "right",
@@ -90,7 +89,8 @@ calc_annual_stats <- function(data = NULL,
                               transpose = FALSE,
                               ignore_missing = FALSE){
   
-  
+  ## CHECKS ON FLOW DATA
+  ## -------------------
   
   # Check if data is provided
   if(is.null(data))   stop("No data provided, must provide a data frame or HYDAT station number(s).")
@@ -137,6 +137,10 @@ calc_annual_stats <- function(data = NULL,
   ## CHECKS ON OTHER ARGUMENTS
   ## -------------------------
   
+  if(!is.numeric(rolling_days))                        stop("rolling_days argument must be numeric")
+  if(!all(rolling_days %in% c(1:180)))                 stop("rolling_days argument must be integers > 0 and <= 180)")
+  if(!rolling_align %in% c("right", "left", "center")) stop("rolling_align argument must be 'right', 'left', or 'center'")
+  
   if(!is.logical(water_year))         stop("water_year argument must be logical (TRUE/FALSE).")
   if(!is.numeric(water_year_start))   stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec).")
   if(length(water_year_start)>1)      stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec).")
@@ -154,17 +158,15 @@ calc_annual_stats <- function(data = NULL,
   if(!is.null(months) & !is.numeric(months)) stop("months argument must be numbers between 1 and 12 (Jan-Dec).")
   if(!all(months %in% c(1:12)))              stop("months argument must be numbers between 1 and 12 (Jan-Dec).")
   
-  if(!is.numeric(percentiles))               stop("percentiles argument must be numeric.")
-  if(!all(percentiles>0 & percentiles<100))  stop("percentiles must be > 0 and < 100.")
+  if(!all(is.na(percentiles))){
+    if(!is.numeric(percentiles))               stop("percentiles argument must be numeric.")
+    if(!all(percentiles>0 & percentiles<100))  stop("percentiles must be > 0 and < 100.")
+  }
   
   if(!is.logical(transpose))       stop("transpose argument must be logical (TRUE/FALSE).")
   
   if(!is.logical(ignore_missing))  stop("ignore_missing argument must be logical (TRUE/FALSE).")
-  
-  if(!is.numeric(rolling_days))                        stop("rolling_days argument must be numeric")
-  if(!all(rolling_days %in% c(1:180)))                 stop("rolling_days argument must be integers > 0 and <= 180)")
-  if(!rolling_align %in% c("right", "left", "center")) stop("rolling_align argument must be 'right', 'left', or 'center'")
-  
+
   
   ## PREPARE FLOW DATA
   ## -----------------
@@ -210,7 +212,7 @@ calc_annual_stats <- function(data = NULL,
       Q_annual <- merge(Q_annual, Q_annual_ptile, by = c("STATION_NUMBER","AnalysisYear"))
       
       # Remove percentile if mean is NA (workaround for na.rm=FALSE in quantile)
-      Q_annual[,ncol(Q_annual)] <- ifelse(is.na(Q_annual$Mean),NA,Q_annual[,ncol(Q_annual)])
+      Q_annual[, ncol(Q_annual)] <- ifelse(is.na(Q_annual$Mean), NA, Q_annual[, ncol(Q_annual)])
     }
   }
   
@@ -240,7 +242,7 @@ calc_annual_stats <- function(data = NULL,
     Q_annual <- with(Q_annual, Q_annual[order(STATION_NUMBER, Statistic),])
   }
   
-  # Recheck if station_number was in original flow_data and rename or remove as necessary
+  # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
   if("STATION_NUMBER" %in% orig_cols) {
     names(Q_annual)[names(Q_annual) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {

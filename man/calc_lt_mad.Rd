@@ -4,46 +4,55 @@
 \alias{calc_lt_mad}
 \title{Calculate the long-term mean annual discharge}
 \usage{
-calc_lt_mad(flow_data = NULL, flow_dates = Date, flow_values = Value,
-  flow_stations = STATION_NUMBER, HYDAT = NULL, water_year = FALSE,
-  water_year_start = 10, start_year = 0, end_year = 9999,
-  exclude_years = NULL, months = 1:12, percent_MAD = NA)
+calc_lt_mad(data = NULL, dates = Date, values = Value,
+  groups = STATION_NUMBER, rolling_days = 1, rolling_align = "right",
+  water_year = FALSE, water_year_start = 10, start_year = 0,
+  end_year = 9999, exclude_years = NULL, complete_years = FALSE,
+  months = 1:12, percent_MAD = NA, transpose = FALSE)
 }
 \arguments{
-\item{flow_data}{a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
-names/numbers. Leave blank if using \code{HYDAT} argument.}
+\item{data}{Daily data to be analyzed. Options:
 
-\item{flow_dates}{a column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Leave blank if using \code{HYDAT} 
-argument. Default \code{Date}.}
+   A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
+   names/numbers).
+   
+   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
 
-\item{flow_values}{a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
-Leave blank if using \code{HYDAT} argument. Default \code{Value}.}
+\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
+using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
 
-\item{flow_stations}{a column in flow_data that contains station identifiers for each flow data set.
-Removing 'STATION_NUMBER' column in flow_data or incorrectly identifying will calculate statistics on all flow values from all stations.
-If using \code{HYDAT} argument, setting \code{flow_stations} to anything besides \code{STATION_NUMBER} will have similar effects.
-Default \code{STATION_NUMBER}.}
+\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
+Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
 
-\item{HYDAT}{a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
-\code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.}
+\item{groups}{Column in the \code{data} data frame that contains unique identifiers for different data sets. 
+Only required if using the data frame option of \code{data} and groups column is not named 'STATION_NUMBER'.
+Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
+another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
 
-\item{water_year}{a logical value indicating whether to use water years to group flow data instead of calendar years. Water years 
+\item{rolling_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
+
+\item{rolling_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
+
+\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
 are designated by the year in which they end. Default \code{FALSE}.}
 
-\item{water_year_start}{a numeric value indicating the month of the start of the water year. Used if \code{water_year=TRUE}. 
+\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
 Default \code{10}.}
 
-\item{start_year}{a numeric value of the first year to consider for analysis. Leave blank if all years are required.}
+\item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
-\item{end_year}{a numeric value of the last year to consider for analysis. Leave blank if all years are required.}
+\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
 
-\item{exclude_years}{a numeric vector of years to exclude from analysis. Leave blank if all years are required.}
+\item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 
-\item{months}{a numeric vector of months to include in analysis (ex. \code{6:8} for Jun-Aug). Leave blank to summarize 
+\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
+
+\item{months}{Numeric vector of months to include in analysis (ex. \code{6:8} for Jun-Aug). Leave blank to summarize 
 all months (default \code{1:12}).}
 
-\item{percent_MAD}{a numeric vector of percents of long-term mean annual discharge to add to the table (ex. 20 for 20 percent MAD).
+\item{percent_MAD}{Numeric vector of percents of long-term mean annual discharge to add to the table (ex. 20 for 20 percent MAD).
 Leave blank for no values to be calculated.}
 }
 \value{
@@ -56,11 +65,11 @@ Calculates the long-term mean annual discharge of a streamflow dataset. Averages
 \examples{
 \dontrun{
 
-calc_lt_mad(flow_data = data, start_year = 1980, end_year = 2010)
+calc_lt_mad(data = data, start_year = 1980, end_year = 2010)
 
-calc_lt_mad(HYDAT = "08NM116",water_year = TRUE, exclude_years = (1990, 1992:1994))
+calc_lt_mad(data = "08NM116", water_year = TRUE, exclude_years = (1990, 1992:1994))
 
-calc_lt_mad(HYDAT = "08NM116", percent_MAD = 20)
+calc_lt_mad(data = "08NM116", percent_MAD = 20)
 
 }
 }

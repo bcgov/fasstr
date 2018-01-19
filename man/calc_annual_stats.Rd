@@ -5,11 +5,10 @@
 \title{Calculate annual summary statistics}
 \usage{
 calc_annual_stats(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, HYDAT = NULL, percentiles = c(10, 90),
-  rolling_days = 1, rolling_align = "right", water_year = FALSE,
-  water_year_start = 10, start_year = 0, end_year = 9999,
-  exclude_years = NULL, months = 1:12, transpose = FALSE,
-  ignore_missing = FALSE)
+  groups = STATION_NUMBER, percentiles = c(10, 90), rolling_days = 1,
+  rolling_align = "right", water_year = FALSE, water_year_start = 10,
+  start_year = 0, end_year = 9999, exclude_years = NULL, months = 1:12,
+  transpose = FALSE, ignore_missing = FALSE)
 }
 \arguments{
 \item{data}{Daily data to be analyzed. Options:
