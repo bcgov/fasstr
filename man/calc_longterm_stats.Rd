@@ -8,8 +8,9 @@ calc_longterm_stats(data = NULL, dates = Date, values = Value,
   groups = STATION_NUMBER, percentiles = c(10, 90), rolling_days = 1,
   rolling_align = "right", water_year = FALSE, water_year_start = 10,
   start_year = 0, end_year = 9999, exclude_years = NULL,
-  custom_months = NULL, custom_months_label = "Custom-Months",
-  transpose = FALSE, ignore_missing = FALSE)
+  complete_years = FALSE, custom_months = NULL,
+  custom_months_label = "Custom-Months", transpose = FALSE,
+  ignore_missing = FALSE)
 }
 \arguments{
 \item{data}{Daily data to be analyzed. Options:
@@ -49,6 +50,8 @@ Default \code{10}.}
 \item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
 
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
+
+\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 
 \item{custom_months}{Numeric vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Adds results to the end of table.
 If wanting months that overlap calendar years (ex. Oct-Mar), choose water_year and a water_year_month that begins before the first 

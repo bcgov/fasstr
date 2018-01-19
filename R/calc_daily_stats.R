@@ -45,6 +45,7 @@
 #' @param start_year Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.
 #' @param end_year Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.
 #' @param exclude_years Numeric vector of years to exclude from analysis. Leave blank to include all years.             
+#' @param complete_years Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.          
 #' @param transpose Logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.
 #' @param ignore_missing Logical value indicating whether dates with missing values should be included in the calculation. If
 #'    \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
@@ -81,7 +82,6 @@ calc_daily_stats <- function(data = NULL,
                              dates = Date,
                              values = Value,
                              groups = STATION_NUMBER,
-                             HYDAT = NULL,
                              percentiles = c(5,25,75,95),
                              rolling_days = 1,
                              rolling_align = "right",
@@ -90,10 +90,12 @@ calc_daily_stats <- function(data = NULL,
                              start_year = 0,
                              end_year = 9999,
                              exclude_years = NULL, 
+                             complete_years = FALSE,
                              transpose = FALSE,
                              ignore_missing = TRUE){
   
-  
+  ## CHECKS ON FLOW DATA
+  ## -------------------
   
   # Check if data is provided
   if(is.null(data))   stop("No data provided, must provide a data frame or HYDAT station number(s).")
@@ -158,6 +160,8 @@ calc_daily_stats <- function(data = NULL,
   if(!is.null(exclude_years) & !is.numeric(exclude_years)) stop("List of exclude_years must be numeric - ex. 1999 or c(1999,2000).")
   if(!all(exclude_years %in% c(0:9999)))                   stop("Years listed in exclude_years must be integers.")
   
+  if(!is.logical(complete_years))         stop("complete_years argument must be logical (TRUE/FALSE).")
+  
   if(!all(is.na(percentiles))){
     if(!is.numeric(percentiles))               stop("percentiles argument must be numeric.")
     if(!all(percentiles>0 & percentiles<100))  stop("percentiles must be > 0 and < 100.")
@@ -206,6 +210,15 @@ calc_daily_stats <- function(data = NULL,
   flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
   flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
   flow_data <- dplyr::filter(flow_data, AnalysisDoY < 366)
+  
+  # Remove incomplete years if selected
+  if(complete_years){
+    comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
+                                   complete_yr = ifelse(sum(!is.na(RollingValue)) == length(AnalysisYear), TRUE, FALSE))
+    flow_data <- merge(flow_data, comp_years, by = c("STATION_NUMBER", "AnalysisYear"))
+    flow_data <- dplyr::filter(flow_data, complete_yr == "TRUE")
+    flow_data <- dplyr::select(flow_data, -complete_yr)
+  }
   
   
   ## CALCULATE STATISTICS

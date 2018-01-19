@@ -180,26 +180,26 @@ calc_lt_mad <- function(data = NULL,
   
   # Remove incomplete years if selected
   if(complete_years){
-    test <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
-                             complete_yr = ifelse(sum(!is.na(RollingValue)) == length(AnalysisYear), TRUE, FALSE))
-    flow_data <- merge(flow_data, test, by = c("STATION_NUMBER", "AnalysisYear"))
+    comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
+                                   complete_yr = ifelse(sum(!is.na(RollingValue)) == length(AnalysisYear), TRUE, FALSE))
+    flow_data <- merge(flow_data, comp_years, by = c("STATION_NUMBER", "AnalysisYear"))
     flow_data <- dplyr::filter(flow_data, complete_yr == "TRUE")
     flow_data <- dplyr::select(flow_data, -complete_yr)
   }
   
   ## CALCULATE STATISTICS
   ## --------------------
-
+  
   Q_ltmad <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER),
-                                 LTMAD = mean(RollingValue, na.rm = TRUE))
-
-
+                              LTMAD = mean(RollingValue, na.rm = TRUE))
+  
+  
   # Calculate the monthly and longterm percentiles
   if(!all(is.na(percent_MAD))) {
     for (pcnt in percent_MAD) {
       Q_ltmad <- dplyr::mutate(Q_ltmad, Percent = LTMAD * pcnt / 100)
       names(Q_ltmad)[names(Q_ltmad) == "Percent"] <- paste0(pcnt,"%MAD")
-
+      
     }
   }
   
@@ -216,16 +216,16 @@ calc_lt_mad <- function(data = NULL,
     levels(Q_ltmad$Statistic) <- stat_levels
     Q_ltmad <- with(Q_ltmad, Q_ltmad[order(STATION_NUMBER, Statistic),])
   }
-
+  
   # Recheck if station_number was in original flow_data and rename or remove as necessary
   if(as.character(substitute(groups)) %in% orig_cols) {
     names(Q_ltmad)[names(Q_ltmad) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
     Q_ltmad <- dplyr::select(Q_ltmad, -STATION_NUMBER)
   }
-
   
-
+  
+  
   # If just one value is in the table, return is as a value, otherwise return it as a tibble
   if(nrow(Q_ltmad) == 1 & ncol(Q_ltmad) == 1){
     dplyr::pull(dplyr::as_tibble(Q_ltmad)[1,1])

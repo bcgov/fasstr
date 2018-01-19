@@ -217,7 +217,7 @@ calc_annual_stats <- function(data = NULL,
   }
   
   # Rename year column
-  Q_annual <-   dplyr::rename(Q_annual,Year=AnalysisYear)
+  Q_annual <-   dplyr::rename(Q_annual, Year = AnalysisYear)
   
   
   # Make excluded years data NA

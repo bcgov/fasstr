@@ -2,15 +2,15 @@
 
 
 devtools::document()
-#install.packages("/Users/jongoetz/Documents/R/fasstr devel",repos = NULL, type = "source")
-install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
+install.packages("/Users/jongoetz/Documents/R/fasstr devel",repos = NULL, type = "source")
+#install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
 library(fasstr)
 library(dplyr)
 
 
 
-data <- fasstr::calc_lt_mad(flow_data)
+data <- fasstr::calc_monthly_stats(flow_data)
 data <- fasstr::calc_lt_percentile(flow_data, percentiles = 1)
 
 

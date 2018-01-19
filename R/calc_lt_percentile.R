@@ -181,9 +181,9 @@ calc_lt_percentile <- function(data = NULL,
   
   # Remove incomplete years if selected
   if(complete_years){
-    test <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
+    comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
                              complete_yr = ifelse(sum(!is.na(RollingValue)) == length(AnalysisYear), TRUE, FALSE))
-    flow_data <- merge(flow_data, test, by = c("STATION_NUMBER", "AnalysisYear"))
+    flow_data <- merge(flow_data, comp_years, by = c("STATION_NUMBER", "AnalysisYear"))
     flow_data <- dplyr::filter(flow_data, complete_yr == "TRUE")
     flow_data <- dplyr::select(flow_data, -complete_yr)
   }

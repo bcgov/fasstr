@@ -41,6 +41,7 @@
 #' @param start_year Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.
 #' @param end_year Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.
 #' @param exclude_years Numeric vector of years to exclude from analysis. Leave blank to include all years.       
+#' @param complete_years Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.          
 #' @param custom_months Numeric vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Adds results to the end of table.
 #'    If wanting months that overlap calendar years (ex. Oct-Mar), choose water_year and a water_year_month that begins before the first 
 #'    month listed. Leave blank for no custom month summary.
@@ -88,6 +89,7 @@ calc_longterm_stats <- function(data = NULL,
                                 start_year = 0,
                                 end_year = 9999,
                                 exclude_years = NULL,
+                                complete_years = FALSE,
                                 custom_months = NULL,
                                 custom_months_label = "Custom-Months",
                                 transpose = FALSE,
@@ -160,6 +162,8 @@ calc_longterm_stats <- function(data = NULL,
   if(!is.null(exclude_years) & !is.numeric(exclude_years)) stop("List of exclude_years must be numeric - ex. 1999 or c(1999,2000).")
   if(!all(exclude_years %in% c(0:9999)))  stop("Years listed in exclude_years must be integers.")
   
+  if(!is.logical(complete_years))         stop("complete_years argument must be logical (TRUE/FALSE).")
+  
   if(!is.null(custom_months) & !is.numeric(custom_months))             
     stop("custom_months argument must be numbers between 1 and 12 (Jan-Dec).")
   if(!all(custom_months %in% c(1:12)))                                 
@@ -191,14 +195,22 @@ calc_longterm_stats <- function(data = NULL,
     flow_data$AnalysisYear <- flow_data$Year
   }
   
-  # Filter for the selected year
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
-  flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
-  
   # Apply rolling mean if designated, default of 1
   flow_data <- add_rolling_means(data = flow_data, days = rolling_days, align = rolling_align)
   colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
   
+  # Filter for the selected year
+  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
+  
+  # Remove incomplete years if selected
+  if(complete_years){
+    comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
+                                   complete_yr = ifelse(sum(!is.na(RollingValue)) == length(AnalysisYear), TRUE, FALSE))
+    flow_data <- merge(flow_data, comp_years, by = c("STATION_NUMBER", "AnalysisYear"))
+    flow_data <- dplyr::filter(flow_data, complete_yr == "TRUE")
+    flow_data <- dplyr::select(flow_data, -complete_yr)
+  }
   
   ## CALCULATE STATISTICS
   ## --------------------
