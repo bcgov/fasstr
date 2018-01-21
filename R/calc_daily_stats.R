@@ -178,6 +178,9 @@ calc_daily_stats <- function(data = NULL,
   # Fill in the missing dates and the add the date variables again
   flow_data <- fill_missing_dates(data = flow_data, water_year = water_year, water_year_start = water_year_start)
   flow_data <- add_date_variables(data = flow_data, water_year = water_year, water_year_start = water_year_start)
+  flow_data <- add_rolling_means(data = flow_data, days = rolling_days, align = rolling_align)
+  colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
+  
   
   # Set selected year-type and day of year, and date columns for analysis
   if (water_year) {
@@ -201,10 +204,6 @@ calc_daily_stats <- function(data = NULL,
     flow_data$AnalysisDoY <- flow_data$DayofYear
     flow_data$AnalysisDate <- as.Date(flow_data$DayofYear, origin = "1899-12-31")
   }
-  
-  # Apply rolling mean if designated, default of 1
-  flow_data <- add_rolling_means(data = flow_data, days = rolling_days, align = rolling_align)
-  colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
   
   # Filter for the selected and excluded years and leap year values (last day)
   flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)

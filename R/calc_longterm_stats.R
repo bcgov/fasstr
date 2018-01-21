@@ -187,6 +187,8 @@ calc_longterm_stats <- function(data = NULL,
   # Fill in the missing dates and the add the date variables again
   flow_data <- fill_missing_dates(flow_data, water_year = water_year, water_year_start = water_year_start)
   flow_data <- add_date_variables(flow_data, water_year = water_year, water_year_start = water_year_start)
+  flow_data <- add_rolling_means(data = flow_data, days = rolling_days, align = rolling_align)
+  colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
   
   # Set selected year-type column for analysis
   if (water_year) {
@@ -194,10 +196,6 @@ calc_longterm_stats <- function(data = NULL,
   }  else {
     flow_data$AnalysisYear <- flow_data$Year
   }
-  
-  # Apply rolling mean if designated, default of 1
-  flow_data <- add_rolling_means(data = flow_data, days = rolling_days, align = rolling_align)
-  colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
   
   # Filter for the selected year
   flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
