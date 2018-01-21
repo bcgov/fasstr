@@ -122,8 +122,7 @@ calc_monthly_stats <- function(data = NULL,
   # Get the just groups (default STATION_NUMBER), Date, and Value columns
   # This method allows the user to select the Station, Date or Value columns if the column names are different
   if(!as.character(substitute(values)) %in% names(flow_data) & !as.character(substitute(dates)) %in% names(flow_data)) 
-    stop("Dates and values not found in data frame. Rename dates and values columns to 'Date' and 'Value' or identify the columns using
-         'dates' and 'values' arguments.")
+    stop("Dates and values not found in data frame. Rename dates and values columns to 'Date' and 'Value' or identify the columns using 'dates' and 'values' arguments.")
   if(!as.character(substitute(dates)) %in% names(flow_data))  
     stop("Dates not found in data frame. Rename dates column to 'Date' or identify the column using 'dates' argument.")
   if(!as.character(substitute(values)) %in% names(flow_data)) 
