@@ -10,7 +10,7 @@ library(dplyr)
 
 
 
-data <- fasstr::calc_monthly_stats(flow_data)
+data <- fasstr::screen_flow_data(c("08NM116","08HB048"), transpose = T)
 data <- fasstr::calc_lt_percentile(flow_data, percentiles = 1)
 
 
