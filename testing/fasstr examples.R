@@ -2,15 +2,15 @@
 
 
 devtools::document()
-install.packages("/Users/jongoetz/Documents/R/fasstr devel",repos = NULL, type = "source")
+install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
 #install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
 library(fasstr)
 library(dplyr)
 
+fasstr::compute_frequency_analysis("08HB048")$freqplot
 
-
-data <- fasstr::screen_flow_data(c("08NM116","08HB048"), transpose = T)
+data <- fasstr::compute_frequency_analysis("08NM116")
 data <- fasstr::calc_lt_percentile(flow_data, percentiles = 1)
 
 
