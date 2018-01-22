@@ -5,10 +5,10 @@
 \title{Plot the daily summary statistics}
 \usage{
 plot_daily_stats(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, rolling_days = 1, rolling_align = "right",
-  water_year = FALSE, water_year_start = 10, start_year = 0,
-  end_year = 9999, exclude_years = NULL, complete_years = FALSE,
-  ignore_missing = TRUE, log_discharge = TRUE, include_year = NULL)
+  rolling_days = 1, rolling_align = "right", water_year = FALSE,
+  water_year_start = 10, start_year = 0, end_year = 9999,
+  exclude_years = NULL, complete_years = FALSE, ignore_missing = TRUE,
+  log_discharge = TRUE, include_year = NULL)
 }
 \arguments{
 \item{data}{Daily data to be analyzed. Options:

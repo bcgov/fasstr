@@ -10,7 +10,7 @@ library(dplyr)
 library(ggthemes)
 
 
-fasstr::plot_daily_cumulative_stats("08HB048", include_year = 1985, use_yield = T)
+fasstr::plot_missing_dates("08NM116")
 
 
   fasstr::plot_daily_stats("08NM116", start_year = 1980, include_year = 1990, water_year = T, water_year_start = 5)
