@@ -134,10 +134,12 @@ plot_daily_stats(data = "08NM116",
 Flow duration curves can be produced using the `plot_flow_duration()` function.
 
 ``` r
-#plot_flow_duration(HYDAT = "08NM116",
-#                   start_year = 1981,
-#                   end_year = 2010)
+plot_flow_duration(data = "08NM116",
+                   start_year = 1981,
+                   end_year = 2010)
 ```
+
+![](tools/readme/README-plot2-1.png)
 
 ### Analysis example: low-flow frequency analysis
 
