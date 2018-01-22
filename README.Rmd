@@ -68,17 +68,17 @@ This package allows for multiple stations (or other groupings such as time-perio
 
 ### Function Types
 
-##### Data Tidying/Preparation (add_ and fill_)
+#### Data Tidying/Preparation (add_ and fill_)
 
 They add columns of variables and converted flow to data frame.
 
-##### Analysis (screen_, calc_, and compute_)
+#### Analysis (screen_, calc_, and compute_)
 
 Screen data for missing dates,
 Calculate - long-term, annual, monthly, daily summary statistics
 Compute - trending and frequency analyses (plots and tables produced)
 
-##### Visualization (plot_)
+#### Visualization (plot_)
 
 plot the data (some set, some customizable)
 
@@ -86,17 +86,21 @@ plot the data (some set, some customizable)
 
 ### Function Options
 
-##### Year and Month Filtering
+#### Daily Rolling Means
+Can choose rolling means for many functions.
+
+
+#### Year and Month Filtering
 
 To customize your analyses for specific time periods, you can designate the start and end years of your analysis using the `start_year` and `end_year` arguments and remove any unwanted years (for partial datasets for example) by listing them in the `excluded_years` argument (e.g. `excluded_years=c(1990,1992:1994)`). Leaving these arguments blank will result in the summary/analysis of all years of the provided dataset.
 
 To group analyses by water, or hydrologic, years instead of calendar years, if desired, you can use `water_year=TRUE` within most functions (default is `water_year=FALSE`). A water year can be defined as a 12-month period that comprises a complete hydrologic cycle (wet seasons can typically cross calendar year), typically starting with the month with minimum flows (the start of a new water recharge cycle). As water years commonly start in October, the default water year is October for `fasstr`.  If another start month is desired, you can choose is using the `water_year_start` argument (numeric month) to designate the water year time period. The water year label is designated by the year it ends in (e.g. water year 2000 goes from Oct 1, 1999 to Sep 30, 2000). Start, end and excluded years will be based on the specified water year.
 
-##### Drainage Basin Area
+#### Drainage Basin Area
 
 Yield runoff statistics calculated in the some of the functions require an upstream drainage basin area (in sq. km) using the `basin_area` argument, where required. If no basin areas are supplied, all yield results will be `NA`. To apply a basin area (10 sqkm for example) to all daily observations, set the argument as `basin_area = 10`. If there are mulitple stations or groups to apply mulitple basin areas (using the `grouping` argument), set them individually using this option: `basin_area = c("08NM116"=795, "08NM242"=22)`. If a STATION_NUMBER column exists with HYDAT station numbers, the function will automatically use the basin areas provided in HYDAT, if available, so `basin_area` is not required.
 
-##### Handling Missing Dates
+#### Handling Missing Dates
 
 Coming soon. ignore_missing argument. different functions have different defaults....
 
@@ -107,7 +111,8 @@ Coming soon. ignore_missing argument. different functions have different default
 To determine the summary statistics of an entire dataset and by month (mean, median, maximum, minimum, and some percentiles) you can use the `calc_longterm_stats()` function. If the 'Mission Creek near East Kelowna' hydrometric station is of interest you can list the station number in the `HYDAT` argument to obtain the data (if `tidyhydat` and HYDAT are installed). 
 
 ```{r example1, warning=FALSE}
-calc_longterm_stats(HYDAT = "08NM116")
+calc_longterm_stats(data = "08NM116", start_year = 1981, end_year = 2010,
+                    custom_months = 7:9, custom_months_label = "Summer")
 ```
 
 ### Plotting example 1: daily summary statistics
@@ -115,10 +120,11 @@ calc_longterm_stats(HYDAT = "08NM116")
 To visualize the daily streamflow patterns on an annual basis, the `plot_daily_stats()` function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the `start_year` and `end_year` arguments. Multiple plots are produced with this function, so this example plots just the summary statistics (`[1]`).
 
 ```{r plot1, warning=FALSE,fig.height = 4, fig.width = 10}
-#plot_daily_stats(HYDAT = "08NM116",
-#                 start_year = 1981,
-#                 end_year = 2010,
-#                 log_discharge = TRUE)[1]
+plot_daily_stats(data = "08NM116",
+                 start_year = 1981,
+                 end_year = 2010,
+                 log_discharge = TRUE,
+                 include_year = 1991)
 ```
 
 ### Plotting example 2: flow duration curves
@@ -136,10 +142,10 @@ Flow duration curves can be produced using the `plot_flow_duration()` function.
 This package also provides a function, `compute_frequency_analysis()`, to complete frequency analyses (using the same methods as [HEC-SSP](http://www.hec.usace.army.mil/software/hec-ssp/)). The default fitting distribution is 'log-Pearson Type III', but the 'weibull' distribution can also be used. Other default plotting and fitting methods are described in the function documentation. For this example, the 7-day low-flow (low-flow is default) quantiles are calculated for the Mission Creek hydrometric station using the 'log-Pearson Type III' distribution. With this, several low-flow indicators can be determined (i.e. 7Q5, 7Q10).
 
 ```{r example2, warning=FALSE}
-#compute_frequency_analysis(HYDAT = "08NM116",
-#                           start_year = 1981,
-#                           end_year = 2010,
-#                           rolling_days=7)[5]
+compute_frequency_analysis(data = "08NM116",
+                           start_year = 1981,
+                           end_year = 2010,
+                           rolling_days = 7)[5]
 ```
 
 

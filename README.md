@@ -54,31 +54,35 @@ This package allows for multiple stations (or other groupings such as time-perio
 
 ### Function Types
 
-##### Data Tidying/Preparation (add\_ and fill\_)
+#### Data Tidying/Preparation (add\_ and fill\_)
 
 They add columns of variables and converted flow to data frame.
 
-##### Analysis (screen\_, calc\_, and compute\_)
+#### Analysis (screen\_, calc\_, and compute\_)
 
 Screen data for missing dates, Calculate - long-term, annual, monthly, daily summary statistics Compute - trending and frequency analyses (plots and tables produced)
 
-##### Visualization (plot\_)
+#### Visualization (plot\_)
 
 plot the data (some set, some customizable)
 
 ### Function Options
 
-##### Year and Month Filtering
+#### Daily Rolling Means
+
+Can choose rolling means for many functions.
+
+#### Year and Month Filtering
 
 To customize your analyses for specific time periods, you can designate the start and end years of your analysis using the `start_year` and `end_year` arguments and remove any unwanted years (for partial datasets for example) by listing them in the `excluded_years` argument (e.g. `excluded_years=c(1990,1992:1994)`). Leaving these arguments blank will result in the summary/analysis of all years of the provided dataset.
 
 To group analyses by water, or hydrologic, years instead of calendar years, if desired, you can use `water_year=TRUE` within most functions (default is `water_year=FALSE`). A water year can be defined as a 12-month period that comprises a complete hydrologic cycle (wet seasons can typically cross calendar year), typically starting with the month with minimum flows (the start of a new water recharge cycle). As water years commonly start in October, the default water year is October for `fasstr`. If another start month is desired, you can choose is using the `water_year_start` argument (numeric month) to designate the water year time period. The water year label is designated by the year it ends in (e.g. water year 2000 goes from Oct 1, 1999 to Sep 30, 2000). Start, end and excluded years will be based on the specified water year.
 
-##### Drainage Basin Area
+#### Drainage Basin Area
 
 Yield runoff statistics calculated in the some of the functions require an upstream drainage basin area (in sq. km) using the `basin_area` argument, where required. If no basin areas are supplied, all yield results will be `NA`. To apply a basin area (10 sqkm for example) to all daily observations, set the argument as `basin_area = 10`. If there are mulitple stations or groups to apply mulitple basin areas (using the `grouping` argument), set them individually using this option: `basin_area = c("08NM116"=795, "08NM242"=22)`. If a STATION\_NUMBER column exists with HYDAT station numbers, the function will automatically use the basin areas provided in HYDAT, if available, so `basin_area` is not required.
 
-##### Handling Missing Dates
+#### Handling Missing Dates
 
 Coming soon. ignore\_missing argument. different functions have different defaults....
 
@@ -90,23 +94,25 @@ Examples
 To determine the summary statistics of an entire dataset and by month (mean, median, maximum, minimum, and some percentiles) you can use the `calc_longterm_stats()` function. If the 'Mission Creek near East Kelowna' hydrometric station is of interest you can list the station number in the `HYDAT` argument to obtain the data (if `tidyhydat` and HYDAT are installed).
 
 ``` r
-calc_longterm_stats(HYDAT = "08NM116")
-#> # A tibble: 13 x 8
+calc_longterm_stats(data = "08NM116", start_year = 1981, end_year = 2010,
+                    custom_months = 7:9, custom_months_label = "Summer")
+#> # A tibble: 14 x 8
 #>    STATION_NUMBER     Month      Mean Median Maximum Minimum    P10    P90
 #>  *          <chr>    <fctr>     <dbl>  <dbl>   <dbl>   <dbl>  <dbl>  <dbl>
-#>  1        08NM116       Jan  1.085907  0.878    9.50   0.160 0.5200  1.700
-#>  2        08NM116       Feb  1.043398  0.879    4.41   0.140 0.4970  1.775
-#>  3        08NM116       Mar  1.606463  1.180    9.86   0.380 0.7050  3.246
-#>  4        08NM116       Apr  6.702245  4.250   42.40   0.340 1.1700 15.600
-#>  5        08NM116       May 23.419247 21.200   87.50   0.821 8.8720 40.200
-#>  6        08NM116       Jun 22.436086 20.300   86.20   0.450 6.2000 40.800
-#>  7        08NM116       Jul  5.981690  3.720   76.80   0.332 0.9946 13.300
-#>  8        08NM116       Aug  2.082254  1.480   22.40   0.311 0.6990  4.022
-#>  9        08NM116       Sep  2.415459  1.560   18.30   0.354 0.6908  5.010
-#> 10        08NM116       Oct  2.121410  1.650   15.20   0.025 0.7797  4.130
-#> 11        08NM116       Nov  1.841419  1.560   11.70   0.260 0.5987  3.291
-#> 12        08NM116       Dec  1.248250  1.080    7.30   0.342 0.5288  2.210
-#> 13        08NM116 Long-term  6.553322  1.840   87.50   0.025 0.6930 21.000
+#>  1        08NM116       Jan  1.217472  1.000    9.50   0.160 0.5400  1.850
+#>  2        08NM116       Feb  1.156100  0.970    4.41   0.140 0.4742  1.994
+#>  3        08NM116       Mar  1.847916  1.405    9.86   0.380 0.7048  3.800
+#>  4        08NM116       Apr  8.318406  6.255   37.90   0.505 1.6290 17.500
+#>  5        08NM116       May 23.576258 20.750   74.40   3.830 9.3330 41.220
+#>  6        08NM116       Jun 21.513999 19.500   84.50   0.450 6.0990 38.900
+#>  7        08NM116       Jul  6.481003  3.900   54.50   0.332 1.0200 15.000
+#>  8        08NM116       Aug  2.125394  1.570   13.30   0.427 0.7749  4.292
+#>  9        08NM116       Sep  2.189149  1.580   14.60   0.364 0.7347  4.352
+#> 10        08NM116       Oct  2.099909  1.595   15.20   0.267 0.7935  3.980
+#> 11        08NM116       Nov  2.041519  1.730   11.70   0.260 0.5600  3.901
+#> 12        08NM116       Dec  1.297002  1.050    7.30   0.342 0.5000  2.333
+#> 13        08NM116 Long-term  6.167362  1.890   84.50   0.140 0.6800 19.300
+#> 14        08NM116    Summer  3.613834  1.980   54.50   0.332 0.7989  7.641
 ```
 
 ### Plotting example 1: daily summary statistics
@@ -114,11 +120,14 @@ calc_longterm_stats(HYDAT = "08NM116")
 To visualize the daily streamflow patterns on an annual basis, the `plot_daily_stats()` function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the `start_year` and `end_year` arguments. Multiple plots are produced with this function, so this example plots just the summary statistics (`[1]`).
 
 ``` r
-#plot_daily_stats(HYDAT = "08NM116",
-#                 start_year = 1981,
-#                 end_year = 2010,
-#                 log_discharge = TRUE)[1]
+plot_daily_stats(data = "08NM116",
+                 start_year = 1981,
+                 end_year = 2010,
+                 log_discharge = TRUE,
+                 include_year = 1991)
 ```
+
+![](tools/readme/README-plot1-1.png)
 
 ### Plotting example 2: flow duration curves
 
@@ -135,10 +144,23 @@ Flow duration curves can be produced using the `plot_flow_duration()` function.
 This package also provides a function, `compute_frequency_analysis()`, to complete frequency analyses (using the same methods as [HEC-SSP](http://www.hec.usace.army.mil/software/hec-ssp/)). The default fitting distribution is 'log-Pearson Type III', but the 'weibull' distribution can also be used. Other default plotting and fitting methods are described in the function documentation. For this example, the 7-day low-flow (low-flow is default) quantiles are calculated for the Mission Creek hydrometric station using the 'log-Pearson Type III' distribution. With this, several low-flow indicators can be determined (i.e. 7Q5, 7Q10).
 
 ``` r
-#compute_frequency_analysis(HYDAT = "08NM116",
-#                           start_year = 1981,
-#                           end_year = 2010,
-#                           rolling_days=7)[5]
+compute_frequency_analysis(data = "08NM116",
+                           start_year = 1981,
+                           end_year = 2010,
+                           rolling_days = 7)[5]
+#> $fitted_quantiles
+#>    Distribution Probability Return Period Q007-day-Avg
+#> 1          PIII       0.010    100.000000    0.1929445
+#> 2          PIII       0.050     20.000000    0.2770067
+#> 3          PIII       0.100     10.000000    0.3318582
+#> 4          PIII       0.200      5.000000    0.4084737
+#> 5          PIII       0.500      2.000000    0.5881156
+#> 6          PIII       0.800      1.250000    0.8122160
+#> 7          PIII       0.900      1.111111    0.9463443
+#> 8          PIII       0.950      1.052632    1.0651498
+#> 9          PIII       0.975      1.025641    1.1735280
+#> 10         PIII       0.980      1.020408    1.2066583
+#> 11         PIII       0.990      1.010101    1.3050198
 ```
 
 Project Status
