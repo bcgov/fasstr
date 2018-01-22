@@ -12,34 +12,42 @@
 
 #' @title Plot cumulative daily flow statistics
 #'
-#' @description Plot cumulative daily flow statistics for each day of the year of daily flow values from a streamflow dataset. 
-#'    Calculates the statistics from all daily discharge values from all years, unless specified. Defaults to volumetric cumulative 
-#'    flows, can use \code{use_yield} and \code{basin_area} to convert to runoff yield.
-#'
-#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-#'    Not required if \code{HYDAT} argument is used.
-#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-#'    database are required. Not required if \code{flowdata} argument is used.
-#' @param basin_area Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm)
-#'    or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.
-#' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
-#'    by the year in which they end. Default \code{FALSE}.
-#' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
-#' @param start_year Integer. First year to consider for analysis. Leave blank if all years are required.
-#' @param end_year Integer. Last year to consider for analysis. Leave blank if all years are required.
-#' @param exclude_years Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.  
-#' @param use_yield Logical. Use runoff yield for total flows instead of total volume. \code{basin_area} required. Default \code{FALSE}.
+#' @param data Daily data to be analyzed. Options:
+#' 
+#'    A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
+#'    names/numbers).
+#'    
+#'    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+#'    extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.   
+#' @param dates Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
+#'    using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}. 
+#' @param values Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
+#'    Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}. 
+#' @param groups Column in the \code{data} data frame that contains unique identifiers for different data sets. 
+#'    Only required if using the data frame option of \code{data} and groups column is not named 'STATION_NUMBER'.
+#'    Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
+#'    another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}. 
+#' @param use_yield Logical value indicating whether to use yield runoff, in mm, instead of volumetric. Default \code{FALSE}.
+#' @param basin_area Upstream drainage basin area to apply to daily observations. Options:
+#'    
+#'    Leave blank if \code{groups} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
+#'    
+#'    Single numeric value to apply to all observations.
+#'    
+#'    List each basin area for each grouping factor (can override HYDAT value) as such \code{c("08NM116" = 795, "08NM242" = 10)}.
+#'    Factors not listed will result in NA basin areas.
+#' @param water_year Logical value indicating whether to use water years to group data instead of calendar years. Water years 
+#'    are designated by the year in which they end. Default \code{FALSE}.
+#' @param water_year_start Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
+#'    Default \code{10}.
+#' @param start_year Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.
+#' @param end_year Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.
+#' @param exclude_years Numeric vector of years to exclude from analysis. Leave blank to include all years.             
+#' @param complete_years Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.          
+#' @param ignore_missing Logical value indicating whether dates with missing values should be included in the calculation. If
+#'    \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
+#'    with no missing dates will be returned. Default \code{TRUE}.
 #' @param log_discharge Logical. Place the discharge axis (Y) on log scale. Default \code{FALSE}.
-#' @param station_name Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
-#'    files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
-#'    will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number. 
-#' @param write_plot Logical. Write the plot to specified directory. Default \code{FALSE}.
-#' @param write_imgtype Character. One of "pdf","png","jpeg","tiff", or "bmp" image types to write the plot as. Default \code{"pdf"}.
-#' @param write_imgsize Numeric. Height and width, respectively, of saved plot. Default \code{c(5,11)}.
-#' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
-#'    Default is the working directory.
 #'    
 #' @return A list of ggplot2 objects, the first the daily cumulative statistics plot containing the listed plots below, and the sebsequent 
 #'    plots for each year of data provided containing the first plot plus the daily cumulative flow data for each year. Default units in
@@ -56,125 +64,88 @@
 #' @examples
 #' \dontrun{
 #' 
-#'plot_daily_cumulative_stats(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
-#' 
-#'plot_daily_cumulative_stats(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+#'plot_daily_cumulative_stats(data = "08NM116", water_year = TRUE, water_year_start = 8)
 #'
 #' }
 #' @export
 
-#--------------------------------------------------------------
 
-plot_daily_cumulative_stats <- function(flowdata=NULL,
-                                        HYDAT=NULL,
-                                        basin_area=NA,
-                                        water_year=FALSE,
-                                        water_year_start=10,
-                                        start_year=NULL,
-                                        end_year=NULL,
-                                        exclude_years=NULL,
-                                        use_yield=FALSE,
+
+plot_daily_cumulative_stats <- function(data = NULL,
+                                        dates = Date,
+                                        values = Value,
+                                        groups = STATION_NUMBER,
+                                        use_yield = FALSE, 
+                                        basin_area = NA,
+                                        water_year = FALSE,
+                                        water_year_start = 10,
+                                        start_year = 0,
+                                        end_year = 9999,
+                                        exclude_years = NULL, 
+                                        complete_years = FALSE,
+                                        ignore_missing = TRUE,
                                         log_discharge=FALSE,
-                                        station_name=NA,
-                                        write_plot=FALSE,      
-                                        write_imgtype="pdf",       
-                                        write_imgsize=c(4,8.5),
-                                        write_dir="."){
+                                        include_year = NULL){
   
+  ## CHECKS ON DATA FOR CALC
+  ##------------------------
   
-  #--------------------------------------------------------------
-  #  Error checking on the input parameters
+  # Check if data is provided
+  if(is.null(data))   stop("No data provided, must provide a data frame or HYDAT station number(s).")
+  if(!is.data.frame(data) & !is.vector(data)) stop("No data provided, must provide a data frame or HYDAT station number(s).")
   
-  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
-  if( is.null(HYDAT)) {
-    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
-    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
-    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
-    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
-    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
-    if( any(flowdata$Value <0, na.rm=TRUE))           {warning('flowdata cannot have negative values - check your data')}
+  # Check HYDAT stations
+  if(is.vector(data)) {
+    if(length(data) != 1)   stop("Only one HYDAT station number can be listed for this function.")
+    if(!data %in% dplyr::pull(tidyhydat::allstations[1]))  stop("Station number listed in data argument does not exist in HYDAT.")
   }
   
-  if( !is.logical(water_year))         {stop("water_year argument must be logical (TRUE/FALSE)")}
-  if( !is.numeric(water_year_start) )  {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( length(water_year_start)>1)      {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( !water_year_start %in% c(1:12) ) {stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec)")}
-  
-  if( length(start_year)>1)   {stop("only one start_year value can be selected")}
-  if( !is.null(start_year) )  {if( !start_year %in% c(0:5000) )  {stop("start_year must be an integer")}}
-  if( length(end_year)>1)     {stop("only one end_year value can be selected")}
-  if( !is.null(end_year) )    {if( !end_year %in% c(0:5000) )  {stop("end_year must be an integer")}}
-  if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("list of exclude_years must be numeric - ex. 1999 or c(1999,2000)")}
-  
-  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
-  
-  if( !is.na(basin_area) & !is.numeric(basin_area)) {stop("basin_area argument must be numeric")}
-  if( length(basin_area)>1)                         {stop("basin_area argument cannot have length > 1")}
-  
-  if( !is.logical(use_yield))  {stop("use_yield parameter must be logical (TRUE/FALSE)")}
-  
-  if( !is.logical(log_discharge))         {stop("log_discharge argument must be logical (TRUE/FALSE)")}
-  
-  if( !is.logical(write_plot))      {stop("write_plot argument must be logical (TRUE/FALSE)")}
-  if( length(write_imgtype)>1)      {stop("write_imgtype argument cannot have length > 1")} 
-  if( !is.na(write_imgtype) & !write_imgtype %in% c("pdf","png","jpeg","tiff","bmp"))  {
-    stop("write_imgtype argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
-  if( !is.numeric(write_imgsize) )   {stop("write_imgsize must be two numbers for height and width, respectively")}
-  if( length(write_imgsize)!=2 )   {stop("write_imgsize must be two numbers for height and width, respectively")}
-  
-  if( !dir.exists(as.character(write_dir))) {
-    message("directory for saved files does not exist, new directory will be created")
-    if( write_table & write_dir!="." ) {dir.create(write_dir)}
-  }
-  
-  # If HYDAT station is listed, check if it exists and make it the flowdata
-  if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 ) {stop("only one HYDAT station can be selected")}
-    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
-    if( is.na(station_name) ) {station_name <- HYDAT}
-    if (is.na(basin_area)) {basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = HYDAT)$DRAINAGE_AREA_GROSS)}
-    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
-  }
-  # Looks for STATION_NUMBER column to search for basin_area
-  if ( is.na(basin_area) & "STATION_NUMBER" %in% names(flowdata)){
-    basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = flowdata$STATION_NUMBER[1])$DRAINAGE_AREA_GROSS)
-  }
-  
-  # Check if no basin_area if use-yield is TRUE
-  if( use_yield & is.na(basin_area) )  {
-    stop("no basin_area provided with use_yield")}
-  
-  #--------------------------------------------------------------
-  # Set the flowdata for analysis (required for plotting daily values)
-  
-  # Select just Date and Value for analysis
-  flowdata <- dplyr::select(flowdata,Date,Value)
-  
-  # add date variables to determine the min/max cal/water years
-  flowdata <- fasstr::add_date_variables(flowdata,water_year = T,water_year_start = water_year_start)
-  if (is.null(start_year)) {start_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))}
-  if (is.null(end_year)) {end_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))}
-  if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
-  
-  #  Fill in the missing dates and the add the date variables again
-  flowdata <- fasstr::fill_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
-  flowdata <- fasstr::add_date_variables(flowdata,water_year = T,water_year_start = water_year_start)
-  
-  # Add cumulative flows to original flow data
-  if (use_yield){
-    flowdata <- fasstr::add_cumulative_yield(flowdata,water_year = water_year, water_year_start = water_year_start, basin_area = basin_area)
-    flowdata$Cumul_Flow <- flowdata$Cumul_Yield_mm
-  } else {
-    flowdata <- fasstr::add_cumulative_volume(flowdata,water_year = water_year, water_year_start = water_year_start)
-    flowdata$Cumul_Flow <- flowdata$Cumul_Volume_m3
-  }
-  
-  # Set selected year-type and day of year, and date columns for analysis
-  if (water_year) {
-    flowdata$AnalysisYear <- flowdata$WaterYear
-    flowdata$AnalysisDoY <- flowdata$WaterDayofYear
+  if(is.data.frame(data)) {
+    # Get the just groups (default STATION_NUMBER), Date, and Value columns
+    # This method allows the user to select the Station, Date or Value columns if the column names are different
+    if(!as.character(substitute(values)) %in% names(data) & !as.character(substitute(dates)) %in% names(data)) 
+      stop("Dates and values not found in data frame. Rename dates and values columns to 'Date' and 'Value' or identify the columns using 'dates' and 'values' arguments.")
+    if(!as.character(substitute(dates)) %in% names(data))  
+      stop("Dates not found in data frame. Rename dates column to 'Date' or identify the column using 'dates' argument.")
+    if(!as.character(substitute(values)) %in% names(data)) 
+      stop("Values not found in data frame. Rename values column to 'Value' or identify the column using 'values' argument.")
     
-    # Create origin date to apply to flowdata and Q_daily later on
+    # Temporarily rename the Date and Value columns
+    data <- data[,c(as.character(substitute(groups)),
+                    as.character(substitute(dates)),
+                    as.character(substitute(values)))]
+    colnames(data) <- c("STATION_NUMBER", "Date", "Value")
+    data <- dplyr::ungroup(data)
+    
+    
+    # Check columns are in proper formats
+    if(!inherits(data$Date[1], "Date"))  stop("'Date' column in data frame does not contain dates.")
+    if(!is.numeric(data$Value))          stop("'Value' column in data frame does not contain numeric values.")   
+    
+    # Remove these to fix warnings?
+    rm(c(dates,values))
+  }
+  
+  if(!is.logical(log_discharge))  stop("log_discharge argument must be logical (TRUE/FALSE).")
+  
+  
+  ## CALC STATS
+  ## ----------
+  
+  daily_stats <- fasstr::calc_daily_cumulative_stats(data = data,
+                                                     percentiles = c(5,25,75,95),
+                                                     use_yield = use_yield, 
+                                                     basin_area = basin_area,
+                                                     water_year = water_year,
+                                                     water_year_start = water_year_start,
+                                                     start_year = start_year,
+                                                     end_year = end_year,
+                                                     exclude_years = exclude_years, 
+                                                     complete_years = complete_years,
+                                                     ignore_missing = ignore_missing)
+  
+  if (water_year) {
+    # Create origin date to apply to flow_data and Q_daily later on
     if (water_year_start==1)         {origin_date <- as.Date("1899-12-31")
     } else if (water_year_start==2)  {origin_date <- as.Date("1899-01-31")
     } else if (water_year_start==3)  {origin_date <- as.Date("1899-02-28")
@@ -188,136 +159,112 @@ plot_daily_cumulative_stats <- function(flowdata=NULL,
     } else if (water_year_start==11) {origin_date <- as.Date("1899-10-31")
     } else if (water_year_start==12) {origin_date <- as.Date("1899-11-30")}
   }  else {
-    flowdata$AnalysisYear <- flowdata$Year
-    flowdata$AnalysisDoY <- flowdata$DayofYear
-    
-    # Create origin date to apply to flowdata and Q_daily later on
     origin_date <- as.Date("1899-12-31")
   }
-  flowdata <- dplyr::mutate(flowdata,AnalysisDate=as.Date(AnalysisDoY, origin = origin_date))
   
-  # Filter for the selected and excluded years and leap year values (last day)
-  flowdata <- dplyr::filter(flowdata, AnalysisDoY <366)
-  flowdata <- dplyr::filter(flowdata, AnalysisYear >= start_year & AnalysisYear <= end_year)
-  flowdata <- dplyr::filter(flowdata,!(AnalysisYear %in% exclude_years))
+  daily_stats <- dplyr::mutate(daily_stats, Date = as.Date(DayofYear, origin = origin_date))
   
-  #--------------------------------------------------------------
-  # Complete analysis
   
-  Q_daily_total <- fasstr::calc_daily_cumulative_stats(flowdata=flowdata,
-                                                         HYDAT=NULL,
-                                                         percentiles=c(5,25,75,95),
-                                                         basin_area=basin_area,
-                                                         water_year=water_year,
-                                                         water_year_start=water_year_start,
-                                                         start_year=start_year,
-                                                         end_year=end_year,
-                                                         exclude_years=exclude_years, 
-                                                         use_yield=use_yield)
-  
-  Q_daily_total <- dplyr::mutate(Q_daily_total,Date=as.Date(DayofYear, origin = origin_date))
-  
-  #--------------------------------------------------------------
-  # Complete plotting
-  
-  # Create the list to place all plots
-  daily_stats_plots <- list()
-  
-  if (write_plot) {
-    if (write_imgtype=="pdf"){
-      file_stat_plot <-file.path(write_dir, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),
-                                                  "-daily-cumulative",ifelse(use_yield,paste0("-yield"),paste0("-volume")),"-stats.pdf", sep=""))
-      pdf(file = file_stat_plot,width=write_imgsize[2],height=write_imgsize[1])
-    }
-    if (write_imgtype %in% c("png","jpeg","tiff","bmp")) {
-      file_stat_plot <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),
-                              "-daily-cumulative",ifelse(use_yield,paste0("-yield"),paste0("-volume")),"-stats",sep = "")
-      dir.create(file_stat_plot)
-    }
-  }
+  ## PLOT STATS
+  ## ----------
   
   # Create the daily stats plots
-  daily_stats_plot <- ggplot2::ggplot(Q_daily_total,ggplot2::aes(x=Date)) +
-    ggplot2::geom_ribbon(ggplot2::aes(ymin=Minimum,ymax=P5,fill = "Min-5th Percentile"))+
-    ggplot2::geom_ribbon(ggplot2::aes(ymin=P5,ymax=P25,fill = "5th-25th Percentile"))+
-    ggplot2::geom_ribbon(ggplot2::aes(ymin=P25,ymax=P75,fill = "25th-75th Percentile"))+
-    ggplot2::geom_ribbon(ggplot2::aes(ymin=P75,ymax=P95,fill = "75th-95th Percentile"))+
-    ggplot2::geom_ribbon(ggplot2::aes(ymin=P95,ymax=Maximum,fill = "95th Percentile-Max"))+
-    ggplot2::geom_line(ggplot2::aes(y=Median, colour="Median"), size=.5) +
-    ggplot2::geom_line(ggplot2::aes(y=Mean, colour="Mean"), size=.5) +
-    ggplot2::scale_fill_manual(values = c("Min-5th Percentile" = "orange" ,"5th-25th Percentile" = "yellow", 
-                                          "25th-75th Percentile" = "skyblue1","75th-95th Percentile" = "dodgerblue2",
+  daily_stats_plot <- ggplot2::ggplot(daily_stats, ggplot2::aes(x = Date)) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = P5, fill = "Min-5th Percentile")) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = P5, ymax = P25, fill = "5th-25th Percentile")) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = P25, ymax = P75, fill = "25th-75th Percentile")) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = P75, ymax = P95, fill = "75th-95th Percentile")) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = P95, ymax = Maximum, fill = "95th Percentile-Max")) +
+    ggplot2::geom_line(ggplot2::aes(y = Median, colour = "Median"), size = .5) +
+    ggplot2::geom_line(ggplot2::aes(y = Mean, colour = "Mean"), size = .5) +
+    ggplot2::scale_fill_manual(values = c("Min-5th Percentile" = "orange" , "5th-25th Percentile" = "yellow",
+                                          "25th-75th Percentile" = "skyblue1", "75th-95th Percentile" = "dodgerblue2",
                                           "95th Percentile-Max" = "royalblue4")) +
-    ggplot2::scale_color_manual(values = c("Median"="purple3","Mean"="springgreen4")) +
-    {if (!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0))}+
+    ggplot2::scale_color_manual(values = c("Median" = "purple3", "Mean" = "springgreen4")) +
+    {if (!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0))} +
     {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0))} +
-    {if (log_discharge) ggplot2::annotation_logticks(base= 10,"left",colour = "grey25",size=0.3,
-                                                     short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"), 
+    {if (log_discharge) ggplot2::annotation_logticks(base= 10, "left", colour = "grey25", size = 0.3,
+                                                     short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
                                                      long = ggplot2::unit(.2, "cm"))} +
     ggplot2::scale_x_date(date_labels = "%b", date_breaks = "1 month",
-                          limits = as.Date(c(NA,as.character(max(Q_daily_total$Date)))),expand=c(0,0)) +
-    ggplot2::xlab(NULL)+
-    {if (!use_yield) ggplot2::ylab("Cumulative Discharge (cubic metres)")}+
-    {if (use_yield) ggplot2::ylab("Cumulative Runoff Yield (mm)")}+
-    ggplot2::theme(axis.text=ggplot2::element_text(size=6, colour = "grey25"),
-                   axis.title=ggplot2::element_text(size=8, colour = "grey25"),
-                   axis.title.y=ggplot2::element_text(margin=ggplot2::margin(0,0,0,0)),
-                   axis.ticks = ggplot2::element_line(size=.1, colour = "grey25"),
-                   axis.ticks.length=ggplot2::unit(0.05,"cm"),
-                   panel.border = ggplot2::element_rect(colour = "grey50", fill=NA, size=.1),
+                          limits = as.Date(c(NA, as.character(max(daily_stats$Date)))), expand=c(0, 0)) +
+    ggplot2::xlab("Day of Year")+
+    {if (!use_yield) ggplot2::ylab("Cumulative Discharge (cubic metres)")} +
+    {if (use_yield) ggplot2::ylab("Cumulative Runoff Yield (mm)")} +
+    ggplot2::theme_bw() +
+    ggplot2::labs(color = 'Daily Statistics', fill = "Daily Ranges") +  
+    ggplot2::theme(axis.text=ggplot2::element_text(size = 10, colour = "grey25"),
+                   axis.title=ggplot2::element_text(size = 12, colour = "grey25"),
+                   axis.title.y=ggplot2::element_text(margin = ggplot2::margin(0,0,0,0)),
+                   axis.ticks = ggplot2::element_line(size = .1, colour = "grey25"),
+                   axis.ticks.length=ggplot2::unit(0.05, "cm"),
+                   panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                    panel.grid.minor = ggplot2::element_blank(),
-                   panel.grid.major = ggplot2::element_line(size=.1),
+                   panel.grid.major = ggplot2::element_line(size = .1),
                    panel.background = ggplot2::element_rect(fill = "grey94"),
-                   legend.title = ggplot2::element_blank(),
-                   legend.text = ggplot2::element_text(size=7, colour="grey25"),
+                   legend.text = ggplot2::element_text(size = 9, colour = "grey25"),
                    legend.box = "vertical",
                    legend.justification = "top",
-                   legend.key.size = ggplot2::unit(0.4,"cm"),
-                   legend.spacing =ggplot2::unit(0, "cm")
-    ) +
+                   legend.key.size = ggplot2::unit(0.4, "cm"),
+                   legend.spacing = ggplot2::unit(0, "cm")) +
     ggplot2::guides(colour = ggplot2::guide_legend(order = 1), fill = ggplot2::guide_legend(order = 2))
-  # Add the plot to the list
-  daily_stats_plots[["cumulative_statistics"]] <- daily_stats_plot
   
-  # Plot the plot to the PDF device if selected
-  if (write_plot & write_imgtype=="pdf") {
-    plot(daily_stats_plot)
-  }
   
-  # Save the plots if the png,jpeg,tiff,or bmp images are selected
-  if (write_plot & write_imgtype %in% c("png","jpeg","tiff","bmp")) {
-    summary_plot <- paste(file_stat_plot,"/","daily-cumulative-stat.",write_imgtype,sep = "")
-    ggplot2::ggsave(filename =summary_plot,daily_stats_plot,width=8.5,height=4)
-  }
   
-  # Add each annaul data to the plot
-  for (yr in unique(flowdata$AnalysisYear)){
-    flowdata_plot <- dplyr::filter(flowdata,AnalysisYear==yr)
-    suppressMessages(daily_stats_year <- daily_stats_plot +
-                       ggplot2::geom_line(data = flowdata_plot, ggplot2::aes(x=AnalysisDate, y=Cumul_Flow, colour= "yr.colour"), size=0.5) +
-                       ggplot2::scale_color_manual(values = c("Mean" = "paleturquoise", "Median" = "dodgerblue4", "yr.colour" = "red"),
-                                                   labels = c("Mean", "Median",paste0(yr," Flows"))))
-    daily_stats_plots[[paste0("cumulative_", yr)]] <- daily_stats_year
+  ## ADD YEAR IF SELECTED
+  ## --------------------
+  
+  if(!is.null(include_year)){
     
-    # Plot the plots to the PDF device if selected
-    if (write_plot & write_imgtype=="pdf") {
-      plot(daily_stats_year)
+    if(length(include_year) != 1)  stop("Only one include_year numeric value can be provided.")
+    if(!is.numeric(include_year))  stop("include_year argument must be numeric.")
+    
+    # Get and set up daily data
+    if(is.vector(data)) {
+      flow_data <- suppressMessages(tidyhydat::hy_daily_flows(station_number = data))
+    } else {
+      flow_data <- data
     }
     
-    # Save the plots if the png,jpeg,tiff,or bmp images are selected
-    if (write_plot & write_imgtype %in% c("png","jpeg","tiff","bmp")) {
-      annual_plot <- paste(file_stat_plot,"/","daily-cumulative-",yr,".",write_imgtype,sep = "")
-      ggplot2::ggsave(filename =annual_plot,daily_stats_year,width=write_imgsize[2],height=write_imgsize[1])
+    flow_data <- fill_missing_dates(data = flow_data, water_year = water_year, water_year_start = water_year_start)
+    flow_data <- add_date_variables(data = flow_data, water_year = water_year, water_year_start = water_year_start)
+    
+    # Add cumulative flows
+    if (use_yield){
+      flow_data <- add_cumulative_yield(data = flow_data, water_year = water_year, water_year_start = water_year_start, basin_area = basin_area)
+      flow_data$Cumul_Flow <- flow_data$Cumul_Yield_mm
+    } else {
+      flow_data <- add_cumulative_volume(data = flow_data, water_year = water_year, water_year_start = water_year_start)
+      flow_data$Cumul_Flow <- flow_data$Cumul_Volume_m3
     }
+    
+    if (water_year) {
+      flow_data$AnalysisYear <- flow_data$WaterYear
+      flow_data$AnalysisDoY <- flow_data$WaterDayofYear
+    }  else {
+      flow_data$AnalysisYear <- flow_data$Year
+      flow_data$AnalysisDoY <- flow_data$DayofYear
+    }
+    flow_data <- dplyr::mutate(flow_data, AnalysisDate = as.Date(AnalysisDoY, origin = origin_date))
+    flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+    flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
+    flow_data <- dplyr::filter(flow_data, AnalysisDoY < 366)
+    
+    if(!include_year %in% flow_data$AnalysisYear) stop(paste0("Year in include_year does not exist. Please choose a year between ",
+                                                              min(flow_data$AnalysisYear), " and ", max(flow_data$AnalysisYear), "."))
+    flow_data <- dplyr::filter(flow_data, AnalysisYear == include_year)
+    
+    # Plot the year
+    suppressMessages(
+      daily_stats_plot <- daily_stats_plot +
+        ggplot2::geom_line(data = flow_data, ggplot2::aes(x = AnalysisDate, y = Cumul_Flow, colour = "yr.colour"), size = 0.5) +
+        ggplot2::scale_color_manual(values = c("Mean" = "paleturquoise", "Median" = "dodgerblue4", "yr.colour" = "red"),
+                                    labels = c("Mean", "Median", paste0(include_year, " Flows")))
+    )
   }
   
-  # End the PDF device if selected
-  if (write_plot & write_imgtype=="pdf") {
-    dev.off()
-  }
   
-  
-  return(daily_stats_plots)
+  daily_stats_plot
   
 }
 

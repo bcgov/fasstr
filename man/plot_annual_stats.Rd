@@ -51,7 +51,7 @@ all months (default \code{1:12}).}
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
 with no missing dates will be returned. Default \code{TRUE}.}
 
-\item{log_discharge}{a logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
+\item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.}
 }
 \value{
 A ggplot2 object with the following plots (percentile plots optional):

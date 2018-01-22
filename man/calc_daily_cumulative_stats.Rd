@@ -33,6 +33,8 @@ another non-existing column name to remove this grouping. Identify another colum
 
 \item{percentiles}{Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(5,25,75,95)}.}
 
+\item{use_yield}{Logical value indicating whether to use yield runoff, in mm, instead of volumetric. Default \code{FALSE}.}
+
 \item{basin_area}{Upstream drainage basin area to apply to daily observations. Options:
 
 Leave blank if \code{groups} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.

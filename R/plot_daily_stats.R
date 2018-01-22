@@ -107,9 +107,8 @@ plot_daily_stats <- function(data = NULL,
     # Temporarily rename the Date and Value columns
     data <- data[,c(as.character(substitute(dates)),
                     as.character(substitute(values)))]
-    colnames(data) <- c("Date","Value")
+    colnames(data) <- c("Date", "Value")
     data <- dplyr::ungroup(data)
-    
     
     # Check columns are in proper formats
     if(!inherits(data$Date[1], "Date"))  stop("'Date' column in data frame does not contain dates.")

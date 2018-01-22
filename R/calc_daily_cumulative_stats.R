@@ -31,6 +31,7 @@
 #'    Only required if using the data frame option of \code{data} and groups column is not named 'STATION_NUMBER'.
 #'    Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
 #'    another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}. 
+#' @param use_yield Logical value indicating whether to use yield runoff, in mm, instead of volumetric. Default \code{FALSE}.
 #' @param percentiles Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(5,25,75,95)}.
 #' @param basin_area Upstream drainage basin area to apply to daily observations. Options:
 #'    
@@ -78,7 +79,7 @@
 #' }
 #' @export
 
-#--------------------------------------------------------------
+
 
 calc_daily_cumulative_stats <- function(data = NULL,
                                         dates = Date,

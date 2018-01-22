@@ -5,10 +5,10 @@
 \title{Plot the daily summary statistics}
 \usage{
 plot_daily_stats(data = NULL, dates = Date, values = Value,
-  rolling_days = 1, rolling_align = "right", water_year = FALSE,
-  water_year_start = 10, start_year = 0, end_year = 9999,
-  exclude_years = NULL, complete_years = FALSE, ignore_missing = TRUE,
-  log_discharge = TRUE, include_year = NULL)
+  groups = STATION_NUMBER, rolling_days = 1, rolling_align = "right",
+  water_year = FALSE, water_year_start = 10, start_year = 0,
+  end_year = 9999, exclude_years = NULL, complete_years = FALSE,
+  ignore_missing = TRUE, log_discharge = TRUE, include_year = NULL)
 }
 \arguments{
 \item{data}{Daily data to be analyzed. Options:
@@ -48,7 +48,9 @@ Default \code{10}.}
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
 with no missing dates will be returned. Default \code{TRUE}.}
 
-\item{log_discharge}{a logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.}
+\item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.}
+
+\item{include_year}{A numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
 
 \item{percentiles}{Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{NA}.}
 }
