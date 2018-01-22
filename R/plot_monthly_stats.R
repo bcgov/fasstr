@@ -16,31 +16,34 @@
 #'    from a streamflow dataset. Plots the statistics from all daily discharge values from all years, unless specified. Data
 #'    calculated using the calc_monthly_stats() function.
 #'
-#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-#'    Not required if \code{HYDAT} argument is used.
-#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-#'    database are required. Not required if \code{flowdata} argument is used.
-#' @param percentiles Numeric. Vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,20)}
-#' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
-#'    by the year in which they end. Default \code{FALSE}.
-#' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
-#' @param start_year Integer. First year to consider for analysis. Leave blank if all years are required.
-#' @param end_year Integer. Last year to consider for analysis. Leave blank if all years are required.
-#' @param exclude_years Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required. 
-#' @param months Integer. Vector of months to consider for analysis (ex. \code{6:8} for Jun-Aug). Leave blank if all months
-#'    are required. Default \code{1:12}.  
-#' @param log_discharge Logical. Place the discharge axis (Y) on log scale. Default \code{TRUE}.
-#' @param station_name Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
-#'    files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
-#'    will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number. 
-#' @param write_plot Logical. Write the plot to specified directory. Default \code{FALSE}.
-#' @param write_imgtype Character. One of "pdf","png","jpeg","tiff", or "bmp" image types to write the plot as. Default \code{"pdf"}.
-#' @param write_imgsize Numeric. Height and width, respectively, of saved plot. Default \code{c(5,11)}.
-#' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
-#'    Default is the working directory.
-#' @param na.rm TBD
+#' @param data Daily data to be analyzed. Options:
+#' 
+#'    A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
+#'    names/numbers).
+#'    
+#'    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+#'    extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.   
+#' @param dates Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
+#'    using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}. 
+#' @param values Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
+#'    Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}. 
+#' @param percentiles Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{NA}.
+#' @param rolling_days Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.
+#' @param rolling_align Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+#'    ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.
+#' @param water_year Logical value indicating whether to use water years to group data instead of calendar years. Water years 
+#'    are designated by the year in which they end. Default \code{FALSE}.
+#' @param water_year_start Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
+#'    Default \code{10}.
+#' @param start_year Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.
+#' @param end_year Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.
+#' @param exclude_years Numeric vector of years to exclude from analysis. Leave blank to include all years.             
+#' @param months Numeric vector of months to include in analysis (ex. \code{6:8} for Jun-Aug). Leave blank to summarize 
+#'    all months (default \code{1:12}).
+#' @param ignore_missing Logical value indicating whether dates with missing values should be included in the calculation. If
+#'    \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
+#'    with no missing dates will be returned. Default \code{TRUE}.
+#' @param log_discharge Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.
 #' 
 #' @return A list of ggplot2 objects for each monthly statistic:
 #'   \item{Monthly Mean Flows}{mean of all daily flows for a given month and year}
@@ -55,152 +58,131 @@
 #' @examples
 #' \dontrun{
 #' 
-#'plot_monthly_stats(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
-#' 
-#'plot_monthly_stats(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
+#'plot_monthly_stats(data = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
 #'
-#'plot_monthly_stats(HYDAT = "08NM116", months = 7:9)
+#'plot_monthly_stats(data = "08NM116", months = 7:9)
 #'
 #' }
 #' @export
 
 
-#--------------------------------------------------------------
 
-plot_monthly_stats <- function(flowdata=NULL,
-                               HYDAT=NULL,
-                               percentiles=c(10,20),
-                               water_year=FALSE,
-                               water_year_start=10,
-                               start_year=NULL,
-                               end_year=NULL,
-                               exclude_years=NULL,
-                               months=1:12,
-                               log_discharge=FALSE,
-                               station_name=NA,
-                               write_plot=FALSE,
-                               write_imgtype="pdf",
-                               write_imgsize=c(5.5,8.5),
-                               write_dir=".",
-                               na.rm=list(na.rm.global=FALSE)){
+plot_monthly_stats <- function(data = NULL,
+                               dates = Date,
+                               values = Value,
+                               percentiles = NA,
+                               rolling_days = 1,
+                               rolling_align = "right",
+                               water_year = FALSE,
+                               water_year_start = 10,
+                               start_year = 0,
+                               end_year = 9999,
+                               exclude_years = NULL,
+                               months = 1:12,
+                               ignore_missing = TRUE,
+                               log_discharge = FALSE){
   
   
-  #--------------------------------------------------------------
-  #  Error checking on the input parameters
+  ## CHECKS ON DATA FOR CALC
+  ##------------------------
   
-  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
-  if( is.null(HYDAT)) {
-    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
-    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
-    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
-    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
-    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
-    if( any(flowdata$Value <0, na.rm=TRUE))           {warning('flowdata cannot have negative values - check your data')}
+  # Check if data is provided
+  if(is.null(data))   stop("No data provided, must provide a data frame or HYDAT station number(s).")
+  if(!is.data.frame(data) & !is.vector(data)) stop("No data provided, must provide a data frame or HYDAT station number(s).")
+  
+  # Check HYDAT stations
+  if(is.vector(data)) {
+    if(length(data) != 1)   stop("Only one HYDAT station number can be listed for this function.")
+    if(!data %in% dplyr::pull(tidyhydat::allstations[1]))  stop("Station number listed in data argument does not exist in HYDAT.")
   }
   
-  if( !is.logical(water_year))         {stop("water_year argument must be logical (TRUE/FALSE)")}
-  if( !is.numeric(water_year_start) )  {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( length(water_year_start)>1)      {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( !water_year_start %in% c(1:12) ) {stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec)")}
-  
-  if( length(start_year)>1)   {stop("only one start_year value can be selected")}
-  if( !is.null(start_year) )  {if( !start_year %in% c(0:5000) )  {stop("start_year must be an integer")}}
-  if( length(end_year)>1)     {stop("only one end_year value can be selected")}
-  if( !is.null(end_year) )    {if( !end_year %in% c(0:5000) )  {stop("end_year must be an integer")}}
-  if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("list of exclude_years must be numeric - ex. 1999 or c(1999,2000)")}
-  
-  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
-  
-  if( !is.logical(log_discharge))         {stop("log_discharge argument must be logical (TRUE/FALSE)")}
-  
-  if( !is.logical(write_plot))      {stop("write_plot argument must be logical (TRUE/FALSE)")}
-  if( length(write_imgtype)>1)      {stop("write_imgtype argument cannot have length > 1")} 
-  if( !is.na(write_imgtype) & !write_imgtype %in% c("pdf","png","jpeg","tiff","bmp"))  {
-    stop("write_imgtype argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
-  if( !is.numeric(write_imgsize) )   {stop("write_imgsize must be two numbers for height and width, respectively")}
-  if( length(write_imgsize)!=2 )   {stop("write_imgsize must be two numbers for height and width, respectively")}
-  
-  if( !dir.exists(as.character(write_dir))) {
-    message("directory for saved files does not exist, new directory will be created")
-    if( write_table & write_dir!="." ) {dir.create(write_dir)}
+  if(is.data.frame(data)) {
+    # Get the just groups (default STATION_NUMBER), Date, and Value columns
+    # This method allows the user to select the Station, Date or Value columns if the column names are different
+    if(!as.character(substitute(values)) %in% names(data) & !as.character(substitute(dates)) %in% names(data)) 
+      stop("Dates and values not found in data frame. Rename dates and values columns to 'Date' and 'Value' or identify the columns using 'dates' and 'values' arguments.")
+    if(!as.character(substitute(dates)) %in% names(data))  
+      stop("Dates not found in data frame. Rename dates column to 'Date' or identify the column using 'dates' argument.")
+    if(!as.character(substitute(values)) %in% names(data)) 
+      stop("Values not found in data frame. Rename values column to 'Value' or identify the column using 'values' argument.")
+    
+    # Temporarily rename the Date and Value columns
+    data <- data[,c(as.character(substitute(dates)),
+                    as.character(substitute(values)))]
+    colnames(data) <- c("Date","Value")
+    data <- dplyr::ungroup(data)
+    
+    
+    # Check columns are in proper formats
+    if(!inherits(data$Date[1], "Date"))  stop("'Date' column in data frame does not contain dates.")
+    if(!is.numeric(data$Value))          stop("'Value' column in data frame does not contain numeric values.")   
+    
+    # Remove these to fix warnings?
+    rm(c(dates,values))
   }
   
-  if( !all(is.na(percentiles)) & !is.numeric(percentiles) )                 {stop("percentiles argument must be numeric")}
-  if( !all(is.na(percentiles)) & (!all(percentiles>0 & percentiles<100)) )  {stop("percentiles must be >0 and <100)")}
+  if(!is.logical(log_discharge))  stop("log_discharge argument must be logical (TRUE/FALSE).")
   
-  if( !is.list(na.rm))                        {stop("na.rm is not a list") }
-  if(! is.logical(unlist(na.rm)))             {stop("na.rm is list of logical (TRUE/FALSE) values only.")}
-  my.na.rm <- list(na.rm.global=FALSE)
-  if( !all(names(na.rm) %in% names(my.na.rm))){stop("Illegal element in na.rm")}
-  my.na.rm[names(na.rm)]<- na.rm
-  na.rm <- my.na.rm  # set the na.rm for the rest of the function.
   
-  # If HYDAT station is listed, check if it exists and make it the flowdata
-  if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 ) {stop("only one HYDAT station can be selected")}
-    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
-    if( is.na(station_name) ) {station_name <- HYDAT}
+  ## CALC STATS
+  ## ----------
+  
+  monthly_data <- calc_monthly_stats(data = data,
+                                     percentiles = percentiles,
+                                     rolling_days = rolling_days,
+                                     rolling_align = rolling_align,
+                                     water_year = water_year,
+                                     water_year_start = water_year_start,
+                                     start_year = start_year,
+                                     end_year = end_year,
+                                     exclude_years = exclude_years, 
+                                     months = months,
+                                     ignore_missing = ignore_missing)
+  
+  # Remove STATION_NUMBER columns if HYDAT was used and set up data
+  if("STATION_NUMBER" %in% colnames(monthly_data)) {
+    monthly_data <- dplyr::ungroup(monthly_data)
+    monthly_data <- dplyr::select(monthly_data, -STATION_NUMBER)
   }
   
-  #--------------------------------------------------------------
-  # Complete analysis
+  monthly_data <- tidyr::gather(monthly_data, Statistic, Value, -(1:2))
   
-  monthly_data <- fasstr::calc_monthly_stats(flowdata=flowdata,
-                                             HYDAT=HYDAT,
-                                             percentiles=percentiles,
-                                             water_year=water_year,
-                                             water_year_start=water_year_start,
-                                             start_year=start_year,
-                                             end_year=end_year,
-                                             exclude_years=exclude_years,
-                                             months=months,
-                                             na.rm=na.rm)
   
-  monthly_data <- tidyr::gather(monthly_data,Statistic,Value,-(1:2))
+  ## PLOT STATS
+  ## ----------
   
-  # Create folder to place all images if writing plots
-  if (write_plot) {
-    file_stat_plot <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),
-                            "-monthly-summary-statistics",sep = "")
-    dir.create(file_stat_plot)
-  }
-  
-  #--------------------------------------------------------------
-  # Complete pltting
-  
-  # Create the list to place all plots
+  # Create list to add each plot to
   monthly_stats_plots <- list()
   
+  # Cycle through each stat and add to list
   for (stat in unique(monthly_data$Statistic)) {
-    monthly_data_plot <- dplyr::filter(monthly_data,Statistic==stat)
-    monthly_plot <- ggplot2::ggplot(data=monthly_data_plot, ggplot2::aes(x=Year, y=Value))+
-      ggplot2::geom_line(ggplot2::aes(colour=Month), alpha=0.5)+
-      ggplot2::geom_point(ggplot2::aes(colour=Month))+
-      ggplot2::facet_wrap(~Month, scales="free_x")+
-      ggplot2::ggtitle(paste0("Monthly ",stat," Flows"))+
+    monthly_data_plot <- dplyr::filter(monthly_data, Statistic == stat)
+    monthly_plot <- ggplot2::ggplot(data = monthly_data_plot, ggplot2::aes(x = Year, y = Value)) +
+      ggplot2::geom_line(ggplot2::aes(colour = Month), alpha = 0.5) +
+      ggplot2::geom_point(ggplot2::aes(colour = Month)) +
+      ggplot2::facet_wrap(~Month, scales = "free_x") +
+      ggplot2::ggtitle(paste0("Monthly ", stat, " Flows")) +
+      ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
+      {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))} +
+      {if(log_discharge) ggplot2::scale_y_log10()} +
+      {if(log_discharge) ggplot2::annotation_logticks(base = 10, "left", colour = "grey25", size = 0.3,
+                                                      short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"), 
+                                                      long = ggplot2::unit(.2, "cm"))} +
+      ggplot2::ylab("Discharge (cms)") +
+      ggplot2::guides(colour = FALSE) +
+      ggplot2::theme_bw() +
       ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
-                     panel.grid = ggplot2::element_line(size=.2),
-                     panel.border = ggplot2::element_rect(colour = "grey80", fill=NA, size=.1))+
-      ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6))+
-      {if (!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))}+
-      {if (log_discharge) ggplot2::scale_y_log10()}+
-      {if (log_discharge) ggplot2::annotation_logticks(base= 10,"left",colour = "grey25",size=0.3,
-                                                       short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"), 
-                                                       long = ggplot2::unit(.2, "cm"))} +
-      ggplot2::ylab("Discharge (cms)")+
-      ggplot2::guides(colour=FALSE)+
+                     panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                     panel.grid = ggplot2::element_line(size = .2),
+                     axis.title = ggplot2::element_text(size = 12),
+                     axis.text = ggplot2::element_text(size = 10)) +
       ggplot2::scale_colour_manual(values = c("Jan" = "dodgerblue3", "Feb" = "skyblue1", "Mar" = "turquoise",
-                                              "Apr" = "forestgreen", "May" = "limegreen","Jun" = "gold",
-                                              "Jul" = "orange", "Aug" = "red","Sep" = "darkred",
-                                              "Oct" = "orchid", "Nov" = "purple3","Dec" = "midnightblue"))
+                                              "Apr" = "forestgreen", "May" = "limegreen", "Jun" = "gold",
+                                              "Jul" = "orange", "Aug" = "red", "Sep" = "darkred",
+                                              "Oct" = "orchid", "Nov" = "purple3", "Dec" = "midnightblue"))
     
     monthly_stats_plots[[paste0("Monthly_",stat)]] <- monthly_plot
-    
-    # WRite each plot in create folder if selected
-    if (write_plot) {
-      file_plot <- paste(file_stat_plot,"/","Monthly_",stat,".",write_imgtype,sep = "")
-      ggplot2::ggsave(filename =file_plot,monthly_plot,width=write_imgsize[2],height=write_imgsize[1])
-    }
+
   }
   
   

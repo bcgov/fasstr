@@ -2,15 +2,24 @@
 
 
 devtools::document()
-install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
-#install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
+#install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
+install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
 library(fasstr)
 library(dplyr)
 library(ggthemes)
 
 
-fasstr::plot_flow_duration("08HB048", custom_months = 4:5)
+fasstr::plot_monthly_stats("08HB048", start_year = 1973)$Monthly_Minimum
+
+fasstr::plot_flow_data(c("08HA002","08HA011"), plot_by_year = T, start_year = 1971, end_year = 1975)
+
+
+fasstr::plot_daily_stats("08HB048", start_year = 1980, end_year = 2000)
+
+data + ggplot2::ylab("Depth Below Surface (m)")
+
+
 
 
   fasstr::plot_daily_stats("08NM116", start_year = 1980, include_year = 1990, water_year = T, water_year_start = 5)
