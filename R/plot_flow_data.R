@@ -187,7 +187,7 @@ plot_flow_data <- function(data = NULL,
     {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(flow_data$RollingValue) * 1.05))} +
     {if(log_discharge) ggplot2::expand_limits(y = c(min(flow_data$RollingValue) * .95, max(flow_data$RollingValue) * 1.05))} +
     ggplot2::theme_bw() +
-    ggplot2::labs(color='Station') +    
+    ggplot2::labs(color = 'Station') +    
     ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                    legend.position = "right", 
                    legend.spacing = ggplot2::unit(0, "cm"),
