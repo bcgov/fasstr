@@ -6,7 +6,7 @@
 \usage{
 compute_frequency_analysis(data = NULL, dates = Date, values = Value,
   rolling_days = c(1, 3, 7, 30), rolling_align = "right",
-  hydat_peaks = NULL, use_max = FALSE, use_log = FALSE,
+  use_hydat_peaks = FALSE, use_max = FALSE, use_log = FALSE,
   prob_plot_position = c("weibull", "median", "hazen"),
   prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5, 0.2, 0.1, 0.02, 0.01,
   0.001, 1e-04), fit_distr = c("PIII", "weibull"),
@@ -35,7 +35,7 @@ Only required if using the data frame option of \code{data} and values column is
 \item{rolling_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
 ('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
-\item{hydat_peaks}{Character string identifying if "MAX" or "MIN" instantaneous peaks are used from HYDAT for analysis.
+\item{use_hydat_peaks}{Logical value indicating whether to use instantaneous peaks from HYDAT for analysis.
 Leave blank if not required.}
 
 \item{use_max}{Logical valve to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}

@@ -27,7 +27,7 @@
 #'    using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}. 
 #' @param values Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
 #'    Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.
-#' @param hydat_peaks Character string identifying if "MAX" or "MIN" instantaneous peaks are used from HYDAT for analysis.
+#' @param use_hydat_peaks Logical value indicating whether to use instantaneous peaks from HYDAT for analysis.
 #'    Leave blank if not required.
 #' @param rolling_days Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.
 #' @param rolling_align Character string identifying the direction of the rolling mean from the specified date, either by the first 
@@ -86,7 +86,7 @@ compute_frequency_analysis <- function(data = NULL,
                                        values = Value,
                                        rolling_days = c(1, 3, 7, 30),
                                        rolling_align = "right",
-                                       hydat_peaks = NULL,
+                                       use_hydat_peaks = FALSE,
                                        use_max = FALSE,
                                        use_log = FALSE,
                                        prob_plot_position = c("weibull", "median", "hazen"),
@@ -146,18 +146,19 @@ compute_frequency_analysis <- function(data = NULL,
   ## -------------------------
   
   ### HYDAT PEAK DATA
-  if(!is.null(hydat_peaks)){
-    # Checks for hydat_peaks
-    if(!hydat_peaks %in% c("MAX","MIN") ) stop("hydat_peaks argument must be 'MAX', 'MIN', or leave blank when not using.")
-    if(is.null(data) | is.data.frame(data))   stop("A HYDAT station number must be listed in data argument when using hydat_peaks.")
+  if(!is.logical(use_hydat_peaks)) stop("use_hydat_peaks must be logical (TRUE/FALSE).")
+  if(use_hydat_peaks){
+    # Checks for use_hydat_peaks
+    if(is.null(data) | is.data.frame(data))   stop("A HYDAT station number must be listed in data argument when using use_hydat_peaks.")
     if(is.vector(data) & length(data) != 1)   stop("Only one HYDAT station number can be listed for this function.")
     if(!data %in% dplyr::pull(tidyhydat::allstations[1])) stop("Station number listed in data argument does not exist in HYDAT.")
-    if(water_year) warning("water_year argument was ignored - hydat_peaks is based on calendar years.")
+    if(water_year)           warning("water_year argument ignored when using use_hydat_peaks.")
+    if(length(months) < 12)  warning("months argument ignored when using use_hydat_peaks.")
     
     # Get peak data
     inst_peaks <- suppressMessages(tidyhydat::hy_annual_instant_peaks(data))
     inst_peaks <- dplyr::filter(inst_peaks, Parameter == "Flow")
-    inst_peaks <- dplyr::filter(inst_peaks, PEAK_CODE == hydat_peaks)
+    inst_peaks <- dplyr::filter(inst_peaks, PEAK_CODE == ifelse(use_max, "MAX", "MIN"))
     inst_peaks$Year <- lubridate::year(inst_peaks$Date)
     inst_peaks <- dplyr::select(inst_peaks, Year, Measure = PEAK_CODE, value = Value)
     inst_peaks <- dplyr::mutate(inst_peaks, Measure = paste0("INST_", Measure))
@@ -170,7 +171,7 @@ compute_frequency_analysis <- function(data = NULL,
   }
   
   ### HYDAT or dataframe data
-  if(is.null(hydat_peaks) ) {
+  if(!use_hydat_peaks) {
     if(!is.numeric(rolling_days))                        stop("rolling_days argument must be numeric.")
     if(!all(rolling_days %in% c(1:180)))                 stop("rolling_days argument must be integers > 0 and <= 180).")
     if(!rolling_align %in% c("right", "left", "center")) stop("rolling_align argument must be 'right', 'left', or 'center'.")
@@ -306,7 +307,7 @@ compute_frequency_analysis <- function(data = NULL,
 
   # change the measure labels in the plot
   plotdata2 <- plotdata
-  if(is.null(hydat_peaks)) {
+  if(!use_hydat_peaks) {
     plotdata2$Measure <- paste(formatC(as.numeric(substr(plotdata2$Measure, 2, 4)), width = 3), "-day Avg", sep = "")
   }
   
@@ -389,7 +390,7 @@ compute_frequency_analysis <- function(data = NULL,
   #--------------------------------------------------------------
   # extracted the fitted quantiles from the fitted distribution
 
-  fitted_quantiles <- plyr::ldply(names(fit), function (measure, prob,fit, use_max, use_log){
+  fitted_quantiles <- plyr::ldply(names(fit), function (measure, prob, fit, use_max, use_log){
     # get the quantiles for each model
     x <- fit[[measure]]
     # if fitting minimums then you want EXCEEDANCE probabilities
@@ -413,58 +414,21 @@ compute_frequency_analysis <- function(data = NULL,
                                            "Return Period" = Return)
 
 
-  # if (write_table_overview | write_table_stats | write_table_plotdata | write_table_quantiles | write_plot_frequency) {
-  #   folder_stat <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-frequency-analysis",sep = "")
-  #   dir.create(folder_stat)
-  # }
-  # if(write_table_stats){
-  #   # Write out the summary table for comparison to HEC spreadsheet
-  #   file_stat_csv <- file.path(folder_stat,paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-vfa-annual-statistics.csv", sep=""))
-  #   temp <- Q_stat_output
-  #   temp[,2:ncol(temp)] <- round(temp[,2:ncol(temp)], write_digits)  # round the output
-  #   utils::write.csv(temp,file=file_stat_csv, row.names=FALSE)
-  # }
-
-  # if(write_table_plotdata){
-  #   # Write out the plotdata for comparison with HEC output
-  #   file_plotdata_csv <- file.path(folder_stat, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-vfa-plotdata.csv", sep=""))
-  #   utils::write.csv(plotdata,file=file_plotdata_csv, row.names=FALSE)
-  # }
-
-  # if(write_table_quantiles){
-  #   # Write out the summary table for comparison to HEC spreadsheet
-  #   file_quantile_csv<- file.path(folder_stat, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-vfa-quantiles.csv", sep=""))
-  #   temp <- fitted_quantiles_output
-  #   temp[,3:ncol(temp)] <- round(temp[,3:ncol(temp)], write_digits)  # round the output
-  #   utils::write.csv(temp,file=file_quantile_csv, row.names=FALSE)
-  # }
-
-  # if(write_plot_frequency){
-  #   file_frequency_plot <- file.path(folder_stat, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-vfa-frequency-plot.",write_imgtype[1],sep=""))
-  #   ggplot2::ggsave(plot=freqplot, file=file_frequency_plot, h=write_imgsize[1], w=write_imgsize[2], units="in", dpi=300)
-  # }
-
-  # analysis.options <- list(#"station name" = station_name,
-  #                          "year type" = ifelse(!water_year, "Calendar Year (Jan-Dec)", "Water Year (Oct-Sep)"),
-  #                          "year range" = paste0(start_year, " - ", end_year),
-  #                          "excluded years" = paste(exclude_years, collapse = ', '),
-  #                          "min or max" = ifelse(use_max, "maximums", "minimums"),
-  #                          rolling_days = paste(rolling_days, collapse = ', '),
-  #                          fit_distr = fit_distr[1],  # distributions fit to the data
-  #                          fit_distr_method = fit_distr_method[1],
-  #                          prob_plot_position = prob_plot_position[1]
+  # analysis.summary <- list(#"station name" = station_name,
+  #   "year type" = ifelse(!water_year, "Calendar Year (Jan-Dec)", "Water Year (Oct-Sep)"),
+  #   "year range" = paste0(start_year, " - ", end_year),
+  #   "excluded years" = paste(exclude_years, collapse = ', '),
+  #   "min or max" = ifelse(use_max, "maximums", "minimums"),
+  #   rolling_days = paste(rolling_days, collapse = ', '),
+  #   fit_distr = fit_distr[1],  # distributions fit to the data
+  #   fit_distr_method = fit_distr_method[1],
+  #   prob_plot_position = prob_plot_position[1]
   # )
   # analysis.options.df <- data.frame("Option" = names(analysis.options),
   #                                   "Selection" = unlist(analysis.options, use.names = FALSE))
 
-  # # Write out the analysis options
-  # if (write_table_overview){
-  #   file_options_csv<- file.path(folder_stat, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-annual-vfa-overview.csv", sep=""))
-  #   utils::write.csv(analysis.options.df,file=file_options_csv, row.names=FALSE)
-  # }
 
-
-  list(Q_stat = Q_stat_output,
+  list(Q_stat = Q_stat,
        plotdata = plotdata,  # has the plotting positions for each point in frequency analysis
        freqplot = freqplot,
        fit = fit,               # list of fits of freq.distr to each measure

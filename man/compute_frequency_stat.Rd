@@ -4,81 +4,93 @@
 \alias{compute_frequency_stat}
 \title{Calculate an annual frequency analysis statistic}
 \usage{
-compute_frequency_stat(flowdata = NULL, HYDAT = NULL, HYDAT_peaks = NULL,
-  rolling_days = NA, rolling_align = "right", return_period = NA,
-  use_max = FALSE, use_log = FALSE, prob_plot_position = c("weibull",
-  "median", "hazen"), fit_distr = c("PIII", "weibull"),
-  fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
-  water_year = FALSE, water_year_start = 10, start_year = NULL,
-  end_year = NULL, exclude_years = NULL, months = 1:12,
-  na.rm = list(na.rm.global = TRUE))
+compute_frequency_stat(data = NULL, dates = Date, values = Value,
+  rolling_day = NA, rolling_align = "right", use_hydat_peaks = FALSE,
+  return_period = NA, use_max = FALSE, use_log = FALSE,
+  prob_plot_position = c("weibull", "median", "hazen"),
+  fit_distr = c("PIII", "weibull"), fit_distr_method = ifelse(fit_distr ==
+  "PIII", "MOM", "MLE"), water_year = FALSE, water_year_start = 10,
+  start_year = 0, end_year = 9999, exclude_years = NULL,
+  complete_years = FALSE, months = 1:12, ignore_missing = FALSE)
 }
 \arguments{
-\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
+\item{data}{Daily data to be analyzed. Options:
 
-\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flowdata} argument is used.}
+   A data frame of daily data that contains columns of dates and values.
+   
+   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
 
-\item{HYDAT_peaks}{Character. "MAX" or "MIN" instantaneous peaks pulled from HYDAT for analysis. Leave blank if not required.}
+\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
+using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
 
-\item{rolling_days}{Numeric. The number of days to apply a rolling mean. Required, unless using HYDAT_peaks.}
+\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
+Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
 
-\item{rolling_align}{Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),
-or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.}
+\item{rolling_day}{Numeric vector of the number of days to apply the rolling mean. Not required if using \code{use_hydat_peaks}.}
 
-\item{return_period}{Numeric. The estimated time interval, in years, between flow events of a similar size, inverse of probability used 
-to estimate the frequency statistic. Required.}
+\item{rolling_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
+('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
-\item{use_max}{Logical. Analyze the annual maximums rather than the minimums. Default \code{FALSE}.}
+\item{use_hydat_peaks}{Logical value indicating whether to use instantaneous peaks from HYDAT for analysis.
+Leave blank if not required.}
 
-\item{use_log}{Logical. Transform flow data to log-scale before analysis. Default \code{FALSE}.}
+\item{return_period}{Numeric vector of the estimated time interval, in years, between flow events of a similar size, 
+inverse of probability, used to estimate the frequency statistic. Required.}
 
-\item{prob_plot_position}{Character. Plotting positions used in the frequency plots, one of "weibull","median", or "hazen". 
-Points are plotted against  (i-a)/(n+1-a-b) where \code{i} is the rank of the value; \code{n} is the sample size and \code{a} and 
-\code{b} are defined as: (a=0, b=0) for Weibull plotting positions; (a=.2; b=.3) for Median plotting postions; and (a=.5; b=.5) 
-for Hazen plotting positions. Default \code{"weibull"}.}
+\item{use_max}{Logical valve to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}
 
-\item{fit_distr}{Character. Distribution to fit annual data, one of "PIII" (Pearson Log III distribution) or "weibull" 
-(Weibull distribution). Default \code{"PIII"}.}
+\item{use_log}{Logical value to indicate log-scale tranforming of flow data before analysis. Default \code{FALSE}.}
 
-\item{fit_distr_method}{Character. Method used to fit the distribution, one of  "MOM" (method of moments) or "MLE" (maximum
-likelihood estimation). Selected as \code{"MOM"} if \code{fit_distr}=="PIII" (default) or \code{"MLE"} if \code{fit_distr}=="weibull".}
+\item{prob_plot_position}{Character string indicating the plotting positions used in the frequency plots, one of "weibull",
+"median", or "hazen". Points are plotted against  (i-a)/(n+1-a-b) where \code{i} is the rank of the value; \code{n} is the 
+sample size and \code{a} and \code{b} are defined as: (a=0, b=0) for Weibull plotting positions; (a=.2; b=.3) for Median 
+plotting postions; and (a=.5; b=.5) for Hazen plotting positions. Default \code{"weibull"}.}
 
-\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
-by the year in which they end. Default \code{FALSE}.}
+\item{fit_distr}{Character string identifying the distribution to fit annual data, one of "PIII" (Pearson Log III distribution) 
+or "weibull" (Weibull distribution). Default \code{"PIII"}.}
 
-\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
+\item{fit_distr_method}{Character string identifying the method used to fit the distribution, one of  "MOM" (method of moments) 
+or "MLE" (maximum likelihood estimation). Selected as \code{"MOM"} if \code{fit_distr}=="PIII" (default) or \code{"MLE"} if 
+ \code{fit_distr}=="weibull".}
 
-\item{start_year}{Integer. First year to consider for analysis. Leave blank if all years are required.}
+\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
+are designated by the year in which they end. Default \code{FALSE}.}
 
-\item{end_year}{Integer. Last year to consider for analysis. Leave blank if all years are required.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
+Default \code{10}.}
 
-\item{exclude_years}{Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.}
+\item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
-\item{months}{Integer. Vector of months to consider for analysis (ex. \code{6:8} for Jun-Aug). Leave blank if all months
-are required. Default \code{1:12}.}
+\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
 
-\item{na.rm}{TBD}
+\item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
+
+\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
+
+\item{months}{Numeric vector of months to include in analysis (ex. \code{6:8} for Jun-Aug). Leave blank to summarize 
+all months (default \code{1:12}).}
+
+\item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
+\code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
+with no missing dates will be returned. Default \code{TRUE}.}
 }
 \value{
 A numeric value of the frequency analysis result, given the rolling_day and return_period
 }
 \description{
 Performs a volume frequency analysis on annual statistics from a streamflow dataset and calculates a statistic based on
-   the provided mean n-days and return period of the statistic. For example, to determine the 7Q10 of a dataset, set the rolling_days 
-   to \code{7} and the return_period to \code{10}. Calculates the statistic from all daily discharge values from all years and months,
-   unless specified. Analysis methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
-   Data calculated using compute_frequency_analysis() function.
+   the provided mean n-days and return period of the statistic, defaults to minimum flows. For example, to determine the 7Q10 of a 
+   dataset, set the rolling_day to \code{7} and the return_period to \code{10}. Calculates the statistic from all daily discharge 
+   values from all years and months, unless specified.Function will calculate using all values in the provided data (no grouped 
+   analysis). Analysis methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
 }
 \examples{
 \dontrun{
 
-compute_frequency_stat(HYDAT="08NM116",
-                            start_year = 1980,
-                            end_year = 2010)
+compute_frequency_stat(data = "08NM116",
+                       rolling_day = 7,
+                       return_period = 10)
                             
 }
 }
