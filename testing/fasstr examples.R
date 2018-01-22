@@ -7,13 +7,34 @@ install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type 
 
 library(fasstr)
 library(dplyr)
+library(ggthemes)
 
-fasstr::compute_frequency_analysis("08HB048")$freqplot
+
+  fasstr::plot_daily_stats("08NM116", start_year = 1980, include_year = 1990, water_year = T, water_year_start = 5)
+
+
+
+data <- fasstr::compute_frequency_stat(flow_data, use_hydat_peaks = T, use_max = T,return_period = 10)
+data <- fasstr::compute_frequency_analysis("08HB048")
+theme_gdocs()
+theme_calc()
+
+### MAKE LINES ON ANNUAL LIGHTER/ALPHA.5
+#### theme_calc with themegdoc axis font size
+
+data <- fasstr::plot_daily_stats(HYDAT = "08HB048", log_discharge = T)$daily_statisitics
+
+
+data + theme_calc()  #+ scale_colour_calc() #+ ggplot2::theme(panel.grid.major.x = ggplot2::element_line(color = "grey80"))
+data + theme_calc()  + ggplot2::theme(panel.grid = ggplot2::element_blank())
+data + theme_calc() + scale_colour_calc() + ggplot2::theme(panel.grid = ggplot2::element_blank())
+data + theme_gdocs() + scale_color_gdocs()+ ggplot2::theme(panel.grid = ggplot2::element_blank())+ ggplot2::ylab("YESSSS")
+
 
 data <- fasstr::compute_frequency_analysis("08NM116")
 data <- fasstr::calc_lt_percentile(flow_data, percentiles = 1)
 
-
+fasstr::plot_annual_stats(HYDAT = "08HB048")
 
 
 if(nrow(data) == 1 & ncol(data) == 1){

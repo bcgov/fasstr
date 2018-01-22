@@ -4,55 +4,53 @@
 \alias{plot_daily_stats}
 \title{Plot the daily summary statistics}
 \usage{
-plot_daily_stats(flowdata = NULL, HYDAT = NULL, rolling_days = 1,
-  rolling_align = "right", water_year = FALSE, water_year_start = 10,
-  start_year = NULL, end_year = NULL, exclude_years = NULL,
-  log_discharge = TRUE, station_name = NA, write_plot = FALSE,
-  write_imgtype = "pdf", write_imgsize = c(4, 8.5), write_dir = ".",
-  na.rm = list(na.rm.global = FALSE))
+plot_daily_stats(data = NULL, dates = Date, values = Value,
+  rolling_days = 1, rolling_align = "right", water_year = FALSE,
+  water_year_start = 10, start_year = 0, end_year = 9999,
+  exclude_years = NULL, complete_years = FALSE, ignore_missing = TRUE,
+  log_discharge = TRUE, include_year = NULL)
 }
 \arguments{
-\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
+\item{data}{Daily data to be analyzed. Options:
 
-\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flowdata} argument is used.}
+   A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
+   names/numbers).
+   
+   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
 
-\item{rolling_days}{Numeric. The number of days to apply a rolling mean. Default \code{1}.}
+\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
+using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
 
-\item{rolling_align}{Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),
-or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.
-by the year in which they end. Default \code{FALSE}.}
+\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
+Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
 
-\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
-by the year in which they end. Default \code{FALSE}.}
+\item{rolling_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
 
-\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
+\item{rolling_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
-\item{start_year}{Integer. First year to consider for analysis. Leave blank if all years are required.}
+\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
+are designated by the year in which they end. Default \code{FALSE}.}
 
-\item{end_year}{Integer. Last year to consider for analysis. Leave blank if all years are required.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
+Default \code{10}.}
 
-\item{exclude_years}{Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.}
+\item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
-\item{log_discharge}{Logical. Place the discharge axis (Y) on log scale. Default \code{TRUE}.}
+\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
 
-\item{station_name}{Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
-files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
-will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number.}
+\item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 
-\item{write_plot}{Logical. Write the plot to specified directory. Default \code{FALSE}.}
+\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 
-\item{write_imgtype}{Character. One of "pdf","png","jpeg","tiff", or "bmp" image types to write the plot as. Default \code{"pdf"}.}
+\item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
+\code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
+with no missing dates will be returned. Default \code{TRUE}.}
 
-\item{write_imgsize}{Numeric. Height and width, respectively, of saved plot. Default \code{c(5,11)}.}
+\item{log_discharge}{a logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.}
 
-\item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
-Default is the working directory.}
-
-\item{na.rm}{TBD}
+\item{percentiles}{Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{NA}.}
 }
 \value{
 A list of ggplot2 objects, the first the daily statistics plot containing the listed plots below, and the sebsequent plots for each
@@ -73,9 +71,7 @@ Plot the daily mean, median, maximum, minimum, and percentiles for each day of t
 \examples{
 \dontrun{
 
-plot_daily_stats(flowdata = flowdata, station_name = "MissionCreek", write_plot = TRUE)
-
-plot_daily_stats(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+plot_daily_stats(data = "08NM116", water_year = TRUE, water_year_start = 8)
 
 }
 }
