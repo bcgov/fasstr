@@ -4,76 +4,69 @@
 \alias{plot_flow_data}
 \title{Plot daily mean streamflow}
 \usage{
-plot_flow_data(flowdata = NULL, HYDAT = NULL, rolling_days = 1,
-  rolling_align = "right", water_year = FALSE, water_year_start = 10,
-  start_year = NULL, end_year = NULL, exclude_years = NULL,
-  start_date = NULL, end_date = NULL, log_discharge = FALSE,
-  plot_by_year = FALSE, station_name = NA, write_plot = FALSE,
-  write_imgtype = "pdf", write_imgsize = c(ifelse(plot_by_year, 11, 6.35),
-  18), write_dir = ".")
+plot_flow_data(data = NULL, dates = Date, values = Value,
+  groups = STATION_NUMBER, rolling_days = 1, rolling_align = "right",
+  water_year = FALSE, water_year_start = 10, start_year = 0,
+  end_year = 9999, exclude_years = NULL, start_date = "0000-01-01",
+  end_date = "3000-12-31", log_discharge = FALSE, plot_by_year = FALSE)
 }
 \arguments{
-\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
+\item{data}{Daily data to be analyzed. Options:
 
-\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flowdata} argument is used.}
+   A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
+   names/numbers).
+   
+   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
 
-\item{rolling_days}{Numeric. The number of days to apply a rolling mean. Default \code{1}.}
+\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
+using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
 
-\item{rolling_align}{Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),
-or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.
-by the year in which they end. Default \code{FALSE}.}
+\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
+Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
 
-\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
-by the year in which they end. Default \code{FALSE}.}
+\item{groups}{Column in the \code{data} data frame that contains unique identifiers for different data sets. 
+Only required if using the data frame option of \code{data} and groups column is not named 'STATION_NUMBER'.
+Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
+another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
 
-\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
+\item{rolling_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
 
-\item{start_year}{Integer. First year to consider for plotting. Leave blank if all years are required.}
+\item{rolling_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
-\item{end_year}{Integer. Last year to consider for plotting. Leave blank if all years are required.}
+\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
+are designated by the year in which they end. Default \code{FALSE}.}
 
-\item{exclude_years}{Integer. Single year or vector of years to exclude from plotting. Leave blank if all years are required.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
+Default \code{10}.}
 
-\item{start_date}{Date. First date to consider for plotting. Leave blank if all years are required.}
+\item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
-\item{end_date}{Date. Last date to consider for plotting. Leave blank if all years are required.}
+\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
 
-\item{log_discharge}{Logical. Place the discharge axis (Y) on log scale. Default \code{FALSE} (linear).}
+\item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 
-\item{plot_by_year}{Logical. Plot each year of data individually. Default \code{FALSE}.}
+\item{start_date}{Date (YYYY-MM-DD) of first date to consider for plotting. Leave blank if all years are required.}
 
-\item{station_name}{Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
-files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
-will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number.}
+\item{end_date}{Date (YYYY-MM-DD) of last date to consider for plotting. Leave blank if all years are required.}
 
-\item{write_plot}{Logical. Write the plot to specified directory. Default \code{FALSE}.}
+\item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.}
 
-\item{write_imgtype}{Character. One of "pdf","png","jpeg","tiff", or "bmp" image types to write the plot as. Default \code{"pdf"}.}
-
-\item{write_imgsize}{Numeric. Height and width, respectively, of saved plot. Default \code{c(5,11)}.}
-
-\item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
-Default is the working directory.}
-
-\item{log_discharge}{Logical. Place the discharge axis (Y) on log scale. Default \code{FALSE} (linear).}
+\item{plot_by_year}{Logical value to indicate whether to plot each year of data individually. Default \code{FALSE}.}
 }
 \value{
-A ggplot2 object of daily flows from flowdata or HYDAT flow data provided
+A ggplot2 object of daily flows from flow_data or HYDAT flow data provided
 }
 \description{
 Plot the daily mean flow values from a streamflow dataset. Plots the statistics from all daily discharge values from all 
-   years, unless specified. Can choose specific dates to start and end plotting. Can choose to plot out each year separately.
+   years, unless specified. Can choose specific dates to start and end plotting. Can choose to plot out each year separately. Data 
+   calculated using calc_daily_stats() function. Multiple groups/stations can be plotted if provided with the \code{groups} argument.
 }
 \examples{
 \dontrun{
 
-plot_flow_data(flowdata = flowdata, station_name = "MissionCreek", write_plot = TRUE)
-
-plot_flow_data(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+plot_flow_data(data = "08NM116", water_year = TRUE, water_year_start = 8)
 
 }
 }
