@@ -43,8 +43,8 @@
 #' @param end_date  Date (YYYY-MM-DD) of last date to consider for plotting. Leave blank if all years are required.
 #' @param fill_missing Logical value indicating whether to fill dates with missing flow data with NA. Default \code{TRUE}.
 #' @param file Character string naming the output file. Default filetype is .xlsx. Change to .csv using filtype argument.
-#' @param value_digits Integer indicating the number of decimal places or significant digits to be used. Use follows that of
-#'    base::round() digits argument.
+#' @param digits Integer indicating the number of decimal places or significant digits used to round flow values. Use follows 
+#'    that of base::round() digits argument.
 #' 
 #' @return A .xlsx or .csv file of streamflow data in a selected directory.
 #'
@@ -70,7 +70,7 @@ write_flow_data <- function(data = NULL,
                             end_date = "3000-12-31",
                             fill_missing = TRUE,
                             file = "",
-                            value_digits = 10){  
+                            digits = 10){  
   
   
   
@@ -143,8 +143,8 @@ write_flow_data <- function(data = NULL,
   filetype <- sub('.*\\.', '', file)
   if(!filetype %in% c("xlsx", "csv"))    stop("file name must end with '.xlsx' or '.csv'.")
   
-  if(length(value_digits) != 1) stop("Only one number can be provided to value_digits.")
-  if(!is.numeric(value_digits)) stop("value_digits must be a numeric value.")
+  if(length(digits) != 1) stop("Only one number can be provided to digits.")
+  if(!is.numeric(digits)) stop("digits must be a numeric value.")
   
   ## PREPARE FLOW DATA
   ## -----------------
@@ -171,7 +171,7 @@ write_flow_data <- function(data = NULL,
   flow_data <- dplyr::filter(flow_data, Date <= end_date)
   
   # Round the values
-  flow_data$Value <- round(flow_data$Value, digits = value_digits)
+  flow_data$Value <- round(flow_data$Value, digits = digits)
   
   # Return the original names of the Date and Value columns
   names(flow_data)[names(flow_data) == "STATION_NUMBER"] <- as.character(substitute(groups))

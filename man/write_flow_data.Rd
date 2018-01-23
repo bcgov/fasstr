@@ -7,8 +7,7 @@
 write_flow_data(data = NULL, dates = Date, values = Value,
   groups = STATION_NUMBER, water_year = FALSE, water_year_start = 10,
   start_year = 0, end_year = 9999, start_date = "0000-01-01",
-  end_date = "3000-12-31", fill_missing = TRUE, file = "",
-  value_digits = 10)
+  end_date = "3000-12-31", fill_missing = TRUE, file = "", digits = 10)
 }
 \arguments{
 \item{data}{Daily data to be analyzed. Options:
@@ -48,8 +47,8 @@ Default \code{10}.}
 
 \item{file}{Character string naming the output file. Default filetype is .xlsx. Change to .csv using filtype argument.}
 
-\item{value_digits}{Integer indicating the number of decimal places or significant digits to be used. Use follows that of
-base::round() digits argument.}
+\item{digits}{Integer indicating the number of decimal places or significant digits used to round flow values. Use follows 
+that of base::round() digits argument.}
 
 \item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
 are designated by the year in which they end. Default \code{FALSE}.}
