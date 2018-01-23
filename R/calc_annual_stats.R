@@ -158,8 +158,8 @@ calc_annual_stats <- function(data = NULL,
   if(!all(months %in% c(1:12)))              stop("months argument must be numbers between 1 and 12 (Jan-Dec).")
   
   if(!all(is.na(percentiles))){
-    if(!is.numeric(percentiles))               stop("percentiles argument must be numeric.")
-    if(!all(percentiles>0 & percentiles<100))  stop("percentiles must be > 0 and < 100.")
+    if(!is.numeric(percentiles))                   stop("percentiles argument must be numeric.")
+    if(!all(percentiles > 0 & percentiles < 100))  stop("percentiles must be > 0 and < 100.")
   }
   
   if(!is.logical(transpose))       stop("transpose argument must be logical (TRUE/FALSE).")
@@ -186,7 +186,7 @@ calc_annual_stats <- function(data = NULL,
   # Filter for the selected year (remove excluded years after)
   flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
   flow_data <- dplyr::filter(flow_data, Month %in% months)
-  
+
   
   ## CALCULATE STATISTICS
   ## --------------------
@@ -215,14 +215,10 @@ calc_annual_stats <- function(data = NULL,
   
   # Rename year column
   Q_annual <-   dplyr::rename(Q_annual, Year = AnalysisYear)
-  
-  
-  # Make excluded years data NA
-  if(as.character(substitute(groups)) %in% orig_cols) {
-    Q_annual[Q_annual$Year %in% exclude_years,-(1:2)] <- NA
-  } else {
-    Q_annual[Q_annual$Year %in% exclude_years,-1] <- NA
-  }
+
+  # Remove selected excluded years
+  Q_annual[Q_annual$Year %in% exclude_years,-(1:2)] <- NA
+
   
   # If transpose if selected, switch columns and rows
   if (transpose) {

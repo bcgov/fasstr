@@ -9,6 +9,10 @@ library(fasstr)
 library(dplyr)
 library(ggthemes)
 
+
+data <- fasstr::calc_annual_lowflows("08HB048", exclude_years = 1990:1995, transpose = T)
+
+
 fasstr::write_flow_data(flow_data, file = "test2.xlsx", value_digits = 1)
 data <- fasstr::calc_annual_stats("08HB048", start_year = 1973)
 
