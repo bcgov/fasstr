@@ -9,8 +9,10 @@ library(fasstr)
 library(dplyr)
 library(ggthemes)
 
+fasstr::write_flow_data(flow_data, file = "test2.xlsx", value_digits = 1)
+data <- fasstr::calc_annual_stats("08HB048", start_year = 1973)
 
-fasstr::plot_monthly_stats("08HB048", start_year = 1973)$Monthly_Minimum
+writexl::write_xlsx(data, path = "test.xlsx")
 
 fasstr::plot_flow_data(c("08HA002","08HA011"), plot_by_year = T, start_year = 1971, end_year = 1975)
 
@@ -86,7 +88,7 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>%
 
 # Multiple stations and custom Date and Value column names
 flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) %>% 
-  rename(SN=STATION_NUMBER) %>% 
+  rename(Datesss = Date, Valuesss = Value) %>% 
   fill_missing_dates(dates = Datesss, values = Valuesss) %>% 
   add_date_variables(dates = Datesss, water_year = T) %>% 
   add_rolling_means(dates = Datesss, values = Valuesss) %>% 

@@ -24,6 +24,7 @@ Imports:
     scales,
     tidyhydat,
     tidyr,
+    writexl,
     zyp
 LazyData: true
 RoxygenNote: 6.0.1
