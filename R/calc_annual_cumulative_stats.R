@@ -10,9 +10,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Calculate annual and seasonal total flows
+#' @title Calculate annual (and seasonal) cumulative flows
 #' 
-#' @description Calculates annual and seasonal total flows, volumetric and runoff yield flows, from a streamflow dataset. Calculates 
+#' @description Calculates annual and seasonal total flows, volumetric or runoff yield flows, from a streamflow dataset. Calculates 
 #'    the statistics from all daily discharge values from all years, unless specified. For water year and seasonal data, the designated
 #'    year is the year in which the year or season ends. For example, if using water years with a start month of 11, the OND season is
 #'    designated by the water year which starts in November (designated by the calendar year in which it ends).
@@ -64,15 +64,15 @@
 #' @examples
 #' \dontrun{
 #' 
-#'calc_annual_total_flows(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
+#'calc_annual_cumulative_stats(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
 #' 
-#'calc_annual_total_flows(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+#'calc_annual_cumulative_stats(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
 #'
 #' }
 #' @export
 
 #--------------------------------------------------------------
-calc_annual_total_flows <- function(flowdata=NULL,
+calc_annual_cumulative_stats <- function(flowdata=NULL,
                                       HYDAT=NULL,
                                       basin_area=NA,
                                       water_year=FALSE,
