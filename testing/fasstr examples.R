@@ -10,9 +10,18 @@ install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type 
 #install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
 
+write_flow_data(data = "08HB048", file = "d.xls", digits = 1)
+
+write_results(data = calc_longterm_stats(data = c("08HA002", "08HA011"),
+                                         start_year = 1971, end_year = 2000), 
+              file = "Cowichan River Long-term Flows (1971-2000).xlsx", 
+              digits = 1)
+
+
+
 data <- fasstr::calc_annual_cumulative_stats(c("08NM116","08HB048"), water_year = T, water_year_start = 3, incl_seasons = T, use_yield = T)
 
-
+writexl::write_xlsx(data, "c.xls")
 
 
 test <- data %>% filter(Year==1973, Month %in% c(1:3)) %>% 

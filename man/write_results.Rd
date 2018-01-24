@@ -4,36 +4,27 @@
 \alias{write_results}
 \title{Write a streamflow dataset as a .csv}
 \usage{
-write_results(data = NULL, station_name = "fasstr", write_dir = ".",
-  write_digits = 4, na = "")
+write_results(data = NULL, file = "", digits = 10)
 }
 \arguments{
-\item{station_name}{Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
-files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
-will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number.}
+\item{data}{Data frame to be written to a directory.}
 
-\item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
-Default is the working directory.}
+\item{file}{Character string naming the output file. Default filetype is .xlsx. Change to .csv using filtype argument.}
 
-\item{na}{Character. String to use for missing values in the data. Default \code{""} (blank).}
-
-\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
-}
-\value{
-A .csv file of streamflow data in a selected directory.
+\item{digits}{Integer indicating the number of decimal places or significant digits used to round flow values. Use follows 
+that of base::round() digits argument.}
 }
 \description{
-Write a streamflow dataset as a .csv file to a directory. Can add missing dates or filter data by years before writing
-   using given arguments. Just list flowdata data frame or HYDAT station number to write its entirety.
+Write a data frame as a .xlsx .xls, or .csv file to a directory with all numbers rounded to specified digits.
+   Writing as .xlsx or .xls uses the 'writexl' package.
 }
 \examples{
 \dontrun{
 
-write_results(flowdata = flowdata, station_name = "MissionCreek", na="")
-
-write_results(HYDAT = "08NM116")
+write_results(data = calc_longterm_stats(data = c("08HA002", "08HA011"),
+                                         start_year = 1971, end_year = 2000), 
+              file = "Cowichan River Long-term Flows (1971-2000).xlsx", 
+              digits = 1)
 
 }
 }

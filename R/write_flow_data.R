@@ -10,11 +10,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Write a streamflow dataset as a .xlsx or .csv file
+#' @title Write a streamflow dataset as a .xlsx, .xls, or .csv file
 #'
-#' @description Write a streamflow dataset as a .xlsx or .csv file to a directory. Can add missing dates or filter data by years before 
-#'    writing using given arguments. Just list data frame or HYDAT station number to write its entirety. Writing as .xlsx uses the 
-#'    'writexl' package.
+#' @description Write a streamflow dataset as a .xlsx .xls, or .csv file to a directory. Can add missing dates or filter data by
+#'     years before writing using given arguments. Just list data frame or HYDAT station number to write its entirety. Writing as 
+#'     .xlsx or .xls uses the 'writexl' package.
 #'
 #' @param data Daily data to be analyzed. Options:
 #' 
@@ -45,13 +45,13 @@
 #' @param file Character string naming the output file. Default filetype is .xlsx. Change to .csv using filtype argument.
 #' @param digits Integer indicating the number of decimal places or significant digits used to round flow values. Use follows 
 #'    that of base::round() digits argument.
-#' 
-#' @return A .xlsx or .csv file of streamflow data in a selected directory.
 #'
 #' @examples
 #' \dontrun{
 #' 
-#'write_flow_data(data = "08NM116", file = "Mission_Creek_flows.xlsx", fill_missing = FALSE)
+#'write_flow_data(data = "08NM116", 
+#'                file = "Mission_Creek_daily_flows.xlsx",
+#'                fill_missing = TRUE)
 #' 
 #' }
 #' @export
@@ -138,10 +138,10 @@ write_flow_data <- function(data = NULL,
   
   if(!is.logical(fill_missing))            stop("fill_missing argument must be logical (TRUE/FALSE).")
   
-  if(file == "") stop("file name must be provided, ending with either '.xlsx' or '.csv'")
+  if(file == "") stop("file name must be provided, ending with either .xlsx, .xls, or .csv.")
   
   filetype <- sub('.*\\.', '', file)
-  if(!filetype %in% c("xlsx", "csv"))    stop("file name must end with '.xlsx' or '.csv'.")
+  if(!filetype %in% c("xlsx", "xls", "csv")) stop("file name must end with .xlsx, .xls, or .csv.")
   
   if(length(digits) != 1) stop("Only one number can be provided to digits.")
   if(!is.numeric(digits)) stop("digits must be a numeric value.")
@@ -184,12 +184,9 @@ write_flow_data <- function(data = NULL,
   ## WRITE FLOW DATA
   ## ---------------
   
-  
   if(filetype == "csv") {
-    write.csv(flow_data, file = file, row.names = F, na = "")
-  }
-  
-  if(filetype == "xlsx") {
+    write.csv(flow_data, file = file, row.names = FALSE, na = "")
+  } else {
     writexl::write_xlsx(flow_data, path = file)
   }
  

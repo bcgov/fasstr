@@ -2,7 +2,7 @@
 % Please edit documentation in R/write_flow_data.R
 \name{write_flow_data}
 \alias{write_flow_data}
-\title{Write a streamflow dataset as a .xlsx or .csv file}
+\title{Write a streamflow dataset as a .xlsx, .xls, or .csv file}
 \usage{
 write_flow_data(data = NULL, dates = Date, values = Value,
   groups = STATION_NUMBER, water_year = FALSE, water_year_start = 10,
@@ -53,18 +53,17 @@ that of base::round() digits argument.}
 \item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
 are designated by the year in which they end. Default \code{FALSE}.}
 }
-\value{
-A .xlsx or .csv file of streamflow data in a selected directory.
-}
 \description{
-Write a streamflow dataset as a .xlsx or .csv file to a directory. Can add missing dates or filter data by years before 
-   writing using given arguments. Just list data frame or HYDAT station number to write its entirety. Writing as .xlsx uses the 
-   'writexl' package.
+Write a streamflow dataset as a .xlsx .xls, or .csv file to a directory. Can add missing dates or filter data by
+    years before writing using given arguments. Just list data frame or HYDAT station number to write its entirety. Writing as 
+    .xlsx or .xls uses the 'writexl' package.
 }
 \examples{
 \dontrun{
 
-write_flow_data(data = "08NM116", file = "Mission_Creek_flows.xlsx", fill_missing = FALSE)
+write_flow_data(data = "08NM116", 
+               file = "Mission_Creek_daily_flows.xlsx",
+               fill_missing = TRUE)
 
 }
 }
