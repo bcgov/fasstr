@@ -10,6 +10,8 @@ install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type 
 #install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
 
+
+fasstr::calc_monthly_cumulative_stats("08HB048", use_yield = T)
 write_flow_data(data = "08HB048", file = "d.xls", digits = 1)
 
 write_results(data = calc_longterm_stats(data = c("08HA002", "08HA011"),
