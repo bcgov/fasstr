@@ -41,7 +41,7 @@
 #' @param end_year Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.
 #' @param start_date Date (YYYY-MM-DD) of first date to consider for plotting. Leave blank if all years are required.
 #' @param end_date  Date (YYYY-MM-DD) of last date to consider for plotting. Leave blank if all years are required.
-#' @param fill_missing Logical value indicating whether to fill dates with missing flow data with NA. Default \code{TRUE}.
+#' @param fill_missing Logical value indicating whether to fill dates with missing flow data with NA. Default \code{FALSE}.
 #' @param file Character string naming the output file. Default filetype is .xlsx. Change to .csv using filtype argument.
 #' @param digits Integer indicating the number of decimal places or significant digits used to round flow values. Use follows 
 #'    that of base::round() digits argument.
@@ -68,7 +68,7 @@ write_flow_data <- function(data = NULL,
                             end_year = 9999,
                             start_date = "0000-01-01",
                             end_date = "3000-12-31",
-                            fill_missing = TRUE,
+                            fill_missing = FALSE,
                             file = "",
                             digits = 10){  
   

@@ -7,7 +7,7 @@
 write_flow_data(data = NULL, dates = Date, values = Value,
   groups = STATION_NUMBER, water_year = FALSE, water_year_start = 10,
   start_year = 0, end_year = 9999, start_date = "0000-01-01",
-  end_date = "3000-12-31", fill_missing = TRUE, file = "", digits = 10)
+  end_date = "3000-12-31", fill_missing = FALSE, file = "", digits = 10)
 }
 \arguments{
 \item{data}{Daily data to be analyzed. Options:
@@ -43,7 +43,7 @@ Default \code{10}.}
 
 \item{end_date}{Date (YYYY-MM-DD) of last date to consider for plotting. Leave blank if all years are required.}
 
-\item{fill_missing}{Logical value indicating whether to fill dates with missing flow data with NA. Default \code{TRUE}.}
+\item{fill_missing}{Logical value indicating whether to fill dates with missing flow data with NA. Default \code{FALSE}.}
 
 \item{file}{Character string naming the output file. Default filetype is .xlsx. Change to .csv using filtype argument.}
 
