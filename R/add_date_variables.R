@@ -109,7 +109,7 @@ add_date_variables <- function(data = NULL,
   if (water_year){
     # Create values used to calculate the water year day of year
     if (water_year_start == 2) {doy_temp <- c(31, 31)}
-    if (water_year_start == 3) {doy_temp <- c(61, 62)}
+    if (water_year_start == 3) {doy_temp <- c(59, 60)}
     if (water_year_start == 4) {doy_temp <- c(90, 91)}
     if (water_year_start == 5) {doy_temp <- c(120, 121)}
     if (water_year_start == 6) {doy_temp <- c(151, 152)}
