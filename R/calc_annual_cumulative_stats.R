@@ -90,7 +90,7 @@ calc_annual_cumulative_stats <- function(data = NULL,
                                          start_year = 0,
                                          end_year = 9999,
                                          exclude_years = NULL, 
-                                         incl_seasons = TRUE,
+                                         incl_seasons = FALSE,
                                          transpose = FALSE){
   
   ## CHECKS ON FLOW DATA
@@ -185,10 +185,10 @@ calc_annual_cumulative_stats <- function(data = NULL,
   # Add cumulative flows
   if (use_yield){
     flow_data <- add_daily_yield(data = flow_data, basin_area = basin_area)
-    names(flow_data)[names(flow_data) == "Yield_mm"] <- "Cumul_Flow"
+    names(flow_data)[names(flow_data) == "Yield_mm"] <- "daily_total"
   } else {
     flow_data <- add_daily_volume(data = flow_data)
-    names(flow_data)[names(flow_data) == "Volume_m3"] <- "Cumul_Flow"
+    names(flow_data)[names(flow_data) == "Volume_m3"] <- "daily_total"
   }
   
   ## CALCULATE STATISTICS
@@ -199,93 +199,98 @@ calc_annual_cumulative_stats <- function(data = NULL,
   if(incl_seasons) {
     
     # Setup up flow_data to have seasons and the proper years according to water year
+    # 2 seasons is grouped by wateryear (Oct) so all ONDJFM and AMJAS seasons have a distinct year to group with
+    # 4 seasons is grouped by calendar year so all seasons have a distict year to group with
     # Year value is designated by the year the season ends in 
     # Example: ONDJFM with calendar years 2000-2001 and water-year-start=2, means ONDJ are WY2001 (ends 
     #          in CY2001) and FM are WY2002 (ends in CY2002) so the the Year for that season is 2002.
+    
+    # Add missing dates and dates for water years
     seasons_flow_data <- fill_missing_dates(data = flow_data, water_year = TRUE, water_year_start = 10)
     seasons_flow_data <- add_date_variables(data = seasons_flow_data, water_year = TRUE, water_year_start = 10)
     
-    # Set selected year-type column for analysis
-    if (water_year) {
-      seasons_flow_data$AnalysisYear <- seasons_flow_data$WaterYear
-    }  else {
-      seasons_flow_data$AnalysisYear <- seasons_flow_data$Year
-    }
-    
+    # Add seasons
     seasons_flow_data <- dplyr::mutate(seasons_flow_data,
                                        Seasons4 = ifelse(Month <= 3, "JFM",
                                                          ifelse(Month >= 4 & Month <= 6, "AMJ",
                                                                 ifelse(Month >= 7 & Month <= 9, "JAS",
                                                                        ifelse(Month >= 10, "OND", NA)))),
                                        Seasons2 = ifelse(Month <= 3 | Month >= 10, "ONDJFM",
-                                                         ifelse(Month >= 4 & Month <= 9, "AMJJAS", NA)),
-                                       Seasons4_year = Year,
-                                       Seasons2_year =  ifelse(Month < 10, Year, Year + 1))
-
-    # 
-    # # Calculate the 2-season summaries (winter/summer)
-    seasons2_stats <- dplyr::summarise(dplyr::group_by(seasons_flow_data, STATION_NUMBER, Seasons2, Seasons2_year),
-                                       Cumulative_value = sum(Cumul_Flow, na.rm = FALSE),
-                                       Max_year=max(AnalysisYear))
+                                                         ifelse(Month >= 4 & Month <= 9, "AMJJAS", NA)))
+    
+    # Calculate the 2-season summaries (winter/summer)
+    seasons2_stats <- dplyr::summarise(dplyr::group_by(seasons_flow_data, STATION_NUMBER, Seasons2, WaterYear),
+                                       Cumulative_total = sum(daily_total, na.rm = FALSE),
+                                       Max_year = max(AnalysisYear))
     seasons2_stats <- dplyr::ungroup(seasons2_stats)
-    seasons2_stats <- dplyr::select(seasons2_stats, STATION_NUMBER, Year = Max_year, Seasons2, Cumulative_value)
+    seasons2_stats <- dplyr::select(seasons2_stats, STATION_NUMBER, Year = Max_year, Seasons2, Cumulative_total)
     seasons2_stats <- dplyr::mutate(seasons2_stats, Statistic = paste0(Seasons2, "_", ifelse(!use_yield, paste("TotalQ_m3"),
                                                                                              paste("Yield_mm"))))
     seasons2_stats <- dplyr::select(seasons2_stats, -Seasons2)
     seasons2_stats <- dplyr::filter(seasons2_stats, Year >= start_year & Year <= end_year)
-    seasons2_stats <- tidyr::spread(seasons2_stats, Statistic, Cumulative_value)
+    seasons2_stats <- tidyr::spread(seasons2_stats, Statistic, Cumulative_total)
     seasons2_stats <- dplyr::filter(seasons2_stats, !rowSums(is.na(seasons2_stats[,3:4])) == 2) # remove rows with NA in both seasons
-
-    # # Calculate the 4-season summaries (winter/spring/summer/fall)
-     seasons4_stats <- dplyr::summarise(dplyr::group_by(seasons_flow_data, STATION_NUMBER, Seasons4, Seasons4_year),
-                                        Cumulative_value = max(Cumul_Flow, na.rm = FALSE),
-                                        Max_year=max(AnalysisYear))
+    
+    # Calculate the 4-season summaries (winter/spring/summer/fall)
+    seasons4_stats <- dplyr::summarise(dplyr::group_by(seasons_flow_data, STATION_NUMBER, Seasons4, Year),
+                                       Cumulative_total = sum(daily_total, na.rm = FALSE),
+                                       Max_year = max(AnalysisYear))
     seasons4_stats <- dplyr::ungroup(seasons4_stats)
-    seasons4_stats <- dplyr::select(seasons4_stats, STATION_NUMBER, Year = Max_year, Seasons4, Cumulative_value)
+    seasons4_stats <- dplyr::select(seasons4_stats, STATION_NUMBER, Year = Max_year, Seasons4, Cumulative_total)
     seasons4_stats <- dplyr::mutate(seasons4_stats, Statistic = paste0(Seasons4, "_", ifelse(!use_yield, paste("TotalQ_m3"),
                                                                                              paste("Yield_mm"))))
     seasons4_stats <- dplyr::select(seasons4_stats, -Seasons4)
     seasons4_stats <- dplyr::filter(seasons4_stats, Year >= start_year & Year <= end_year)
-    seasons4_stats <- tidyr::spread(seasons4_stats, Statistic, Cumulative_value)
+    seasons4_stats <- tidyr::spread(seasons4_stats, Statistic, Cumulative_total)
     seasons4_stats <- dplyr::filter(seasons4_stats, !rowSums(is.na(seasons4_stats[,3:6])) == 4) # remove rows with NA in all seasons
-
+    
   }
   
-  # # FILTER flow_data FOR SELECTED YEARS FOR REMAINDER OF CALCS
-   flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
-
-
-  # Calculate seasonal stats
-
+  # Filter data FOR SELECTED YEARS FOR REMAINDER OF CALCS
+  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  
+  # Calculate annual stats
   annual_stats <-   dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
-                                     Cumulative_value  = sum(Cumul_Flow, na.rm = FALSE))
-  names(annual_stats)[names(annual_stats) == "Cumulative_value"] <- ifelse(!use_yield,
+                                     Cumulative_total  = sum(daily_total, na.rm = FALSE))
+  names(annual_stats)[names(annual_stats) == "Cumulative_total"] <- ifelse(!use_yield,
                                                                            paste("Annual_TotalQ_m3"),
                                                                            paste("Annual_Yield_mm"))
   annual_stats <- dplyr::rename(annual_stats, Year = AnalysisYear)
-
-
+  
+  
   # Add in seasons if selected
   if (incl_seasons) {
     annual_stats <- merge(annual_stats, seasons2_stats, by = c("STATION_NUMBER", "Year"), all = TRUE)
     annual_stats <- merge(annual_stats, seasons4_stats, by = c("STATION_NUMBER", "Year"), all = TRUE)
   }
-
+  
   # Make an excluded years NA
   annual_stats[annual_stats$Year %in% exclude_years, -(1:2)] <- NA
-
-
-
-  # # # Transpose data if selected
-  # # if(transpose){
-  # #   options(scipen = 999)
-  # #   Qstat_tpose <- tidyr::gather(Qstat,Statistic,Value,-Year)
-  # #   Qstat_tpose_temp <- dplyr::mutate(Qstat_tpose,Value=round(Value,write_digits))
-  # #   Qstat <- tidyr::spread(Qstat_tpose,Year,Value)
-  # # }
-
-
-  return(annual_stats)
+  
+  # Transpose data if selected
+  if(transpose){
+    options(scipen = 999)
+    # Get list of columns to order the Statistic column after transposing
+    stat_levels <- names(annual_stats[-(1:2)])
+    
+    annual_stats <- tidyr::gather(annual_stats, Statistic, Value, -Year, -STATION_NUMBER)
+    annual_stats <- tidyr::spread(annual_stats, Year, Value)
+    
+    # Order the columns
+    annual_stats$Statistic <- as.factor(annual_stats$Statistic)
+    levels(annual_stats$Statistic) <- stat_levels
+    annual_stats <- with(annual_stats, annual_stats[order(STATION_NUMBER, Statistic),])
+  }
+  
+  # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
+  if("STATION_NUMBER" %in% orig_cols) {
+    names(annual_stats)[names(annual_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
+  } else {
+    annual_stats <- dplyr::select(annual_stats, -STATION_NUMBER)
+  }
+  
+  
+  dplyr::as_tibble(annual_stats)
   
 }
 

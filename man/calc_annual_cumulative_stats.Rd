@@ -7,7 +7,7 @@
 calc_annual_cumulative_stats(data = NULL, dates = Date, values = Value,
   groups = STATION_NUMBER, use_yield = FALSE, basin_area = NA,
   water_year = FALSE, water_year_start = 10, start_year = 0,
-  end_year = 9999, exclude_years = NULL, incl_seasons = TRUE,
+  end_year = 9999, exclude_years = NULL, incl_seasons = FALSE,
   transpose = FALSE)
 }
 \arguments{
