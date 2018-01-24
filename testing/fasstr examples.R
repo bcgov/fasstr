@@ -1,16 +1,16 @@
 
 
-
-devtools::document()
-#install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
-install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
-
 library(fasstr)
 library(dplyr)
 library(ggthemes)
 
 
-data <- fasstr::calc_annual_lowflows("08HB048", exclude_years = 1990:1995, transpose = T)
+devtools::document()
+#install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
+install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
+
+
+data <- fasstr::calc_annual_cumulative_stats("08HB048", water_year = T, water_year_start = 3, incl_seasons = T)
 
 
 fasstr::write_flow_data(flow_data, file = "test2.xlsx", value_digits = 1)
@@ -73,10 +73,12 @@ if(nrow(data) == 1 & ncol(data) == 1){
 
 
 # One station with Date and Value
-flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% 
-  add_basin_area() %>%
-  fill_missing_dates() %>%
-  add_date_variables() %>%
+ flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% 
+   add_basin_area() %>%
+   fill_missing_dates() %>%
+   add_date_variables(water_year = T, water_year_start = 3) %>%
+   write_flow_data(file="total.xlsx")
+   
   add_rolling_means(days = 7) %>%
   add_daily_volume() %>%
   add_cumulative_volume() %>%
