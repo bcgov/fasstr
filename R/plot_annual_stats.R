@@ -114,7 +114,7 @@ plot_annual_stats <- function(data = NULL,
     # Check columns are in proper formats
     if(!inherits(data$Date[1], "Date"))  stop("'Date' column in data frame does not contain dates.")
     if(!is.numeric(data$Value))          stop("'Value' column in data frame does not contain numeric values.")   
- 
+    
     # Remove these to fix warnings?
     rm(c(dates,values))
   }
@@ -125,18 +125,18 @@ plot_annual_stats <- function(data = NULL,
   ## CALC STATS
   ## ----------
   
-  annual_stats <- fasstr::calc_annual_stats(data = data,
-                                            percentiles = percentiles,
-                                            rolling_days = rolling_days,
-                                            rolling_align = rolling_align,
-                                            water_year = water_year,
-                                            water_year_start = water_year_start,
-                                            start_year = start_year,
-                                            end_year = end_year,
-                                            exclude_years = exclude_years, 
-                                            months = months,
-                                            ignore_missing = ignore_missing)
-
+  annual_stats <- calc_annual_stats(data = data,
+                                    percentiles = percentiles,
+                                    rolling_days = rolling_days,
+                                    rolling_align = rolling_align,
+                                    water_year = water_year,
+                                    water_year_start = water_year_start,
+                                    start_year = start_year,
+                                    end_year = end_year,
+                                    exclude_years = exclude_years, 
+                                    months = months,
+                                    ignore_missing = ignore_missing)
+  
   # Remove STATION_NUMBER columns if HYDAT was used and set up data
   if("STATION_NUMBER" %in% colnames(annual_stats)) {
     annual_stats <- dplyr::ungroup(annual_stats)
@@ -157,7 +157,7 @@ plot_annual_stats <- function(data = NULL,
     {if(log_discharge) ggplot2::scale_y_log10(expand = c(0,0))} +
     {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0))} +
     {if(log_discharge) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"), 
-                                                     mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))} +
+                                                    mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))} +
     ggplot2::expand_limits(y = 0) +
     ggplot2::ylab("Discharge (cms)")+
     ggplot2::xlab("Year") +
@@ -173,6 +173,6 @@ plot_annual_stats <- function(data = NULL,
                    axis.title = ggplot2::element_text(size = 12),
                    axis.text = ggplot2::element_text(size = 10))
   
-
+  
 }
 
