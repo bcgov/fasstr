@@ -12,7 +12,7 @@ install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type 
 
 
 data <- calc_all_annual_stats("08HB048", transpose = T)
-
+write_results(data = data, file = "all.xlsx", digits = 3)
 calc_annual_flow_timing("08HB048")
 
 fasstr::calc_monthly_cumulative_stats("08HB048", use_yield = T)
