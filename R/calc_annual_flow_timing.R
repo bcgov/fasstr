@@ -190,7 +190,7 @@ calc_annual_flow_timing <- function(data = NULL,
   
   
   # Make excluded years data NA
-  if(as.character(substitute(flow_stations)) %in% orig_cols) {
+  if(as.character(substitute(groups)) %in% orig_cols) {
     timing_stats[timing_stats$Year %in% exclude_years,-(1:2)] <- NA
   } else {
     timing_stats[timing_stats$Year %in% exclude_years,-1] <- NA
@@ -205,8 +205,8 @@ calc_annual_flow_timing <- function(data = NULL,
   }
   
   # Recheck if station_number was in original flow_data and rename or remove as necessary
-  if(as.character(substitute(flow_stations)) %in% orig_cols) {
-    names(timing_stats)[names(timing_stats) == "STATION_NUMBER"] <- as.character(substitute(flow_stations))
+  if(as.character(substitute(groups)) %in% orig_cols) {
+    names(timing_stats)[names(timing_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
     timing_stats <- dplyr::select(timing_stats, -STATION_NUMBER)
   }
