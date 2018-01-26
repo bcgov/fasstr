@@ -11,6 +11,10 @@ install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type 
 #install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
 
+lowflows <- calc_annual_lowflows("08HB048", transpose = T)
+
+data <- compute_annual_trends("08HB048", zyp_method = "yuepilon", incl_data=F)
+
 data <- calc_all_annual_stats("08HB048", transpose = T)
 write_results(data = data, file = "all.xlsx", digits = 3)
 calc_annual_flow_timing("08HB048")
