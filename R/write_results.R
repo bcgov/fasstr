@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Write a streamflow dataset as a .csv
+#' @title Write a data frame as a .xlsx, .xls, or .csv file
 #'
 #' @description Write a data frame as a .xlsx .xls, or .csv file to a directory with all numbers rounded to specified digits.
 #'    Writing as .xlsx or .xls uses the 'writexl' package.

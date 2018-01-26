@@ -2,7 +2,7 @@
 % Please edit documentation in R/write_results.R
 \name{write_results}
 \alias{write_results}
-\title{Write a streamflow dataset as a .csv}
+\title{Write a data frame as a .xlsx, .xls, or .csv file}
 \usage{
 write_results(data = NULL, file = "", digits = 10)
 }
