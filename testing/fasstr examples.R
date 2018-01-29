@@ -10,7 +10,10 @@ devtools::document()
 install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
 #install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
+write_plots(month_plot, file = "pdftestkkkk", format = "jpeg")
 
+month_plot <- plot_monthly_stats("08HB048")$Monthly_Mean
+ggplot2::ggsave(month_plot, filename = "test.pdf")
 lowflows <- calc_annual_lowflows("08HB048", transpose = T)
 
 data <- compute_annual_trends("08HB048", zyp_method = "yuepilon", incl_data=F)
@@ -27,7 +30,7 @@ write_results(data = calc_longterm_stats(data = c("08HA002", "08HA011"),
               file = "Cowichan River Long-term Flows (1971-2000).xlsx", 
               digits = 1)
 
-
+ggplot2::ggsave("month",month_plots, device = "pdf")
 
 data <- fasstr::calc_annual_cumulative_stats(c("08NM116","08HB048"), water_year = T, water_year_start = 3, incl_seasons = T, use_yield = T)
 

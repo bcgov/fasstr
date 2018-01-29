@@ -4,15 +4,26 @@
 \alias{write_plots}
 \title{Write a plot in a directory}
 \usage{
-write_plots(data = NULL, file = "", digits = 10)
+write_plots(plot = NULL, file = "", format = NULL, height = NA,
+  width = NA, units = "in", combined_pdf = FALSE)
 }
 \arguments{
-\item{data}{Data frame to be written to a directory.}
+\item{plot}{Name of plot or name of list of plots to write to a directory.}
 
-\item{file}{Character string naming the output file. Default filetype is .xlsx. Change to .csv using filtype argument.}
+\item{file}{Character string of name of file (single or combined_pdf) or name of folder (mulitple plots) in a directory 
+to write the plot(s). Listing the image format (ex. ".png" or ".pdf") will overwrite the \code{format} argument for
+single plots.}
 
-\item{digits}{Integer indicating the number of decimal places or significant digits used to round flow values. Use follows 
-that of base::round() digits argument.}
+\item{format}{Character string of image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
+Image type will be overwritten if using \code{combined_pdf argument}.}
+
+\item{height}{Numeric plot height in \code{units}. If not supplied, uses the size of current graphics device.}
+
+\item{width}{Numeric plot width in \code{units}. If not supplied, uses the size of current graphics device.}
+
+\item{units}{Character string plot height and width units, one of "in", "cm", or "mm". Default \code{"in"}.}
+
+\item{combined_pdf}{Logical value indicating whether to combine list of plots into one pdf document. Default \code{FALSE}.}
 }
 \description{
 Write plots, single or multiple, into a folder or pdf document
@@ -20,10 +31,7 @@ Write plots, single or multiple, into a folder or pdf document
 \examples{
 \dontrun{
 
-write_results(data = calc_longterm_stats(data = c("08HA002", "08HA011"),
-                                         start_year = 1971, end_year = 2000), 
-              file = "Cowichan River Long-term Flows (1971-2000).xlsx", 
-              digits = 1)
+write_plots()
 
 }
 }
