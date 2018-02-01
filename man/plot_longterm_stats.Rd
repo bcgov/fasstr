@@ -13,8 +13,7 @@ plot_longterm_stats(data = NULL, dates = Date, values = Value,
 \arguments{
 \item{data}{Daily data to be analyzed. Options:
 
-   A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
-   names/numbers).
+   A data frame of daily data that contains columns of dates and values.
    
    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
    extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
