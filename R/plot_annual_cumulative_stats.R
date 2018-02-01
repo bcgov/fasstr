@@ -61,7 +61,7 @@
 #' @export
 
 #--------------------------------------------------------------
-plot_annual_total_flows <- function(flowdata=NULL,
+plot_annual_cumulative_stats <- function(flowdata=NULL,
                                             HYDAT=NULL,
                                             basin_area=NA,
                                             water_year=FALSE,
