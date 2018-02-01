@@ -17,32 +17,32 @@
 #'    streamflow dataset. Plots statistics from all daily discharge values from all years, unless specified. Data
 #'    calculated from calc_annual_lowflows() function.
 #'
-#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-#'    Not required if \code{HYDAT} argument is used.
-#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-#'    database are required. Not required if \code{flowdata} argument is used.
-#' @param rolling_days  Numeric. The number of days to apply a rolling mean. Default \code{1}.
-#' @param rolling_align Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),
-#'    or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.
-#' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
-#'    by the year in which they end. Default \code{FALSE}.
-#' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
-#' @param start_year Integer. First year to consider for analysis. Leave blank if all years are required.
-#' @param end_year Integer. Last year to consider for analysis. Leave blank if all years are required.
-#' @param exclude_years Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.       
-#' @param months Integer. Vector of months to consider for analysis (ex. \code{6:8} for Jun-Aug). Leave blank if all months
-#'    are required. Default \code{1:12}.
-#' @param station_name Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
-#'    files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
-#'    will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number. 
-#' @param write_plot Logical. Write the plot to specified directory. Default \code{FALSE}.
-#' @param write_imgtype Character. One of "pdf","png","jpeg","tiff", or "bmp" image types to write the plot as. Default \code{"pdf"}.
-#' @param write_imgsize Numeric. Height and width, respectively, of saved plot. Default \code{c(5,8.5)}.
-#' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
-#'    Default is the working directory.
-#' @param na.rm TBD
+#' @param data Daily data to be analyzed. Options:
+#' 
+#'    A data frame of daily data that contains columns of dates and values.
+#'    
+#'    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+#'    extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.   
+#' @param dates Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
+#'    using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}. 
+#' @param values Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
+#'    Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}. 
+#' @param rolling_days Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.
+#' @param rolling_align Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+#'    ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.
+#' @param water_year Logical value indicating whether to use water years to group data instead of calendar years. Water years 
+#'    are designated by the year in which they end. Default \code{FALSE}.
+#' @param water_year_start Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
+#'    Default \code{10}.
+#' @param start_year Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.
+#' @param end_year Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.
+#' @param exclude_years Numeric vector of years to exclude from analysis. Leave blank to include all years.             
+#' @param months Numeric vector of months to include in analysis (ex. \code{6:8} for Jun-Aug). Leave blank to summarize 
+#'    all months (default \code{1:12}).
+#' @param ignore_missing Logical value indicating whether dates with missing values should be included in the calculation. If
+#'    \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
+#'    with no missing dates will be returned. Default \code{TRUE}.
+#' @param log_discharge Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.
 #'    
 #' @return A list of the following ggplot2 objects:
 #'   \item{Annual_Minimums}{ggplot2 object of annual minimums of selected n-day rolling means}
@@ -51,163 +51,161 @@
 #' @examples
 #' \dontrun{
 #' 
-#'plot_annual_lowflows(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
-#' 
-#'plot_annual_lowflows(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8, rolling_days = c(3,7))
+#'plot_annual_lowflows(data = "08NM116", water_year = TRUE, water_year_start = 8, rolling_days = c(3,7))
 #'
 #' }
 #' @export
 
 #--------------------------------------------------------------
 
-plot_annual_lowflows <- function(flowdata=NULL,
-                                 HYDAT=NULL,
-                                 rolling_days=c(1,3,7,30),
-                                 rolling_align="right",
-                                 water_year=FALSE,
-                                 water_year_start=10,
-                                 start_year=NULL,
-                                 end_year=NULL,
-                                 exclude_years=NULL, 
-                                 months=1:12,
-                                 station_name=NA,
-                                 write_plot=FALSE,
-                                 write_imgtype="pdf",
-                                 write_imgsize=c(5,8.5),
-                                 write_dir=".",
-                                 na.rm=list(na.rm.global=FALSE)){
+plot_annual_lowflows <- function(data = NULL,
+                                 dates = Date,
+                                 values = Value,
+                                 rolling_days = c(1, 3, 7, 30),
+                                 rolling_align = "right",
+                                 water_year = FALSE,
+                                 water_year_start = 10,
+                                 start_year = 0,
+                                 end_year = 9999,
+                                 exclude_years = NULL,
+                                 months = 1:12,
+                                 ignore_missing = FALSE,
+                                 log_discharge = FALSE){
   
   
-  #--------------------------------------------------------------
-  #  Error checking on the input parameters
+  ## CHECKS ON DATA FOR CALC
+  ##------------------------
   
-  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
-  if( is.null(HYDAT)) {
-    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
-    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
-    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
-    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
-    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
-    if( any(flowdata$Value <0, na.rm=TRUE))           {warning('flowdata cannot have negative values - check your data')}
+  # Check if data is provided
+  if(is.null(data))   stop("No data provided, must provide a data frame or HYDAT station number(s).")
+  if(!is.data.frame(data) & !is.vector(data)) stop("No data provided, must provide a data frame or HYDAT station number(s).")
+  
+  # Check HYDAT stations
+  if(is.vector(data)) {
+    if(length(data) != 1)   stop("Only one HYDAT station number can be listed for this function.")
+    if(!data %in% dplyr::pull(tidyhydat::allstations[1]))  stop("Station number listed in data argument does not exist in HYDAT.")
   }
   
-  if( !is.logical(water_year))         {stop("water_year argument must be logical (TRUE/FALSE)")}
-  if( !is.numeric(water_year_start) )  {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( length(water_year_start)>1)      {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( !water_year_start %in% c(1:12) ) {stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec)")}
-  
-  if( length(start_year)>1)   {stop("only one start_year value can be selected")}
-  if( !is.null(start_year) )  {if( !start_year %in% c(0:5000) )  {stop("start_year must be an integer")}}
-  if( length(end_year)>1)     {stop("only one end_year value can be selected")}
-  if( !is.null(end_year) )    {if( !end_year %in% c(0:5000) )  {stop("end_year must be an integer")}}
-  if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("list of exclude_years must be numeric - ex. 1999 or c(1999,2000)")}
-  
-  if( !is.numeric(months) )        {stop("months argument must be integers")}
-  if( !all(months %in% c(1:12)) )  {stop("months argument must be integers between 1 and 12 (Jan-Dec)")}
-  
-  if( !is.numeric(rolling_days))                       {stop("rolling_days argument must be numeric")}
-  if( !all(rolling_days %in% c(1:180)) )               {stop("rolling_days argument must be integers > 0 and <= 180)")}
-  if( !rolling_align %in% c("right","left","center"))  {stop("rolling_align argument must be 'right', 'left', or 'center'")}
-  
-  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
-  
-  if( !is.logical(write_plot))      {stop("write_plot argument must be logical (TRUE/FALSE)")}
-  if( length(write_imgtype)>1)      {stop("write_imgtype argument cannot have length > 1")} 
-  if( !is.na(write_imgtype) & !write_imgtype %in% c("pdf","png","jpeg","tiff","bmp"))  {
-    stop("write_imgtype argument must be one of 'pdf','png','jpeg','tiff', or 'bmp'")}
-  if( !is.numeric(write_imgsize) )   {stop("write_imgsize must be two numbers for height and width, respectively")}
-  if( length(write_imgsize)!=2 )   {stop("write_imgsize must be two numbers for height and width, respectively")}
-  
-  if( !dir.exists(as.character(write_dir))) {
-    message("directory for saved files does not exist, new directory will be created")
-    if( write_table & write_dir!="." ) {dir.create(write_dir)}
+  if(is.data.frame(data)) {
+    # Get the just groups (default STATION_NUMBER), Date, and Value columns
+    # This method allows the user to select the Station, Date or Value columns if the column names are different
+    if(!as.character(substitute(values)) %in% names(data) & !as.character(substitute(dates)) %in% names(data)) 
+      stop("Dates and values not found in data frame. Rename dates and values columns to 'Date' and 'Value' or identify the columns using 'dates' and 'values' arguments.")
+    if(!as.character(substitute(dates)) %in% names(data))  
+      stop("Dates not found in data frame. Rename dates column to 'Date' or identify the column using 'dates' argument.")
+    if(!as.character(substitute(values)) %in% names(data)) 
+      stop("Values not found in data frame. Rename values column to 'Value' or identify the column using 'values' argument.")
+    
+    # Temporarily rename the Date and Value columns
+    data <- data[,c(as.character(substitute(dates)),
+                    as.character(substitute(values)))]
+    colnames(data) <- c("Date","Value")
+    data <- dplyr::ungroup(data)
+    
+    
+    # Check columns are in proper formats
+    if(!inherits(data$Date[1], "Date"))  stop("'Date' column in data frame does not contain dates.")
+    if(!is.numeric(data$Value))          stop("'Value' column in data frame does not contain numeric values.")   
+    
+    # Remove these to fix warnings?
+    rm(c(dates,values))
   }
   
-  if( !is.list(na.rm))                        {stop("na.rm is not a list") }
-  if(! is.logical(unlist(na.rm)))             {stop("na.rm is list of logical (TRUE/FALSE) values only.")}
-  my.na.rm <- list(na.rm.global=FALSE)
-  if( !all(names(na.rm) %in% names(my.na.rm))){stop("Illegal element in na.rm")}
-  my.na.rm[names(na.rm)]<- na.rm
-  na.rm <- my.na.rm  # set the na.rm for the rest of the function.
+  if(!is.logical(log_discharge))  stop("log_discharge argument must be logical (TRUE/FALSE).")
   
-  # If HYDAT station is listed, check if it exists and make it the flowdata
-  if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
-    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
-    if( is.na(station_name) ) {station_name <- HYDAT}
+  
+  ## CALC STATS
+  ## ----------
+  
+  lowflow_stats <- calc_annual_lowflows(data = data,
+                                        rolling_days = rolling_days,
+                                        rolling_align = rolling_align,
+                                        water_year = water_year,
+                                        water_year_start = water_year_start,
+                                        start_year = start_year,
+                                        end_year = end_year,
+                                        exclude_years = exclude_years, 
+                                        months = months,
+                                        ignore_missing = ignore_missing)
+  
+  # Remove STATION_NUMBER columns if HYDAT was used and set up data
+  if("STATION_NUMBER" %in% colnames(lowflow_stats)) {
+    lowflow_stats <- dplyr::ungroup(lowflow_stats)
+    lowflow_stats <- dplyr::select(lowflow_stats, -STATION_NUMBER)
   }
+
+  ## SET ORDER
   
-  #--------------------------------------------------------------
-  # Complete analysis
-  
-  # COmpute the low flows data
-  lowflows_data <- fasstr::calc_annual_lowflows(flowdata=flowdata,
-                                                  HYDAT=HYDAT,
-                                                  rolling_days=rolling_days,
-                                                  rolling_align=rolling_align,
-                                                  water_year=water_year,
-                                                  water_year_start=water_year_start,
-                                                  start_year=start_year,
-                                                  end_year=end_year,
-                                                  exclude_years=exclude_years, 
-                                                  months=months)
   
   # Gather data and plot the minimums day
-  lowflows_DoY_data <- dplyr::select(lowflows_data,Year,dplyr::contains("DoY"))
-  lowflows_DoY_data <- tidyr::gather(lowflows_DoY_data,Statistic,Value,-1)
+  lowflow_doy <- dplyr::select(lowflow_stats, Year, dplyr::contains("DoY"))
+  stat_levels <- names(lowflow_doy[-1])
+  stat_levels <- substr(stat_levels, 5, nchar(as.character(stat_levels)))
+  stat_levels <- paste0(gsub("_Day_DoY", "", stat_levels), " Day Mininum")
   
+  lowflow_doy <- tidyr::gather(lowflow_doy, Statistic, Value, -1)
+  lowflow_doy <- dplyr::mutate(lowflow_doy, Statistic = substr(Statistic, 5, nchar(as.character(Statistic))))
+  lowflow_doy <- dplyr::mutate(lowflow_doy, Statistic = paste0(gsub("_Day_DoY", "", Statistic), " Day Mininum"))
+  lowflow_doy <- dplyr::mutate(lowflow_doy, Statistic = as.factor(Statistic))
+  levels(lowflow_doy$Statistic) <- stat_levels
+
+  
+  
+
   # Gather data and plot the minimums values
-  lowflows_value_data <- dplyr::select(lowflows_data,Year,dplyr::contains("Day"),
-                                       -dplyr::contains("DoY"),
-                                       -dplyr::contains("Date"))
-  lowflows_value_data <- tidyr::gather(lowflows_value_data,Statistic,Value,-1)
+  lowflow_values <- dplyr::select(lowflow_stats, Year, dplyr::contains("Day"), -dplyr::contains("DoY"), -dplyr::contains("Date"))
+
+  lowflow_values <- tidyr::gather(lowflow_values, Statistic, Value, -1)
+  lowflow_values <- dplyr::mutate(lowflow_values, Statistic = substr(Statistic, 5, nchar(Statistic)))
+  lowflow_values <- dplyr::mutate(lowflow_values, Statistic = paste0(gsub("_Day", "", Statistic), " Day Mininum"))
+  lowflow_values <- dplyr::mutate(lowflow_values, Statistic = as.factor(Statistic))
+  levels(lowflow_values$Statistic) <- stat_levels
   
-  #--------------------------------------------------------------
-  # Complete plotting
-  
-  doy_plot <- ggplot2::ggplot(data=lowflows_DoY_data, ggplot2::aes(x=Year, y=Value))+
-    ggplot2::geom_line(ggplot2::aes(colour=Statistic))+
-    ggplot2::geom_point(ggplot2::aes(colour=Statistic))+
-    ggplot2::facet_wrap(~Statistic, scales="free_x",ncol = 1, strip.position="right")+
+
+  ## PLOT STATS
+  ## ----------
+
+
+  doy_plot <- ggplot2::ggplot(data = lowflow_doy, ggplot2::aes(x = Year, y = Value))+
+    ggplot2::geom_line(ggplot2::aes(colour = Statistic))+
+    ggplot2::geom_point(ggplot2::aes(colour = Statistic))+
+    ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "right")+
     ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6))+
     ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
     ggplot2::ylab("Day of Year")+
     ggplot2::xlab("Year")+
-    ggplot2::guides(colour=FALSE)+
-    ggplot2::theme(panel.border = ggplot2::element_rect(colour = "grey80", fill=NA, size=.1),
-                   panel.grid = ggplot2::element_line(size=.2))
-  
-  
-  min_plot <- ggplot2::ggplot(data=lowflows_value_data, ggplot2::aes(x=Year, y=Value))+
-    ggplot2::geom_line(ggplot2::aes(colour=Statistic))+
-    ggplot2::geom_point(ggplot2::aes(colour=Statistic))+
-    ggplot2::facet_wrap(~Statistic, scales="free_x",ncol = 1, strip.position="right")+
+    ggplot2::scale_color_brewer(palette = "Set1") +
+    ggplot2::theme_bw() +
+    ggplot2::guides(colour = FALSE)+
+    ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                   panel.grid = ggplot2::element_line(size = .2),
+                   axis.title = ggplot2::element_text(size = 12),
+                   axis.text = ggplot2::element_text(size = 10))
+
+
+  min_plot <- ggplot2::ggplot(data = lowflow_values, ggplot2::aes(x = Year, y = Value))+
+    ggplot2::geom_line(ggplot2::aes(colour = Statistic))+
+    ggplot2::geom_point(ggplot2::aes(colour = Statistic))+
+    ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "right")+
     ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6))+
     ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
     ggplot2::ylab("Discharge (cms)")+
     ggplot2::xlab("Year")+
-    ggplot2::guides(colour=FALSE)+
-    ggplot2::theme(panel.border = ggplot2::element_rect(colour = "grey80", fill=NA, size=.1),
-                   panel.grid = ggplot2::element_line(size=.2))
-  
-  
-  # Write the plots if selected.
-  if (write_plot) {
-    file_doy_plot <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),
-                           "_annual_lowflow_minimums.",write_imgtype,sep = "")
-    ggplot2::ggsave(filename =file_doy_plot,doy_plot,width=write_imgsize[2],height=write_imgsize[1])
-    
-    file_min_plot <- paste(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),
-                           "_annual_lowflow_minimum_days.",write_imgtype,sep = "")
-    ggplot2::ggsave(filename =file_min_plot,min_plot,width=write_imgsize[2],height=write_imgsize[1])
-  }
-  
+    ggplot2::scale_color_brewer(palette = "Set1") +
+    ggplot2::theme_bw() +
+    ggplot2::guides(colour = FALSE)+
+    ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                   panel.grid = ggplot2::element_line(size = .2),
+                   axis.title = ggplot2::element_text(size = 12),
+                   axis.text = ggplot2::element_text(size = 10))
+
+
+
   low_flow_plots <- list()
   low_flow_plots[["Annual_Minimums"]] <- min_plot
   low_flow_plots[["Annual_Minimum_Days"]] <- doy_plot
-  
-  
-  
+
+
   return(low_flow_plots)
   
 }

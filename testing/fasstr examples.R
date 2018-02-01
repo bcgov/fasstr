@@ -7,8 +7,18 @@ library(ggthemes)
 
 
 devtools::document()
-install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
-#install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
+#install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
+install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
+
+
+fasstr::plot_annual_flow_timing("08HB048")
+
+calc_annual_flow_timing("08HB048")
+
+
+
+
+fasstr::plot_annual_flow_timing("08HB048")
 
 write_plots(month_plot, file = "pdftestkkkk", format = "jpeg")
 

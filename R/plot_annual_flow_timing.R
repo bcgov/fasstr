@@ -17,23 +17,24 @@
 #'    values from a streamflow dataset. Calculates the statistics from all daily discharge values from all years, unless specified.
 #'    Data calculated using calc_annual_flow_timing() function.
 #'
-#' @param flow_data a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
-#'    names/numbers. Leave blank if using \code{HYDAT} argument.
-#' @param flow_dates a column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Leave blank if using \code{HYDAT} 
-#'    argument. Default \code{Date}. 
-#' @param flow_values a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
-#'    Leave blank if using \code{HYDAT} argument. Default \code{Value}.
-#' @param HYDAT a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-#'    extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
-#'    \code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.
-#' @param percent_total a numeric vector of percents of total annual flows to determine dates. Default \code{c(25,33.3,50,75)}.
-#' @param water_year a logical value indicating whether to use water years to group flow data instead of calendar years. Water years 
+#' @param data Daily data to be analyzed. Options:
+#' 
+#'    A data frame of daily data that contains columns of dates and values.
+#'    
+#'    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+#'    extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.   
+#' @param dates Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
+#'    using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}. 
+#' @param values Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
+#'    Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}. 
+#' @param percent_total Numeric vector of percents of total annual flows to determine dates. Default \code{c(25,33.3,50,75)}.
+#' @param water_year Logical value indicating whether to use water years to group data instead of calendar years. Water years 
 #'    are designated by the year in which they end. Default \code{FALSE}.
-#' @param water_year_start a numeric value indicating the month of the start of the water year. Used if \code{water_year=TRUE}. 
+#' @param water_year_start Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
 #'    Default \code{10}.
-#' @param start_year a numeric value of the first year to consider for analysis. Leave blank if all years are required.
-#' @param end_year a numeric value of the last year to consider for analysis. Leave blank if all years are required.
-#' @param exclude_years a numeric vector of years to exclude from analysis. Leave blank if all years are required.   
+#' @param start_year Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.
+#' @param end_year Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.
+#' @param exclude_years Numeric vector of years to exclude from analysis. Leave blank to include all years.             
 #'
 #' @return A ggplot2 object with the following plots:
 #'   \item{DoY_'n'pct_TotalQ}{day of year for each n-percent of total volumetric discharge}
@@ -46,18 +47,15 @@
 #' @examples
 #' \dontrun{
 #' 
-#'plot_annual_flow_timing(flowdata = flowdata)
-#' 
-#'plot_annual_flow_timing(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8, percent_total = 50)
+#'plot_annual_flow_timing(data = "08NM116", water_year = TRUE, water_year_start = 8, percent_total = 50)
 #'
 #' }
 #' @export
 
 
-plot_annual_flow_timing <- function(flow_data = NULL,
-                                    flow_dates = Date,
-                                    flow_values = Value,
-                                    HYDAT = NULL,
+plot_annual_flow_timing <- function(data = NULL,
+                                    dates = Date,
+                                    values = Value,
                                     percent_total = c(25,33.3,50,75),
                                     water_year = FALSE,
                                     water_year_start = 10,
@@ -65,93 +63,87 @@ plot_annual_flow_timing <- function(flow_data = NULL,
                                     end_year = 9999,
                                     exclude_years = NULL){ 
   
-  ## SETUP FLOW DATA
-  ## ---------------
+  ## CHECKS ON DATA FOR CALC
+  ##------------------------
   
   # Check if data is provided
-  if(is.null(flow_data) & is.null(HYDAT))   stop("No flow data provided, must use flow_data or HYDAT arguments.")
-  if(!is.null(flow_data) & !is.null(HYDAT)) stop("Only one of flow_data or HYDAT arguments can be used.")
+  if(is.null(data))   stop("No data provided, must provide a data frame or HYDAT station number(s).")
+  if(!is.data.frame(data) & !is.vector(data)) stop("No data provided, must provide a data frame or HYDAT station number(s).")
   
-  # Get HYDAT data if selected and stations exist
-  if(!is.null(HYDAT)) {
-    if(!all(HYDAT %in% dplyr::pull(tidyhydat::allstations[1]))) stop("One or more stations listed in 'HYDAT' do not exist.")
-    flow_data <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
+  # Check HYDAT stations
+  if(is.vector(data)) {
+    if(length(data) != 1)   stop("Only one HYDAT station number can be listed for this function.")
+    if(!data %in% dplyr::pull(tidyhydat::allstations[1]))  stop("Station number listed in data argument does not exist in HYDAT.")
   }
   
-  # Ungroup data if grouped
-  flow_data <- dplyr::ungroup(flow_data)
-  
-  # Get the just Date, and Value columns
-  # This method allows the user to select the Station, Date or Value columns if the column names are different
-  if(!as.character(substitute(flow_dates)) %in% names(flow_data))  
-    stop("Flow dates not found. Rename flow dates column to 'Date' or identify the column using 'flow_dates' argument.")
-  if(!as.character(substitute(flow_values)) %in% names(flow_data)) 
-    stop("Flow values not found. Rename flow values column to 'Value' or identify the column using 'flow_values' argument.")
-  
-  # Gather required columns
-  flow_data <- flow_data[,c(as.character(substitute(flow_dates)),
-                            as.character(substitute(flow_values)))]
-  colnames(flow_data) <- c("Date","Value")
-  
-  # Check columns are in proper formats
-  if(!inherits(flow_data$Date[1], "Date"))  stop("'Date' column in flow_data data frame does not contain dates.")
-  if(!is.numeric(flow_data$Value))          stop("'Value' column in flow_data data frame does not contain numeric values.")
-  
-  
-  ## CHECKS ON OTHER ARGUMENTS
-  ## -------------------------
-  
-  if(!is.logical(water_year))         stop("water_year argument must be logical (TRUE/FALSE).")
-  if(!is.numeric(water_year_start))   stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec).")
-  if(length(water_year_start)>1)      stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec).")
-  if(!water_year_start %in% c(1:12))  stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec).")
-  
-  if(length(start_year)>1)        stop("Only one start_year value can be listed")
-  if(!start_year %in% c(0:9999))  stop("start_year must be an integer.")
-  if(length(end_year)>1)          stop("Only one end_year value can be listed")
-  if(!end_year %in% c(0:9999))    stop("end_year must be an integer.")
-  if(start_year > end_year)       stop("start_year must be less than or equal to end_year.")
-  
-  if(!is.null(exclude_years) & !is.numeric(exclude_years)) stop("List of exclude_years must be numeric - ex. 1999 or c(1999,2000).")
-  if(!all(exclude_years %in% c(0:9999)))                   stop("Years listed in exclude_years must be integers.")
-  
-  if(!is.numeric(percent_total))                   stop("percent_total must be numeric")
-  if(!all(percent_total > 0 & percent_total < 100)) stop("percent_total must be >0 and <100)")
+  if(is.data.frame(data)) {
+    # Get the just groups (default STATION_NUMBER), Date, and Value columns
+    # This method allows the user to select the Station, Date or Value columns if the column names are different
+    if(!as.character(substitute(values)) %in% names(data) & !as.character(substitute(dates)) %in% names(data)) 
+      stop("Dates and values not found in data frame. Rename dates and values columns to 'Date' and 'Value' or identify the columns using 'dates' and 'values' arguments.")
+    if(!as.character(substitute(dates)) %in% names(data))  
+      stop("Dates not found in data frame. Rename dates column to 'Date' or identify the column using 'dates' argument.")
+    if(!as.character(substitute(values)) %in% names(data)) 
+      stop("Values not found in data frame. Rename values column to 'Value' or identify the column using 'values' argument.")
+    
+    # Temporarily rename the Date and Value columns
+    data <- data[,c(as.character(substitute(dates)),
+                    as.character(substitute(values)))]
+    colnames(data) <- c("Date","Value")
+    data <- dplyr::ungroup(data)
+    
+    
+    # Check columns are in proper formats
+    if(!inherits(data$Date[1], "Date"))  stop("'Date' column in data frame does not contain dates.")
+    if(!is.numeric(data$Value))          stop("'Value' column in data frame does not contain numeric values.")   
+    
+    # Remove these to fix warnings?
+    rm(c(dates,values))
+  }
   
   
   ## CALC STATS
   ## ----------
   
-  flowtiming_data <- fasstr::calc_annual_flow_timing(flow_data = flow_data,
-                                                     flow_dates = Date,
-                                                     flow_values = Value,
-                                                     HYDAT = NULL,
-                                                     percent_total = percent_total,
-                                                     water_year = water_year,
-                                                     water_year_start = water_year_start,
-                                                     start_year = start_year,
-                                                     end_year = end_year,
-                                                     exclude_years = exclude_years)
+  timing_stats <- calc_annual_flow_timing(data = data,
+                                          dates = Date,
+                                          values = Value,
+                                          percent_total = percent_total,
+                                          water_year = water_year,
+                                          water_year_start = water_year_start,
+                                          start_year = start_year,
+                                          end_year = end_year,
+                                          exclude_years = exclude_years)
   
-  flowtiming_data <- dplyr::select(flowtiming_data, Year, dplyr::contains("TotalQ"), -dplyr::contains("Date"))
-  flowtiming_data <- tidyr::gather(flowtiming_data, Statistic, Value, -1)
-  flowtiming_data <- dplyr::mutate(flowtiming_data, Statistic = substr(Statistic, 5, nchar(Statistic)))
+  timing_stats <- dplyr::select(timing_stats, Year, dplyr::contains("TotalQ"), -dplyr::contains("Date"))
+  timing_stats <- tidyr::gather(timing_stats, Statistic, Value, -1)
+  timing_stats <- dplyr::mutate(timing_stats, Statistic = substr(Statistic, 5, nchar(Statistic)))
+  timing_stats <- dplyr::mutate(timing_stats, Statistic = paste0(gsub("pct_TotalQ", "", Statistic), " Percent"))
+  
   
   
   ## PLOT STATS
   ## ----------
   
-  flowtiming_plot <- ggplot2::ggplot(data = flowtiming_data, ggplot2::aes(x = Year, y = Value)) +
+  flowtiming_plot <- ggplot2::ggplot(data = timing_stats, ggplot2::aes(x = Year, y = Value)) +
     ggplot2::geom_line(ggplot2::aes(colour = Statistic)) +
     ggplot2::geom_point(ggplot2::aes(colour = Statistic)) +
-    ggplot2::facet_wrap(~Statistic, scales = "free_x", ncol = 1, strip.position = "right") +
+    {if(length(percent_total) > 1) ggplot2::facet_wrap(~Statistic, scales = "free_x", ncol = 1, strip.position = "right")} +
     ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
     ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
     ggplot2::ylab("Day of Year") +
     ggplot2::xlab("Year") +
+    ggplot2::scale_color_brewer(palette = "Set1") +
+    ggplot2::theme_bw() +
     ggplot2::guides(colour = FALSE) +
-    ggplot2::theme(panel.border = ggplot2::element_rect(colour = "grey80", fill = NA, size = .1),
-                   panel.grid = ggplot2::element_line(size = .2))
+    ggplot2::theme(legend.position = "right", 
+                   legend.spacing = ggplot2::unit(0, "cm"),
+                   legend.justification = "top",
+                   legend.text = ggplot2::element_text(size = 9),
+                   panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                   panel.grid = ggplot2::element_line(size = .2),
+                   axis.title = ggplot2::element_text(size = 12),
+                   axis.text = ggplot2::element_text(size = 10))
   
   
   flowtiming_plot

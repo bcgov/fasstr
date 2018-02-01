@@ -4,38 +4,38 @@
 \alias{plot_annual_flow_timing}
 \title{Plot annual flow timing}
 \usage{
-plot_annual_flow_timing(flow_data = NULL, flow_dates = Date,
-  flow_values = Value, HYDAT = NULL, percent_total = c(25, 33.3, 50, 75),
-  water_year = FALSE, water_year_start = 10, start_year = 0,
-  end_year = 9999, exclude_years = NULL)
+plot_annual_flow_timing(data = NULL, dates = Date, values = Value,
+  percent_total = c(25, 33.3, 50, 75), water_year = FALSE,
+  water_year_start = 10, start_year = 0, end_year = 9999,
+  exclude_years = NULL)
 }
 \arguments{
-\item{flow_data}{a data frame of daily mean flow data that contains columns of dates, flow values, and (optional) station 
-names/numbers. Leave blank if using \code{HYDAT} argument.}
+\item{data}{Daily data to be analyzed. Options:
 
-\item{flow_dates}{a column in flow_data that contains dates of daily flow data formatted YYYY-MM-DD. Leave blank if using \code{HYDAT} 
-argument. Default \code{Date}.}
+   A data frame of daily data that contains columns of dates and values.
+   
+   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
 
-\item{flow_values}{a column in flow_data that contains numeric values of daily mean flow data, in units of cubic metres per second. 
-Leave blank if using \code{HYDAT} argument. Default \code{Value}.}
+\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
+using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
 
-\item{HYDAT}{a character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-extract daily streamflow data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the 
-\code{tidyhydat} package and a HYDAT database are required. Leave blank if using \code{flow_data} arguments.}
+\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
+Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
 
-\item{percent_total}{a numeric vector of percents of total annual flows to determine dates. Default \code{c(25,33.3,50,75)}.}
+\item{percent_total}{Numeric vector of percents of total annual flows to determine dates. Default \code{c(25,33.3,50,75)}.}
 
-\item{water_year}{a logical value indicating whether to use water years to group flow data instead of calendar years. Water years 
+\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
 are designated by the year in which they end. Default \code{FALSE}.}
 
-\item{water_year_start}{a numeric value indicating the month of the start of the water year. Used if \code{water_year=TRUE}. 
+\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
 Default \code{10}.}
 
-\item{start_year}{a numeric value of the first year to consider for analysis. Leave blank if all years are required.}
+\item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
-\item{end_year}{a numeric value of the last year to consider for analysis. Leave blank if all years are required.}
+\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
 
-\item{exclude_years}{a numeric vector of years to exclude from analysis. Leave blank if all years are required.}
+\item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 }
 \value{
 A ggplot2 object with the following plots:
@@ -54,9 +54,7 @@ Plots annual the timing (day of year) of occurrence of portions of total annual 
 \examples{
 \dontrun{
 
-plot_annual_flow_timing(flowdata = flowdata)
-
-plot_annual_flow_timing(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8, percent_total = 50)
+plot_annual_flow_timing(data = "08NM116", water_year = TRUE, water_year_start = 8, percent_total = 50)
 
 }
 }
