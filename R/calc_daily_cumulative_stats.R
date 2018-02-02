@@ -239,7 +239,7 @@ calc_daily_cumulative_stats <- function(data = NULL,
   ## --------------------
   
   # Calculate basic stats
-  Q_daily <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, AnalysisDoY),
+  daily_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, AnalysisDoY),
                               Mean = mean(Cumul_Flow, na.rm = ignore_missing),
                               Median = median(Cumul_Flow, na.rm = ignore_missing),
                               Minimum = min(Cumul_Flow, na.rm = ignore_missing),
@@ -248,49 +248,48 @@ calc_daily_cumulative_stats <- function(data = NULL,
   # Compute daily percentiles (if 10 or more years of data)
   if (!all(is.na(percentiles))){
     for (ptile in percentiles) {
-      Q_daily_ptile <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, AnalysisDoY),
+      daily_stats_ptile <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, AnalysisDoY),
                                         Percentile = quantile(Cumul_Flow, ptile / 100, na.rm = TRUE))
-      names(Q_daily_ptile)[names(Q_daily_ptile) == "Percentile"] <- paste0("P", ptile)
+      names(daily_stats_ptile)[names(daily_stats_ptile) == "Percentile"] <- paste0("P", ptile)
       
-      # Merge with Q_daily
-      Q_daily <- merge(Q_daily, Q_daily_ptile, by = c("STATION_NUMBER", "AnalysisDate", "AnalysisDoY"))
+      # Merge with daily_stats
+      daily_stats <- merge(daily_stats, daily_stats_ptile, by = c("STATION_NUMBER", "AnalysisDate", "AnalysisDoY"))
       
       # Remove percentile if mean is NA (workaround for na.rm=FALSE in quantile)
-      Q_daily[, ncol(Q_daily)] <- ifelse(is.na(Q_daily$Mean), NA, Q_daily[, ncol(Q_daily)])
+      daily_stats[, ncol(daily_stats)] <- ifelse(is.na(daily_stats$Mean), NA, daily_stats[, ncol(daily_stats)])
     }
   }
   
   # Final formatting
-  Q_daily <- dplyr::rename(Q_daily, DayofYear = AnalysisDoY, Date = AnalysisDate)
-  Q_daily$Date <- format(as.Date(Q_daily$Date), format = "%b-%d")
-  col_order <- Q_daily$Date
+  daily_stats <- dplyr::rename(daily_stats, DayofYear = AnalysisDoY, Date = AnalysisDate)
+  daily_stats$Date <- format(as.Date(daily_stats$Date), format = "%b-%d")
+  col_order <- daily_stats$Date
   
   
   # If transpose if selected, switch columns and rows
   if (transpose) {
     # Get list of columns to order the Statistic column after transposing
-    stat_levels <- names(Q_daily[-(1:2)])
+    stat_levels <- names(daily_stats[-(1:2)])
     
     # Transpose the columns for rows
-    Q_daily <- tidyr::gather(Q_daily, Statistic, Value, -STATION_NUMBER, -Date)
-    Q_daily <- tidyr::spread(Q_daily, Date, Value)
+    daily_stats <- tidyr::gather(daily_stats, Statistic, Value, -STATION_NUMBER, -Date)
+    daily_stats <- tidyr::spread(daily_stats, Date, Value)
     
     # Order the columns
-    Q_daily <-  Q_daily[, c("STATION_NUMBER", "Statistic", col_order)]
-    Q_daily$Statistic <- as.factor(Q_daily$Statistic)
-    levels(Q_daily$Statistic) <- stat_levels
-    Q_daily <- with(Q_daily, Q_daily[order(STATION_NUMBER, Statistic),])
+    daily_stats <-  daily_stats[, c("STATION_NUMBER", "Statistic", col_order)]
+    daily_stats$Statistic <- factor(daily_stats$Statistic, levels = stat_levels)
+    daily_stats <- dplyr::arrange(daily_stats, STATION_NUMBER, Statistic)
   }
   
   
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
   if("STATION_NUMBER" %in% orig_cols) {
-    names(Q_daily)[names(Q_daily) == "STATION_NUMBER"] <- as.character(substitute(groups))
+    names(daily_stats)[names(daily_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
-    Q_daily <- dplyr::select(Q_daily, -STATION_NUMBER)
+    daily_stats <- dplyr::select(daily_stats, -STATION_NUMBER)
   }
 
   
-  dplyr::as_tibble(Q_daily)
+  dplyr::as_tibble(daily_stats)
   
 }

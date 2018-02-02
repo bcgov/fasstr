@@ -232,9 +232,8 @@ calc_annual_lowflows <- function(data = NULL,
     lowflow_stats <- tidyr::spread(lowflow_stats, Year, Value)
     
     # Order the columns
-    lowflow_stats$Statistic <- as.factor(lowflow_stats$Statistic)
-    levels(lowflow_stats$Statistic) <- stat_levels
-    lowflow_stats <- with(lowflow_stats, lowflow_stats[order(STATION_NUMBER, Statistic),])
+    lowflow_stats$Statistic <- factor(lowflow_stats$Statistic, levels = stat_levels)
+    lowflow_stats <- dplyr::arrange(lowflow_stats, STATION_NUMBER, Statistic)
   }
   
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary

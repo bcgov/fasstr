@@ -216,9 +216,8 @@ calc_annual_outside_normal <- function(data = NULL,
     normals_stats <- tidyr::spread(normals_stats, Year, Value)
 
     # Order the columns
-    normals_stats$Statistic <- as.factor(normals_stats$Statistic)
-    levels(normals_stats$Statistic) <- stat_levels
-    normals_stats <- with(normals_stats, normals_stats[order(STATION_NUMBER, Statistic),])
+    normals_stats$Statistic <- factor(normals_stats$Statistic, levels = stat_levels)
+    normals_stats <- dplyr::arrange(normals_stats, STATION_NUMBER, Statistic)
   }
 
 

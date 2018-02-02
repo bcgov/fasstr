@@ -262,9 +262,8 @@ calc_monthly_cumulative_stats <- function(data = NULL,
     monthly_cumul <- tidyr::spread(monthly_cumul, Month, Value)
     
     # Order the columns
-    monthly_cumul$Statistic <- as.factor(monthly_cumul$Statistic)
-    levels(monthly_cumul$Statistic) <- stat_levels
-    monthly_cumul <- with(monthly_cumul, monthly_cumul[order(STATION_NUMBER, Statistic),])
+    monthly_cumul$Statistic <- factor(monthly_cumul$Statistic, levels = stat_levels)
+    monthly_cumul <- dplyr::arrange(monthly_cumul, STATION_NUMBER, Statistic)
   }
   
   # Recheck if station_number was in original flow_data and rename or remove as necessary

@@ -151,8 +151,8 @@ calc_all_annual_stats <- function(data = NULL,
   
   # Gather required columns (will temporarily rename groups column as STATION_NUMBER if isn't already)
   data <- data[,c(as.character(substitute(groups)),
-                            as.character(substitute(dates)),
-                            as.character(substitute(values)))]
+                  as.character(substitute(dates)),
+                  as.character(substitute(values)))]
   colnames(data) <- c("STATION_NUMBER","Date","Value")
   
   # Check columns are in proper formats
@@ -222,7 +222,7 @@ calc_all_annual_stats <- function(data = NULL,
                                     exclude_years = exclude_years, 
                                     ignore_missing = ignore_missing)
   
-
+  
   lowflow_stats <- calc_annual_lowflows(data = data,
                                         rolling_days = lowflow_days,
                                         rolling_align = lowflow_align,
@@ -233,8 +233,8 @@ calc_all_annual_stats <- function(data = NULL,
                                         exclude_years = exclude_years,
                                         ignore_missing = ignore_missing)
   lowflow_stats <- dplyr::select(lowflow_stats, -dplyr::contains("Date"))
-
-
+  
+  
   totalQ_stats <- calc_annual_cumulative_stats(data = data,
                                                use_yield = FALSE,
                                                basin_area = NA,
@@ -244,7 +244,7 @@ calc_all_annual_stats <- function(data = NULL,
                                                end_year = end_year,
                                                exclude_years = exclude_years,
                                                incl_seasons = TRUE)
-
+  
   totalyield_stats <- calc_annual_cumulative_stats(data = data,
                                                    use_yield = TRUE,
                                                    basin_area = basin_area,
@@ -254,8 +254,8 @@ calc_all_annual_stats <- function(data = NULL,
                                                    end_year = end_year,
                                                    exclude_years = exclude_years,
                                                    incl_seasons = TRUE)
-
-
+  
+  
   timing_stats <- calc_annual_flow_timing(data = data,
                                           percent_total = timing_percent,
                                           water_year = water_year,
@@ -264,8 +264,8 @@ calc_all_annual_stats <- function(data = NULL,
                                           end_year = end_year,
                                           exclude_years = exclude_years)
   timing_stats <- dplyr::select(timing_stats, STATION_NUMBER, Year, dplyr::contains("DoY"))
-
-    
+  
+  
   month_stats <- calc_monthly_stats(data = data,
                                     percentiles = monthly_percentiles,
                                     rolling_days = stats_days,
@@ -288,7 +288,7 @@ calc_all_annual_stats <- function(data = NULL,
                                               start_year = start_year,
                                               end_year = end_year,
                                               exclude_years = exclude_years)
-
+  
   ## COMBINE ALL STATS
   ## -----------------
   
@@ -308,11 +308,11 @@ calc_all_annual_stats <- function(data = NULL,
   col_order <- c("STATION_NUMBER", "Year", unique(all_stats$Stat))
   all_stats <- tidyr::spread(all_stats, Stat, Value)
   all_stats <- all_stats[, col_order]
-
+  
   # Remove excluded years
   all_stats <- dplyr::filter(all_stats, Year >= start_year & Year <= end_year)
   all_stats[all_stats$Year %in% exclude_years, -(1:2)] <- NA
-
+  
   
   # If transpose if selected, switch columns and rows
   if (transpose) {
@@ -326,9 +326,8 @@ calc_all_annual_stats <- function(data = NULL,
     all_stats <- tidyr::spread(all_stats, Year, Value)
     
     # Order the columns
-   # all_stats$Statistic <- as.factor(all_stats$Statistic)
-  #  levels(all_stats$Statistic) <- stat_levels
-  #  all_stats <- with(all_stats, all_stats[order(STATION_NUMBER, Statistic),])
+    all_stats$Statistic <- factor(all_stats$Statistic, levels = stat_levels)
+    all_stats <- dplyr::arrange(all_stats, STATION_NUMBER, Statistic)
   }
   
   

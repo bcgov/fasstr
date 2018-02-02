@@ -187,15 +187,15 @@ calc_lt_mad <- function(data = NULL,
   ## CALCULATE STATISTICS
   ## --------------------
   
-  Q_ltmad <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER),
+  ltmad_stats <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER),
                               LTMAD = mean(RollingValue, na.rm = TRUE))
   
   
   # Calculate the monthly and longterm percentiles
   if(!all(is.na(percent_MAD))) {
     for (pcnt in percent_MAD) {
-      Q_ltmad <- dplyr::mutate(Q_ltmad, Percent = LTMAD * pcnt / 100)
-      names(Q_ltmad)[names(Q_ltmad) == "Percent"] <- paste0(pcnt,"%MAD")
+      ltmad_stats <- dplyr::mutate(ltmad_stats, Percent = LTMAD * pcnt / 100)
+      names(ltmad_stats)[names(ltmad_stats) == "Percent"] <- paste0(pcnt,"%MAD")
       
     }
   }
@@ -203,31 +203,30 @@ calc_lt_mad <- function(data = NULL,
   # If transpose if selected, switch columns and rows
   if (transpose) {
     # Get list of columns to order the Statistic column after transposing
-    stat_levels <- names(Q_ltmad[-(1)])
+    stat_levels <- names(ltmad_stats[-(1)])
     
     # Transpose the columns for rows
-    Q_ltmad <- tidyr::gather(Q_ltmad, Statistic, Value, -STATION_NUMBER)
+    ltmad_stats <- tidyr::gather(ltmad_stats, Statistic, Value, -STATION_NUMBER)
     
     # Order the columns
-    Q_ltmad$Statistic <- as.factor(Q_ltmad$Statistic)
-    levels(Q_ltmad$Statistic) <- stat_levels
-    Q_ltmad <- with(Q_ltmad, Q_ltmad[order(STATION_NUMBER, Statistic),])
+    ltmad_stats$Statistic <- factor(ltmad_stats$Statistic, levels = stat_levels)
+    ltmad_stats <- dplyr::arrange(ltmad_stats, STATION_NUMBER, Statistic)
   }
   
   # Recheck if station_number was in original flow_data and rename or remove as necessary
   if(as.character(substitute(groups)) %in% orig_cols) {
-    names(Q_ltmad)[names(Q_ltmad) == "STATION_NUMBER"] <- as.character(substitute(groups))
+    names(ltmad_stats)[names(ltmad_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
-    Q_ltmad <- dplyr::select(Q_ltmad, -STATION_NUMBER)
+    ltmad_stats <- dplyr::select(ltmad_stats, -STATION_NUMBER)
   }
   
   
   
   # If just one value is in the table, return is as a value, otherwise return it as a tibble
-  if(nrow(Q_ltmad) == 1 & ncol(Q_ltmad) == 1){
-    dplyr::pull(dplyr::as_tibble(Q_ltmad)[1,1])
+  if(nrow(ltmad_stats) == 1 & ncol(ltmad_stats) == 1){
+    dplyr::pull(dplyr::as_tibble(ltmad_stats)[1,1])
   } else {
-    dplyr::as_tibble(Q_ltmad)
+    dplyr::as_tibble(ltmad_stats)
   }
   
 }

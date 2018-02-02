@@ -189,47 +189,46 @@ calc_lt_percentile <- function(data = NULL,
   #--------------------------------------------------------------
   # Complete the analysis
   
-  Q_ptile <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER))
+  ptile_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER))
   # Calculate the long-term percentile
   for(ptile in percentiles){
-    Q_ptiles <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER),
+    ptile_statss <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER),
                                  Percentile = quantile(RollingValue, ptile / 100, na.rm = TRUE))
-    names(Q_ptiles)[names(Q_ptiles) == "Percentile"] <- paste0("P", ptile)
+    names(ptile_statss)[names(ptile_statss) == "Percentile"] <- paste0("P", ptile)
     
-    # Merge with Q_ptiles
-    Q_ptile <- merge(Q_ptile, Q_ptiles, by = c("STATION_NUMBER"))
+    # Merge with ptile_statss
+    ptile_stats <- merge(ptile_stats, ptile_statss, by = c("STATION_NUMBER"))
   }
   
   
   # If transpose if selected, switch columns and rows
   if (transpose) {
     # Get list of columns to order the Statistic column after transposing
-    stat_levels <- names(Q_ptile[-(1)])
+    stat_levels <- names(ptile_stats[-(1)])
     
     # Transpose the columns for rows
-    Q_ptile <- tidyr::gather(Q_ptile, Statistic, Value, -STATION_NUMBER)
+    ptile_stats <- tidyr::gather(ptile_stats, Statistic, Value, -STATION_NUMBER)
     
     # Order the columns
-    Q_ptile$Statistic <- as.factor(Q_ptile$Statistic)
-    levels(Q_ptile$Statistic) <- stat_levels
-    Q_ptile <- with(Q_ptile, Q_ptile[order(STATION_NUMBER, Statistic),])
+    ptile_stats$Statistic <- factor(ptile_stats$Statistic, levels = stat_levels)
+    ptile_stats <- dplyr::arrange(ptile_stats, STATION_NUMBER, Statistic)
   }
   
   
   # Recheck if station_number was in original flow_data and rename or remove as necessary
   if(as.character(substitute(groups)) %in% orig_cols) {
-    names(Q_ptile)[names(Q_ptile) == "STATION_NUMBER"] <- as.character(substitute(groups))
+    names(ptile_stats)[names(ptile_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
-    Q_ptile <- dplyr::select(Q_ptile, -STATION_NUMBER)
+    ptile_stats <- dplyr::select(ptile_stats, -STATION_NUMBER)
   }
   
 
     
   # If just one value is in the table, return is as a value, otherwise return it as a tibble
-  if(nrow(Q_ptile) == 1 & ncol(Q_ptile) == 1){
-    dplyr::pull(dplyr::as_tibble(Q_ptile)[1,1])
+  if(nrow(ptile_stats) == 1 & ncol(ptile_stats) == 1){
+    dplyr::pull(dplyr::as_tibble(ptile_stats)[1,1])
   } else {
-    dplyr::as_tibble(Q_ptile)
+    dplyr::as_tibble(ptile_stats)
   }
 
   

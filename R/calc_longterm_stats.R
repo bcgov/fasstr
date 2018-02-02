@@ -218,14 +218,14 @@ calc_longterm_stats <- function(data = NULL,
                                Median = median(RollingValue, na.rm = ignore_missing),
                                Maximum = max(RollingValue, na.rm = ignore_missing),
                                Minimum = min(RollingValue, na.rm = ignore_missing))
-  Q_longterm   <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER),
+  longterm_stats   <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER),
                                    Mean = mean(RollingValue, na.rm = ignore_missing),
                                    Median = median(RollingValue, na.rm = ignore_missing),
                                    Maximum = max(RollingValue, na.rm = ignore_missing),
                                    Minimum = min(RollingValue, na.rm = ignore_missing))
-  Q_longterm <- dplyr::mutate(Q_longterm, MonthName = as.factor("Long-term"))
+  longterm_stats <- dplyr::mutate(longterm_stats, MonthName = as.factor("Long-term"))
   
-  Q_longterm <- rbind(dplyr::ungroup(Q_months), dplyr::ungroup(Q_longterm))  #dplyr::bindrows gives unnecessary warnings
+  longterm_stats <- rbind(dplyr::ungroup(Q_months), dplyr::ungroup(longterm_stats))  #dplyr::bindrows gives unnecessary warnings
   
   
   # Calculate the monthly and longterm percentiles
@@ -235,18 +235,18 @@ calc_longterm_stats <- function(data = NULL,
       Q_months_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, MonthName),
                                          Percentile = ifelse(!is.na(mean(RollingValue, na.rm = FALSE)) | ignore_missing, 
                                                              quantile(RollingValue, ptile / 100, na.rm = TRUE), NA))
-      Q_longterm_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER),
+      longterm_stats_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER),
                                            Percentile = ifelse(!is.na(mean(RollingValue, na.rm = FALSE)) | ignore_missing, 
                                                                quantile(RollingValue, ptile / 100, na.rm = TRUE), NA))
-      Q_longterm_ptile <- dplyr::mutate(Q_longterm_ptile, MonthName = "Long-term")
+      longterm_stats_ptile <- dplyr::mutate(longterm_stats_ptile, MonthName = "Long-term")
       
       names(Q_months_ptile)[names(Q_months_ptile) == "Percentile"] <- paste0("P", ptile)
-      names(Q_longterm_ptile)[names(Q_longterm_ptile) == "Percentile"] <- paste0("P", ptile)
+      names(longterm_stats_ptile)[names(longterm_stats_ptile) == "Percentile"] <- paste0("P", ptile)
       
-      Q_longterm_ptile <- rbind(dplyr::ungroup(Q_months_ptile), dplyr::ungroup(Q_longterm_ptile))  #dplyr::bindrows gives unnecessary warnings
+      longterm_stats_ptile <- rbind(dplyr::ungroup(Q_months_ptile), dplyr::ungroup(longterm_stats_ptile))  #dplyr::bindrows gives unnecessary warnings
       
-      # Merge with Q_longterm
-      Q_longterm <- merge(Q_longterm,Q_longterm_ptile,by=c("STATION_NUMBER", "MonthName"))
+      # Merge with longterm_stats
+      longterm_stats <- merge(longterm_stats,longterm_stats_ptile,by=c("STATION_NUMBER", "MonthName"))
     }
   }
   
@@ -275,41 +275,40 @@ calc_longterm_stats <- function(data = NULL,
         Q_months_custom <- merge(dplyr::ungroup(Q_months_custom), dplyr::ungroup(Q_ptile_custom), by = c("STATION_NUMBER", "MonthName"))
       }
     }
-    # Merge with Q_longterm
-    Q_longterm <- rbind(Q_longterm, Q_months_custom)
+    # Merge with longterm_stats
+    longterm_stats <- rbind(longterm_stats, Q_months_custom)
   }
   
   # Rename Month column and reorder to proper levels (set in add_date_vars)
-  Q_longterm <- dplyr::rename(Q_longterm, Month = MonthName)
-  Q_longterm <- with(Q_longterm, Q_longterm[order(STATION_NUMBER, Month),])
-  #  row.names(Q_longterm) <- c(1:nrow(Q_longterm))
+  longterm_stats <- dplyr::rename(longterm_stats, Month = MonthName)
+  longterm_stats <- with(longterm_stats, longterm_stats[order(STATION_NUMBER, Month),])
+  #  row.names(longterm_stats) <- c(1:nrow(longterm_stats))
   
   
   # If transpose if selected, switch columns and rows
   if (transpose) {
     # Get list of columns to order the Statistic column after transposing
-    stat_levels <- names(Q_longterm[-(1:2)])
+    stat_levels <- names(longterm_stats[-(1:2)])
     
     # Transpose the columns for rows
-    Q_longterm <- tidyr::gather(Q_longterm, Statistic, Value, -STATION_NUMBER, -Month)
-    Q_longterm <- tidyr::spread(Q_longterm, Month, Value)
+    longterm_stats <- tidyr::gather(longterm_stats, Statistic, Value, -STATION_NUMBER, -Month)
+    longterm_stats <- tidyr::spread(longterm_stats, Month, Value)
     
     # Order the columns
-    Q_longterm$Statistic <- as.factor(Q_longterm$Statistic)
-    levels(Q_longterm$Statistic) <- stat_levels
-    Q_longterm <- with(Q_longterm, Q_longterm[order(STATION_NUMBER, Statistic),])
+    longterm_stats$Statistic <- factor(longterm_stats$Statistic, levels = stat_levels)
+    longterm_stats <- dplyr::arrange(longterm_stats, STATION_NUMBER, Statistic)
   }
   
   # Recheck if station_number was in original flow_data and rename or remove as necessary
   if(as.character(substitute(groups)) %in% orig_cols) {
-    names(Q_longterm)[names(Q_longterm) == "STATION_NUMBER"] <- as.character(substitute(groups))
+    names(longterm_stats)[names(longterm_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
-    Q_longterm <- dplyr::select(Q_longterm, -STATION_NUMBER)
+    longterm_stats <- dplyr::select(longterm_stats, -STATION_NUMBER)
   }
   
   
   
-  dplyr::as_tibble(Q_longterm)
+  dplyr::as_tibble(longterm_stats)
   
   
 }

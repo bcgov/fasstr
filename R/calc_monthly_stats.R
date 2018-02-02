@@ -202,7 +202,7 @@ calc_monthly_stats <- function(data = NULL,
   ## --------------------
   
   # Calculate basic stats
-  Q_monthly <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
+  monthly_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
                                 Mean = mean(RollingValue, na.rm = ignore_missing),  
                                 Median = median(RollingValue, na.rm = ignore_missing), 
                                 Maximum = max (RollingValue, na.rm = ignore_missing),    
@@ -211,112 +211,112 @@ calc_monthly_stats <- function(data = NULL,
   # Calculate annual percentiles
   if(!all(is.na(percentiles))) {
     for (ptile in percentiles) {
-      Q_monthly_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
+      monthly_stats_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
                                           Percentile = quantile(RollingValue, ptile / 100, na.rm = TRUE))
-      names(Q_monthly_ptile)[names(Q_monthly_ptile) == "Percentile"] <- paste0("P", ptile)
+      names(monthly_stats_ptile)[names(monthly_stats_ptile) == "Percentile"] <- paste0("P", ptile)
       
-      # Merge with Q_monthly
-      Q_monthly <- merge(Q_monthly, Q_monthly_ptile, by = c("STATION_NUMBER", "AnalysisYear", "MonthName"))
+      # Merge with monthly_stats
+      monthly_stats <- merge(monthly_stats, monthly_stats_ptile, by = c("STATION_NUMBER", "AnalysisYear", "MonthName"))
       
       # Remove percentile if mean is NA (workaround for na.rm=FALSE in quantile)
-      Q_monthly[, ncol(Q_monthly)] <- ifelse(is.na(Q_monthly$Mean), NA, Q_monthly[, ncol(Q_monthly)])
+      monthly_stats[, ncol(monthly_stats)] <- ifelse(is.na(monthly_stats$Mean), NA, monthly_stats[, ncol(monthly_stats)])
     }
   }
   
   # Rename year column
-  Q_monthly <-   dplyr::rename(Q_monthly, Year = AnalysisYear, Month = MonthName)
+  monthly_stats <-   dplyr::rename(monthly_stats, Year = AnalysisYear, Month = MonthName)
   
   
   # Set the levels of the months for proper ordering
   if (water_year) {
     if (water_year_start == 1) {
-      Q_monthly$Month <- factor(Q_monthly$Month, 
+      monthly_stats$Month <- factor(monthly_stats$Month, 
                                 levels=c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
     } else if (water_year_start == 2) {
-      Q_monthly$Month <- factor(Q_monthly$Month, 
+      monthly_stats$Month <- factor(monthly_stats$Month, 
                                 levels=c("Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan"))
     } else if (water_year_start == 3) {
-      Q_monthly$Month <- factor(Q_monthly$Month, 
+      monthly_stats$Month <- factor(monthly_stats$Month, 
                                 levels=c("Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb"))
     } else if (water_year_start == 4) {
-      Q_monthly$Month <- factor(Q_monthly$Month, 
+      monthly_stats$Month <- factor(monthly_stats$Month, 
                                 levels=c("Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"))
     } else if (water_year_start == 5) {
-      Q_monthly$Month <- factor(Q_monthly$Month, 
+      monthly_stats$Month <- factor(monthly_stats$Month, 
                                 levels=c("May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"))
     } else if (water_year_start == 6) {
-      Q_monthly$Month <- factor(Q_monthly$Month, 
+      monthly_stats$Month <- factor(monthly_stats$Month, 
                                 levels=c("Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May"))
     } else if (water_year_start == 7) {
-      Q_monthly$Month <- factor(Q_monthly$Month, 
+      monthly_stats$Month <- factor(monthly_stats$Month, 
                                 levels=c("Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun"))
     } else if (water_year_start == 8) {
-      Q_monthly$Month <- factor(Q_monthly$Month, 
+      monthly_stats$Month <- factor(monthly_stats$Month, 
                                 levels=c("Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"))
     } else if (water_year_start == 9) {
-      Q_monthly$Month <- factor(Q_monthly$Month, 
+      monthly_stats$Month <- factor(monthly_stats$Month, 
                                 levels=c("Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"))
     } else if (water_year_start == 10) {
-      Q_monthly$Month <- factor(Q_monthly$Month, 
+      monthly_stats$Month <- factor(monthly_stats$Month, 
                                 levels=c("Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"))
     } else if (water_year_start == 11) {
-      Q_monthly$Month <- factor(Q_monthly$Month, 
+      monthly_stats$Month <- factor(monthly_stats$Month, 
                                 levels=c("Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"))
     } else if (water_year_start == 12) {
-      Q_monthly$Month <- factor(Q_monthly$Month, 
+      monthly_stats$Month <- factor(monthly_stats$Month, 
                                 levels=c("Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"))
     }
   } else {           
-    Q_monthly$Month <- factor(Q_monthly$Month,
+    monthly_stats$Month <- factor(monthly_stats$Month,
                               levels=c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
   }
   
   # Reorder months and row.names
-  Q_monthly <- with(Q_monthly, Q_monthly[order(Year, Month),])
+  monthly_stats <- with(monthly_stats, monthly_stats[order(Year, Month),])
   
   
   # Make excluded years data NA
   if(as.character(substitute(groups)) %in% orig_cols) {
-    Q_monthly[Q_monthly$Year %in% exclude_years,-(1:3)] <- NA
+    monthly_stats[monthly_stats$Year %in% exclude_years,-(1:3)] <- NA
   } else {
-    Q_monthly[Q_monthly$Year %in% exclude_years,-(1:2)] <- NA
+    monthly_stats[monthly_stats$Year %in% exclude_years,-(1:2)] <- NA
   }
   
   
   # Transform data to chosen format
   # Spread data if selected
   if (spread | transpose) {
-    Q_monthly_spread <- dplyr::summarise(dplyr::group_by(Q_monthly, STATION_NUMBER, Year))
-    for (mnth in unique(Q_monthly$Month)) {
-      Q_monthly_month <- dplyr::filter(Q_monthly, Month == mnth)
-      Q_monthly_month <- tidyr::gather(Q_monthly_month, Statistic, Value, 4:ncol(Q_monthly_month))
-      Q_monthly_month <- dplyr::mutate(Q_monthly_month, StatMonth = paste0(Month, "_", Statistic))
-      Q_monthly_month <- dplyr::select(Q_monthly_month, -Statistic, -Month)
-      Qstat_order <- unique(Q_monthly_month$StatMonth)
-      Q_monthly_month <- tidyr::spread(Q_monthly_month, StatMonth, Value)
-      Q_monthly_month <-  Q_monthly_month[, c("STATION_NUMBER", "Year", Qstat_order)]
-      Q_monthly_spread <- merge(Q_monthly_spread, Q_monthly_month, by = c("STATION_NUMBER", "Year"), all = TRUE)
+    monthly_stats_spread <- dplyr::summarise(dplyr::group_by(monthly_stats, STATION_NUMBER, Year))
+    for (mnth in unique(monthly_stats$Month)) {
+      monthly_stats_month <- dplyr::filter(monthly_stats, Month == mnth)
+      monthly_stats_month <- tidyr::gather(monthly_stats_month, Statistic, Value, 4:ncol(monthly_stats_month))
+      monthly_stats_month <- dplyr::mutate(monthly_stats_month, StatMonth = paste0(Month, "_", Statistic))
+      monthly_stats_month <- dplyr::select(monthly_stats_month, -Statistic, -Month)
+      stat_order <- unique(monthly_stats_month$StatMonth)
+      monthly_stats_month <- tidyr::spread(monthly_stats_month, StatMonth, Value)
+      monthly_stats_month <-  monthly_stats_month[, c("STATION_NUMBER", "Year", stat_order)]
+      monthly_stats_spread <- merge(monthly_stats_spread, monthly_stats_month, by = c("STATION_NUMBER", "Year"), all = TRUE)
     }
-    Q_monthly <- Q_monthly_spread
+    monthly_stats <- monthly_stats_spread
     
     if(transpose){
-      Q_monthly <- tidyr::gather(Q_monthly, Statistic, Value, -(1:2))
+      monthly_stats <- tidyr::gather(monthly_stats, Statistic, Value, -(1:2))
     }
   }
   
-  Q_monthly <- with(Q_monthly, Q_monthly[order(STATION_NUMBER, Year),])
-  row.names(Q_monthly) <- c(1:nrow(Q_monthly))
+  monthly_stats <- with(monthly_stats, monthly_stats[order(STATION_NUMBER, Year),])
+  row.names(monthly_stats) <- c(1:nrow(monthly_stats))
   
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
   if("STATION_NUMBER" %in% orig_cols) {
-    names(Q_monthly)[names(Q_monthly) == "STATION_NUMBER"] <- as.character(substitute(groups))
+    names(monthly_stats)[names(monthly_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
-    Q_monthly <- dplyr::select(Q_monthly, -STATION_NUMBER)
+    monthly_stats <- dplyr::select(monthly_stats, -STATION_NUMBER)
   }
   
   
   
-  dplyr::as_tibble(Q_monthly)
+  dplyr::as_tibble(monthly_stats)
   
 }
 

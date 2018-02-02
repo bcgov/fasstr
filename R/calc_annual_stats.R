@@ -192,7 +192,7 @@ calc_annual_stats <- function(data = NULL,
   ## --------------------
 
   # Calculate basic stats
-  Q_annual <-   dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
+  annual_stats <-   dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
                                  Mean = mean(RollingValue, na.rm = ignore_missing),  
                                  Median = median(RollingValue, na.rm = ignore_missing), 
                                  Maximum = max (RollingValue, na.rm = ignore_missing),    
@@ -201,48 +201,47 @@ calc_annual_stats <- function(data = NULL,
   # Calculate annual percentiles
   if(!all(is.na(percentiles))) {
     for (ptile in percentiles) {
-      Q_annual_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
+      annual_stats_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
                                          Percentile = quantile(RollingValue, ptile / 100, na.rm = TRUE))
-      names(Q_annual_ptile)[names(Q_annual_ptile) == "Percentile"] <- paste0("P", ptile)
+      names(annual_stats_ptile)[names(annual_stats_ptile) == "Percentile"] <- paste0("P", ptile)
       
-      # Merge with Q_annual
-      Q_annual <- merge(Q_annual, Q_annual_ptile, by = c("STATION_NUMBER","AnalysisYear"))
+      # Merge with annual_stats
+      annual_stats <- merge(annual_stats, annual_stats_ptile, by = c("STATION_NUMBER","AnalysisYear"))
       
       # Remove percentile if mean is NA (workaround for na.rm=FALSE in quantile)
-      Q_annual[, ncol(Q_annual)] <- ifelse(is.na(Q_annual$Mean), NA, Q_annual[, ncol(Q_annual)])
+      annual_stats[, ncol(annual_stats)] <- ifelse(is.na(annual_stats$Mean), NA, annual_stats[, ncol(annual_stats)])
     }
   }
   
   # Rename year column
-  Q_annual <-   dplyr::rename(Q_annual, Year = AnalysisYear)
+  annual_stats <-   dplyr::rename(annual_stats, Year = AnalysisYear)
 
   # Remove selected excluded years
-  Q_annual[Q_annual$Year %in% exclude_years,-(1:2)] <- NA
+  annual_stats[annual_stats$Year %in% exclude_years,-(1:2)] <- NA
 
   
   # If transpose if selected, switch columns and rows
   if (transpose) {
     # Get list of columns to order the Statistic column after transposing
-    stat_levels <- names(Q_annual[-(1:2)])
+    stat_levels <- names(annual_stats[-(1:2)])
     
     # Transpose the columns for rows
-    Q_annual <- tidyr::gather(Q_annual, Statistic, Value, -STATION_NUMBER, -Year)
-    Q_annual <- tidyr::spread(Q_annual, Year, Value)
+    annual_stats <- tidyr::gather(annual_stats, Statistic, Value, -STATION_NUMBER, -Year)
+    annual_stats <- tidyr::spread(annual_stats, Year, Value)
     
     # Order the columns
-    Q_annual$Statistic <- as.factor(Q_annual$Statistic)
-    levels(Q_annual$Statistic) <- stat_levels
-    Q_annual <- with(Q_annual, Q_annual[order(STATION_NUMBER, Statistic),])
+    annual_stats$Statistic <- factor(annual_stats$Statistic, levels = stat_levels)
+    annual_stats <- dplyr::arrange(annual_stats, STATION_NUMBER, Statistic)
   }
   
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
   if("STATION_NUMBER" %in% orig_cols) {
-    names(Q_annual)[names(Q_annual) == "STATION_NUMBER"] <- as.character(substitute(groups))
+    names(annual_stats)[names(annual_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
-    Q_annual <- dplyr::select(Q_annual, -STATION_NUMBER)
+    annual_stats <- dplyr::select(annual_stats, -STATION_NUMBER)
   }
   
-  dplyr::as_tibble(Q_annual)
+  dplyr::as_tibble(annual_stats)
   
 }
 
