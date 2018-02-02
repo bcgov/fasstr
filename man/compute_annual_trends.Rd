@@ -35,7 +35,7 @@ Function will automatically group by a column named 'STATION_NUMBER' if present.
 another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
 
 \item{trendsdata}{Data frame of annual data with column names of years and rows of annual statistics. 
-Leave blank if using \code{data},}
+Leave blank if using \code{data}.}
 
 \item{zyp_method}{Character string identifying the prewhitened trend method to use from 'zyp', either "zhang' or "yuepilon". 
 Required.}
@@ -91,7 +91,7 @@ Used for calc_annual_outside_normal() function. Default \code{c(25,75)}.}
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
 with no missing dates will be returned. Default \code{TRUE}.}
 
-\item{incl_data}{Logicial value indicating whether to include the trending data. Default \code{TRUE}.}
+\item{incl_data}{Logical value indicating whether to include the trending data with the results. Default \code{TRUE}.}
 
 \item{transpose}{Logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.}
 }

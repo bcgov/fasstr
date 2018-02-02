@@ -58,7 +58,7 @@
 #' @examples
 #' \dontrun{
 #' 
-#'calc_annual_outside_normal(data = "08NM116", water_year = TRUE, water_year_start = 8)
+#' calc_annual_outside_normal(data = "08NM116", water_year = TRUE, water_year_start = 8)
 #'
 #' }
 #' @export

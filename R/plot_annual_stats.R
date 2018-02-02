@@ -54,11 +54,11 @@
 #' @examples
 #' \dontrun{
 #' 
-#'plot_annual_stats(data = flowdata)
+#' plot_annual_stats(data = flowdata)
 #' 
-#'plot_annual_stats(data = "08NM116", water_year = TRUE, water_year_start = 8)
+#' plot_annual_stats(data = "08NM116", water_year = TRUE, water_year_start = 8)
 #'
-#'plot_annual_stats(data = "08NM116", months = 7:9)
+#' plot_annual_stats(data = "08NM116", months = 7:9)
 #'
 #' }
 #' @export

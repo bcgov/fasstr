@@ -43,7 +43,7 @@
 #'    Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
 #'    another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}. 
 #' @param trendsdata Data frame of annual data with column names of years and rows of annual statistics. 
-#'    Leave blank if using \code{data},
+#'    Leave blank if using \code{data}.
 #' @param zyp_method Character string identifying the prewhitened trend method to use from 'zyp', either "zhang' or "yuepilon". 
 #'    Required.
 #' @param basin_area Upstream drainage basin area to apply to daily observations. Options:
@@ -83,7 +83,7 @@
 #' @param ignore_missing Logical value indicating whether dates with missing values should be included in the calculation. If
 #'    \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
 #'    with no missing dates will be returned. Default \code{TRUE}.
-#' @param incl_data Logicial value indicating whether to include the trending data. Default \code{TRUE}.
+#' @param incl_data Logical value indicating whether to include the trending data with the results. Default \code{TRUE}.
 
 #' 
 #' @return A data frame containing trends with the following outputs from the zyp package:
@@ -282,20 +282,19 @@ compute_annual_trends <- function(data = NULL,
                                          ignore_missing = ignore_missing)
   }
   
-  trends_data
 
   # Compute some summary stats on the input data
   colnames(trends_data)[2] <- "Statistic"
   trends_data_summary <- tidyr::gather(trends_data, Year, Value, 3:ncol(trends_data))
   trends_data_summary <- dplyr::summarise(dplyr::group_by(trends_data_summary, STATION_NUMBER, Statistic),
-                                          min_year = min(Year),
-                                          max_year = max(Year),
+                                          min_year = as.numeric(min(Year, na.rm = TRUE)),
+                                          max_year = as.numeric(max(Year, na.rm = TRUE)),
                                           n_years = sum(!is.na(Value)),
                                           mean = mean(Value, na.rm = TRUE),
                                           median = median(Value, na.rm = TRUE),
                                           min = min(Value, na.rm = TRUE),
                                           max = max(Value, na.rm = TRUE))
-  trends_data_summary
+
   # Complete trends analysis
   trends_results <- zyp::zyp.trend.dataframe(indat = trends_data,
                                              metadata.cols = 2,
@@ -306,14 +305,14 @@ compute_annual_trends <- function(data = NULL,
   if(incl_data){
     trends_results <- merge(trends_results, trends_data, by = c("STATION_NUMBER", "Statistic"), all = TRUE)
   }
-  
+
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
   if("STATION_NUMBER" %in% orig_cols) {
     names(trends_results)[names(trends_results) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
     trends_results <- dplyr::select(trends_results, -STATION_NUMBER)
   }
-  
+
   dplyr::as_tibble(trends_results)
 } 
 
