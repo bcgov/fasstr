@@ -4,48 +4,51 @@
 \alias{plot_annual_cumulative_stats}
 \title{Plot annual and seasonal total flows}
 \usage{
-plot_annual_cumulative_stats(flowdata = NULL, HYDAT = NULL,
-  basin_area = NA, water_year = FALSE, water_year_start = 10,
-  start_year = NULL, end_year = NULL, exclude_years = NULL,
-  station_name = NA, write_plot = FALSE, write_imgtype = "pdf",
-  write_imgsize = c(5, 8.5), write_dir = ".", na.rm = list(na.rm.global =
-  FALSE))
+plot_annual_cumulative_stats(data = NULL, dates = Date, values = Value,
+  use_yield = FALSE, basin_area = NA, water_year = FALSE,
+  water_year_start = 10, start_year = 0, end_year = 9999,
+  exclude_years = NULL, incl_seasons = FALSE, log_discharge = FALSE)
 }
 \arguments{
-\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
+\item{data}{Daily data to be analyzed. Options:
 
-\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flowdata} argument is used.}
+   A data frame of daily data that contains columns of dates and values.
+   
+   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
 
-\item{basin_area}{Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm)
-or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.}
+\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
+using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
 
-\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
-by the year in which they end. Default \code{FALSE}.}
+\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
+Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
 
-\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
+\item{use_yield}{Logical value indicating whether to use yield runoff, in mm, instead of volumetric. Default \code{FALSE}.}
 
-\item{start_year}{Integer. First year to consider for analysis. Leave blank if all years are required.}
+\item{basin_area}{Upstream drainage basin area to apply to daily observations. Options:
 
-\item{end_year}{Integer. Last year to consider for analysis. Leave blank if all years are required.}
+Leave blank if \code{groups} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
 
-\item{exclude_years}{Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.}
+Single numeric value to apply to all observations.
 
-\item{station_name}{Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
-files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
-will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number.}
+List each basin area for each grouping factor (can override HYDAT value) as such \code{c("08NM116" = 795, "08NM242" = 10)}.
+Factors not listed will result in NA basin areas.}
 
-\item{write_plot}{Logical. Write the plot to specified directory. Default \code{FALSE}.}
+\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
+are designated by the year in which they end. Default \code{FALSE}.}
 
-\item{write_imgtype}{Character. One of "pdf","png","jpeg","tiff", or "bmp" image types to write the plot as. Default \code{"pdf"}.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
+Default \code{10}.}
 
-\item{write_imgsize}{Numeric. Height and width, respectively, of saved plot. Default \code{c(5,11)}.}
+\item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
-\item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
-Default is the working directory.}
+\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
+
+\item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
+
+\item{incl_seasons}{Logical value indication whether to include seasonal yields and total discharges. Default \code{TRUE}.}
+
+\item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.}
 }
 \value{
 A list of the following ggplot2 objects (yield plots unavailable if no basin_area):
@@ -59,16 +62,15 @@ A list of the following ggplot2 objects (yield plots unavailable if no basin_are
 \description{
 Plots annual and seasonal total flows, volumetric and runoff yield flows, from a streamflow dataset. Calculates 
    the statistics from all daily discharge values from all years, unless specified. Data calculated from
-   calc_annual_total_flows() function. For water year and seasonal data, the designated
+   plot_annual_cumulative_stats() function. For water year and seasonal data, the designated
    year is the year in which the year or season ends. For example, if using water years with a start month of 11, the OND season is
    designated by the water year which starts in November (designated by the calendar year in which it ends).
 }
 \examples{
 \dontrun{
 
-plot_annual_total_flows(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
 
-plot_annual_total_flows(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+plot_annual_cumulative_stats(data = "08NM116", water_year = TRUE, water_year_start = 8)
 
 }
 }
