@@ -142,17 +142,30 @@ plot_annual_cumulative_stats <- function(data = NULL,
     cumulative_stats <- dplyr::select(cumulative_stats, -STATION_NUMBER)
   }
   
+  # Extract each annual/seasonal datasets
+  annual_data <- cumulative_stats[,1:2]
+  annual_data <- tidyr::gather(annual_data, Statistic, Value, -Year)
+  annual_data <- dplyr::mutate(annual_data, Statistic = substr(Statistic, 1, 6))
   
-  cumulative_stats <- tidyr::gather(cumulative_stats, Statistic, Value, -1)
-  
+  if(incl_seasons) {
+    seasons2_data <- cumulative_stats[,c(1,3:4)]
+    seasons2_data <- tidyr::gather(seasons2_data, Statistic, Value, -Year)
+    seasons2_data <- dplyr::mutate(seasons2_data, Statistic = substr(Statistic, 1, 7))
+    seasons2_data$Statistic <- factor(seasons2_data$Statistic, levels = unique(seasons2_data$Statistic))
+    
+    seasons4_data <- cumulative_stats[,c(1,5:8)]
+    seasons4_data <- tidyr::gather(seasons4_data, Statistic, Value, -Year)
+    seasons4_data <- dplyr::mutate(seasons4_data, Statistic = substr(Statistic, 1, 7))
+    seasons4_data$Statistic <- factor(seasons4_data$Statistic, levels = unique(seasons4_data$Statistic))
+  }
   
   ## PLOT STATS
   ## ----------
   
   if(!incl_seasons){
-    cumulative_plot <- ggplot2::ggplot(data = cumulative_stats, ggplot2::aes(x = Year, y = Value)) +
+    cumulative_plot <- ggplot2::ggplot(data = annual_data, ggplot2::aes(x = Year, y = Value)) +
       ggplot2::geom_line(ggplot2::aes(colour = Statistic), alpha = 0.5) +
-      ggplot2::geom_point(ggplot2::aes(colour = Statistic), alpha = 0.5)+
+      ggplot2::geom_point(ggplot2::aes(colour = Statistic))+
       ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
       ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
       ggplot2::ylab("Total Discharge (cubic metres)") +
@@ -169,26 +182,6 @@ plot_annual_cumulative_stats <- function(data = NULL,
   
   
   if(incl_seasons){
-    
-    # Filter and rename all the seasons
-    annual_data <- dplyr::filter(cumulative_stats, grepl("Annual_", Statistic))
-    annual_data <- dplyr::mutate(annual_data, Statistic = substr(Statistic, 1, 6))
-    
-    
-    seasons2_data <- dplyr::filter(cumulative_stats, grepl("ONDJFM_", Statistic) | grepl("AMJJAS_", Statistic))
-    seasons2_data <- dplyr::mutate(seasons2_data, Statistic = substr(Statistic, 1, 6))
-    seasons2_data <- dplyr::mutate(seasons2_data, Statistic = replace(Statistic, Statistic == "ONDJFM", "Oct - Mar"),
-                                   Statistic = replace(Statistic, Statistic == "AMJJAS", "Apr - Sep"))
-    
-    seasons4_data <- dplyr::filter(cumulative_stats, grepl("OND_", Statistic) | grepl("JFM_", Statistic) |
-                                     grepl("AMJ_", Statistic) | grepl("JAS_", Statistic))
-    seasons4_data <- dplyr::filter(seasons4_data, !grepl("ONDJFM_", Statistic) & !grepl("AMJJAS_", Statistic))
-    seasons4_data <- dplyr::mutate(seasons4_data, Statistic = substr(Statistic, 1, 3))
-    seasons4_data <- dplyr::mutate(seasons4_data, Statistic = replace(Statistic, Statistic == "OND", "Oct - Dec"),
-                                   Statistic = replace(Statistic, Statistic == "JFM", "Jan - Feb"), 
-                                   Statistic = replace(Statistic, Statistic == "AMJ", "Apr - Jun"),
-                                   Statistic = replace(Statistic, Statistic == "JAS", "Jul - Sep"))
-    
     
     # Create a list to place the plots
     cumulative_plot <- list()

@@ -56,35 +56,32 @@ Default \code{10}.}
 \item{incl_seasons}{Logical value indication whether to include seasonal yields and total discharges. Default \code{TRUE}.}
 }
 \value{
-A data frame with the following columns:
+A data frame with the following columns, ending with '_TotalQ_m3' or '_Yield_mm' based on selection:
   \item{Year}{calendar or water year selected}
-  \item{Annual_TotalQ_m3}{annual total volumetric discharge, in cubic metres}
-  \item{Annual_Yield_mm}{annual runoff yield, in millimetres}
+  \item{Annual_*}{annual total flow, in m3 or mm}
   Default seasonal columns:
-  \item{AMJJAS_TotalQ_m3}{Apr-Sep total volumetric discharge, in cubic metres}
-  \item{AMJJAS_Yield_mm}{Apr-Sep runoff yield, in millimetres}
-  \item{ONDJFM_TotalQ_m3}{Oct-Mar total volumetric discharge, in cubic metres}
-  \item{ONDJFM__Yield_mm}{Oct-Mar runoff yield, in millimetres}   
-  \item{AMJ_TotalQ_m3}{Apr-Jun total volumetric discharge, in cubic metres}
-  \item{AMJ__Yield_mm}{Apr-Jun runoff yield, in millimetres}  
-  \item{JAS_TotalQ_m3}{Jul-Sep total volumetric discharge, in cubic metres}
-  \item{JAS__Yield_mm}{Jul-Sep runoff yield, in millimetres}  
-  \item{JFM_TotalQ_m3}{Jan-Mar total volumetric discharge, in cubic metres}
-  \item{JFM__Yield_mm}{Jan-Mar runoff yield, in millimetres}  
-  \item{OND_TotalQ_m3}{Oct-Dec total volumetric discharge, in cubic metres}
-  \item{OND__Yield_mm}{Oct-Dec runoff yield, in millimetres}
+  \item{MMM-MMM_*}{first of two season total flows, in m3 or mm}
+  \item{MMM-MMM_*}{second of two season total flows, in m3 or mm}
+  \item{MMM-MMM_*}{first of four season total flows, in m3 or mm}
+  \item{MMM-MMM_*}{second of four season total flows, in m3 or mm}
+  \item{MMM-MMM_*}{third of four season total flows, in m3 or mm}
+  \item{MMM-MMM_*}{fourth of four season total flows, in m3 or mm}
   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 }
 \description{
 Calculates annual and seasonal total flows, volumetric or runoff yield flows, from a streamflow dataset. Calculates 
    the statistics from all daily discharge values from all years, unless specified. For water year and seasonal data, the designated
-   year is the year in which the year or season ends. For example, if using water years with a start month of 11, the OND season is
-   designated by the water year which starts in November (designated by the calendar year in which it ends).
+   year is the year in which the year or season ends. Two-seasons and four-seasons per year are calculated, with each 6 and 3-month
+   seasons starting with the first month of the year (Jan for calendar year, specified for water year). Each season is designated
+   by the calendar or water year in which it occurs.
 }
 \examples{
 \dontrun{
 
-calc_annual_cumulative_stats(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+calc_annual_cumulative_stats(data = "08NM116", 
+                            water_year = TRUE, 
+                            water_year_start = 8,
+                            incl_seasons = TRUE)
 
 }
 }

@@ -11,7 +11,7 @@ devtools::document()
 install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
 
-fasstr::plot_annual_cumulative_stats("08HB048", use_yield = T, incl_seasons = T)
+fasstr::plot_annual_cumulative_stats("08HB048", use_yield = F, water_year = T, water_year_start = 5)
 
 test <- calc_annual_cumulative_stats("08HB048", incl_seasons = T, use_yield = T)
 

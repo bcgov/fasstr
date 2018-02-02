@@ -15,7 +15,7 @@
 #' @description Add columns of Seasons2 (two 6-month seasons) and Seasons4 (four 3-month seasons) to a data frame with a column of dates 
 #'    called 'Date'. The start of the two and four seasons coincides with the start month of each year ('Jan-Jun' and 'Jan-Mar' for 
 #'    the first two and four calendar year seasons, respectively, or 'Oct-Mar' and 'Apr-Sep' for the first two and four water year
-#'    seasons starting in Oct, respectively). Each season is designated by the calendar or water year which it occurs.
+#'    seasons starting in Oct, respectively). Each season is designated by the calendar or water year in which it occurs.
 #'
 #' @param data Daily data to be analyzed. Options:
 #' 
