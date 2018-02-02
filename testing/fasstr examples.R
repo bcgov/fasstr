@@ -11,10 +11,17 @@ devtools::document()
 install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
 
-fasstr::plot_annual_flow_timing("08HB048")
+fasstr::plot_annual_cumulative_stats("08HB048", use_yield = T, incl_seasons = T)
 
-calc_annual_flow_timing("08HB048")
+test <- calc_annual_cumulative_stats("08HB048", incl_seasons = T, use_yield = T)
 
+
+# Remove STATION_NUMBER columns if HYDAT was used and set up data
+if("STATION_NUMBER" %in% colnames(test)) {
+  test <- dplyr::ungroup(test)
+  test <- dplyr::select(test, -STATION_NUMBER)
+}
+test <- tidyr::gather(test, Statistic, Value, -1)
 
 
 

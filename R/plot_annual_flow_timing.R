@@ -126,7 +126,7 @@ plot_annual_flow_timing <- function(data = NULL,
   ## ----------
   
   flowtiming_plot <- ggplot2::ggplot(data = timing_stats, ggplot2::aes(x = Year, y = Value)) +
-    ggplot2::geom_line(ggplot2::aes(colour = Statistic)) +
+    ggplot2::geom_line(ggplot2::aes(colour = Statistic), alpha = 0.5) +
     ggplot2::geom_point(ggplot2::aes(colour = Statistic)) +
     {if(length(percent_total) > 1) ggplot2::facet_wrap(~Statistic, scales = "free_x", ncol = 1, strip.position = "right")} +
     ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
