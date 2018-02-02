@@ -4,47 +4,47 @@
 \alias{plot_annual_outside_normal}
 \title{Plot annual days above and below normal}
 \usage{
-plot_annual_outside_normal(flowdata = NULL, HYDAT = NULL,
-  normal_percentiles = c(25, 75), water_year = FALSE,
-  water_year_start = 10, start_year = NULL, end_year = NULL,
-  exclude_years = NULL, station_name = NA, write_plot = FALSE,
-  write_imgtype = "pdf", write_imgsize = c(6, 8.5), write_dir = ".")
+plot_annual_outside_normal(data = NULL, dates = Date, values = Value,
+  normal_percentiles = c(25, 75), rolling_days = 1,
+  rolling_align = "right", water_year = FALSE, water_year_start = 10,
+  start_year = 0, end_year = 9999, exclude_years = NULL, months = 1:12)
 }
 \arguments{
-\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
+\item{data}{Daily data to be analyzed. Options:
 
-\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flowdata} argument is used.}
+   A data frame of daily data that contains columns of dates and values.
+   
+   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
+   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
 
-\item{normal_percentiles}{Numeric. Lower and upper percentiles, respectively indicating the limits of the normal range. 
-Default \code{c(25,75)}.}
+\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
+using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
 
-\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
-by the year in which they end. Default \code{FALSE}.}
+\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
+Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
 
-\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
+\item{normal_percentiles}{Numeric vector of two values, lower and upper percentiles, respectively indicating the limits of the 
+normal range. Default \code{c(25,75)}.}
 
-\item{start_year}{Integer. First year to consider for analysis. Leave blank if all years are required.}
+\item{rolling_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
 
-\item{end_year}{Integer. Last year to consider for analysis. Leave blank if all years are required.}
+\item{rolling_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
-\item{exclude_years}{Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.}
+\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
+are designated by the year in which they end. Default \code{FALSE}.}
 
-\item{station_name}{Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
-files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
-will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
+Default \code{10}.}
 
-\item{write_plot}{Logical. Write the plot to specified directory. Default \code{FALSE}.}
+\item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
-\item{write_imgtype}{Character. One of "pdf","png","jpeg","tiff", or "bmp" image types to write the plot as. Default \code{"pdf"}.}
+\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
 
-\item{write_imgsize}{Numeric. Height and width, respectively, of saved plot. Default \code{c(5,11)}.}
+\item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 
-\item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
-Default is the working directory.}
+\item{months}{Numeric vector of months to include in analysis (ex. \code{6:8} for Jun-Aug). Leave blank to summarize 
+all months (default \code{1:12}).}
 }
 \value{
 A ggplot2 object with the following plots:
@@ -61,9 +61,7 @@ Plots the number of days per year outside of the 'normal' range (typically betwe
 \examples{
 \dontrun{
 
-plot_annual_outside_normal(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
-
-plot_annual_outside_normal(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+plot_annual_outside_normal(data = "08NM116", water_year = TRUE, water_year_start = 8)
 
 }
 }

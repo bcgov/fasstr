@@ -11,9 +11,53 @@ devtools::document()
 install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
 
-fasstr::plot_annual_cumulative_stats("08HB048", use_yield = F, water_year = T, water_year_start = 5)
+fasstr::plot_annual_outside_normal("08HB048")
 
-test <- calc_annual_cumulative_stats("08HB048", incl_seasons = T, use_yield = T)
+
+
+
+
+
+
+trending <- fasstr::compute_annual_trends("08HB048", zyp_method = "yuepilon", start_year = 1973)
+trending <- dplyr::select(trending, -STATION_NUMBER)
+
+
+test <- fasstr::plot_annual_trends(trending)
+
+
+
+trending <- trending[!is.na(trending$Value),]
+trends_data_summary <- dplyr::summarise(dplyr::group_by(trending, STATION_NUMBER, Statistic),
+                                        min_year = min(Year, na.rm = TRUE),
+                                        max_year = max(Year, na.rm = TRUE),
+                                        n_years = sum(!is.na(Value)),
+                                        mean = mean(Value, na.rm = TRUE),
+                                        median = median(Value, na.rm = TRUE),
+                                        min = min(Value, na.rm = TRUE),
+                                        max = max(Value, na.rm = TRUE))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+alldata <- fasstr::calc_all_annual_stats("08HB048", transpose = T)
+alldata <- alldata[,2:ncol(alldata)]
+test2 <- fasstr::plot_annual_trends(trendsdata = alldata, zyp_method = "yuepilon")
 
 
 # Remove STATION_NUMBER columns if HYDAT was used and set up data
