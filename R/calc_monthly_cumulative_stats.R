@@ -275,49 +275,6 @@ calc_monthly_cumulative_stats <- function(data = NULL,
   
   
   dplyr::as_tibble(monthly_cumul)
+
   
-  # monthly_cumul$Month <- match(monthly_cumul$Month, month.abb)
-  # 
-  # # Create the daily stats plots
-  # ggplot2::ggplot(monthly_cumul, ggplot2::aes(x = Month)) +
-  #   ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = P5, fill = "Min-5th Percentile")) +
-  #   ggplot2::geom_ribbon(ggplot2::aes(ymin = P5, ymax = P25, fill = "5th-25th Percentile")) +
-  #   ggplot2::geom_ribbon(ggplot2::aes(ymin = P25, ymax = P75, fill = "25th-75th Percentile")) +
-  #   ggplot2::geom_ribbon(ggplot2::aes(ymin = P75, ymax = P95, fill = "75th-95th Percentile")) +
-  #   ggplot2::geom_ribbon(ggplot2::aes(ymin = P95, ymax = Maximum, fill = "95th Percentile-Max")) +
-  #   ggplot2::geom_line(ggplot2::aes(y = Median, colour = "Median"), size = .5) +
-  #   ggplot2::geom_line(ggplot2::aes(y = Mean, colour = "Mean"), size = .5) +
-  #   ggplot2::scale_fill_manual(values = c("Min-5th Percentile" = "orange" , "5th-25th Percentile" = "yellow",
-  #                                         "25th-75th Percentile" = "skyblue1", "75th-95th Percentile" = "dodgerblue2",
-  #                                         "95th Percentile-Max" = "royalblue4")) +
-  #   ggplot2::scale_color_manual(values = c("Median" = "purple3", "Mean" = "springgreen4")) +
-  #   {if (!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0))} +
-  #   {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0))} +
-  #   {if (log_discharge) ggplot2::annotation_logticks(base= 10, "left", colour = "grey25", size = 0.3,
-  #                                                    short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
-  #                                                    long = ggplot2::unit(.2, "cm"))} +
-  #   ggplot2::xlab("Month")+
-  #   ggplot2::scale_x_continuous(breaks = 1:12, labels = month.abb[1:12], expand = c(0,0)) +
-  #   {if (!use_yield) ggplot2::ylab("Cumulative Discharge (cubic metres)")} +
-  #   {if (use_yield) ggplot2::ylab("Cumulative Runoff Yield (mm)")} +
-  #   ggplot2::theme_bw() +
-  #   ggplot2::labs(color = 'Monthly Statistics', fill = "Monthly Ranges") +  
-  #   ggplot2::theme(axis.text=ggplot2::element_text(size = 10, colour = "grey25"),
-  #                  axis.title=ggplot2::element_text(size = 12, colour = "grey25"),
-  #                  axis.title.y=ggplot2::element_text(margin = ggplot2::margin(0,0,0,0)),
-  #                  axis.ticks = ggplot2::element_line(size = .1, colour = "grey25"),
-  #                  axis.ticks.length=ggplot2::unit(0.05, "cm"),
-  #                  panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-  #                  panel.grid.minor = ggplot2::element_blank(),
-  #                  panel.grid.major = ggplot2::element_line(size = .1),
-  #                  panel.background = ggplot2::element_rect(fill = "grey94"),
-  #                  legend.text = ggplot2::element_text(size = 9, colour = "grey25"),
-  #                  legend.box = "vertical",
-  #                  legend.justification = "top",
-  #                  legend.key.size = ggplot2::unit(0.4, "cm"),
-  #                  legend.spacing = ggplot2::unit(0, "cm")) +
-  #   ggplot2::guides(colour = ggplot2::guide_legend(order = 1), fill = ggplot2::guide_legend(order = 2))
-  # 
-  # 
-  # 
 }
