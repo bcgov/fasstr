@@ -11,8 +11,9 @@ devtools::document()
 install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
 
-fasstr::plot_annual_outside_normal("08HB048")
+fasstr::plot_monthly_cumulative_stats("08HB048", include_year = 1973)
 
+test <- fasstr::calc_monthly_cumulative_stats("08HB048")
 
 
 
@@ -55,7 +56,7 @@ trends_data_summary <- dplyr::summarise(dplyr::group_by(trending, STATION_NUMBER
 
 
 
-alldata <- fasstr::calc_all_annual_stats("08HB048", transpose = T)
+alldata <- fasstr::calc_annual_flow_timing("08HB048", transpose = T)
 alldata <- alldata[,2:ncol(alldata)]
 test2 <- fasstr::plot_annual_trends(trendsdata = alldata, zyp_method = "yuepilon")
 

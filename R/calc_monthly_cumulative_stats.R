@@ -200,7 +200,7 @@ calc_monthly_cumulative_stats <- function(data = NULL,
     flow_data <- add_cumulative_yield(data = flow_data, water_year = water_year, water_year_start = water_year_start, basin_area = basin_area)
     names(flow_data)[names(flow_data) == "Cumul_Yield_mm"] <- paste("Cumul_Total")
   } else {
-    flow_data <- add_daily_volume(data = flow_data, water_year = water_year, water_year_start = water_year_start)
+    flow_data <- add_cumulative_volume(data = flow_data, water_year = water_year, water_year_start = water_year_start)
     names(flow_data)[names(flow_data) == "Cumul_Volume_m3"] <- paste("Cumul_Total")
   }
   
@@ -224,8 +224,8 @@ calc_monthly_cumulative_stats <- function(data = NULL,
   # Calculate monthly totals for all years
   monthly_data <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
                                    Monthly_Total = max(Cumul_Total, na.rm = FALSE))
-  monthly_data
-  # Calculate the monthly and longterm stats
+
+    # Calculate the monthly and longterm stats
   monthly_cumul <- dplyr::summarize(dplyr::group_by(monthly_data, STATION_NUMBER, MonthName),
                                     Mean = mean(Monthly_Total, na.rm = ignore_missing),
                                     Median = median(Monthly_Total, na.rm = ignore_missing),
