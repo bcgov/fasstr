@@ -105,6 +105,12 @@ plot_monthly_cumulative_stats <- function(data = NULL,
   }
   
   if(is.data.frame(data)) {
+    
+    # If no groups (default STATION_NUMBER) in data, make it so (required)
+    if(!as.character(substitute(groups)) %in% colnames(data)) {
+      data[, as.character(substitute(groups))] <- "XXXXXXX"
+    }
+    
     # Get the just groups (default STATION_NUMBER), Date, and Value columns
     # This method allows the user to select the Station, Date or Value columns if the column names are different
     if(!as.character(substitute(values)) %in% names(data) & !as.character(substitute(dates)) %in% names(data)) 
@@ -126,8 +132,7 @@ plot_monthly_cumulative_stats <- function(data = NULL,
     if(!inherits(data$Date[1], "Date"))  stop("'Date' column in data frame does not contain dates.")
     if(!is.numeric(data$Value))          stop("'Value' column in data frame does not contain numeric values.")   
     
-    # Remove these to fix warnings?
-    rm(c(dates,values))
+
   }
   
   if(!is.logical(log_discharge))  stop("log_discharge argument must be logical (TRUE/FALSE).")

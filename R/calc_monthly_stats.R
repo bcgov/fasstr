@@ -207,12 +207,15 @@ calc_monthly_stats <- function(data = NULL,
                                 Median = median(RollingValue, na.rm = ignore_missing), 
                                 Maximum = max (RollingValue, na.rm = ignore_missing),    
                                 Minimum = min (RollingValue, na.rm = ignore_missing))
+  monthly_stats <- dplyr::ungroup(monthly_stats)
   
   # Calculate annual percentiles
   if(!all(is.na(percentiles))) {
     for (ptile in percentiles) {
       monthly_stats_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
                                           Percentile = quantile(RollingValue, ptile / 100, na.rm = TRUE))
+      monthly_stats_ptile <- dplyr::ungroup(monthly_stats_ptile)
+      
       names(monthly_stats_ptile)[names(monthly_stats_ptile) == "Percentile"] <- paste0("P", ptile)
       
       # Merge with monthly_stats
@@ -287,6 +290,7 @@ calc_monthly_stats <- function(data = NULL,
   # Spread data if selected
   if (spread | transpose) {
     monthly_stats_spread <- dplyr::summarise(dplyr::group_by(monthly_stats, STATION_NUMBER, Year))
+    monthly_stats_spread <- dplyr::ungroup(monthly_stats_spread)
     for (mnth in unique(monthly_stats$Month)) {
       monthly_stats_month <- dplyr::filter(monthly_stats, Month == mnth)
       monthly_stats_month <- tidyr::gather(monthly_stats_month, Statistic, Value, 4:ncol(monthly_stats_month))

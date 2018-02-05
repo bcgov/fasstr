@@ -185,6 +185,7 @@ plot_flow_data <- function(data = NULL,
     {if(!plot_by_year) ggplot2::scale_x_date(breaks = scales::pretty_breaks(n = 12))} +
     {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(flow_data$RollingValue) * 1.05))} +
     {if(log_discharge) ggplot2::expand_limits(y = c(min(flow_data$RollingValue) * .95, max(flow_data$RollingValue) * 1.05))} +
+    {if(!"STATION_NUMBER" %in% orig_cols) ggplot2::guides(colour = FALSE)} +
     ggplot2::theme_bw() +
     ggplot2::labs(color = 'Station') +    
     ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),

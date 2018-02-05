@@ -285,18 +285,16 @@ screen_flow_data <- function(data = NULL,
     Q_summary <- tidyr::spread(Q_summary, Year, Value)
     
     # Order the columns
-    Q_summary$Statistic <- as.factor(Q_summary$Statistic)
-    levels(Q_summary$Statistic) <- stat_levels
+    Q_summary$Statistic <- factor(Q_summary$Statistic, levels = stat_levels)
     Q_summary <- with(Q_summary, Q_summary[order(STATION_NUMBER, Statistic),])
   }
-  # 
-  # if(transpose){
-  #   Q_summary_tpose <- tidyr::gather(Q_summary,Statistic,Value,-Year)
-  #   Q_summary_tpose_temp <- dplyr::mutate(Q_summary_tpose,Value=round(Value,write_digits)) # for writing to csv
-  #   Q_summary <- tidyr::spread(Q_summary_tpose,Year,Value)
-  #   Q_summary <- Q_summary_[match(row_order, Q_summary_$Statistic),]
-  # }
-  # 
+
+  # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
+  if("STATION_NUMBER" %in% orig_cols) {
+    names(Q_summary)[names(Q_summary) == "STATION_NUMBER"] <- as.character(substitute(groups))
+  } else {
+    Q_summary <- dplyr::select(Q_summary, -STATION_NUMBER)
+  }
   
   
   

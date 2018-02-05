@@ -108,8 +108,6 @@ plot_annual_outside_normal <- function(data = NULL,
     if(!inherits(data$Date[1], "Date"))  stop("'Date' column in data frame does not contain dates.")
     if(!is.numeric(data$Value))          stop("'Value' column in data frame does not contain numeric values.")   
     
-    # Remove these to fix warnings?
-    rm(c(dates,values))
   }
   
   

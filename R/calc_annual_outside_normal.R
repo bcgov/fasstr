@@ -194,6 +194,7 @@ calc_annual_outside_normal <- function(data = NULL,
   daily_normals <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDoY),
                                     LOWER = stats::quantile(RollingValue, prob = normal_percentiles[1] / 100, na.rm = TRUE),
                                     UPPER = stats::quantile(RollingValue, prob = normal_percentiles[2] / 100, na.rm = TRUE))
+  daily_normals <- dplyr::ungroup(daily_normals)
   flow_data_temp <- merge(flow_data, daily_normals, by = c("STATION_NUMBER", "AnalysisDoY"))
   
   #Compute the number of days above and below normal for each year
@@ -201,6 +202,7 @@ calc_annual_outside_normal <- function(data = NULL,
                             Days_Below_Normal = sum(Value < LOWER, na.rm = FALSE),
                             Days_Above_Normal = sum(Value > UPPER, na.rm = FALSE),
                             Days_Outside_Normal = Days_Below_Normal + Days_Above_Normal)
+  normals_stats <- dplyr::ungroup(normals_stats)
   normals_stats <- dplyr::rename(normals_stats, Year = AnalysisYear)
   
   

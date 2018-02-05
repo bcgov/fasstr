@@ -197,12 +197,15 @@ calc_annual_stats <- function(data = NULL,
                                  Median = median(RollingValue, na.rm = ignore_missing), 
                                  Maximum = max (RollingValue, na.rm = ignore_missing),    
                                  Minimum = min (RollingValue, na.rm = ignore_missing))
+  annual_stats <- dplyr::ungroup(annual_stats)
   
   # Calculate annual percentiles
   if(!all(is.na(percentiles))) {
     for (ptile in percentiles) {
       annual_stats_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
                                          Percentile = quantile(RollingValue, ptile / 100, na.rm = TRUE))
+      annual_stats_ptile <- dplyr::ungroup(annual_stats_ptile)
+      
       names(annual_stats_ptile)[names(annual_stats_ptile) == "Percentile"] <- paste0("P", ptile)
       
       # Merge with annual_stats

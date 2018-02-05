@@ -106,9 +106,7 @@ plot_annual_lowflows <- function(data = NULL,
     # Check columns are in proper formats
     if(!inherits(data$Date[1], "Date"))  stop("'Date' column in data frame does not contain dates.")
     if(!is.numeric(data$Value))          stop("'Value' column in data frame does not contain numeric values.")   
-    
-    # Remove these to fix warnings?
-    rm(c(dates,values))
+
   }
   
   if(!is.logical(log_discharge))  stop("log_discharge argument must be logical (TRUE/FALSE).")
