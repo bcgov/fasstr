@@ -10,9 +10,20 @@ The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http:
 Features
 --------
 
-This package provides a set of quick solution functions for streamflow data tidying (add\_ and fill\_ functions), screening (screen\_ functions), statistical analyses (calc\_ and compute\_ functions), and visualization (plot\_ functions), amongst others.
+This package provides functions with quick solutions for streamflow data:
 
-Useful in-function arguments include the utilization of the `tidyhydat` package to pull streamflow data from a Water Survey of Canada [HYDAT](https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html) database for analyses; and arguments for filtering of years and months in analyses, option to choose water years for analyses instead of calendar years (and choice of start month), and customizing how missing dates are handled.
+-   tidying (to prepare data for analyses; `add_*` and `fill_*` functions),
+-   screening (to look for outliers and missing data; `screen_*` functions),
+-   analyzing (basic summary statistics, frequency analyses, trending ;`calc_*` and `compute_*` functions), and
+-   visualizing (to plot statistics; `plot_*` functions), amongst others.
+
+Useful features of functions include:
+
+-   the integration of the `tidyhydat` package to pull streamflow data from a Water Survey of Canada [HYDAT](https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html) database for analyses;
+-   arguments for filtering of years and months in analyses and plotting (reducing need to tidy data beforehand);
+-   choosing water years for analyses instead of calendar years (and choice of start month);
+-   selecting for rolling n-day averages (e.g. 7-day rolling average);
+-   customizing how missing dates are handled.
 
 Installation
 ------------
@@ -32,14 +43,14 @@ library(fasstr)
 
 To utilize the `tidyhydat` features, you will need to download a HYDAT database using the `tidyhydat::download_hydat()` function.
 
-Usage
------
+Using fasstr
+------------
 
 ### Data Input
 
 All functions in `fasstr` require a data frame of daily mean streamflow from one or more hydrometric stations. Long-term and continuous datasets are preferred for most analyses, but seasonal and partial data can be used. Other daily time series data, like temperature, precipitation or water levels, may also be used, but with certain caution as some calculations/conversions are based on units of streamflow (cubic metres per second). Data is provided to each function using the `data` argument with two options: a data frame of daily data or a vector of HYDAT station numbers (ex. `08NM116` or `c(08NM116,08NM242)`).
 
-Using the data frame option, a data frame of daily data containing columns of dates (YYYY-MM-DD in date format), values (mean daily discharge in cubic metres per second in numeric format), and, optionally, grouping identifiers (character string of station names or numbers) is called. By default the functions will look for columns identified as 'Date', 'Value', and 'STATION\_NUMBER' (grouping results by STATION\_NUMBER), respectively, but columns of different names can be identified using the `dates`, `values`, `groups` column arguments (PROVIDE EXAMPLE), respectively. The following is an example of an appropriate flow\_data dataframe:
+Using the data frame option, a data frame of daily data containing columns of dates (YYYY-MM-DD in date format), values (mean daily discharge in cubic metres per second in numeric format), and, optionally, grouping identifiers (character string of station names or numbers) is called. By default the functions will look for columns identified as 'Date', 'Value', and 'STATION\_NUMBER' (grouping results by STATION\_NUMBER), respectively, but columns of different names can be identified using the `dates`, `values`, `groups` column arguments (PROVIDE EXAMPLE), respectively. The following is an example of an appropriate dataframe:
 
 ``` r
 str(flow_data)
@@ -54,23 +65,23 @@ This package allows for multiple stations (or other groupings such as time-perio
 
 ### Function Types
 
-#### Data Tidying/Preparation (add\_ and fill\_)
+#### Tidying
 
-They add columns of variables and converted flow to data frame.
+These functions, that start with `add_*` and `fill_*`, add columns and rows, respectively, to your streamflow data frame to help set up your data for further analysis. Examples include adding rolling means, adding date variables (Year, Month, DayofYear, etc.), adding basin areas, adding columns of volumetric and yield discharge, and filling dates with missing flow values with `NA`.
 
-#### Analysis (screen\_, calc\_, and compute\_)
+#### Analysis
 
-Screen data for missing dates, Calculate - long-term, annual, monthly, daily summary statistics Compute - trending and frequency analyses (plots and tables produced)
+The analysis functions summarize your discharge values into various statistics. `screen_*` functions summarize annual data for outliers and missing dates. `calc_*` functions calculate daily, monthly, annual, and long-term statistics (e.g. mean, median, maximum, minimum, percentiles, amongst others) of daily, rolling days, and cumulative flow data. `compute_*` functions also analyze data but produce more in-depth analyses, like frequency and trending analysis, and may produce plots and tables as a result.
 
-#### Visualization (plot\_)
+#### Visualization
 
-plot the data (some set, some customizable)
+The visualization functions, which begin with `plot_*` plot the various summary statistics and analyses as a way to visualize the data. While most plotting functions are as customizable as the analysis functions, some come pre-set with statistics that cannot be changed for consistency. Plots can be modified by the user using the `ggplot2` package and its functions.
 
 ### Function Options
 
 #### Daily Rolling Means
 
-Can choose rolling means for many functions.
+If certain n-day rolling mean statistics are desired to be analyzed (e.g. 3- or 7-day rolling means) some functions provide the ability to select for that as function arguments (e.g. `rolling_days = 7` and `rolling_align = "right"`). The rolling day align is the placement of the date amongst the n-day means, where "right" averages the day-of and previous n-1 days, "centre" date is in the middle of the averages, and "left" averages the day-of and the following n-1 days. For your own analyses you can add rolling means to your dataset using the `add_rolling_means()` function.
 
 #### Year and Month Filtering
 
@@ -78,13 +89,15 @@ To customize your analyses for specific time periods, you can designate the star
 
 To group analyses by water, or hydrologic, years instead of calendar years, if desired, you can use `water_year = TRUE` within most functions (default is `water_year = FALSE`). A water year can be defined as a 12-month period that comprises a complete hydrologic cycle (wet seasons can typically cross calendar year), typically starting with the month with minimum flows (the start of a new water recharge cycle). As water years commonly start in October, the default water year is October for `fasstr`. If another start month is desired, you can choose is using the `water_year_start` argument (numeric month) to designate the water year time period. The water year label is designated by the year it ends in (e.g. water year 2000 goes from Oct 1, 1999 to Sep 30, 2000). Start, end and excluded years will be based on the specified water year.
 
+For your own analyses, you can add date variables to your dataset using the `add_date_variables()` function.
+
 #### Drainage Basin Area
 
-Yield runoff statistics calculated in the some of the functions require an upstream drainage basin area (in sq. km) using the `basin_area` argument, where required. If no basin areas are supplied, all yield results will be `NA`. To apply a basin area (10 sqkm for example) to all daily observations, set the argument as `basin_area = 10`. If there are mulitple stations or groups to apply mulitple basin areas (using the `groups` argument), set them individually using this option: `basin_area = c("08NM116" = 795,  "08NM242" = 22)`. If a STATION\_NUMBER column exists with HYDAT station numbers, the function will automatically use the basin areas provided in HYDAT, if available, so `basin_area` is not required.
+Yield runoff statistics calculated in the some of the functions require an upstream drainage basin area (in sq. km) using the `basin_area` argument, where required. If no basin areas are supplied, all yield results will be `NA`. To apply a basin area (10 sqkm for example) to all daily observations, set the argument as `basin_area = 10`. If there are multiple stations or groups to apply multiple basin areas (using the `groups` argument), set them individually using this option: `basin_area = c("08NM116" = 795,  "08NM242" = 22)`. If a STATION\_NUMBER column exists with HYDAT station numbers, the function will automatically use the basin areas provided in HYDAT, if available, so `basin_area` is not required. For your own analyses, you can add basin areas to your dataset using the `add_basin_area()` function.
 
 #### Handling Missing Dates
 
-Coming soon. ignore\_missing argument. different functions have different defaults....
+With the use of the `ignore_missing` argument in most function, you can decide how to handle dates with missing flow values in calculations. When you set `ignore_missing = TRUE` a statistic will be calculated for a given year, all years, or month regardless of if there are missing flow values. When `ignore_missing = FALSE` the returned value for the period will be `NA` if there are missing values.
 
 Examples
 --------
@@ -143,14 +156,14 @@ plot_flow_duration(data = "08NM116",
 
 ### Analysis example: low-flow frequency analysis
 
-This package also provides a function, `compute_frequency_analysis()`, to complete frequency analyses (using the same methods as [HEC-SSP](http://www.hec.usace.army.mil/software/hec-ssp/)). The default fitting distribution is 'log-Pearson Type III', but the 'weibull' distribution can also be used. Other default plotting and fitting methods are described in the function documentation. For this example, the 7-day low-flow (low-flow is default) quantiles are calculated for the Mission Creek hydrometric station using the 'log-Pearson Type III' distribution. With this, several low-flow indicators can be determined (i.e. 7Q5, 7Q10).
+This package also provides a function, `compute_frequency_analysis()`, to complete frequency analyses (using the same methods as [HEC-SSP](http://www.hec.usace.army.mil/software/hec-ssp/)). The default fitting distribution is 'log-Pearson Type III', but the 'Weibull' distribution can also be used. Other default plotting and fitting methods are described in the function documentation. For this example, the 7-day low-flow (low-flow is default) quantiles are calculated for the Mission Creek hydrometric station using the 'log-Pearson Type III' distribution. With this, several low-flow indicators can be determined (i.e. 7Q5, 7Q10).
 
 ``` r
-compute_frequency_analysis(data = "08NM116",
+freq_results <- compute_frequency_analysis(data = "08NM116",
                            start_year = 1981,
                            end_year = 2010,
-                           rolling_days = 7)[5]
-#> $fitted_quantiles
+                           rolling_days = 7)
+freq_results$fitted_quantiles
 #>    Distribution Probability Return Period Q007-day-Avg
 #> 1          PIII       0.010    100.000000    0.1929445
 #> 2          PIII       0.050     20.000000    0.2770067
