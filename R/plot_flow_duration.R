@@ -125,18 +125,18 @@ plot_flow_duration <- function(data = NULL,
   ## CALC STATS
   ## ----------
   
-  percentiles_data <- fasstr::calc_longterm_stats(data = data,
-                                                  percentiles=c(.01,.1,.2:9.8,10:90,90.2:99.8,99.9,99.99),
-                                                  rolling_days = rolling_days,
-                                                  rolling_align = rolling_align,
-                                                  water_year = water_year,
-                                                  water_year_start = water_year_start,
-                                                  start_year = start_year,
-                                                  end_year = end_year,
-                                                  exclude_years = exclude_years,
-                                                  complete_years = complete_years,
-                                                  custom_months = custom_months,
-                                                  ignore_missing = ignore_missing)
+  percentiles_data <- calc_longterm_stats(data = data,
+                                          percentiles = c(.01,.1,.2:9.8,10:90,90.2:99.8,99.9,99.99),
+                                          rolling_days = rolling_days,
+                                          rolling_align = rolling_align,
+                                          water_year = water_year,
+                                          water_year_start = water_year_start,
+                                          start_year = start_year,
+                                          end_year = end_year,
+                                          exclude_years = exclude_years,
+                                          complete_years = complete_years,
+                                          custom_months = custom_months,
+                                          ignore_missing = ignore_missing)
   
   # Remove STATION_NUMBER columns if HYDAT was used and set up data
   if("STATION_NUMBER" %in% colnames(percentiles_data)) {
