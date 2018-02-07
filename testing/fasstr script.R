@@ -7,12 +7,12 @@
 library(fasstr)
 # Parameters
 stn_number <- "08NM116"
-start_year=1981 #NULL
-end_year=2000 #NULL
+start_year = 1981 #NULL
+end_year = 2000 #NULL
 
 
 folder <- "testing/MissionCreek/"
-dir.create(path=folder)
+dir.create(path = folder)
 
 
 ### Time series
@@ -20,22 +20,16 @@ dir.create(path=folder)
 timeseriesfolder <- "1-TimeSeries/"
 dir.create(path=paste0(folder,timeseriesfolder))
 
-timeseries <- fasstr_add_missing_dates(HYDAT = stn_number)
-timeseries <- fasstr_add_date_vars(timeseries)
-timeseries <- fasstr_add_rolling_means(timeseries)
-fasstr_write_daily_flows(timeseries,report_dir = paste0(folder,timeseriesfolder),na="")
-timeseries_plot <- fasstr_timeseries_plot(HYDAT = stn_number,
-                                          write_plot = T,
-                                          report_dir = paste0(folder,timeseriesfolder),
-                                          start_year = start_year,end_year = end_year)
-timeseries_annual_plot <- fasstr_timeseries_plot(HYDAT = stn_number,
-                                          write_plot = T,
-                                          report_dir = paste0(folder,timeseriesfolder),
-                                          plot_by_year = T,start_year = start_year,end_year = end_year)
+timeseries <- fill_missing_dates(data = stn_number)
+timeseries <- add_date_variables(timeseries)
+timeseries <- add_rolling_means(timeseries)
+write_flow_data(timeseries, file = paste0(folder, timeseriesfolder, "daily_record.csv"))
+timeseries_plot <- plot_flow_data(data = stn_number, start_year = start_year,end_year = end_year)
+timeseries_annual_plot <- plot_flow_data(data = stn_number, start_year = start_year,end_year = end_year,
+                                         plot_by_year = TRUE)
 
-flow_summary <- fasstr_data_screening(flowdata=timeseries,
-                                      #HYDAT = stn_number,
-                                      write_table = T,report_dir = paste0(folder,timeseriesfolder),start_year = start_year,end_year = end_year)
+
+flow_summary <- screen_flow_data(timeseries,start_year = start_year,end_year = end_year)
 summary_plot <- fasstr_data_screening_plots(flowdata=timeseries,
                                             #HYDAT = stn_number,
                                             write_plot = T,report_dir = paste0(folder,timeseriesfolder),start_year = start_year,end_year = end_year)
