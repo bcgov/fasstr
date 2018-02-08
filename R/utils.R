@@ -17,16 +17,22 @@
 flowdata_import <- function(data = NULL, station_number = NULL){
   
   # Check if data is provided
-  if (is.null(station_number) & is.null(data))    stop("must select one of data or station_number arguments", call. = FALSE)
-  if (!is.null(station_number) & !is.null(data))  stop("must select either data or station_number arguments, not both", call. = FALSE)
+  if (is.null(station_number) & is.null(data))    
+    stop("Must select one of data or station_number arguments to supply data.", call. = FALSE)
+  if (!is.null(station_number) & !is.null(data))  
+    stop("Must select either data or station_number arguments, not both, to supply data.", call. = FALSE)
   
   if (is.null(data)) {
-    if (!is.character(station_number))  stop("station_number must be a character vector containing station numbers", call. = FALSE)
+    if (!file.exists(file.path(tidyhydat::hy_dir(),"HYDAT.sqlite3")))
+      stop("A HYDAT database has not been downloaded yet using the tidyhydat::download_hydat() function. 
+       Download HYDAT before using station_number argument.", call. = FALSE)
+    
+    if (!is.character(station_number))  stop("station_number must be a character vector containing HYDAT station number(s).", call. = FALSE)
     if (!all(station_number %in% dplyr::pull(suppressMessages(tidyhydat::hy_stations()[1])))) 
       stop("One or more station numbers listed do not have historical daily flows in HYDAT.", call. = FALSE)
     data <- as.data.frame(suppressMessages(tidyhydat::hy_daily_flows(station_number =  station_number)))
   } else {
-    if (!is.data.frame(data))  stop("data arguments is not a data frame", call. = FALSE)
+    if (!is.data.frame(data))  stop("data arguments is not a data frame.", call. = FALSE)
     data <- as.data.frame(data)
   }
   
@@ -42,76 +48,48 @@ flowdata_import <- function(data = NULL, station_number = NULL){
 }
 
 
-
-## Check for dates, values, and groups and rename
-## ----------------------------------------------
+## Check for dates, values, and groups proper formatting
+## -----------------------------------------------------
 
 format_all_cols <- function(data,
-                               dates = "Date",
-                               values = "Value",
-                               groups = "STATION_NUMBER"){
+                            dates = "Date",
+                            values = "Value",
+                            groups = "STATION_NUMBER",
+                            rm_other_cols = FALSE){
   
-  
+  # Check format all columns
   data <- format_dates_col(data, dates = dates)
   data <- format_values_col(data, values = values)
   data <- format_groups_col(data, groups = groups)
   
-  # # If no groups (default STATION_NUMBER) in data, make it so (required)
-  # if (!groups %in% colnames(data)) {
-  #   data[, groups] <- "XXXXXXX"
-  # }
-  # 
-  # # Get the just groups (default STATION_NUMBER), Date, and Value columns
-  # # This method allows the user to select the Station, Date or Value columns if the column names are different
-  # if (!values %in% names(data) & !dates %in% names(data))
-  #   stop("dates and values not found in data frame. Rename dates and values columns to 'Date' and 'Value' or identify the columns using 'dates' and 'values' arguments.", call. = FALSE)
-  # if (!dates %in% names(data))
-  #   stop("dates not found in data frame. Rename dates column to 'Date' or identify the column using 'dates' argument.", call. = FALSE)
-  # if (!values %in% names(data))
-  #   stop("values not found in data frame. Rename values column to 'Value' or identify the column using 'values' argument.", call. = FALSE)
-  # 
-  # # Temporarily rename the Date and Value columns
-  # names(data)[names(data) == groups] <- "STATION_NUMBER"
-  # names(data)[names(data) == dates] <- "Date"
-  # names(data)[names(data) == values] <- "Value"
-  # 
-  # # Check dates are dates, and attempt to format
-  # if (!inherits(data$Date[1], "Date"))  {
-  #   test <- try(as.Date(data$Date, "%Y-%m-%d"), silent = TRUE)
-  #   if ("try-error" %in% class(test)) {
-  #     stop("dates cannot be formatted as dates (YYYY-MM-DD).")
-  #   } else {
-  #     data$Date <- as.Date(data$Date, "%Y-%m-%d")
-  #   }
-  # }
-  # 
-  # # Check if values are numeric
-  # if (!is.numeric(data$Value))  stop("values in values column ", call. = FALSE)
-  # 
-  # # Make groups characters
-  # data$STATION_NUMBER <- as.character(data$STATION_NUMBER)
+  if (rm_other_cols) {
+    data <- dplyr::select(data, STATION_NUMBER, Date, Value)
+  }
   
   data
 }
 
 
+## Check for dates and proper formatting
+## -------------------------------------
+
 format_dates_col <- function(data,
-                         dates = "Date"){
+                             dates = "Date"){
   
-  
-  # Get the just groups (default STATION_NUMBER), Date, and Value columns
-  # This method allows the user to select the Station, Date or Value columns if the column names are different
+  # Check if exists
   if (!dates %in% names(data))  
-    stop("dates not found in data frame. Rename dates column to 'Date' or identify the column using 'dates' argument.", call. = FALSE)
+    stop("Dates not found in data frame. Rename dates column to 'Date' or identify the column using 'dates' argument.", call. = FALSE)
   
-  # Temporarily rename the Date and Value columns
+  # Rename
   names(data)[names(data) == dates] <- "Date"
   
-  # Check dates are dates, and attempt to format
+  # Check formatting
   if (!inherits(data$Date[1], "Date"))  {
+    
+    # Attempt to format as dates if not class "Date"
     test <- try(as.Date(data$Date, "%Y-%m-%d"), silent = TRUE)
     if ("try-error" %in% class(test)) {
-      stop("dates cannot be formatted as dates (YYYY-MM-DD).")
+      stop("Dates in dates column must be formatted as dates (YYYY-MM-DD).", call. = FALSE)
     } else {
       data$Date <- as.Date(data$Date, "%Y-%m-%d")
     }
@@ -121,59 +99,139 @@ format_dates_col <- function(data,
 }
 
 
+## Check for values and proper formatting
+## --------------------------------------
+
 format_values_col <- function(data,
-                          values = "Value"){
+                              values = "Value"){
   
-  
-  # Get the just groups (default STATION_NUMBER), Date, and Value columns
-  # This method allows the user to select the Station, Date or Value columns if the column names are different
+  # Check if exists
   if (!values %in% names(data)) 
     stop("values not found in data frame. Rename values column to 'Value' or identify the column using 'values' argument.", call. = FALSE)
   
-  # Temporarily rename the Date and Value columns
+  # Rename
   names(data)[names(data) == values] <- "Value"
   
-  # Check if values are numeric
-  if (!is.numeric(data$Value))          stop("values in values column ", call. = FALSE)
+  # Check formatting
+  if (!is.numeric(data$Value))  stop("Values in values column must be numeric.", call. = FALSE)
   
   data
 }
 
 
+## Check for groups and proper formatting
+## --------------------------------------
 
 format_groups_col <- function(data,
-                          groups = "STATION_NUMBER"){
+                              groups = "STATION_NUMBER"){
   
-  # If no groups (default STATION_NUMBER) in data, make it so (required)
-  if (!groups %in% colnames(data)) {
+  # Check if exists
+  if (groups != "STATION_NUMBER" & !groups %in% names(flow_data)) 
+    stop("Groups not found in data frame. Leave blank for no grouping, rename groups column to 'STATION_NUMBER', or identify the column using 'groups' argument.", call. = FALSE)
+
+  if (!groups %in% names(data)) {
     data[, groups] <- "XXXXXXX"
   }
   
-  # Temporarily rename the Date and Value columns
+  # Rename
   names(data)[names(data) == groups] <- "STATION_NUMBER"
   
-  # Make groups characters
+  # Check formatting
   data$STATION_NUMBER <- as.character(data$STATION_NUMBER)
   
   data
 }
 
 
+## Fill missing dates, add date variables and add AnalysisYear, DoY, and/or Date
+## Used in prep for analyses
+## -----------------------------------------------------------------------------
+
+analysis_prep <- function(data,
+                          water_year, 
+                          water_year_start,
+                          year = TRUE,
+                          doy = FALSE,
+                          date = FALSE){
+  
+  # Fill in missing dates to ensure all years are covered
+  data <- fill_missing_dates(data = data, water_year = water_year, water_year_start = water_year_start)
+  data <- add_date_variables(data = data, water_year = water_year, water_year_start = water_year_start)
+  
+  # Set selected year-type column for analysis
+  if (water_year) {
+    
+    if (year) {
+      data$AnalysisYear <- data$WaterYear
+    }
+          
+    if (doy) {
+      data$AnalysisDoY <- data$WaterDayofYear
+    }
+    
+    if (date) {
+      if (water_year_start == 1)  {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1989-12-31")
+      } else if (water_year_start == 2)  {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-01-31")
+      } else if (water_year_start == 3)  {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-02-28")
+      } else if (water_year_start == 4)  {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-03-31")
+      } else if (water_year_start == 5)  {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-04-30")
+      } else if (water_year_start == 6)  {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-05-31")
+      } else if (water_year_start == 7)  {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-06-30")
+      } else if (water_year_start == 8)  {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-07-31")
+      } else if (water_year_start == 9)  {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-08-31")
+      } else if (water_year_start == 10) {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-09-30")
+      } else if (water_year_start == 11) {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-10-31")
+      } else if (water_year_start == 12) {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-11-30")
+      }
+    }
+    
+    
+  } else {
+    
+    if (year) {
+      data$AnalysisYear <- data$Year
+    }
+    
+    if (doy) {
+      data$AnalysisDoY <- data$DayofYear
+    }
+    
+    if (date) {
+      data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-12-31")
+    }
+    
+  }
+  
+  data
+}
 
 
+## Transpose Data
+## --------------
 
-
-
+# data_transpose <- function(data){
+#   # Get list of columns to order the Statistic column after transposing
+#   stat_levels <- names(data[-(1:2)])
+#   
+#   # Transpose the columns for rows
+#   data <- tidyr::gather(data, Statistic, Value, -STATION_NUMBER, names(data[2]))
+#   data <- tidyr::spread(data, names(data[2]), Value)
+#   
+#   # Order the columns
+#   data$Statistic <- factor(data$Statistic, levels = stat_levels)
+#   data <- dplyr::arrange(data, STATION_NUMBER, Statistic)
+# }
 
 
 
 
 ## Various check functions
 
-rolling_days_checks <- function(rolling_days, rolling_align) {
-  if (!is.numeric(rolling_days))                         stop("rolling_days argument must be numeric.", call. = FALSE)
-  if (!all(rolling_days %in% c(1:180)))                  stop("rolling_days argument must be integers > 0 and <= 180).", call. = FALSE)
-  if (!rolling_align %in% c("right", "left", "center"))  stop("rolling_align argument must be 'right', 'left', or 'center'.", call. = FALSE)
+rolling_days_checks <- function(roll_days, roll_align) {
+  if (length(roll_days) > 1)                          stop("Only one roll_days value can be listed for this function.", call. = FALSE)
+  if (!is.numeric(roll_days))                         stop("roll_days argument must be numeric.", call. = FALSE)
+  if (!all(roll_days %in% c(1:180)))                  stop("roll_days argument must be integers > 0 and <= 180).", call. = FALSE)
+  if (!roll_align %in% c("right", "left", "center"))  stop("roll_align argument must be 'right', 'left', or 'center'.", call. = FALSE)
 }
 
 water_year_checks <- function(water_year, water_year_start) {
@@ -184,29 +242,37 @@ water_year_checks <- function(water_year, water_year_start) {
 }
 
 years_checks <- function(start_year, end_year, exclude_years) {
-  if(length(start_year) > 1)        stop("Only one start_year value can be listed.", call. = FALSE)
-  if(!start_year %in% c(0:9999))    stop("start_year must be an integer.", call. = FALSE)
-  if(length(end_year) > 1)          stop("Only one end_year value can be listed.", call. = FALSE)
-  if(!end_year %in% c(0:9999))      stop("end_year must be an integer.", call. = FALSE)
-  if(start_year > end_year)         stop("start_year must be less than or equal to end_year.", call. = FALSE)
+  if (length(start_year) > 1)        stop("Only one start_year value can be listed.", call. = FALSE)
+  if (!start_year %in% c(0:9999))    stop("start_year must be an integer.", call. = FALSE)
+  if (length(end_year) > 1)          stop("Only one end_year value can be listed.", call. = FALSE)
+  if (!end_year %in% c(0:9999))      stop("end_year must be an integer.", call. = FALSE)
+  if (start_year > end_year)         stop("start_year must be less than or equal to end_year.", call. = FALSE)
   
-  if(!is.null(exclude_years) & !is.numeric(exclude_years)) stop("List of exclude_years must be numeric - ex. 1999 or c(1999,2000).", call. = FALSE)
-  if(!all(exclude_years %in% c(0:9999)))                   stop("Years listed in exclude_years must be integers.", call. = FALSE)
+  if (!is.null(exclude_years) & !is.numeric(exclude_years)) stop("List of exclude_years must be numeric - ex. 1999 or c(1999,2000).", call. = FALSE)
+  if (!all(exclude_years %in% c(0:9999)))                   stop("Years listed in exclude_years must be integers.", call. = FALSE)
 }
 
 months_checks <- function(months) {
-  if(!is.null(months) & !is.numeric(months)) stop("months argument must be numbers between 1 and 12 (Jan-Dec).", call. = FALSE)
-  if(!all(months %in% c(1:12)))              stop("months argument must be numbers between 1 and 12 (Jan-Dec).", call. = FALSE)
+  if (!is.null(months) & !is.numeric(months)) stop("months argument must be numbers between 1 and 12 (Jan-Dec).", call. = FALSE)
+  if (!all(months %in% c(1:12)))              stop("months argument must be numbers between 1 and 12 (Jan-Dec).", call. = FALSE)
 }
 
 percentiles_checks <- function(percentiles) {
-  if(!all(is.na(percentiles))){
-    if(!is.numeric(percentiles))                   stop("percentiles argument must be numeric.", call. = FALSE)
-    if(!all(percentiles > 0 & percentiles < 100))  stop("percentiles must be > 0 and < 100.", call. = FALSE)
+  if (!all(is.na(percentiles))){
+    if (!is.numeric(percentiles))                   stop("percentiles argument must be numeric.", call. = FALSE)
+    if (!all(percentiles > 0 & percentiles < 100))  stop("percentiles must be > 0 and < 100.", call. = FALSE)
   }
 }
 
+transpose_checks <- function(transpose) {
+  if (length(transpose) > 1)        stop("Only one transpose logical value can be listed.", call. = FALSE)
+  if (!is.logical(transpose))       stop("transpose argument must be logical (TRUE/FALSE).", call. = FALSE)
+}
 
+ignore_missing_checks <- function(ignore_missing) {
+  if (length(ignore_missing) > 1)   stop("Only one ignore_missing logical value can be listed.", call. = FALSE)
+  if (!is.logical(ignore_missing))  stop("ignore_missing argument must be logical (TRUE/FALSE).")
+}
 
 
 

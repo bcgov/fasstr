@@ -9,26 +9,25 @@ add_cumulative_volume(data = NULL, dates = Date, values = Value,
   water_year_start = 10)
 }
 \arguments{
-\item{data}{A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
-names/numbers). Leave blank if using \code{station_number} argument.}
+\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+Leave blank if using \code{station_number} argument.}
 
 \item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
 Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second. 
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{groups}{Column in \code{data} that contains unique identifiers for different data sets. Only required if groups 
-column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
-Remove the 'STATION_NUMBER' column or identify another non-existing column name to remove this grouping.
-Leave blank if using \code{station_number} argument.}
+\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
+groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
+Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
 
-\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of 
-which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database. 
+\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
 Leave blank if using \code{data} argument.}
 
 \item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the year in which they end. Default \code{FALSE}.}
+are designated by the calendar year in which they end. Default \code{FALSE}.}
 
 \item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
 Default \code{10}.}
@@ -39,7 +38,8 @@ A tibble data frame of the source data with an additional column:
 }
 \description{
 Add a column of daily cumulative volumetric flows on an annual basis to a streamflow dataset. Adds the volumetric 
-   discharge from each day with the previous day(s) for each year, in units of cubic metres. The cumulative flows restart every year.
+   discharge from each day with the previous day(s) for each year, in units of cubic metres. 
+   The cumulative flows restart every year and are only calculated in years with complete data.
 }
 \examples{
 \dontrun{
