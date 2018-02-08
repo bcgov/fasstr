@@ -43,7 +43,7 @@
 #' 
 #'add_cumulative_volume(data = flow_data)
 #' 
-#'add_cumulative_volume(data = "08NM116", water_year = TRUE, water_year_start = 8)
+#'add_cumulative_volume(station_number = "08NM116", water_year = TRUE, water_year_start = 8)
 #'
 #' }
 #' @export
@@ -53,6 +53,7 @@ add_cumulative_volume <- function(data = NULL,
                                   dates = Date,
                                   values = Value,
                                   groups = STATION_NUMBER,
+                                  station_number = NULL,
                                   water_year = FALSE,
                                   water_year_start = 10){
   
@@ -62,16 +63,7 @@ add_cumulative_volume <- function(data = NULL,
   ## -------------------
   
   # Check if data is provided
-  if(is.null(data))   stop("No data provided, must provide a data frame or HYDAT station number(s).")
-  if(is.vector(data)) {
-    if(!all(data %in% dplyr::pull(tidyhydat::allstations[1]))) 
-      stop("One or more stations numbers listed in data argument do not exist in HYDAT. Re-check numbers or provide a data frame of data.")
-    flow_data <- suppressMessages(tidyhydat::hy_daily_flows(station_number = data))
-  } else {
-    flow_data <- data
-  }
-  if(!is.data.frame(flow_data)) stop("Incorrect selection for data argument, must provide a data frame or HYDAT station number(s).")
-  flow_data <- as.data.frame(flow_data) # Getting random 'Unknown or uninitialised column:' warnings if using tibble
+  flow_data <- flowdata_import(data = data, station_number = station_number)
   
   # Save the original columns from the flow_data to remove added columns
   orig_cols <- names(flow_data)
@@ -79,37 +71,17 @@ add_cumulative_volume <- function(data = NULL,
   # Get groups of flow_data to return after
   flow_data_groups <- dplyr::group_vars(flow_data)
   
-  # If no groups (default STATION_NUMBER) in data, make it so (required)
-  if(!as.character(substitute(groups)) %in% colnames(flow_data)) {
-    flow_data[, as.character(substitute(groups))] <- "XXXXXXX"
-  }
-  
-  # Get the just groups (default STATION_NUMBER), Date, and Value columns
-  # This method allows the user to select the Station, Date or Value columns if the column names are different
-  if(!as.character(substitute(values)) %in% names(flow_data) & !as.character(substitute(dates)) %in% names(flow_data)) 
-    stop("Dates and values not found in data frame. Rename dates and values columns to 'Date' and 'Value' or identify the columns using 'dates' and 'values' arguments.")
-  if(!as.character(substitute(dates)) %in% names(flow_data))  
-    stop("Dates not found in data frame. Rename dates column to 'Date' or identify the column using 'dates' argument.")
-  if(!as.character(substitute(values)) %in% names(flow_data)) 
-    stop("Values not found in data frame. Rename values column to 'Value' or identify the column using 'values' argument.")
-  
-  # Temporarily rename the Date and Value columns
-  names(flow_data)[names(flow_data) == as.character(substitute(groups))] <- "STATION_NUMBER"
-  names(flow_data)[names(flow_data) == as.character(substitute(dates))] <- "Date"
-  names(flow_data)[names(flow_data) == as.character(substitute(values))] <- "Value"
-  
-  # Check columns are in proper formats
-  if(!inherits(flow_data$Date[1], "Date"))  stop("'Date' column in data frame does not contain dates.")
-  if(!is.numeric(flow_data$Value))          stop("'Value' column in data frame does not contain numeric values.")
+  # Check and rename columns
+  flow_data <- format_all_cols(data = flow_data,
+                               dates = as.character(substitute(dates)),
+                               values = as.character(substitute(values)),
+                               groups = as.character(substitute(groups)))
   
   
   ## CHECKS ON OTHER ARGUMENTS
   ## -------------------------
   
-  if(!is.logical(water_year))         stop("water_year argument must be logical (TRUE/FALSE).")
-  if(!is.numeric(water_year_start))   stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec).")
-  if(length(water_year_start)>1)      stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec).")
-  if(!water_year_start %in% c(1:12))  stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec).")
+  water_year_checks(water_year, water_year_start)
   
   
   ## PREP FLOW_DATA
@@ -117,7 +89,7 @@ add_cumulative_volume <- function(data = NULL,
   
   # Fill in missing dates to ensure all years are covered
   flow_data_temp <- fill_missing_dates(data = flow_data)
-  flow_data_temp <- add_date_variables(data = flow_data_temp, water_year = TRUE, water_year_start = water_year_start)
+  flow_data_temp <- add_date_variables(data = flow_data_temp, water_year = water_year, water_year_start = water_year_start)
   
   # Set selected year-type column for analysis
   if (water_year) {
@@ -128,7 +100,6 @@ add_cumulative_volume <- function(data = NULL,
   
   ## ADD VOLUME COLUMN
   ## -----------------
-
   
   # Create cumsum function to not create cumsum if any NA's in a given year
   cumsum_na <- function(x) {
@@ -141,7 +112,7 @@ add_cumulative_volume <- function(data = NULL,
   
   # Add cumulative volume column and ungroup (remove analysisyear group)
   flow_data_temp <- dplyr::ungroup(flow_data_temp)
-  flow_data_temp <- dplyr::mutate(dplyr::group_by(flow_data_temp,STATION_NUMBER,AnalysisYear, add = TRUE), Cumul_Volume_m3 = cumsum_na(Value)*86400)
+  flow_data_temp <- dplyr::mutate(dplyr::group_by(flow_data_temp, STATION_NUMBER, AnalysisYear, add = TRUE), Cumul_Volume_m3 = cumsum_na(Value) * 86400)
   flow_data_temp <- dplyr::ungroup(flow_data_temp)
   
   # Get new column and merge back with
@@ -153,9 +124,9 @@ add_cumulative_volume <- function(data = NULL,
   } else {
     flow_data <- merge(flow_data, flow_data_temp, by = c("STATION_NUMBER", "Date"), all.x = TRUE)
   }
-
   
-  ## ---------------
+  ## Reformat to original data
+  ## -------------------------
   
   # Return the original names of the Date and Value columns
   names(flow_data)[names(flow_data) == "STATION_NUMBER"] <- as.character(substitute(groups))
@@ -164,9 +135,9 @@ add_cumulative_volume <- function(data = NULL,
   
   # Return columns to original order plus new column
   if("Cumul_Volume_m3" %in% orig_cols){
-    flow_data <-  flow_data[,c(orig_cols)]
+    flow_data <-  flow_data[, c(orig_cols)]
   } else {
-    flow_data <-  flow_data[,c(orig_cols, paste("Cumul_Volume_m3"))]
+    flow_data <-  flow_data[, c(orig_cols, paste("Cumul_Volume_m3"))]
   }
   
   # Regroup by the original groups

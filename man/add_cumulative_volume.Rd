@@ -5,7 +5,8 @@
 \title{Add daily cumulative volumetric flows on an annual basis}
 \usage{
 add_cumulative_volume(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, water_year = FALSE, water_year_start = 10)
+  groups = STATION_NUMBER, station_number = NULL, water_year = FALSE,
+  water_year_start = 10)
 }
 \arguments{
 \item{data}{Daily data to be analyzed. Options:
