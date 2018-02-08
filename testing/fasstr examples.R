@@ -10,8 +10,8 @@ install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 str(flowdata_format(data = read.csv("test.csv")))
 str(tidyhydat::hy_daily_flows(station_number = "08HB048"))
 
-flow_data <- add_cumulative_volume(station_number = "08HB048", water_year_start = 12)
-
+flow_data <- add_cumulative_volume(station_number = "08HB048", groups = "sdfs")
+dataa <- calc_annual_stats(station_number = "08HB048", transpose = T)
 
 
 ### FLOW_DATA
@@ -23,7 +23,7 @@ library(dplyr)
 
 
 # One station with Date and Value
-flow_data <- str(tidyhydat::hy_daily_flows(station_number = "08HB048")) %>% 
+flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% 
   #fill_missing_dates() %>% 
   #add_basin_area(basin_area = 10.3) %>% 
   #add_date_variables(water_year = T) %>% 
@@ -115,11 +115,11 @@ plot_annual_cumulative_stats(data = flow_data, incl_seasons = T, dates = Datesss
 # Station no STATION_NUMBER
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% 
   select(Date,Value) %>% 
-  fill_missing_dates() %>% 
-  add_basin_area(basin_area = 10.3) %>% 
-  add_date_variables(water_year = T) %>% 
-  add_rolling_means() %>% 
-  add_daily_volume() %>% 
+ # fill_missing_dates() %>% 
+  #add_basin_area(basin_area = 10.3) %>% 
+  #add_date_variables(water_year = T) %>% 
+  #add_rolling_means() %>% 
+  #add_daily_volume() %>% 
   add_cumulative_volume() %>% 
   add_daily_yield(basin_area = 10.3) %>%
   add_cumulative_yield(basin_area = 10.3) %>% 
@@ -210,11 +210,11 @@ flow_data <- add_seasons(data = c("08HB048","08NM116"))
 flow_data <- add_date_variables(data = c("08HB048","08NM116"), water_year = T)
 flow_data <- add_rolling_means(data = c("08HB048","08NM116"))
 flow_data <- add_daily_volume(data = c("08HB048","08NM116"))
-flow_data <- add_cumulative_volume(data = c("08HB048","08NM116"))
+flow_data <- add_cumulative_volume(station_number = c("08HB048","08NM116"))
 flow_data <- add_daily_yield(data = c("08HB048","08NM116"))
 flow_data <- add_cumulative_yield(data = c("08HB048","08NM116"), basin_area = c("08HB048"=10.2))
 flow_data <- calc_longterm_stats(data = c("08HB048","08NM116"))
-flow_data <- calc_annual_stats(data = c("08HB048","08NM116"))
+flow_data <- calc_annual_stats(station_number = c("08HB048","08NM116"))
 flow_data <- calc_all_annual_stats(data = c("08HB048","08NM116"))
 flow_data <- calc_annual_cumulative_stats(data = c("08HB048","08NM116"))
 flow_data <- calc_annual_flow_timing(data = c("08HB048","08NM116"))
