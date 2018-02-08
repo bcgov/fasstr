@@ -163,7 +163,7 @@ fill_missing_dates <- function(data = NULL,
     
     # Fill in station number and parameter gaps (removed if not originally there)
     flow_data_stn$STATION_NUMBER <- stn
-    flow_data_stn$Parameter <- "FLOW"
+    flow_data_stn$Parameter <- "Flow"
     
     # Append to flow_data
     flow_data_new <- dplyr::bind_rows(flow_data_new, flow_data_stn)
