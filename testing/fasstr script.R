@@ -30,12 +30,8 @@ timeseries_annual_plot <- plot_flow_data(data = stn_number, start_year = start_y
 
 
 flow_summary <- screen_flow_data(timeseries,start_year = start_year,end_year = end_year)
-summary_plot <- fasstr_data_screening_plots(flowdata=timeseries,
-                                            #HYDAT = stn_number,
-                                            write_plot = T,report_dir = paste0(folder,timeseriesfolder),start_year = start_year,end_year = end_year)
-missing_plot <- fasstr_data_screening_plots(flowdata=timeseries,
-                                            #HYDAT = stn_number,
-                                            write_plot = T,report_dir = paste0(folder,timeseriesfolder),start_year = start_year,end_year = end_year)
+summary_plot <- plot_data_screening(timeseries,start_year = start_year,end_year = end_year)
+missing_plot <- plot_missing_dates(timeseries,start_year = start_year,end_year = end_year)
 
 
 
@@ -44,20 +40,10 @@ missing_plot <- fasstr_data_screening_plots(flowdata=timeseries,
 longtermfolder <- "2-Longterm/"
 dir.create(path=paste0(folder,longtermfolder))
 
-longterm_table <- fasstr_longterm_stats(flowdata=timeseries,
-                                        #HYDAT = stn_number,
-                                        write_table = T,report_dir = paste0(folder,longtermfolder),start_year = start_year,end_year = end_year)
-longterm_plot <- fasstr_longterm_stats_plot(flowdata=timeseries,
-                                            #HYDAT = stn_number,
-                                            log_discharge = T,
-                                            write_plot =T,report_dir = paste0(folder,longtermfolder),start_year = start_year,end_year = end_year)
+longterm_table <- calc_longterm_stats(timeseries, start_year = start_year,end_year = end_year, percentiles = 1:99)
+longterm_plot <- plot_longterm_stats(timeseries,start_year = start_year,end_year = end_year)
 
-longterm_ptiles <- fasstr_longterm_ptiles(flowdata=timeseries,
-                                         # HYDAT = stn_number,
-                                          write_table = T,report_dir = paste0(folder,longtermfolder), transpose = T,start_year = start_year,end_year = end_year)
-flow_curves <- fasstr_flow_duration_plots(flowdata=timeseries,
-                                        #  HYDAT = stn_number,
-                                          write_plot = T,report_dir = paste0(folder,longtermfolder),start_year = start_year,end_year = end_year)
+flow_curves <- plot_flow_duration(timeseries,start_year = start_year,end_year = end_year)
 
 
 
@@ -66,18 +52,11 @@ flow_curves <- fasstr_flow_duration_plots(flowdata=timeseries,
 annualfolder <- "3-Annual/"
 dir.create(path=paste0(folder,annualfolder))
 
-annual_stats <- fasstr_annual_stats(flowdata=timeseries,
-                                  #HYDAT = stn_number,
-                                  write_table = T,report_dir = paste0(folder,annualfolder),start_year = start_year,end_year = end_year)
-annual_total <- fasstr_annual_total_flows(flowdata=timeseries,
-                                          #HYDAT = stn_number,
-                                          write_table = T,report_dir = paste0(folder,annualfolder),start_year = start_year,end_year = end_year)
-annual_timing <- fasstr_annual_flow_timing(flowdata=timeseries,
-                                          #HYDAT = stn_number,
-                                          write_table = T,report_dir = paste0(folder,annualfolder),start_year = start_year,end_year = end_year)# DAYS OUTSIDE NORMAL
-annual_normal <- fasstr_annual_days_outside_normal(flowdata=timeseries,
-                                          #HYDAT = stn_number,
-                                          write_table = T,report_dir = paste0(folder,annualfolder),start_year = start_year,end_year = end_year)
+annual_stats <- calc_annual_stats(timeseries,start_year = start_year,end_year = end_year)
+annual_total <- calc_annual_cumulative_stats(timeseries,start_year = start_year,end_year = end_year)
+annual_yield <- calc_annual_cumulative_stats(timeseries,start_year = start_year,end_year = end_year, use_yield = T)
+annual_timing <- calc_annual_flow_timing(timeseries,start_year = start_year,end_year = end_year)# DAYS OUTSIDE NORMAL
+annual_normal <- calc_annual_outside_normal(timeseries,start_year = start_year,end_year = end_year)
 
 
 ### Monthly Stats
@@ -86,6 +65,10 @@ monthfolder <- "4-Month/"
 dir.create(path=paste0(folder,monthfolder))
 
 # MONTHLY STATS
+monthly_stats <- calc_monthly_stats(timeseries,start_year = start_year,end_year = end_year)
+monthly_total <- calc_monthly_cumulative_stats(timeseries,start_year = start_year,end_year = end_year)
+monthly_yield <- calc_monthly_cumulative_stats(timeseries,start_year = start_year,end_year = end_year, use_yield = T)
+
 
 
 
