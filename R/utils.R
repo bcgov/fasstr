@@ -126,7 +126,7 @@ format_groups_col <- function(data,
                               groups = "STATION_NUMBER"){
   
   # Check if exists
-  if (groups != "STATION_NUMBER" & !groups %in% names(flow_data)) 
+  if (groups != "STATION_NUMBER" & !groups %in% names(data)) 
     stop("Groups not found in data frame. Leave blank for no grouping, rename groups column to 'STATION_NUMBER', or identify the column using 'groups' argument.", call. = FALSE)
 
   if (!groups %in% names(data)) {

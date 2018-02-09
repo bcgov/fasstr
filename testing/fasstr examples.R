@@ -10,7 +10,7 @@ install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 str(flowdata_format(data = read.csv("test.csv")))
 str(tidyhydat::hy_daily_flows(station_number = "08HB048"))
 
-flow_data <- add_cumulative_volume(station_number = "08HB048", groups = "sdfs")
+flow_data <- add_cumulative_yield(station_number = "08HB048")
 dataa <- calc_annual_stats(station_number = "08HB048", transpose = T)
 
 

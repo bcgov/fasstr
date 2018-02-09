@@ -97,18 +97,18 @@ add_basin_area <- function(data = NULL,
   
   # Apply basin_areas to matching STATION_NUMBERS
   if(!all(is.na(basin_area))){
-    if(!is.numeric(basin_area)) stop("basin_area argument must be numeric.")
+    if(!is.numeric(basin_area)) stop("basin_area argument must be numeric.", call. = FALSE)
     if(is.null(names(basin_area)) & length(basin_area) == 1) {
-      if(length(unique(flow_data$STATION_NUMBER)) > 1) warning("Just one basin_area applied without a corresponding STATION_NUMBER, the basin_area will be applied to all stations.")
+      if(length(unique(flow_data$STATION_NUMBER)) > 1) warning("Just one basin_area applied without a corresponding STATION_NUMBER, the basin_area will be applied to all stations.", call. = FALSE)
       basin_area_table <- data.frame(STATION_NUMBER = unique(flow_data$STATION_NUMBER), Basin_Area_sqkm = basin_area)
     } else {
       if(length(basin_area)!=length(unique(flow_data$STATION_NUMBER)) | !all(names(basin_area) %in% unique(flow_data$STATION_NUMBER))) 
-        warning("The number/names of STATION_NUMBERS and basin_area values provided do not match the number/names of STATION_NUMBERS in the flow data. Only those that match will be applied.")
+        warning("The number/names of STATION_NUMBERS and basin_area values provided do not match the number/names of STATION_NUMBERS in the flow data. Only those that match will be applied.", call. = FALSE)
       #if(!all(names(basin_area) %in% unique(flow_data$STATION_NUMBER))) warning("All STATION_NUMBERS listed in basin_area do not match those in the flow data. Only those that match will be applied.")
       basin_area_table <- data.frame(STATION_NUMBER = names(basin_area), Basin_Area_sqkm = basin_area, stringsAsFactors = FALSE)
     }
   }
-  if(all(is.na(basin_area_table$Basin_Area_sqkm))) warning("No basin_area values provided or extracted from HYDAT. All values will be NA.")
+  if(all(is.na(basin_area_table$Basin_Area_sqkm))) warning("No basin_area values provided or extracted from HYDAT. All values will be NA.", call. = FALSE)
   
   
   ## ADD BASIN AREA COLUMN

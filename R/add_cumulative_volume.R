@@ -108,6 +108,7 @@ add_cumulative_volume <- function(data = NULL,
     flow_data <- merge(flow_data, flow_data_temp, by = c("STATION_NUMBER", "Date"), all.x = TRUE)
   }
   
+  
   ## Reformat to original names and groups
   ## -------------------------------------
   

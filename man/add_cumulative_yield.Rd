@@ -5,59 +5,58 @@
 \title{Add daily cumulative runoff yield flows on an annual basis}
 \usage{
 add_cumulative_yield(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, basin_area = NA, water_year = FALSE,
-  water_year_start = 10)
+  groups = STATION_NUMBER, station_number = NULL, basin_area = NA,
+  water_year = FALSE, water_year_start = 10)
 }
 \arguments{
-\item{data}{Daily data to be analyzed. Options:
+\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+Leave blank if using \code{station_number} argument.}
 
-   A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
-   names/numbers).
-   
-   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
+\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
+Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
-using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
-Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
+\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
+groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
+Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
 
-\item{groups}{Column in the \code{data} data frame that contains unique identifiers for different data sets. 
-Only required if using the data frame option of \code{data} and groups column is not named 'STATION_NUMBER'.
-Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
-another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
+\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
+Leave blank if using \code{data} argument.}
 
-\item{basin_area}{Upstream drainage basin area to apply to daily observations. Options:
+\item{basin_area}{Upstream drainage basin area, in square kilometres, to apply to observations. Three options:
 
-Leave blank if \code{groups} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
+(1) Leave blank if \code{groups} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
 
-Single numeric value to apply to all observations.
+(2) A single numeric value to apply to all observations.
 
-List each basin area for each groups factor (can override HYDAT value) as such \code{c("08NM116" = 795, "08NM242" = 10)}.
-Factors not listed will result in NA basin areas.}
+(3) List each basin area for each group in groups (can override HYDAT value) as such \code{c("08NM116" = 795, "08NM242" = 10)}.
+Group not listed will result in NA basin area.}
 
-\item{water_year}{a logical value indicating whether to use water years to group flow data instead of calendar years. Water years 
-are designated by the year in which they end. Default \code{FALSE}.}
+\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
+are designated by the calendar year in which they end. Default \code{FALSE}.}
 
-\item{water_year_start}{a numeric value indicating the month of the start of the water year. Used if \code{water_year=TRUE}. 
+\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
 Default \code{10}.}
 }
 \value{
-A data frame of the source data with an additional column:
+A tibble data frame of the source data with an additional column:
   \item{Cumul_Yield_mm}{cumulative yield flows for each day for each year, in units of millimetres}
 }
 \description{
 Add a column of daily cumulative runoff yield flows on an annual basis to a streamflow dataset. Adds the runoff yield 
-   discharge from each day with the previous day(s) for each year, in units of millimetres. The cumulative flows restart every year.
-   Converts cumulative discharge to a depth of water based on the upstream drainge basin area.
+   discharge from each day with the previous day(s) for each year, in units of millimetres. Converts cumulative discharge to a 
+   depth of water based on the upstream drainge basin area.The cumulative flows restart every year and are only calculated in
+   years with complete data.
 }
 \examples{
 \dontrun{
 
 add_cumulative_yield(data = flow_data, area = 105.6)
 
-add_cumulative_yield(data = "08NM116", water_year = TRUE, water_year_start = 8)
+add_cumulative_yield(station_number = "08NM116", water_year = TRUE, water_year_start = 8)
 
 }
 }
