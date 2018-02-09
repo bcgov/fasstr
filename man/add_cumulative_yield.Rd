@@ -32,8 +32,8 @@ Leave blank if using \code{data} argument.}
 
 (2) A single numeric value to apply to all observations.
 
-(3) List each basin area for each group in groups (can override HYDAT value) as such \code{c("08NM116" = 795, "08NM242" = 10)}.
-Group not listed will result in NA basin area.}
+(3) List each basin area for each group/station in groups (can override HYDAT value) as such \code{c("08NM116" = 795, 
+"08NM242" = 10)}. Group not listed will result in NA basin area.}
 
 \item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
 are designated by the calendar year in which they end. Default \code{FALSE}.}

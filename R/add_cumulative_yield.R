@@ -18,14 +18,7 @@
 #'    years with complete data.
 #'
 #' @inheritParams calc_annual_stats
-#' @param basin_area Upstream drainage basin area, in square kilometres, to apply to observations. Three options:
-#'    
-#'    (1) Leave blank if \code{groups} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
-#'    
-#'    (2) A single numeric value to apply to all observations.
-#'    
-#'    (3) List each basin area for each group in groups (can override HYDAT value) as such \code{c("08NM116" = 795, "08NM242" = 10)}.
-#'    Group not listed will result in NA basin area.
+#' @inheritParams add_basin_area
 #' 
 #' @return A tibble data frame of the source data with an additional column:
 #'   \item{Cumul_Yield_mm}{cumulative yield flows for each day for each year, in units of millimetres}
@@ -93,6 +86,7 @@ add_cumulative_yield <- function(data = NULL,
                                   water_year = water_year, 
                                   water_year_start = water_year_start,
                                   year = TRUE)
+  
   
   ## ADD VOLUME COLUMN
   ## -----------------

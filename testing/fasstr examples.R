@@ -25,7 +25,7 @@ library(dplyr)
 # One station with Date and Value
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% 
   #fill_missing_dates() %>% 
-  #add_basin_area(basin_area = 10.3) %>% 
+  add_basin_area(basin_area = c("08HB048" =10.3355533)) %>% 
   #add_date_variables(water_year = T) %>% 
   #add_rolling_means() %>% 
   #add_daily_volume() %>% 
@@ -70,7 +70,7 @@ plot_annual_cumulative_stats(data = flow_data, incl_seasons = T)
 flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) %>% 
   rename(Datesss = Date, Valuesss = Value) %>% 
   # fill_missing_dates(dates = Datesss, values = Valuesss) %>% 
-  # add_basin_area() %>% 
+   add_basin_area() %>% 
   # add_date_variables(dates = Datesss) %>% 
   # add_rolling_means(dates = Datesss, values = Valuesss) %>% 
   # add_daily_volume(values = Valuesss) %>% 
@@ -205,7 +205,7 @@ plot_annual_cumulative_stats(data = "08HB048")
 
 # Multiple stations
 flow_data <- fill_missing_dates(data = c("08HB048","08NM116"))
-flow_data <- add_basin_area(data = c("08HB048","08NM116"))
+flow_data <- add_basin_area(station_number = c("08HB048","08NM116"))
 flow_data <- add_seasons(data = c("08HB048","08NM116"))
 flow_data <- add_date_variables(data = c("08HB048","08NM116"), water_year = T)
 flow_data <- add_rolling_means(data = c("08HB048","08NM116"))
