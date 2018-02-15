@@ -128,7 +128,7 @@ format_groups_col <- function(data,
   # Check if exists
   if (groups != "STATION_NUMBER" & !groups %in% names(data)) 
     stop("Groups not found in data frame. Leave blank for no grouping, rename groups column to 'STATION_NUMBER', or identify the column using 'groups' argument.", call. = FALSE)
-
+  
   if (!groups %in% names(data)) {
     data[, groups] <- "XXXXXXX"
   }
@@ -141,6 +141,28 @@ format_groups_col <- function(data,
   
   data
 }
+
+
+format_plot_cols <- function(data,
+                             dates = "Date",
+                             values = "Value",
+                             groups = "STATION_NUMBER",
+                             use_groups = FALSE){
+  
+  # Check and rename columns
+  data <- format_dates_col(data = data, dates = dates)
+  data <- format_values_col(data = data, values = values)
+  
+  if (use_groups) {
+    data <- format_groups_col(data = data, groups = groups)
+    data <- dplyr::select(data, STATION_NUMBER, Date, Value)
+  } else {
+    data <- dplyr::select(data, Date, Value)
+  }
+  
+}
+
+
 
 
 ## Fill missing dates, add date variables and add AnalysisYear, DoY, and/or Date
@@ -164,7 +186,7 @@ analysis_prep <- function(data,
     if (year) {
       data$AnalysisYear <- data$WaterYear
     }
-          
+    
     if (doy) {
       data$AnalysisDoY <- data$WaterDayofYear
     }
@@ -278,6 +300,11 @@ transpose_checks <- function(transpose) {
 ignore_missing_checks <- function(ignore_missing) {
   if (length(ignore_missing) > 1)   stop("Only one ignore_missing logical value can be listed.", call. = FALSE)
   if (!is.logical(ignore_missing))  stop("ignore_missing argument must be logical (TRUE/FALSE).")
+}
+
+log_discharge_checks <- function(log_discharge) {
+  if (length(log_discharge) > 1)   stop("Only one log_discharge logical value can be listed.", call. = FALSE)
+  if (!is.logical(log_discharge))  stop("log_discharge argument must be logical (TRUE/FALSE).")
 }
 
 

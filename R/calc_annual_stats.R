@@ -129,7 +129,7 @@ calc_annual_stats <- function(data = NULL,
                              year = TRUE)
   
   # Add rolling means to end of dataframe
-  flow_data <- add_rolling_means(data = flow_data, days = roll_days, align = roll_align)
+  flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
   colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
   
   # Filter for the selected year (remove excluded years after)
