@@ -4,40 +4,34 @@
 \alias{add_date_variables}
 \title{Add year, month, and day of year variables}
 \usage{
-add_date_variables(data = NULL, dates = Date, water_year = FALSE,
-  water_year_start = 10)
+add_date_variables(data = NULL, dates = Date, station_number = NULL,
+  water_year = FALSE, water_year_start = 10)
 }
 \arguments{
-\item{data}{Daily data to be analyzed. Options:
+\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+Leave blank if using \code{station_number} argument.}
 
-   A data frame of daily data that contains columns of dates.
-   
-   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
+\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
+Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
-using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
+\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
+Leave blank if using \code{data} argument.}
 
 \item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the year in which they end. Default \code{FALSE}.}
+are designated by the calendar year in which they end. Default \code{FALSE}.}
 
 \item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
 Default \code{10}.}
 }
 \value{
-A data frame of the source data with additional columns:
+A tibble data frame of the source data with additional columns:
   \item{Year}{calendar year}
   \item{Month}{numeric month (1 to 12)}
   \item{MonthName}{month name (Jan-Dec)}
   \item{DayofYear}{day of the year (1-365 or 366)}
   \item{WaterYear}{(optional) water year, designated by the calendar year in which it ends}
   \item{WaterDayofYear}{(optional) day of the water year (1-365 or 366), starting in the first month of the water year}
-}
-\description{
-Add columns of Year (YYYY), Month (MM), MonthName (e.g. 'Jan'), and DayofYear (1-365 or 366); and WaterYear (YYYY) and 
-   WaterDayofYear (1-365 or 366) if selected; to a data frame with a column of dates called 'Date'. Water years are designated by 
-   the year in which they end. For example, Water Year 1999 (starting Oct) is from 1 Oct 1998 (WaterDayofYear 1) to 30 Sep 1999
-   (WaterDayofYear 365)).
 }
 \examples{
 \dontrun{

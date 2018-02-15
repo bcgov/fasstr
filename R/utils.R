@@ -234,6 +234,12 @@ rolling_days_checks <- function(roll_days, roll_align) {
   if (!roll_align %in% c("right", "left", "center"))  stop("roll_align argument must be 'right', 'left', or 'center'.", call. = FALSE)
 }
 
+rolling_days_multiple_checks <- function(roll_days, roll_align) {
+  if (!is.numeric(roll_days))                         stop("roll_days argument must be numeric.", call. = FALSE)
+  if (!all(roll_days %in% c(1:180)))                  stop("roll_days argument must be integers > 0 and <= 180).", call. = FALSE)
+  if (!roll_align %in% c("right", "left", "center"))  stop("roll_align argument must be 'right', 'left', or 'center'.", call. = FALSE)
+}
+
 water_year_checks <- function(water_year, water_year_start) {
   if (!is.logical(water_year))         stop("water_year argument must be logical (TRUE/FALSE).", call. = FALSE)
   if (!is.numeric(water_year_start))   stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec).", call. = FALSE)

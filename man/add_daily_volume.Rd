@@ -4,22 +4,21 @@
 \alias{add_daily_volume}
 \title{Add daily volumetric flows}
 \usage{
-add_daily_volume(data = NULL, values = Value)
+add_daily_volume(data = NULL, values = Value, station_number = NULL)
 }
 \arguments{
-\item{data}{Daily data to be analyzed. Options:
+\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+Leave blank if using \code{station_number} argument.}
 
-   A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
-   names/numbers).
-   
-   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
-Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
+\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
+Leave blank if using \code{data} argument.}
 }
 \value{
-A data frame of the source data with an additional column:
+A tibble data frame of the source data with an additional column:
   \item{Volume_m3}{daily total volumetric flow, in units of cubic metres}
 }
 \description{
@@ -30,7 +29,7 @@ Add a column of daily volumetric flows to a streamflow dataset, in units of cubi
 
 add_daily_volume(data = flow_data)
 
-add_daily_volume(data = "08NM116")
+add_daily_volume(station_number = "08NM116")
 
 }
 }

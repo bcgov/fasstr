@@ -58,10 +58,8 @@ add_cumulative_yield <- function(data = NULL,
   flow_data <- flowdata_import(data = data, 
                                station_number = station_number)
   
-  # Save the original columns from the flow_data to remove added columns
+  # Save the original columns and groups from the flow_data to remove added columns
   orig_cols <- names(flow_data)
-  
-  # Get groups of flow_data to return after
   orig_groups <- dplyr::group_vars(flow_data)
   
   # Check and rename columns

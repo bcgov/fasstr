@@ -5,31 +5,34 @@
 \title{Add daily volumetric runoff yields}
 \usage{
 add_daily_yield(data = NULL, values = Value, groups = STATION_NUMBER,
-  basin_area = NA)
+  station_number = NULL, basin_area = NA)
 }
 \arguments{
-\item{data}{Daily data to be analyzed. Options:
+\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+Leave blank if using \code{station_number} argument.}
 
-   A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
-   names/numbers).
-   
-   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
-Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
+\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
+groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
+Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
 
-\item{basin_area}{Upstream drainage basin area to apply to daily observations. Options:
+\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
+Leave blank if using \code{data} argument.}
 
-Leave blank if \code{groups} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
+\item{basin_area}{Upstream drainage basin area, in square kilometres, to apply to observations. Three options:
 
-Single numeric value to apply to all observations.
+(1) Leave blank if \code{groups} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
 
-List each basin area for each grouping factor (can override HYDAT value) as such \code{c("08NM116" = 795, "08NM242" = 10)}.
-Factors not listed will result in NA basin areas.}
+(2) A single numeric value to apply to all observations.
+
+(3) List each basin area for each group/station in groups (can override HYDAT value) as such \code{c("08NM116" = 795, 
+"08NM242" = 10)}. Group not listed will result in NA basin area.}
 }
 \value{
-A data frame of the source data with an additional column:
+A tibble data frame of the source data with an additional column:
   \item{Yield_mm}{daily runoff yield flow, in units of millimetres}
 }
 \description{
@@ -41,7 +44,7 @@ Add a column of daily runoff yields to a streamflow dataset, in units of millime
 
 add_daily_yield(flow_data = flow_data, basin_area = 104.5)
 
-add_daily_yield(HYDAT = "08NM116")
+add_daily_yield(station_number = "08NM116")
 
 }
 }

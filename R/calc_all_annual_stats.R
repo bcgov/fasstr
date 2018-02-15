@@ -107,7 +107,7 @@ calc_all_annual_stats <- function(data = NULL,
                                   exclude_years = NULL,
                                   annual_percentiles = c(10,90),
                                   monthly_percentiles = c(10,20),
-                                  stats_days = c(1,3,7,30),
+                                  stats_days = 1,
                                   stats_align = "right",
                                   lowflow_days = c(1,3,7,30),
                                   lowflow_align = "right",
@@ -181,7 +181,8 @@ calc_all_annual_stats <- function(data = NULL,
   
   if(!is.logical(ignore_missing))  stop("ignore_missing argument must be logical (TRUE/FALSE).")
   
-  if(!is.numeric(stats_days))                         stop("stats_days argument must be numeric")
+  if(!is.numeric(stats_days))                         stop("stats_days argument must be numeric.")
+  if(length(stats_days)>1)                            stop("Only one stats_days value can be listed.")
   if(!all(stats_days %in% c(1:180)))                  stop("stats_days argument must be integers > 0 and <= 180)")
   if(!stats_align %in% c("right", "left", "center"))  stop("stats_align argument must be 'right', 'left', or 'center'")
   
@@ -213,8 +214,8 @@ calc_all_annual_stats <- function(data = NULL,
   
   annual_stats <- calc_annual_stats(data = data,
                                     percentiles = annual_percentiles,
-                                    rolling_days = stats_days,
-                                    rolling_align = stats_align,
+                                    roll_days = stats_days,
+                                    roll_align = stats_align,
                                     water_year = water_year,
                                     water_year_start = water_year_start,
                                     start_year = start_year,
