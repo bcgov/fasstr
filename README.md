@@ -48,18 +48,18 @@ Using fasstr
 
 ### Data Input
 
-All functions in `fasstr` require a data frame of daily mean streamflow from one or more hydrometric stations. Long-term and continuous datasets are preferred for most analyses, but seasonal and partial data can be used. Other daily time series data, like temperature, precipitation or water levels, may also be used, but with certain caution as some calculations/conversions are based on units of streamflow (cubic metres per second). Data is provided to each function using the `data` argument with two options: a data frame of daily data or a vector of HYDAT station numbers (ex. `08NM116` or `c(08NM116,08NM242)`).
+All functions in `fasstr` require a daily mean streamflow dataset from one or more hydrometric stations. Long-term and continuous datasets are preferred for most analyses, but seasonal and partial data can be used. Other daily time series data, like temperature, precipitation or water levels, may also be used, but with certain caution as some calculations/conversions are based on units of streamflow (cubic metres per second). Data is provided to each function using the either the `data` argument, as a data frame, or the `station_number` argument, as a list of Water Survey of Canada HYDAT station numbers.
 
-Using the data frame option, a data frame of daily data containing columns of dates (YYYY-MM-DD in date format), values (mean daily discharge in cubic metres per second in numeric format), and, optionally, grouping identifiers (character string of station names or numbers) is called. By default the functions will look for columns identified as 'Date', 'Value', and 'STATION\_NUMBER' (grouping results by STATION\_NUMBER), respectively, but columns of different names can be identified using the `dates`, `values`, `groups` column arguments (PROVIDE EXAMPLE), respectively. The following is an example of an appropriate dataframe:
+Using the `data` option, a data frame of daily data containing columns of dates (YYYY-MM-DD in date format), values (mean daily discharge in cubic metres per second in numeric format), and, optionally, grouping identifiers (character string of station names or numbers) is called. By default the functions will look for columns identified as 'Date', 'Value', and 'STATION\_NUMBER' (grouping results by STATION\_NUMBER), respectively, but columns of different names can be identified using the `dates`, `values`, `groups` column arguments (PROVIDE EXAMPLE), respectively. The following is an example of an appropriate dataframe:
 
 ``` r
-str(flow_data)
+str(data)
 #> Classes 'tbl_df', 'tbl' and 'data.frame':    16102 obs. of  2 variables:
 #>  $ Date : Date, format: "1972-12-01" "1972-12-02" ...
 #>  $ Value: num  3 0.94 0.385 0.241 0.207 ...
 ```
 
-Alternatively, you can directly extract a HYDAT flow data frame directly from a HYDAT database by listing HYDAT station numbers in the `data` argument (ex. `data = "08NM116"` or `data = c("08NM116", "08NM242")`). A data frame of daily streamflow data for all stations listed will be extracted using `tidyhydat`.
+Alternatively, you can directly extract a HYDAT flow data frame directly from a HYDAT database by listing HYDAT station numbers in the `station_number` argument (ex. `station_number = "08NM116"` or `station_number = c("08NM116", "08NM242")`). A data frame of daily streamflow data for all stations listed will be extracted using `tidyhydat`.
 
 This package allows for multiple stations (or other groupings such as time-periods of a flow record (ex. pre/post an event)) to be analyzed in many of the functions provided station identifiers are provided using the `groups` column argument (defaults to STATION\_NUMBER). If grouping column doesn't exist or is improperly named, then all values listed in the `values` column will be summarized. Note that the plotting functions do not use the `groups` arguments (as just one plot is typically produced), so just one station/group should be provided.
 
@@ -107,25 +107,8 @@ Examples
 To determine the summary statistics of an entire dataset and by month (mean, median, maximum, minimum, and some percentiles) you can use the `calc_longterm_stats()` function. If the 'Mission Creek near East Kelowna' hydrometric station is of interest you can list the station number in the `HYDAT` argument to obtain the data (if `tidyhydat` and HYDAT are installed).
 
 ``` r
-calc_longterm_stats(data = "08NM116", start_year = 1981, end_year = 2010,
-                    custom_months = 7:9, custom_months_label = "Summer")
-#> # A tibble: 14 x 8
-#>    STATION_NUMBER     Month      Mean Median Maximum Minimum    P10    P90
-#>  *          <chr>    <fctr>     <dbl>  <dbl>   <dbl>   <dbl>  <dbl>  <dbl>
-#>  1        08NM116       Jan  1.217472  1.000    9.50   0.160 0.5400  1.850
-#>  2        08NM116       Feb  1.156100  0.970    4.41   0.140 0.4742  1.994
-#>  3        08NM116       Mar  1.847916  1.405    9.86   0.380 0.7048  3.800
-#>  4        08NM116       Apr  8.318406  6.255   37.90   0.505 1.6290 17.500
-#>  5        08NM116       May 23.576258 20.750   74.40   3.830 9.3330 41.220
-#>  6        08NM116       Jun 21.513999 19.500   84.50   0.450 6.0990 38.900
-#>  7        08NM116       Jul  6.481003  3.900   54.50   0.332 1.0200 15.000
-#>  8        08NM116       Aug  2.125394  1.570   13.30   0.427 0.7749  4.292
-#>  9        08NM116       Sep  2.189149  1.580   14.60   0.364 0.7347  4.352
-#> 10        08NM116       Oct  2.099909  1.595   15.20   0.267 0.7935  3.980
-#> 11        08NM116       Nov  2.041519  1.730   11.70   0.260 0.5600  3.901
-#> 12        08NM116       Dec  1.297002  1.050    7.30   0.342 0.5000  2.333
-#> 13        08NM116 Long-term  6.167362  1.890   84.50   0.140 0.6800 19.300
-#> 14        08NM116    Summer  3.613834  1.980   54.50   0.332 0.7989  7.641
+#calc_longterm_stats(data = "08NM116", start_year = 1981, end_year = 2010,
+#                    custom_months = 7:9, custom_months_label = "Summer")
 ```
 
 ### Plotting example 1: daily summary statistics
@@ -133,49 +116,33 @@ calc_longterm_stats(data = "08NM116", start_year = 1981, end_year = 2010,
 To visualize the daily streamflow patterns on an annual basis, the `plot_daily_stats()` function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the `start_year` and `end_year` arguments. Multiple plots are produced with this function, so this example plots just the summary statistics (`[1]`).
 
 ``` r
-plot_daily_stats(data = "08NM116",
-                 start_year = 1981,
-                 end_year = 2010,
-                 log_discharge = TRUE,
-                 include_year = 1991)
+#plot_daily_stats(data = "08NM116",
+#                 start_year = 1981,
+#                 end_year = 2010,
+#                 log_discharge = TRUE,
+#                 include_year = 1991)
 ```
-
-![](tools/readme/README-plot1-1.png)
 
 ### Plotting example 2: flow duration curves
 
 Flow duration curves can be produced using the `plot_flow_duration()` function.
 
 ``` r
-plot_flow_duration(data = "08NM116",
-                   start_year = 1981,
-                   end_year = 2010)
+#plot_flow_duration(data = "08NM116",
+#                   start_year = 1981,
+#                   end_year = 2010)
 ```
-
-![](tools/readme/README-plot2-1.png)
 
 ### Analysis example: low-flow frequency analysis
 
 This package also provides a function, `compute_frequency_analysis()`, to complete frequency analyses (using the same methods as [HEC-SSP](http://www.hec.usace.army.mil/software/hec-ssp/)). The default fitting distribution is 'log-Pearson Type III', but the 'Weibull' distribution can also be used. Other default plotting and fitting methods are described in the function documentation. For this example, the 7-day low-flow (low-flow is default) quantiles are calculated for the Mission Creek hydrometric station using the 'log-Pearson Type III' distribution. With this, several low-flow indicators can be determined (i.e. 7Q5, 7Q10).
 
 ``` r
-freq_results <- compute_frequency_analysis(data = "08NM116",
-                           start_year = 1981,
-                           end_year = 2010,
-                           rolling_days = 7)
-freq_results$fitted_quantiles
-#>    Distribution Probability Return Period Q007-day-Avg
-#> 1          PIII       0.010    100.000000    0.1929445
-#> 2          PIII       0.050     20.000000    0.2770067
-#> 3          PIII       0.100     10.000000    0.3318582
-#> 4          PIII       0.200      5.000000    0.4084737
-#> 5          PIII       0.500      2.000000    0.5881156
-#> 6          PIII       0.800      1.250000    0.8122160
-#> 7          PIII       0.900      1.111111    0.9463443
-#> 8          PIII       0.950      1.052632    1.0651498
-#> 9          PIII       0.975      1.025641    1.1735280
-#> 10         PIII       0.980      1.020408    1.2066583
-#> 11         PIII       0.990      1.010101    1.3050198
+#freq_results <- compute_frequency_analysis(data = "08NM116",
+#                           start_year = 1981,
+#                           end_year = 2010,
+#                           rolling_days = 7)
+#freq_results$fitted_quantiles
 ```
 
 Project Status

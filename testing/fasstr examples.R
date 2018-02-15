@@ -5,6 +5,11 @@ devtools::document()
 #install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
 install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
+test <- screen_flow_data("07FB002")
+data <- compute_annual_trends("07FB002", start_year = 1978, zyp_method = "yuepilon", water_year = T)[-1]
+plots <- plot_annual_trends(data)
+
+
 
 
 str(flowdata_format(data = read.csv("test.csv")))
@@ -12,6 +17,27 @@ str(tidyhydat::hy_daily_flows(station_number = "08HB048"))
 
 flow_data <- add_cumulative_yield(station_number = "08HB048")
 dataa <- calc_annual_stats(station_number = "08HB048", transpose = T)
+
+
+
+
+
+
+
+flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% 
+  fill_missing_dates() %>% 
+    add_seasons() %>% 
+  add_date_variables(water_year = T) %>% 
+  add_daily_volume() %>% 
+  add_daily_yield() %>% 
+  add_cumulative_volume() %>% 
+  add_cumulative_yield()
+
+
+
+
+
+
 
 
 ### FLOW_DATA
@@ -24,7 +50,7 @@ library(dplyr)
 
 # One station with Date and Value
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% 
-  #fill_missing_dates() %>% 
+  fill_missing_dates() %>% 
   add_basin_area(basin_area = c("08HB048" =10.3355533)) %>% 
   #add_date_variables(water_year = T) %>% 
   #add_rolling_means() %>% 
@@ -190,7 +216,7 @@ plot_flow_data(data = "08HB048")
 plot_annual_cumulative_stats(data = "08HB048", incl_seasons = T)
 plot_annual_flow_timing(data = "08HB048")
 plot_annual_outside_normal(data = "08HB048")
-plot_annual_stats(data = "08HB048")
+plot_annual_stats(station_number = "08HB048")
 #plot_annual_trends(data = "08HB048")
 plot_daily_cumulative_stats(data = "08HB048")
 plot_daily_stats(data = "08HB048")
@@ -204,11 +230,11 @@ plot_annual_cumulative_stats(data = "08HB048")
 
 
 # Multiple stations
-flow_data <- fill_missing_dates(data = c("08HB048","08NM116"))
+flow_data <- fill_missing_dates(station_number = c("08HB048","08NM116"))
 flow_data <- add_basin_area(station_number = c("08HB048","08NM116"))
 flow_data <- add_seasons(data = c("08HB048","08NM116"))
-flow_data <- add_date_variables(data = c("08HB048","08NM116"), water_year = T)
-flow_data <- add_rolling_means(data = c("08HB048","08NM116"))
+flow_data <- add_date_variables(station_number = c("08HB048","08NM116"), water_year = T)
+flow_data <- add_rolling_means(station_number = c("08HB048","08NM116"))
 flow_data <- add_daily_volume(data = c("08HB048","08NM116"))
 flow_data <- add_cumulative_volume(station_number = c("08HB048","08NM116"))
 flow_data <- add_daily_yield(data = c("08HB048","08NM116"))

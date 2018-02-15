@@ -61,19 +61,19 @@ To utilize the `tidyhydat` features, you will need to download a HYDAT database 
 
 ### Data Input
 
-All functions in `fasstr` require a data frame of daily mean streamflow from one or more hydrometric stations. Long-term and continuous datasets are preferred for most analyses, but seasonal and partial data can be used. Other daily time series data, like temperature, precipitation or water levels, may also be used, but with certain caution as some calculations/conversions are based on units of streamflow (cubic metres per second). Data is provided to each function using the `data` argument with two options: a data frame of daily data or a vector of HYDAT station numbers (ex. `08NM116` or `c(08NM116,08NM242)`).
+All functions in `fasstr` require a daily mean streamflow dataset from one or more hydrometric stations. Long-term and continuous datasets are preferred for most analyses, but seasonal and partial data can be used. Other daily time series data, like temperature, precipitation or water levels, may also be used, but with certain caution as some calculations/conversions are based on units of streamflow (cubic metres per second). Data is provided to each function using the either the `data` argument, as a data frame, or the `station_number` argument, as a list of Water Survey of Canada HYDAT station numbers.
 
-Using the data frame option, a data frame of daily data containing columns of dates (YYYY-MM-DD in date format), values (mean daily discharge in cubic metres per second in numeric format), and, optionally, grouping identifiers (character string of station names or numbers) is called. By default the functions will look for columns identified as 'Date', 'Value', and 'STATION_NUMBER' (grouping results by STATION_NUMBER), respectively, but columns of different names can be identified using the `dates`, `values`, `groups` column arguments (PROVIDE EXAMPLE), respectively. The following is an example of an appropriate dataframe:
+Using the `data` option, a data frame of daily data containing columns of dates (YYYY-MM-DD in date format), values (mean daily discharge in cubic metres per second in numeric format), and, optionally, grouping identifiers (character string of station names or numbers) is called. By default the functions will look for columns identified as 'Date', 'Value', and 'STATION_NUMBER' (grouping results by STATION_NUMBER), respectively, but columns of different names can be identified using the `dates`, `values`, `groups` column arguments (PROVIDE EXAMPLE), respectively. The following is an example of an appropriate dataframe:
 ```{r setup, include = FALSE}
-flow_data <- tidyhydat::hy_daily_flows("08HB048")
-flow_data <- flow_data[,c(2,4)]
+data <- tidyhydat::hy_daily_flows("08HB048")
+data <- data[,c(2,4)]
 ```
 
 ```{r flow_data, warning = FALSE}
-str(flow_data)
+str(data)
 ```
 
-Alternatively, you can directly extract a HYDAT flow data frame directly from a HYDAT database by listing HYDAT station numbers in the `data` argument (ex. `data = "08NM116"` or `data = c("08NM116", "08NM242")`). A data frame of daily streamflow data for all stations listed will be extracted using `tidyhydat`. 
+Alternatively, you can directly extract a HYDAT flow data frame directly from a HYDAT database by listing HYDAT station numbers in the `station_number` argument (ex. `station_number = "08NM116"` or `station_number = c("08NM116", "08NM242")`). A data frame of daily streamflow data for all stations listed will be extracted using `tidyhydat`. 
 
 This package allows for multiple stations (or other groupings such as time-periods of a flow record (ex. pre/post an event)) to be analyzed in many of the functions provided station identifiers are provided using the `groups` column argument (defaults to STATION_NUMBER). If grouping column doesn't exist or is improperly named, then all values listed in the `values` column will be summarized. Note that the plotting functions do not use the `groups` arguments (as just one plot is typically produced), so just one station/group should be provided.
 
@@ -123,8 +123,8 @@ With the use of the `ignore_missing` argument in most function, you can decide h
 To determine the summary statistics of an entire dataset and by month (mean, median, maximum, minimum, and some percentiles) you can use the `calc_longterm_stats()` function. If the 'Mission Creek near East Kelowna' hydrometric station is of interest you can list the station number in the `HYDAT` argument to obtain the data (if `tidyhydat` and HYDAT are installed). 
 
 ```{r example1, warning = FALSE}
-calc_longterm_stats(data = "08NM116", start_year = 1981, end_year = 2010,
-                    custom_months = 7:9, custom_months_label = "Summer")
+#calc_longterm_stats(data = "08NM116", start_year = 1981, end_year = 2010,
+#                    custom_months = 7:9, custom_months_label = "Summer")
 ```
 
 ### Plotting example 1: daily summary statistics
@@ -132,11 +132,11 @@ calc_longterm_stats(data = "08NM116", start_year = 1981, end_year = 2010,
 To visualize the daily streamflow patterns on an annual basis, the `plot_daily_stats()` function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the `start_year` and `end_year` arguments. Multiple plots are produced with this function, so this example plots just the summary statistics (`[1]`).
 
 ```{r plot1, warning = FALSE, fig.height = 4, fig.width = 10}
-plot_daily_stats(data = "08NM116",
-                 start_year = 1981,
-                 end_year = 2010,
-                 log_discharge = TRUE,
-                 include_year = 1991)
+#plot_daily_stats(data = "08NM116",
+#                 start_year = 1981,
+#                 end_year = 2010,
+#                 log_discharge = TRUE,
+#                 include_year = 1991)
 ```
 
 ### Plotting example 2: flow duration curves
@@ -144,9 +144,9 @@ plot_daily_stats(data = "08NM116",
 Flow duration curves can be produced using the `plot_flow_duration()` function.
 
 ```{r plot2, warning = FALSE, fig.height = 4, fig.width = 7}
-plot_flow_duration(data = "08NM116",
-                   start_year = 1981,
-                   end_year = 2010)
+#plot_flow_duration(data = "08NM116",
+#                   start_year = 1981,
+#                   end_year = 2010)
 ```
 
 ### Analysis example: low-flow frequency analysis
@@ -154,11 +154,11 @@ plot_flow_duration(data = "08NM116",
 This package also provides a function, `compute_frequency_analysis()`, to complete frequency analyses (using the same methods as [HEC-SSP](http://www.hec.usace.army.mil/software/hec-ssp/)). The default fitting distribution is 'log-Pearson Type III', but the 'Weibull' distribution can also be used. Other default plotting and fitting methods are described in the function documentation. For this example, the 7-day low-flow (low-flow is default) quantiles are calculated for the Mission Creek hydrometric station using the 'log-Pearson Type III' distribution. With this, several low-flow indicators can be determined (i.e. 7Q5, 7Q10).
 
 ```{r example2, warning = FALSE}
-freq_results <- compute_frequency_analysis(data = "08NM116",
-                           start_year = 1981,
-                           end_year = 2010,
-                           rolling_days = 7)
-freq_results$fitted_quantiles
+#freq_results <- compute_frequency_analysis(data = "08NM116",
+#                           start_year = 1981,
+#                           end_year = 2010,
+#                           rolling_days = 7)
+#freq_results$fitted_quantiles
 ```
 
 
