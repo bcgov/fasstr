@@ -185,7 +185,7 @@ calc_flow_percentile <- function(data = NULL,
   ## --------------------
   
   ptile_rank <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER),
-                                 Percentile = round(ecdf(Value)(flow_value), 5) * 100)
+                                 Percentile = round(stats::ecdf(Value)(flow_value), 5) * 100)
   
   
   # Recheck if station_number was in original flow_data and rename or remove as necessary

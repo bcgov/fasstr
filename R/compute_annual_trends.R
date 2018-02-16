@@ -291,7 +291,7 @@ compute_annual_trends <- function(data = NULL,
                                           max_year = as.numeric(max(Year, na.rm = TRUE)),
                                           n_years = sum(!is.na(Value)),
                                           mean = mean(Value, na.rm = TRUE),
-                                          median = median(Value, na.rm = TRUE),
+                                          median = stats::median(Value, na.rm = TRUE),
                                           min = min(Value, na.rm = TRUE),
                                           max = max(Value, na.rm = TRUE))
 

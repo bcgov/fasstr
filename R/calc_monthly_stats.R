@@ -204,7 +204,7 @@ calc_monthly_stats <- function(data = NULL,
   # Calculate basic stats
   monthly_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
                                 Mean = mean(RollingValue, na.rm = ignore_missing),  
-                                Median = median(RollingValue, na.rm = ignore_missing), 
+                                Median = stats::median(RollingValue, na.rm = ignore_missing), 
                                 Maximum = max (RollingValue, na.rm = ignore_missing),    
                                 Minimum = min (RollingValue, na.rm = ignore_missing))
   monthly_stats <- dplyr::ungroup(monthly_stats)
@@ -213,7 +213,7 @@ calc_monthly_stats <- function(data = NULL,
   if(!all(is.na(percentiles))) {
     for (ptile in percentiles) {
       monthly_stats_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
-                                          Percentile = quantile(RollingValue, ptile / 100, na.rm = TRUE))
+                                          Percentile = stats::quantile(RollingValue, ptile / 100, na.rm = TRUE))
       monthly_stats_ptile <- dplyr::ungroup(monthly_stats_ptile)
       
       names(monthly_stats_ptile)[names(monthly_stats_ptile) == "Percentile"] <- paste0("P", ptile)
