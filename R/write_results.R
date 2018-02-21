@@ -63,7 +63,7 @@ write_results <- function(data = NULL,
   ## ---------------
   
   if(filetype == "csv") {
-    write.csv(data, file = file, row.names = FALSE, na = "")
+    utils::write.csv(data, file = file, row.names = FALSE, na = "")
   } else {
     writexl::write_xlsx(data, path = file)
   }

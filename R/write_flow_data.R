@@ -185,7 +185,7 @@ write_flow_data <- function(data = NULL,
   ## ---------------
   
   if(filetype == "csv") {
-    write.csv(flow_data, file = file, row.names = FALSE, na = "")
+    utils::write.csv(flow_data, file = file, row.names = FALSE, na = "")
   } else {
     writexl::write_xlsx(flow_data, path = file)
   }

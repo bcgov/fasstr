@@ -215,12 +215,12 @@ calc_longterm_stats <- function(data = NULL,
   # Calculate the monthly and longterm stats
   Q_months <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, MonthName),
                                Mean = mean(RollingValue, na.rm = ignore_missing),
-                               Median = median(RollingValue, na.rm = ignore_missing),
+                               Median = stats::median(RollingValue, na.rm = ignore_missing),
                                Maximum = max(RollingValue, na.rm = ignore_missing),
                                Minimum = min(RollingValue, na.rm = ignore_missing))
   longterm_stats   <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER),
                                    Mean = mean(RollingValue, na.rm = ignore_missing),
-                                   Median = median(RollingValue, na.rm = ignore_missing),
+                                   Median = stats::median(RollingValue, na.rm = ignore_missing),
                                    Maximum = max(RollingValue, na.rm = ignore_missing),
                                    Minimum = min(RollingValue, na.rm = ignore_missing))
   longterm_stats <- dplyr::mutate(longterm_stats, MonthName = as.factor("Long-term"))
@@ -234,10 +234,10 @@ calc_longterm_stats <- function(data = NULL,
       
       Q_months_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, MonthName),
                                          Percentile = ifelse(!is.na(mean(RollingValue, na.rm = FALSE)) | ignore_missing, 
-                                                             quantile(RollingValue, ptile / 100, na.rm = TRUE), NA))
+                                                             stats::quantile(RollingValue, ptile / 100, na.rm = TRUE), NA))
       longterm_stats_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER),
                                            Percentile = ifelse(!is.na(mean(RollingValue, na.rm = FALSE)) | ignore_missing, 
-                                                               quantile(RollingValue, ptile / 100, na.rm = TRUE), NA))
+                                                               stats::quantile(RollingValue, ptile / 100, na.rm = TRUE), NA))
       longterm_stats_ptile <- dplyr::mutate(longterm_stats_ptile, MonthName = "Long-term")
       
       names(Q_months_ptile)[names(Q_months_ptile) == "Percentile"] <- paste0("P", ptile)
@@ -257,7 +257,7 @@ calc_longterm_stats <- function(data = NULL,
     flow_data_temp <- dplyr::filter(flow_data, Month %in% custom_months)
     Q_months_custom <-   dplyr::summarize(dplyr::group_by(flow_data_temp, STATION_NUMBER),
                                           Mean = mean(RollingValue, na.rm = ignore_missing),
-                                          Median = median(RollingValue, na.rm = ignore_missing),
+                                          Median = stats::median(RollingValue, na.rm = ignore_missing),
                                           Maximum = max(RollingValue,na.rm = ignore_missing),
                                           Minimum = min(RollingValue,na.rm = ignore_missing))
     Q_months_custom <- dplyr::mutate(Q_months_custom, MonthName = paste0(custom_months_label))
@@ -267,7 +267,7 @@ calc_longterm_stats <- function(data = NULL,
       for (ptile in percentiles) {
         Q_ptile_custom <- dplyr::summarize(dplyr::group_by(flow_data_temp, STATION_NUMBER),
                                            Percentile = ifelse(!is.na(mean(RollingValue, na.rm = FALSE)) | ignore_missing, 
-                                                               quantile(RollingValue, ptile / 100, na.rm = TRUE), NA))
+                                                               stats::quantile(RollingValue, ptile / 100, na.rm = TRUE), NA))
         Q_ptile_custom <- dplyr::mutate(Q_ptile_custom, MonthName = paste0(custom_months_label))
         names(Q_ptile_custom)[names(Q_ptile_custom) == "Percentile"] <- paste0("P", ptile)
         

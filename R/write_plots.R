@@ -130,18 +130,18 @@ write_plots <- function(plot = NULL,
     if(combined_pdf) {
       
       if(is.na(width)) {
-        width <- dev.size(units = units)[1]
+        width <- grDevices::dev.size(units = units)[1]
       }
       
       if(is.na(height)) {
-        height <- dev.size(units = units)[2]
+        height <- grDevices::dev.size(units = units)[2]
       }
       
-      pdf(file = paste0(file, ".pdf"), width = width, height = height)
+      grDevices::pdf(file = paste0(file, ".pdf"), width = width, height = height)
       for (item in names(plot)) {
         suppressWarnings(plot(plot[[item]]))
       }
-      invisible(dev.off())
+      invisible(grDevices::dev.off())
       
     }
   }

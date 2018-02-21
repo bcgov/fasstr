@@ -228,7 +228,7 @@ calc_monthly_cumulative_stats <- function(data = NULL,
     # Calculate the monthly and longterm stats
   monthly_cumul <- dplyr::summarize(dplyr::group_by(monthly_data, STATION_NUMBER, MonthName),
                                     Mean = mean(Monthly_Total, na.rm = ignore_missing),
-                                    Median = median(Monthly_Total, na.rm = ignore_missing),
+                                    Median = stats::median(Monthly_Total, na.rm = ignore_missing),
                                     Maximum = max(Monthly_Total, na.rm = ignore_missing),
                                     Minimum = min(Monthly_Total, na.rm = ignore_missing))
   
@@ -237,7 +237,7 @@ calc_monthly_cumulative_stats <- function(data = NULL,
     for (ptile in percentiles) {
       monthly_ptile <- dplyr::summarise(dplyr::group_by(monthly_data, STATION_NUMBER, MonthName),
                                         Percentile = ifelse(!is.na(mean(Monthly_Total, na.rm = FALSE)) | ignore_missing, 
-                                                            quantile(Monthly_Total, ptile / 100, na.rm = TRUE), NA))
+                                                            stats::quantile(Monthly_Total, ptile / 100, na.rm = TRUE), NA))
       
       names(monthly_ptile)[names(monthly_ptile) == "Percentile"] <- paste0("P", ptile)
       

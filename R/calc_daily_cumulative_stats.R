@@ -241,7 +241,7 @@ calc_daily_cumulative_stats <- function(data = NULL,
   # Calculate basic stats
   daily_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, AnalysisDoY),
                               Mean = mean(Cumul_Flow, na.rm = ignore_missing),
-                              Median = median(Cumul_Flow, na.rm = ignore_missing),
+                              Median = stats::median(Cumul_Flow, na.rm = ignore_missing),
                               Minimum = min(Cumul_Flow, na.rm = ignore_missing),
                               Maximum = max(Cumul_Flow, na.rm = ignore_missing))
 
@@ -249,7 +249,7 @@ calc_daily_cumulative_stats <- function(data = NULL,
   if (!all(is.na(percentiles))){
     for (ptile in percentiles) {
       daily_stats_ptile <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, AnalysisDoY),
-                                        Percentile = quantile(Cumul_Flow, ptile / 100, na.rm = TRUE))
+                                        Percentile = stats::quantile(Cumul_Flow, ptile / 100, na.rm = TRUE))
       names(daily_stats_ptile)[names(daily_stats_ptile) == "Percentile"] <- paste0("P", ptile)
       
       # Merge with daily_stats
