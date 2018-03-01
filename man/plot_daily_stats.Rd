@@ -50,8 +50,6 @@ with no missing dates will be returned. Default \code{TRUE}.}
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.}
 
 \item{include_year}{A numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
-
-\item{percentiles}{Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{NA}.}
 }
 \value{
 A list of ggplot2 objects, the first the daily statistics plot containing the listed plots below, and the sebsequent plots for each

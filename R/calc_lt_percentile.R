@@ -44,6 +44,7 @@
 #' @param complete_years Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.          
 #' @param months Numeric vector of months to include in analysis (ex. \code{6:8} for Jun-Aug). Leave blank to summarize 
 #'    all months (default \code{1:12}).
+#' @param transpose Logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.
 #'
 #' @return A data frame of a long-term percentile of selected years and months.
 #' 

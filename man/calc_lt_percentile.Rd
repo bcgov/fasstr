@@ -53,6 +53,8 @@ Default \code{10}.}
 
 \item{months}{Numeric vector of months to include in analysis (ex. \code{6:8} for Jun-Aug). Leave blank to summarize 
 all months (default \code{1:12}).}
+
+\item{transpose}{Logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.}
 }
 \value{
 A data frame of a long-term percentile of selected years and months.

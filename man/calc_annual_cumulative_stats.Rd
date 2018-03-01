@@ -54,6 +54,8 @@ Default \code{10}.}
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 
 \item{incl_seasons}{Logical value indication whether to include seasonal yields and total discharges. Default \code{TRUE}.}
+
+\item{transpose}{Logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.}
 }
 \value{
 A data frame with the following columns, ending with '_TotalQ_m3' or '_Yield_mm' based on selection:

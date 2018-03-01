@@ -30,6 +30,9 @@
 #'    Only required if using the data frame option of \code{data} and groups column is not named 'STATION_NUMBER'.
 #'    Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
 #'    another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}. 
+#' @param rolling_days Numeric vector of the number of days to apply the rolling mean. Default \code{1}.
+#' @param rolling_align Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+#'    ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.
 #' @param flow_value Numeric. Flow value of which to determine the percentile rank. Required.
 #' @param water_year Logical value indicating whether to use water years to group data instead of calendar years. Water years 
 #'    are designated by the year in which they end. Default \code{FALSE}.
@@ -47,11 +50,18 @@
 #' @examples
 #' \dontrun{
 #' 
-#' calc_flow_percentile(data = data, start_year = 1980, end_year = 2010, flow_value = 10)
+#' calc_flow_percentile(data = data, 
+#'                      start_year = 1980,  
+#'                      end_year = 2010, 
+#'                      flow_value = 10)
 #' 
-#' calc_flow_percentile(data = "08NM116", water_year = TRUE, exclude_years = (1990, 1992:1994), flow_value = 10)
+#' calc_flow_percentile(data = "08NM116", 
+#'                      water_year = TRUE, 
+#'                      exclude_years = (1990, 1992:1994),
+#'                      flow_value = 10)
 #' 
-#' calc_flow_percentile(data = "08NM116", flow_value = 10)
+#' calc_flow_percentile(data = "08NM116", 
+#'                      flow_value = 10)
 #' 
 #' }
 #' @export

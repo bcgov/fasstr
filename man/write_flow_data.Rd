@@ -29,8 +29,8 @@ Only required if using the data frame option of \code{data} and groups column is
 Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
 another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
 
-\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
-by the year in which they end. Default \code{FALSE}.}
+\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
+are designated by the year in which they end. Default \code{FALSE}.}
 
 \item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
 Default \code{10}.}
@@ -49,9 +49,6 @@ Default \code{10}.}
 
 \item{digits}{Integer indicating the number of decimal places or significant digits used to round flow values. Use follows 
 that of base::round() digits argument.}
-
-\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the year in which they end. Default \code{FALSE}.}
 }
 \description{
 Write a streamflow dataset as a .xlsx .xls, or .csv file to a directory. Can add missing dates or filter data by

@@ -67,11 +67,15 @@
 #' @examples
 #' \dontrun{
 #' 
-#'calc_longterm_stats(data = flow_data)
+#' calc_longterm_stats(data = flow_data)
 #' 
-#'calc_longterm_stats(data = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
+#' calc_longterm_stats(data = "08NM116", 
+#'                     water_year = TRUE, 
+#'                     water_year_start = 8, 
+#'                     percentiles = c(1:10))
 #'
-#'calc_longterm_stats(data = c("08NM116","08NM242"), custom_months = c(5:9))
+#' calc_longterm_stats(data = c("08NM116","08NM242"), 
+#'                     custom_months = c(5:9))
 #'
 #' }
 #' @export

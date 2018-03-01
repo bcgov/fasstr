@@ -47,7 +47,10 @@
 #' @examples
 #' \dontrun{
 #' 
-#'plot_annual_flow_timing(data = "08NM116", water_year = TRUE, water_year_start = 8, percent_total = 50)
+#' plot_annual_flow_timing(data = "08NM116", 
+#'                         water_year = TRUE, 
+#'                        water_year_start = 8, 
+#'                        percent_total = 50)
 #'
 #' }
 #' @export

@@ -60,8 +60,6 @@ with no missing dates will be returned. Default \code{TRUE}.}
 \item{incl_longterm}{Logical value indicating whether to include longterm curve of all data. Default \code{TRUE}.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.}
-
-\item{percentiles}{Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{NA}.}
 }
 \value{
 A ggplot2 object with plots for each month, long-term, and custom months showing the percentage of time that 

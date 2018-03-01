@@ -51,7 +51,10 @@
 #' @examples
 #' \dontrun{
 #' 
-#'plot_annual_lowflows(data = "08NM116", water_year = TRUE, water_year_start = 8, rolling_days = c(3,7))
+#' plot_annual_lowflows(data = "08NM116", 
+#'                      water_year = TRUE, 
+#'                      water_year_start = 8, 
+#'                      rolling_days = c(3,7))
 #'
 #' }
 #' @export

@@ -48,8 +48,6 @@ Default \code{10}.}
 with no missing dates will be returned. Default \code{TRUE}.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.}
-
-\item{percentiles}{Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{NA}.}
 }
 \value{
 A ggplot2 object with the following plots:

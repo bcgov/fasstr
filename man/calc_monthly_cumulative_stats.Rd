@@ -88,9 +88,10 @@ Calculate cumulative daily flow statistics for each day of the year of daily flo
 \examples{
 \dontrun{
 
-calc_monthly_cumulative_stats(data = flow_data, station_name = "MissionCreek", write_table = TRUE)
-
-calc_monthly_cumulative_stats(data = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
+calc_monthly_cumulative_stats(data = "08NM116",
+                              water_year = TRUE, 
+                              water_year_start = 8, 
+                              percentiles = c(1:10))
 
 }
 }

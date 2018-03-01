@@ -79,7 +79,6 @@
 #'    Default \code{c(25,33.3,50,75)}.
 #' @param normal_percentiles Numeric. Lower and upper percentiles, respectively indicating the limits of the normal range. 
 #'    Used for calc_annual_outside_normal() function. Default \code{c(25,75)}.
-#' @param transpose Logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.
 #' @param ignore_missing Logical value indicating whether dates with missing values should be included in the calculation. If
 #'    \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
 #'    with no missing dates will be returned. Default \code{TRUE}.

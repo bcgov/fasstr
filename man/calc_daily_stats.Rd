@@ -84,9 +84,11 @@ Calculates the daily mean, median, maximum, minimum, and percentiles for each da
 \examples{
 \dontrun{
 
-calc_daily_stats(data = flow_data, station_name = "MissionCreek", write_table = TRUE)
 
-calc_daily_stats(data = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
+calc_daily_stats(data = "08NM116", 
+                 water_year = TRUE, 
+                 water_year_start = 8, 
+                 percentiles = c(1:10))
 
 }
 }

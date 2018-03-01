@@ -50,6 +50,7 @@
 #' @param end_year Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.
 #' @param exclude_years Numeric vector of years to exclude from analysis. Leave blank to include all years.             
 #' @param incl_seasons Logical value indication whether to include seasonal yields and total discharges. Default \code{TRUE}.
+#' @param transpose Logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.
 #' 
 #' @return A data frame with the following columns, ending with '_TotalQ_m3' or '_Yield_mm' based on selection:
 #'   \item{Year}{calendar or water year selected}

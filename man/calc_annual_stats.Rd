@@ -79,9 +79,13 @@ Calculates annual monthly mean, median, maximum, minimum, and percentiles of dai
 
 calc_annual_stats(data = flow_data)
 
-calc_annual_stats(station_number = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
+calc_annual_stats(station_number = "08NM116",
+                  water_year = TRUE, 
+                  water_year_start = 8, 
+                  percentiles = c(1:10))
 
-calc_annual_stats(station_number = "08NM116", months = 7:9)
+calc_annual_stats(station_number = "08NM116", 
+                  months = 7:9)
 
 }
 }

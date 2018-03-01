@@ -45,6 +45,7 @@
 #'    all months (default \code{1:12}).
 #' @param percent_MAD Numeric vector of percents of long-term mean annual discharge to add to the table (ex. 20 for 20 percent MAD).
 #'    Leave blank for no values to be calculated.
+#' @param transpose Logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.
 #'
 #' @return A tibble of numeric values of a long-term mean (and percent of long-term mean if selected) of selected years and months.
 #' 

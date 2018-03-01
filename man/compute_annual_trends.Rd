@@ -92,8 +92,6 @@ Used for calc_annual_outside_normal() function. Default \code{c(25,75)}.}
 with no missing dates will be returned. Default \code{TRUE}.}
 
 \item{incl_data}{Logical value indicating whether to include the trending data with the results. Default \code{TRUE}.}
-
-\item{transpose}{Logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.}
 }
 \value{
 A data frame containing trends with the following outputs from the zyp package:
