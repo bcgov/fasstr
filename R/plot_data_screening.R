@@ -26,8 +26,8 @@
 #'    using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}. 
 #' @param values Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
 #'    Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}. 
-#' @param rolling_days Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.
-#' @param rolling_align Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+#' @param roll_days Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.
+#' @param roll_align Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
 #'    ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.
 #' @param water_year Logical value indicating whether to use water years to group data instead of calendar years. Water years 
 #'    are designated by the year in which they end. Default \code{FALSE}.
@@ -55,8 +55,8 @@
 plot_data_screening <- function(data = NULL,
                                 dates = Date,
                                 values = Value,
-                                rolling_days = 1,
-                                rolling_align = "right",
+                                roll_days = 1,
+                                roll_align = "right",
                                 water_year = FALSE,
                                 water_year_start = 10,
                                 start_year = 0,
@@ -105,8 +105,8 @@ plot_data_screening <- function(data = NULL,
   ## ----------
   
   flow_summary <- fasstr::screen_flow_data(data = data,
-                                           rolling_days = rolling_days,
-                                           rolling_align = rolling_align,
+                                           roll_days = roll_days,
+                                           roll_align = roll_align,
                                            water_year = water_year,
                                            water_year_start = water_year_start,
                                            start_year = start_year,

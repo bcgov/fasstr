@@ -5,7 +5,7 @@
 \title{Calculate an annual frequency analysis statistic}
 \usage{
 compute_frequency_stat(data = NULL, dates = Date, values = Value,
-  rolling_day = NA, rolling_align = "right", use_hydat_peaks = FALSE,
+  roll_day = NA, roll_align = "right", use_hydat_peaks = FALSE,
   return_period = NA, use_max = FALSE, use_log = FALSE,
   prob_plot_position = c("weibull", "median", "hazen"),
   fit_distr = c("PIII", "weibull"), fit_distr_method = ifelse(fit_distr ==
@@ -27,9 +27,9 @@ using the data frame option of \code{data} and dates column is not named 'Date'.
 \item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
 Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
 
-\item{rolling_day}{Numeric vector of the number of days to apply the rolling mean. Not required if using \code{use_hydat_peaks}.}
+\item{roll_day}{Numeric vector of the number of days to apply the rolling mean. Not required if using \code{use_hydat_peaks}.}
 
-\item{rolling_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
+\item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
 ('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
 \item{use_hydat_peaks}{Logical value indicating whether to use instantaneous peaks from HYDAT for analysis.
@@ -76,12 +76,12 @@ all months (default \code{1:12}).}
 with no missing dates will be returned. Default \code{TRUE}.}
 }
 \value{
-A numeric value of the frequency analysis result, given the rolling_day and return_period
+A numeric value of the frequency analysis result, given the roll_day and return_period
 }
 \description{
 Performs a volume frequency analysis on annual statistics from a streamflow dataset and calculates a statistic based on
    the provided mean n-days and return period of the statistic, defaults to minimum flows. For example, to determine the 7Q10 of a 
-   dataset, set the rolling_day to \code{7} and the return_period to \code{10}. Calculates the statistic from all daily discharge 
+   dataset, set the roll_day to \code{7} and the return_period to \code{10}. Calculates the statistic from all daily discharge 
    values from all years and months, unless specified.Function will calculate using all values in the provided data (no grouped 
    analysis). Analysis methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
 }
@@ -89,7 +89,7 @@ Performs a volume frequency analysis on annual statistics from a streamflow data
 \dontrun{
 
 compute_frequency_stat(data = "08NM116",
-                       rolling_day = 7,
+                       roll_day = 7,
                        return_period = 10)
                             
 }

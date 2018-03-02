@@ -5,11 +5,10 @@
 \title{Calculate the daily summary statistics}
 \usage{
 calc_daily_stats(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, percentiles = c(5, 25, 75, 95),
-  rolling_days = 1, rolling_align = "right", water_year = FALSE,
-  water_year_start = 10, start_year = 0, end_year = 9999,
-  exclude_years = NULL, complete_years = FALSE, transpose = FALSE,
-  ignore_missing = TRUE)
+  groups = STATION_NUMBER, percentiles = c(5, 25, 75, 95), roll_days = 1,
+  roll_align = "right", water_year = FALSE, water_year_start = 10,
+  start_year = 0, end_year = 9999, exclude_years = NULL,
+  complete_years = FALSE, transpose = FALSE, ignore_missing = TRUE)
 }
 \arguments{
 \item{data}{Daily data to be analyzed. Options:
@@ -33,9 +32,9 @@ another non-existing column name to remove this grouping. Identify another colum
 
 \item{percentiles}{Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(5,25,75,95)}.}
 
-\item{rolling_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
+\item{roll_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
 
-\item{rolling_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+\item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
 ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
 \item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
@@ -77,7 +76,7 @@ A data frame with the following columns:
 \description{
 Calculates the daily mean, median, maximum, minimum, and percentiles for each day of the year of daily flow values 
    from a streamflow dataset. Calculate the statistics from all daily discharge values from all years, unless specified. Can determine
-   statistics of rolling mean days (e.g. 7-day flows) using the rolling_days argument. Note that statistics are based on the numeric days
+   statistics of rolling mean days (e.g. 7-day flows) using the roll_days argument. Note that statistics are based on the numeric days
    of year (1-365) and not the date (Jan1 - Dec 31) of year so day of year values for days after Feb 29 in leap years will be one value
    higher than non-leap years.
 }

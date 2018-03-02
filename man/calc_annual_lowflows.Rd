@@ -5,8 +5,8 @@
 \title{Calculate annual lowflows}
 \usage{
 calc_annual_lowflows(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, rolling_days = c(1, 3, 7, 30),
-  rolling_align = "right", water_year = FALSE, water_year_start = 10,
+  groups = STATION_NUMBER, roll_days = c(1, 3, 7, 30),
+  roll_align = "right", water_year = FALSE, water_year_start = 10,
   start_year = 0, end_year = 9999, exclude_years = NULL, months = 1:12,
   transpose = FALSE, ignore_missing = FALSE)
 }
@@ -30,9 +30,9 @@ Only required if using the data frame option of \code{data} and groups column is
 Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
 another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
 
-\item{rolling_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
+\item{roll_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
 
-\item{rolling_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+\item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
 ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
 \item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
@@ -59,20 +59,20 @@ with no missing dates will be returned. Default \code{TRUE}.}
 \value{
 A data frame with the following columns:
   \item{Year}{calendar or water year selected}
-  \item{Min_'n'_Day}{annual minimum for each n-day rolling mean, direction of mean specified by rolling_align}
+  \item{Min_'n'_Day}{annual minimum for each n-day rolling mean, direction of mean specified by roll_align}
   \item{Min_'n'_Day_DoY}{day of year for each annual minimum of n-day rolling mean}
   \item{Min_'n'_Day_Date}{date (YYYY-MM-DD) for each annual minimum of n-day rolling mean}
   Default columns:
-  \item{Min_1_Day}{annual 1-day mean minimum (rolling_align=right)}
+  \item{Min_1_Day}{annual 1-day mean minimum (roll_align=right)}
   \item{Min_1_Day_DoY}{day of year of annual 1-day mean minimum}
   \item{Min_1_Day_Date}{date (YYYY-MM-DD) of annual 1-day mean minimum}
-  \item{Min_3_Day}{annual 3-day mean minimum (rolling_align=right)}
+  \item{Min_3_Day}{annual 3-day mean minimum (roll_align=right)}
   \item{Min_3_Day_DoY}{day of year of annual 3-day mean minimum}
   \item{Min_3_Day_Date}{date (YYYY-MM-DD) of annual 3-day mean minimum}   
-  \item{Min_7_Day}{annual 7-day mean minimum (rolling_align=right)}
+  \item{Min_7_Day}{annual 7-day mean minimum (roll_align=right)}
   \item{Min_7_Day_DoY}{day of year of annual 7-day mean minimum}
   \item{Min_7_Day_Date}{date (YYYY-MM-DD) of annual 7-day mean minimum}
-  \item{Min_30_Day}{annual 30-day mean minimum (rolling_align=right)}
+  \item{Min_30_Day}{annual 30-day mean minimum (roll_align=right)}
   \item{Min_30_Day_DoY}{day of year of annual 30-day mean minimum}
   \item{Min_30_Day_Date}{date (YYYY-MM-DD) of annual 30-day mean minimum}
   Transposing data creates a column of "Statistics" and subsequent columns for each year selected. "Date" statistics
@@ -88,7 +88,7 @@ Calculates annual n-day minimum values, and the day of year and date of occurren
 calc_annual_lowflows(data = "08NM116", 
                      water_year = TRUE, 
                      water_year_start = 8, 
-                     rolling_days = c(3,7))
+                     roll_days = c(3,7))
 
 }
 }

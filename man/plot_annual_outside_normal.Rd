@@ -5,9 +5,9 @@
 \title{Plot annual days above and below normal}
 \usage{
 plot_annual_outside_normal(data = NULL, dates = Date, values = Value,
-  normal_percentiles = c(25, 75), rolling_days = 1,
-  rolling_align = "right", water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, exclude_years = NULL, months = 1:12)
+  normal_percentiles = c(25, 75), roll_days = 1, roll_align = "right",
+  water_year = FALSE, water_year_start = 10, start_year = 0,
+  end_year = 9999, exclude_years = NULL, months = 1:12)
 }
 \arguments{
 \item{data}{Daily data to be analyzed. Options:
@@ -26,9 +26,9 @@ Only required if using the data frame option of \code{data} and values column is
 \item{normal_percentiles}{Numeric vector of two values, lower and upper percentiles, respectively indicating the limits of the 
 normal range. Default \code{c(25,75)}.}
 
-\item{rolling_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
+\item{roll_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
 
-\item{rolling_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+\item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
 ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
 \item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 

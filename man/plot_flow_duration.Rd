@@ -5,7 +5,7 @@
 \title{Plot flow duration curves}
 \usage{
 plot_flow_duration(data = NULL, dates = Date, values = Value,
-  rolling_days = 1, rolling_align = "right", water_year = FALSE,
+  roll_days = 1, roll_align = "right", water_year = FALSE,
   water_year_start = 10, start_year = 0, end_year = 9999,
   exclude_years = NULL, complete_years = FALSE, custom_months = NULL,
   custom_months_label = "Custom-Months", ignore_missing = TRUE,
@@ -25,9 +25,9 @@ using the data frame option of \code{data} and dates column is not named 'Date'.
 \item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
 Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
 
-\item{rolling_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
+\item{roll_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
 
-\item{rolling_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+\item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
 ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
 \item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 

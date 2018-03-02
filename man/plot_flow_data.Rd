@@ -5,7 +5,7 @@
 \title{Plot daily mean streamflow}
 \usage{
 plot_flow_data(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, rolling_days = 1, rolling_align = "right",
+  groups = STATION_NUMBER, roll_days = 1, roll_align = "right",
   water_year = FALSE, water_year_start = 10, start_year = 0,
   end_year = 9999, exclude_years = NULL, start_date = "0000-01-01",
   end_date = "3000-12-31", log_discharge = FALSE, plot_by_year = FALSE)
@@ -29,9 +29,9 @@ Only required if using the data frame option of \code{data} and groups column is
 Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
 another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
 
-\item{rolling_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
+\item{roll_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
 
-\item{rolling_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+\item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
 ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
 \item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 

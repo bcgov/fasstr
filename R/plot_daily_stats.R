@@ -14,7 +14,7 @@
 #'
 #' @description Plot the daily mean, median, maximum, minimum, and percentiles for each day of the year of daily flow values 
 #'    from a streamflow dataset. Plots the statistics from all daily discharge values from all years, unless specified. Can determine
-#'    statistics of rolling mean days (e.g. 7-day flows) using the rolling_days argument. Data calculated using calc_daily_stats()
+#'    statistics of rolling mean days (e.g. 7-day flows) using the roll_days argument. Data calculated using calc_daily_stats()
 #'    function.
 #'
 #' @param data Daily data to be analyzed. Options:
@@ -27,8 +27,8 @@
 #'    using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}. 
 #' @param values Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
 #'    Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}. 
-#' @param rolling_days Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.
-#' @param rolling_align Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+#' @param roll_days Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.
+#' @param roll_align Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
 #'    ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.
 #' @param water_year Logical value indicating whether to use water years to group data instead of calendar years. Water years 
 #'    are designated by the year in which they end. Default \code{FALSE}.
@@ -65,8 +65,8 @@
 plot_daily_stats <- function(data = NULL,
                              dates = Date,
                              values = Value,
-                             rolling_days = 1,
-                             rolling_align = "right",
+                             roll_days = 1,
+                             roll_align = "right",
                              water_year = FALSE,
                              water_year_start = 10,
                              start_year = 0,
@@ -122,8 +122,8 @@ plot_daily_stats <- function(data = NULL,
   
   daily_stats <- fasstr::calc_daily_stats(data = data,
                                           percentiles = c(5,25,75,95),
-                                          rolling_days = rolling_days,
-                                          rolling_align = rolling_align,
+                                          roll_days = roll_days,
+                                          roll_align = roll_align,
                                           water_year = water_year,
                                           water_year_start = water_year_start,
                                           start_year = start_year,
@@ -210,7 +210,7 @@ plot_daily_stats <- function(data = NULL,
     
     flow_data <- fill_missing_dates(data = flow_data, water_year = water_year, water_year_start = water_year_start)
     flow_data <- add_date_variables(data = flow_data, water_year = water_year, water_year_start = water_year_start)
-    flow_data <- add_rolling_means(data = flow_data, days = rolling_days, align = rolling_align)
+    flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
     colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
     
     if (water_year) {

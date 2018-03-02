@@ -15,7 +15,7 @@
 #'
 #' @description Performs a volume frequency analysis on annual statistics from a streamflow dataset and calculates a statistic based on
 #'    the provided mean n-days and return period of the statistic, defaults to minimum flows. For example, to determine the 7Q10 of a 
-#'    dataset, set the rolling_day to \code{7} and the return_period to \code{10}. Calculates the statistic from all daily discharge 
+#'    dataset, set the roll_day to \code{7} and the return_period to \code{10}. Calculates the statistic from all daily discharge 
 #'    values from all years and months, unless specified.Function will calculate using all values in the provided data (no grouped 
 #'    analysis). Analysis methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
 #'
@@ -31,8 +31,8 @@
 #'    Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.
 #' @param use_hydat_peaks Logical value indicating whether to use instantaneous peaks from HYDAT for analysis.
 #'    Leave blank if not required.
-#' @param rolling_day Numeric vector of the number of days to apply the rolling mean. Not required if using \code{use_hydat_peaks}.
-#' @param rolling_align Character string identifying the direction of the rolling mean from the specified date, either by the first 
+#' @param roll_day Numeric vector of the number of days to apply the rolling mean. Not required if using \code{use_hydat_peaks}.
+#' @param roll_align Character string identifying the direction of the rolling mean from the specified date, either by the first 
 #'    ('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.
 #' @param return_period Numeric vector of the estimated time interval, in years, between flow events of a similar size, 
 #'    inverse of probability, used to estimate the frequency statistic. Required.
@@ -61,13 +61,13 @@
 #'    \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
 #'    with no missing dates will be returned. Default \code{TRUE}.
 #' 
-#' @return A numeric value of the frequency analysis result, given the rolling_day and return_period
+#' @return A numeric value of the frequency analysis result, given the roll_day and return_period
 #'   
 #' @examples
 #' \dontrun{
 #' 
 #' compute_frequency_stat(data = "08NM116",
-#'                        rolling_day = 7,
+#'                        roll_day = 7,
 #'                        return_period = 10)
 #'                             
 #' }
@@ -77,8 +77,8 @@
 compute_frequency_stat <- function(data = NULL,
                                    dates = Date,
                                    values = Value,
-                                   rolling_day = NA,
-                                   rolling_align = "right",
+                                   roll_day = NA,
+                                   roll_align = "right",
                                    use_hydat_peaks = FALSE,
                                    return_period = NA,
                                    use_max = FALSE,
@@ -135,11 +135,11 @@ compute_frequency_stat <- function(data = NULL,
   if(length(return_period) > 1)   stop("Only one return_period can be provided.")
   if(is.na(return_period) | !is.numeric(return_period)) stop("A numeric return_period value is required.")
   if(!use_hydat_peaks){
-    if(length(rolling_day) > 1)   stop("Only one rolling_day can be provided.")
-    if(is.na(rolling_day) | !is.numeric(rolling_day)) stop("A numeric rolling_day value is required.")
+    if(length(roll_day) > 1)   stop("Only one roll_day can be provided.")
+    if(is.na(roll_day) | !is.numeric(roll_day)) stop("A numeric roll_day value is required.")
   }
   if(use_hydat_peaks){
-    if(!is.na(rolling_day))  warning("rolling_day argument ignored when using use_hydat_peaks.")
+    if(!is.na(roll_day))  warning("roll_day argument ignored when using use_hydat_peaks.")
     if(water_year)           warning("water_year argument ignored when using use_hydat_peaks.")
     if(length(months) < 12)  warning("months argument ignored when using use_hydat_peaks.")
   }
@@ -152,8 +152,8 @@ compute_frequency_stat <- function(data = NULL,
   ##---------------
   
   fasstr::compute_frequency_analysis(data = data,
-                                     rolling_days = rolling_day,
-                                     rolling_align = rolling_align,
+                                     roll_days = roll_day,
+                                     roll_align = roll_align,
                                      use_hydat_peaks = use_hydat_peaks,
                                      use_max = use_max,
                                      use_log = use_log,

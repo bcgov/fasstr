@@ -14,7 +14,7 @@
 #'
 #' @description Calculates the daily mean, median, maximum, minimum, and percentiles for each day of the year of daily flow values 
 #'    from a streamflow dataset. Calculate the statistics from all daily discharge values from all years, unless specified. Can determine
-#'    statistics of rolling mean days (e.g. 7-day flows) using the rolling_days argument. Note that statistics are based on the numeric days
+#'    statistics of rolling mean days (e.g. 7-day flows) using the roll_days argument. Note that statistics are based on the numeric days
 #'    of year (1-365) and not the date (Jan1 - Dec 31) of year so day of year values for days after Feb 29 in leap years will be one value
 #'    higher than non-leap years.
 #'    
@@ -35,8 +35,8 @@
 #'    Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
 #'    another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}. 
 #' @param percentiles Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(5,25,75,95)}.
-#' @param rolling_days Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.
-#' @param rolling_align Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+#' @param roll_days Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.
+#' @param roll_align Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
 #'    ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.
 #' @param water_year Logical value indicating whether to use water years to group data instead of calendar years. Water years 
 #'    are designated by the year in which they end. Default \code{FALSE}.
@@ -85,8 +85,8 @@ calc_daily_stats <- function(data = NULL,
                              values = Value,
                              groups = STATION_NUMBER,
                              percentiles = c(5,25,75,95),
-                             rolling_days = 1,
-                             rolling_align = "right",
+                             roll_days = 1,
+                             roll_align = "right",
                              water_year = FALSE,
                              water_year_start = 10,
                              start_year = 0,
@@ -143,9 +143,9 @@ calc_daily_stats <- function(data = NULL,
   ## CHECKS ON OTHER ARGUMENTS
   ## -------------------------
   
-  if(!is.numeric(rolling_days))                        stop("rolling_days argument must be numeric")
-  if(!all(rolling_days %in% c(1:180)))                 stop("rolling_days argument must be integers > 0 and <= 180)")
-  if(!rolling_align %in% c("right", "left", "center")) stop("rolling_align argument must be 'right', 'left', or 'center'")
+  if(!is.numeric(roll_days))                        stop("roll_days argument must be numeric")
+  if(!all(roll_days %in% c(1:180)))                 stop("roll_days argument must be integers > 0 and <= 180)")
+  if(!roll_align %in% c("right", "left", "center")) stop("roll_align argument must be 'right', 'left', or 'center'")
   
   if(!is.logical(water_year))         stop("water_year argument must be logical (TRUE/FALSE).")
   if(!is.numeric(water_year_start))   stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec).")
@@ -179,7 +179,7 @@ calc_daily_stats <- function(data = NULL,
   # Fill in the missing dates and the add the date variables again
   flow_data <- fill_missing_dates(data = flow_data, water_year = water_year, water_year_start = water_year_start)
   flow_data <- add_date_variables(data = flow_data, water_year = water_year, water_year_start = water_year_start)
-  flow_data <- add_rolling_means(data = flow_data, days = rolling_days, align = rolling_align)
+  flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
   colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
   
   

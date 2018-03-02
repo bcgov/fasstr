@@ -5,7 +5,7 @@
 \title{Calculate the percentile rank of a flow value}
 \usage{
 calc_flow_percentile(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, rolling_days = 1, rolling_align = "right",
+  groups = STATION_NUMBER, roll_days = 1, roll_align = "right",
   flow_value = NA, water_year = FALSE, water_year_start = 10,
   start_year = 0, end_year = 9999, exclude_years = NULL,
   complete_years = FALSE, months = 1:12)
@@ -30,9 +30,9 @@ Only required if using the data frame option of \code{data} and groups column is
 Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
 another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
 
-\item{rolling_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{1}.}
+\item{roll_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{1}.}
 
-\item{rolling_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
+\item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
 ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
 \item{flow_value}{Numeric. Flow value of which to determine the percentile rank. Required.}
