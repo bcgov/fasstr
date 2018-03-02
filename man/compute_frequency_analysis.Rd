@@ -5,7 +5,7 @@
 \title{Perform a volume frequency analysis on annual statistics}
 \usage{
 compute_frequency_analysis(data = NULL, dates = Date, values = Value,
-  rolling_days = c(1, 3, 7, 30), rolling_align = "right",
+  roll_days = c(1, 3, 7, 30), roll_align = "right",
   use_hydat_peaks = FALSE, use_max = FALSE, use_log = FALSE,
   prob_plot_position = c("weibull", "median", "hazen"),
   prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5, 0.2, 0.1, 0.02, 0.01,
@@ -30,9 +30,9 @@ using the data frame option of \code{data} and dates column is not named 'Date'.
 \item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
 Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
 
-\item{rolling_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
+\item{roll_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
 
-\item{rolling_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
+\item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
 ('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
 \item{use_hydat_peaks}{Logical value indicating whether to use instantaneous peaks from HYDAT for analysis.

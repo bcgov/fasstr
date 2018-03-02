@@ -29,8 +29,8 @@
 #'    Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.
 #' @param use_hydat_peaks Logical value indicating whether to use instantaneous peaks from HYDAT for analysis.
 #'    Leave blank if not required.
-#' @param rolling_days Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.
-#' @param rolling_align Character string identifying the direction of the rolling mean from the specified date, either by the first 
+#' @param roll_days Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.
+#' @param roll_align Character string identifying the direction of the rolling mean from the specified date, either by the first 
 #'    ('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.
 #' @param use_max  Logical valve to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.
 #' @param use_log  Logical value to indicate log-scale tranforming of flow data before analysis. Default \code{FALSE}.
@@ -84,8 +84,8 @@
 compute_frequency_analysis <- function(data = NULL,
                                        dates = Date,
                                        values = Value,
-                                       rolling_days = c(1, 3, 7, 30),
-                                       rolling_align = "right",
+                                       roll_days = c(1, 3, 7, 30),
+                                       roll_align = "right",
                                        use_hydat_peaks = FALSE,
                                        use_max = FALSE,
                                        use_log = FALSE,
@@ -172,9 +172,9 @@ compute_frequency_analysis <- function(data = NULL,
   
   ### HYDAT or dataframe data
   if(!use_hydat_peaks) {
-    if(!is.numeric(rolling_days))                        stop("rolling_days argument must be numeric.")
-    if(!all(rolling_days %in% c(1:180)))                 stop("rolling_days argument must be integers > 0 and <= 180).")
-    if(!rolling_align %in% c("right", "left", "center")) stop("rolling_align argument must be 'right', 'left', or 'center'.")
+    if(!is.numeric(roll_days))                        stop("roll_days argument must be numeric.")
+    if(!all(roll_days %in% c(1:180)))                 stop("roll_days argument must be integers > 0 and <= 180).")
+    if(!roll_align %in% c("right", "left", "center")) stop("roll_align argument must be 'right', 'left', or 'center'.")
     
     ## CHECKS ON FLOW DATA
     ## -------------------
@@ -225,10 +225,10 @@ compute_frequency_analysis <- function(data = NULL,
       flow_data$AnalysisYear <- flow_data$Year
     }
     
-    # Loop through each rolling_days and add customized names of rolling means to flow_data
-    for (day in rolling_days) {
+    # Loop through each roll_days and add customized names of rolling means to flow_data
+    for (day in roll_days) {
       flow_data_temp <- dplyr::select(flow_data, Date, Value)
-      flow_data_temp <- add_rolling_means(flow_data_temp, days = day, align = rolling_align)
+      flow_data_temp <- add_rolling_means(flow_data_temp, roll_days = day, roll_align = roll_align)
       names(flow_data_temp)[names(flow_data_temp) == paste0("Q", day, "Day")] <- paste("Q", formatC(day, width = 3, format = "d", 
                                                                                                     flag = "0"), "-day-Avg", sep = "")
       flow_data_temp <- dplyr::select(flow_data_temp, -Value)
@@ -262,11 +262,18 @@ compute_frequency_analysis <- function(data = NULL,
 
   ## Define functions for analysis
   ##------------------------------
-
+  
+  # This code chunk removes error for "no visible binding for '<<-' assignment to 'dPIII'" etc
+  dPIII <- NULL
+  pPIII <- NULL
+  qPIII <- NULL
+  mPIII <- NULL
+  
+  
   # Define the log=Pearson III function needed for fitting at the GLOBAL environment level
-  dPIII <<-function(x, shape, location, scale) PearsonDS::dpearsonIII(x, shape, location, scale, log = FALSE)
-  pPIII <<-function(q, shape, location, scale) PearsonDS::ppearsonIII(q, shape, location, scale, lower.tail = TRUE, log.p = FALSE)
-  qPIII <<-function(p, shape, location, scale) PearsonDS::qpearsonIII(p, shape, location, scale, lower.tail = TRUE, log.p = FALSE)
+  dPIII <<- function(x, shape, location, scale) PearsonDS::dpearsonIII(x, shape, location, scale, log = FALSE)
+  pPIII <<- function(q, shape, location, scale) PearsonDS::ppearsonIII(q, shape, location, scale, lower.tail = TRUE, log.p = FALSE)
+  qPIII <<- function(p, shape, location, scale) PearsonDS::qpearsonIII(p, shape, location, scale, lower.tail = TRUE, log.p = FALSE)
 
   mPIII <<-function(order, shape, location, scale){
     # compute the empirical first 3 moments of the PIII distribution
@@ -419,7 +426,7 @@ compute_frequency_analysis <- function(data = NULL,
   #   "year range" = paste0(start_year, " - ", end_year),
   #   "excluded years" = paste(exclude_years, collapse = ', '),
   #   "min or max" = ifelse(use_max, "maximums", "minimums"),
-  #   rolling_days = paste(rolling_days, collapse = ', '),
+  #   roll_days = paste(roll_days, collapse = ', '),
   #   fit_distr = fit_distr[1],  # distributions fit to the data
   #   fit_distr_method = fit_distr_method[1],
   #   prob_plot_position = prob_plot_position[1]
