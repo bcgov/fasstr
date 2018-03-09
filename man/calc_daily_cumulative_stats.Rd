@@ -5,47 +5,45 @@
 \title{Calculate cumulative daily flow statistics}
 \usage{
 calc_daily_cumulative_stats(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, percentiles = c(5, 25, 75, 95),
-  use_yield = FALSE, basin_area = NA, water_year = FALSE,
+  groups = STATION_NUMBER, station_number = NULL, percentiles = c(5, 25,
+  75, 95), use_yield = FALSE, basin_area = NA, water_year = FALSE,
   water_year_start = 10, start_year = 0, end_year = 9999,
   exclude_years = NULL, complete_years = FALSE, transpose = FALSE,
-  ignore_missing = TRUE)
+  ignore_missing = FALSE)
 }
 \arguments{
-\item{data}{Daily data to be analyzed. Options:
+\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+Leave blank if using \code{station_number} argument.}
 
-   A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
-   names/numbers).
-   
-   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
+\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
+Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
-using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
-Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
+\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
+groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
+Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
 
-\item{groups}{Column in the \code{data} data frame that contains unique identifiers for different data sets. 
-Only required if using the data frame option of \code{data} and groups column is not named 'STATION_NUMBER'.
-Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
-another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
+\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
+Leave blank if using \code{data} argument.}
 
 \item{percentiles}{Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(5,25,75,95)}.}
 
 \item{use_yield}{Logical value indicating whether to use yield runoff, in mm, instead of volumetric. Default \code{FALSE}.}
 
-\item{basin_area}{Upstream drainage basin area to apply to daily observations. Options:
+\item{basin_area}{Upstream drainage basin area, in square kilometres, to apply to observations. Three options:
 
-Leave blank if \code{groups} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
+(1) Leave blank if \code{groups} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
 
-Single numeric value to apply to all observations.
+(2) A single numeric value to apply to all observations.
 
-List each basin area for each grouping factor (can override HYDAT value) as such \code{c("08NM116" = 795, "08NM242" = 10)}.
-Factors not listed will result in NA basin areas.}
+(3) List each basin area for each group/station in groups (can override HYDAT value) as such \code{c("08NM116" = 795, 
+"08NM242" = 10)}. Group not listed will result in NA basin area.}
 
 \item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the year in which they end. Default \code{FALSE}.}
+are designated by the calendar year in which they end. Default \code{FALSE}.}
 
 \item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
 Default \code{10}.}
@@ -62,7 +60,7 @@ Default \code{10}.}
 
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
-with no missing dates will be returned. Default \code{TRUE}.}
+with no missing dates will be returned. Default \code{FALSE}.}
 }
 \value{
 A data frame with the following columns, default units in cubic metres, millimetres if use_yield and basin_area provided:
@@ -89,7 +87,7 @@ Calculate cumulative daily flow statistics for each day of the year of daily flo
 \dontrun{
 
 
-calc_daily_cumulative_stats(data = "08NM116",
+calc_daily_cumulative_stats(station_number = "08NM116",
                             water_year = TRUE,
                             water_year_start = 8, 
                             percentiles = c(1:10))

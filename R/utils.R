@@ -228,6 +228,20 @@ analysis_prep <- function(data,
 }
 
 
+filter_complete_yrs <- function(complete_years, flow_data) {
+  
+  if (complete_years){
+    comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
+                                   complete_yr = ifelse(sum(!is.na(RollingValue)) == length(AnalysisYear), TRUE, FALSE))
+    flow_data <- merge(flow_data, comp_years, by = c("STATION_NUMBER", "AnalysisYear"))
+    flow_data <- dplyr::filter(flow_data, complete_yr == "TRUE")
+    flow_data <- dplyr::select(flow_data, -complete_yr)
+  }
+  
+  flow_data
+}
+
+
 ## Transpose Data
 ## --------------
 
@@ -280,6 +294,11 @@ years_checks <- function(start_year, end_year, exclude_years) {
   
   if (!is.null(exclude_years) & !is.numeric(exclude_years)) stop("List of exclude_years must be numeric - ex. 1999 or c(1999,2000).", call. = FALSE)
   if (!all(exclude_years %in% c(0:9999)))                   stop("Years listed in exclude_years must be integers.", call. = FALSE)
+}
+
+complete_yrs_checks <- function(complete_years) {
+  if (length(complete_years) > 1)        stop("Only one complete_years logical value can be listed.", call. = FALSE)
+  if (!is.logical(complete_years))       stop("complete_years argument must be logical (TRUE/FALSE).", call. = FALSE)
 }
 
 months_checks <- function(months) {
