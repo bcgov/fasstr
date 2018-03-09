@@ -32,7 +32,7 @@ flowdata_import <- function(data = NULL, station_number = NULL){
       stop("One or more station numbers listed do not have historical daily flows in HYDAT.", call. = FALSE)
     data <- as.data.frame(suppressMessages(tidyhydat::hy_daily_flows(station_number =  station_number)))
   } else {
-    if (!is.data.frame(data))  stop("data arguments is not a data frame.", call. = FALSE)
+    if (!is.data.frame(data))  stop("data argument is not a data frame.", call. = FALSE)
     data <- as.data.frame(data)
   }
   
@@ -249,18 +249,20 @@ analysis_prep <- function(data,
 
 ## Various check functions
 
-rolling_days_checks <- function(roll_days, roll_align) {
-  if (length(roll_days) > 1)                          stop("Only one roll_days value can be listed for this function.", call. = FALSE)
+rolling_days_checks <- function(roll_days, roll_align , multiple = FALSE) {
+  if (!multiple) {
+    if (length(roll_days) > 1)                          stop("Only one roll_days value can be listed for this function.", call. = FALSE)
+  }
   if (!is.numeric(roll_days))                         stop("roll_days argument must be numeric.", call. = FALSE)
   if (!all(roll_days %in% c(1:180)))                  stop("roll_days argument must be integers > 0 and <= 180).", call. = FALSE)
   if (!roll_align %in% c("right", "left", "center"))  stop("roll_align argument must be 'right', 'left', or 'center'.", call. = FALSE)
 }
 
-rolling_days_multiple_checks <- function(roll_days, roll_align) {
-  if (!is.numeric(roll_days))                         stop("roll_days argument must be numeric.", call. = FALSE)
-  if (!all(roll_days %in% c(1:180)))                  stop("roll_days argument must be integers > 0 and <= 180).", call. = FALSE)
-  if (!roll_align %in% c("right", "left", "center"))  stop("roll_align argument must be 'right', 'left', or 'center'.", call. = FALSE)
-}
+# rolling_days_multiple_checks <- function(roll_days, roll_align) {
+#   if (!is.numeric(roll_days))                         stop("roll_days argument must be numeric.", call. = FALSE)
+#   if (!all(roll_days %in% c(1:180)))                  stop("roll_days argument must be integers > 0 and <= 180).", call. = FALSE)
+#   if (!roll_align %in% c("right", "left", "center"))  stop("roll_align argument must be 'right', 'left', or 'center'.", call. = FALSE)
+# }
 
 water_year_checks <- function(water_year, water_year_start) {
   if (!is.logical(water_year))         stop("water_year argument must be logical (TRUE/FALSE).", call. = FALSE)
@@ -297,27 +299,74 @@ transpose_checks <- function(transpose) {
   if (!is.logical(transpose))       stop("transpose argument must be logical (TRUE/FALSE).", call. = FALSE)
 }
 
+spread_checks <- function(spread) {
+  if (length(spread) > 1)        stop("Only one spread logical value can be listed.", call. = FALSE)
+  if (!is.logical(spread))       stop("spread argument must be logical (TRUE/FALSE).", call. = FALSE)
+}
+
 ignore_missing_checks <- function(ignore_missing) {
   if (length(ignore_missing) > 1)   stop("Only one ignore_missing logical value can be listed.", call. = FALSE)
-  if (!is.logical(ignore_missing))  stop("ignore_missing argument must be logical (TRUE/FALSE).")
+  if (!is.logical(ignore_missing))  stop("ignore_missing argument must be logical (TRUE/FALSE).", call. = FALSE)
 }
 
 log_discharge_checks <- function(log_discharge) {
   if (length(log_discharge) > 1)   stop("Only one log_discharge logical value can be listed.", call. = FALSE)
-  if (!is.logical(log_discharge))  stop("log_discharge argument must be logical (TRUE/FALSE).")
+  if (!is.logical(log_discharge))  stop("log_discharge argument must be logical (TRUE/FALSE).", call. = FALSE)
 }
 
+use_yield_checks <- function(use_yield) {
+  if (length(use_yield) > 1)   stop("Only one use_yield logical value can be listed.", call. = FALSE)
+  if (!is.logical(use_yield))  stop("use_yield argument must be logical (TRUE/FALSE).", call. = FALSE)
+}
 
+incl_seasons_checks <- function(incl_seasons) {
+  if (length(incl_seasons) > 1)   stop("Only one incl_seasons logical value can be listed.", call. = FALSE)
+  if (!is.logical(incl_seasons))  stop("incl_seasons argument must be logical (TRUE/FALSE).", call. = FALSE)
+}
 
+percent_total_checks <- function(percent_total) {
+  if (!is.numeric(percent_total))                    stop("percent_total must be numeric.", call. = FALSE)
+  if (!all(percent_total > 0 & percent_total < 100)) stop("percent_total must be > 0 and < 100).", call. = FALSE)
+}
 
+normal_percentiles_checks <- function(normal_percentiles) {
+  if (!is.numeric(normal_percentiles) )                stop("normal_percentiles must be two numeric values.", call. = FALSE)
+  if (length(normal_percentiles) != 2 )                stop("normal_percentiles must be two numeric values (ex. c(25,75)).", call. = FALSE)
+  if (!all(is.na(normal_percentiles)) & (!all(normal_percentiles > 0 & normal_percentiles < 100)) )  
+    stop("normal_percentiles must be >0 and <100)", call. = FALSE)
+}
 
+lowflow_days_checks <- function(lowflow_days, lowflow_align) {
+  if (!is.numeric(lowflow_days))                         stop("lowflow_days argument must be numeric.", call. = FALSE)
+  if (!all(lowflow_days %in% c(1:180)))                  stop("lowflow_days argument must be integers > 0 and <= 180).", call. = FALSE)
+  if (!lowflow_align %in% c("right", "left", "center"))  stop("lowflow_align argument must be 'right', 'left', or 'center'.", call. = FALSE)
+}
 
+stats_days_checks <- function(stats_days, stats_align) {
+  if (length(stats_days) > 1)                          stop("Only one stats_days value can be listed for this function.", call. = FALSE)
+  if (!is.numeric(stats_days))                         stop("stats_days argument must be numeric.", call. = FALSE)
+  if (!all(stats_days %in% c(1:180)))                  stop("stats_days argument must be integers > 0 and <= 180).", call. = FALSE)
+  if (!stats_align %in% c("right", "left", "center"))  stop("stats_align argument must be 'right', 'left', or 'center'.", call. = FALSE)
+}
 
+ann_percentiles_checks <- function(annual_percentiles) {
+  if (!all(is.na(annual_percentiles))){
+    if (!is.numeric(annual_percentiles))                          stop("annual_percentiles argument must be numeric.", call. = FALSE)
+    if (!all(annual_percentiles > 0 & annual_percentiles < 100))  stop("annual_percentiles must be > 0 and < 100.", call. = FALSE)
+  }
+}
 
+mon_percentiles_checks <- function(monthly_percentiles) {
+  if (!all(is.na(monthly_percentiles))){
+    if (!is.numeric(monthly_percentiles))                           stop("monthly_percentiles argument must be numeric.", call. = FALSE)
+    if (!all(monthly_percentiles > 0 & monthly_percentiles < 100))  stop("monthly_percentiles must be > 0 and < 100.", call. = FALSE)
+  }
+}
 
-
-
-
+timing_pct_checks <- function(timing_percent) {
+  if (!is.numeric(timing_percent))                     stop("timing_percent must be numeric.", call. = FALSE)
+  if (!all(timing_percent > 0 & timing_percent < 100)) stop("timing_percent must be > 0 and < 100).", call. = FALSE)
+}
 
 
 
