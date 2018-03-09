@@ -50,7 +50,7 @@ add_rolling_means <- function(data = NULL,
   ## ARGUMENT CHECKS
   ## ---------------
   
-  rolling_days_multiple_checks(roll_days, roll_align)
+  rolling_days_checks(roll_days, roll_align, multiple = TRUE)
 
   
   ## FLOW DATA CHECKS AND FORMATTING

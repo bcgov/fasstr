@@ -5,40 +5,39 @@
 \title{Calculate monthly summary statistics}
 \usage{
 calc_monthly_stats(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, percentiles = c(10, 20), roll_days = 1,
-  roll_align = "right", water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, exclude_years = NULL, months = 1:12,
-  transpose = FALSE, spread = FALSE, ignore_missing = FALSE)
+  groups = STATION_NUMBER, station_number = NULL, percentiles = c(10, 90),
+  roll_days = 1, roll_align = "right", water_year = FALSE,
+  water_year_start = 10, start_year = 0, end_year = 9999,
+  exclude_years = NULL, months = 1:12, transpose = FALSE,
+  spread = FALSE, ignore_missing = FALSE)
 }
 \arguments{
-\item{data}{Daily data to be analyzed. Options:
+\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+Leave blank if using \code{station_number} argument.}
 
-   A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
-   names/numbers).
-   
-   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
+\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
+Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
-using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
-Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
+\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
+groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
+Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
 
-\item{groups}{Column in the \code{data} data frame that contains unique identifiers for different data sets. 
-Only required if using the data frame option of \code{data} and groups column is not named 'STATION_NUMBER'.
-Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
-another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
+\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
+Leave blank if using \code{data} argument.}
 
 \item{percentiles}{Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.}
 
-\item{roll_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
+\item{roll_days}{Numeric value of the number of days to apply a rolling mean. Default \code{1}.}
 
-\item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
-('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
+\item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
+('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
 \item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the year in which they end. Default \code{FALSE}.}
+are designated by the calendar year in which they end. Default \code{FALSE}.}
 
 \item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
 Default \code{10}.}
@@ -49,7 +48,7 @@ Default \code{10}.}
 
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 
-\item{months}{Numeric vector of months to include in analysis (ex. \code{6:8} for Jun-Aug). Leave blank to summarize 
+\item{months}{Numeric vector of months to include in analysis (e.g.. \code{6:8} for Jun-Aug). Leave blank to summarize 
 all months (default \code{1:12}).}
 
 \item{transpose}{Logical value indicating if each month statistic should be individual rows. Default \code{FALSE}.}
@@ -58,10 +57,10 @@ all months (default \code{1:12}).}
 
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
-with no missing dates will be returned. Default \code{TRUE}.}
+with no missing dates will be returned. Default \code{FALSE}.}
 }
 \value{
-A data frame with the following columns:
+A tibble data frame with the following columns:
   \item{Year}{calendar or water year selected}
   \item{Month}{month of the year}
   \item{Mean}{mean of all daily flows for a given month and year}
@@ -71,10 +70,10 @@ A data frame with the following columns:
   \item{P'n'}{each n-th percentile selected for a given month and year}
   Default percentile columns:
   \item{P10}{10th percentile of all daily flows for a given month and year}
-  \item{P20}{20th percentile of all daily flows for a given month and year}
-  Transposing data creates a column of "Statistics" for each month, labeled as "Month-Statistic" (ex "Jan-Mean"),
+  \item{P90}{90th percentile of all daily flows for a given month and year}
+  Transposing data creates a column of 'Statistics' for each month, labeled as 'Month-Statistic' (ex "Jan-Mean"),
   and subsequent columns for each year selected.
-  Spreading data creates columns of Year and subsequent columns of Month-Statistics  (ex "Jan-Mean").
+  Spreading data creates columns of Year and subsequent columns of Month-Statistics  (ex 'Jan-Mean').
 }
 \description{
 Calculates monthly mean, median, maximum, minimum, and percentiles for each month of all years of daily flow values 
@@ -83,11 +82,13 @@ Calculates monthly mean, median, maximum, minimum, and percentiles for each mont
 \examples{
 \dontrun{
 
-calc_monthly_stats(data = flowdata, station_name = "MissionCreek", write_table = TRUE)
+calc_monthly_stats(station_number = "08NM116", 
+                   water_year = TRUE,
+                   water_year_start = 8, 
+                   percentiles = c(1:10))
 
-calc_monthly_stats(data = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
-
-calc_monthly_stats(data = "08NM116", months = 7:9)
+calc_monthly_stats(station_number = "08NM116", 
+                   months = 7:9)
 
 }
 }
