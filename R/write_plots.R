@@ -47,17 +47,17 @@ write_plots <- function(plot = NULL,
   ## ARGUMENT CHECKS
   ## ---------------
   
-  if(is.null(plot)) stop("No plots provided using plot argument.")
+  if(is.null(plot)) stop("No plots provided using plot argument.", call. = FALSE)
   
-  if(file == "") stop("file/folder name must be provided using file argument.")
+  if(file == "") stop("file/folder name must be provided using file argument.", call. = FALSE)
   
-  if(!is.logical(combined_pdf))  stop("combined_pdf argument must be logical (TRUE/FALSE).")
+  if(!is.logical(combined_pdf))  stop("combined_pdf argument must be logical (TRUE/FALSE).", call. = FALSE)
   
   # Grab format if format not provided
   if(!combined_pdf) {
     if(is.null(format)) {
       if(!sub('.*\\.', '', file) %in% c("png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", "svg"))
-        stop("No image file type provided. Please provide using format argument.")
+        stop("No image file type provided. Please provide using format argument.", call. = FALSE)
       
       if(sub('.*\\.', '', file) %in% c("png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", "svg")) {
         format <- sub('.*\\.', '', file)
@@ -67,7 +67,7 @@ write_plots <- function(plot = NULL,
     
     if(!is.null(format)) {
       if(sub('.*\\.', '', file) %in% c("png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", "svg"))
-        warning("Provided format will be overwritten by the format provided in the file argument.")
+        warning("Provided format will be overwritten by the format provided in the file argument.", call. = FALSE)
       file <- sub(paste0(".", format), '', file)
     }
   }
@@ -76,21 +76,21 @@ write_plots <- function(plot = NULL,
   
   if(combined_pdf) {
     if(sub('.*\\.', '', file) %in% c("png", "eps", "ps", "tex", "jpeg", "tiff", "bmp", "svg"))
-      warning("format provided in file will be overridden when using combined_pdf function.")
+      warning("format provided in file will be overridden when using combined_pdf function.", call. = FALSE)
     if(!is.null(format)) {
       if(format %in% c("png", "eps", "ps", "tex", "jpeg", "tiff", "bmp", "svg"))
-        warning("format provided will be overridden when using combined_pdf function.")
+        warning("format provided will be overridden when using combined_pdf function.", call. = FALSE)
     }
     #format <- sub('.*\\.', '', file)
     file <- sub(paste0(".", sub('.*\\.', '', file)), '', file)
   }
   
   if((!is.na(height) & !is.numeric(height)) | (!is.na(width) & !is.numeric(width)))
-    stop("height and width arguments must be numeric.")
-  if(length(height) !=1 | length(width) !=1) stop("Only one height and width values can be provided.")
+    stop("height and width arguments must be numeric.", call. = FALSE)
+  if(length(height) !=1 | length(width) !=1) stop("Only one height and width values can be provided.", call. = FALSE)
   
   if(length(units) != 1)  stop("only one unit type can be provided.")
-  if(!units %in% c("in", "cm", "mm"))  stop("Only units of 'in', 'cm', or 'mm' can be provided.")
+  if(!units %in% c("in", "cm", "mm"))  stop("Only units of 'in', 'cm', or 'mm' can be provided.", call. = FALSE)
   
   
   
@@ -111,7 +111,7 @@ write_plots <- function(plot = NULL,
     
     if(!combined_pdf) {
       if(is.null(format)) {
-        warning("No file format for multiple plots was selected, will use jpeg.")
+        warning("No file format for multiple plots was selected, will use jpeg.", call. = FALSE)
         format <- "jpeg"
       }
       
