@@ -104,7 +104,6 @@ calc_annual_cumulative_stats <- function(data = NULL,
   ## PREPARE FLOW DATA
   ## -----------------
   
-  # Fill in the missing dates and the add the date variables again
   # Fill missing dates, add date variables, and add AnalysisYear
   flow_data <- analysis_prep(data = flow_data, 
                              water_year = water_year, 
