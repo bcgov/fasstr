@@ -12,11 +12,11 @@
 
 #' @title Write a data frame as a .xlsx, .xls, or .csv file
 #'
-#' @description Write a data frame as a .xlsx .xls, or .csv file to a directory with all numbers rounded to specified digits.
-#'    Writing as .xlsx or .xls uses the 'writexl' package.
+#' @description Write a data frame to a directory with all numbers rounded to specified digits. Can write as .xls, .xlsx, or .csv 
+#'    file types. Writing as .xlsx or .xls uses the 'writexl' package.
 #'
 #' @param data Data frame to be written to a directory.
-#' @param file Character string naming the output file. Default filetype is .xlsx. Change to .csv using filtype argument.
+#' @param file Character string naming the output file. Required.
 #' @param digits Integer indicating the number of decimal places or significant digits used to round flow values. Use follows 
 #'    that of base::round() digits argument.
 #'
@@ -42,16 +42,16 @@ write_results <- function(data = NULL,
   ## CHECKS ON DATA
   ## --------------
   
-  if(is.null(data))         stop("data must be provided.")
-  if(!is.data.frame(data))  stop("data must be a data frame.")
+  if(is.null(data))         stop("data must be provided.", call. = FALSE)
+  if(!is.data.frame(data))  stop("data must be a data frame.", call. = FALSE)
   
-  if(file == "") stop("file name must be provided, ending with either .xlsx, .xls, or .csv.")
+  if(file == "") stop("file name must be provided, ending with either .xlsx, .xls, or .csv.", call. = FALSE)
   
   filetype <- sub('.*\\.', '', file)
-  if(!filetype %in% c("xlsx", "xls", "csv")) stop("file name must end with .xlsx, .xls, or .csv.")
+  if(!filetype %in% c("xlsx", "xls", "csv")) stop("file name must end with .xlsx, .xls, or .csv.", call. = FALSE)
   
-  if(length(digits) != 1) stop("Only one number can be provided to digits.")
-  if(!is.numeric(digits)) stop("digits must be a numeric value.")  
+  if(length(digits) != 1) stop("Only one number can be provided to digits.", call. = FALSE)
+  if(!is.numeric(digits)) stop("digits must be a numeric value.", call. = FALSE)  
   
   
   # Round any numeric column to the specified digits
@@ -64,6 +64,7 @@ write_results <- function(data = NULL,
   
   if(filetype == "csv") {
     utils::write.csv(data, file = file, row.names = FALSE, na = "")
+    print(paste0(file))
   } else {
     writexl::write_xlsx(data, path = file)
   }

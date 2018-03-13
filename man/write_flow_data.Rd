@@ -50,9 +50,9 @@ Default \code{10}.}
 that of base::round() digits argument.}
 }
 \description{
-Write a streamflow dataset to a directory. Can add missing dates or filter data by years before writing using given 
-    arguments. Just list data frame or HYDAT station number to write its entirety. Can write as .xls, .xlsx, or .csv file types.
-    Writing as Excel file type uses the 'writexl' package.
+Write a streamflow dataset to a directory. Can fill missing dates or filter data by years or dates before writing using 
+   given arguments. Just list data frame or HYDAT station number to write its entirety. Can write as .xls, .xlsx, or .csv file types.
+   Writing as Excel file type uses the 'writexl' package.
 }
 \examples{
 \dontrun{

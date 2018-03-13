@@ -9,14 +9,14 @@ write_results(data = NULL, file = "", digits = 10)
 \arguments{
 \item{data}{Data frame to be written to a directory.}
 
-\item{file}{Character string naming the output file. Default filetype is .xlsx. Change to .csv using filtype argument.}
+\item{file}{Character string naming the output file. Required.}
 
 \item{digits}{Integer indicating the number of decimal places or significant digits used to round flow values. Use follows 
 that of base::round() digits argument.}
 }
 \description{
-Write a data frame as a .xlsx .xls, or .csv file to a directory with all numbers rounded to specified digits.
-   Writing as .xlsx or .xls uses the 'writexl' package.
+Write a data frame to a directory with all numbers rounded to specified digits. Can write as .xls, .xlsx, or .csv 
+   file types. Writing as .xlsx or .xls uses the 'writexl' package.
 }
 \examples{
 \dontrun{
