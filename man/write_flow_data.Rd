@@ -5,60 +5,59 @@
 \title{Write a streamflow dataset as a .xlsx, .xls, or .csv file}
 \usage{
 write_flow_data(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, start_date = "0000-01-01",
-  end_date = "3000-12-31", fill_missing = FALSE, file = "", digits = 10)
+  groups = STATION_NUMBER, station_number = NULL, water_year = FALSE,
+  water_year_start = 10, start_year = 0, end_year = 9999,
+  start_date = "0000-01-01", end_date = "3000-12-31", file = "",
+  fill_missing = FALSE, digits = 10)
 }
 \arguments{
-\item{data}{Daily data to be analyzed. Options:
+\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+Leave blank if using \code{station_number} argument.}
 
-   A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
-   names/numbers).
-   
-   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
+\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
+Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
-using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
-Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
+\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
+groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
+Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
 
-\item{groups}{Column in the \code{data} data frame that contains unique identifiers for different data sets. 
-Only required if using the data frame option of \code{data} and groups column is not named 'STATION_NUMBER'.
-Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
-another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
+\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
+Leave blank if using \code{data} argument.}
 
 \item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the year in which they end. Default \code{FALSE}.}
+are designated by the calendar year in which they end. Default \code{FALSE}.}
 
 \item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
 Default \code{10}.}
 
-\item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
+\item{start_year}{Numeric value of the first year of data to write. Leave blank to use the first year of the source data.}
 
-\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
+\item{end_year}{Numeric value of the last year of data to write. Leave blank to use the last year of the source data.}
 
-\item{start_date}{Date (YYYY-MM-DD) of first date to consider for plotting. Leave blank if all years are required.}
+\item{start_date}{Date (YYYY-MM-DD) of first date of data to write. Leave blank if all dates required.}
 
-\item{end_date}{Date (YYYY-MM-DD) of last date to consider for plotting. Leave blank if all years are required.}
+\item{end_date}{Date (YYYY-MM-DD) of last date of data to write. Leave blank if all dates required.}
+
+\item{file}{Character string naming the output file. Default file name (with .xlsx) provided and is printed in console when writing.}
 
 \item{fill_missing}{Logical value indicating whether to fill dates with missing flow data with NA. Default \code{FALSE}.}
-
-\item{file}{Character string naming the output file. Default filetype is .xlsx. Change to .csv using filtype argument.}
 
 \item{digits}{Integer indicating the number of decimal places or significant digits used to round flow values. Use follows 
 that of base::round() digits argument.}
 }
 \description{
-Write a streamflow dataset as a .xlsx .xls, or .csv file to a directory. Can add missing dates or filter data by
-    years before writing using given arguments. Just list data frame or HYDAT station number to write its entirety. Writing as 
-    .xlsx or .xls uses the 'writexl' package.
+Write a streamflow dataset to a directory. Can add missing dates or filter data by years before writing using given 
+    arguments. Just list data frame or HYDAT station number to write its entirety. Can write as .xls, .xlsx, or .csv file types.
+    Writing as Excel file type uses the 'writexl' package.
 }
 \examples{
 \dontrun{
 
-write_flow_data(data = "08NM116", 
+write_flow_data(station_number = "08NM116", 
                file = "Mission_Creek_daily_flows.xlsx",
                fill_missing = TRUE)
 
