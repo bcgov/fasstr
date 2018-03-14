@@ -388,6 +388,16 @@ timing_pct_checks <- function(timing_percent) {
 }
 
 
+include_year_checks <- function(include_year) {
+  if(!is.null(include_year)){
+    if(length(include_year) != 1)  stop("Only one include_year numeric value can be provided.", call. = FALSE)
+    if(!is.numeric(include_year))  stop("include_year argument must be numeric.", call. = FALSE)
+  }
+  }
+
+
+
+
 
 
 

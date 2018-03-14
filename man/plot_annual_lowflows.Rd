@@ -5,32 +5,32 @@
 \title{Plot annual lowflows}
 \usage{
 plot_annual_lowflows(data = NULL, dates = Date, values = Value,
-  roll_days = c(1, 3, 7, 30), roll_align = "right", water_year = FALSE,
-  water_year_start = 10, start_year = 0, end_year = 9999,
-  exclude_years = NULL, months = 1:12, ignore_missing = FALSE,
-  log_discharge = FALSE)
+  station_number = NULL, roll_days = c(1, 3, 7, 30), roll_align = "right",
+  water_year = FALSE, water_year_start = 10, start_year = 0,
+  end_year = 9999, exclude_years = NULL, months = 1:12,
+  ignore_missing = FALSE, log_discharge = FALSE)
 }
 \arguments{
-\item{data}{Daily data to be analyzed. Options:
+\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+Leave blank if using \code{station_number} argument.}
 
-   A data frame of daily data that contains columns of dates and values.
-   
-   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
+\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
+Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
-using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
-Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
+\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
+Leave blank if using \code{data} argument.}
 
-\item{roll_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
+\item{roll_days}{Numeric value of the number of days to apply a rolling mean. Default \code{1}.}
 
-\item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
-('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
+\item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
+('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
 \item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the year in which they end. Default \code{FALSE}.}
+are designated by the calendar year in which they end. Default \code{FALSE}.}
 
 \item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
 Default \code{10}.}
@@ -41,14 +41,14 @@ Default \code{10}.}
 
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 
-\item{months}{Numeric vector of months to include in analysis (ex. \code{6:8} for Jun-Aug). Leave blank to summarize 
+\item{months}{Numeric vector of months to include in analysis (e.g.. \code{6:8} for Jun-Aug). Leave blank to summarize 
 all months (default \code{1:12}).}
 
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
-with no missing dates will be returned. Default \code{TRUE}.}
+with no missing dates will be returned. Default \code{FALSE}.}
 
-\item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.}
+\item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
 }
 \value{
 A list of the following ggplot2 objects:

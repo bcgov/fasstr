@@ -214,13 +214,14 @@ flow_data <- calc_monthly_cumulative_stats(station_number = "08HB048")
 flow_data <- calc_monthly_stats(station_number = "08HB048")
 flow_data <- screen_flow_data(station_number = "08HB048")
 plot_flow_data(data = "08HB048")
-plot_annual_cumulative_stats(data = "08HB048", incl_seasons = T)
-plot_annual_flow_timing(data = "08HB048")
-plot_annual_outside_normal(data = "08HB048")
+plot_annual_cumulative_stats(station_number = "08HB048", incl_seasons = T)
+plot_annual_flow_timing(station_number = "08HB048")
+plot_annual_outside_normal(station_number = "08HB048")
 plot_annual_stats(station_number = "08HB048")
+plot_annual_lowflows(station_number = "08HB048")
 #plot_annual_trends(data = "08HB048")
-plot_daily_cumulative_stats(data = "08HB048")
-plot_daily_stats(data = "08HB048")
+plot_daily_cumulative_stats(station_number = "08HB048")
+plot_daily_stats(station_number = "08HB048", include_year = 1999)
 plot_data_screening(data = "08HB048")
 plot_flow_duration(data = "08HB048")
 plot_longterm_stats(data = "08HB048")
@@ -232,7 +233,7 @@ write_flow_data(station_number = c("08HB048","08NM116"))
 
 
 data <- tidyhydat::hy_daily_flows("08HB048") %>% select(-STATION_NUMBER)
-write_flow_data(data, file = "carn111.xlx")
+write_flow_data(data, file = "C:/R Projects/carn111.csv")
 
 
 

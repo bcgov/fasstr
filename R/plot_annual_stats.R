@@ -58,12 +58,6 @@ plot_annual_stats <- function(data = NULL,
   ## ARGUMENT CHECKS
   ## ---------------
   
-  rolling_days_checks(roll_days, roll_align)
-  percentiles_checks(percentiles)
-  water_year_checks(water_year, water_year_start)
-  years_checks(start_year, end_year, exclude_years)
-  months_checks(months)
-  ignore_missing_checks(ignore_missing)
   log_discharge_checks(log_discharge) 
   
   
