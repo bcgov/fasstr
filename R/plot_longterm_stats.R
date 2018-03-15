@@ -16,31 +16,8 @@
 #'    flow values from a single streamflow dataset. Plots statistics from all daily discharge values from all years, unless specified. 
 #'    Data calculated using calc_longterm_stats() function.
 #'
-#' @param data Daily data to be analyzed. Options:
-#' 
-#'    A data frame of daily data that contains columns of dates and values.
-#'    
-#'    A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-#'    extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.   
-#' @param dates Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
-#'    using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}. 
-#' @param values Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
-#'    Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}. 
-#' @param roll_days Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.
-#' @param roll_align Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
-#'    ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.
-#' @param water_year Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-#'    are designated by the year in which they end. Default \code{FALSE}.
-#' @param water_year_start Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
-#'    Default \code{10}.
-#' @param start_year Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.
-#' @param end_year Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.
-#' @param exclude_years Numeric vector of years to exclude from analysis. Leave blank to include all years.             
-#' @param complete_years Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.          
-#' @param ignore_missing Logical value indicating whether dates with missing values should be included in the calculation. If
-#'    \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
-#'    with no missing dates will be returned. Default \code{TRUE}.
-#' @param log_discharge Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.
+#' @inheritParams calc_longterm_stats
+#' @inheritParams plot_annual_stats
 #'
 #' @return A ggplot2 object with the following plots:
 #'   \item{Long-term Mean}{mean of all daily flows over all years}
@@ -54,9 +31,7 @@
 #' @examples
 #' \dontrun{
 #' 
-#'plot_longterm_stats(flow_data = flow_data)
-#' 
-#'plot_longterm_stats(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+#' plot_longterm_stats(station_number = "08NM116", water_year = TRUE, water_year_start = 8)
 #'
 #' }
 #' @export
@@ -65,6 +40,7 @@
 plot_longterm_stats <- function(data = NULL,
                                 dates = Date,
                                 values = Value,
+                                station_number = NULL,
                                 roll_days = 1,
                                 roll_align = "right",
                                 water_year = FALSE,
@@ -73,53 +49,32 @@ plot_longterm_stats <- function(data = NULL,
                                 end_year = 9999,
                                 exclude_years = NULL,
                                 complete_years = FALSE,
-                                ignore_missing = TRUE,
+                                ignore_missing = FALSE,
                                 log_discharge = TRUE){
   
-  ## CHECKS ON DATA FOR CALC
-  ##------------------------
+  ## ARGUMENT CHECKS
+  ## ---------------
   
-  # Check if data is provided
-  if(is.null(data))   stop("No data provided, must provide a data frame or HYDAT station number(s).")
-  if(!is.data.frame(data) & !is.vector(data)) stop("No data provided, must provide a data frame or HYDAT station number(s).")
+  log_discharge_checks(log_discharge)
   
-  # Check HYDAT stations
-  if(is.vector(data)) {
-    if(length(data) != 1)   stop("Only one HYDAT station number can be listed for this function.")
-    if(!data %in% dplyr::pull(tidyhydat::allstations[1]))  stop("Station number listed in data argument does not exist in HYDAT.")
-  }
   
-  if(is.data.frame(data)) {
-    # Get the just groups (default STATION_NUMBER), Date, and Value columns
-    # This method allows the user to select the Station, Date or Value columns if the column names are different
-    if(!as.character(substitute(values)) %in% names(data) & !as.character(substitute(dates)) %in% names(data)) 
-      stop("Dates and values not found in data frame. Rename dates and values columns to 'Date' and 'Value' or identify the columns using 'dates' and 'values' arguments.")
-    if(!as.character(substitute(dates)) %in% names(data))  
-      stop("Dates not found in data frame. Rename dates column to 'Date' or identify the column using 'dates' argument.")
-    if(!as.character(substitute(values)) %in% names(data)) 
-      stop("Values not found in data frame. Rename values column to 'Value' or identify the column using 'values' argument.")
-    
-    # Temporarily rename the Date and Value columns
-    data <- data[,c(as.character(substitute(dates)),
-                    as.character(substitute(values)))]
-    colnames(data) <- c("Date","Value")
-    data <- dplyr::ungroup(data)
-    
-    
-    # Check columns are in proper formats
-    if(!inherits(data$Date[1], "Date"))  stop("'Date' column in data frame does not contain dates.")
-    if(!is.numeric(data$Value))          stop("'Value' column in data frame does not contain numeric values.")   
-    
-
-  }
+  ## FLOW DATA CHECKS AND FORMATTING
+  ## -------------------------------
   
-  if(!is.logical(log_discharge))  stop("log_discharge argument must be logical (TRUE/FALSE).")
+  # Check if data is provided and import it
+  flow_data <- flowdata_import(data = data, station_number = station_number)
+  
+  # Check and rename columns
+  flow_data <- format_plot_cols(data = flow_data, 
+                                dates = as.character(substitute(dates)),
+                                values = as.character(substitute(values)))
+  
   
   
   ## CALC STATS
   ## ----------
 
-  longterm_stats <- fasstr::calc_longterm_stats(data = data,
+  longterm_stats <- fasstr::calc_longterm_stats(data = flow_data,
                                                 percentiles = c(5,25,75,95),
                                                 roll_days = roll_days,
                                                 roll_align = roll_align,

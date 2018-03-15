@@ -8,7 +8,7 @@ plot_daily_cumulative_stats(data = NULL, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number = NULL, use_yield = FALSE,
   basin_area = NA, water_year = FALSE, water_year_start = 10,
   start_year = 0, end_year = 9999, exclude_years = NULL,
-  complete_years = FALSE, ignore_missing = TRUE, log_discharge = FALSE,
+  complete_years = FALSE, ignore_missing = FALSE, log_discharge = FALSE,
   include_year = NULL)
 }
 \arguments{
@@ -85,7 +85,7 @@ Plot the daily cumulative mean, median, maximum, minimum, and 5, 25, 75, 95th pe
 
 plot_daily_cumulative_stats(station_number = "08NM116", 
                             water_year = TRUE,
-                             water_year_start = 8)
+                           water_year_start = 8)
 
 }
 }

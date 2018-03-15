@@ -62,7 +62,7 @@ calc_monthly_cumulative_stats <- function(data = NULL,
                                           exclude_years = NULL, 
                                           complete_years = FALSE,
                                           transpose = FALSE,
-                                          ignore_missing = TRUE){
+                                          ignore_missing = FALSE){
   
   
   

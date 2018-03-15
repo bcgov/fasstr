@@ -52,7 +52,7 @@ plot_annual_stats <- function(data = NULL,
                               end_year = 9999,
                               exclude_years = NULL,
                               months = 1:12,
-                              ignore_missing = TRUE,
+                              ignore_missing = FALSE,
                               log_discharge = FALSE){ 
   
   ## ARGUMENT CHECKS

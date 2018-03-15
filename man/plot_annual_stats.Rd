@@ -8,7 +8,7 @@ plot_annual_stats(data = NULL, dates = Date, values = Value,
   station_number = NULL, percentiles = NA, roll_days = 1,
   roll_align = "right", water_year = FALSE, water_year_start = 10,
   start_year = 0, end_year = 9999, exclude_years = NULL, months = 1:12,
-  ignore_missing = TRUE, log_discharge = FALSE)
+  ignore_missing = FALSE, log_discharge = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

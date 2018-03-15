@@ -36,7 +36,7 @@
 #' 
 #' plot_daily_cumulative_stats(station_number = "08NM116", 
 #'                             water_year = TRUE,
-#'                              water_year_start = 8)
+#'                            water_year_start = 8)
 #'
 #' }
 #' @export
@@ -56,8 +56,8 @@ plot_daily_cumulative_stats <- function(data = NULL,
                                         end_year = 9999,
                                         exclude_years = NULL, 
                                         complete_years = FALSE,
-                                        ignore_missing = TRUE,
-                                        log_discharge=FALSE,
+                                        ignore_missing = FALSE,
+                                        log_discharge = FALSE,
                                         include_year = NULL){
   
   ## ARGUMENT CHECKS

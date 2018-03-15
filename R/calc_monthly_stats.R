@@ -125,8 +125,8 @@ calc_monthly_stats <- function(data = NULL,
   monthly_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
                                 Mean = mean(RollingValue, na.rm = ignore_missing),  
                                 Median = stats::median(RollingValue, na.rm = ignore_missing), 
-                                Maximum = max (RollingValue, na.rm = ignore_missing),    
-                                Minimum = min (RollingValue, na.rm = ignore_missing))
+                                Maximum = suppressWarnings(max(RollingValue, na.rm = ignore_missing)),    
+                                Minimum = suppressWarnings(min(RollingValue, na.rm = ignore_missing)))
   monthly_stats <- dplyr::ungroup(monthly_stats)
   
   # Calculate annual percentiles
@@ -229,8 +229,7 @@ calc_monthly_stats <- function(data = NULL,
   }
   
   monthly_stats <- with(monthly_stats, monthly_stats[order(STATION_NUMBER, Year),])
-  row.names(monthly_stats) <- c(1:nrow(monthly_stats))
-  
+
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
   if("STATION_NUMBER" %in% orig_cols) {
     names(monthly_stats)[names(monthly_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))

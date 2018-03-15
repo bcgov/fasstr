@@ -5,33 +5,34 @@
 \title{Plot flow duration curves}
 \usage{
 plot_flow_duration(data = NULL, dates = Date, values = Value,
-  roll_days = 1, roll_align = "right", water_year = FALSE,
-  water_year_start = 10, start_year = 0, end_year = 9999,
-  exclude_years = NULL, complete_years = FALSE, custom_months = NULL,
-  custom_months_label = "Custom-Months", ignore_missing = TRUE,
-  incl_months = 1:12, incl_longterm = TRUE, log_discharge = TRUE)
+  station_number = NULL, roll_days = 1, roll_align = "right",
+  water_year = FALSE, water_year_start = 10, start_year = 0,
+  end_year = 9999, exclude_years = NULL, complete_years = FALSE,
+  custom_months = NULL, custom_months_label = "Custom-Months",
+  ignore_missing = FALSE, months = 1:12, incl_longterm = TRUE,
+  log_discharge = TRUE)
 }
 \arguments{
-\item{data}{Daily data to be analyzed. Options:
+\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+Leave blank if using \code{station_number} argument.}
 
-   A data frame of daily data that contains columns of dates and values.
-   
-   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
+\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
+Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
-using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
-Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
+\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
+Leave blank if using \code{data} argument.}
 
-\item{roll_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
+\item{roll_days}{Numeric value of the number of days to apply a rolling mean. Default \code{1}.}
 
-\item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
-('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
+\item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
+('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
 \item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the year in which they end. Default \code{FALSE}.}
+are designated by the calendar year in which they end. Default \code{FALSE}.}
 
 \item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
 Default \code{10}.}
@@ -48,18 +49,18 @@ Default \code{10}.}
 If wanting months that overlap calendar years (ex. Oct-Mar), choose water_year and a water_year_month that begins before the first 
 month listed. Leave blank for no custom month summary.}
 
-\item{custom_months_label}{Character string to use as a label of custom months. For example, if choosing months 7:9  you may choose 
+\item{custom_months_label}{Character string to label custom months. For example, if choosing months 7:9  you may choose 
 "Summer" or "Jul-Sep". Default \code{"Custom-Months"}.}
 
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
-with no missing dates will be returned. Default \code{TRUE}.}
+with no missing dates will be returned. Default \code{FALSE}.}
 
-\item{incl_months}{Numeric vector of month curvesto plot. NA if no months required. Default \code{1:12}.}
+\item{months}{Numeric vector of month curves to plot. NA if no months required. Default \code{1:12}.}
 
 \item{incl_longterm}{Logical value indicating whether to include longterm curve of all data. Default \code{TRUE}.}
 
-\item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.}
+\item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
 }
 \value{
 A ggplot2 object with plots for each month, long-term, and custom months showing the percentage of time that 
@@ -73,7 +74,9 @@ Plots flow duration curves, percent time a flow value is equalled or exceeded, f
 \examples{
 \dontrun{
 
-plot_flow_duration(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+plot_flow_duration(station_number = "08NM116", 
+                   water_year = TRUE, 
+                   water_year_start = 8)
 
 }
 }

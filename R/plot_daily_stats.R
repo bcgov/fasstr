@@ -53,7 +53,7 @@ plot_daily_stats <- function(data = NULL,
                              end_year = 9999,
                              exclude_years = NULL,
                              complete_years = FALSE,
-                             ignore_missing = TRUE,
+                             ignore_missing = FALSE,
                              log_discharge = TRUE,
                              include_year = NULL){
   

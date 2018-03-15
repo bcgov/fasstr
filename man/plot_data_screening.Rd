@@ -5,30 +5,31 @@
 \title{Plot annual summary statistics for data screening}
 \usage{
 plot_data_screening(data = NULL, dates = Date, values = Value,
-  roll_days = 1, roll_align = "right", water_year = FALSE,
-  water_year_start = 10, start_year = 0, end_year = 9999)
+  station_number = NULL, roll_days = 1, roll_align = "right",
+  water_year = FALSE, water_year_start = 10, start_year = 0,
+  end_year = 9999)
 }
 \arguments{
-\item{data}{Daily data to be analyzed. Options:
+\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+Leave blank if using \code{station_number} argument.}
 
-   A data frame of daily data that contains columns of dates and values.
-   
-   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
+\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
+Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
-using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
-Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
+\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
+Leave blank if using \code{data} argument.}
 
-\item{roll_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
+\item{roll_days}{Numeric value of the number of days to apply a rolling mean. Default \code{1}.}
 
-\item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first ('left'), last
-('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
+\item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
+('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
 \item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the year in which they end. Default \code{FALSE}.}
+are designated by the calendar year in which they end. Default \code{FALSE}.}
 
 \item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
 Default \code{10}.}
@@ -51,7 +52,9 @@ Plots the mean, median, maximum, minimum, standard deviation of annual flows. Pl
 \examples{
 \dontrun{
 
-plot_data_screening(data = "08NM116", water_year = TRUE, water_year_start = 8)
+plot_data_screening(station_number = "08NM116", 
+                    water_year = TRUE, 
+                    water_year_start = 8)
 
 }
 }
