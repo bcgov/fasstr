@@ -2,30 +2,31 @@
 % Please edit documentation in R/plot_annual_trends.R
 \name{plot_annual_trends}
 \alias{plot_annual_trends}
-\title{Plot prewhitened nonlinear trends on streamflow data}
+\title{Plot prewhitened nonlinear annual trends on streamflow data}
 \usage{
-plot_annual_trends(trends_results = NULL, zyp_alpha = 0.05)
+plot_annual_trends(trends_results = NULL, zyp_alpha = NA)
 }
 \arguments{
-\item{trends_results}{Data frame of results from the compute_annual_trends() function, with original data included
-(incl_data = TRUE). The first column must be 'Statistics' with the following columns with results and then data.}
+\item{trends_results}{A data frame of results from the compute_annual_trends() function, with original data included
+(compute_annual_trends(incl_data = TRUE)). Uses the only the "Statistics" and zyp results columns, along with the 
+annual data to plot.}
 
-\item{zyp_alpha}{Numeric value of the significance level of when to plot a trend line. Set to NA if no line required.}
+\item{zyp_alpha}{Numeric value of the significance level (ex. 0.05) of when to plot a trend line. Leave blank for no line.}
 }
 \value{
 A list of ggplot2 objects with plots of trended annual statistics, as the name of each object, with a trend line
    plotted if less than the zyp_alpha provided.
 }
 \description{
-Plots the annual data and significant trend from the results from all statistics from a compute_annual_trends()
-   analysis.
+Plots the annual data and significance trend from results from a compute_annual_trends() analysis data frame.
 }
 \examples{
 \dontrun{
 
-trends <- compute_annual_trends("08NM116",
+trends <- compute_annual_trends(station_number = "08NM116",
                                 zyp_method = "yuepilon",
-                                start_year = 1980, end_year = 2010)
+                                start_year = 1980, 
+                                end_year = 2010)
  
 plot_annual_trends(trends_results = trends,
                    zyp_alpha = 0.05)
