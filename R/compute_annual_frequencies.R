@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 
-#' @title Perform a volume frequency analysis on annual statistics
+#' @title Perform a flow frequency analysis on annual statistics
 #'
 #' @description Performs a volume frequency analysis on annual statistics from a streamflow dataset. Calculates the statistics from all 
 #'    daily discharge values from all years, unless specified. Function will calculate using all values in the provided data (no grouped
@@ -73,35 +73,35 @@
 #' @examples
 #' \dontrun{
 #' 
-#' compute_frequency_analysis(data="08NM116",
-#'                            start_year = 1980,
-#'                            end_year = 2010)
+#' compute_annual_frequencies(data = "08NM116",
+#'                                 start_year = 1980,
+#'                                 end_year = 2010)
 #'                             
 #' }
 #' @export
 
 
-compute_frequency_analysis <- function(data = NULL,
-                                       dates = Date,
-                                       values = Value,
-                                       roll_days = c(1, 3, 7, 30),
-                                       roll_align = "right",
-                                       use_hydat_peaks = FALSE,
-                                       use_max = FALSE,
-                                       use_log = FALSE,
-                                       prob_plot_position = c("weibull", "median", "hazen"),
-                                       prob_scale_points = c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001),
-                                       fit_distr = c("PIII", "weibull"),
-                                       fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
-                                       fit_quantiles = c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),
-                                       water_year = FALSE,
-                                       water_year_start = 10,
-                                       start_year = 0,
-                                       end_year = 9999,
-                                       exclude_years = NULL,
-                                       complete_years = FALSE,
-                                       months = 1:12,
-                                       ignore_missing = FALSE){
+compute_annual_frequencies <- function(data = NULL,
+                                          dates = Date,
+                                          values = Value,
+                                          roll_days = c(1, 3, 7, 30),
+                                          roll_align = "right",
+                                          use_hydat_peaks = FALSE,
+                                          use_max = FALSE,
+                                          use_log = FALSE,
+                                          prob_plot_position = c("weibull", "median", "hazen"),
+                                          prob_scale_points = c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001),
+                                          fit_distr = c("PIII", "weibull"),
+                                          fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
+                                          fit_quantiles = c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),
+                                          water_year = FALSE,
+                                          water_year_start = 10,
+                                          start_year = 0,
+                                          end_year = 9999,
+                                          exclude_years = NULL,
+                                          complete_years = FALSE,
+                                          months = 1:12,
+                                          ignore_missing = FALSE){
   
   # replicate the frequency analysis of the HEC-SSP program
   # refer to Chapter 7 of the user manual
@@ -258,8 +258,8 @@ compute_frequency_analysis <- function(data = NULL,
                                               min(value, na.rm = ignore_missing)))
     Q_stat <- dplyr::rename(Q_stat, Year = AnalysisYear)
   }
-
-
+  
+  
   ## Define functions for analysis
   ##------------------------------
   
@@ -274,7 +274,7 @@ compute_frequency_analysis <- function(data = NULL,
   dPIII <<- function(x, shape, location, scale) PearsonDS::dpearsonIII(x, shape, location, scale, log = FALSE)
   pPIII <<- function(q, shape, location, scale) PearsonDS::ppearsonIII(q, shape, location, scale, lower.tail = TRUE, log.p = FALSE)
   qPIII <<- function(p, shape, location, scale) PearsonDS::qpearsonIII(p, shape, location, scale, lower.tail = TRUE, log.p = FALSE)
-
+  
   mPIII <<-function(order, shape, location, scale){
     # compute the empirical first 3 moments of the PIII distribution
     if(order == 1) return(location + shape * scale)
@@ -286,17 +286,17 @@ compute_frequency_analysis <- function(data = NULL,
   
   #--------------------------------------------------------------
   # Plot the data on the distrubtion
-
+  
   # Compute the summary table for output
   Q_stat_output <- tidyr::spread(Q_stat, Measure, value)
-
+  
   # See if a (natural) log-transform is to be used in the frequency analysis?
   # This flag also controls how the data is shown in the frequency plot
   if(use_log)Q_stat$value <- log(Q_stat$value)
-
+  
   # make the plot. Remove any missing or infinite or NaN values
   Q_stat <- Q_stat[is.finite(Q_stat$value),]  # remove missing/ Inf/ NaN values
-
+  
   # get the plotting positions
   # From the HEC-SSP package, the  plotting positions are (m-a)/(n+1-a-b)
   a <- 0; b <- 0
@@ -311,7 +311,7 @@ compute_frequency_analysis <- function(data = NULL,
     x$dist.prob <- stats::qnorm(1 - x$prob)
     x
   }, a = a, b = b, use_max = use_max)
-
+  
   # change the measure labels in the plot
   plotdata2 <- plotdata
   if(!use_hydat_peaks) {
@@ -337,7 +337,7 @@ compute_frequency_analysis <- function(data = NULL,
                                                            labels=function(x){ifelse(x<2,x,round(x,0))}))+
     ggplot2::theme(axis.title.x.top = ggplot2::element_text(size=10),
                    legend.title=ggplot2::element_blank(), legend.key.size=ggplot2::unit(.1,"in"))
-
+  
   if(!use_max){ freqplot <- freqplot + ggplot2::theme(legend.justification = c(1, 1), legend.position = c(1, 1))}
   if(use_max){ freqplot <- freqplot + ggplot2::theme(legend.justification = c(1,0), legend.position = c(1, 0))}
   if(!use_log){ freqplot <- freqplot + ggplot2::scale_y_log10(breaks = scales::pretty_breaks(n = 10))}
@@ -346,10 +346,10 @@ compute_frequency_analysis <- function(data = NULL,
   if(use_log & !use_max){freqplot <- freqplot + ggplot2::ylab("ln(Annual Minimum Flow (cms))")}
   if(!use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab("Annual Maximum Flow (cms)")}
   if(!use_log & !use_max){freqplot <- freqplot + ggplot2::ylab("Annual Minimum Flow (cms)")}
-
+  
   #--------------------------------------------------------------
   # fit the distribution to each measure
-
+  
   # log-Pearson III implies that the log(x) has a 3-parameter gamma distribution
   ePIII <- function(x, order){
     # compute (centered) empirical centered moments of the data
@@ -357,7 +357,7 @@ compute_frequency_analysis <- function(data = NULL,
     if(order == 2) return(stats::var(x))
     if(order == 3) return(e1071::skewness(x, type = 2))
   }
-
+  
   fit <- plyr::dlply(Q_stat, "Measure", function(x, distr, fit_method){
     start=NULL
     # PIII is fit to log-of values unless use_log has been set, in which case data has previous been logged
@@ -370,7 +370,7 @@ compute_frequency_analysis <- function(data = NULL,
       v <- stats::var(x$value)
       s <- stats::sd(x$value)
       g <- e1071::skewness(x$value, type = 2)
-
+      
       # This can be corrected, but HEC Bulletin 17b does not do these corrections
       # Correct the sample skew for bias using the recommendation of
       # Bobee, B. and R. Robitaille (1977). "The use of the Pearson Type 3 and Log Pearson Type 3 distributions revisited."
@@ -378,25 +378,25 @@ compute_frequency_analysis <- function(data = NULL,
       #n <- length(x$value)
       #g <- g*(sqrt(n*(n-1))/(n-2))*(1+8.5/n)
       # We will use method of moment estimates as starting values for the MLE search
-
+      
       my_shape <- (2 / g) ^ 2
       my_scale <- sqrt(v) / sqrt(my_shape) * sign(g)
       my_location <- m - my_scale * my_shape
-
+      
       start <- list(shape = my_shape, location = my_location, scale = my_scale)
     }
-
+    
     if(fit_method == "MLE") {fit <- fitdistrplus::fitdist(x$value, distr, start = start, control = list(maxit = 1000)) }# , trace=1, REPORT=1))
     if(fit_method == "MOM") {fit <- fitdistrplus::fitdist(x$value, distr, start = start,
-                                                        method = "mme", order = 1:3, memp = ePIII, control = list(maxit = 1000))
+                                                          method = "mme", order = 1:3, memp = ePIII, control = list(maxit = 1000))
     } # fixed at MOM estimates
     fit
   }, distr = fit_distr[1], fit_method = fit_distr_method[1])
-
-
+  
+  
   #--------------------------------------------------------------
   # extracted the fitted quantiles from the fitted distribution
-
+  
   fitted_quantiles <- plyr::ldply(names(fit), function (measure, prob, fit, use_max, use_log){
     # get the quantiles for each model
     x <- fit[[measure]]
@@ -411,7 +411,7 @@ compute_frequency_analysis <- function(data = NULL,
     rownames(res) <- NULL
     res
   }, prob = fit_quantiles, fit = fit, use_max = use_max, use_log = use_log)
-
+  
   # get the transposed version
   fitted_quantiles$Return <- 1 / fitted_quantiles$prob
   fitted_quantiles_output <- tidyr::spread(fitted_quantiles, Measure, quantile)
@@ -419,8 +419,8 @@ compute_frequency_analysis <- function(data = NULL,
                                            Distribution = distr,
                                            Probability = prob,
                                            "Return Period" = Return)
-
-
+  
+  
   # analysis.summary <- list(#"station name" = station_name,
   #   "year type" = ifelse(!water_year, "Calendar Year (Jan-Dec)", "Water Year (Oct-Sep)"),
   #   "year range" = paste0(start_year, " - ", end_year),
@@ -433,8 +433,8 @@ compute_frequency_analysis <- function(data = NULL,
   # )
   # analysis.options.df <- data.frame("Option" = names(analysis.options),
   #                                   "Selection" = unlist(analysis.options, use.names = FALSE))
-
-
+  
+  
   list(Q_stat = Q_stat,
        plotdata = plotdata,  # has the plotting positions for each point in frequency analysis
        freqplot = freqplot,
@@ -442,5 +442,5 @@ compute_frequency_analysis <- function(data = NULL,
        fitted_quantiles = fitted_quantiles_output#,             # fitted quantiles and their transposition
        #overview = analysis.options.df
   )
-
+  
 }
