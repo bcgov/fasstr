@@ -4,39 +4,18 @@
 \alias{compute_hydat_peak_frequencies}
 \title{Perform a flow frequency analysis on annual statistics}
 \usage{
-compute_hydat_peak_frequencies(data = NULL, dates = Date, values = Value,
-  roll_days = c(1, 3, 7, 30), roll_align = "right",
-  use_hydat_peaks = FALSE, use_max = FALSE, use_log = FALSE,
-  prob_plot_position = c("weibull", "median", "hazen"),
+compute_hydat_peak_frequencies(station_number = NULL, use_max = FALSE,
+  use_log = FALSE, prob_plot_position = c("weibull", "median", "hazen"),
   prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5, 0.2, 0.1, 0.02, 0.01,
-  0.001, 0.0001), fit_distr = c("PIII", "weibull"),
+  0.001, 1e-04), fit_distr = c("PIII", "weibull"),
   fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
   fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1, 0.05,
-  0.01), water_year = FALSE, water_year_start = 10, start_year = 0,
-  end_year = 9999, exclude_years = NULL, complete_years = FALSE,
-  months = 1:12, ignore_missing = FALSE)
+  0.01), start_year = 0, end_year = 9999, exclude_years = NULL)
 }
 \arguments{
-\item{data}{Daily data to be analyzed. Options:
-
-   A data frame of daily data that contains columns of dates and values.
-   
-   A character string vector of a single seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to 
-   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
-
-\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
-using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
-
-\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
-Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
-
-\item{roll_days}{Numeric vector of the number of days to apply the rolling mean. Default \code{c(3,7,30)}.}
-
-\item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
-('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
-
-\item{use_hydat_peaks}{Logical value indicating whether to use instantaneous peaks from HYDAT for analysis.
-Leave blank if not required.}
+\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+which to extract annual peak minimum or maximum instantaneous streamflow data from a HYDAT database. Requires \code{tidyhydat} 
+package and a HYDAT database.}
 
 \item{use_max}{Logical valve to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}
 
@@ -60,26 +39,11 @@ or "MLE" (maximum likelihood estimation). Selected as \code{"MOM"} if \code{fit_
 \item{fit_quantiles}{Numeric vector of quantiles to be estimated from the fitted distribution. 
 Default \code{c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)}.}
 
-\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the year in which they end. Default \code{FALSE}.}
-
-\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
-Default \code{10}.}
-
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
 \item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
 
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
-
-\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
-
-\item{months}{Numeric vector of months to include in analysis (ex. \code{6:8} for Jun-Aug). Leave blank to summarize 
-all months (default \code{1:12}).}
-
-\item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
-\code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
-with no missing dates will be returned. Default \code{TRUE}.}
 }
 \value{
 A list with the following elements:
@@ -98,7 +62,7 @@ Performs a volume frequency analysis on annual statistics from a streamflow data
 \examples{
 \dontrun{
 
-compute_hydat_peak_frequencies(data = "08NM116",
+compute_hydat_peak_frequencies(station_number = "08NM116",
                                start_year = 1980,
                                end_year = 2010)
                             
