@@ -17,7 +17,7 @@ str(flowdata_format(data = read.csv("test.csv")))
 str(tidyhydat::hy_daily_flows(station_number = "08HB048"))
 
 flow_data <- add_cumulative_yield(station_number = "08HB048")
-dataa <- calc_annual_stats(station_number = "08HB048", transpose = T)
+dataa <- calc_annual_stats(station_number = c("08HB048","08NM116"), transpose = T)
 
 
 
@@ -230,6 +230,11 @@ plot_monthly_cumulative_stats(station_number = "08HB048")
 plot_monthly_stats(station_number = "08HB048")
 plot_annual_cumulative_stats(station_number = "08HB048", use_yield = T)
 write_flow_data(station_number = c("08HB048","08NM116"))
+
+data <- tidyhydat::hy_daily_flows("08HB048") %>% select(-STATION_NUMBER)
+data <- compute_annual_trends(data, zyp_method = "yuepilon", start_year = 1973)
+plots <- plot_annual_trends(data)
+data <- compute_annual_trends(station_number = c("08HB048","08NM116"), zyp_method = "yuepilon", start_year = 1973)
 
 
 data <- tidyhydat::hy_daily_flows("08HB048") %>% select(-STATION_NUMBER)

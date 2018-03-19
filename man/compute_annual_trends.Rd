@@ -2,17 +2,17 @@
 % Please edit documentation in R/compute_annual_trends.R
 \name{compute_annual_trends}
 \alias{compute_annual_trends}
-\title{Calculate prewhitened nonlinear trends on streamflow data}
+\title{Calculate prewhitened nonlinear annual trends on streamflow data}
 \usage{
 compute_annual_trends(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, trends_data = NULL,
-  zyp_method = NA, basin_area = NA, water_year = FALSE,
-  water_year_start = 10, start_year = 0, end_year = 9999,
-  exclude_years = NULL, annual_percentiles = c(10, 90),
-  monthly_percentiles = c(10, 20), stats_days = 1, stats_align = "right",
-  lowflow_days = c(1, 3, 7, 30), lowflow_align = "right",
-  timing_percent = c(25, 33, 50, 75), normal_percentiles = c(25, 75),
-  ignore_missing = FALSE, incl_data = TRUE)
+  groups = STATION_NUMBER, station_number = NULL, zyp_method = NA,
+  basin_area = NA, water_year = FALSE, water_year_start = 10,
+  start_year = 0, end_year = 9999, exclude_years = NULL,
+  annual_percentiles = c(10, 90), monthly_percentiles = c(10, 20),
+  stats_days = 1, stats_align = "right", lowflow_days = c(1, 3, 7, 30),
+  lowflow_align = "right", timing_percent = c(25, 33, 50, 75),
+  normal_percentiles = c(25, 75), ignore_missing = FALSE,
+  incl_data = TRUE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -31,9 +31,6 @@ Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave bla
 \item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
 Leave blank if using \code{data} argument.}
-
-\item{trends_data}{A data frame of data to trend with column names of years (or other timestep) and rows of statistics. 
-Leave blank if using \code{data} or \code{station_number} arguments.}
 
 \item{zyp_method}{Character string identifying the prewhitened trend method to use from 'zyp', either "zhang' or "yuepilon". 
 Required.}
@@ -119,8 +116,7 @@ A data frame containing trends with the following outputs from the zyp package:
 \description{
 Calculates prewhitened nonlinear trends on annual streamflow data. Uses the
    \href{https://cran.r-project.org/web/packages/zyp/index.html}{'zyp'} package to trend. Review 'zyp' to understand its methology.
-   Use \code{trends_data} if providing your own data frame of statistics to trend. If using \code{data} or \code{station_number}, 
-   then all annual statistics will be calculated using the calc_all_annual_stats() function which uses the following fasstr functions:
+   All annual statistics calculated using the calc_all_annual_stats() function which uses the following fasstr functions:
 \itemize{
  \item{calc_annual_stats()}
  \item{calc_annual_lowflows()}
