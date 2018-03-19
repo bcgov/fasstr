@@ -5,52 +5,50 @@
 \title{Calculate prewhitened nonlinear trends on streamflow data}
 \usage{
 compute_annual_trends(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, trendsdata = NULL, zyp_method = NA,
-  basin_area = NA, water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, exclude_years = NULL,
-  annual_percentiles = c(10, 90), monthly_percentiles = c(10, 20),
-  stats_days = 1, stats_align = "right", lowflow_days = c(1, 3, 7, 30),
-  lowflow_align = "right", timing_percent = c(25, 33, 50, 75),
-  normal_percentiles = c(25, 75), ignore_missing = FALSE,
-  incl_data = TRUE)
+  groups = STATION_NUMBER, station_number = NULL, trends_data = NULL,
+  zyp_method = NA, basin_area = NA, water_year = FALSE,
+  water_year_start = 10, start_year = 0, end_year = 9999,
+  exclude_years = NULL, annual_percentiles = c(10, 90),
+  monthly_percentiles = c(10, 20), stats_days = 1, stats_align = "right",
+  lowflow_days = c(1, 3, 7, 30), lowflow_align = "right",
+  timing_percent = c(25, 33, 50, 75), normal_percentiles = c(25, 75),
+  ignore_missing = FALSE, incl_data = TRUE)
 }
 \arguments{
-\item{data}{Daily data to be analyzed. Options:
+\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+Leave blank if using \code{station_number} argument.}
 
-   A data frame of daily data that contains columns of dates, values, and (optional) groups (ex. station 
-   names/numbers).
-   
-   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
+\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
+Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
-using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
-Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
+\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
+groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
+Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
 
-\item{groups}{Column in the \code{data} data frame that contains unique identifiers for different data sets. 
-Only required if using the data frame option of \code{data} and groups column is not named 'STATION_NUMBER'.
-Function will automatically group by a column named 'STATION_NUMBER' if present. Remove the 'STATION_NUMBER' column or identify 
-another non-existing column name to remove this grouping. Identify another column if desired. Default \code{STATION_NUMBER}.}
+\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
+Leave blank if using \code{data} argument.}
 
-\item{trendsdata}{Data frame of annual data with column names of years and rows of annual statistics. 
-Leave blank if using \code{data}.}
+\item{trends_data}{A data frame of data to trend with column names of years (or other timestep) and rows of statistics. 
+Leave blank if using \code{data} or \code{station_number} arguments.}
 
 \item{zyp_method}{Character string identifying the prewhitened trend method to use from 'zyp', either "zhang' or "yuepilon". 
 Required.}
 
-\item{basin_area}{Upstream drainage basin area to apply to daily observations. Options:
+\item{basin_area}{Upstream drainage basin area, in square kilometres, to apply to observations. Three options:
 
-Leave blank if \code{groups} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
+(1) Leave blank if \code{groups} is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.
 
-Single numeric value to apply to all observations.
+(2) A single numeric value to apply to all observations.
 
-List each basin area for each grouping factor (can override HYDAT value) as such \code{c("08NM116" = 795, "08NM242" = 10)}.
-Factors not listed will result in NA basin areas.}
+(3) List each basin area for each group/station in groups (can override HYDAT value) as such \code{c("08NM116" = 795, 
+"08NM242" = 10)}. Group not listed will result in NA basin area.}
 
 \item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the year in which they end. Default \code{FALSE}.}
+are designated by the calendar year in which they end. Default \code{FALSE}.}
 
 \item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
 Default \code{10}.}
@@ -84,12 +82,12 @@ Used for calc_lowflow_stats() function.}
 \item{timing_percent}{Numeric vector of percents of annual total flows to determine dates. Used for calc_annual_flow_timing() function. 
 Default \code{c(25,33.3,50,75)}.}
 
-\item{normal_percentiles}{Numeric. Lower and upper percentiles, respectively indicating the limits of the normal range. 
-Used for calc_annual_outside_normal() function. Default \code{c(25,75)}.}
+\item{normal_percentiles}{Numeric vector of two values, lower and upper percentiles, respectively indicating the limits of the 
+normal range. Default \code{c(25,75)}.}
 
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
-with no missing dates will be returned. Default \code{TRUE}.}
+with no missing dates will be returned. Default \code{FALSE}.}
 
 \item{incl_data}{Logical value indicating whether to include the trending data with the results. Default \code{TRUE}.}
 }
@@ -121,12 +119,12 @@ A data frame containing trends with the following outputs from the zyp package:
 \description{
 Calculates prewhitened nonlinear trends on annual streamflow data. Uses the
    \href{https://cran.r-project.org/web/packages/zyp/index.html}{'zyp'} package to trend. Review 'zyp' to understand its methology.
-   Use \code{trendsdata} if providing your own data frame of statistics to trend. If using \code{HYDAT} or \code{flowdata}, then all
-   annual statistics will be calculated using the calc_all_annual_stats() function which uses the following fasstr functions:
+   Use \code{trends_data} if providing your own data frame of statistics to trend. If using \code{data} or \code{station_number}, 
+   then all annual statistics will be calculated using the calc_all_annual_stats() function which uses the following fasstr functions:
 \itemize{
  \item{calc_annual_stats()}
  \item{calc_annual_lowflows()}
- \item{calc_annual_total_flows()}
+ \item{calc_annual_cumulative_stats()}
  \item{calc_annual_flow_timing()}
  \item{calc_monthly_stats()}
  \item{calc_annual_outside_normal()}
@@ -135,10 +133,10 @@ Calculates prewhitened nonlinear trends on annual streamflow data. Uses the
 \examples{
 \dontrun{
 
-compute_annual_trends(data = "08NM116", 
-                     water_year = TRUE, 
-                     water_year_start = 8,
-                     zyp_method = "yuepilon")
+compute_annual_trends(station_number = "08NM116", 
+                      water_year = TRUE, 
+                      water_year_start = 8,
+                      zyp_method = "yuepilon")
 
 }
 }
