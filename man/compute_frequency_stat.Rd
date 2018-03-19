@@ -5,35 +5,32 @@
 \title{Calculate an annual frequency analysis statistic}
 \usage{
 compute_frequency_stat(data = NULL, dates = Date, values = Value,
-  roll_day = NA, roll_align = "right", use_hydat_peaks = FALSE,
+  station_number = NULL, roll_days = NA, roll_align = "right",
   return_period = NA, use_max = FALSE, use_log = FALSE,
   prob_plot_position = c("weibull", "median", "hazen"),
   fit_distr = c("PIII", "weibull"), fit_distr_method = ifelse(fit_distr ==
   "PIII", "MOM", "MLE"), water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, exclude_years = NULL,
-  complete_years = FALSE, months = 1:12, ignore_missing = FALSE)
+  start_year = 0, end_year = 9999, exclude_years = NULL, months = 1:12,
+  ignore_missing = FALSE)
 }
 \arguments{
-\item{data}{Daily data to be analyzed. Options:
+\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+Leave blank if using \code{station_number} argument.}
 
-   A data frame of daily data that contains columns of dates and values.
-   
-   A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of which to 
-   extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.}
+\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
+Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{dates}{Column in the \code{data} data frame that contains dates formatted YYYY-MM-DD. Only required if
-using the data frame option of \code{data} and dates column is not named 'Date'. Default \code{Date}.}
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in the \code{data} data frame that contains numeric flow values, in units of cubic metres per second.
-Only required if using the data frame option of \code{data} and values column is not named 'Value'. Default \code{Value}.}
+\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
+Leave blank if using \code{data} argument.}
 
-\item{roll_day}{Numeric vector of the number of days to apply the rolling mean. Not required if using \code{use_hydat_peaks}.}
+\item{roll_days}{Numeric value of the number of days to apply a rolling mean. Required.}
 
 \item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
 ('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
-
-\item{use_hydat_peaks}{Logical value indicating whether to use instantaneous peaks from HYDAT for analysis.
-Leave blank if not required.}
 
 \item{return_period}{Numeric vector of the estimated time interval, in years, between flow events of a similar size, 
 inverse of probability, used to estimate the frequency statistic. Required.}
@@ -55,7 +52,7 @@ or "MLE" (maximum likelihood estimation). Selected as \code{"MOM"} if \code{fit_
  \code{fit_distr}=="weibull".}
 
 \item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the year in which they end. Default \code{FALSE}.}
+are designated by the calendar year in which they end. Default \code{FALSE}.}
 
 \item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
 Default \code{10}.}
@@ -66,30 +63,28 @@ Default \code{10}.}
 
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 
-\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
-
-\item{months}{Numeric vector of months to include in analysis (ex. \code{6:8} for Jun-Aug). Leave blank to summarize 
+\item{months}{Numeric vector of months to include in analysis (e.g.. \code{6:8} for Jun-Aug). Leave blank to summarize 
 all months (default \code{1:12}).}
 
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
-with no missing dates will be returned. Default \code{TRUE}.}
+with no missing dates will be returned. Default \code{FALSE}.}
 }
 \value{
-A numeric value of the frequency analysis result, given the roll_day and return_period
+A numeric value of the frequency analysis result, given the roll_days and return_period
 }
 \description{
 Performs a volume frequency analysis on annual statistics from a streamflow dataset and calculates a statistic based on
    the provided mean n-days and return period of the statistic, defaults to minimum flows. For example, to determine the 7Q10 of a 
-   dataset, set the roll_day to \code{7} and the return_period to \code{10}. Calculates the statistic from all daily discharge 
+   dataset, set the roll_days to \code{7} and the return_period to \code{10}. Calculates the statistic from all daily discharge 
    values from all years and months, unless specified.Function will calculate using all values in the provided data (no grouped 
    analysis). Analysis methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
 }
 \examples{
 \dontrun{
 
-compute_frequency_stat(data = "08NM116",
-                       roll_day = 7,
+compute_frequency_stat(station_number = "08NM116",
+                       roll_days = 7,
                        return_period = 10)
                             
 }
