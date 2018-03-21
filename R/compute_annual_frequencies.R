@@ -149,7 +149,7 @@ compute_annual_frequencies <- function(data = NULL,
   # Loop through each roll_days and add customized names of rolling means to flow_data
   for (day in roll_days) {
     flow_data_temp <- dplyr::select(flow_data, Date, Value)
-    flow_data_temp <- add_rolling_means(flow_data_temp, roll_days = day, roll_align = "right")
+    flow_data_temp <- add_rolling_means(flow_data_temp, roll_days = day, roll_align = roll_align)
     names(flow_data_temp)[names(flow_data_temp) == paste0("Q", day, "Day")] <- paste("Q", formatC(day, width = 3, format = "d",
                                                                                                   flag = "0"), "-day-Avg", sep = "")
     flow_data_temp <- dplyr::select(flow_data_temp, -Value)
@@ -163,7 +163,7 @@ compute_annual_frequencies <- function(data = NULL,
   flow_data <- dplyr::filter(flow_data, Month %in% months)
 
   # Calculate the min or max of the rolling means for each year
-  flow_data <- dplyr::select(flow_data, -Date, -Value, -Year, -Month, -MonthName, -DayofYear)
+  flow_data <- dplyr::select(flow_data, -Date, -Value, -Year, -Month, -MonthName, -DayofYear, -WaterYear, -WaterDayofYear)
   
   flow_data <- tidyr::gather(flow_data, Measure, value, -AnalysisYear)
   Q_stat <- dplyr::summarise(dplyr::group_by(flow_data, AnalysisYear, Measure),
@@ -350,7 +350,7 @@ compute_annual_frequencies <- function(data = NULL,
 
 
   list(Q_stat = Q_stat,
-       plotdata = plotdata,  # has the plotting positions for each point in frequency analysis
+       plotdata = dplyr::as_tibble(plotdata),  # has the plotting positions for each point in frequency analysis
        freqplot = freqplot,
        fit = fit,               # list of fits of freq.distr to each measure
        fitted_quantiles = fitted_quantiles_output#,             # fitted quantiles and their transposition
