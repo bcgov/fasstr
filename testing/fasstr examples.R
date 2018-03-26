@@ -241,7 +241,7 @@ data <- tidyhydat::hy_daily_flows("08HB048") %>% select(-STATION_NUMBER)
 write_flow_data(data, file = "C:/R Projects/carn111.csv")
 
 
-data <- compute_annual_frequencies(station_number = "08HB048")
+data <- compute_annual_frequencies(station_number = "08HB048", water_year = TRUE)
 data <- compute_hydat_peak_frequencies(station_number = "08NM116")
 
 data <- compute_annual_frequencies(station_number = c("08HB048","08NM116"))

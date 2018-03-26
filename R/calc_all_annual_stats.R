@@ -134,6 +134,11 @@ calc_all_annual_stats <- function(data = NULL,
                                     exclude_years = exclude_years, 
                                     ignore_missing = ignore_missing)
   
+  # Gather to name all columns with CY or WY for calendar or water year
+  annual_stats <- tidyr::gather(annual_stats, Stat, Value, 3:ncol(annual_stats))
+  annual_stats <- dplyr::mutate(annual_stats, Stat = paste0("Annual_", Stat))
+  annual_stats <- tidyr::spread(annual_stats, Stat, Value)
+  
   
   lowflow_stats <- calc_annual_lowflows(data = flow_data,
                                         roll_days = lowflow_days,
@@ -214,7 +219,7 @@ calc_all_annual_stats <- function(data = NULL,
   
   # Gather to name all columns with CY or WY for calendar or water year
   all_stats <- tidyr::gather(all_stats, Stat, Value, 3:ncol(all_stats))
-  all_stats <- dplyr::mutate(all_stats, Stat = paste0(ifelse(water_year, paste("WY_"), paste("CY_")), Stat))
+  #all_stats <- dplyr::mutate(all_stats, Stat = paste0(ifelse(water_year, paste("WY_"), paste("CY_")), Stat))
   
   # Spread back using the same order
   col_order <- c("STATION_NUMBER", "Year", unique(all_stats$Stat))
