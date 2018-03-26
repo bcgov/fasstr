@@ -306,6 +306,15 @@ months_checks <- function(months) {
   if (!all(months %in% c(1:12)))              stop("months argument must be numbers between 1 and 12 (Jan-Dec).", call. = FALSE)
 }
 
+custom_months_checks <- function(custom_months, custom_months_label) {
+  if (!is.null(custom_months) & !is.numeric(custom_months))  
+    stop("custom_months argument must be numbers between 1 and 12 (Jan-Dec).", call. = FALSE)
+  if (!all(custom_months %in% c(1:12)))                      
+    stop("custom_months argument must be numbers between 1 and 12 (Jan-Dec).", call. = FALSE)
+  if (!is.na(custom_months_label) & !is.character(custom_months_label)) 
+    stop("custom_months_label argument must be a character string.", call. = FALSE)
+}
+
 percentiles_checks <- function(percentiles) {
   if (!all(is.na(percentiles))){
     if (!is.numeric(percentiles))                   stop("percentiles argument must be numeric.", call. = FALSE)
@@ -393,7 +402,7 @@ include_year_checks <- function(include_year) {
     if(length(include_year) != 1)  stop("Only one include_year numeric value can be provided.", call. = FALSE)
     if(!is.numeric(include_year))  stop("include_year argument must be numeric.", call. = FALSE)
   }
-  }
+}
 
 
 

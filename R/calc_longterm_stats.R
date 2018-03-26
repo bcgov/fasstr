@@ -80,13 +80,8 @@ calc_longterm_stats <- function(data = NULL,
   transpose_checks(transpose)
   ignore_missing_checks(ignore_missing)
   complete_yrs_checks(complete_years)
+  custom_months_checks(custom_months, custom_months_label)
   
-  if (!is.null(custom_months) & !is.numeric(custom_months))  
-    stop("custom_months argument must be numbers between 1 and 12 (Jan-Dec).", call. = FALSE)
-  if (!all(custom_months %in% c(1:12)))                      
-    stop("custom_months argument must be numbers between 1 and 12 (Jan-Dec).", call. = FALSE)
-  if (!is.na(custom_months_label) & !is.character(custom_months_label)) 
-    stop("custom_months_label argument must be a character string.", call. = FALSE)
   
   
   ## FLOW DATA CHECKS AND FORMATTING

@@ -63,6 +63,7 @@ plot_flow_duration <- function(data = NULL,
   ## ---------------
   
   log_discharge_checks(log_discharge)
+  custom_months_checks(custom_months, custom_months_label)
   
   if (length(incl_longterm) > 1)   stop("Only one incl_longterm logical value can be listed.", call. = FALSE)
   if (!is.logical(incl_longterm))  stop("incl_longterm argument must be logical (TRUE/FALSE).", call. = FALSE)
@@ -112,25 +113,38 @@ plot_flow_duration <- function(data = NULL,
   if (!is.null(custom_months)) { include <- c(include, "Custom-Months") }
   percentiles_data <- dplyr::filter(percentiles_data, Month %in% include)
   
+  # Rename the custom months
+  if (!is.null(custom_months)) { 
+    levels(percentiles_data$Month) <- c(levels(percentiles_data$Month), custom_months_label)    
+    percentiles_data <- dplyr::mutate(percentiles_data,
+                                      Month = replace(Month, Month == "Custom-Months", custom_months_label))
+  }
+  
+  # Create list of colours for plot, and add custom_months if necessary
+  colour_list <-  c("Jan" = "dodgerblue3", "Feb" = "skyblue1", "Mar" = "turquoise",
+                    "Apr" = "forestgreen", "May" = "limegreen", "Jun" = "gold", "Jul" = "orange",
+                    "Aug" = "red", "Sep" = "darkred", "Oct" = "orchid", "Nov" = "purple3",
+                    "Dec" = "midnightblue", "Long-term" = "black")
+  if (!is.null(custom_months)) { 
+    colour_list[[ custom_months_label ]] = "grey60"
+  }
+  
   
   ## PLOT STATS
   ## ----------
   
-  ggplot2::ggplot(percentiles_data, ggplot2::aes(x = Percentile, y = Value, colour = Month))+
-    ggplot2::geom_line()+
-    {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0))}+
-    {if (!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 10),expand = c(0, 0))}+
-    ggplot2::scale_x_continuous(expand = c(0,0), breaks = scales::pretty_breaks(n = 10))+
-    ggplot2::ylab("Discharge (cms)")+
-    ggplot2::xlab("% Time flow equalled or exceeded")+
-    ggplot2::scale_color_manual(values = c("Jan" = "dodgerblue3", "Feb" = "skyblue1", "Mar" = "turquoise",
-                                           "Apr" = "forestgreen", "May" = "limegreen", "Jun" = "gold", "Jul" = "orange", 
-                                           "Aug" = "red", "Sep" = "darkred", "Oct" = "orchid", "Nov" = "purple3",
-                                           "Dec" = "midnightblue", "Long-term" = "black", "Custom-Months" = "grey60")) +
+  ggplot2::ggplot(percentiles_data, ggplot2::aes(x = Percentile, y = Value, colour = Month)) +
+    ggplot2::geom_line() +
+    {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0))} +
+    {if (!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 10),expand = c(0, 0))} +
+    ggplot2::scale_x_continuous(expand = c(0,0), breaks = scales::pretty_breaks(n = 10)) +
+    ggplot2::ylab("Discharge (cms)") +
+    ggplot2::xlab("% Time flow equalled or exceeded") +
+    ggplot2::scale_color_manual(values = colour_list) +
     ggplot2:: annotation_logticks(sides = "l", base = 10, colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"),
                                   mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))+
-    ggplot2::labs(color = 'Period') +  
-    ggplot2::theme_bw()+
+    ggplot2::labs(color = 'Period') +
+    ggplot2::theme_bw() +
     ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                    panel.grid = ggplot2::element_line(size = .2),
                    legend.justification = "top",
