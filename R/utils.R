@@ -406,7 +406,7 @@ include_year_checks <- function(include_year) {
 
 missing_values_warning <- function(x) {
   if (anyNA(x)) 
-    warning("One or more calculations contains missing values and NA was produced. Use to ignore_missing = TRUE to ignore the missing values.", call. = FALSE)
+    warning("One or more calculations included missing values and NA was produced. Use to ignore_missing = TRUE to ignore the missing values.", call. = FALSE)
 }
 
 

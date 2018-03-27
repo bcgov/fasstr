@@ -194,6 +194,9 @@ calc_annual_stats <- function(data = NULL,
     annual_stats <- dplyr::arrange(annual_stats, STATION_NUMBER, Statistic)
   }
   
+  # Give warning if any NA values
+  missing_values_warning(annual_stats[, 3:ncol(annual_stats)])
+  
   
   # Recheck if station_number/grouping was in original data and rename or remove as necessary
   if("STATION_NUMBER" %in% orig_cols) {

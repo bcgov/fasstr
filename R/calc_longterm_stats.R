@@ -123,7 +123,7 @@ calc_longterm_stats <- function(data = NULL,
   flow_data <- filter_complete_yrs(complete_years = complete_years, 
                                    flow_data)
   
-  missing_values_warning(flow_data$RollingValue)
+
   
   ## CALCULATE STATISTICS
   ## --------------------
@@ -214,6 +214,9 @@ calc_longterm_stats <- function(data = NULL,
     longterm_stats$Statistic <- factor(longterm_stats$Statistic, levels = stat_levels)
     longterm_stats <- dplyr::arrange(longterm_stats, STATION_NUMBER, Statistic)
   }
+  
+  # Give warning if any NA values
+  missing_values_warning(longterm_stats[, 3:ncol(longterm_stats)])
   
   # Recheck if station_number was in original flow_data and rename or remove as necessary
   if(as.character(substitute(groups)) %in% orig_cols) {

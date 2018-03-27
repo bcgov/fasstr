@@ -99,7 +99,7 @@ calc_all_annual_stats <- function(data = NULL,
   timing_pct_checks(timing_percent)
   normal_percentiles_checks(normal_percentiles)
   sort(normal_percentiles)
-    
+  
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
@@ -123,16 +123,16 @@ calc_all_annual_stats <- function(data = NULL,
   ## CALCULATE STATISTICS
   ## --------------------
   
-  annual_stats <- calc_annual_stats(data = flow_data,
-                                    percentiles = annual_percentiles,
-                                    roll_days = stats_days,
-                                    roll_align = stats_align,
-                                    water_year = water_year,
-                                    water_year_start = water_year_start,
-                                    start_year = start_year,
-                                    end_year = end_year,
-                                    exclude_years = exclude_years, 
-                                    ignore_missing = ignore_missing)
+  annual_stats <- suppressWarnings(calc_annual_stats(data = flow_data,
+                                                     percentiles = annual_percentiles,
+                                                     roll_days = stats_days,
+                                                     roll_align = stats_align,
+                                                     water_year = water_year,
+                                                     water_year_start = water_year_start,
+                                                     start_year = start_year,
+                                                     end_year = end_year,
+                                                     exclude_years = exclude_years, 
+                                                     ignore_missing = ignore_missing))
   
   # Gather to name all columns with CY or WY for calendar or water year
   annual_stats <- tidyr::gather(annual_stats, Stat, Value, 3:ncol(annual_stats))
@@ -140,15 +140,15 @@ calc_all_annual_stats <- function(data = NULL,
   annual_stats <- tidyr::spread(annual_stats, Stat, Value)
   
   
-  lowflow_stats <- calc_annual_lowflows(data = flow_data,
-                                        roll_days = lowflow_days,
-                                        roll_align = lowflow_align,
-                                        water_year = water_year,
-                                        water_year_start = water_year_start,
-                                        start_year = start_year,
-                                        end_year = end_year,
-                                        exclude_years = exclude_years,
-                                        ignore_missing = ignore_missing)
+  lowflow_stats <- suppressWarnings(calc_annual_lowflows(data = flow_data,
+                                                         roll_days = lowflow_days,
+                                                         roll_align = lowflow_align,
+                                                         water_year = water_year,
+                                                         water_year_start = water_year_start,
+                                                         start_year = start_year,
+                                                         end_year = end_year,
+                                                         exclude_years = exclude_years,
+                                                         ignore_missing = ignore_missing))
   lowflow_stats <- dplyr::select(lowflow_stats, -dplyr::contains("Date"))
   
   
@@ -183,17 +183,17 @@ calc_all_annual_stats <- function(data = NULL,
   timing_stats <- dplyr::select(timing_stats, STATION_NUMBER, Year, dplyr::contains("DoY"))
   
   
-  month_stats <- calc_monthly_stats(data = flow_data,
-                                    percentiles = monthly_percentiles,
-                                    roll_days = stats_days,
-                                    roll_align = stats_align,
-                                    water_year = water_year,
-                                    water_year_start = water_year_start,
-                                    start_year = start_year,
-                                    end_year = end_year,
-                                    exclude_years = exclude_years,
-                                    spread = TRUE,
-                                    ignore_missing = ignore_missing)
+  month_stats <- suppressWarnings(calc_monthly_stats(data = flow_data,
+                                                     percentiles = monthly_percentiles,
+                                                     roll_days = stats_days,
+                                                     roll_align = stats_align,
+                                                     water_year = water_year,
+                                                     water_year_start = water_year_start,
+                                                     start_year = start_year,
+                                                     end_year = end_year,
+                                                     exclude_years = exclude_years,
+                                                     spread = TRUE,
+                                                     ignore_missing = ignore_missing))
   
   
   normals_stats <- calc_annual_outside_normal(data = flow_data,
@@ -247,6 +247,8 @@ calc_all_annual_stats <- function(data = NULL,
     all_stats <- dplyr::arrange(all_stats, STATION_NUMBER, Statistic)
   }
   
+  # Give warning if any NA values
+  missing_values_warning(all_stats[, 3:ncol(all_stats)])
   
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
   if("STATION_NUMBER" %in% orig_cols) {

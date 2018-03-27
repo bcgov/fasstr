@@ -171,6 +171,9 @@ calc_daily_stats <- function(data = NULL,
     daily_stats <- dplyr::arrange(daily_stats, STATION_NUMBER, Statistic)
   }
 
+  # Give warning if any NA values
+  missing_values_warning(daily_stats[, 4:ncol(daily_stats)])
+  
 
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
   if("STATION_NUMBER" %in% orig_cols) {
