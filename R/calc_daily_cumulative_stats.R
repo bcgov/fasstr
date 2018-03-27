@@ -61,9 +61,7 @@ calc_daily_cumulative_stats <- function(data = NULL,
                                         start_year = 0,
                                         end_year = 9999,
                                         exclude_years = NULL, 
-                                        complete_years = FALSE,
-                                        transpose = FALSE,
-                                        ignore_missing = FALSE){
+                                        transpose = FALSE){
   
   ## ARGUMENT CHECKS
   ## ---------------
@@ -72,10 +70,8 @@ calc_daily_cumulative_stats <- function(data = NULL,
   water_year_checks(water_year, water_year_start)
   years_checks(start_year, end_year, exclude_years)
   transpose_checks(transpose)
-  ignore_missing_checks(ignore_missing)
-  complete_yrs_checks(complete_years)
   use_yield_checks(use_yield)
-    
+  
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
@@ -128,9 +124,14 @@ calc_daily_cumulative_stats <- function(data = NULL,
   flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
   flow_data <- dplyr::filter(flow_data, AnalysisDoY < 366)
   
-  # Remove incomplete years if selected
-  flow_data <- filter_complete_yrs(complete_years = complete_years, 
-                                   flow_data)
+  
+  # Warning if some of the years contained partial data
+  comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
+                                 complete_yr = ifelse(sum(!is.na(Cumul_Flow)) == length(AnalysisYear), TRUE, FALSE))
+  if (!all(comp_years$complete_yr)) 
+    warning("One or more years contained partial data and were excluded. Only years with complete data were used for calculations.", call. = FALSE)
+  
+  
   
   
   ## CALCULATE STATISTICS
@@ -138,16 +139,16 @@ calc_daily_cumulative_stats <- function(data = NULL,
   
   # Calculate basic stats
   daily_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, AnalysisDoY),
-                              Mean = mean(Cumul_Flow, na.rm = ignore_missing),
-                              Median = stats::median(Cumul_Flow, na.rm = ignore_missing),
-                              Minimum = min(Cumul_Flow, na.rm = ignore_missing),
-                              Maximum = max(Cumul_Flow, na.rm = ignore_missing))
-
+                                  Mean = mean(Cumul_Flow, na.rm = TRUE),
+                                  Median = stats::median(Cumul_Flow, na.rm = TRUE),
+                                  Minimum = min(Cumul_Flow, na.rm = TRUE),
+                                  Maximum = max(Cumul_Flow, na.rm = TRUE))
+  
   # Compute daily percentiles (if 10 or more years of data)
   if (!all(is.na(percentiles))){
     for (ptile in percentiles) {
       daily_stats_ptile <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, AnalysisDoY),
-                                        Percentile = stats::quantile(Cumul_Flow, ptile / 100, na.rm = TRUE))
+                                            Percentile = stats::quantile(Cumul_Flow, ptile / 100, na.rm = TRUE))
       names(daily_stats_ptile)[names(daily_stats_ptile) == "Percentile"] <- paste0("P", ptile)
       
       # Merge with daily_stats
@@ -186,7 +187,7 @@ calc_daily_cumulative_stats <- function(data = NULL,
   } else {
     daily_stats <- dplyr::select(daily_stats, -STATION_NUMBER)
   }
-
+  
   
   dplyr::as_tibble(daily_stats)
   

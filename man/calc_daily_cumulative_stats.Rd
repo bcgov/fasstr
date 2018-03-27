@@ -8,8 +8,7 @@ calc_daily_cumulative_stats(data = NULL, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number = NULL, percentiles = c(5, 25,
   75, 95), use_yield = FALSE, basin_area = NA, water_year = FALSE,
   water_year_start = 10, start_year = 0, end_year = 9999,
-  exclude_years = NULL, complete_years = FALSE, transpose = FALSE,
-  ignore_missing = FALSE)
+  exclude_years = NULL, transpose = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -54,13 +53,7 @@ Default \code{10}.}
 
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 
-\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
-
 \item{transpose}{Logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.}
-
-\item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
-\code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
-with no missing dates will be returned. Default \code{FALSE}.}
 }
 \value{
 A data frame with the following columns, default units in cubic metres, millimetres if use_yield and basin_area provided:

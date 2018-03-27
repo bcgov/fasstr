@@ -60,9 +60,7 @@ calc_monthly_cumulative_stats <- function(data = NULL,
                                           start_year = 0,
                                           end_year = 9999,
                                           exclude_years = NULL, 
-                                          complete_years = FALSE,
-                                          transpose = FALSE,
-                                          ignore_missing = FALSE){
+                                          transpose = FALSE){
   
   
   
@@ -72,10 +70,8 @@ calc_monthly_cumulative_stats <- function(data = NULL,
   percentiles_checks(percentiles)
   water_year_checks(water_year, water_year_start)
   years_checks(start_year, end_year, exclude_years)
-  complete_yrs_checks(complete_years)
   transpose_checks(transpose)
-  ignore_missing_checks(ignore_missing)
-  
+
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -127,68 +123,71 @@ calc_monthly_cumulative_stats <- function(data = NULL,
   flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
   flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
   
-  # Remove incomplete years if selected
-  flow_data <- filter_complete_yrs(complete_years = complete_years, 
-                                   flow_data)
-  
+
+  # Warning if some of the years contained partial data
+  comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
+                                 complete_yr = ifelse(sum(!is.na(Cumul_Total)) == length(AnalysisYear), TRUE, FALSE))
+  if (!all(comp_years$complete_yr)) 
+    warning("One or more years contained partial data and were excluded. Only years with complete data were used for calculations.", call. = FALSE)
+
   
   ## CALCULATE STATISTICS
   ## --------------------
-  
+
   # Calculate monthly totals for all years
   monthly_data <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
-                                   Monthly_Total = max(Cumul_Total, na.rm = FALSE))
+                                   Monthly_Total = max(Cumul_Total, na.rm = TRUE))
 
     # Calculate the monthly and longterm stats
   monthly_cumul <- dplyr::summarize(dplyr::group_by(monthly_data, STATION_NUMBER, MonthName),
-                                    Mean = mean(Monthly_Total, na.rm = ignore_missing),
-                                    Median = stats::median(Monthly_Total, na.rm = ignore_missing),
-                                    Maximum = max(Monthly_Total, na.rm = ignore_missing),
-                                    Minimum = min(Monthly_Total, na.rm = ignore_missing))
-  
+                                    Mean = mean(Monthly_Total, na.rm = TRUE),
+                                    Median = stats::median(Monthly_Total, na.rm = TRUE),
+                                    Maximum = max(Monthly_Total, na.rm = TRUE),
+                                    Minimum = min(Monthly_Total, na.rm = TRUE))
+
   # Compute daily percentiles
   if (!all(is.na(percentiles))){
     for (ptile in percentiles) {
       monthly_ptile <- dplyr::summarise(dplyr::group_by(monthly_data, STATION_NUMBER, MonthName),
-                                        Percentile = ifelse(!is.na(mean(Monthly_Total, na.rm = FALSE)) | ignore_missing, 
+                                        Percentile = ifelse(!is.na(mean(Monthly_Total, na.rm = TRUE)),
                                                             stats::quantile(Monthly_Total, ptile / 100, na.rm = TRUE), NA))
-      
+
       names(monthly_ptile)[names(monthly_ptile) == "Percentile"] <- paste0("P", ptile)
-      
+
       # Merge with monthly_cumul
       monthly_cumul <- merge(monthly_cumul, monthly_ptile, by = c("STATION_NUMBER", "MonthName"))
     }
   }
-  
+
   # Rename Month column and reorder to proper levels (set in add_date_vars)
   monthly_cumul <- dplyr::rename(monthly_cumul, Month = MonthName)
   monthly_cumul <- with(monthly_cumul, monthly_cumul[order(STATION_NUMBER, Month),])
   row.names(monthly_cumul) <- c(1:nrow(monthly_cumul))
-  
-  
+
+
   # If transpose if selected, switch columns and rows
   if (transpose) {
     # Get list of columns to order the Statistic column after transposing
     stat_levels <- names(monthly_cumul[-(1:2)])
-    
+
     # Transpose the columns for rows
     monthly_cumul <- tidyr::gather(monthly_cumul, Statistic, Value, -STATION_NUMBER, -Month)
     monthly_cumul <- tidyr::spread(monthly_cumul, Month, Value)
-    
+
     # Order the columns
     monthly_cumul$Statistic <- factor(monthly_cumul$Statistic, levels = stat_levels)
     monthly_cumul <- dplyr::arrange(monthly_cumul, STATION_NUMBER, Statistic)
   }
-  
+
   # Recheck if station_number was in original flow_data and rename or remove as necessary
   if(as.character(substitute(groups)) %in% orig_cols) {
     names(monthly_cumul)[names(monthly_cumul) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
     monthly_cumul <- dplyr::select(monthly_cumul, -STATION_NUMBER)
   }
-  
-  
+
+
   dplyr::as_tibble(monthly_cumul)
 
-  
+
 }
