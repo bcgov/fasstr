@@ -2,7 +2,7 @@
 
 
 devtools::document()
-#install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
+install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
 install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 #devtools::check()
 
@@ -199,7 +199,7 @@ flow_data <- add_cumulative_volume(data = read.csv("test.csv"))
 flow_data <- add_daily_yield(data = "08HB048")
 flow_data <- add_cumulative_yield(data = "08HB048", basin_area = c("08HB048"=10.2))
 flow_data <- calc_longterm_stats(station_number = "08HB048")
-flow_data <- calc_annual_stats(data = "08HB048")
+flow_data <- calc_annual_stats(station_number = "08HB048")
 flow_data <- calc_all_annual_stats(station_number = "08HB048")
 flow_data <- calc_annual_cumulative_stats(station_number = "08HB048", use_yield = T, incl_seasons = T)
 flow_data <- calc_annual_flow_timing(station_number = "08HB048")
@@ -223,7 +223,7 @@ plot_annual_lowflows(station_number = "08HB048")
 plot_daily_cumulative_stats(station_number = "08HB048")
 plot_daily_stats(station_number = "08HB048", include_year = 1999)
 plot_data_screening(station_number = "08HB048")
-plot_flow_duration(station_number = "08HB048")
+data <- plot_flow_duration(station_number = "08HB048", custom_months = 1:3, custom_months_label = "WINTER", ignore_missing = T)
 plot_longterm_stats(station_number = "08HB048")
 plot_missing_dates(station_number = "08HB048")
 plot_monthly_cumulative_stats(station_number = "08HB048")
@@ -232,6 +232,9 @@ plot_annual_cumulative_stats(station_number = "08HB048", use_yield = T)
 write_flow_data(station_number = c("08HB048","08NM116"))
 
 data <- tidyhydat::hy_daily_flows("08HB048") %>% select(-STATION_NUMBER)
+
+flow_data <- calc_all_annual_stats(data = data)
+
 data <- compute_annual_trends(data, zyp_method = "yuepilon", start_year = 1973)
 plots <- plot_annual_trends(data)
 data <- compute_annual_trends(station_number = c("08HB048","08NM116"), zyp_method = "yuepilon", start_year = 1973)

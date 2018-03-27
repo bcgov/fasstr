@@ -123,6 +123,8 @@ calc_longterm_stats <- function(data = NULL,
   flow_data <- filter_complete_yrs(complete_years = complete_years, 
                                    flow_data)
   
+  missing_values_warning(flow_data$RollingValue)
+  
   ## CALCULATE STATISTICS
   ## --------------------
   
