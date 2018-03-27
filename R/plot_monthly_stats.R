@@ -144,6 +144,9 @@ plot_monthly_stats <- function(data = NULL,
   }
   
   
-  return(monthly_stats_plots)
+  suppressWarnings(print(
+    monthly_stats_plots
+  ))
+  
 }
 

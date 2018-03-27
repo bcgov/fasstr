@@ -165,7 +165,8 @@ plot_annual_lowflows <- function(data = NULL,
   low_flow_plots[["Annual_Minimum_Days"]] <- doy_plot
 
 
-  return(low_flow_plots)
-  
+  suppressWarnings(print(
+    (low_flow_plots)
+  ))
 }
 

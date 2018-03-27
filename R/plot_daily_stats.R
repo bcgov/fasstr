@@ -191,7 +191,7 @@ plot_daily_stats <- function(data = NULL,
   }
   
   
-  
-  daily_stats_plot  
-  
+  suppressWarnings(print(
+    daily_stats_plot  
+  ))
 }

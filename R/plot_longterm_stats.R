@@ -73,7 +73,7 @@ plot_longterm_stats <- function(data = NULL,
   
   ## CALC STATS
   ## ----------
-
+  
   longterm_stats <- fasstr::calc_longterm_stats(data = flow_data,
                                                 percentiles = c(5,25,75,95),
                                                 roll_days = roll_days,
@@ -91,47 +91,48 @@ plot_longterm_stats <- function(data = NULL,
     longterm_stats <- dplyr::ungroup(longterm_stats)
     longterm_stats <- dplyr::select(longterm_stats, -STATION_NUMBER)
   }
-
+  
   ## PLOT STATS
   ## ----------
-
+  
   longterm_stats_months <- dplyr::filter(longterm_stats, Month != "Long-term")
   longterm_stats_longterm <- dplyr::filter(longterm_stats, Month == "Long-term")
-
-  ggplot2::ggplot(longterm_stats_months, ggplot2::aes(group = 1)) +
-    ggplot2::geom_ribbon(ggplot2::aes(x = Month, ymin = Minimum, ymax = Maximum, fill = "Minimum-Maxium")) +
-    ggplot2::geom_ribbon(ggplot2::aes(x = Month, ymin = P5, ymax = P95, fill = "5-95 Percentiles")) +
-    ggplot2::geom_ribbon(ggplot2::aes(x = Month, ymin = P25, ymax = P75, fill = "25-75 Percentiles")) +
-    ggplot2::geom_hline(ggplot2::aes(yintercept = longterm_stats_longterm$Mean, colour = "Long-term Mean"), size = 0.6, linetype = 2) +
-    ggplot2::geom_hline(ggplot2::aes(yintercept = longterm_stats_longterm$Median, colour = "Long-term Median"), size = 0.6, linetype = 2) +
-    ggplot2::geom_line(ggplot2::aes(x = Month, y = Mean, color = "Monthly Mean"), size = 0.6) +
-    ggplot2::geom_line(ggplot2::aes(x = Month, y = Median, color = "Monthly Median"), size = 0.6) +
-    ggplot2::geom_point(ggplot2::aes(x = Month, y = Mean, color = "Monthly Mean"), size = 2) +
-    ggplot2::geom_point(ggplot2::aes(x = Month, y = Median, color = "Monthly Median"), size = 2) +
-    ggplot2::scale_color_manual(values = c("Monthly Mean" = "skyblue2", "Monthly Median" = "dodgerblue4",
-                                           "Long-term Mean" = "forestgreen", "Long-term Median" = "darkorchid4")) +
-    ggplot2::scale_fill_manual(values = c("25-75 Percentiles" = "lightblue4", "5-95 Percentiles" = "lightblue3",
-                                          "Minimum-Maxium" = "lightblue2")) +
-    {if(log_discharge) ggplot2::scale_y_log10(expand = c(0,0))} +
-    {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0))} +
-    {if(log_discharge) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(0.07, "cm"),
-                                                     mid = ggplot2::unit(0.15, "cm"), long = ggplot2::unit(0.2, "cm"))} +
-    ggplot2::scale_x_discrete(expand = c(0.01,0.01)) +
-    ggplot2::ylab("Discharge (cms)") +
-    ggplot2::xlab(NULL) +
-    ggplot2::theme_bw()+
-    ggplot2::labs(color = 'Long-term Statistics', fill = "Monthly Ranges") +  
-   # ggplot2::guides(fill = ggplot2::guide_legend(title = NULL)) +
-    ggplot2::theme(legend.position = "right",
-                   legend.spacing = ggplot2::unit(0, "cm"),
-                   legend.justification = "top",
-                   legend.text = ggplot2::element_text(size = 9),
-                   panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                   panel.grid = ggplot2::element_line(size = .2),
-                   axis.title = ggplot2::element_text(size = 12),
-                   axis.text = ggplot2::element_text(size = 10)) +
-    ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(linetype = c(2,2,1,1), shape = c(NA,NA,16,16))))
-
-
   
-  } 
+  suppressWarnings(print(
+    ggplot2::ggplot(longterm_stats_months, ggplot2::aes(group = 1)) +
+      ggplot2::geom_ribbon(ggplot2::aes(x = Month, ymin = Minimum, ymax = Maximum, fill = "Minimum-Maxium")) +
+      ggplot2::geom_ribbon(ggplot2::aes(x = Month, ymin = P5, ymax = P95, fill = "5-95 Percentiles")) +
+      ggplot2::geom_ribbon(ggplot2::aes(x = Month, ymin = P25, ymax = P75, fill = "25-75 Percentiles")) +
+      ggplot2::geom_hline(ggplot2::aes(yintercept = longterm_stats_longterm$Mean, colour = "Long-term Mean"), size = 0.6, linetype = 2) +
+      ggplot2::geom_hline(ggplot2::aes(yintercept = longterm_stats_longterm$Median, colour = "Long-term Median"), size = 0.6, linetype = 2) +
+      ggplot2::geom_line(ggplot2::aes(x = Month, y = Mean, color = "Monthly Mean"), size = 0.6) +
+      ggplot2::geom_line(ggplot2::aes(x = Month, y = Median, color = "Monthly Median"), size = 0.6) +
+      ggplot2::geom_point(ggplot2::aes(x = Month, y = Mean, color = "Monthly Mean"), size = 2) +
+      ggplot2::geom_point(ggplot2::aes(x = Month, y = Median, color = "Monthly Median"), size = 2) +
+      ggplot2::scale_color_manual(values = c("Monthly Mean" = "skyblue2", "Monthly Median" = "dodgerblue4",
+                                             "Long-term Mean" = "forestgreen", "Long-term Median" = "darkorchid4")) +
+      ggplot2::scale_fill_manual(values = c("25-75 Percentiles" = "lightblue4", "5-95 Percentiles" = "lightblue3",
+                                            "Minimum-Maxium" = "lightblue2")) +
+      {if(log_discharge) ggplot2::scale_y_log10(expand = c(0,0))} +
+      {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0))} +
+      {if(log_discharge) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(0.07, "cm"),
+                                                      mid = ggplot2::unit(0.15, "cm"), long = ggplot2::unit(0.2, "cm"))} +
+      ggplot2::scale_x_discrete(expand = c(0.01,0.01)) +
+      ggplot2::ylab("Discharge (cms)") +
+      ggplot2::xlab(NULL) +
+      ggplot2::theme_bw()+
+      ggplot2::labs(color = 'Long-term Statistics', fill = "Monthly Ranges") +  
+      # ggplot2::guides(fill = ggplot2::guide_legend(title = NULL)) +
+      ggplot2::theme(legend.position = "right",
+                     legend.spacing = ggplot2::unit(0, "cm"),
+                     legend.justification = "top",
+                     legend.text = ggplot2::element_text(size = 9),
+                     panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                     panel.grid = ggplot2::element_line(size = .2),
+                     axis.title = ggplot2::element_text(size = 12),
+                     axis.text = ggplot2::element_text(size = 10)) +
+      ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(linetype = c(2,2,1,1), shape = c(NA,NA,16,16))))
+  ))
+  
+  
+} 
