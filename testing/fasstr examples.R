@@ -2,7 +2,7 @@
 
 
 devtools::document()
-install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
+#install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
 install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 #devtools::check()
 
@@ -185,6 +185,18 @@ plot_annual_cumulative_stats(data = flow_data, incl_seasons = T)
 
 
 
+
+
+
+devtools::document()
+#install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
+install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
+#devtools::check()
+
+
+
+
+
 ### HYDAT
 ### ----------
 
@@ -198,19 +210,19 @@ flow_data <- add_daily_volume(data = "08HB048")
 flow_data <- add_cumulative_volume(data = read.csv("test.csv"))
 flow_data <- add_daily_yield(data = "08HB048")
 flow_data <- add_cumulative_yield(data = "08HB048", basin_area = c("08HB048"=10.2))
-flow_data <- calc_longterm_stats(station_number = "08HB048")
+flow_data <- calc_longterm_stats(station_number = "08HB048", ignore_missing = F)
 flow_data <- calc_annual_stats(station_number = "08HB048")
 flow_data <- calc_all_annual_stats(station_number = "08HB048")
 flow_data <- calc_annual_cumulative_stats(station_number = "08HB048", use_yield = T, incl_seasons = T)
 flow_data <- calc_annual_flow_timing(station_number = "08HB048")
 flow_data <- calc_annual_lowflows(station_number = "08HB048")
 flow_data <- calc_annual_outside_normal(station_number = "08HB048")
-flow_data <- calc_daily_stats(station_number = "08HB048")
-flow_data <- calc_daily_cumulative_stats(station_number = "08HB048")
-flow_data <- calc_flow_percentile(station_number = "08HB048")
+flow_data <- calc_daily_stats(station_number = "08HB048", months = 6:7)
+flow_data <- calc_daily_cumulative_stats(station_number = "08NM116", start_year = 1990)
+flow_data <- calc_flow_percentile(station_number = "08HB048", flow_value = 10000)
 flow_data <- calc_lt_mad(station_number = "08HB048")
 flow_data <- calc_lt_percentile(station_number = "08HB048")
-flow_data <- calc_monthly_cumulative_stats(station_number = "08HB048")
+flow_data2 <- calc_monthly_cumulative_stats(station_number = "08HB048")
 flow_data <- calc_monthly_stats(station_number = "08HB048")
 flow_data <- screen_flow_data(station_number = "08HB048")
 plot_flow_data(station_number = "08HB048")

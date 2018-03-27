@@ -53,6 +53,7 @@ plot_daily_stats <- function(data = NULL,
                              end_year = 9999,
                              exclude_years = NULL,
                              complete_years = FALSE,
+                             months = 1:12,
                              ignore_missing = FALSE,
                              log_discharge = TRUE,
                              include_year = NULL){
@@ -91,6 +92,7 @@ plot_daily_stats <- function(data = NULL,
                                           end_year = end_year,
                                           exclude_years = exclude_years, 
                                           complete_years = complete_years,
+                                          months = months,
                                           ignore_missing = ignore_missing)
   
   if (water_year) {
@@ -175,6 +177,9 @@ plot_daily_stats <- function(data = NULL,
     flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
     flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
     flow_data <- dplyr::filter(flow_data, AnalysisDoY < 366)
+    
+    flow_data <- dplyr::filter(flow_data, Month %in% months)
+    
     
     if(!include_year %in% flow_data$AnalysisYear) stop(paste0("Year in include_year does not exist. Please choose a year between ",
                                                               min(flow_data$AnalysisYear), " and ", max(flow_data$AnalysisYear), "."), 
