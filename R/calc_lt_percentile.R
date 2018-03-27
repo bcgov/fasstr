@@ -112,6 +112,10 @@ calc_lt_percentile <- function(data = NULL,
                                    flow_data)
   
   
+  # Give warning if any NA values
+  missing_values_warning_noNA(flow_data$RollingValue)
+  
+  
   #--------------------------------------------------------------
   # Complete the analysis
   

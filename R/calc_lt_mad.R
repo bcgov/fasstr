@@ -108,6 +108,9 @@ calc_lt_mad <- function(data = NULL,
   flow_data <- filter_complete_yrs(complete_years = complete_years, 
                                    flow_data)
   
+  # Give warning if any NA values
+  missing_values_warning_noNA(flow_data$RollingValue)
+  
   ## CALCULATE STATISTICS
   ## --------------------
   
