@@ -8,8 +8,8 @@ calc_daily_stats(data = NULL, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number = NULL, percentiles = c(5, 25,
   75, 95), roll_days = 1, roll_align = "right", water_year = FALSE,
   water_year_start = 10, start_year = 0, end_year = 9999,
-  exclude_years = NULL, complete_years = FALSE, transpose = FALSE,
-  ignore_missing = FALSE)
+  exclude_years = NULL, complete_years = FALSE, months = 1:12,
+  transpose = FALSE, ignore_missing = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -49,6 +49,9 @@ Default \code{10}.}
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 
 \item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
+
+\item{months}{Numeric vector of months to include in analysis (e.g.. \code{6:8} for Jun-Aug). Leave blank to summarize 
+all months (default \code{1:12}).}
 
 \item{transpose}{Logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.}
 

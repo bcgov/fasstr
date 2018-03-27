@@ -65,6 +65,7 @@ calc_daily_stats <- function(data = NULL,
                              end_year = 9999,
                              exclude_years = NULL, 
                              complete_years = FALSE,
+                             months = 1:12,
                              transpose = FALSE,
                              ignore_missing = FALSE){
   
@@ -76,6 +77,7 @@ calc_daily_stats <- function(data = NULL,
   percentiles_checks(percentiles)
   water_year_checks(water_year, water_year_start)
   years_checks(start_year, end_year, exclude_years)
+  months_checks(months)
   transpose_checks(transpose)
   ignore_missing_checks(ignore_missing)
   complete_yrs_checks(complete_years)
@@ -120,6 +122,8 @@ calc_daily_stats <- function(data = NULL,
   flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
   flow_data <- dplyr::filter(flow_data, AnalysisDoY < 366)
   
+  
+  
   # Remove incomplete years if selected
   flow_data <- filter_complete_yrs(complete_years = complete_years, 
                                    flow_data)
@@ -149,6 +153,12 @@ calc_daily_stats <- function(data = NULL,
       daily_stats[, ncol(daily_stats)] <- ifelse(is.na(daily_stats$Mean), NA, daily_stats[, ncol(daily_stats)])
     }
   }
+  
+  # Filter for months
+  daily_stats$Month <- lubridate::month(daily_stats$AnalysisDate)
+  daily_stats <- dplyr::filter(daily_stats, Month %in% months)
+  daily_stats <- dplyr::select(daily_stats, -Month)
+  
 
   # Final formatting
   daily_stats <- dplyr::rename(daily_stats, DayofYear = AnalysisDoY, Date = AnalysisDate)
