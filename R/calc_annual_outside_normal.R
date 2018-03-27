@@ -147,6 +147,9 @@ calc_annual_outside_normal <- function(data = NULL,
     normals_stats$Statistic <- factor(normals_stats$Statistic, levels = stat_levels)
     normals_stats <- dplyr::arrange(normals_stats, STATION_NUMBER, Statistic)
   }
+  
+  # Give warning if any NA values
+  missing_complete_yr_warning(normals_stats[, 3:ncol(normals_stats)])
 
 
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary

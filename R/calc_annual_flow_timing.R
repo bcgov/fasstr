@@ -139,6 +139,10 @@ calc_annual_flow_timing <- function(data = NULL,
     timing_stats <- tidyr::spread(timing_stats, Year, Value)
   }
   
+  # Give warning if any NA values
+  missing_complete_yr_warning(timing_stats[, 3:ncol(timing_stats)])
+  
+  
   # Recheck if station_number was in original flow_data and rename or remove as necessary
   if(as.character(substitute(groups)) %in% orig_cols) {
     names(timing_stats)[names(timing_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))

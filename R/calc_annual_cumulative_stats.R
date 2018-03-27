@@ -189,6 +189,10 @@ calc_annual_cumulative_stats <- function(data = NULL,
     
   }
   
+  # Give warning if any NA values
+  missing_complete_yr_warning(annual_stats[, 3:ncol(annual_stats)])
+  
+  
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
   if("STATION_NUMBER" %in% orig_cols) {
     names(annual_stats)[names(annual_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
