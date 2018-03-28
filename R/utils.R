@@ -167,7 +167,10 @@ one_station_number_stop <- function(station_number) {
   if (length(station_number) > 1) stop("Multiple station_numbers were provided, only one can be listed for this function.", call. = FALSE)
 }
 
-
+one_station_number_stop_data <- function(data){
+  if (length(unique(data$STATION_NUMBER)) > 1) 
+    stop("Multiple station numbers were provided in the groups column, only one can be listed for this function. Filter for one station or remove the column.", call. = FALSE)
+}
 
 
 ## Fill missing dates, add date variables and add AnalysisYear, DoY, and/or Date
