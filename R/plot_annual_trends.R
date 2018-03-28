@@ -121,7 +121,9 @@ plot_annual_trends <- function(trends_results = NULL,
     
   }
   
-  return(trends_plots)
+  suppressWarnings(print(
+    trends_plots
+  ))
   
 }
 

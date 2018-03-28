@@ -132,26 +132,26 @@ plot_flow_duration <- function(data = NULL,
   
   ## PLOT STATS
   ## ----------
-  
-  ggplot2::ggplot(percentiles_data, ggplot2::aes(x = Percentile, y = Value, colour = Month)) +
-    ggplot2::geom_line() +
-    {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0))} +
-    {if (!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 10),expand = c(0, 0))} +
-    ggplot2::scale_x_continuous(expand = c(0,0), breaks = scales::pretty_breaks(n = 10)) +
-    ggplot2::ylab("Discharge (cms)") +
-    ggplot2::xlab("% Time flow equalled or exceeded") +
-    ggplot2::scale_color_manual(values = colour_list) +
-    ggplot2:: annotation_logticks(sides = "l", base = 10, colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"),
-                                  mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))+
-    ggplot2::labs(color = 'Period') +
-    ggplot2::theme_bw() +
-    ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                   panel.grid = ggplot2::element_line(size = .2),
-                   legend.justification = "top",
-                   axis.text = ggplot2::element_text(size = 10, colour = "grey25"),
-                   axis.title = ggplot2::element_text(size = 12, colour = "grey25"),
-                   legend.text = ggplot2::element_text(size = 9, colour = "grey25"))
-  
+  suppressWarnings(print(
+    ggplot2::ggplot(percentiles_data, ggplot2::aes(x = Percentile, y = Value, colour = Month)) +
+      ggplot2::geom_line() +
+      {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0))} +
+      {if (!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 10),expand = c(0, 0))} +
+      ggplot2::scale_x_continuous(expand = c(0,0), breaks = scales::pretty_breaks(n = 10)) +
+      ggplot2::ylab("Discharge (cms)") +
+      ggplot2::xlab("% Time flow equalled or exceeded") +
+      ggplot2::scale_color_manual(values = colour_list) +
+      ggplot2:: annotation_logticks(sides = "l", base = 10, colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"),
+                                    mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))+
+      ggplot2::labs(color = 'Period') +
+      ggplot2::theme_bw() +
+      ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                     panel.grid = ggplot2::element_line(size = .2),
+                     legend.justification = "top",
+                     axis.text = ggplot2::element_text(size = 10, colour = "grey25"),
+                     axis.title = ggplot2::element_text(size = 12, colour = "grey25"),
+                     legend.text = ggplot2::element_text(size = 9, colour = "grey25"))
+  ))
   
   
 }

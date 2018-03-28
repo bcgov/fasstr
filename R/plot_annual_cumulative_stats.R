@@ -178,6 +178,8 @@ plot_annual_cumulative_stats <- function(data = NULL,
 
   
   
-  return(cumulative_plot)
+  suppressWarnings(print(
+    cumulative_plot
+    ))
   
 }

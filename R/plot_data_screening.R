@@ -83,21 +83,23 @@ plot_data_screening <- function(data = NULL,
   ## PLOT STATS
   ## ----------
   
-  ggplot2::ggplot(data = flow_summary, ggplot2::aes(x = Year, y = Value)) +
-    ggplot2::geom_line(colour = "dodgerblue4") +
-    ggplot2::geom_point(colour = "firebrick3") +
-    ggplot2::facet_wrap(~Statistic, ncol = 2, scales = "free_y") +
-    ggplot2::scale_y_continuous(expand = c(0, 0)) +
-    ggplot2::expand_limits(y = 0) +
-    ggplot2::ylab("Discharge (cms)") +
-    ggplot2::xlab("Year") +
-    ggplot2::theme_bw() +
-    ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
-                   panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                   panel.grid = ggplot2::element_line(size = .2),
-                   axis.title = ggplot2::element_text(size = 12),
-                   axis.text = ggplot2::element_text(size = 10))
-    
+  suppressWarnings(print(
+    ggplot2::ggplot(data = flow_summary, ggplot2::aes(x = Year, y = Value)) +
+      ggplot2::geom_line(colour = "dodgerblue4") +
+      ggplot2::geom_point(colour = "firebrick3") +
+      ggplot2::facet_wrap(~Statistic, ncol = 2, scales = "free_y") +
+      ggplot2::scale_y_continuous(expand = c(0, 0)) +
+      ggplot2::expand_limits(y = 0) +
+      ggplot2::ylab("Discharge (cms)") +
+      ggplot2::xlab("Year") +
+      ggplot2::theme_bw() +
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                     panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                     panel.grid = ggplot2::element_line(size = .2),
+                     axis.title = ggplot2::element_text(size = 12),
+                     axis.text = ggplot2::element_text(size = 10))
+  ))
+  
   
   
 }

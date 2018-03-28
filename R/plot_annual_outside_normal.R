@@ -99,22 +99,22 @@ plot_annual_outside_normal <- function(data = NULL,
   ## PLOT STATS
   ## ----------
   
-  normal_plot <- ggplot2::ggplot(data = normal_data, ggplot2::aes(x = Year, y = Value, colour = Statistic))+
-    ggplot2::geom_line(alpha = 0.5)+
-    ggplot2::geom_point()+
-    ggplot2::facet_wrap(~Statistic, scales="free_x", ncol = 1, strip.position = "right")+
-    ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6))+
-    ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
-    ggplot2::ylab("Number of Days")+
-    ggplot2::xlab("Year")+
-    ggplot2::guides(colour = FALSE)+
-    ggplot2::theme_bw() +
-    ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                   panel.grid = ggplot2::element_line(size = .2),
-                   axis.title = ggplot2::element_text(size = 12),
-                   axis.text = ggplot2::element_text(size = 10))
-  
-  return(normal_plot)
+  suppressWarnings(print(
+    ggplot2::ggplot(data = normal_data, ggplot2::aes(x = Year, y = Value, colour = Statistic))+
+      ggplot2::geom_line(alpha = 0.5)+
+      ggplot2::geom_point()+
+      ggplot2::facet_wrap(~Statistic, scales="free_x", ncol = 1, strip.position = "right")+
+      ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6))+
+      ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
+      ggplot2::ylab("Number of Days")+
+      ggplot2::xlab("Year")+
+      ggplot2::guides(colour = FALSE)+
+      ggplot2::theme_bw() +
+      ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                     panel.grid = ggplot2::element_line(size = .2),
+                     axis.title = ggplot2::element_text(size = 12),
+                     axis.text = ggplot2::element_text(size = 10))
+  ))
   
 }
 

@@ -93,28 +93,27 @@ plot_annual_flow_timing <- function(data = NULL,
   ## PLOT STATS
   ## ----------
   
-  flowtiming_plot <- ggplot2::ggplot(data = timing_stats, ggplot2::aes(x = Year, y = Value)) +
-    ggplot2::geom_line(ggplot2::aes(colour = Statistic), alpha = 0.5) +
-    ggplot2::geom_point(ggplot2::aes(colour = Statistic)) +
-    {if(length(percent_total) > 1) ggplot2::facet_wrap(~Statistic, scales = "free_x", ncol = 1, strip.position = "right")} +
-    ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
-    ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
-    ggplot2::ylab("Day of Year") +
-    ggplot2::xlab("Year") +
-    ggplot2::scale_color_brewer(palette = "Set1") +
-    ggplot2::theme_bw() +
-    ggplot2::guides(colour = FALSE) +
-    ggplot2::theme(legend.position = "right", 
-                   legend.spacing = ggplot2::unit(0, "cm"),
-                   legend.justification = "top",
-                   legend.text = ggplot2::element_text(size = 9),
-                   panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                   panel.grid = ggplot2::element_line(size = .2),
-                   axis.title = ggplot2::element_text(size = 12),
-                   axis.text = ggplot2::element_text(size = 10))
-  
-  
-  flowtiming_plot
+  suppressWarnings(print(
+    ggplot2::ggplot(data = timing_stats, ggplot2::aes(x = Year, y = Value)) +
+      ggplot2::geom_line(ggplot2::aes(colour = Statistic), alpha = 0.5) +
+      ggplot2::geom_point(ggplot2::aes(colour = Statistic)) +
+      {if(length(percent_total) > 1) ggplot2::facet_wrap(~Statistic, scales = "free_x", ncol = 1, strip.position = "right")} +
+      ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
+      ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
+      ggplot2::ylab("Day of Year") +
+      ggplot2::xlab("Year") +
+      ggplot2::scale_color_brewer(palette = "Set1") +
+      ggplot2::theme_bw() +
+      ggplot2::guides(colour = FALSE) +
+      ggplot2::theme(legend.position = "right", 
+                     legend.spacing = ggplot2::unit(0, "cm"),
+                     legend.justification = "top",
+                     legend.text = ggplot2::element_text(size = 9),
+                     panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                     panel.grid = ggplot2::element_line(size = .2),
+                     axis.title = ggplot2::element_text(size = 12),
+                     axis.text = ggplot2::element_text(size = 10))
+  ))
   
 }
 
