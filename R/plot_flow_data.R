@@ -89,7 +89,7 @@ plot_flow_data <- function(data = NULL,
                                rm_other_cols = TRUE)
   
   
- 
+  
   ## PREPARE FLOW DATA
   ## -----------------
   
@@ -105,34 +105,42 @@ plot_flow_data <- function(data = NULL,
   
   # Filter for the selected year (remove excluded years after)
   flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
-  flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
-  
+
   # Filter for specific dates, if selected
   flow_data <- dplyr::filter(flow_data, Date >= start_date)
   flow_data <- dplyr::filter(flow_data, Date <= end_date)
   
+  # Remove selected excluded years
+  flow_data <- dplyr::mutate(flow_data, RollingValue = replace(RollingValue, AnalysisYear %in% exclude_years, NA))
   
-  ggplot2::ggplot(data = flow_data, ggplot2::aes(x = Date, y = RollingValue, color = STATION_NUMBER)) +
-    ggplot2::geom_line() +
-    ggplot2::ylab("Discharge (cms)") +
-    {if(plot_by_year) ggplot2::facet_wrap(~AnalysisYear, scales = "free_x")} +
-    {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 8),expand = c(0, 0))} +
-    {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0))} +
-    {if(plot_by_year) ggplot2::scale_x_date(date_labels = "%b", expand = c(0,0))} +
-    {if(!plot_by_year) ggplot2::scale_x_date(breaks = scales::pretty_breaks(n = 12))} +
-    {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(flow_data$RollingValue) * 1.05))} +
-    {if(log_discharge) ggplot2::expand_limits(y = c(min(flow_data$RollingValue) * .95, max(flow_data$RollingValue) * 1.05))} +
-    {if(length(unique(flow_data$STATION_NUMBER)) <= 1) ggplot2::guides(colour = FALSE)} +
-    ggplot2::theme_bw() +
-    ggplot2::labs(color = 'Station') +    
-    ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                   legend.position = "right", 
-                   legend.spacing = ggplot2::unit(0, "cm"),
-                   legend.justification = "top",
-                   legend.text = ggplot2::element_text(size = 9),
-                   panel.grid = ggplot2::element_line(size = .2),
-                   axis.title = ggplot2::element_text(size = 12),
-                   axis.text = ggplot2::element_text(size = 10))
+  if (anyNA(flow_data$RollingValue)) 
+    warning(paste0("Did not plot ", sum(is.na(flow_data$RollingValue)),
+                   " missing or excluded values between ", min(flow_data$Date), " and ", max(flow_data$Date),"."), 
+            call. = FALSE)
+  
+  suppressWarnings(print(
+    ggplot2::ggplot(data = flow_data, ggplot2::aes(x = Date, y = RollingValue, color = STATION_NUMBER)) +
+      ggplot2::geom_line() +
+      ggplot2::ylab("Discharge (cms)") +
+      {if(plot_by_year) ggplot2::facet_wrap(~AnalysisYear, scales = "free_x")} +
+      {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 8),expand = c(0, 0))} +
+      {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0))} +
+      {if(plot_by_year) ggplot2::scale_x_date(date_labels = "%b", expand = c(0,0))} +
+      {if(!plot_by_year) ggplot2::scale_x_date(breaks = scales::pretty_breaks(n = 12))} +
+      {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(flow_data$RollingValue) * 1.05))} +
+      {if(log_discharge) ggplot2::expand_limits(y = c(min(flow_data$RollingValue) * .95, max(flow_data$RollingValue) * 1.05))} +
+      {if(length(unique(flow_data$STATION_NUMBER)) <= 1) ggplot2::guides(colour = FALSE)} +
+      ggplot2::theme_bw() +
+      ggplot2::labs(color = 'Station') +    
+      ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                     legend.position = "right", 
+                     legend.spacing = ggplot2::unit(0, "cm"),
+                     legend.justification = "top",
+                     legend.text = ggplot2::element_text(size = 9),
+                     panel.grid = ggplot2::element_line(size = .2),
+                     axis.title = ggplot2::element_text(size = 12),
+                     axis.text = ggplot2::element_text(size = 10))
+  ))
   
   
   
