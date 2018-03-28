@@ -88,7 +88,7 @@ plot_daily_cumulative_stats <- function(data = NULL,
   daily_stats <- fasstr::calc_daily_cumulative_stats(data = flow_data,
                                                      percentiles = c(5,25,75,95),
                                                      use_yield = use_yield, 
-                                                     basin_area = basin_area,
+                                                     basin_area = ifelse(use_yield, basin_area, 0),
                                                      water_year = water_year,
                                                      water_year_start = water_year_start,
                                                      start_year = start_year,
@@ -165,45 +165,45 @@ plot_daily_cumulative_stats <- function(data = NULL,
   ## ADD YEAR IF SELECTED
   ## --------------------
   
-  if(!is.null(include_year)){
-    
-    flow_data <- fill_missing_dates(data = flow_data, water_year = water_year, water_year_start = water_year_start)
-    flow_data <- add_date_variables(data = flow_data, water_year = water_year, water_year_start = water_year_start)
-    
-    # Add cumulative flows
-    if (use_yield){
-      flow_data <- add_cumulative_yield(data = flow_data, water_year = water_year, water_year_start = water_year_start, basin_area = basin_area)
-      flow_data$Cumul_Flow <- flow_data$Cumul_Yield_mm
-    } else {
-      flow_data <- add_cumulative_volume(data = flow_data, water_year = water_year, water_year_start = water_year_start)
-      flow_data$Cumul_Flow <- flow_data$Cumul_Volume_m3
-    }
-    
-    if (water_year) {
-      flow_data$AnalysisYear <- flow_data$WaterYear
-      flow_data$AnalysisDoY <- flow_data$WaterDayofYear
-    }  else {
-      flow_data$AnalysisYear <- flow_data$Year
-      flow_data$AnalysisDoY <- flow_data$DayofYear
-    }
-    flow_data <- dplyr::mutate(flow_data, AnalysisDate = as.Date(AnalysisDoY, origin = origin_date))
-    flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
-    flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
-    flow_data <- dplyr::filter(flow_data, AnalysisDoY < 366)
-    
-    if(!include_year %in% flow_data$AnalysisYear) stop(paste0("Year in include_year does not exist. Please choose a year between ",
-                                                              min(flow_data$AnalysisYear), " and ", max(flow_data$AnalysisYear), "."), 
-                                                       call. = FALSE)
-    flow_data <- dplyr::filter(flow_data, AnalysisYear == include_year)
-    
-    # Plot the year
-    suppressMessages(
-      daily_stats_plot <- daily_stats_plot +
-        ggplot2::geom_line(data = flow_data, ggplot2::aes(x = AnalysisDate, y = Cumul_Flow, colour = "yr.colour"), size = 0.5) +
-        ggplot2::scale_color_manual(values = c("Mean" = "paleturquoise", "Median" = "dodgerblue4", "yr.colour" = "red"),
-                                    labels = c("Mean", "Median", paste0(include_year, " Flows")))
-    )
-  }
+  # if(!is.null(include_year)){
+  #   
+  #   flow_data <- fill_missing_dates(data = flow_data, water_year = water_year, water_year_start = water_year_start)
+  #   flow_data <- add_date_variables(data = flow_data, water_year = water_year, water_year_start = water_year_start)
+  #   
+  #   # Add cumulative flows
+  #   if (use_yield){
+  #     flow_data <- add_cumulative_yield(data = flow_data, water_year = water_year, water_year_start = water_year_start, basin_area = basin_area)
+  #     flow_data$Cumul_Flow <- flow_data$Cumul_Yield_mm
+  #   } else {
+  #     flow_data <- add_cumulative_volume(data = flow_data, water_year = water_year, water_year_start = water_year_start)
+  #     flow_data$Cumul_Flow <- flow_data$Cumul_Volume_m3
+  #   }
+  #   
+  #   if (water_year) {
+  #     flow_data$AnalysisYear <- flow_data$WaterYear
+  #     flow_data$AnalysisDoY <- flow_data$WaterDayofYear
+  #   }  else {
+  #     flow_data$AnalysisYear <- flow_data$Year
+  #     flow_data$AnalysisDoY <- flow_data$DayofYear
+  #   }
+  #   flow_data <- dplyr::mutate(flow_data, AnalysisDate = as.Date(AnalysisDoY, origin = origin_date))
+  #   flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  #   flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
+  #   flow_data <- dplyr::filter(flow_data, AnalysisDoY < 366)
+  #   
+  #   if(!include_year %in% flow_data$AnalysisYear) stop(paste0("Year in include_year does not exist. Please choose a year between ",
+  #                                                             min(flow_data$AnalysisYear), " and ", max(flow_data$AnalysisYear), "."), 
+  #                                                      call. = FALSE)
+  #   flow_data <- dplyr::filter(flow_data, AnalysisYear == include_year)
+  #   
+  #   # Plot the year
+  #   suppressMessages(
+  #     daily_stats_plot <- daily_stats_plot +
+  #       ggplot2::geom_line(data = flow_data, ggplot2::aes(x = AnalysisDate, y = Cumul_Flow, colour = "yr.colour"), size = 0.5) +
+  #       ggplot2::scale_color_manual(values = c("Mean" = "paleturquoise", "Median" = "dodgerblue4", "yr.colour" = "red"),
+  #                                   labels = c("Mean", "Median", paste0(include_year, " Flows")))
+  #   )
+  # }
   
   suppressWarnings(print(
     daily_stats_plot

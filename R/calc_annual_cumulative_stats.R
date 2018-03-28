@@ -97,9 +97,10 @@ calc_annual_cumulative_stats <- function(data = NULL,
   ## SET UP BASIN AREA
   ## -----------------
   
-  flow_data <- add_basin_area(flow_data, basin_area = basin_area)
-  flow_data$Basin_Area_sqkm_temp <- flow_data$Basin_Area_sqkm
-  
+  if (use_yield){
+    flow_data <- add_basin_area(flow_data, basin_area = basin_area)
+    flow_data$Basin_Area_sqkm_temp <- flow_data$Basin_Area_sqkm
+  }  
   
   ## PREPARE FLOW DATA
   ## -----------------
@@ -114,7 +115,7 @@ calc_annual_cumulative_stats <- function(data = NULL,
   
   # Add cumulative flows
   if (use_yield){
-    flow_data <- add_daily_yield(data = flow_data, basin_area = basin_area)
+    flow_data <- suppressWarnings(add_daily_yield(data = flow_data, basin_area = basin_area))
     names(flow_data)[names(flow_data) == "Yield_mm"] <- "daily_total"
   } else {
     flow_data <- add_daily_volume(data = flow_data)

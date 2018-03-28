@@ -94,9 +94,10 @@ calc_daily_cumulative_stats <- function(data = NULL,
   ## SET UP BASIN AREA
   ## -----------------
   
-  flow_data <- add_basin_area(flow_data, basin_area = basin_area)
-  flow_data$Basin_Area_sqkm_temp <- flow_data$Basin_Area_sqkm
-  
+  if (use_yield) {
+    flow_data <- add_basin_area(flow_data, basin_area = basin_area)
+    flow_data$Basin_Area_sqkm_temp <- flow_data$Basin_Area_sqkm
+  }  
   
   
   ## PREPARE FLOW DATA
@@ -112,7 +113,8 @@ calc_daily_cumulative_stats <- function(data = NULL,
   
   # Add cumulative flows
   if (use_yield){
-    flow_data <- add_cumulative_yield(data = flow_data, water_year = water_year, water_year_start = water_year_start, basin_area = basin_area)
+    flow_data <- suppressWarnings(add_cumulative_yield(data = flow_data, water_year = water_year, 
+                                                       water_year_start = water_year_start, basin_area = basin_area))
     flow_data$Cumul_Flow <- flow_data$Cumul_Yield_mm
   } else {
     flow_data <- add_cumulative_volume(data = flow_data, water_year = water_year, water_year_start = water_year_start)
@@ -125,13 +127,14 @@ calc_daily_cumulative_stats <- function(data = NULL,
   flow_data <- dplyr::filter(flow_data, AnalysisDoY < 366)
   
   
+  if (all(is.na(flow_data$Cumul_Flow))) 
+    stop("No basin_area values provided or extracted from HYDAT. Use basin_area argument to supply one.", call. = FALSE)
+  
   # Warning if some of the years contained partial data
   comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
                                  complete_yr = ifelse(sum(!is.na(Cumul_Flow)) == length(AnalysisYear), TRUE, FALSE))
   if (!all(comp_years$complete_yr)) 
     warning("One or more years contained partial data and were excluded. Only years with complete data were used for calculations.", call. = FALSE)
-  
-  
   
   
   ## CALCULATE STATISTICS

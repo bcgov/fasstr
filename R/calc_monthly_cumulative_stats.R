@@ -96,9 +96,10 @@ calc_monthly_cumulative_stats <- function(data = NULL,
   ## SET UP BASIN AREA
   ## -----------------
   
-  flow_data <- add_basin_area(flow_data, basin_area = basin_area)
-  flow_data$Basin_Area_sqkm_temp <- flow_data$Basin_Area_sqkm
-  
+  if (use_yield){
+    flow_data <- add_basin_area(flow_data, basin_area = basin_area)
+    flow_data$Basin_Area_sqkm_temp <- flow_data$Basin_Area_sqkm
+  }  
   
   
   ## PREPARE FLOW DATA
@@ -112,7 +113,8 @@ calc_monthly_cumulative_stats <- function(data = NULL,
   
   # Add cumulative flows
   if (use_yield){
-    flow_data <- add_cumulative_yield(data = flow_data, water_year = water_year, water_year_start = water_year_start, basin_area = basin_area)
+    flow_data <- suppressWarnings(add_cumulative_yield(data = flow_data, water_year = water_year, 
+                                                       water_year_start = water_year_start, basin_area = basin_area))
     names(flow_data)[names(flow_data) == "Cumul_Yield_mm"] <- paste("Cumul_Total")
   } else {
     flow_data <- add_cumulative_volume(data = flow_data, water_year = water_year, water_year_start = water_year_start)
@@ -123,8 +125,8 @@ calc_monthly_cumulative_stats <- function(data = NULL,
   flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
   flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
   
-
-  
+  if (all(is.na(flow_data$Cumul_Total))) 
+    stop("No basin_area values provided or extracted from HYDAT. Use basin_area argument to supply one.", call. = FALSE)
 
   # Warning if some of the years contained partial data
   comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
@@ -135,13 +137,14 @@ calc_monthly_cumulative_stats <- function(data = NULL,
   flow_data <- merge(flow_data, comp_years, by = c("STATION_NUMBER", "AnalysisYear"))
   flow_data <- dplyr::filter(flow_data, complete_yr == "TRUE")
   flow_data <- dplyr::select(flow_data, -complete_yr)
-  
+
   ## CALCULATE STATISTICS
   ## --------------------
 
   # Calculate monthly totals for all years
   monthly_data <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
                                    Monthly_Total = max(Cumul_Total, na.rm = TRUE))
+  
     # Calculate the monthly and longterm stats
   monthly_cumul <- dplyr::summarize(dplyr::group_by(monthly_data, STATION_NUMBER, MonthName),
                                     Mean = mean(Monthly_Total, na.rm = FALSE),

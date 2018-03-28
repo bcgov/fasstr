@@ -82,13 +82,16 @@ plot_annual_cumulative_stats <- function(data = NULL,
                                 groups = as.character(substitute(groups)),
                                 use_groups = TRUE)
   
+  one_station_number_stop_data(flow_data)
+    
+  
 
   ## CALC STATS
   ## ----------
   
   cumulative_stats <- calc_annual_cumulative_stats(data = flow_data,
                                                    use_yield = use_yield, 
-                                                   basin_area = basin_area,
+                                                   basin_area = ifelse(use_yield, basin_area, 0),
                                                    water_year = water_year,
                                                    water_year_start = water_year_start,
                                                    start_year = start_year,
