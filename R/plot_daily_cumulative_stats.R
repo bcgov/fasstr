@@ -55,8 +55,6 @@ plot_daily_cumulative_stats <- function(data = NULL,
                                         start_year = 0,
                                         end_year = 9999,
                                         exclude_years = NULL, 
-                                        complete_years = FALSE,
-                                        ignore_missing = FALSE,
                                         log_discharge = FALSE,
                                         include_year = NULL){
   
@@ -93,9 +91,7 @@ plot_daily_cumulative_stats <- function(data = NULL,
                                                      water_year_start = water_year_start,
                                                      start_year = start_year,
                                                      end_year = end_year,
-                                                     exclude_years = exclude_years, 
-                                                     complete_years = complete_years,
-                                                     ignore_missing = ignore_missing)
+                                                     exclude_years = exclude_years)
   
   if (water_year) {
     # Create origin date to apply to flow_data and Q_daily later on
@@ -207,8 +203,9 @@ plot_daily_cumulative_stats <- function(data = NULL,
     )
   }
   
-  
-  daily_stats_plot
+  suppressWarnings(print(
+    daily_stats_plot
+  ))
   
 }
 

@@ -54,9 +54,7 @@ plot_monthly_cumulative_stats <- function(data = NULL,
                                           water_year_start = 10,
                                           start_year = 0,
                                           end_year = 9999,
-                                          exclude_years = NULL, 
-                                          complete_years = FALSE,
-                                          ignore_missing = FALSE,
+                                          exclude_years = NULL,
                                           log_discharge = FALSE,
                                           include_year = NULL){
   
@@ -93,9 +91,7 @@ plot_monthly_cumulative_stats <- function(data = NULL,
                                                  water_year_start = water_year_start,
                                                  start_year = start_year,
                                                  end_year = end_year,
-                                                 exclude_years = exclude_years, 
-                                                 complete_years = complete_years,
-                                                 ignore_missing = ignore_missing)
+                                                 exclude_years = exclude_years)
   
   
   ## PLOT STATS
@@ -187,8 +183,9 @@ plot_monthly_cumulative_stats <- function(data = NULL,
     )
   }
 
-
-  monthly_stats_plot
+  suppressWarnings(print(
+    monthly_stats_plot
+  ))
   
 }
 

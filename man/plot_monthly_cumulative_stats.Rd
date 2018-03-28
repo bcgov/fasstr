@@ -8,8 +8,7 @@ plot_monthly_cumulative_stats(data = NULL, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number = NULL, use_yield = FALSE,
   basin_area = NA, water_year = FALSE, water_year_start = 10,
   start_year = 0, end_year = 9999, exclude_years = NULL,
-  complete_years = FALSE, ignore_missing = FALSE, log_discharge = FALSE,
-  include_year = NULL)
+  log_discharge = FALSE, include_year = NULL)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -51,12 +50,6 @@ Default \code{10}.}
 \item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
 
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
-
-\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
-
-\item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
-\code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
-with no missing dates will be returned. Default \code{FALSE}.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
 
