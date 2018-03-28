@@ -124,12 +124,17 @@ calc_monthly_cumulative_stats <- function(data = NULL,
   flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
   
 
+  
+
   # Warning if some of the years contained partial data
   comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
                                  complete_yr = ifelse(sum(!is.na(Cumul_Total)) == length(AnalysisYear), TRUE, FALSE))
   if (!all(comp_years$complete_yr)) 
     warning("One or more years contained partial data and were excluded. Only years with complete data were used for calculations.", call. = FALSE)
 
+  flow_data <- merge(flow_data, comp_years, by = c("STATION_NUMBER", "AnalysisYear"))
+  flow_data <- dplyr::filter(flow_data, complete_yr == "TRUE")
+  flow_data <- dplyr::select(flow_data, -complete_yr)
   
   ## CALCULATE STATISTICS
   ## --------------------
@@ -137,13 +142,12 @@ calc_monthly_cumulative_stats <- function(data = NULL,
   # Calculate monthly totals for all years
   monthly_data <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
                                    Monthly_Total = max(Cumul_Total, na.rm = TRUE))
-
     # Calculate the monthly and longterm stats
   monthly_cumul <- dplyr::summarize(dplyr::group_by(monthly_data, STATION_NUMBER, MonthName),
-                                    Mean = mean(Monthly_Total, na.rm = TRUE),
-                                    Median = stats::median(Monthly_Total, na.rm = TRUE),
-                                    Maximum = max(Monthly_Total, na.rm = TRUE),
-                                    Minimum = min(Monthly_Total, na.rm = TRUE))
+                                    Mean = mean(Monthly_Total, na.rm = FALSE),
+                                    Median = stats::median(Monthly_Total, na.rm = FALSE),
+                                    Maximum = max(Monthly_Total, na.rm = FALSE),
+                                    Minimum = min(Monthly_Total, na.rm = FALSE))
 
   # Compute daily percentiles
   if (!all(is.na(percentiles))){
