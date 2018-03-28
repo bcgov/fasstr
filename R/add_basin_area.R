@@ -57,8 +57,8 @@ add_basin_area <- function(data = NULL,
   orig_groups <- dplyr::group_vars(flow_data)
   
   # Format the groups column
-  format_groups_col(data = flow_data,
-                    groups = "STATION_NUMBER")
+  flow_data <- format_groups_col(data = flow_data,
+                                 groups = "STATION_NUMBER")
   
   
   ## CHECKS ON BASIN AREA
@@ -113,7 +113,7 @@ add_basin_area <- function(data = NULL,
   # Get new column and merge back with
   if("Basin_Area_sqkm" %in% orig_cols){
     flow_data <- dplyr::ungroup(flow_data)
-    flow_data <- dplyr::left_join(flow_data, basin_area_table, by = "STATION_NUMBER")
+    flow_data <- suppressWarnings(dplyr::left_join(flow_data, basin_area_table, by = "STATION_NUMBER"))
     flow_data$Basin_Area_sqkm <- flow_data$Basin_Area_sqkm.y
     flow_data <- dplyr::select(flow_data, -Basin_Area_sqkm.y, -Basin_Area_sqkm.x)
   } else {
