@@ -163,6 +163,11 @@ format_plot_cols <- function(data,
 }
 
 
+one_station_number_stop <- function(station_number) {
+  if (length(station_number) > 1) stop("Multiple station_numbers were provided, only one can be listed for this function.", call. = FALSE)
+}
+
+
 
 
 ## Fill missing dates, add date variables and add AnalysisYear, DoY, and/or Date

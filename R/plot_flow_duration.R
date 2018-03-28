@@ -64,6 +64,8 @@ plot_flow_duration <- function(data = NULL,
   
   log_discharge_checks(log_discharge)
   custom_months_checks(custom_months, custom_months_label)
+  one_station_number_stop(station_number)
+  
   
   if (length(incl_longterm) > 1)   stop("Only one incl_longterm logical value can be listed.", call. = FALSE)
   if (!is.logical(incl_longterm))  stop("incl_longterm argument must be logical (TRUE/FALSE).", call. = FALSE)

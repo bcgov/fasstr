@@ -48,7 +48,7 @@ plot_missing_dates <- function(data = NULL,
   ## ARGUMENT CHECKS
   ## ---------------
   
-  # None
+  one_station_number_stop(station_number)
   
   
   ## FLOW DATA CHECKS AND FORMATTING

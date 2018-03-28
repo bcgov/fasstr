@@ -63,6 +63,8 @@ plot_daily_cumulative_stats <- function(data = NULL,
   
   log_discharge_checks(log_discharge) 
   include_year_checks(include_year)
+  one_station_number_stop(station_number)
+  
   
   
   ## FLOW DATA CHECKS AND FORMATTING

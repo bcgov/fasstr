@@ -51,7 +51,7 @@ plot_data_screening <- function(data = NULL,
   ## ARGUMENT CHECKS
   ## ---------------
   
-  # None  
+  one_station_number_stop(station_number)
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------

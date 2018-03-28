@@ -54,7 +54,7 @@ plot_annual_flow_timing <- function(data = NULL,
   ## others will be check in calc_ function
   ## ---------------
   
-  # None
+  one_station_number_stop(station_number)
   
   
   ## FLOW DATA CHECKS AND FORMATTING

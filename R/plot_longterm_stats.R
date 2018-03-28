@@ -56,6 +56,8 @@ plot_longterm_stats <- function(data = NULL,
   ## ---------------
   
   log_discharge_checks(log_discharge)
+  one_station_number_stop(station_number)
+  
   
   
   ## FLOW DATA CHECKS AND FORMATTING
