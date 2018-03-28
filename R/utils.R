@@ -404,6 +404,7 @@ include_year_checks <- function(include_year) {
   }
 }
 
+# for some single calculation functions
 missing_values_warning_noNA <- function(x) {
   if (anyNA(x)) 
     warning("Calculation ignored missing values in data. Filter data to complete years or months if desired.", call. = FALSE)
@@ -411,12 +412,13 @@ missing_values_warning_noNA <- function(x) {
 
 missing_values_warning <- function(x) {
   if (anyNA(x)) 
-    warning("One or more calculations included missing values and NA was produced. Use to ignore_missing = TRUE to ignore missing values.", call. = FALSE)
+    warning("One or more calculations included missing values and NA's were produced. Filter data for complete years or months, or use to ignore_missing = TRUE to ignore missing values.", call. = FALSE)
 }
 
+# For annual timing, normals
 missing_complete_yr_warning <- function(x) {
   if (anyNA(x)) 
-    warning("One or more years contained partial or missing data and NA was produced. Only time periods with complete data were used for calculations.", call. = FALSE)
+    warning("One or more years contained partial or missing data and NA's were produced. Only time periods with complete data were calculated.", call. = FALSE)
 }
 
 
