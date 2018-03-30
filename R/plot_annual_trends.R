@@ -115,15 +115,15 @@ plot_annual_trends <- function(trends_results = NULL,
         ggplot2::geom_abline(slope = trends_results_stat$trend, intercept = int, colour = "red")
     }
     
-    trends_plots[[paste0(stat, "-trends")]] <- trends_plot
+    trends_plots[[ stat ]] <- trends_plot
     
     
     
   }
   
-  suppressWarnings(print(
+  suppressWarnings(
     trends_plots
-  ))
+  )
   
 }
 

@@ -148,6 +148,10 @@ plot_missing_dates(data = flow_data)
 plot_monthly_cumulative_stats(data = flow_data, use_yield = T, basin_area = 10)
 plot_monthly_stats(data = flow_data)
 
+trending <- compute_annual_trends(data = flow_data, zyp_method = "yuepilon")
+trending_plots <- plot_annual_trends(trending)
+
+
 
 
 ### HYDAT
@@ -178,6 +182,9 @@ results <- calc_lt_percentile(station_number = "08HB048", percentiles = 50, comp
 results <- calc_monthly_cumulative_stats(station_number = "08HB048")
 results <- calc_monthly_stats(station_number = "08HB048")
 results <- screen_flow_data(station_number = "08HB048")
+trending <- compute_annual_trends(station_number = "08HB048", zyp_method = "yuepilon")
+trending_plots <- plot_annual_trends(trending)
+
 plot_flow_data(station_number = "08HB048", exclude_years = 2000)
 plot_annual_cumulative_stats(station_number = "08HB048", incl_seasons = T)
 plot_annual_flow_timing(station_number = "08HB048")
@@ -210,7 +217,7 @@ flow_data <- add_daily_yield(station_number = c("08HB048","08NM116"))
 flow_data <- add_cumulative_yield(station_number = c("08HB048","08NM116"), basin_area = c("08HB048"=10.2))
 results <- calc_longterm_stats(station_number = c("08HB048","08NM116"))
 results <- calc_annual_stats(station_number = c("08HB048","08NM116"))
-results <- calc_all_annual_stats(station_number = c("08HB048","08NM116"))
+results <- calc_all_annual_stats(station_number = c("08HB048","08NM116"), transpose = T)
 results <- calc_annual_cumulative_stats(station_number = c("08HB048","08NM116"))
 results <- calc_annual_flow_timing(station_number = c("08HB048","08NM116"))
 results <- calc_annual_lowflows(station_number = c("08HB048","08NM116"))
@@ -223,6 +230,9 @@ results <- calc_lt_percentile(station_number = c("08HB048","08NM116"), percentil
 results <- calc_monthly_cumulative_stats(station_number = c("08HB048","08NM116"))
 results <- calc_monthly_stats(station_number = c("08HB048","08NM116"))
 results <- screen_flow_data(station_number = c("08HB048","08NM116"))
+trending <- compute_annual_trends(station_number = c("08HB048","08NM116"), zyp_method = "yuepilon")
+trending_plots <- plot_annual_trends(trending)
+
 plot_flow_data(station_number = c("08HB048","08NM116"))
 plot_annual_cumulative_stats(station_number = c("08HB048","08NM116"))
 plot_annual_flow_timing(station_number = c("08HB048","08NM116"))
@@ -258,11 +268,8 @@ library(fasstr)
 #### TRENDING
 
 
-trending <- fasstr::compute_annual_trends("08HB048", zyp_method = "yuepilon", start_year = 1973)
-trending <- dplyr::select(trending, -STATION_NUMBER)
-
-
-test <- fasstr::plot_annual_trends(trending)
+trending <- compute_annual_trends(station_number = "08HB048", zyp_method = "yuepilon", start_year = 1973)
+plots <- plot_annual_trends(trending)
 
 
 
