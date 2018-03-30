@@ -231,6 +231,21 @@ calc_all_annual_stats <- function(data = NULL,
   all_stats[all_stats$Year %in% exclude_years, -(1:2)] <- NA
   
   
+  # Give warning if any NA values or no basin areas
+  if ( anyNA(dplyr::select(all_stats, -dplyr::contains("Yield"))) & 
+       all(is.na(dplyr::select(all_stats, dplyr::contains("Yield"))))) 
+    warning("No basin area values provided or extracted from HYDAT, and one or more calculations included missing values and NA's were produced. Provide a basin_area if desired and/or filter data for complete years or months, or use to ignore_missing = TRUE to ignore missing values.", call. = FALSE)
+  
+  if ( !anyNA(dplyr::select(all_stats, -dplyr::contains("Yield"))) & 
+       all(is.na(dplyr::select(all_stats, dplyr::contains("Yield"))))) 
+    warning("No basin area values provided or extracted from HYDAT and NA's were produced for all 'Yield' calculations. Use basin_area argument to provide one if desired.", call. = FALSE)
+  
+  if ( anyNA(all_stats[,3:ncol(all_stats)]) & 
+       !all(is.na(dplyr::select(all_stats, dplyr::contains("Yield"))))) 
+    warning("One or more calculations included missing values and NA's were produced. Filter data for complete years or months, or use to ignore_missing = TRUE to ignore missing values.", call. = FALSE)
+  
+  
+  
   # If transpose if selected, switch columns and rows
   if (transpose) {
     options(scipen = 999)
@@ -246,20 +261,6 @@ calc_all_annual_stats <- function(data = NULL,
     all_stats$Statistic <- factor(all_stats$Statistic, levels = stat_levels)
     all_stats <- dplyr::arrange(all_stats, STATION_NUMBER, Statistic)
   }
-  
-  # Give warning if any NA values or no basin areas
-  if ( anyNA(dplyr::select(all_stats, -dplyr::contains("Yield"))) & 
-       all(is.na(dplyr::select(all_stats, dplyr::contains("Yield"))))) 
-    warning("No basin area values provided or extracted from HYDAT, and one or more calculations included missing values and NA's were produced. Provide a basin_area if desired and/or filter data for complete years or months, or use to ignore_missing = TRUE to ignore missing values.", call. = FALSE)
-  
-  if ( !anyNA(dplyr::select(all_stats, -dplyr::contains("Yield"))) & 
-       all(is.na(dplyr::select(all_stats, dplyr::contains("Yield"))))) 
-    warning("No basin area values provided or extracted from HYDAT and NA's were produced for all 'Yield' calculations. Use basin_area argument to provide one if desired.", call. = FALSE)
-  
-  if ( anyNA(dplyr::select(all_stats, -STATION_NUMBER, -Year)) & 
-       !all(is.na(dplyr::select(all_stats, dplyr::contains("Yield"))))) 
-    warning("One or more calculations included missing values and NA's were produced. Filter data for complete years or months, or use to ignore_missing = TRUE to ignore missing values.", call. = FALSE)
-  
   
   
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
