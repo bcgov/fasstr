@@ -163,6 +163,10 @@ compute_annual_trends <- function(data = NULL,
     trends_results <- merge(trends_results, trends_data, by = c("STATION_NUMBER", "Statistic"), all = TRUE)
   }
   
+  # Order the list of stats in order of all_stats
+  trends_results <- dplyr::arrange(trends_results, STATION_NUMBER, Statistic)
+  
+  
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
   if("STATION_NUMBER" %in% orig_cols) {
     names(trends_results)[names(trends_results) == "STATION_NUMBER"] <- as.character(substitute(groups))
