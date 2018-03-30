@@ -133,7 +133,7 @@ plot_missing_dates <- function(data = NULL,
   
   ## PLOT STATS
   ## ----------
-  suppressWarnings(print(
+  suppressWarnings(
     ggplot2::ggplot(data=missing_plotdata, ggplot2::aes(x = Year, y = Value)) +
       ggplot2::geom_line(colour = "dodgerblue4") +
       ggplot2::geom_point(colour = "firebrick3") +
@@ -146,6 +146,6 @@ plot_missing_dates <- function(data = NULL,
                      panel.grid = ggplot2::element_line(size = .2),
                      axis.title = ggplot2::element_text(size = 12),
                      axis.text = ggplot2::element_text(size = 10))
-  ))
+  )
   
 }

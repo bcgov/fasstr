@@ -118,7 +118,7 @@ plot_flow_data <- function(data = NULL,
                    " missing or excluded values between ", min(flow_data$Date), " and ", max(flow_data$Date),"."), 
             call. = FALSE)
   
-  suppressWarnings(print(
+  suppressWarnings(
     ggplot2::ggplot(data = flow_data, ggplot2::aes(x = Date, y = RollingValue, color = STATION_NUMBER)) +
       ggplot2::geom_line() +
       ggplot2::ylab("Discharge (cms)") +
@@ -140,7 +140,7 @@ plot_flow_data <- function(data = NULL,
                      panel.grid = ggplot2::element_line(size = .2),
                      axis.title = ggplot2::element_text(size = 12),
                      axis.text = ggplot2::element_text(size = 10))
-  ))
+  )
   
   
   

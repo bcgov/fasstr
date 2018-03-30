@@ -134,7 +134,7 @@ plot_flow_duration <- function(data = NULL,
   
   ## PLOT STATS
   ## ----------
-  suppressWarnings(print(
+  suppressWarnings(
     ggplot2::ggplot(percentiles_data, ggplot2::aes(x = Percentile, y = Value, colour = Month)) +
       ggplot2::geom_line() +
       {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0))} +
@@ -153,7 +153,7 @@ plot_flow_duration <- function(data = NULL,
                      axis.text = ggplot2::element_text(size = 10, colour = "grey25"),
                      axis.title = ggplot2::element_text(size = 12, colour = "grey25"),
                      legend.text = ggplot2::element_text(size = 9, colour = "grey25"))
-  ))
+  )
   
   
 }

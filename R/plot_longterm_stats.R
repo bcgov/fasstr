@@ -101,7 +101,7 @@ plot_longterm_stats <- function(data = NULL,
   longterm_stats_longterm <- dplyr::filter(longterm_stats, Month == "Long-term")
   
   suppressMessages(
-  suppressWarnings(print(
+  suppressWarnings(
     ggplot2::ggplot(longterm_stats_months, ggplot2::aes(group = 1)) +
       ggplot2::geom_ribbon(ggplot2::aes(x = Month, ymin = Minimum, ymax = Maximum, fill = "Minimum-Maxium")) +
       ggplot2::geom_ribbon(ggplot2::aes(x = Month, ymin = P5, ymax = P95, fill = "5-95 Percentiles")) +
@@ -135,7 +135,7 @@ plot_longterm_stats <- function(data = NULL,
                      axis.title = ggplot2::element_text(size = 12),
                      axis.text = ggplot2::element_text(size = 10)) +
       ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(linetype = c(2,2,1,1), shape = c(NA,NA,16,16))))
-  ))
+  )
   )
   
   

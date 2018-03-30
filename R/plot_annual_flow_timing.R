@@ -93,7 +93,7 @@ plot_annual_flow_timing <- function(data = NULL,
   ## PLOT STATS
   ## ----------
   
-  suppressWarnings(print(
+  suppressWarnings(
     ggplot2::ggplot(data = timing_stats, ggplot2::aes(x = Year, y = Value)) +
       ggplot2::geom_line(ggplot2::aes(colour = Statistic), alpha = 0.5) +
       ggplot2::geom_point(ggplot2::aes(colour = Statistic)) +
@@ -113,7 +113,7 @@ plot_annual_flow_timing <- function(data = NULL,
                      panel.grid = ggplot2::element_line(size = .2),
                      axis.title = ggplot2::element_text(size = 12),
                      axis.text = ggplot2::element_text(size = 10))
-  ))
+  )
   
 }
 

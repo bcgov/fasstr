@@ -185,9 +185,9 @@ plot_monthly_cumulative_stats <- function(data = NULL,
     )
   }
 
-  suppressWarnings(print(
+  suppressWarnings(
     monthly_stats_plot
-  ))
+  )
   
 }
 

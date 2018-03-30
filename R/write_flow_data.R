@@ -29,9 +29,9 @@
 #' @examples
 #' \dontrun{
 #' 
-#'write_flow_data(station_number = "08NM116", 
-#'                file = "Mission_Creek_daily_flows.xlsx",
-#'                fill_missing = TRUE)
+#' write_flow_data(station_number = "08NM116", 
+#'                 file = "Mission_Creek_daily_flows.xlsx",
+#'                 fill_missing = TRUE)
 #' 
 #' }
 #' @export

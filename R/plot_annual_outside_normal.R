@@ -99,7 +99,7 @@ plot_annual_outside_normal <- function(data = NULL,
   ## PLOT STATS
   ## ----------
   
-  suppressWarnings(print(
+  suppressWarnings(
     ggplot2::ggplot(data = normal_data, ggplot2::aes(x = Year, y = Value, colour = Statistic))+
       ggplot2::geom_line(alpha = 0.5)+
       ggplot2::geom_point()+
@@ -114,7 +114,7 @@ plot_annual_outside_normal <- function(data = NULL,
                      panel.grid = ggplot2::element_line(size = .2),
                      axis.title = ggplot2::element_text(size = 12),
                      axis.text = ggplot2::element_text(size = 10))
-  ))
+  )
   
 }
 
