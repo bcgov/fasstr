@@ -4,12 +4,17 @@
 \alias{plot_annual_trends}
 \title{Plot prewhitened nonlinear annual trends on streamflow data}
 \usage{
-plot_annual_trends(trends_results = NULL, zyp_alpha = NA)
+plot_annual_trends(trends_results = NULL, groups = STATION_NUMBER,
+  zyp_alpha = NA)
 }
 \arguments{
 \item{trends_results}{A data frame of results from the compute_annual_trends() function, with original data included
 (compute_annual_trends(incl_data = TRUE)). Uses the only the "Statistics" and zyp results columns, along with the 
 annual data to plot.}
+
+\item{groups}{Column in \code{trends_results} that contains unique identifiers for different data sets, if applicable. 
+Only required if groups multiple groups are required and the column name is not 'STATION_NUMBER'. 
+Remove the 'STATION_NUMBER' column beforehand to remove this grouping.}
 
 \item{zyp_alpha}{Numeric value of the significance level (ex. 0.05) of when to plot a trend line. Leave blank for no line.}
 }
