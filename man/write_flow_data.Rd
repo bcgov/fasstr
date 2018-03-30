@@ -58,8 +58,8 @@ Write a streamflow dataset to a directory. Can fill missing dates or filter data
 \dontrun{
 
 write_flow_data(station_number = "08NM116", 
-               file = "Mission_Creek_daily_flows.xlsx",
-               fill_missing = TRUE)
+                file = "Mission_Creek_daily_flows.xlsx",
+                fill_missing = TRUE)
 
 }
 }

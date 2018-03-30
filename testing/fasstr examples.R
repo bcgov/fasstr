@@ -148,7 +148,7 @@ plot_missing_dates(data = flow_data)
 plot_monthly_cumulative_stats(data = flow_data, use_yield = T, basin_area = 10)
 plot_monthly_stats(data = flow_data)
 
-trending <- compute_annual_trends(data = flow_data, zyp_method = "yuepilon")
+trending <- compute_annual_trends(data = flow_data, zyp_method = "yuepilon", dates = Datesss, values = Valuesss)
 trending_plots <- plot_annual_trends(trending)
 
 
@@ -189,8 +189,8 @@ plot_flow_data(station_number = "08HB048", exclude_years = 2000)
 plot_annual_cumulative_stats(station_number = "08HB048", incl_seasons = T)
 plot_annual_flow_timing(station_number = "08HB048")
 plot_annual_outside_normal(station_number = "08HB048")
-plot_annual_stats(station_number = "08HB048")
-plot_annual_lowflows(station_number = "08HB048")
+plot <- plot_annual_stats(station_number = "08HB048")
+plot <- plot_annual_lowflows(station_number = "08HB048")
 #plot_annual_trends(data = "08HB048")
 plot_daily_cumulative_stats(station_number = "08HB048")
 plot_daily_stats(station_number = "08HB048", include_year = 1999)
@@ -272,22 +272,10 @@ trending <- compute_annual_trends(station_number = "08HB048", zyp_method = "yuep
 plots <- plot_annual_trends(trending)
 
 
-
-
-
 alldata <- fasstr::calc_annual_flow_timing("08HB048", transpose = T)
 alldata <- alldata[,2:ncol(alldata)]
 test2 <- fasstr::plot_annual_trends(trendsdata = alldata, zyp_method = "yuepilon")
 
-
-# more recent
-data <- tidyhydat::hy_daily_flows("08HB048") %>% select(-STATION_NUMBER)
-
-flow_data <- calc_all_annual_stats(data = data)
-
-data <- compute_annual_trends(data, zyp_method = "yuepilon", start_year = 1973)
-plots <- plot_annual_trends(data)
-data <- compute_annual_trends(station_number = c("08HB048","08NM116"), zyp_method = "yuepilon", start_year = 1973)
 
 
 ### FREQUENCY
@@ -299,7 +287,46 @@ data <- compute_annual_frequencies(station_number = c("08HB048","08NM116"))
 data <- compute_frequency_stat(station_number = "08NM116", roll_day = 7, return_period = 10)
 
 
+# PLOTS TESTING
 
+results <- calc_annual_stats(station_number = c("08HB048","08NM116","08NM242","08NM241","08HB069"))
+annual_stats <- tidyr::gather(results, Statistic, Value, -Year, -STATION_NUMBER)
+
+plots <- annual_stats %>%
+  dplyr::group_by(STATION_NUMBER) %>%
+  tidyr::nest() %>%
+  dplyr::mutate(
+    plot = purrr::map2(
+      data, STATION_NUMBER, 
+      ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
+        ggplot2::geom_line(alpha = 0.5) +
+        ggplot2::geom_point() +
+        {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(.$Value, na.rm = T) * 1.05))}+
+        {if(log_discharge) ggplot2::expand_limits(y = c(min(.$Value, na.rm = T) * .95, max(.$Value, na.rm = T) * 1.05))} +
+        {if(log_discharge) ggplot2::scale_y_log10(expand = c(0,0))} +
+        {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0))} +
+        {if(log_discharge) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"), 
+                                                        mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))} +
+        ggplot2::expand_limits(y = 0) +
+        ggplot2::ylab("Discharge (cms)")+
+        ggplot2::xlab("Year") +
+        ggplot2::scale_color_brewer(palette = "Set1") +
+        ggplot2::theme_bw() +
+        ggplot2::labs(color='Annual Statistics') +    
+        ggplot2::theme(legend.position = "right", 
+                       legend.spacing = ggplot2::unit(0, "cm"),
+                       legend.justification = "top",
+                       legend.text = ggplot2::element_text(size = 9),
+                       panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                       panel.grid = ggplot2::element_line(size = .2),
+                       axis.title = ggplot2::element_text(size = 12),
+                       axis.text = ggplot2::element_text(size = 10))))
+
+plotsss <- plots$plot
+names(plotsss) <- plots$STATION_NUMBER
+
+plotsss
 
 
 ######## WRITING
