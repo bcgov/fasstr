@@ -20,7 +20,7 @@
 #' @inheritParams calc_annual_stats
 #' @param log_discharge Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.
 #'
-#' @return A ggplot2 object with the following plots (percentile plots optional):
+#' @return A list of ggplot2 objects for with the following plots (percentile plots optional) for each station provided:
 #'   \item{Mean}{annual mean of all daily flows}
 #'   \item{Median}{annual median of all daily flows}
 #'   \item{Maximum}{annual maximum of all daily flows}
@@ -29,11 +29,12 @@
 #' @examples
 #' \dontrun{
 #' 
-#' plot_annual_stats(data = flow_data)
-#' 
-#' plot_annual_stats(station_number = "08NM116", water_year = TRUE, water_year_start = 8)
+#' plot_annual_stats(station_number = "08NM116", 
+#'                   water_year = TRUE, 
+#'                   water_year_start = 8)
 #'
-#' plot_annual_stats(station_number = "08NM116", months = 7:9)
+#' plot_annual_stats(station_number = "08NM116", 
+#'                   months = 7:9)
 #'
 #' }
 #' @export
@@ -42,6 +43,7 @@
 plot_annual_stats <- function(data = NULL,
                               dates = Date,
                               values = Value,
+                              groups = STATION_NUMBER,
                               station_number = NULL,
                               percentiles = NA,
                               roll_days = 1,
@@ -59,7 +61,7 @@ plot_annual_stats <- function(data = NULL,
   ## ---------------
   
   log_discharge_checks(log_discharge) 
-  one_station_number_stop(station_number)
+  #one_station_number_stop(station_number)
   
   
   
@@ -70,9 +72,11 @@ plot_annual_stats <- function(data = NULL,
   flow_data <- flowdata_import(data = data, station_number = station_number)
   
   # Check and rename columns
-  flow_data <- format_plot_cols(data = flow_data, 
-                                dates = as.character(substitute(dates)),
-                                values = as.character(substitute(values)))
+  flow_data <- format_all_cols(data = flow_data,
+                               dates = as.character(substitute(dates)),
+                               values = as.character(substitute(values)),
+                               groups = as.character(substitute(groups)),
+                               rm_other_cols = TRUE)
   
   
   ## CALC STATS
@@ -91,38 +95,50 @@ plot_annual_stats <- function(data = NULL,
                                     ignore_missing = ignore_missing)
   
   
-  annual_stats <- tidyr::gather(annual_stats, Statistic, Value, -1)
+  annual_stats <- tidyr::gather(annual_stats, Statistic, Value, -Year, -STATION_NUMBER)
   
   
   ## PLOT STATS
   ## ----------
   
-  suppressWarnings(
-    ggplot2::ggplot(data = annual_stats, ggplot2::aes(x = Year, y = Value, color = Statistic)) +
-      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
-      ggplot2::geom_line(alpha = 0.5) +
-      ggplot2::geom_point() +
-      {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(annual_stats$Value, na.rm = T) * 1.05))}+
-      {if(log_discharge) ggplot2::expand_limits(y = c(min(annual_stats$Value, na.rm = T) * .95, max(annual_stats$Value, na.rm = T) * 1.05))} +
-      {if(log_discharge) ggplot2::scale_y_log10(expand = c(0,0))} +
-      {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0))} +
-      {if(log_discharge) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"), 
-                                                      mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))} +
-      ggplot2::expand_limits(y = 0) +
-      ggplot2::ylab("Discharge (cms)")+
-      ggplot2::xlab("Year") +
-      ggplot2::scale_color_brewer(palette = "Set1") +
-      ggplot2::theme_bw() +
-      ggplot2::labs(color='Annual Statistics') +    
-      ggplot2::theme(legend.position = "right", 
-                     legend.spacing = ggplot2::unit(0, "cm"),
-                     legend.justification = "top",
-                     legend.text = ggplot2::element_text(size = 9),
-                     panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                     panel.grid = ggplot2::element_line(size = .2),
-                     axis.title = ggplot2::element_text(size = 12),
-                     axis.text = ggplot2::element_text(size = 10))
-  )
+  plots <- dplyr::group_by(annual_stats, STATION_NUMBER)
+  plots <- tidyr::nest(plots)
+  plots <- dplyr::mutate(plots,
+    plot = purrr::map2(data, STATION_NUMBER, 
+      ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
+        ggplot2::geom_line(alpha = 0.5) +
+        ggplot2::geom_point() +
+        {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(.$Value, na.rm = T) * 1.05))}+
+        {if(log_discharge) ggplot2::expand_limits(y = c(min(.$Value, na.rm = T) * .95, max(.$Value, na.rm = T) * 1.05))} +
+        {if(log_discharge) ggplot2::scale_y_log10(expand = c(0,0))} +
+        {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0))} +
+        {if(log_discharge) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"), 
+                                                        mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))} +
+        ggplot2::expand_limits(y = 0) +
+        ggplot2::ylab("Discharge (cms)")+
+        ggplot2::xlab("Year") +
+        ggplot2::scale_color_brewer(palette = "Set1") +
+        ggplot2::theme_bw() +
+        ggplot2::labs(color='Annual Statistics') +    
+        ggplot2::theme(legend.position = "right", 
+                       legend.spacing = ggplot2::unit(0, "cm"),
+                       legend.justification = "top",
+                       legend.text = ggplot2::element_text(size = 9),
+                       panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                       panel.grid = ggplot2::element_line(size = .2),
+                       axis.title = ggplot2::element_text(size = 12),
+                       axis.text = ggplot2::element_text(size = 10))))
+  
+  
+  plotss <- plots$plot
+  if (nrow(plots) == 1) {
+    names(plotss) <- "Annual_Stats"
+  } else {
+    names(plotss) <- paste0(plots$STATION_NUMBER, "_Annual_Stats")
+  }
+  
+  plotss
     
 }
 

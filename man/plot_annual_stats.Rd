@@ -5,10 +5,11 @@
 \title{Plot annual summary statistics}
 \usage{
 plot_annual_stats(data = NULL, dates = Date, values = Value,
-  station_number = NULL, percentiles = NA, roll_days = 1,
-  roll_align = "right", water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, exclude_years = NULL, months = 1:12,
-  ignore_missing = FALSE, log_discharge = FALSE)
+  groups = STATION_NUMBER, station_number = NULL, percentiles = NA,
+  roll_days = 1, roll_align = "right", water_year = FALSE,
+  water_year_start = 10, start_year = 0, end_year = 9999,
+  exclude_years = NULL, months = 1:12, ignore_missing = FALSE,
+  log_discharge = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -19,6 +20,10 @@ Date' (default). Leave blank if using \code{station_number} argument.}
 
 \item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
+
+\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
+groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
+Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
 
 \item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
@@ -53,7 +58,7 @@ with no missing dates will be returned. Default \code{FALSE}.}
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
 }
 \value{
-A ggplot2 object with the following plots (percentile plots optional):
+A list of ggplot2 objects for with the following plots (percentile plots optional) for each station provided:
   \item{Mean}{annual mean of all daily flows}
   \item{Median}{annual median of all daily flows}
   \item{Maximum}{annual maximum of all daily flows}
@@ -67,11 +72,12 @@ Plot annual monthly mean, median, maximum, minimum, and percentiles of daily flo
 \examples{
 \dontrun{
 
-plot_annual_stats(data = flow_data)
+plot_annual_stats(station_number = "08NM116", 
+                  water_year = TRUE, 
+                  water_year_start = 8)
 
-plot_annual_stats(station_number = "08NM116", water_year = TRUE, water_year_start = 8)
-
-plot_annual_stats(station_number = "08NM116", months = 7:9)
+plot_annual_stats(station_number = "08NM116", 
+                  months = 7:9)
 
 }
 }
