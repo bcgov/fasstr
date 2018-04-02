@@ -22,8 +22,8 @@ Useful features of functions include:
 -   the integration of the `tidyhydat` package to pull streamflow data from a Water Survey of Canada [HYDAT](https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html) database for analyses;
 -   arguments for filtering of years and months in analyses and plotting (reducing need to tidy data beforehand);
 -   choosing water years for analyses instead of calendar years (and choice of start month);
--   selecting for rolling n-day averages (e.g. 7-day rolling average);
--   customizing how missing dates are handled.
+-   selecting for rolling day averages (e.g. 7-day rolling average);
+-   choosing how missing dates are handled.
 
 Installation
 ------------
@@ -59,7 +59,7 @@ str(data)
 #>  $ Value: num  3 0.94 0.385 0.241 0.207 ...
 ```
 
-Alternatively, you can directly extract a HYDAT flow data frame directly from a HYDAT database by listing HYDAT station numbers in the `station_number` argument (ex. `station_number = "08NM116"` or `station_number = c("08NM116", "08NM242")`). A data frame of daily streamflow data for all stations listed will be extracted using `tidyhydat`.
+Alternatively, you can directly extract a HYDAT flow data set directly from a HYDAT database by listing HYDAT station numbers in the `station_number` argument (ex. `station_number = "08NM116"` or `station_number = c("08NM116", "08NM242")`). A data frame of daily streamflow data for all stations listed will be extracted using `tidyhydat`.
 
 This package allows for multiple stations (or other groupings such as time-periods of a flow record (ex. pre/post an event)) to be analyzed in many of the functions provided station identifiers are provided using the `groups` column argument (defaults to STATION\_NUMBER). If grouping column doesn't exist or is improperly named, then all values listed in the `values` column will be summarized. Note that the plotting functions do not use the `groups` arguments (as just one plot is typically produced), so just one station/group should be provided.
 
@@ -107,8 +107,28 @@ Examples
 To determine the summary statistics of an entire dataset and by month (mean, median, maximum, minimum, and some percentiles) you can use the `calc_longterm_stats()` function. If the 'Mission Creek near East Kelowna' hydrometric station is of interest you can list the station number in the `HYDAT` argument to obtain the data (if `tidyhydat` and HYDAT are installed).
 
 ``` r
-#calc_longterm_stats(data = "08NM116", start_year = 1981, end_year = 2010,
-#                    custom_months = 7:9, custom_months_label = "Summer")
+calc_longterm_stats(station_number = "08NM116", 
+                    start_year = 1981, 
+                    end_year = 2010,
+                    custom_months = 7:9, 
+                    custom_months_label = "Summer")
+#> # A tibble: 14 x 8
+#>    STATION_NUMBER Month      Mean Median Maximum Minimum   P10   P90
+#>  * <chr>          <fct>     <dbl>  <dbl>   <dbl>   <dbl> <dbl> <dbl>
+#>  1 08NM116        Jan        1.22  1.00     9.50   0.160 0.540  1.85
+#>  2 08NM116        Feb        1.16  0.970    4.41   0.140 0.474  1.99
+#>  3 08NM116        Mar        1.85  1.40     9.86   0.380 0.705  3.80
+#>  4 08NM116        Apr        8.32  6.26    37.9    0.505 1.63  17.5 
+#>  5 08NM116        May       23.6  20.8     74.4    3.83  9.33  41.2 
+#>  6 08NM116        Jun       21.5  19.5     84.5    0.450 6.10  38.9 
+#>  7 08NM116        Jul        6.48  3.90    54.5    0.332 1.02  15.0 
+#>  8 08NM116        Aug        2.13  1.57    13.3    0.427 0.775  4.29
+#>  9 08NM116        Sep        2.19  1.58    14.6    0.364 0.735  4.35
+#> 10 08NM116        Oct        2.10  1.60    15.2    0.267 0.794  3.98
+#> 11 08NM116        Nov        2.04  1.73    11.7    0.260 0.560  3.90
+#> 12 08NM116        Dec        1.30  1.05     7.30   0.342 0.500  2.33
+#> 13 08NM116        Long-term  6.17  1.89    84.5    0.140 0.680 19.3 
+#> 14 08NM116        Summer     3.61  1.98    54.5    0.332 0.799  7.64
 ```
 
 ### Plotting example 1: daily summary statistics
@@ -116,22 +136,27 @@ To determine the summary statistics of an entire dataset and by month (mean, med
 To visualize the daily streamflow patterns on an annual basis, the `plot_daily_stats()` function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the `start_year` and `end_year` arguments. Multiple plots are produced with this function, so this example plots just the summary statistics (`[1]`).
 
 ``` r
-#plot_daily_stats(data = "08NM116",
-#                 start_year = 1981,
-#                 end_year = 2010,
-#                 log_discharge = TRUE,
-#                 include_year = 1991)
+plot_daily_stats(station_number = "08NM116",
+                 start_year = 1981,
+                 end_year = 2010,
+                 log_discharge = TRUE,
+                 include_year = 1991,
+                 ignore_missing = TRUE)
 ```
+
+![](tools/readme/README-plot1-1.png)
 
 ### Plotting example 2: flow duration curves
 
 Flow duration curves can be produced using the `plot_flow_duration()` function.
 
 ``` r
-#plot_flow_duration(data = "08NM116",
-#                   start_year = 1981,
-#                   end_year = 2010)
+plot_flow_duration(station_number = "08NM116",
+                   start_year = 1981,
+                   end_year = 2010)
 ```
+
+![](tools/readme/README-plot2-1.png)
 
 ### Analysis example: low-flow frequency analysis
 
