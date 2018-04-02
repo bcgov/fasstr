@@ -27,7 +27,7 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>%
   add_daily_yield(basin_area = 10.3) %>%
   add_cumulative_yield(basin_area = 10.3) %>% 
   add_seasons()
-results <- calc_longterm_stats(data = flow_data)
+caresults <- calc_longterm_stats(data = flow_data)
 results <- calc_annual_stats(data = flow_data)
 results <- calc_all_annual_stats(data = flow_data)
 results <- calc_annual_cumulative_stats(data = flow_data)
@@ -237,7 +237,7 @@ plot_flow_data(station_number = c("08HB048","08NM116"))
 plot_annual_cumulative_stats(station_number = c("08HB048","08NM116"))
 plot_annual_flow_timing(station_number = c("08HB048","08NM116"))
 plot_annual_outside_normal(station_number = c("08HB048","08NM116"))
-plot_annual_stats(station_number = c("08HB048","08NM116"))
+plot <- plot_annual_stats(station_number = c("08HB048","08NM116"))
 #plot_annual_trends(data = c("08HB048","08NM116"))
 plot_daily_cumulative_stats(station_number = c("08HB048","08NM116"))
 plot_daily_stats(station_number = c("08HB048","08NM116"))
@@ -289,8 +289,13 @@ data <- compute_frequency_stat(station_number = "08NM116", roll_day = 7, return_
 
 # PLOTS TESTING
 
-results <- calc_annual_stats(station_number = c("08HB048","08NM116","08NM242","08NM241","08HB069"))
-annual_stats <- tidyr::gather(results, Statistic, Value, -Year, -STATION_NUMBER)
+annual_stats <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% 
+  select(Date,Value) %>% 
+  calc_annual_stats()
+
+annual_stats <- calc_annual_stats(station_number = c("08HB048","08NM116","08NM242","08NM241","08HB069"), ignore_missing = T)
+annual_stats <- calc_annual_stats(station_number = "08HB048")
+annual_stats <- tidyr::gather(annual_stats, Statistic, Value, -Year, -STATION_NUMBER)
 
 plots <- annual_stats %>%
   dplyr::group_by(STATION_NUMBER) %>%
@@ -323,11 +328,52 @@ plots <- annual_stats %>%
                        axis.title = ggplot2::element_text(size = 12),
                        axis.text = ggplot2::element_text(size = 10))))
 
-plotsss <- plots$plot
-names(plotsss) <- plots$STATION_NUMBER
+plotss <- plots$plot
+if (nrow(plots) == 1) {
+  names(plotss) <- "Annual_Stats"
+} else {
+  names(plotss) <- paste0(plots$STATION_NUMBER, "_Annual_Stats")
+}
 
-plotsss
+plotss
 
+
+names(plot)
+
+
+
+if (inherits(plot$`08HB048_Annual_Stats`,"gg")) {
+  gg
+}
+
+length(plot2)
+
+
+if (inherits(plot, what = "gg") {
+  # PLOT THIS SINGLE PLOT
+  
+} else {
+  # If is a list and none of them are gg
+  if (is.list(plot) & !all(sapply(plot, inherits, what = "gg"))) {
+    stop("none are gg plots")
+  }
+  
+}
+
+# Round any numeric column to the specified digits
+if (!all(sapply(plot, inherits, what = "gg"))) {
+  stop("Not all objects in list are ggplot2 plots.", call. = FALSE)
+  } else {
+  #PLOT SOME SHIT
+}
+
+
+
+
+for (i in plot) {
+  
+  ggplot2::ggsave(filename = "waaaht", plot = i, device = "pdf")
+}
 
 ######## WRITING
 

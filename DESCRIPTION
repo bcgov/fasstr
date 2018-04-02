@@ -20,6 +20,7 @@ Imports:
     lubridate,
     PearsonDS,
     plyr,
+    purrr,
     RcppRoll,
     scales,
     tidyhydat,

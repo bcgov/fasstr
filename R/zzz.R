@@ -68,7 +68,9 @@
           "Cumul_Total",
           "Parameter",
           "StatMonth",
-          "Units" )
+          "Units",
+          "WaterYear",
+          "WaterDayofYear")
       )
     invisible()
   }
