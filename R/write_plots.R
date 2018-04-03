@@ -10,19 +10,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Write a plot in a directory
+#' @title Write plots from a list into a directory or PDF document
 #'
-#' @description Write plots, single or multiple, into a folder or pdf document
+#' @description Write a list of plots (ggplots; as used by fasstr ) into a directory or PDF document. 
+#'    When writing into a named directory each plot will be named by the plot name listed in the list; uses ggplot2::ggsave function.
+#'    When writing into a PDF document (\code{combined_pdf == TRUE}) the plot names will not appear; uses grDevices:pdf function.
 #'
-#' @param plot Name of plot or name of list of plots to write to a directory.
-#' @param file Character string of name of file (single or combined_pdf) or name of folder (mulitple plots) in a directory 
-#'    to write the plot(s). Listing the image format (ex. ".png" or ".pdf") will overwrite the \code{format} argument for
-#'    single plots.
-#' @param format Character string of image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
-#'    Image type will be overwritten if using \code{combined_pdf argument}.
-#' @param height Numeric plot height in \code{units}. If not supplied, uses the size of current graphics device.
+#' @param plots List of plots to write to disk.
+#' @param foldername Name of folder to create on disk (if it does not exist) to write each plot from list. 
+#'    If using \code{combined_pdf} argument, then it will be the name of the PDF document.
+#' @param type Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
+#'    Image type will be overwritten if using \code{combined_pdf} is used.
 #' @param width Numeric plot width in \code{units}. If not supplied, uses the size of current graphics device.
+#' @param height Numeric plot height in \code{units}. If not supplied, uses the size of current graphics device.
 #' @param units Character string plot height and width units, one of "in", "cm", or "mm". Default \code{"in"}.
+#' @param dpi Numeric resolution of plots. Default \code{300}.
 #' @param combined_pdf Logical value indicating whether to combine list of plots into one pdf document. Default \code{FALSE}.
 #'
 #' @examples
@@ -33,119 +35,95 @@
 #' }
 #' @export
 
-
-
-write_plots <- function(plot = NULL,
-                        file = "",
-                        format = NULL,
+write_plots <- function(plots = NULL,
+                        foldername = "",
+                        type = NULL, 
+                        width = NA,
                         height = NA,
-                        width = NA, 
                         units = "in",
-                        combined_pdf = FALSE){  
+                        dpi = 300,
+                        combined_pdf = FALSE){
+  
+  # ARGUMENT CHECKS
+  # ---------------
+  
+  # Check list of plots
+  if (is.null(plots)) stop("Must provice a list of plots.", call. = FALSE)
+  if (!is.list(plots)) stop("Object provided is a not a list.", call. = FALSE)
+  if (!all(sapply(plots, inherits, what = "gg"))) stop("Not all objects in list are plots.", call. = FALSE)
+  
+  # Check device type
+  if (!combined_pdf) {
+    if (is.null(type)) stop("Must provide an image type to save.", call. = FALSE)
+    if (!type %in% c("png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", "svg")) 
+      stop("Use of the file types required.", call. = FALSE)
+  }
+  
+  # Check dimensions
+  if ((!is.na(height) & !is.numeric(height)))
+    stop("height argument must be numeric.", call. = FALSE)
+  if (length(height) !=1) stop("Only one height value can be provided.", call. = FALSE)
+  
+  if ((!is.na(width) & !is.numeric(width)))
+    stop("width argument must be numeric.", call. = FALSE)
+  if (length(width) !=1) stop("Only one width value can be provided.", call. = FALSE)
+  
+  if (length(units) != 1)  stop("only one unit type can be provided.", call. = FALSE)
+  if (!units %in% c("in", "cm", "mm"))  stop("Only units of 'in', 'cm', or 'mm' can be provided.", call. = FALSE)
   
   
-  ## ARGUMENT CHECKS
-  ## ---------------
+  # SAVE PLOTS
+  # ----------
   
-  if(is.null(plot)) stop("No plots provided using plot argument.", call. = FALSE)
-  
-  if(file == "") stop("file/folder name must be provided using file argument.", call. = FALSE)
-  
-  if(!is.logical(combined_pdf))  stop("combined_pdf argument must be logical (TRUE/FALSE).", call. = FALSE)
-  
-  # Grab format if format not provided
-  if(!combined_pdf) {
-    if(is.null(format)) {
-      if(!sub('.*\\.', '', file) %in% c("png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", "svg"))
-        stop("No image file type provided. Please provide using format argument.", call. = FALSE)
-      
-      if(sub('.*\\.', '', file) %in% c("png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", "svg")) {
-        format <- sub('.*\\.', '', file)
-        file <- sub(paste0(".", format), '', file)
-      }
+  # Create a single PDF document
+  if(combined_pdf) { 
+    
+    # Remove slash if foldername ends with it
+    if (substr(foldername, nchar(foldername), nchar(foldername)) == "/") {
+      foldername <- substr(foldername, 1, nchar(foldername)-1)
     }
     
-    if(!is.null(format)) {
-      if(sub('.*\\.', '', file) %in% c("png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", "svg"))
-        warning("Provided format will be overwritten by the format provided in the file argument.", call. = FALSE)
-      file <- sub(paste0(".", format), '', file)
-    }
-  }
-  
-  
-  
-  if(combined_pdf) {
-    if(sub('.*\\.', '', file) %in% c("png", "eps", "ps", "tex", "jpeg", "tiff", "bmp", "svg"))
-      warning("format provided in file will be overridden when using combined_pdf function.", call. = FALSE)
-    if(!is.null(format)) {
-      if(format %in% c("png", "eps", "ps", "tex", "jpeg", "tiff", "bmp", "svg"))
-        warning("format provided will be overridden when using combined_pdf function.", call. = FALSE)
-    }
-    #format <- sub('.*\\.', '', file)
-    file <- sub(paste0(".", sub('.*\\.', '', file)), '', file)
-  }
-  
-  if((!is.na(height) & !is.numeric(height)) | (!is.na(width) & !is.numeric(width)))
-    stop("height and width arguments must be numeric.", call. = FALSE)
-  if(length(height) !=1 | length(width) !=1) stop("Only one height and width values can be provided.", call. = FALSE)
-  
-  if(length(units) != 1)  stop("only one unit type can be provided.")
-  if(!units %in% c("in", "cm", "mm"))  stop("Only units of 'in', 'cm', or 'mm' can be provided.", call. = FALSE)
-  
-  
-  
-  ## WRITE THE PLOTS
-  ## ---------------
-  
-  # Plotting for just one image
-  if(length(plot) == 1) {
-    ggplot2::ggsave(plot = plot,
-                    filename = file,
-                    height = height,
-                    width = width,
-                    units = units)
-  }
-  
-  # Plotting for mulitple images
-  if(length(plot) > 1) {
-    
-    if(!combined_pdf) {
-      if(is.null(format)) {
-        warning("No file format for multiple plots was selected, will use jpeg.", call. = FALSE)
-        format <- "jpeg"
-      }
-      
-      dir.create(paste(file), showWarnings = FALSE)
-      
-      for (item in names(plot)) {
-        suppressWarnings(ggplot2::ggsave(plot = plotsss <- plot[[item]],
-                                         filename = paste0(file, "/", item, ".", format),
-                                         height = height,
-                                         width = width,
-                                         units = units)
-        )
-      }
+    # Check dimensions for PDF device
+    if(is.na(width)) {
+      width <- grDevices::dev.size(units = units)[1]
     }
     
-    if(combined_pdf) {
-      
-      if(is.na(width)) {
-        width <- grDevices::dev.size(units = units)[1]
-      }
-      
-      if(is.na(height)) {
-        height <- grDevices::dev.size(units = units)[2]
-      }
-      
-      grDevices::pdf(file = paste0(file, ".pdf"), width = width, height = height)
-      for (item in names(plot)) {
-        suppressWarnings(plot(plot[[item]]))
-      }
-      invisible(grDevices::dev.off())
-      
+    if(is.na(height)) {
+      height <- grDevices::dev.size(units = units)[2]
+    }
+    
+    # Plot plots to PDF device
+    grDevices::pdf(file = paste0(foldername, ".pdf"), 
+                   width = width, 
+                   height = height,
+                   title = "R Graphics Output - fasstr")
+    for (i in names(plots)) {
+      suppressWarnings(graphics::plot(plots[[i]]))
+    }
+    invisible(grDevices::dev.off())
+    
+  } else {
+    
+    # Create a folder of plots
+    
+    # Check if folder exists, create if not
+    dir.create(foldername, showWarnings = FALSE)
+    
+    # Add the slash to foldername if it doesn't exist
+    if (!substr(foldername, nchar(foldername), nchar(foldername)) == "/") {
+      foldername <- paste0(foldername, "/")
+    }
+    
+    # Filter through each plot
+    for (i in names(plots)) {
+      suppressWarnings(ggplot2::ggsave(filename = paste0(foldername, i, ".", type), 
+                                       plot = plots[[i]],
+                                       width = width,
+                                       height = height,
+                                       units = units,
+                                       dpi = dpi))
     }
   }
-  
   
   
 }

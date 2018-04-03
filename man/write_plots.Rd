@@ -2,31 +2,34 @@
 % Please edit documentation in R/write_plots.R
 \name{write_plots}
 \alias{write_plots}
-\title{Write a plot in a directory}
+\title{Write plots from a list into a directory or PDF document}
 \usage{
-write_plots(plot = NULL, file = "", format = NULL, height = NA,
-  width = NA, units = "in", combined_pdf = FALSE)
+write_plots(plots = NULL, foldername = "", type = NULL, width = NA,
+  height = NA, units = "in", dpi = 300, combined_pdf = FALSE)
 }
 \arguments{
-\item{plot}{Name of plot or name of list of plots to write to a directory.}
+\item{plots}{List of plots to write to disk.}
 
-\item{file}{Character string of name of file (single or combined_pdf) or name of folder (mulitple plots) in a directory 
-to write the plot(s). Listing the image format (ex. ".png" or ".pdf") will overwrite the \code{format} argument for
-single plots.}
+\item{foldername}{Name of folder to create on disk (if it does not exist) to write each plot from list. 
+If using \code{combined_pdf} argument, then it will be the name of the PDF document.}
 
-\item{format}{Character string of image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
-Image type will be overwritten if using \code{combined_pdf argument}.}
-
-\item{height}{Numeric plot height in \code{units}. If not supplied, uses the size of current graphics device.}
+\item{type}{Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
+Image type will be overwritten if using \code{combined_pdf} is used.}
 
 \item{width}{Numeric plot width in \code{units}. If not supplied, uses the size of current graphics device.}
 
+\item{height}{Numeric plot height in \code{units}. If not supplied, uses the size of current graphics device.}
+
 \item{units}{Character string plot height and width units, one of "in", "cm", or "mm". Default \code{"in"}.}
+
+\item{dpi}{Numeric resolution of plots. Default \code{300}.}
 
 \item{combined_pdf}{Logical value indicating whether to combine list of plots into one pdf document. Default \code{FALSE}.}
 }
 \description{
-Write plots, single or multiple, into a folder or pdf document
+Write a list of plots (ggplots; as used by fasstr ) into a directory or PDF document. 
+   When writing into a named directory each plot will be named by the plot name listed in the list; uses ggplot2::ggsave function.
+   When writing into a PDF document (\code{combined_pdf == TRUE}) the plot names will not appear; uses grDevices:pdf function.
 }
 \examples{
 \dontrun{

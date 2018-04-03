@@ -190,7 +190,7 @@ plot_annual_cumulative_stats(station_number = "08HB048", incl_seasons = T)
 plot_annual_flow_timing(station_number = "08HB048")
 plot_annual_outside_normal(station_number = "08HB048")
 plot <- plot_annual_stats(station_number = "08HB048")
-plot <- plot_annual_lowflows(station_number = "08HB048")
+plot2 <- plot_annual_lowflows(station_number = "08HB048")
 #plot_annual_trends(data = "08HB048")
 plot_daily_cumulative_stats(station_number = "08HB048")
 plot_daily_stats(station_number = "08HB048", include_year = 1999)
@@ -349,31 +349,139 @@ if (inherits(plot$`08HB048_Annual_Stats`,"gg")) {
 length(plot2)
 
 
-if (inherits(plot, what = "gg") {
-  # PLOT THIS SINGLE PLOT
-  
-} else {
-  # If is a list and none of them are gg
-  if (is.list(plot) & !all(sapply(plot, inherits, what = "gg"))) {
-    stop("none are gg plots")
-  }
-  
-}
+# Save list of gg plots
 
-# Round any numeric column to the specified digits
-if (!all(sapply(plot, inherits, what = "gg"))) {
-  stop("Not all objects in list are ggplot2 plots.", call. = FALSE)
-  } else {
-  #PLOT SOME SHIT
-}
+write_plots(foldername = "GUUUURL/", 
+               plots = plot, 
+               type = "pdf",
+               height = 4,
+               width = 11,
+               dpi = 100,
+               combined_pdf = F)
+
+# save_plot_list <- function(plots = NULL,
+#                            foldername = "",
+#                            type = NULL, 
+#                            width = NA,
+#                            height = NA,
+#                            units = "in",
+#                            dpi = 300,
+#                            combined_pdf = FALSE){
+#   
+#   # Check list of plots
+#   if (is.null(plots)) stop("Must provice a list of plots.", call. = FALSE)
+#   if (!is.list(plots)) stop("Object provided is a not a list.", call. = FALSE)
+#   if (!all(sapply(plots, inherits, what = "gg"))) stop("Not all objects in list are plots.", call. = FALSE)
+#   
+#   # Check device type
+#   if (!combined_pdf) {
+#     if (is.null(type)) stop("Must provide an image type to save.", call. = FALSE)
+#     if (!type %in% c("png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", "svg")) 
+#       stop("Use of the file types required.", call. = FALSE)
+#   }
+#   
+#   # Check dimensions
+#   if ((!is.na(height) & !is.numeric(height)))
+#     stop("height argument must be numeric.", call. = FALSE)
+#   if (length(height) !=1) stop("Only one height value can be provided.", call. = FALSE)
+#   
+#   if ((!is.na(width) & !is.numeric(width)))
+#     stop("width argument must be numeric.", call. = FALSE)
+#   if (length(width) !=1) stop("Only one width value can be provided.", call. = FALSE)
+#   
+#   if (length(units) != 1)  stop("only one unit type can be provided.", call. = FALSE)
+#   if (!units %in% c("in", "cm", "mm"))  stop("Only units of 'in', 'cm', or 'mm' can be provided.", call. = FALSE)
+#   
+#   # Create a single PDF document
+#   if(combined_pdf) { 
+#     
+#     # Remove slash if foldername ends with it
+#     if (substr(foldername, nchar(foldername), nchar(foldername)) == "/") {
+#       foldername <- substr(foldername, 1, nchar(foldername)-1)
+#     }
+#     
+#     # Check dimensions for PDF device
+#     if(is.na(width)) {
+#       width <- grDevices::dev.size(units = units)[1]
+#     }
+#     
+#     if(is.na(height)) {
+#       height <- grDevices::dev.size(units = units)[2]
+#     }
+#     
+#     # Plot plots to PDF device
+#     grDevices::pdf(file = paste0(foldername, ".pdf"), width = width, height = height)
+#     for (i in names(plots)) {
+#       suppressWarnings(plot(plots[[i]]))
+#     }
+#     invisible(grDevices::dev.off())
+#     
+#   } else {
+#     
+#   # Create a folder of plots
+#     
+#     # Check if folder exists, create if not
+#     dir.create(foldername, showWarnings = FALSE)
+#     
+#     # Add the slash to foldername if it doesn't exist
+#     if (!substr(foldername, nchar(foldername), nchar(foldername)) == "/") {
+#       foldername <- paste0(foldername, "/")
+#     }
+#     
+#     # Filter through each plot
+#     for (i in names(plots)) {
+#       suppressWarnings(ggplot2::ggsave(filename = paste0(foldername, i, ".", type), 
+#                                        plot = plots[[i]],
+#                                        width = width,
+#                                        height = height,
+#                                        units = units,
+#                                        dpi = dpi))
+#     }
+#   }
+#   
+#   
+# }
 
 
 
-
-for (i in plot) {
-  
-  ggplot2::ggsave(filename = "waaaht", plot = i, device = "pdf")
-}
+# 
+# 
+# 
+# 
+# type ="pdf"
+# lapply(names(plot), 
+#        function(x, type = "pdf") ggplot2::ggsave(filename = paste(x, ".", type, sep = ""), plot = plot[[x]]))
+# 
+# 
+# lapply(names(plot), 
+#        function(x, ) ggplot2::ggsave(filename = paste(x, ".jpeg", sep=""), plot = plot[[x]]))
+# 
+# 
+# if (inherits(plot, what = "gg") {
+#   # PLOT THIS SINGLE PLOT
+#   
+# } else {
+#   # If is a list and none of them are gg
+#   if (is.list(plot) & !all(sapply(plot, inherits, what = "gg"))) {
+#     stop("none are gg plots")
+#   }
+#   
+# }
+# 
+# # Round any numeric column to the specified digits
+# if (!all(sapply(plot, inherits, what = "gg"))) {
+#   stop("Not all objects in list are ggplot2 plots.", call. = FALSE)
+#   } else {
+#   #PLOT SOME SHIT
+# }
+# 
+# 
+# 
+# 
+# for (i in plot) {
+#   
+#   ggplot2::ggsave(filename = "waaaht", plot = i, device = "pdf")
+# }
 
 ######## WRITING
 
