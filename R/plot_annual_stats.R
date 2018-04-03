@@ -63,10 +63,9 @@ plot_annual_stats <- function(data = NULL,
   ## ---------------
   
   log_discharge_checks(log_discharge) 
-  #one_station_number_stop(station_number)
-  
-  
-  
+  include_title_checks(include_title)
+
+    
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
   
@@ -103,6 +102,7 @@ plot_annual_stats <- function(data = NULL,
   ## PLOT STATS
   ## ----------
   
+  # Create plots for each STATION_NUMBER in a tibble (see: http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/)
   tidy_plots <- dplyr::group_by(annual_stats, STATION_NUMBER)
   tidy_plots <- tidyr::nest(tidy_plots)
   tidy_plots <- dplyr::mutate(tidy_plots,
@@ -135,7 +135,7 @@ plot_annual_stats <- function(data = NULL,
     ))
   
 
-  
+  # Create a list of named plots extracted from the tibble
   plots <- tidy_plots$plot
   if (nrow(tidy_plots) == 1) {
     names(plots) <- "Annual_Stats"

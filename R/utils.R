@@ -350,6 +350,11 @@ log_discharge_checks <- function(log_discharge) {
   if (!is.logical(log_discharge))  stop("log_discharge argument must be logical (TRUE/FALSE).", call. = FALSE)
 }
 
+include_title_checks <- function(include_title) {
+  if (length(include_title) > 1)   stop("Only one include_title logical value can be listed.", call. = FALSE)
+  if (!is.logical(include_title))  stop("include_title argument must be logical (TRUE/FALSE).", call. = FALSE)
+}
+
 use_yield_checks <- function(use_yield) {
   if (length(use_yield) > 1)   stop("Only one use_yield logical value can be listed.", call. = FALSE)
   if (!is.logical(use_yield))  stop("use_yield argument must be logical (TRUE/FALSE).", call. = FALSE)
