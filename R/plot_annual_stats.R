@@ -19,6 +19,7 @@
 #'
 #' @inheritParams calc_annual_stats
 #' @param log_discharge Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.
+#' @param include_title Logical value to indicate adding the group/station number to the plot. Default \code{FALSE}.
 #'
 #' @return A list of ggplot2 objects for with the following plots (percentile plots optional) for each station provided:
 #'   \item{Mean}{annual mean of all daily flows}
@@ -55,7 +56,8 @@ plot_annual_stats <- function(data = NULL,
                               exclude_years = NULL,
                               months = 1:12,
                               ignore_missing = FALSE,
-                              log_discharge = FALSE){ 
+                              log_discharge = FALSE,
+                              include_title = FALSE){ 
   
   ## ARGUMENT CHECKS
   ## ---------------
@@ -101,9 +103,9 @@ plot_annual_stats <- function(data = NULL,
   ## PLOT STATS
   ## ----------
   
-  plots <- dplyr::group_by(annual_stats, STATION_NUMBER)
-  plots <- tidyr::nest(plots)
-  plots <- dplyr::mutate(plots,
+  tidy_plots <- dplyr::group_by(annual_stats, STATION_NUMBER)
+  tidy_plots <- tidyr::nest(tidy_plots)
+  tidy_plots <- dplyr::mutate(tidy_plots,
     plot = purrr::map2(data, STATION_NUMBER, 
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
         ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
@@ -120,7 +122,8 @@ plot_annual_stats <- function(data = NULL,
         ggplot2::xlab("Year") +
         ggplot2::scale_color_brewer(palette = "Set1") +
         ggplot2::theme_bw() +
-        ggplot2::labs(color='Annual Statistics') +    
+        ggplot2::labs(color = 'Annual Statistics') +    
+        {if (include_title) ggplot2::labs(color = paste0(.y,'\n \nAnnual Statistics')) }+    
         ggplot2::theme(legend.position = "right", 
                        legend.spacing = ggplot2::unit(0, "cm"),
                        legend.justification = "top",
@@ -128,17 +131,19 @@ plot_annual_stats <- function(data = NULL,
                        panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                        panel.grid = ggplot2::element_line(size = .2),
                        axis.title = ggplot2::element_text(size = 12),
-                       axis.text = ggplot2::element_text(size = 10))))
+                       axis.text = ggplot2::element_text(size = 10))
+    ))
   
+
   
-  plotss <- plots$plot
-  if (nrow(plots) == 1) {
-    names(plotss) <- "Annual_Stats"
+  plots <- tidy_plots$plot
+  if (nrow(tidy_plots) == 1) {
+    names(plots) <- "Annual_Stats"
   } else {
-    names(plotss) <- paste0(plots$STATION_NUMBER, "_Annual_Stats")
+    names(plots) <- paste0(tidy_plots$STATION_NUMBER, "_Annual_Stats")
   }
   
-  plotss
-    
+  plots
+  
 }
 

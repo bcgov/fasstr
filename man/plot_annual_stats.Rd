@@ -9,7 +9,7 @@ plot_annual_stats(data = NULL, dates = Date, values = Value,
   roll_days = 1, roll_align = "right", water_year = FALSE,
   water_year_start = 10, start_year = 0, end_year = 9999,
   exclude_years = NULL, months = 1:12, ignore_missing = FALSE,
-  log_discharge = FALSE)
+  log_discharge = FALSE, include_title = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -56,6 +56,8 @@ all months (default \code{1:12}).}
 with no missing dates will be returned. Default \code{FALSE}.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
+
+\item{include_title}{Logical value to indicate adding the group/station number to the plot. Default \code{FALSE}.}
 }
 \value{
 A list of ggplot2 objects for with the following plots (percentile plots optional) for each station provided:
