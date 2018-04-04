@@ -57,7 +57,7 @@ with no missing dates will be returned. Default \code{FALSE}.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
 
-\item{include_title}{Logical value to indicate adding the group/station number to the plot. Default \code{FALSE}.}
+\item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 
 \item{include_year}{A numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
 }

@@ -103,6 +103,29 @@ plot_daily_stats <- function(data = NULL,
   }
   
   
+  
+  ## CALC STATS
+  ## ----------
+  
+  daily_stats <-calc_daily_stats(data = flow_data,
+                                 percentiles = c(5,25,75,95),
+                                 roll_days = roll_days,
+                                 roll_align = roll_align,
+                                 water_year = water_year,
+                                 water_year_start = water_year_start,
+                                 start_year = start_year,
+                                 end_year = end_year,
+                                 exclude_years = exclude_years, 
+                                 complete_years = complete_years,
+                                 months = months,
+                                 ignore_missing = ignore_missing)
+  
+  
+  daily_stats <- dplyr::mutate(daily_stats, Date = as.Date(DayofYear, origin = origin_date))
+  daily_stats <- dplyr::mutate(daily_stats, AnalysisDate = Date)
+  
+  
+  
   ## ADD YEAR IF SELECTED
   ## --------------------
   
@@ -126,59 +149,29 @@ plot_daily_stats <- function(data = NULL,
     year_data <- dplyr::filter(year_data, AnalysisDoY < 366)
     
     year_data <- dplyr::filter(year_data, Month %in% months)
-
+    
     year_data <- dplyr::filter(year_data, AnalysisYear == include_year)
     
     year_data <- dplyr::select(year_data, STATION_NUMBER, AnalysisDate, RollingValue)
     
-
-  }
-  
-  
-  ## CALC STATS
-  ## ----------
-  
-  daily_stats <-calc_daily_stats(data = flow_data,
-                                 percentiles = c(5,25,75,95),
-                                 roll_days = roll_days,
-                                 roll_align = roll_align,
-                                 water_year = water_year,
-                                 water_year_start = water_year_start,
-                                 start_year = start_year,
-                                 end_year = end_year,
-                                 exclude_years = exclude_years, 
-                                 complete_years = complete_years,
-                                 months = months,
-                                 ignore_missing = ignore_missing)
-  
-  
-  daily_stats <- dplyr::mutate(daily_stats, Date = as.Date(DayofYear, origin = origin_date))
-  daily_stats <- dplyr::mutate(daily_stats, AnalysisDate = Date)
-  
+    # Add the daily data from include_year to the daily stats
+    daily_stats <- dplyr::left_join(daily_stats, year_data, by = c("STATION_NUMBER", "AnalysisDate"))
+    
+    # Warning if all daily values are NA from the include_year
+    for (stn in unique(daily_stats$STATION_NUMBER)) {
+      year_test <- dplyr::filter(daily_stats, STATION_NUMBER == stn)
+      
+      if(all(is.na(daily_stats$RollingValue)))
+        warning("Daily data does not exist for the year listed in include_year and was not plotted.", call. = FALSE)
+    }
+    
+  } 
   
   ## PLOT STATS
   ## ----------
   
-  # Merge flow data with the daily data, if so
-  if (!is.null(include_year)){
-    
-    # Add the daily data from include_year to the daily stats
-    daily_stats2 <- dplyr::left_join(daily_stats, year_data, by =c("STATION_NUMBER","AnalysisDate"))
-    
-    # Warning if all daily values are NA from the include_year
-    for (stn in unique(daily_stats2$STATION_NUMBER)) {
-      year_test <- dplyr::filter(daily_stats2, STATION_NUMBER == stn)
-      
-      if(all(is.na(daily_stats2$RollingValue)))
-        warning("Daily data does not exist for the year listed in include_year and was not plotted.", call. = FALSE)
-    }
-    
-  } else {
-    daily_stats2 <- daily_stats
-  }
-  
   # Create the daily stats plots
-  daily_plots <- dplyr::group_by(daily_stats2, STATION_NUMBER)
+  daily_plots <- dplyr::group_by(daily_stats, STATION_NUMBER)
   daily_plots <- tidyr::nest(daily_plots)
   daily_plots <- dplyr::mutate(daily_plots,
                                plot = purrr::map2(data, STATION_NUMBER, 
