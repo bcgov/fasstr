@@ -2,7 +2,7 @@
 
 
 devtools::document()
-install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
+#install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
 install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 #devtools::check()
 
@@ -140,7 +140,7 @@ plot_annual_outside_normal(data = flow_data)
 plot_annual_stats(data = flow_data)
 #plot_annual_trends(data = flow_data)
 plot_daily_cumulative_stats(data = flow_data, use_yield = T, basin_area = 10)
-plot_daily_stats(data = flow_data, include_year = 1990)
+plot_daily_stats(data = flow_data, include_year = 1990, complete_years = T, include_title = T)
 plot_data_screening(data = flow_data)
 plot_flow_duration(data = flow_data)
 plot_longterm_stats(data = flow_data)
@@ -357,7 +357,7 @@ write_plots(foldername = "GUUUURL/",
                height = 4,
                width = 11,
                dpi = 100,
-               combined_pdf = F)
+               combined_pdf =)
 
 # save_plot_list <- function(plots = NULL,
 #                            foldername = "",
