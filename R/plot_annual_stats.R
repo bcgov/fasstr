@@ -19,7 +19,7 @@
 #'
 #' @inheritParams calc_annual_stats
 #' @param log_discharge Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.
-#' @param include_title Logical value to indicate adding the group/station number to the plot. Default \code{FALSE}.
+#' @param include_title Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.
 #'
 #' @return A list of ggplot2 objects for with the following plots (percentile plots optional) for each station provided:
 #'   \item{Mean}{annual mean of all daily flows}
@@ -107,32 +107,34 @@ plot_annual_stats <- function(data = NULL,
   tidy_plots <- tidyr::nest(tidy_plots)
   tidy_plots <- dplyr::mutate(tidy_plots,
     plot = purrr::map2(data, STATION_NUMBER, 
-      ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
-        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
-        ggplot2::geom_line(alpha = 0.5) +
-        ggplot2::geom_point() +
-        {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(.$Value, na.rm = T) * 1.05))}+
-        {if(log_discharge) ggplot2::expand_limits(y = c(min(.$Value, na.rm = T) * .95, max(.$Value, na.rm = T) * 1.05))} +
-        {if(log_discharge) ggplot2::scale_y_log10(expand = c(0,0))} +
-        {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0))} +
-        {if(log_discharge) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"), 
-                                                        mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))} +
-        ggplot2::expand_limits(y = 0) +
-        ggplot2::ylab("Discharge (cms)")+
-        ggplot2::xlab("Year") +
-        ggplot2::scale_color_brewer(palette = "Set1") +
-        ggplot2::theme_bw() +
-        ggplot2::labs(color = 'Annual Statistics') +    
-        {if (include_title) ggplot2::labs(color = paste0(.y,'\n \nAnnual Statistics')) }+    
-        ggplot2::theme(legend.position = "right", 
-                       legend.spacing = ggplot2::unit(0, "cm"),
-                       legend.justification = "top",
-                       legend.text = ggplot2::element_text(size = 9),
-                       panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                       panel.grid = ggplot2::element_line(size = .2),
-                       axis.title = ggplot2::element_text(size = 12),
-                       axis.text = ggplot2::element_text(size = 10))
-    ))
+     ~suppressMessages(
+       suppressWarnings(
+         ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
+           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
+           ggplot2::geom_line(alpha = 0.5) +
+           ggplot2::geom_point() +
+           {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(.$Value, na.rm = T) * 1.05))}+
+           {if(log_discharge) ggplot2::expand_limits(y = c(min(.$Value, na.rm = T) * .95, max(.$Value, na.rm = T) * 1.05))} +
+           {if(log_discharge) ggplot2::scale_y_log10(expand = c(0,0))} +
+           {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0))} +
+           {if(log_discharge) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"), 
+                                                           mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))} +
+           ggplot2::expand_limits(y = 0) +
+           ggplot2::ylab("Discharge (cms)")+
+           ggplot2::xlab("Year") +
+           ggplot2::scale_color_brewer(palette = "Set1") +
+           ggplot2::theme_bw() +
+           ggplot2::labs(color = 'Annual Statistics') +    
+           {if (include_title & .y != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nAnnual Statistics')) }+    
+           ggplot2::theme(legend.position = "right", 
+                          legend.spacing = ggplot2::unit(0, "cm"),
+                          legend.justification = "top",
+                          legend.text = ggplot2::element_text(size = 9),
+                          panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                          panel.grid = ggplot2::element_line(size = .2),
+                          axis.title = ggplot2::element_text(size = 12),
+                          axis.text = ggplot2::element_text(size = 10))
+    ))))
   
 
   # Create a list of named plots extracted from the tibble

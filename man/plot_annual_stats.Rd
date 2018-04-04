@@ -57,7 +57,7 @@ with no missing dates will be returned. Default \code{FALSE}.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
 
-\item{include_title}{Logical value to indicate adding the group/station number to the plot. Default \code{FALSE}.}
+\item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 }
 \value{
 A list of ggplot2 objects for with the following plots (percentile plots optional) for each station provided:

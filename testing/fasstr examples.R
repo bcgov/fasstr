@@ -126,7 +126,7 @@ results <- calc_annual_flow_timing(data = flow_data)
 results <- calc_annual_lowflows(data = flow_data)
 results <- calc_annual_outside_normal(data = flow_data)
 results <- calc_daily_stats(data = flow_data)
-results <- calc_daily_cumulative_stats(data = flow_data, use_yield = T)
+results <- calc_daily_cumulative_stats(data = flow_data)
 results <- calc_flow_percentile(data = flow_data, flow_value =  0.801)
 results <- calc_lt_mad(data = flow_data)
 results <- calc_lt_percentile(data = flow_data, percentiles =  50)
@@ -240,7 +240,7 @@ plot_annual_outside_normal(station_number = c("08HB048","08NM116"))
 plot <- plot_annual_stats(station_number = c("08HB048","08NM116"), include_title = T)
 #plot_annual_trends(data = c("08HB048","08NM116"))
 plot_daily_cumulative_stats(station_number = c("08HB048","08NM116"))
-plot_daily_stats(station_number = c("08HB048","08NM116"))
+plot_daily_stats(station_number = c("08HB048","08NM116"), complete_years = T, include_title = T)
 plot_data_screening(station_number = c("08HB048","08NM116"))
 plot_flow_duration(station_number = c("08HB048","08NM116"))
 plot_longterm_stats(station_number = c("08HB048","08NM116"))
@@ -288,6 +288,18 @@ data <- compute_frequency_stat(station_number = "08NM116", roll_day = 7, return_
 
 
 # PLOTS TESTING
+
+
+year_data <- fill_missing_dates(station_number = c("08HB048","08NM116"), water_year = water_year, water_year_start = water_year_start)
+
+daily_stats <- results
+water_year=F
+water_year_start=9
+use_yield=F
+origin_date <- as.Date("1899-12-31")
+
+
+
 
 annual_stats <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% 
   select(Date,Value) %>% 
