@@ -21,7 +21,7 @@
 #' @inheritParams calc_daily_cumulative_stats
 #' @inheritParams plot_daily_stats
 #'    
-#' @return A ggplot2 object of daily cumulative flows with the following plots
+#' @return A list of the ggplot2 objects of daily cumulative flows for each station provided that contain:
 #'   \item{Mean}{daily cumulative mean}
 #'   \item{Median}{daily cumulative median}
 #'   \item{Min-5 Percentile Range}{a ribbon showing the range of data between the daily cumulative minimum and 5th percentile}
@@ -73,7 +73,6 @@ plot_daily_cumulative_stats <- function(data = NULL,
   # Check if data is provided and import it
   flow_data <- flowdata_import(data = data, station_number = station_number)
   
-  # Check and rename columns
   # Check and rename columns
   flow_data <- format_all_cols(data = flow_data,
                                dates = as.character(substitute(dates)),
@@ -148,7 +147,6 @@ plot_daily_cumulative_stats <- function(data = NULL,
     year_data <- dplyr::filter(year_data, !(AnalysisYear %in% exclude_years))
     year_data <- dplyr::filter(year_data, AnalysisDoY < 366)
     
-    
     year_data <- dplyr::filter(year_data, AnalysisYear == include_year)
     
     year_data <- dplyr::select(year_data, STATION_NUMBER, AnalysisDate, Cumul_Flow)
@@ -184,8 +182,8 @@ plot_daily_cumulative_stats <- function(data = NULL,
              ggplot2::geom_ribbon(ggplot2::aes(ymin = P25, ymax = P75, fill = "25th-75th Percentile")) +
              ggplot2::geom_ribbon(ggplot2::aes(ymin = P75, ymax = P95, fill = "75th-95th Percentile")) +
              ggplot2::geom_ribbon(ggplot2::aes(ymin = P95, ymax = Maximum, fill = "95th Percentile-Max")) +
-             ggplot2::geom_line(ggplot2::aes(y = Median, colour = "Median"), size = .5) +
-             ggplot2::geom_line(ggplot2::aes(y = Mean, colour = "Mean"), size = .5) +
+             ggplot2::geom_line(ggplot2::aes(y = Median, colour = "Median"), size = .7) +
+             ggplot2::geom_line(ggplot2::aes(y = Mean, colour = "Mean"), size = .7) +
              ggplot2::scale_fill_manual(values = c("Min-5th Percentile" = "orange" , "5th-25th Percentile" = "yellow",
                                                    "25th-75th Percentile" = "skyblue1", "75th-95th Percentile" = "dodgerblue2",
                                                    "95th Percentile-Max" = "royalblue4")) +
@@ -218,7 +216,7 @@ plot_daily_cumulative_stats <- function(data = NULL,
                             legend.key.size = ggplot2::unit(0.4, "cm"),
                             legend.spacing = ggplot2::unit(0, "cm")) +
              ggplot2::guides(colour = ggplot2::guide_legend(order = 1), fill = ggplot2::guide_legend(order = 2)) +
-             {if (is.numeric(include_year)) ggplot2::geom_line(ggplot2::aes(y = Cumul_Flow, colour = "yr.colour"), size = 0.5) } +
+             {if (is.numeric(include_year)) ggplot2::geom_line(ggplot2::aes(y = Cumul_Flow, colour = "yr.colour"), size = 0.7) } +
              {if (is.numeric(include_year)) ggplot2::scale_color_manual(values = c("Mean" = "paleturquoise", "Median" = "dodgerblue4", "yr.colour" = "red"),
                                                                         labels = c("Mean", "Median", paste0(include_year, " Flows"))) }
          ))))

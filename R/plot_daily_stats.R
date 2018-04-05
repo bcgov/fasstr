@@ -21,8 +21,7 @@
 #' @inheritParams plot_annual_stats
 #' @param include_year A numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.
 #'
-#' @return A list of ggplot2 objects, the first the daily statistics plot containing the listed plots below, and the sebsequent plots for each
-#'    year of data provided containing the first plot plus the daily flow data for each year.
+#' @return A list of the ggplot2 objects of daily flow statistics for each station provided that contain:
 #'   \item{Mean}{daily mean}
 #'   \item{Median}{daily median}
 #'   \item{25-75 Percentiles Range}{a ribbon showing the range of data between the daily 25th and 75th percentiles}
