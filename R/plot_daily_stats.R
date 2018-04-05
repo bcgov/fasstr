@@ -21,7 +21,9 @@
 #' @inheritParams plot_annual_stats
 #' @param include_year A numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.
 #'
-#' @return A list of the ggplot2 objects of daily flow statistics for each station provided that contain:
+#' @return A list of ggplot2 objects with the following for each station provided:
+#'   \item{Daily_Stats}{a plot that contains daily flow statistics}
+#'   Default plots on each object:  
 #'   \item{Mean}{daily mean}
 #'   \item{Median}{daily median}
 #'   \item{25-75 Percentiles Range}{a ribbon showing the range of data between the daily 25th and 75th percentiles}
@@ -174,9 +176,7 @@ plot_daily_stats <- function(data = NULL,
   daily_plots <- tidyr::nest(daily_plots)
   daily_plots <- dplyr::mutate(daily_plots,
                                plot = purrr::map2(data, STATION_NUMBER, 
-      ~suppressMessages(
-        suppressWarnings(
-          ggplot2::ggplot(data = ., ggplot2::aes(x = AnalysisDate)) +
+      ~ggplot2::ggplot(data = ., ggplot2::aes(x = AnalysisDate)) +
             ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maximum")) +
             ggplot2::geom_ribbon(ggplot2::aes(ymin = P5, ymax = P95, fill = "5-95 Percentiles")) +
             ggplot2::geom_ribbon(ggplot2::aes(ymin = P25, ymax = P75, fill = "25-75 Percentiles")) +
@@ -214,7 +214,7 @@ plot_daily_stats <- function(data = NULL,
             {if (is.numeric(include_year)) ggplot2::geom_line(ggplot2::aes(y = RollingValue, colour = "yr.colour"), size = 0.5) } +
             {if (is.numeric(include_year)) ggplot2::scale_color_manual(values = c("Mean" = "paleturquoise", "Median" = "dodgerblue4", "yr.colour" = "red"),
                                                                        labels = c("Mean", "Median", paste0(include_year, " Flows"))) }
-        ))))
+        ))
   
   
   

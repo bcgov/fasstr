@@ -18,8 +18,11 @@
 #'    from all daily discharge values from all years, unless specified. Data calculated using calc_annual_outside_normal() function.
 #'
 #' @inheritParams calc_annual_outside_normal
+#' @inheritParams plot_annual_stats
 #' 
-#' @return A ggplot2 object with the following plots:
+#' @return A list of ggplot2 objects with the following for each station provided:
+#'   \item{Annual_Days_Outside_Normal}{a plot that contains the number of days outside normal}
+#'   Default plots on each object:  
 #'   \item{Days_Below_Normal}{number of days per year below the daily normal (default 25th percentile)}
 #'   \item{Days_Above_Normal}{number of days per year above the daily normal (default 75th percentile)}
 #'   \item{Days_Outside_Normal}{number of days per year below and above the daily normal (default 25/75th percentile)}
@@ -39,6 +42,7 @@
 plot_annual_outside_normal <- function(data = NULL,
                                        dates = Date,
                                        values = Value,
+                                       groups = STATION_NUMBER,
                                        station_number = NULL,
                                        normal_percentiles = c(25, 75),
                                        roll_days = 1,
@@ -48,14 +52,16 @@ plot_annual_outside_normal <- function(data = NULL,
                                        start_year = 0,
                                        end_year = 9999,
                                        exclude_years = NULL, 
-                                       months = 1:12){
+                                       months = 1:12,
+                                       include_title = FALSE){
   
   
   
   ## ARGUMENT CHECKS
   ## ---------------
   
-  one_station_number_stop(station_number)
+  include_title_checks(include_title)
+  
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
@@ -64,9 +70,11 @@ plot_annual_outside_normal <- function(data = NULL,
   flow_data <- flowdata_import(data = data, station_number = station_number)
   
   # Check and rename columns
-  flow_data <- format_plot_cols(data = flow_data, 
-                                dates = as.character(substitute(dates)),
-                                values = as.character(substitute(values)))
+  flow_data <- format_all_cols(data = flow_data,
+                               dates = as.character(substitute(dates)),
+                               values = as.character(substitute(values)),
+                               groups = as.character(substitute(groups)),
+                               rm_other_cols = TRUE)
   
   
   
@@ -84,13 +92,8 @@ plot_annual_outside_normal <- function(data = NULL,
                                                     exclude_years = exclude_years, 
                                                     months = months)
   
-  # Remove STATION_NUMBER columns if HYDAT was used and set up data
-  if("STATION_NUMBER" %in% colnames(normal_data)) {
-    normal_data <- dplyr::ungroup(normal_data)
-    normal_data <- dplyr::select(normal_data, -STATION_NUMBER)
-  }
-  
-  normal_data <- tidyr::gather(normal_data, Statistic, Value, -1)
+
+  normal_data <- tidyr::gather(normal_data, Statistic, Value, -STATION_NUMBER, -Year)
   normal_data <- dplyr::mutate(normal_data, Statistic = substr(Statistic, 6, nchar(Statistic)))
   normal_data <- dplyr::mutate(normal_data, Statistic = gsub("_", " ", Statistic))
   
@@ -99,22 +102,40 @@ plot_annual_outside_normal <- function(data = NULL,
   ## PLOT STATS
   ## ----------
   
-  suppressWarnings(
-    ggplot2::ggplot(data = normal_data, ggplot2::aes(x = Year, y = Value, colour = Statistic))+
-      ggplot2::geom_line(alpha = 0.5)+
-      ggplot2::geom_point()+
-      ggplot2::facet_wrap(~Statistic, scales="free_x", ncol = 1, strip.position = "right")+
-      ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6))+
-      ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
-      ggplot2::ylab("Number of Days")+
-      ggplot2::xlab("Year")+
-      ggplot2::guides(colour = FALSE)+
-      ggplot2::theme_bw() +
-      ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                     panel.grid = ggplot2::element_line(size = .2),
-                     axis.title = ggplot2::element_text(size = 12),
-                     axis.text = ggplot2::element_text(size = 10))
-  )
+  # Create plots for each STATION_NUMBER in a tibble 
+  normal_plots <- dplyr::group_by(normal_data, STATION_NUMBER)
+  normal_plots <- tidyr::nest(normal_plots)
+  normal_plots <- dplyr::mutate(normal_plots,
+                                plot = purrr::map2(data, STATION_NUMBER, 
+        ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
+          ggplot2::geom_line(alpha = 0.5) +
+          ggplot2::geom_point() +
+          ggplot2::facet_wrap(~Statistic, scales="free_x", ncol = 1, strip.position = "right") +
+          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
+          ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
+          ggplot2::ylab("Number of Days") +
+          ggplot2::xlab("Year") +
+          ggplot2::guides(colour = FALSE) +
+          ggplot2::theme_bw() +
+          {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
+          ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                         panel.grid = ggplot2::element_line(size = .2),
+                         axis.title = ggplot2::element_text(size = 12),
+                         axis.text = ggplot2::element_text(size = 10),
+                         plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
+                                ))
+  
+  # Create a list of named plots extracted from the tibble
+  plots <- normal_plots$plot
+  if (nrow(normal_plots) == 1) {
+    names(plots) <- "Annual_Days_Outside_Normal"
+  } else {
+    names(plots) <- paste0(normal_plots$STATION_NUMBER, "Annual_Days_Outside_Normal")
+  }
+  
+  plots
+  
+  
   
 }
 

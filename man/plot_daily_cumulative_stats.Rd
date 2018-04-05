@@ -58,7 +58,9 @@ Default \code{10}.}
 \item{include_year}{A numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
 }
 \value{
-A list of the ggplot2 objects of daily cumulative flows for each station provided that contain:
+A list of ggplot2 objects with the following for each station provided:
+  \item{Daily_Cumulative_Stats}{a plot that contains daily cumulative flow statistics}
+  Default plots on each object:   
   \item{Mean}{daily cumulative mean}
   \item{Median}{daily cumulative median}
   \item{Min-5 Percentile Range}{a ribbon showing the range of data between the daily cumulative minimum and 5th percentile}

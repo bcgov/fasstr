@@ -21,7 +21,7 @@
 #' @inheritParams calc_annual_cumulative_stats
 #' @inheritParams plot_annual_stats
 #'    
-#' @return A list of the following ggplot2 objects for each station provided:
+#' @return A list of ggplot2 objects with the following for each station provided:
 #'   \item{Annual_Total_Volume}{annual total volumetric discharge, in cubic metres}
 #'   \item{Two_Seasons_Total_Volume}{if include_seasons = TRUE, two seasons total volumetric discharges, in cubic metres}
 #'   \item{Four_Seasons_Total_Volume}{if include_seasons = TRUE, four seasons total volumetric discharges, in cubic metres}
@@ -136,7 +136,7 @@ plot_annual_cumulative_stats <- function(data = NULL,
         ggplot2::scale_color_brewer(palette = "Set1") +
         ggplot2::theme_bw() +
         ggplot2::guides(colour = FALSE)+
-        {if (include_title) ggplot2::ggtitle(paste(.y)) } +
+        {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
         ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                        panel.grid = ggplot2::element_line(size = .2),
                        axis.title = ggplot2::element_text(size = 12),
@@ -173,7 +173,7 @@ plot_annual_cumulative_stats <- function(data = NULL,
           ggplot2::scale_color_brewer(palette = "Set1") +
           ggplot2::theme_bw() +
           ggplot2::guides(colour = FALSE) +
-          {if (include_title) ggplot2::ggtitle(paste(.y)) } +
+          {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
           ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                          panel.grid = ggplot2::element_line(size = .2),
                          axis.title = ggplot2::element_text(size = 12),
@@ -198,7 +198,7 @@ plot_annual_cumulative_stats <- function(data = NULL,
           ggplot2::scale_color_brewer(palette = "Set1") +
           ggplot2::theme_bw() +
           ggplot2::guides(colour = FALSE)+
-          {if (include_title) ggplot2::ggtitle(paste(.y)) } +
+          {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
           ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                          panel.grid = ggplot2::element_line(size = .2),
                          axis.title = ggplot2::element_text(size = 12),

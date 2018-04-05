@@ -62,7 +62,9 @@ with no missing dates will be returned. Default \code{FALSE}.}
 \item{include_year}{A numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
 }
 \value{
-A list of the ggplot2 objects of daily flow statistics for each station provided that contain:
+A list of ggplot2 objects with the following for each station provided:
+  \item{Daily_Stats}{a plot that contains daily flow statistics}
+  Default plots on each object:  
   \item{Mean}{daily mean}
   \item{Median}{daily median}
   \item{25-75 Percentiles Range}{a ribbon showing the range of data between the daily 25th and 75th percentiles}

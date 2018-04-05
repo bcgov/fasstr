@@ -21,7 +21,9 @@
 #' @inheritParams calc_daily_cumulative_stats
 #' @inheritParams plot_daily_stats
 #'    
-#' @return A list of the ggplot2 objects of daily cumulative flows for each station provided that contain:
+#' @return A list of ggplot2 objects with the following for each station provided:
+#'   \item{Daily_Cumulative_Stats}{a plot that contains daily cumulative flow statistics}
+#'   Default plots on each object:   
 #'   \item{Mean}{daily cumulative mean}
 #'   \item{Median}{daily cumulative median}
 #'   \item{Min-5 Percentile Range}{a ribbon showing the range of data between the daily cumulative minimum and 5th percentile}

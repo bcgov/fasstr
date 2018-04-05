@@ -61,6 +61,8 @@ with no missing dates will be returned. Default \code{FALSE}.}
 }
 \value{
 A list of ggplot2 objects for with the following plots (percentile plots optional) for each station provided:
+  \item{Annual_Stats}{a plot that contains annual statistics}
+  Default plots on each object:  
   \item{Mean}{annual mean of all daily flows}
   \item{Median}{annual median of all daily flows}
   \item{Maximum}{annual maximum of all daily flows}

@@ -22,6 +22,8 @@
 #' @param include_title Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.
 #'
 #' @return A list of ggplot2 objects for with the following plots (percentile plots optional) for each station provided:
+#'   \item{Annual_Stats}{a plot that contains annual statistics}
+#'   Default plots on each object:  
 #'   \item{Mean}{annual mean of all daily flows}
 #'   \item{Median}{annual median of all daily flows}
 #'   \item{Maximum}{annual maximum of all daily flows}

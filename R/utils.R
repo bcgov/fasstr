@@ -143,26 +143,6 @@ format_groups_col <- function(data,
 }
 
 
-format_plot_cols <- function(data,
-                             dates = "Date",
-                             values = "Value",
-                             groups = "STATION_NUMBER",
-                             use_groups = FALSE){
-  
-  # Check and rename columns
-  data <- format_dates_col(data = data, dates = dates)
-  data <- format_values_col(data = data, values = values)
-  
-  if (use_groups) {
-    data <- format_groups_col(data = data, groups = groups)
-    data <- dplyr::select(data, STATION_NUMBER, Date, Value)
-  } else {
-    data <- dplyr::select(data, Date, Value)
-  }
-  
-}
-
-
 one_station_number_stop <- function(station_number) {
   if (length(station_number) > 1) stop("Multiple station_numbers were provided, only one can be listed for this function.", call. = FALSE)
 }

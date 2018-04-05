@@ -45,9 +45,9 @@ Default \code{10}.}
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 }
 \value{
-A list of ggplot2 objects with the following plots for each station provided:
-  \item{DoY_'n'pct_TotalQ}{day of year for each n-percent of total volumetric discharge}
-  Default plots:   
+A list of ggplot2 objects with the following for each station provided:
+  \item{Annual_Flow_Timing}{a plot that contains each n-percent of total volumetric discharge}
+  Default plots on each object:   
   \item{DoY_25pct_TotalQ}{day of year of 25-percent of total volumetric discharge}
   \item{DoY_33.3pct_TotalQ}{day of year of 33.3-percent of total volumetric discharge}
   \item{DoY_50pct_TotalQ}{day of year of 50-percent of total volumetric discharge}

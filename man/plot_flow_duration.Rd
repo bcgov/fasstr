@@ -5,12 +5,13 @@
 \title{Plot flow duration curves}
 \usage{
 plot_flow_duration(data = NULL, dates = Date, values = Value,
-  station_number = NULL, roll_days = 1, roll_align = "right",
-  water_year = FALSE, water_year_start = 10, start_year = 0,
-  end_year = 9999, exclude_years = NULL, complete_years = FALSE,
-  custom_months = NULL, custom_months_label = "Custom-Months",
-  ignore_missing = FALSE, months = 1:12, incl_longterm = TRUE,
-  log_discharge = TRUE)
+  groups = STATION_NUMBER, station_number = NULL, roll_days = 1,
+  roll_align = "right", water_year = FALSE, water_year_start = 10,
+  start_year = 0, end_year = 9999, exclude_years = NULL,
+  complete_years = FALSE, custom_months = NULL,
+  custom_months_label = "Custom-Months", ignore_missing = FALSE,
+  months = 1:12, incl_longterm = TRUE, log_discharge = TRUE,
+  include_title = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -21,6 +22,10 @@ Date' (default). Leave blank if using \code{station_number} argument.}
 
 \item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
+
+\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
+groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
+Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
 
 \item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
@@ -61,10 +66,12 @@ with no missing dates will be returned. Default \code{FALSE}.}
 \item{incl_longterm}{Logical value indicating whether to include longterm curve of all data. Default \code{TRUE}.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
+
+\item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 }
 \value{
-A ggplot2 object with plots for each month, long-term, and custom months showing the percentage of time that 
-   flows are likely equal or exceeded for each time period.
+A list of ggplot2 objects with the following for each station provided:
+  \item{Flow_Duration}{a plot that contains flow duration curves for each month, long-term, and (option) customized months}
 }
 \description{
 Plots flow duration curves, percent time a flow value is equalled or exceeded, for a streamflow dataset. Plots 

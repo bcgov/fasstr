@@ -22,6 +22,7 @@
 #' @param end_date  Date (YYYY-MM-DD) of last date to consider for plotting. Leave blank if all years are required.
 #' @param log_discharge Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.
 #' @param plot_by_year Logical value to indicate whether to plot each year of data individually. Default \code{FALSE}.
+#' @param one_plot Logical value to indicate whether to plot all groups/stations on one plot. Default \code{FALSE}.
 #' 
 #' @return A ggplot2 object of daily flows from flow_data or HYDAT flow data provided
 #'
@@ -52,7 +53,9 @@ plot_flow_data <- function(data = NULL,
                            start_date = "0000-01-01",
                            end_date = "3000-12-31",
                            log_discharge = FALSE,
-                           plot_by_year = FALSE){
+                           plot_by_year = FALSE,
+                           one_plot = FALSE,
+                           include_title = FALSE){
   
   
   ## ARGUMENT CHECKS
@@ -62,12 +65,14 @@ plot_flow_data <- function(data = NULL,
   water_year_checks(water_year, water_year_start)
   years_checks(start_year, end_year, exclude_years = NULL)
   log_discharge_checks(log_discharge)
+  include_title_checks(include_title)
   
   if (class(try(as.Date(start_date))) == "try-error") stop("start_date must be a date formatted YYYY-MM-DD.", call. = FALSE)
   if (class(try(as.Date(end_date))) == "try-error")   stop("end_date must be a date formatted YYYY-MM-DD.", call. = FALSE)
   if (start_date >= end_date)                         stop("start_date must be less than end_date.", call. = FALSE)
   
   if(!is.logical(plot_by_year))  stop("plot_by_year argument must be logical (TRUE/FALSE).")
+  if(!is.logical(one_plot))  stop("one_plot argument must be logical (TRUE/FALSE).")
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -118,8 +123,50 @@ plot_flow_data <- function(data = NULL,
                    " missing or excluded values between ", min(flow_data$Date), " and ", max(flow_data$Date),"."), 
             call. = FALSE)
   
-  suppressWarnings(
-    ggplot2::ggplot(data = flow_data, ggplot2::aes(x = Date, y = RollingValue, color = STATION_NUMBER)) +
+  
+  # Plot each individual station on their own
+  if (!one_plot) {
+    flow_plots <- dplyr::group_by(flow_data, STATION_NUMBER)
+    flow_plots <- tidyr::nest(flow_plots)
+    flow_plots <- dplyr::mutate(flow_plots,
+                                plot = purrr::map2(data, STATION_NUMBER, 
+          ~ggplot2::ggplot(data = ., ggplot2::aes(x = Date, y = RollingValue)) +
+            ggplot2::geom_line(colour = "dodgerblue4") +
+            ggplot2::ylab("Discharge (cms)") +
+            {if(plot_by_year) ggplot2::facet_wrap(~AnalysisYear, scales = "free_x")} +
+            {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 8),expand = c(0, 0))} +
+            {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0))} +
+            {if(plot_by_year) ggplot2::scale_x_date(date_labels = "%b", expand = c(0,0))} +
+            {if(!plot_by_year) ggplot2::scale_x_date(breaks = scales::pretty_breaks(n = 12))} +
+            {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(.$RollingValue) * 1.05))} +
+            {if(log_discharge) ggplot2::expand_limits(y = c(min(.$RollingValue) * .95, max(.$RollingValue) * 1.05))} +
+            {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(.y) } +    
+            ggplot2::theme_bw() +
+            ggplot2::labs(color = 'Station') +    
+            ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                           legend.position = "right", 
+                           legend.spacing = ggplot2::unit(0, "cm"),
+                           legend.justification = "top",
+                           legend.text = ggplot2::element_text(size = 9),
+                           panel.grid = ggplot2::element_line(size = .2),
+                           axis.title = ggplot2::element_text(size = 12),
+                           axis.text = ggplot2::element_text(size = 10),
+                           plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
+                                ))
+    
+    # Create a list of named plots extracted from the tibble
+    plots <- flow_plots$plot
+    if (nrow(flow_plots) == 1) {
+      names(plots) <- "Daily_Flows"
+    } else {
+      names(plots) <- paste0(flow_plots$STATION_NUMBER, "_Daily_Flows")
+    }
+    
+    
+    
+  # Plot all stations together
+  } else {
+    plot <- ggplot2::ggplot(data = flow_data, ggplot2::aes(x = Date, y = RollingValue, colour = STATION_NUMBER)) +
       ggplot2::geom_line() +
       ggplot2::ylab("Discharge (cms)") +
       {if(plot_by_year) ggplot2::facet_wrap(~AnalysisYear, scales = "free_x")} +
@@ -129,7 +176,6 @@ plot_flow_data <- function(data = NULL,
       {if(!plot_by_year) ggplot2::scale_x_date(breaks = scales::pretty_breaks(n = 12))} +
       {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(flow_data$RollingValue) * 1.05))} +
       {if(log_discharge) ggplot2::expand_limits(y = c(min(flow_data$RollingValue) * .95, max(flow_data$RollingValue) * 1.05))} +
-      {if(length(unique(flow_data$STATION_NUMBER)) <= 1) ggplot2::guides(colour = FALSE)} +
       ggplot2::theme_bw() +
       ggplot2::labs(color = 'Station') +    
       ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
@@ -140,8 +186,11 @@ plot_flow_data <- function(data = NULL,
                      panel.grid = ggplot2::element_line(size = .2),
                      axis.title = ggplot2::element_text(size = 12),
                      axis.text = ggplot2::element_text(size = 10))
-  )
+    plots <- list("Daily_Flows" = plot)
+    
+  }  
   
   
+  plots
   
 } 

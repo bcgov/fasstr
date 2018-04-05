@@ -19,15 +19,12 @@
 #' @inheritParams calc_monthly_stats
 #' @inheritParams plot_annual_stats
 #' 
-#' @return A list of ggplot2 objects for each monthly statistic:
+#' @return A list of ggplot2 objects for each monthly statistic for each station provided that contain:
 #'   \item{Monthly Mean Flows}{mean of all daily flows for a given month and year}
 #'   \item{Monthly Median Flows}{median of all daily flows for a given month and year}
 #'   \item{Monthly Maximum Flows}{maximum of all daily flows for a given month and year}
 #'   \item{Monthly Minimum Flows}{minimum of all daily flows for a given month and year}
-#'   \item{Monthly P'n' Flows}{each n-th percentile selected for a given month and year}
-#'   Default percentile plots:
-#'   \item{Monthly P10 Flows}{10th percentile of all daily flows for a given month and year}
-#'   \item{Monthl P20 Flows}{20th percentile of all daily flows for a given month and year}
+#'   \item{Monthly P'n' Flows}{(optional) each n-th percentile selected for a given month and year}
 #'   
 #' @examples
 #' \dontrun{
@@ -48,6 +45,7 @@
 plot_monthly_stats <- function(data = NULL,
                                dates = Date,
                                values = Value,
+                               groups = STATION_NUMBER,
                                station_number = NULL,
                                percentiles = NA,
                                roll_days = 1,
@@ -59,7 +57,8 @@ plot_monthly_stats <- function(data = NULL,
                                exclude_years = NULL,
                                months = 1:12,
                                ignore_missing = FALSE,
-                               log_discharge = FALSE){
+                               log_discharge = FALSE,
+                               include_title = FALSE){
   
   
   ## ARGUMENT CHECKS 
@@ -67,8 +66,7 @@ plot_monthly_stats <- function(data = NULL,
   ## ---------------
   
   log_discharge_checks(log_discharge) 
-  one_station_number_stop(station_number)
-  
+  include_title_checks(include_title)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -78,9 +76,11 @@ plot_monthly_stats <- function(data = NULL,
   flow_data <- flowdata_import(data = data, station_number = station_number)
   
   # Check and rename columns
-  flow_data <- format_plot_cols(data = flow_data, 
-                                dates = as.character(substitute(dates)),
-                                values = as.character(substitute(values)))
+  flow_data <- format_all_cols(data = flow_data,
+                               dates = as.character(substitute(dates)),
+                               values = as.character(substitute(values)),
+                               groups = as.character(substitute(groups)),
+                               rm_other_cols = TRUE)
   
   
   
@@ -99,56 +99,59 @@ plot_monthly_stats <- function(data = NULL,
                                      months = months,
                                      ignore_missing = ignore_missing)
   
-  # Remove STATION_NUMBER columns if HYDAT was used and set up data
-  if("STATION_NUMBER" %in% colnames(monthly_data)) {
-    monthly_data <- dplyr::ungroup(monthly_data)
-    monthly_data <- dplyr::select(monthly_data, -STATION_NUMBER)
-  }
-  
-  monthly_data <- tidyr::gather(monthly_data, Statistic, Value, -(1:2))
-  
-  
+
+  monthly_data <- tidyr::gather(monthly_data, Statistic, Value, -(1:3))
+  monthly_data <- dplyr::mutate(monthly_data, Stat2 = Statistic)
+    
+  # monthly_data
   ## PLOT STATS
   ## ----------
-  
-  # Create list to add each plot to
-  monthly_stats_plots <- list()
-  
-  # Cycle through each stat and add to list
-  for (stat in unique(monthly_data$Statistic)) {
-    monthly_data_plot <- dplyr::filter(monthly_data, Statistic == stat)
-    monthly_plot <- ggplot2::ggplot(data = monthly_data_plot, ggplot2::aes(x = Year, y = Value)) +
-      ggplot2::geom_line(ggplot2::aes(colour = Month), alpha = 0.5) +
-      ggplot2::geom_point(ggplot2::aes(colour = Month)) +
-      ggplot2::facet_wrap(~Month, scales = "free_x") +
-      ggplot2::ggtitle(paste0("Monthly ", stat, " Flows")) +
-      ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
-      {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))} +
-      {if(log_discharge) ggplot2::scale_y_log10()} +
-      {if(log_discharge) ggplot2::annotation_logticks(base = 10, "left", colour = "grey25", size = 0.3,
-                                                      short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"), 
-                                                      long = ggplot2::unit(.2, "cm"))} +
-      ggplot2::ylab("Discharge (cms)") +
-      ggplot2::guides(colour = FALSE) +
-      ggplot2::theme_bw() +
-      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
-                     panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                     panel.grid = ggplot2::element_line(size = .2),
-                     axis.title = ggplot2::element_text(size = 12),
-                     axis.text = ggplot2::element_text(size = 10)) +
-      ggplot2::scale_colour_manual(values = c("Jan" = "dodgerblue3", "Feb" = "skyblue1", "Mar" = "turquoise",
-                                              "Apr" = "forestgreen", "May" = "limegreen", "Jun" = "gold",
-                                              "Jul" = "orange", "Aug" = "red", "Sep" = "darkred",
-                                              "Oct" = "orchid", "Nov" = "purple3", "Dec" = "midnightblue"))
-    
-    monthly_stats_plots[[paste0("Monthly_",stat)]] <- monthly_plot
 
+  # Create the daily stats plots
+  monthly_plots <- dplyr::group_by(monthly_data, STATION_NUMBER, Statistic)
+  monthly_plots <- tidyr::nest(monthly_plots)
+  monthly_plots <- dplyr::mutate(monthly_plots,
+                              plot = purrr::map2(data, STATION_NUMBER,
+          ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, colour = Month)) +
+            ggplot2::geom_line(alpha = 0.5) +
+            ggplot2::geom_point() +
+            ggplot2::facet_wrap(~Month, scales = "fixed") +
+            #ggplot2::ggtitle(paste0("Monthly ", stat, " Flows")) +
+            ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
+            {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))} +
+            {if(log_discharge) ggplot2::scale_y_log10()} +
+            {if(log_discharge) ggplot2::annotation_logticks(base = 10, "left", colour = "grey25", size = 0.3,
+                                                            short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
+                                                            long = ggplot2::unit(.2, "cm"))} +
+            ggplot2::ylab("Discharge (cms)") +
+            ggplot2::guides(colour = FALSE) +
+            ggplot2::theme_bw() +
+            {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y, unique(.$Stat2))) } +
+            {if (include_title & .y == "XXXXXXX") ggplot2::ggtitle(paste(unique(.$Stat2))) } +
+            ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                           panel.grid = ggplot2::element_line(size = .2),
+                           axis.title = ggplot2::element_text(size = 12),
+                           axis.text = ggplot2::element_text(size = 10),
+                           plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25")) +
+            ggplot2::scale_colour_manual(values = c("Jan" = "dodgerblue3", "Feb" = "skyblue1", "Mar" = "turquoise",
+                                                    "Apr" = "forestgreen", "May" = "limegreen", "Jun" = "gold",
+                                                    "Jul" = "orange", "Aug" = "red", "Sep" = "darkred",
+                                                    "Oct" = "orchid", "Nov" = "purple3", "Dec" = "midnightblue"))
+                              ))
+
+  #monthly_plots <- dplyr::mutate(monthly_plots, plot = purrr::map2(plot, Statistic,
+  #                                                                 ~. + ggplot2::ggtitle("WHHHAT")))
+
+  # Create a list of named plots extracted from the tibble
+  plots <- monthly_plots$plot
+  if (length(unique(monthly_plots$STATION_NUMBER)) == 1) {
+    names(plots) <- paste0(monthly_plots$Statistic, "_Monthly_Stats")
+  } else {
+    names(plots) <- paste0(monthly_plots$STATION_NUMBER, "_", monthly_plots$Statistic, "_Monthly_Stats")
   }
-  
-  
-  suppressWarnings(
-    monthly_stats_plots
-  )
+
+  plots
+
   
 }
 

@@ -20,9 +20,9 @@
 #' @inheritParams calc_annual_flow_timing
 #' @inheritParams plot_annual_stats
 #'
-#' @return A list of ggplot2 objects with the following plots for each station provided:
-#'   \item{DoY_'n'pct_TotalQ}{day of year for each n-percent of total volumetric discharge}
-#'   Default plots:   
+#' @return A list of ggplot2 objects with the following for each station provided:
+#'   \item{Annual_Flow_Timing}{a plot that contains each n-percent of total volumetric discharge}
+#'   Default plots on each object:   
 #'   \item{DoY_25pct_TotalQ}{day of year of 25-percent of total volumetric discharge}
 #'   \item{DoY_33.3pct_TotalQ}{day of year of 33.3-percent of total volumetric discharge}
 #'   \item{DoY_50pct_TotalQ}{day of year of 50-percent of total volumetric discharge}
@@ -113,7 +113,7 @@ plot_annual_flow_timing <- function(data = NULL,
         ggplot2::scale_color_brewer(palette = "Set1") +
         ggplot2::theme_bw() +
         ggplot2::guides(colour = FALSE) +
-        {if (include_title) ggplot2::ggtitle(paste(.y)) } +
+        {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
         ggplot2::theme(legend.position = "right", 
                        legend.spacing = ggplot2::unit(0, "cm"),
                        legend.justification = "top",

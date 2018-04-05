@@ -5,9 +5,11 @@
 \title{Plot annual days above and below normal}
 \usage{
 plot_annual_outside_normal(data = NULL, dates = Date, values = Value,
-  station_number = NULL, normal_percentiles = c(25, 75), roll_days = 1,
-  roll_align = "right", water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, exclude_years = NULL, months = 1:12)
+  groups = STATION_NUMBER, station_number = NULL,
+  normal_percentiles = c(25, 75), roll_days = 1, roll_align = "right",
+  water_year = FALSE, water_year_start = 10, start_year = 0,
+  end_year = 9999, exclude_years = NULL, months = 1:12,
+  include_title = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -18,6 +20,10 @@ Date' (default). Leave blank if using \code{station_number} argument.}
 
 \item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
+
+\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
+groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
+Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
 
 \item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
@@ -45,9 +51,13 @@ Default \code{10}.}
 
 \item{months}{Numeric vector of months to include in analysis (e.g.. \code{6:8} for Jun-Aug). Leave blank to summarize 
 all months (default \code{1:12}).}
+
+\item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 }
 \value{
-A ggplot2 object with the following plots:
+A list of ggplot2 objects with the following for each station provided:
+  \item{Annual_Days_Outside_Normal}{a plot that contains the number of days outside normal}
+  Default plots on each object:  
   \item{Days_Below_Normal}{number of days per year below the daily normal (default 25th percentile)}
   \item{Days_Above_Normal}{number of days per year above the daily normal (default 75th percentile)}
   \item{Days_Outside_Normal}{number of days per year below and above the daily normal (default 25/75th percentile)}

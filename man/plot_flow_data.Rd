@@ -9,7 +9,8 @@ plot_flow_data(data = NULL, dates = Date, values = Value,
   roll_align = "right", water_year = FALSE, water_year_start = 10,
   start_year = 0, end_year = 9999, exclude_years = NULL,
   start_date = "0000-01-01", end_date = "3000-12-31",
-  log_discharge = FALSE, plot_by_year = FALSE)
+  log_discharge = FALSE, plot_by_year = FALSE, one_plot = FALSE,
+  include_title = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -53,6 +54,10 @@ Default \code{10}.}
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.}
 
 \item{plot_by_year}{Logical value to indicate whether to plot each year of data individually. Default \code{FALSE}.}
+
+\item{one_plot}{Logical value to indicate whether to plot all groups/stations on one plot. Default \code{FALSE}.}
+
+\item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 }
 \value{
 A ggplot2 object of daily flows from flow_data or HYDAT flow data provided

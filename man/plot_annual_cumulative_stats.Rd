@@ -58,7 +58,7 @@ Default \code{10}.}
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 }
 \value{
-A list of the following ggplot2 objects for each station provided:
+A list of ggplot2 objects with the following for each station provided:
   \item{Annual_Total_Volume}{annual total volumetric discharge, in cubic metres}
   \item{Two_Seasons_Total_Volume}{if include_seasons = TRUE, two seasons total volumetric discharges, in cubic metres}
   \item{Four_Seasons_Total_Volume}{if include_seasons = TRUE, four seasons total volumetric discharges, in cubic metres}
