@@ -157,15 +157,17 @@ plot_flow_data <- function(data = NULL,
     # Create a list of named plots extracted from the tibble
     plots <- flow_plots$plot
     if (nrow(flow_plots) == 1) {
-      names(plots) <- "Daily_Flows"
+      names(plots) <- ifelse(plot_by_year, "Annual_Daily_Flows","Daily_Flows")
     } else {
-      names(plots) <- paste0(flow_plots$STATION_NUMBER, "_Daily_Flows")
+      names(plots) <- paste0(flow_plots$STATION_NUMBER, ifelse(plot_by_year, "_Annual_Daily_Flows","_Daily_Flows"))
     }
     
     
     
   # Plot all stations together
   } else {
+    plots <- list()
+    
     plot <- ggplot2::ggplot(data = flow_data, ggplot2::aes(x = Date, y = RollingValue, colour = STATION_NUMBER)) +
       ggplot2::geom_line() +
       ggplot2::ylab("Discharge (cms)") +
@@ -186,7 +188,7 @@ plot_flow_data <- function(data = NULL,
                      panel.grid = ggplot2::element_line(size = .2),
                      axis.title = ggplot2::element_text(size = 12),
                      axis.text = ggplot2::element_text(size = 10))
-    plots <- list("Daily_Flows" = plot)
+    plots[[ paste(ifelse(plot_by_year, "Annual_Daily_Flows","Daily_Flows")) ]] <- plot
     
   }  
   
