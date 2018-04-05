@@ -205,9 +205,9 @@ plot_monthly_cumulative_stats <- function(data = NULL,
   # Create a list of named plots extracted from the tibble
   plots <- monthly_plots$plot
   if (nrow(monthly_plots) == 1) {
-    names(plots) <- "Monthly_Cumulative_Stats"
+    names(plots) <- paste0(ifelse(use_yield, "Monthly_Cumulative_Yield_Stats", "Monthly_Cumulative_Volumetric_Stats"))
   } else {
-    names(plots) <- paste0(monthly_plots$STATION_NUMBER, "_Monthly_Cumulative_Stats")
+    names(plots) <- paste0(monthly_plots$STATION_NUMBER, ifelse(use_yield, "Monthly_Cumulative_Yield_Stats", "Monthly_Cumulative_Volumetric_Stats"))
   }
   
   plots

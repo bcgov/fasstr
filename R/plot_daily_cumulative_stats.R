@@ -228,9 +228,9 @@ plot_daily_cumulative_stats <- function(data = NULL,
   # Create a list of named plots extracted from the tibble
   plots <- daily_plots$plot
   if (nrow(daily_plots) == 1) {
-    names(plots) <- "Daily_Cumulative_Stats"
+    names(plots) <- paste0(ifelse(use_yield, "Daily_Cumulative_Yield_Stats", "Daily_Cumulative_Volumetric_Stats"))
   } else {
-    names(plots) <- paste0(daily_plots$STATION_NUMBER, "_Daily_Cumulative_Stats")
+    names(plots) <- paste0(daily_plots$STATION_NUMBER, ifelse(use_yield, "_Daily_Cumulative_Yield_Stats", "_Daily_Cumulative_Volumetric_Stats"))
   }
 
   plots
