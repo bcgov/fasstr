@@ -107,9 +107,7 @@ plot_annual_stats <- function(data = NULL,
   tidy_plots <- tidyr::nest(tidy_plots)
   tidy_plots <- dplyr::mutate(tidy_plots,
     plot = purrr::map2(data, STATION_NUMBER, 
-     ~suppressMessages(
-       suppressWarnings(
-         ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
+     ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
            ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
            ggplot2::geom_line(alpha = 0.5) +
            ggplot2::geom_point() +
@@ -134,7 +132,7 @@ plot_annual_stats <- function(data = NULL,
                           panel.grid = ggplot2::element_line(size = .2),
                           axis.title = ggplot2::element_text(size = 12),
                           axis.text = ggplot2::element_text(size = 10))
-    ))))
+    ))
   
 
   # Create a list of named plots extracted from the tibble

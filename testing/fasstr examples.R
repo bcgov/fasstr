@@ -2,7 +2,7 @@
 
 
 devtools::document()
-#install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
+install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
 install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 #devtools::check()
 
@@ -186,7 +186,7 @@ trending <- compute_annual_trends(station_number = "08HB048", zyp_method = "yuep
 trending_plots <- plot_annual_trends(trending)
 
 plot_flow_data(station_number = "08HB048", exclude_years = 2000)
-plot_annual_cumulative_stats(station_number = "08HB048", incl_seasons = T)
+plot_annual_cumulative_stats(station_number = "08HB048", incl_seasons = T)$plot
 plot_annual_flow_timing(station_number = "08HB048")
 plot_annual_outside_normal(station_number = "08HB048")
 plot <- plot_annual_stats(station_number = "08HB048")
@@ -198,7 +198,7 @@ plot_data_screening(station_number = "08HB048")
 plot_flow_duration(station_number = "08HB048", custom_months = 1:3, custom_months_label = "WINTER", ignore_missing = T)
 plot_longterm_stats(station_number = "08HB048")
 plot_missing_dates(station_number = "08HB048")
-plot_monthly_cumulative_stats(station_number = "08HB048")
+test <- plot_monthly_cumulative_stats(station_number = "08HB048")
 plot_monthly_stats(station_number = "08HB048")
 plot_annual_cumulative_stats(station_number = "08HB048", use_yield = T)
 write_flow_data(station_number = c("08HB048","08NM116"))
@@ -245,7 +245,7 @@ plot_data_screening(station_number = c("08HB048","08NM116"))
 plot_flow_duration(station_number = c("08HB048","08NM116"))
 plot_longterm_stats(station_number = c("08HB048","08NM116"))
 plot_missing_dates(station_number = c("08HB048","08NM116"))
-plot_monthly_cumulative_stats(station_number = c("08HB048","08NM116"))
+test <- plot_monthly_cumulative_stats(station_number = c("08HB048","08NM116"))
 plot_monthly_stats(station_number = c("08HB048","08NM116"))
 plot_annual_cumulative_stats(station_number = c("08HB048","08NM116"))
 
