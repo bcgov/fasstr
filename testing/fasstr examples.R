@@ -365,12 +365,12 @@ length(plot2)
 # Save list of gg plots
 
 write_plots(foldername = "GUUUURL/", 
-               plots = plot, 
+               plots = plots, 
                type = "pdf",
                height = 4,
                width = 11,
                dpi = 100,
-               combined_pdf =)
+               combined_pdf =F)
 
 # save_plot_list <- function(plots = NULL,
 #                            foldername = "",
