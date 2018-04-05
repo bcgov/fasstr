@@ -8,7 +8,7 @@ plot_annual_cumulative_stats(data = NULL, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number = NULL, use_yield = FALSE,
   basin_area = NA, water_year = FALSE, water_year_start = 10,
   start_year = 0, end_year = 9999, exclude_years = NULL,
-  incl_seasons = FALSE, log_discharge = FALSE)
+  incl_seasons = FALSE, log_discharge = FALSE, include_title = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -54,16 +54,18 @@ Default \code{10}.}
 \item{incl_seasons}{Logical value indication whether to include seasonal yields and total discharges. Default \code{TRUE}.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
+
+\item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 }
 \value{
-A list of the following ggplot2 objects:
-  \item{TotalQ_Annual}{ggplot2 object of annual total volumetric discharge, in cubic metres}
-  \item{TotalQ_Two_Seasons}{ggplot2 object of Oct-Mar and Apr-Sep total volumetric discharges, in cubic metres}
-  \item{TotalQ_Four_Seasons}{ggplot2 object of Jan-Mar, Apr-Jun, Jul-Sep, Oct-Dec total volumetric discharges, in cubic metres}
+A list of the following ggplot2 objects for each station provided:
+  \item{Annual_Total_Volume}{annual total volumetric discharge, in cubic metres}
+  \item{Two_Seasons_Total_Volume}{if include_seasons = TRUE, two seasons total volumetric discharges, in cubic metres}
+  \item{Four_Seasons_Total_Volume}{if include_seasons = TRUE, four seasons total volumetric discharges, in cubic metres}
   If \code{use_yield} argument is used the list will contain the following objects:
-  \item{Yield_Annual}{ggplot2 object of annual runoff yield, in millimetres}
-  \item{Yield_Two_Seasons}{ggplot2 object of Oct-Mar and Apr-Sep runoff yields, in millimetres}
-  \item{Yield_Four_Seasons}{ggplot2 object of Jan-Mar, Apr-Jun, Jul-Sep, Oct-Dec runoff yields, in millimetres}
+  \item{Annual_Yield}{annual runoff yield, in millimetres}
+  \item{Two_Seasons_Yield}{if include_seasons = TRUE, two seasons runoff yields, in millimetres}
+  \item{Four_Seasons_Yield}{if include_seasons = TRUE, four seasons runoff yields, in millimetres}
 }
 \description{
 Plots annual and seasonal total flows, volumetric or runoff yield flows, from a streamflow dataset. Calculates 

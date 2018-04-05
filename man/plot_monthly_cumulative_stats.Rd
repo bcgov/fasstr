@@ -8,7 +8,7 @@ plot_monthly_cumulative_stats(data = NULL, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number = NULL, use_yield = FALSE,
   basin_area = NA, water_year = FALSE, water_year_start = 10,
   start_year = 0, end_year = 9999, exclude_years = NULL,
-  log_discharge = FALSE, include_year = NULL)
+  log_discharge = FALSE, include_title = FALSE, include_year = NULL)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -53,10 +53,12 @@ Default \code{10}.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
 
+\item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
+
 \item{include_year}{A numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
 }
 \value{
-A ggplot2 object of monthly cumulative flows with the following plots
+A list of the ggplot2 objects of monthly cumulative flows for each station provided that contain:
   \item{Mean}{monthly cumulative mean}
   \item{Median}{monthly cumulative median}
   \item{Min-5 Percentile Range}{a ribbon showing the range of data between the monthly cumulative minimum and 5th percentile}

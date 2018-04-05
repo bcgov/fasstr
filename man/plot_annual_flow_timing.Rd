@@ -5,9 +5,10 @@
 \title{Plot annual flow timing}
 \usage{
 plot_annual_flow_timing(data = NULL, dates = Date, values = Value,
-  station_number = NULL, percent_total = c(25, 33.3, 50, 75),
-  water_year = FALSE, water_year_start = 10, start_year = 0,
-  end_year = 9999, exclude_years = NULL)
+  groups = STATION_NUMBER, station_number = NULL, percent_total = c(25,
+  33.3, 50, 75), water_year = FALSE, water_year_start = 10,
+  start_year = 0, end_year = 9999, exclude_years = NULL,
+  include_title = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -18,6 +19,10 @@ Date' (default). Leave blank if using \code{station_number} argument.}
 
 \item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
+
+\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
+groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
+Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
 
 \item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
@@ -36,9 +41,11 @@ Default \code{10}.}
 \item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
 
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
+
+\item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 }
 \value{
-A ggplot2 object with the following plots:
+A list of ggplot2 objects with the following plots for each station provided:
   \item{DoY_'n'pct_TotalQ}{day of year for each n-percent of total volumetric discharge}
   Default plots:   
   \item{DoY_25pct_TotalQ}{day of year of 25-percent of total volumetric discharge}
