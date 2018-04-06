@@ -144,6 +144,7 @@ plot_missing_dates <- function(data = NULL,
         ggplot2::ylab("Missing Days") +
         ggplot2::xlab("Year") +
         ggplot2::theme_bw() +
+        ggplot2::scale_y_continuous(limits = c(0, 32)) +
         {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
         ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                        panel.grid = ggplot2::element_line(size = .2),
