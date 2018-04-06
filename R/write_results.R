@@ -64,9 +64,11 @@ write_results <- function(data = NULL,
   
   if(filetype == "csv") {
     utils::write.csv(data, file = file, row.names = FALSE, na = "")
-    print(paste0(file))
+    message(paste0("Successfully created ", file, "."))
   } else {
-    writexl::write_xlsx(data, path = file)
+    invisible(writexl::write_xlsx(data, path = file))
+    message(paste0("Successfully created ", file, "."))
+    
   }
 
   

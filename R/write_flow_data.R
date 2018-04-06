@@ -21,7 +21,8 @@
 #' @param end_year Numeric value of the last year of data to write. Leave blank to use the last year of the source data.
 #' @param start_date Date (YYYY-MM-DD) of first date of data to write. Leave blank if all dates required.
 #' @param end_date  Date (YYYY-MM-DD) of last date of data to write. Leave blank if all dates required.
-#' @param file Character string naming the output file. Default file name (with .xlsx) provided and is printed in console when writing.
+#' @param file Character string naming the output file. If none provided, a default file name (with .xlsx) is provided (see 
+#'    "Successfully created" message when using function for file name).
 #' @param fill_missing Logical value indicating whether to fill dates with missing flow data with NA. Default \code{FALSE}.
 #' @param digits Integer indicating the number of decimal places or significant digits used to round flow values. Use follows 
 #'    that of base::round() digits argument.
@@ -166,9 +167,10 @@ write_flow_data <- function(data = NULL,
   # Write the data
   if(filetype == "csv") {
     utils::write.csv(flow_data, file = file, row.names = FALSE, na = "")
-    print(paste0(file))
+    message(paste0("Successfully created ", file, "."))
   } else {
-    writexl::write_xlsx(flow_data, path = file)
+    invisible(writexl::write_xlsx(flow_data, path = file))
+    message(paste0("Successfully created ", file, "."))
   }
   
 }

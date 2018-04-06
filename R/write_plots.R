@@ -102,7 +102,7 @@ write_plots <- function(plots = NULL,
     }
     invisible(grDevices::dev.off())
     
-    print(paste0("Successfully created PDF file ", foldername, ".pdf with all plots."))
+    message(paste0("Successfully created PDF file ", foldername, ".pdf with all plots."))
     
     
   } else {
@@ -127,7 +127,7 @@ write_plots <- function(plots = NULL,
                                        dpi = dpi))
     }
     
-    print(paste0("Successfully created folder ", foldername, " with all plots."))
+    message(paste0("Successfully created folder ", foldername, " with all plots."))
     
     
   }

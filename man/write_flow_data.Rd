@@ -42,7 +42,8 @@ Default \code{10}.}
 
 \item{end_date}{Date (YYYY-MM-DD) of last date of data to write. Leave blank if all dates required.}
 
-\item{file}{Character string naming the output file. Default file name (with .xlsx) provided and is printed in console when writing.}
+\item{file}{Character string naming the output file. If none provided, a default file name (with .xlsx) is provided (see 
+"Successfully created" message when using function for file name).}
 
 \item{fill_missing}{Logical value indicating whether to fill dates with missing flow data with NA. Default \code{FALSE}.}
 
