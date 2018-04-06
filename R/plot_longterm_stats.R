@@ -105,6 +105,11 @@ plot_longterm_stats <- function(data = NULL,
   longterm_stats_longterm <- dplyr::select(longterm_stats_longterm, STATION_NUMBER, "LT_Mean" = Mean, "LT_Med" = Median)
   longterm_stats <- dplyr::left_join(longterm_stats_months, longterm_stats_longterm, by = "STATION_NUMBER")
   
+  # Create axis label based on input columns
+  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (m3)",
+                         ifelse(as.character(substitute(values)) == "Yield_mm", "Runoff Yield (mm)", 
+                                "Discharge (cms)"))
+  # Plot
   lt_plots <- dplyr::group_by(longterm_stats, STATION_NUMBER)
   lt_plots <- tidyr::nest(lt_plots)
   lt_plots <- dplyr::mutate(lt_plots,
@@ -128,7 +133,7 @@ plot_longterm_stats <- function(data = NULL,
              {if(log_discharge) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(0.07, "cm"),
                                                              mid = ggplot2::unit(0.15, "cm"), long = ggplot2::unit(0.2, "cm"))} +
              ggplot2::scale_x_discrete(expand = c(0.01,0.01)) +
-             ggplot2::ylab("Discharge (cms)") +
+             ggplot2::ylab(y_axis_title) +
              ggplot2::xlab(NULL) +
              ggplot2::theme_bw()+
              ggplot2::labs(color = 'Long-term Statistics', fill = "Monthly Ranges") + 

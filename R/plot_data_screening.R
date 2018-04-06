@@ -90,6 +90,12 @@ plot_data_screening <- function(data = NULL,
   ## PLOT STATS
   ## ----------
   
+  # Create axis label based on input columns
+  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (m3)",
+                         ifelse(as.character(substitute(values)) == "Yield_mm", "Runoff Yield (mm)", 
+                                "Discharge (cms)"))
+  
+  # Plot
   sum_plots <- dplyr::group_by(flow_summary, STATION_NUMBER)
   sum_plots <- tidyr::nest(sum_plots)
   sum_plots <- dplyr::mutate(sum_plots,
@@ -100,7 +106,7 @@ plot_data_screening <- function(data = NULL,
            ggplot2::facet_wrap(~Statistic, ncol = 2, scales = "free_y") +
            ggplot2::scale_y_continuous(expand = c(0, 0)) +
            ggplot2::expand_limits(y = 0) +
-           ggplot2::ylab("Discharge (cms)") +
+           ggplot2::ylab(y_axis_title) +
            ggplot2::xlab("Year") +
            ggplot2::theme_bw() +
            {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +

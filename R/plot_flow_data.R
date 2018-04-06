@@ -123,6 +123,10 @@ plot_flow_data <- function(data = NULL,
                    " missing or excluded values between ", min(flow_data$Date), " and ", max(flow_data$Date),"."), 
             call. = FALSE)
   
+  # Create axis label based on input columns
+  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (m3)",
+                         ifelse(as.character(substitute(values)) == "Yield_mm", "Runoff Yield (mm)", 
+                                "Discharge (cms)"))
   
   # Plot each individual station on their own
   if (!one_plot) {
@@ -132,7 +136,7 @@ plot_flow_data <- function(data = NULL,
                                 plot = purrr::map2(data, STATION_NUMBER, 
           ~ggplot2::ggplot(data = ., ggplot2::aes(x = Date, y = RollingValue)) +
             ggplot2::geom_line(colour = "dodgerblue4") +
-            ggplot2::ylab("Discharge (cms)") +
+            ggplot2::ylab(y_axis_title) +
             {if(plot_by_year) ggplot2::facet_wrap(~AnalysisYear, scales = "free_x")} +
             {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 8),expand = c(0, 0))} +
             {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0))} +
@@ -170,7 +174,7 @@ plot_flow_data <- function(data = NULL,
     
     plot <- ggplot2::ggplot(data = flow_data, ggplot2::aes(x = Date, y = RollingValue, colour = STATION_NUMBER)) +
       ggplot2::geom_line() +
-      ggplot2::ylab("Discharge (cms)") +
+      ggplot2::ylab(y_axis_title) +
       {if(plot_by_year) ggplot2::facet_wrap(~AnalysisYear, scales = "free_x")} +
       {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 8),expand = c(0, 0))} +
       {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0))} +

@@ -171,6 +171,11 @@ plot_daily_stats <- function(data = NULL,
   ## PLOT STATS
   ## ----------
   
+  # Create axis label based on input columns
+  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (m3)",
+                         ifelse(as.character(substitute(values)) == "Yield_mm", "Runoff Yield (mm)", 
+                                "Discharge (cms)"))
+  
   # Create the daily stats plots
   daily_plots <- dplyr::group_by(daily_stats, STATION_NUMBER)
   daily_plots <- tidyr::nest(daily_plots)
@@ -193,7 +198,7 @@ plot_daily_stats <- function(data = NULL,
             ggplot2::scale_x_date(date_labels = "%b", date_breaks = "1 month",
                                   limits = as.Date(c(NA, as.character(max(daily_stats$AnalysisDate)))), expand = c(0,0)) +
             ggplot2::xlab("Day of Year")+
-            ggplot2::ylab("Discharge (cms)")+
+            ggplot2::ylab(y_axis_title)+
             ggplot2::theme_bw()+
             ggplot2::labs(color = 'Daily Statistics', fill = "Daily Ranges") +  
             {if (include_title & .y != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nDaily Statistics'), fill = "Daily Ranges") } +    

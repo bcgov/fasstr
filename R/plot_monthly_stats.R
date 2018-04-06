@@ -107,6 +107,11 @@ plot_monthly_stats <- function(data = NULL,
   ## PLOT STATS
   ## ----------
 
+  # Create axis label based on input columns
+  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (m3)",
+                         ifelse(as.character(substitute(values)) == "Yield_mm", "Runoff Yield (mm)", 
+                                "Discharge (cms)"))
+  
   # Create the daily stats plots
   monthly_plots <- dplyr::group_by(monthly_data, STATION_NUMBER, Statistic)
   monthly_plots <- tidyr::nest(monthly_plots)
@@ -123,7 +128,7 @@ plot_monthly_stats <- function(data = NULL,
             {if(log_discharge) ggplot2::annotation_logticks(base = 10, "left", colour = "grey25", size = 0.3,
                                                             short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
                                                             long = ggplot2::unit(.2, "cm"))} +
-            ggplot2::ylab("Discharge (cms)") +
+            ggplot2::ylab(y_axis_title) +
             ggplot2::guides(colour = FALSE) +
             ggplot2::theme_bw() +
             {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y, unique(.$Stat2))) } +

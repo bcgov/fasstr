@@ -133,6 +133,12 @@ plot_flow_duration <- function(data = NULL,
 
   ## PLOT STATS
   ## ----------
+  
+  # Create axis label based on input columns
+  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Daily Volume (m3)",
+                         ifelse(as.character(substitute(values)) == "Yield_mm", "Daily Yield (mm)", 
+                                "Daily Discharge (cms)"))
+  
   flow_plots <- dplyr::group_by(percentiles_data, STATION_NUMBER)
   flow_plots <- tidyr::nest(flow_plots)
   flow_plots <- dplyr::mutate(flow_plots,
@@ -142,7 +148,7 @@ plot_flow_duration <- function(data = NULL,
       {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0))} +
       {if (!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 10),expand = c(0, 0))} +
       ggplot2::scale_x_continuous(expand = c(0,0), breaks = scales::pretty_breaks(n = 10)) +
-      ggplot2::ylab("Discharge (cms)") +
+      ggplot2::ylab(y_axis_title) +
       ggplot2::xlab("% Time flow equalled or exceeded") +
       ggplot2::scale_color_manual(values = colour_list) +
       ggplot2:: annotation_logticks(sides = "l", base = 10, colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"),

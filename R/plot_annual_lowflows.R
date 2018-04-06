@@ -125,6 +125,12 @@ plot_annual_lowflows <- function(data = NULL,
 
   ## PLOT STATS
   ## ----------
+  
+  # Create axis label based on input columns
+  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (m3)",
+                         ifelse(as.character(substitute(values)) == "Yield_mm", "Runoff Yield (mm)", 
+                                "Discharge (cms)"))
+  
   # Create plots for each STATION_NUMBER in a tibble (see: http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/)
   doy_plots <- dplyr::group_by(lowflow_doy, STATION_NUMBER)
   doy_plots <- tidyr::nest(doy_plots)
@@ -159,7 +165,7 @@ plot_annual_lowflows <- function(data = NULL,
              ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "right")+
              ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6))+
              ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
-             ggplot2::ylab("Discharge (cms)")+
+             ggplot2::ylab(y_axis_title)+
              ggplot2::xlab("Year")+
              ggplot2::scale_color_brewer(palette = "Set1") +
              ggplot2::theme_bw() +

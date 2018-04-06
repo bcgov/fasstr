@@ -104,6 +104,11 @@ plot_annual_stats <- function(data = NULL,
   ## PLOT STATS
   ## ----------
   
+  # Create axis label based on input columns
+  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (m3)",
+                         ifelse(as.character(substitute(values)) == "Yield_mm", "Runoff Yield (mm)", 
+                                "Discharge (cms)"))
+  
   # Create plots for each STATION_NUMBER in a tibble (see: http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/)
   tidy_plots <- dplyr::group_by(annual_stats, STATION_NUMBER)
   tidy_plots <- tidyr::nest(tidy_plots)
@@ -120,7 +125,7 @@ plot_annual_stats <- function(data = NULL,
            {if(log_discharge) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"), 
                                                            mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))} +
            ggplot2::expand_limits(y = 0) +
-           ggplot2::ylab("Discharge (cms)")+
+           ggplot2::ylab(y_axis_title)+
            ggplot2::xlab("Year") +
            ggplot2::scale_color_brewer(palette = "Set1") +
            ggplot2::theme_bw() +
