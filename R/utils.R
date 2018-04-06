@@ -80,7 +80,11 @@ format_dates_col <- function(data,
   if (!dates %in% names(data))  
     stop("Dates not found in data frame. Rename dates column to 'Date' or identify the column using 'dates' argument.", call. = FALSE)
   
-  # Rename
+  # Rename values to "Value" (and change original if required so no duplication)
+  if ("Date" %in% colnames(data) & dates != "Date") {
+    names(data)[names(data) == "Date"] <- "Date_orig"
+  }
+  
   names(data)[names(data) == dates] <- "Date"
   
   # Check formatting
@@ -109,7 +113,11 @@ format_values_col <- function(data,
   if (!values %in% names(data)) 
     stop("values not found in data frame. Rename values column to 'Value' or identify the column using 'values' argument.", call. = FALSE)
   
-  # Rename
+  # Rename values to "Value" (and change original if required so no duplication)
+  if ("Value" %in% colnames(data) & values != "Value") {
+    names(data)[names(data) == "Value"] <- "Value_orig"
+  }
+  
   names(data)[names(data) == values] <- "Value"
   
   # Check formatting
@@ -133,7 +141,11 @@ format_groups_col <- function(data,
     data[, groups] <- "XXXXXXX"
   }
   
-  # Rename
+  # Rename values to "Value" (and change original if required so no duplication)
+  if ("STATION_NUMBER" %in% colnames(data) & groups != "STATION_NUMBER") {
+    names(data)[names(groups) == "STATION_NUMBER"] <- "STATION_NUMBER_orig"
+  }
+  
   names(data)[names(data) == groups] <- "STATION_NUMBER"
   
   # Check formatting
