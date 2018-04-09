@@ -2,6 +2,8 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <a rel="Exploration" href="https://github.com/BCDevExchange/docs/blob/master/discussion/projectstates.md"><img alt="Being designed and built, but in the lab. May change, disappear, or be buggy." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/exploration.svg" title="Being designed and built, but in the lab. May change, disappear, or be buggy." /></a>
 
+[![Travis build status](https://travis-ci.org/bcgov/fasstr.svg?branch=master)](https://travis-ci.org/bcgov/fasstr)
+
 fasstr
 ======
 
@@ -142,6 +144,9 @@ plot_daily_stats(station_number = "08NM116",
                  log_discharge = TRUE,
                  include_year = 1991,
                  ignore_missing = TRUE)
+#> Scale for 'colour' is already present. Adding another scale for
+#> 'colour', which will replace the existing scale.
+#> $Daily_Stats
 ```
 
 ![](tools/readme/README-plot1-1.png)
@@ -154,6 +159,7 @@ Flow duration curves can be produced using the `plot_flow_duration()` function.
 plot_flow_duration(station_number = "08NM116",
                    start_year = 1981,
                    end_year = 2010)
+#> $Flow_Duration
 ```
 
 ![](tools/readme/README-plot2-1.png)
