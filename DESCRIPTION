@@ -27,12 +27,10 @@ Imports:
     tidyr,
     writexl,
     zyp
-Suggests:
+Suggests: 
     knitr,
+    rmarkdown,
     testthat
 LazyData: true
 RoxygenNote: 6.0.1
-Suggests: knitr,
-    rmarkdown,
-    testthat
 VignetteBuilder: knitr
