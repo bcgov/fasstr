@@ -8,8 +8,8 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r}
-opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")))
+```{r options, include=FALSE}
+knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")))
 ```
 
 ## Installation
