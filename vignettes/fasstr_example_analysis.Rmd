@@ -8,6 +8,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r}
+opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")))
+```
+
 ## Installation
 
 To install the `fasstr` package, you need to install the `devtools` package then the `fasstr` package
@@ -18,7 +22,7 @@ devtools::install_github("bcgov/fasstr")
   
 Then to call the `fasstr` functions you can either load the package using the `library()` function or access a specific function using a double-colon (e.g. `fasstr::calc_daily_stats()`). Several other packages will be installed in addition to this package including [zyp](https://cran.r-project.org/web/packages/zyp/index.html) for trending, [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html) for creating plots, and [dplyr](https://cran.r-project.org/web/packages/dplyr/index.html) and [tidyr](https://cran.r-project.org/web/packages/tidyr/index.html) for various data wrangling and summarizing functions, amongst others.
 
-```{r, eval = TRUE, echo=TRUE, message=FALSE, warning=FALSE}
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
 library(fasstr)
 library(dplyr)
 ```
