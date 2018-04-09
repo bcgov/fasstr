@@ -18,6 +18,8 @@ test_that("modifying water year changes outputs",{
 })
 
 test_that("record starts in the month specified by water_year_start",{
+  skip_on_cran()
+  skip_on_travis()
   month_to_start_water_year <- 5
   stns <- "08NM003"
   
