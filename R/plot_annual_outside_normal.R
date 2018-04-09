@@ -130,7 +130,7 @@ plot_annual_outside_normal <- function(data = NULL,
   if (nrow(normal_plots) == 1) {
     names(plots) <- "Annual_Days_Outside_Normal"
   } else {
-    names(plots) <- paste0(normal_plots$STATION_NUMBER, "Annual_Days_Outside_Normal")
+    names(plots) <- paste0(normal_plots$STATION_NUMBER, "_Annual_Days_Outside_Normal")
   }
   
   plots
