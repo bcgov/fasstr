@@ -2,59 +2,65 @@
 % Please edit documentation in R/write_flow_data.R
 \name{write_flow_data}
 \alias{write_flow_data}
-\title{Write a streamflow dataset as a .csv}
+\title{Write a streamflow dataset as a .xlsx, .xls, or .csv file}
 \usage{
-write_flow_data(flowdata = NULL, HYDAT = NULL, water_year = FALSE,
-  water_year_start = 10, start_year = NULL, end_year = NULL,
-  exclude_years = NULL, exclude_rm = FALSE, fill_missing_dates = FALSE,
-  station_name = "fasstr", write_dir = ".", na = "")
+write_flow_data(data = NULL, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number = NULL, water_year = FALSE,
+  water_year_start = 10, start_year = 0, end_year = 9999,
+  start_date = "0000-01-01", end_date = "3000-12-31", file = "",
+  fill_missing = FALSE, digits = 10)
 }
 \arguments{
-\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
+\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+Leave blank if using \code{station_number} argument.}
 
-\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flowdata} argument is used.}
+\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
+Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
-by the year in which they end. Default \code{FALSE}.}
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
+\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
+groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
+Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
 
-\item{start_year}{Integer. First year to consider for writing to csv. Leave blank if all years are required.}
+\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
+Leave blank if using \code{data} argument.}
 
-\item{end_year}{Integer. Last year to consider for writing to csv. Leave blank if all years are required.}
+\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
+are designated by the calendar year in which they end. Default \code{FALSE}.}
 
-\item{exclude_years}{Integer. Single year or vector of years to exclude from writing to csv. Leave blank if all years are required.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
+Default \code{10}.}
 
-\item{exclude_rm}{Logical. Will remove the excluded data if \code{TRUE}, otherwise excluded data remain as NA. Default \code{FALSE}.}
+\item{start_year}{Numeric value of the first year of data to write. Leave blank to use the first year of the source data.}
 
-\item{fill_missing_dates}{Logical. Fill dates with missing flow data with NA. Default \code{FALSE}.}
+\item{end_year}{Numeric value of the last year of data to write. Leave blank to use the last year of the source data.}
 
-\item{station_name}{Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
-files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
-will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number.}
+\item{start_date}{Date (YYYY-MM-DD) of first date of data to write. Leave blank if all dates required.}
 
-\item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
-Default is the working directory.}
+\item{end_date}{Date (YYYY-MM-DD) of last date of data to write. Leave blank if all dates required.}
 
-\item{na}{Character. String to use for missing values in the data. Default \code{""} (blank).}
-}
-\value{
-A .csv file of streamflow data in a selected directory.
+\item{file}{Character string naming the output file. If none provided, a default file name (with .xlsx) is provided (see 
+"Successfully created" message when using function for file name).}
+
+\item{fill_missing}{Logical value indicating whether to fill dates with missing flow data with NA. Default \code{FALSE}.}
+
+\item{digits}{Integer indicating the number of decimal places or significant digits used to round flow values. Use follows 
+that of base::round() digits argument.}
 }
 \description{
-Write a streamflow dataset as a .csv file to a directory. Can add missing dates or filter data by years before writing
-   using given arguments. Just list flowdata data frame or HYDAT station number to write its entirety.
+Write a streamflow dataset to a directory. Can fill missing dates or filter data by years or dates before writing using 
+   given arguments. Just list data frame or HYDAT station number to write its entirety. Can write as .xls, .xlsx, or .csv file types.
+   Writing as Excel file type uses the 'writexl' package.
 }
 \examples{
 \dontrun{
 
-write_flow_data(flowdata = flowdata, station_name = "MissionCreek", na="")
-
-write_flow_data(HYDAT = "08NM116")
+write_flow_data(station_number = "08NM116", 
+                file = "Mission_Creek_daily_flows.xlsx",
+                fill_missing = TRUE)
 
 }
 }

@@ -15,33 +15,11 @@
 #' @description Calculates monthly mean, median, maximum, minimum, and percentiles for each month of all years of daily flow values 
 #'    from a streamflow dataset. Calculates the statistics from all daily discharge values from all years, unless specified.
 #'
-#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-#'    Not required if \code{HYDAT} argument is used.
-#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-#'    database are required. Not required if \code{flowdata} argument is used.
-#' @param percentiles Numeric. Vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,20)}
-#' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
-#'    by the year in which they end. Default \code{FALSE}.
-#' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
-#' @param start_year Integer. First year to consider for analysis. Leave blank if all years are required.
-#' @param end_year Integer. Last year to consider for analysis. Leave blank if all years are required.
-#' @param exclude_years Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required. 
-#' @param months Integer. Vector of months to consider for analysis (ex. \code{6:8} for Jun-Aug). Leave blank if all months
-#'    are required. Default \code{1:12}.    
-#' @param spread Logical. All monthly statistics as column names. Default \code{FALSE}.
-#' @param transpose Logical. All monthly statistics as row names. Default \code{FALSE}.
-#' @param station_name Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
-#'    files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
-#'    will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number. 
-#' @param write_table Logical. Write the table as a .csv file to specified directory. Default \code{FALSE}.
-#' @param write_digits Numeric. Number of significant digits to round the results in the written table. Default \code{3}.
-#' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
-#'    Default is the working directory.
-#' @param na.rm TBD
+#' @inheritParams calc_annual_stats
+#' @param transpose Logical value indicating if each month statistic should be individual rows. Default \code{FALSE}.
+#' @param spread Logical value indicating if each month statistic should be the column name. Default \code{FALSE}.
 #' 
-#' @return A data frame with the following columns:
+#' @return A tibble data frame with the following columns:
 #'   \item{Year}{calendar or water year selected}
 #'   \item{Month}{month of the year}
 #'   \item{Mean}{mean of all daily flows for a given month and year}
@@ -51,248 +29,221 @@
 #'   \item{P'n'}{each n-th percentile selected for a given month and year}
 #'   Default percentile columns:
 #'   \item{P10}{10th percentile of all daily flows for a given month and year}
-#'   \item{P20}{20th percentile of all daily flows for a given month and year}
-#'   Transposing data creates a column of "Statistics" for each month, labeled as "Month-Statistic" (ex "Jan-Mean"),
+#'   \item{P90}{90th percentile of all daily flows for a given month and year}
+#'   Transposing data creates a column of 'Statistics' for each month, labeled as 'Month-Statistic' (ex "Jan-Mean"),
 #'   and subsequent columns for each year selected.
-#'   Spreading data creates columns of Year and subsequent columns of Month-Statistics  (ex "Jan-Mean").
+#'   Spreading data creates columns of Year and subsequent columns of Month-Statistics  (ex 'Jan-Mean').
 #'   
 #' @examples
 #' \dontrun{
 #' 
-#'calc_monthly_stats(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
-#' 
-#'calc_monthly_stats(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
+#' calc_monthly_stats(station_number = "08NM116", 
+#'                    water_year = TRUE,
+#'                    water_year_start = 8, 
+#'                    percentiles = c(1:10))
 #'
-#'calc_monthly_stats(HYDAT = "08NM116", months = 7:9)
+#' calc_monthly_stats(station_number = "08NM116", 
+#'                    months = 7:9)
 #'
 #' }
 #' @export
 
-#--------------------------------------------------------------
-calc_monthly_stats <- function(flowdata=NULL,
-                                 HYDAT=NULL,
-                                 percentiles=c(10,20),
-                                 water_year=FALSE,
-                                 water_year_start=10,
-                                 start_year=NULL,
-                                 end_year=NULL,
-                                 exclude_years=NULL,
-                                 months=1:12,
-                                 spread=FALSE,
-                                 transpose=FALSE,
-                                 station_name=NA,
-                                 write_table=FALSE,
-                                 write_digits=3,
-                                 write_dir=".",
-                                 na.rm=list(na.rm.global=FALSE)){
+
+calc_monthly_stats <- function(data = NULL,
+                               dates = Date,
+                               values = Value,
+                               groups = STATION_NUMBER,
+                               station_number = NULL,
+                               percentiles = c(10,90),
+                               roll_days = 1,
+                               roll_align = "right",
+                               water_year = FALSE,
+                               water_year_start = 10,
+                               start_year = 0,
+                               end_year = 9999,
+                               exclude_years = NULL,
+                               months = 1:12,
+                               transpose = FALSE,
+                               spread = FALSE,
+                               ignore_missing = FALSE){
   
   
-  #--------------------------------------------------------------
-  #  Error checking on the input parameters
+  ## ARGUMENT CHECKS
+  ## ---------------
   
-  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
-  if( is.null(HYDAT)) {
-    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
-    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
-    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
-    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
-    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
-    if( any(flowdata$Value <0, na.rm=TRUE))           {warning('flowdata cannot have negative values - check your data')}
-  }
+  rolling_days_checks(roll_days, roll_align, multiple = FALSE)
+  water_year_checks(water_year, water_year_start)
+  years_checks(start_year, end_year, exclude_years)
+  months_checks(months)
+  ignore_missing_checks(ignore_missing)
+  transpose_checks(transpose)
+  spread_checks(spread)
+  if(transpose & spread) stop("Both spread and transpose arguments cannot be TRUE.", call. = FALSE)
   
-  if( !is.logical(water_year))         {stop("water_year argument must be logical (TRUE/FALSE)")}
-  if( !is.numeric(water_year_start) )  {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( length(water_year_start)>1)      {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( !water_year_start %in% c(1:12) ) {stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec)")}
+
+  ## FLOW DATA CHECKS AND FORMATTING
+  ## -------------------------------
   
-  if( length(start_year)>1)   {stop("only one start_year value can be selected")}
-  if( !is.null(start_year) )  {if( !start_year %in% c(0:5000) )  {stop("start_year must be an integer")}}
-  if( length(end_year)>1)     {stop("only one end_year value can be selected")}
-  if( !is.null(end_year) )    {if( !end_year %in% c(0:5000) )  {stop("end_year must be an integer")}}
-  if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("list of exclude_years must be numeric - ex. 1999 or c(1999,2000)")}
+  # Check if data is provided and import it
+  flow_data <- flowdata_import(data = data, 
+                               station_number = station_number)
   
-  if( !is.numeric(months) )        {stop("months argument must be integers")}
-  if( !all(months %in% c(1:12)) )  {stop("months argument must be integers between 1 and 12 (Jan-Dec)")}
+  # Save the original columns (to check for STATION_NUMBER col at end) and ungroup if necessary
+  orig_cols <- names(flow_data)
+  flow_data <- dplyr::ungroup(flow_data)
   
-  if( !all(is.na(percentiles)) & !is.numeric(percentiles) )                 {stop("percentiles argument must be numeric")}
-  if( !all(is.na(percentiles)) & (!all(percentiles>0 & percentiles<100)) )  {stop("percentiles must be >0 and <100)")}
-  
-  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
-  
-  if( !is.logical(spread))    {stop("spread parameter must be logical (TRUE/FALSE)")}
-  if( !is.logical(transpose)) {stop("transpose parameter must be logical (TRUE/FALSE)")}
-  if( spread & transpose )    {stop("both spread and transpose arguments cannot be TRUE")}
-  
-  if( !is.logical(write_table))  {stop("write_table parameter must be logical (TRUE/FALSE)")}
-  if( !is.numeric(write_digits))  {stop("csv.ndddigits parameter needs to be numeric")}
-  write_digits <- round(write_digits[1])
-  
-  if( !dir.exists(as.character(write_dir))) {
-    message("directory for saved files does not exist, new directory will be created")
-    if( write_table & write_dir!="." ) {dir.create(write_dir)}
-  }
-  
-  if( !is.list(na.rm))                        {stop("na.rm is not a list") }
-  if(! is.logical(unlist(na.rm)))             {stop("na.rm is list of logical (TRUE/FALSE) values only.")}
-  my.na.rm <- list(na.rm.global=FALSE)
-  if( !all(names(na.rm) %in% names(my.na.rm))){stop("Illegal element in na.rm")}
-  my.na.rm[names(na.rm)]<- na.rm
-  na.rm <- my.na.rm  # set the na.rm for the rest of the function.
-  
-  # If HYDAT station is listed, check if it exists and make it the flowdata
-  if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 ) {stop("only one HYDAT station can be selected")}
-    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
-    if( is.na(station_name) ) {station_name <- HYDAT}
-    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
-  }
-  
-  #--------------------------------------------------------------
-  # Set the flowdata for analysis
-  
-  # Select just Date and Value for analysis
-  flowdata <- dplyr::select(flowdata,Date,Value)
-  
-  # add date variables to determine the min/max cal/water years
-  flowdata <- fasstr::add_date_variables(flowdata,water_year = T,water_year_start = water_year_start)
-  if (is.null(start_year)) {start_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))}
-  if (is.null(end_year)) {end_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))}
-  if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
-  
-  #  Fill in the missing dates and the add the date variables again
-  flowdata <- fasstr::fill_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
-  flowdata <- fasstr::add_date_variables(flowdata,water_year = T,water_year_start = water_year_start)
-  
-  # Set selected year-type column for analysis
-  if (water_year) {
-    flowdata$AnalysisYear <- flowdata$WaterYear
-    flowdata$AnalysisDoY <- flowdata$WaterDayofYear
-  }  else {
-    flowdata$AnalysisYear <- flowdata$Year
-    flowdata$AnalysisDoY <- flowdata$DayofYear
-  }
+  # Check and rename columns
+  flow_data <- format_all_cols(data = flow_data,
+                               dates = as.character(substitute(dates)),
+                               values = as.character(substitute(values)),
+                               groups = as.character(substitute(groups)),
+                               rm_other_cols = TRUE)
   
   
-  # Filter the data for the start and end years
-  flowdata <- dplyr::filter(flowdata, AnalysisYear >= start_year & AnalysisYear <= end_year)
-  flowdata <- dplyr::filter(flowdata, Month %in% months)
+  ## PREPARE FLOW DATA
+  ## -----------------
+  
+  # Fill missing dates, add date variables, and add AnalysisYear
+  flow_data <- analysis_prep(data = flow_data, 
+                             water_year = water_year, 
+                             water_year_start = water_year_start,
+                             year = TRUE)
+  
+  # Add rolling means to end of dataframe
+  flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
+  colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
+
+  # Filter for the selected year (remove excluded years after)
+  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, Month %in% months)
   
   
-  #--------------------------------------------------------------
-  # Complete analysis
+  ## CALCULATE STATISTICS
+  ## --------------------
   
-  # Compute basic stats for each month for each year
-  Qstat_monthly <-   dplyr::summarize(dplyr::group_by(flowdata,AnalysisYear,MonthName),
-                                      Mean    = mean(Value, na.rm=na.rm$na.rm.global),    
-                                      Median  = median(Value, na.rm=na.rm$na.rm.global),  
-                                      Maximum	    = max (Value, na.rm=na.rm$na.rm.global), 
-                                      Minimum     = min (Value, na.rm=na.rm$na.rm.global)
-  )
+  # Calculate basic stats
+  monthly_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
+                                Mean = mean(RollingValue, na.rm = ignore_missing),  
+                                Median = stats::median(RollingValue, na.rm = ignore_missing), 
+                                Maximum = suppressWarnings(max(RollingValue, na.rm = ignore_missing)),    
+                                Minimum = suppressWarnings(min(RollingValue, na.rm = ignore_missing)))
+  monthly_stats <- dplyr::ungroup(monthly_stats)
   
-  # Compute selected percentiles for each month for each year
-  if (!all(is.na(percentiles))){
+  # Calculate annual percentiles
+  if(!all(is.na(percentiles))) {
     for (ptile in percentiles) {
+      monthly_stats_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
+                                          Percentile = stats::quantile(RollingValue, ptile / 100, na.rm = TRUE))
+      monthly_stats_ptile <- dplyr::ungroup(monthly_stats_ptile)
       
-      Q_monthly_ptile <- dplyr::summarise(dplyr::group_by(flowdata,AnalysisYear,MonthName),
-                                          Percentile=quantile(Value,ptile/100, na.rm=TRUE))
-      colnames(Q_monthly_ptile)[3] <- paste0("P",ptile)
+      names(monthly_stats_ptile)[names(monthly_stats_ptile) == "Percentile"] <- paste0("P", ptile)
       
-      Qstat_monthly <- merge(Qstat_monthly,Q_monthly_ptile,by=c("AnalysisYear","MonthName"))
+      # Merge with monthly_stats
+      monthly_stats <- merge(monthly_stats, monthly_stats_ptile, by = c("STATION_NUMBER", "AnalysisYear", "MonthName"))
+      
+      # Remove percentile if mean is NA (workaround for na.rm=FALSE in quantile)
+      monthly_stats[, ncol(monthly_stats)] <- ifelse(is.na(monthly_stats$Mean), NA, monthly_stats[, ncol(monthly_stats)])
     }
   }
   
-  # Rename some columns
-  Qstat_monthly <-   dplyr::rename(Qstat_monthly,Year=AnalysisYear,Month=MonthName)
+  # Rename year column
+  monthly_stats <-   dplyr::rename(monthly_stats, Year = AnalysisYear, Month = MonthName)
+  
   
   # Set the levels of the months for proper ordering
   if (water_year) {
-    if (water_year_start==1) {
-      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
-    } else if (water_year_start==2) {
-      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan"))
-    } else if (water_year_start==3) {
-      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb"))
-    } else if (water_year_start==4) {
-      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar"))
-    } else if (water_year_start==5) {
-      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr"))
-    } else if (water_year_start==6) {
-      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May"))
-    } else if (water_year_start==7) {
-      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Jul","Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun"))
-    } else if (water_year_start==8) {
-      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Aug","Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul"))
-    } else if (water_year_start==9) {
-      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Sep","Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug"))
-    } else if (water_year_start==10) {
-      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Oct","Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep"))
-    } else if (water_year_start==11) {
-      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Nov","Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct"))
-    } else if (water_year_start==12) {
-      Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Dec","Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov"))
+    if (water_year_start == 1) {
+      monthly_stats$Month <- factor(monthly_stats$Month, 
+                                levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+    } else if (water_year_start == 2) {
+      monthly_stats$Month <- factor(monthly_stats$Month, 
+                                levels = c("Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan"))
+    } else if (water_year_start == 3) {
+      monthly_stats$Month <- factor(monthly_stats$Month, 
+                                levels = c("Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb"))
+    } else if (water_year_start == 4) {
+      monthly_stats$Month <- factor(monthly_stats$Month, 
+                                levels = c("Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"))
+    } else if (water_year_start == 5) {
+      monthly_stats$Month <- factor(monthly_stats$Month, 
+                                levels = c("May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"))
+    } else if (water_year_start == 6) {
+      monthly_stats$Month <- factor(monthly_stats$Month, 
+                                levels = c("Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May"))
+    } else if (water_year_start == 7) {
+      monthly_stats$Month <- factor(monthly_stats$Month, 
+                                levels = c("Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun"))
+    } else if (water_year_start == 8) {
+      monthly_stats$Month <- factor(monthly_stats$Month, 
+                                levels = c("Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"))
+    } else if (water_year_start == 9) {
+      monthly_stats$Month <- factor(monthly_stats$Month, 
+                                levels = c("Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"))
+    } else if (water_year_start == 10) {
+      monthly_stats$Month <- factor(monthly_stats$Month, 
+                                levels = c("Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"))
+    } else if (water_year_start == 11) {
+      monthly_stats$Month <- factor(monthly_stats$Month, 
+                                levels = c("Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"))
+    } else if (water_year_start == 12) {
+      monthly_stats$Month <- factor(monthly_stats$Month, 
+                                levels = c("Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"))
     }
   } else {           
-    Qstat_monthly$Month <- factor(Qstat_monthly$Month, levels=c("Jan", "Feb", "Mar", "Apr", "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
+    monthly_stats$Month <- factor(monthly_stats$Month,
+                              levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
   }
   
   # Reorder months and row.names
-  Qstat_monthly <- with(Qstat_monthly, Qstat_monthly[order(Year, Month),])
-  row.names(Qstat_monthly) <- c(1:nrow(Qstat_monthly))
+  monthly_stats <- with(monthly_stats, monthly_stats[order(Year, Month),])
   
-  # Make any excluded years NA (doesnt remove the data)
-  Qstat_monthly[Qstat_monthly$Year %in% exclude_years,3:ncol(Qstat_monthly)] <- NA
+  
+  # Make excluded years data NA
+  if(as.character(substitute(groups)) %in% orig_cols) {
+    monthly_stats[monthly_stats$Year %in% exclude_years,-(1:3)] <- NA
+  } else {
+    monthly_stats[monthly_stats$Year %in% exclude_years,-(1:2)] <- NA
+  }
+  
   
   # Transform data to chosen format
   # Spread data if selected
-  if (spread) {
-    Qstat_monthly_spread <- dplyr::summarise(dplyr::group_by(Qstat_monthly,Year))
-    for (mnth in unique(Qstat_monthly$Month)) {
-      Qstat_monthly_month <- dplyr::filter(Qstat_monthly,Month==mnth)
-      Qstat_monthly_month <- tidyr::gather(Qstat_monthly_month,Statistic,Value,3:ncol(Qstat_monthly_month))
-      Qstat_monthly_month <- dplyr::mutate(Qstat_monthly_month,StatMonth=paste0(Month,"_",Statistic))
-      Qstat_monthly_month <- dplyr::select(Qstat_monthly_month,-Statistic,-Month)
-      Qstat_order <- unique(Qstat_monthly_month$StatMonth)
-      Qstat_monthly_month <- tidyr::spread(Qstat_monthly_month,StatMonth,Value)
-      Qstat_monthly_month <-  Qstat_monthly_month[,c("Year",Qstat_order)]
-      Qstat_monthly_spread <- merge(Qstat_monthly_spread,Qstat_monthly_month,by="Year",all = TRUE)
-    }  
-    Qstat_monthly <- Qstat_monthly_spread
-  }
-  # Transpose data if selected
-  if (transpose) {
-    Qstat_monthly_tpose_names <- c("Statistic",unique(Qstat_monthly$Year))
-    Qstat_monthly_tpose <- data.frame(matrix(ncol = length(Qstat_monthly_tpose_names), nrow = 0))
-    colnames(Qstat_monthly_tpose) <- Qstat_monthly_tpose_names
-    
-    for (mnth in unique(Qstat_monthly$Month)) {
-      Qstat_monthly_month <- dplyr::filter(Qstat_monthly,Month==mnth)
-      Qstat_monthly_month <- tidyr::gather(Qstat_monthly_month,Statistic,Value,3:ncol(Qstat_monthly_month))
-      Qstat_monthly_month <- dplyr::mutate(Qstat_monthly_month,Statistic=paste0(Month,"_",Statistic))
-      Qstat_monthly_month <- dplyr::select(Qstat_monthly_month,-Month)
-      Qstat_order <- unique(Qstat_monthly_month$Statistic)
-      Qstat_monthly_month <- tidyr::spread(Qstat_monthly_month,Year,Value)
-      Qstat_monthly_month <- Qstat_monthly_month[match(Qstat_order, Qstat_monthly_month$Statistic),]
-      Qstat_monthly_tpose <- dplyr::bind_rows(Qstat_monthly_tpose,Qstat_monthly_month)
-    }  
-    Qstat_monthly <- Qstat_monthly_tpose
-  }
-  
-  
-  # Write the table if selected
-  if(write_table){
-    file_Qmonth_table <- file.path(write_dir, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-monthly-statistics.csv", sep=""))
-    temp <- Qstat_monthly
-    if (spread | transpose) {
-      temp <- round(temp, write_digits)
-    } else {
-      temp[,3:ncol(temp)] <- round(temp[,3:ncol(temp)], write_digits)
+  if (spread | transpose) {
+    monthly_stats_spread <- dplyr::summarise(dplyr::group_by(monthly_stats, STATION_NUMBER, Year))
+    monthly_stats_spread <- dplyr::ungroup(monthly_stats_spread)
+    for (mnth in unique(monthly_stats$Month)) {
+      monthly_stats_month <- dplyr::filter(monthly_stats, Month == mnth)
+      monthly_stats_month <- tidyr::gather(monthly_stats_month, Statistic, Value, 4:ncol(monthly_stats_month))
+      monthly_stats_month <- dplyr::mutate(monthly_stats_month, StatMonth = paste0(Month, "_", Statistic))
+      monthly_stats_month <- dplyr::select(monthly_stats_month, -Statistic, -Month)
+      stat_order <- unique(monthly_stats_month$StatMonth)
+      monthly_stats_month <- tidyr::spread(monthly_stats_month, StatMonth, Value)
+      monthly_stats_month <-  monthly_stats_month[, c("STATION_NUMBER", "Year", stat_order)]
+      monthly_stats_spread <- merge(monthly_stats_spread, monthly_stats_month, by = c("STATION_NUMBER", "Year"), all = TRUE)
     }
-    utils::write.csv(temp,file=file_Qmonth_table, row.names=FALSE)
+    monthly_stats <- monthly_stats_spread
+    
+    if(transpose){
+      monthly_stats <- tidyr::gather(monthly_stats, Statistic, Value, -(1:2))
+    }
+  }
+  
+  monthly_stats <- with(monthly_stats, monthly_stats[order(STATION_NUMBER, Year),])
+  
+  # Give warning if any NA values
+  missing_values_warning(monthly_stats[, 4:ncol(monthly_stats)])
+  
+
+  # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
+  if("STATION_NUMBER" %in% orig_cols) {
+    names(monthly_stats)[names(monthly_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
+  } else {
+    monthly_stats <- dplyr::select(monthly_stats, -STATION_NUMBER)
   }
   
   
-  return(Qstat_monthly)
-
+  
+  dplyr::as_tibble(monthly_stats)
   
 }
 

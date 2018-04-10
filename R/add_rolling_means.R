@@ -17,86 +17,110 @@
 #'   would obtain a mean of the given and previous 6 days of daily mean flow. Rolling mean values will not be calculated if there is less 
 #'   than the n-days provided.
 #'
-#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-#'    Not required if \code{HYDAT} argument is used.
-#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-#'    database are required. Not required if \code{flowdata} argument is used.
-#' @param days  Numeric. The number of days to apply the rolling mean. Default \code{c(3,7,30)}.
-#' @param align Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),
-#'    or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.
+#' @inheritParams calc_annual_stats
+#' @param roll_days Numeric values of the number of days to apply a rolling mean. Default \code{c(3,7,30)}.
 #' 
-#' @return A data frame of the original flowdata or HYDAT data with additional column(s) of:
-#'   \item{QnDay}{rolling means of the n-day flow values of the designated date and adjacent dates, direction of mean specified by align}
+#' @return A data frame of the source data with an additional column(s):
+#'   \item{QnDay}{rolling means of the n-day flow values of the designated date and adjacent dates, direction of mean specified by roll_align}
 #'   Default additional columns:
-#'   \item{Q3Day}{rolling means of the 3-day flow values of the designated date and previous 2 days (align="right")}
-#'   \item{Q7Day}{rolling means of the 7-day flow values of the designated date and previous 6 days (align="right")}
-#'   \item{Q30Day}{rolling means of the 30-day flow values of the designated date and previous 29 days (align="right")}
+#'   \item{Q3Day}{rolling means of the 3-day flow values of the designated date and previous 2 days (roll_align = "right")}
+#'   \item{Q7Day}{rolling means of the 7-day flow values of the designated date and previous 6 days (roll_align = "right")}
+#'   \item{Q30Day}{rolling means of the 30-day flow values of the designated date and previous 29 days (roll_align = "right")}
 #'    
 #' @examples
 #' \dontrun{
 #' 
-#'add_rolling_means(flowdata = flowdata, days = 7, align = 'centre')
+#' add_rolling_means(data = flow_data, roll_days = 7, roll_align = 'centre')
 #' 
-#'add_rolling_means(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+#' add_rolling_means(station_number = "08NM116")
 #'
 #' }
 #' @export
 
-#--------------------------------------------------------------
 
-
-
-add_rolling_means <- function(flowdata=NULL,
-                                     HYDAT=NULL,
-                                     days=c(3,7,30),
-                                     align="right"){
+add_rolling_means <- function(data = NULL,
+                              dates = Date,
+                              values = Value,
+                              groups = STATION_NUMBER,
+                              station_number = NULL,
+                              roll_days = c(3,7,30),
+                              roll_align = "right"){
   
-  #--------------------------------------------------------------
-  #  Some basic error checking on the input parameters
   
-  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
-  if( is.null(HYDAT)) {
-    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
-    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
-    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
-    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
-    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
-    if( any(flowdata$Value <0, na.rm=TRUE))           {warning('flowdata cannot have negative values - check your data')}
+  ## ARGUMENT CHECKS
+  ## ---------------
+  
+  rolling_days_checks(roll_days, roll_align, multiple = TRUE)
+
+  
+  ## FLOW DATA CHECKS AND FORMATTING
+  ## -------------------------------
+  
+  # Check if data is provided
+  flow_data <- flowdata_import(data = data, station_number = station_number)
+  
+  # Save the original columns from the flow_data to remove added columns
+  orig_cols <- names(flow_data)
+  
+  # Get groups of flow_data to return after
+  flow_data_groups <- dplyr::group_vars(flow_data)
+  flow_data <- dplyr::ungroup(flow_data)
+  
+  # Check and rename columns
+  flow_data <- format_all_cols(data = flow_data,
+                               dates = as.character(substitute(dates)),
+                               values = as.character(substitute(values)),
+                               groups = as.character(substitute(groups)),
+                               rm_other_cols = FALSE)
+  
+  
+  ## ADD ROLLING MEANS
+  ## -----------------
+  
+  # Loop through each station number, and add rolling means
+  flow_data_new <- flow_data[0,]
+  for (stn in unique(flow_data$STATION_NUMBER)) {
+    
+    # Filter for station number
+    flow_data_stn <- dplyr::filter(flow_data, STATION_NUMBER == stn)
+    flow_data_stn <- flow_data_stn[order(flow_data_stn$Date), ]
+    dates_list <- c(flow_data_stn$Date)
+    
+    # fill in missing dates to ensure means roll over consecutive days
+    flow_data_stn <- fill_missing_dates(data = flow_data_stn)
+    
+    # Add rolling means
+    for (x in roll_days) {
+      flow_data_stn[, paste0("Q", x, "Day")] <- RcppRoll::roll_mean(flow_data_stn$Value, n = x, fill = NA, align = roll_align)
+    }
+    
+    # Return flow_data_stn to original dates
+    flow_data_stn <- dplyr::filter(flow_data_stn, Date %in% dates_list)
+    
+    # Append to flow_data
+    flow_data_new <- dplyr::bind_rows(flow_data_new, flow_data_stn)
+    
+  }
+  flow_data <- flow_data_new
+  
+  
+  ## Reformat to original names and groups
+  ## -------------------------------------
+  
+  # Return the original names of the Date and Value columns
+  names(flow_data)[names(flow_data) == "STATION_NUMBER"] <- as.character(substitute(groups))
+  names(flow_data)[names(flow_data) == "Date"] <- as.character(substitute(dates))
+  names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(values))
+  
+  # Remove the STATION_NUMBER columns if one wasn't in flowdata originally
+  if(!"STATION_NUMBER" %in% orig_cols) {
+    flow_data <- dplyr::select(flow_data, -STATION_NUMBER)
   }
   
-  if( !is.numeric(days))                       {stop("days argument must be numeric")}
-  if( !all(days %in% c(1:180)) )                    {stop("days argument must be integers > 0 and <= 180)")}
-  if( !align %in% c("right","left","center"))  {stop("align argument must be 'right', 'left', or 'center'")}
-  
-  # If HYDAT station is listed, check if it exists and make it the flowdata
-  if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 )                                  {stop("Only one HYDAT station can be selected.")}
-    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
-    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
-  }
-  
-  #--------------------------------------------------------------
-  # Set the flowdata for analysis
-  
-  # get list of dates in flowdata
-  flowdata <- flowdata[ order(flowdata$Date),]
-  dates_list <- c(flowdata$Date)
-  
-  # fill in missing dates to ensure means roll over consecutive days
-  flowdata <- fasstr::fill_missing_dates(flowdata=flowdata)
-  
-  #--------------------------------------------------------------
-  # Add rolling means
-  for (x in days) {
-    flowdata[, paste0("Q",x,"Day")] <- zoo::rollapply( flowdata$Value,  x, mean, fill=NA, align=align)
-  }
-  
-  # Return flowdata to original dates
-  flowdata <- dplyr::filter(flowdata,Date %in% dates_list)
+  # Regroup by the original groups
+  flow_data <- dplyr::group_by_at(flow_data, dplyr::vars(flow_data_groups))
   
   
-  return(flowdata)
+  dplyr::as_tibble(flow_data)
 } 
 

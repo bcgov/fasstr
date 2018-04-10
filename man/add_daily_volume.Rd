@@ -4,19 +4,21 @@
 \alias{add_daily_volume}
 \title{Add daily volumetric flows}
 \usage{
-add_daily_volume(flowdata = NULL, HYDAT = NULL)
+add_daily_volume(data = NULL, values = Value, station_number = NULL)
 }
 \arguments{
-\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
+\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+Leave blank if using \code{station_number} argument.}
 
-\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flowdata} argument is used.}
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
+
+\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
+Leave blank if using \code{data} argument.}
 }
 \value{
-A data frame of the original flowdata or HYDAT data with an additional column:
+A tibble data frame of the source data with an additional column:
   \item{Volume_m3}{daily total volumetric flow, in units of cubic metres}
 }
 \description{
@@ -25,9 +27,9 @@ Add a column of daily volumetric flows to a streamflow dataset, in units of cubi
 \examples{
 \dontrun{
 
-add_daily_volume(flowdata = flowdata)
+add_daily_volume(data = flow_data)
 
-add_daily_volume(HYDAT = "08NM116")
+add_daily_volume(station_number = "08NM116")
 
 }
 }

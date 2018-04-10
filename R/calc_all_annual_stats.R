@@ -20,287 +20,257 @@
 #' \itemize{
 #'  \item{calc_annual_stats()}
 #'  \item{calc_annual_lowflows()}
-#'  \item{calc_annual_total_flows()}
+#'  \item{calc_annual_cumulative_stats()}
 #'  \item{calc_annual_flow_timing()}
 #'  \item{calc_monthly_stats()}
 #'  \item{calc_annual_outside_normal()}
 #'  }
 #'    
-#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-#'    Not required if \code{HYDAT} argument is used.
-#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-#'    database are required. Not required if \code{flowdata} argument is used.
-#' @param basin_area Numeric. Upstream drainage basin area of the hydrometric station, in sq. km. Leave blank if \code{HYDAT} is used or 
-#'    a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the basin area will be extracted from HYDAT. 
-#'    Setting the basin area will replace the HYDAT basin area. 
-#' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
-#'    by the year in which they end. Default \code{FALSE}.
-#' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
-#' @param start_year Integer. First year to consider for analysis. Leave blank if all years are required.
-#' @param end_year Integer. Last year to consider for analysis. Leave blank if all years are required.
-#' @param exclude_years Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.
-#' @param annual_percentiles Numeric. Vector of percentiles to calculate annually. Set to NA if none required. Used for calc_annual_stats()
+#' @inheritParams calc_annual_stats
+#' @inheritParams calc_annual_cumulative_stats
+#' @inheritParams calc_annual_outside_normal
+#' @param annual_percentiles Numeric vector of percentiles to calculate annually. Set to NA if none required. Used for calc_annual_stats()
 #'    function. Default \code{c(10,90)}.
-#' @param monthly_percentiles Numeric. Vector of percentiles to calculate monthly for each year. Set to NA if none required. Used for 
+#' @param monthly_percentiles Numeric vector of percentiles to calculate monthly for each year. Set to NA if none required. Used for 
 #'    calc_monthly_stats() function. Default \code{c(10,90)}.
-#' @param lowflow_days  Numeric. The number of days to apply a rolling mean. Used for calc_annual_lowflows() function. Default \code{1}.
-#' @param lowflow_align Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),
-#'    or middle ('center') of the rolling n-day group of observations. Used for calc_annual_lowflows() function. Default \code{'right'}.
-#' @param totalflow_seasons Logical. Include seasonal yields and total discharges.Used for calc_annual_total_flows() function. 
-#'    Default \code{TRUE}.
-#' @param timing_percent Numeric. Percents of annual total flows to determine dates. Used for calc_annual_flow_timing() function. 
+#' @param stats_days Numeric vector of the number of days to apply a rolling mean on basic stats. Default \code{c(1)}.
+#'    Used for calc_annual_stats() and calc_monthly_stats() functions.
+#' @param stats_align Character string identifying the direction of the rolling mean on basic stats from the specified date, either by 
+#'    the first ('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.
+#'    Used for calc_annual_stats(), calc_monthly_stats(), and calc_annual_outside_normal() functions.
+#' @param lowflow_days Numeric vector of the number of days to apply a rolling mean on lowflow stats. Default \code{c(1,3,7,30)}.
+#'    Used for calc_lowflow_stats() function.
+#' @param lowflow_align Character string identifying the direction of the rolling mean on lowflow stats from the specified date, either by 
+#'    the first ('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.
+#'    Used for calc_lowflow_stats() function.
+#' @param timing_percent Numeric vector of percents of annual total flows to determine dates. Used for calc_annual_flow_timing() function. 
 #'    Default \code{c(25,33.3,50,75)}.
-#' @param normal_percentiles Numeric. Lower and upper percentiles, respectively indicating the limits of the normal range. 
-#'    Used for calc_annual_outside_normal() function. Default \code{c(25,75)}.
-#' @param transpose Logical. Switch the rows and columns of the results table. Default \code{FALSE}.
-#' @param station_name Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
-#'    files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
-#'    will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number. 
-#' @param write_table Logical. Write the table as a .csv file to specified directory. Default \code{FALSE}.
-#' @param write_digits Numeric. Number of significant digits to round the results in the written table. Default \code{3}.
-#' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
-#'    Default is the working directory.
-#' @param na.rm TBD
 #' 
-#' @return A data frame with column "Year" and then 107 (default) variables from the fasstr annual functions.
+#' @return A tibble data frame with column "Year" and then 107 (default) variables from the fasstr annual functions.
 #'    See listed functions above for default variables. Transposing data creates a column of "Statistics" and subsequent
 #'    columns for each year selected.
 #'
 #' @examples
 #' \dontrun{
 #' 
-#'calc_all_annual_stats(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
-#' 
-#'calc_all_annual_stats(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+#' calc_all_annual_stats(station_number = "08NM116", 
+#'                       water_year = TRUE, 
+#'                       water_year_start = 8)
 #'
 #' }
 #' @export
 
-#--------------------------------------------------------------
 
-calc_all_annual_stats <- function(flowdata=NULL,
-                                    HYDAT=NULL,
-                                    basin_area=NA, 
-                                    water_year=FALSE,
-                                    water_year_start=10,
-                                    start_year=NULL,
-                                    end_year=NULL,
-                                    exclude_years=NULL,
-                                    annual_percentiles=c(10,90),
-                                    monthly_percentiles=c(10,20),
-                                    lowflow_days=c(1,3,7,30),
-                                    lowflow_align="right",
-                                    totalflow_seasons=TRUE,
-                                    timing_percent=c(25,33,50,75),
-                                    normal_percentiles=c(25,75),
-                                    transpose=FALSE,
-                                    station_name=NA,
-                                    write_table=FALSE,
-                                    write_digits=3,
-                                    write_dir=".",
-                                    na.rm=list(na.rm.global=FALSE)){
+calc_all_annual_stats <- function(data = NULL,
+                                  dates = Date,
+                                  values = Value,
+                                  groups = STATION_NUMBER,
+                                  station_number = NULL,
+                                  basin_area = NA, 
+                                  water_year = FALSE,
+                                  water_year_start = 10,
+                                  start_year = 0,
+                                  end_year = 9999,
+                                  exclude_years = NULL,
+                                  annual_percentiles = c(10,90),
+                                  monthly_percentiles = c(10,20),
+                                  stats_days = 1,
+                                  stats_align = "right",
+                                  lowflow_days = c(1,3,7,30),
+                                  lowflow_align = "right",
+                                  timing_percent = c(25,33,50,75),
+                                  normal_percentiles = c(25,75),
+                                  transpose = FALSE,
+                                  ignore_missing = FALSE){
   
   
-  #--------------------------------------------------------------
-  #  Error checking on the input parameters
   
-  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
-  if( is.null(HYDAT)) {
-    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
-    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
-    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
-    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
-    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
-    if( any(flowdata$Value <0, na.rm=TRUE))           {warning('flowdata cannot have negative values - check your data')}
-  }
+  ## ARGUMENT CHECKS
+  ## ---------------
   
-  if( !is.logical(water_year))         {stop("water_year argument must be logical (TRUE/FALSE)")}
-  if( !is.numeric(water_year_start) )  {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( length(water_year_start)>1)      {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( !water_year_start %in% c(1:12) ) {stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec)")}
-  
-  if( length(start_year)>1)   {stop("only one start_year value can be selected")}
-  if( !is.null(start_year) )  {if( !start_year %in% c(0:5000) )  {stop("start_year must be an integer")}}
-  if( length(end_year)>1)     {stop("only one end_year value can be selected")}
-  if( !is.null(end_year) )    {if( !end_year %in% c(0:5000) )  {stop("end_year must be an integer")}}
-  if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("list of exclude_years must be numeric - ex. 1999 or c(1999,2000)")}
-  
-  if( !is.na(basin_area) & !is.numeric(basin_area)) {stop("basin_area argument must be numeric")}
-  if( length(basin_area)>1)                         {stop("basin_area argument cannot have length > 1")}
-  
-  if( !is.numeric(lowflow_days))                       {stop("lowflow_days argument must be numeric")}
-  if( !all(lowflow_days %in% c(1:180)) )               {stop("lowflow_days argument must be integers > 0 and <= 180)")}
-  if( !lowflow_align %in% c("right","left","center"))  {stop("lowflow_align argument must be 'right', 'left', or 'center'")}
-  
-  if( !is.logical(totalflow_seasons))  {stop("totalflow_seasons argument must be logical (TRUE/FALSE)")}
-  
-  if( !is.numeric(timing_percent) )                 {stop("timing_percent must be numeric")}
-  if( !all(timing_percent>0 & timing_percent<100))  {stop("timing_percent must be >0 and <100)")}
-  
-  if( !all(is.na(annual_percentiles)) & !is.numeric(annual_percentiles) )                 {stop("annual_percentiles argument must be numeric")}
-  if( !all(is.na(annual_percentiles)) & (!all(annual_percentiles>0 & annual_percentiles<100)) )  {stop("annual_percentiles must be >0 and <100)")}
-  if( !all(is.na(monthly_percentiles)) & !is.numeric(monthly_percentiles) )                 {stop("monthly_percentiles argument must be numeric")}
-  if( !all(is.na(monthly_percentiles)) & (!all(monthly_percentiles>0 & monthly_percentiles<100)) )  {stop("monthly_percentiles must be >0 and <100)")}
-  
-  if( !is.numeric(normal_percentiles) )                {stop("normal_percentiles must be numeric")}
-  if( length(normal_percentiles)!=2 )                  {stop("normal_percentiles must be two percentile values (ex. c(25,75))")}
-  if( normal_percentiles[1] >= normal_percentiles[2] ) {stop("normal_percentiles[1] must be < normal_percentiles[2]")}
-  if( !all(is.na(normal_percentiles)) & (!all(normal_percentiles>0 & normal_percentiles<100)) )  {stop("normal_percentiles must be >0 and <100)")}
-
-  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
-  
-  if( !is.logical(transpose))    {stop("transpose parameter must be logical (TRUE/FALSE)")}
-  if( !is.logical(write_table))  {stop("write_table parameter must be logical (TRUE/FALSE)")}
-  if( !is.numeric(write_digits))  {stop("write_digits parameter needs to be numeric")}
-  write_digits <- round(write_digits[1])
-  
-  if( !dir.exists(as.character(write_dir))) {
-    message("directory for saved files does not exist, new directory will be created")
-    if( write_table & write_dir!="." ) {dir.create(write_dir)}
-  }
-
-  # If HYDAT station is listed, check if it exists and make it the flowdata
-  if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 ) {stop("only one HYDAT station can be selected")}
-    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
-    if( is.na(station_name) ) {station_name <- HYDAT}
-    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
-    if (is.na(basin_area)) {basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = HYDAT)$DRAINAGE_AREA_GROSS)}
-  }
-  
-  # Looks for STATION_NUMBER column to search for basin_area
-  if ( is.na(basin_area) & "STATION_NUMBER" %in% names(flowdata)){
-    basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = flowdata$STATION_NUMBER[1])$DRAINAGE_AREA_GROSS)
-  }
-  
-  # Check if no basin_area if use-yield is TRUE
-  if( is.na(basin_area) )  {
-    warning("no basin_area provided, 'Yield' values will be NA")}
-  
-  #--------------------------------------------------------------
-  # Set the flowdata for analysis
-  
-  # Select just Date and Value for analysis
-  flowdata <- dplyr::select(flowdata,Date,Value)
-  
-  # add date variables to determine the min/max cal/water years
-  flowdata <- fasstr::add_date_variables(flowdata,water_year = T,water_year_start = water_year_start)
-  if (is.null(start_year)) {start_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))}
-  if (is.null(end_year)) {end_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))}
-  if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
-
-  
-  #--------------------------------------------------------------
-  # Complete analysis
-  
-  Qannual_stats <- fasstr::calc_annual_stats(flowdata=flowdata,
-                                               HYDAT=NULL,
-                                               percentiles=annual_percentiles,
-                                               water_year=water_year,
-                                               water_year_start=water_year_start,
-                                               start_year=start_year,
-                                               end_year=end_year,
-                                               exclude_years=exclude_years,
-                                               na.rm=na.rm)
-  
-
-  Qannual_lowflows <- fasstr::calc_annual_lowflows(flowdata=flowdata,
-                                                     HYDAT=NULL,
-                                                     rolling_days=lowflow_days,
-                                                     rolling_align=lowflow_align,
-                                                     water_year=water_year,
-                                                     water_year_start=water_year_start,
-                                                     start_year=start_year,
-                                                     end_year=end_year,
-                                                     exclude_years=exclude_years,
-                                                     na.rm=na.rm)
-  Qannual_lowflows <- dplyr::select(Qannual_lowflows,-dplyr::contains("Date"))
+  water_year_checks(water_year, water_year_start)
+  years_checks(start_year, end_year, exclude_years)
+  transpose_checks(transpose)
+  ignore_missing_checks(ignore_missing)
+  ann_percentiles_checks(annual_percentiles)
+  mon_percentiles_checks(monthly_percentiles)
+  stats_days_checks(stats_days, stats_align)
+  lowflow_days_checks(lowflow_days, lowflow_align)
+  timing_pct_checks(timing_percent)
+  normal_percentiles_checks(normal_percentiles)
+  sort(normal_percentiles)
   
   
-  Qannual_totalflows <- fasstr::calc_annual_total_flows(flowdata=flowdata,
-                                                          HYDAT=NULL,
-                                                          basin_area=basin_area,
-                                                          water_year=water_year,
-                                                          water_year_start=water_year_start,
-                                                          start_year=start_year,
-                                                          end_year=end_year,
-                                                          exclude_years=exclude_years,
-                                                          incl_seasons=totalflow_seasons,
-                                                          na.rm=na.rm)
+  ## FLOW DATA CHECKS AND FORMATTING
+  ## -------------------------------
+  
+  # Check if data is provided and import it
+  flow_data <- flowdata_import(data = data, 
+                               station_number = station_number)
+  
+  # Save the original columns (to check for STATION_NUMBER col at end) and ungroup if necessary
+  orig_cols <- names(flow_data)
+  flow_data <- dplyr::ungroup(flow_data)
+  
+  # Check and rename columns
+  flow_data <- format_all_cols(data = flow_data,
+                               dates = as.character(substitute(dates)),
+                               values = as.character(substitute(values)),
+                               groups = as.character(substitute(groups)),
+                               rm_other_cols = TRUE)
   
   
-  Qannual_flowdates <- fasstr::calc_annual_flow_timing(flowdata=flowdata,
-                                                         HYDAT=NULL,
-                                                         percent_total=timing_percent,
-                                                         water_year=water_year,
-                                                         water_year_start=water_year_start,
-                                                         start_year=start_year,
-                                                         end_year=end_year,
-                                                         exclude_years=exclude_years)
-  Qannual_flowdates <- dplyr::select(Qannual_flowdates,Year,dplyr::contains("DoY"))
+  ## CALCULATE STATISTICS
+  ## --------------------
   
-  Qannual_months <- fasstr::calc_monthly_stats(flowdata=flowdata,
-                                                 HYDAT=NULL,
-                                                 percentiles=monthly_percentiles,
-                                                 water_year=water_year,
-                                                 water_year_start=water_year_start,
-                                                 start_year=start_year,
-                                                 end_year=end_year,
-                                                 exclude_years=exclude_years,
-                                                 spread = TRUE,
-                                                 na.rm=na.rm)
+  annual_stats <- suppressWarnings(calc_annual_stats(data = flow_data,
+                                                     percentiles = annual_percentiles,
+                                                     roll_days = stats_days,
+                                                     roll_align = stats_align,
+                                                     water_year = water_year,
+                                                     water_year_start = water_year_start,
+                                                     start_year = start_year,
+                                                     end_year = end_year,
+                                                     exclude_years = exclude_years, 
+                                                     ignore_missing = ignore_missing))
   
-  Qannual_normals <- fasstr::calc_annual_outside_normal(flowdata=flowdata,
-                                                               HYDAT=NULL,
-                                                               normal_percentiles=normal_percentiles,
-                                                               water_year=water_year,
-                                                               water_year_start=water_year_start,
-                                                               start_year=start_year,
-                                                               end_year=end_year,
-                                                               exclude_years=exclude_years)
+  # Gather to name all columns with CY or WY for calendar or water year
+  annual_stats <- tidyr::gather(annual_stats, Stat, Value, 3:ncol(annual_stats))
+  annual_stats <- dplyr::mutate(annual_stats, Stat = paste0("Annual_", Stat))
+  annual_stats <- tidyr::spread(annual_stats, Stat, Value)
   
   
-  # Combine all and label columns
-  Qstat <- merge(Qannual_stats,Qannual_lowflows,by="Year",all = TRUE)
-  Qstat <- merge(Qstat,Qannual_totalflows,by="Year",all = TRUE)
-  Qstat <- merge(Qstat,Qannual_flowdates,by="Year",all = TRUE)
-  Qstat <- merge(Qstat,Qannual_normals,by="Year",all = TRUE)
-  Qstat <- merge(Qstat,Qannual_months,by="Year",all = TRUE)
-  Qstat <- tidyr::gather(Qstat,Stat,Value,2:ncol(Qstat))
-  Qstat <- dplyr::mutate(Qstat,Stat=paste0(ifelse(water_year,paste("WY_"),paste("CY_")),Stat))
-  col.order <- c("Year",unique(Qstat$Stat)) # to keep the same order as merged when spread below
-  Qstat <- tidyr::spread(Qstat,Stat,Value)
-  Qstat <- Qstat[,col.order]
+  lowflow_stats <- suppressWarnings(calc_annual_lowflows(data = flow_data,
+                                                         roll_days = lowflow_days,
+                                                         roll_align = lowflow_align,
+                                                         water_year = water_year,
+                                                         water_year_start = water_year_start,
+                                                         start_year = start_year,
+                                                         end_year = end_year,
+                                                         exclude_years = exclude_years,
+                                                         ignore_missing = ignore_missing))
+  lowflow_stats <- dplyr::select(lowflow_stats, -dplyr::contains("Date"))
+  
+  
+  totalQ_stats <- suppressWarnings(calc_annual_cumulative_stats(data = flow_data,
+                                                                use_yield = FALSE,
+                                                                basin_area = NA,
+                                                                water_year = water_year,
+                                                                water_year_start = water_year_start,
+                                                                start_year = start_year,
+                                                                end_year = end_year,
+                                                                exclude_years = exclude_years,
+                                                                incl_seasons = TRUE))
+  
+  totalyield_stats <- suppressWarnings(calc_annual_cumulative_stats(data = flow_data,
+                                                                    use_yield = TRUE,
+                                                                    basin_area = basin_area,
+                                                                    water_year = water_year,
+                                                                    water_year_start = water_year_start,
+                                                                    start_year = start_year,
+                                                                    end_year = end_year,
+                                                                    exclude_years = exclude_years,
+                                                                    incl_seasons = TRUE))
+  
+  
+  timing_stats <- suppressWarnings(calc_annual_flow_timing(data = flow_data,
+                                                           percent_total = timing_percent,
+                                                           water_year = water_year,
+                                                           water_year_start = water_year_start,
+                                                           start_year = start_year,
+                                                           end_year = end_year,
+                                                           exclude_years = exclude_years))
+  timing_stats <- dplyr::select(timing_stats, STATION_NUMBER, Year, dplyr::contains("DoY"))
+  
+  
+  month_stats <- suppressWarnings(calc_monthly_stats(data = flow_data,
+                                                     percentiles = monthly_percentiles,
+                                                     roll_days = stats_days,
+                                                     roll_align = stats_align,
+                                                     water_year = water_year,
+                                                     water_year_start = water_year_start,
+                                                     start_year = start_year,
+                                                     end_year = end_year,
+                                                     exclude_years = exclude_years,
+                                                     spread = TRUE,
+                                                     ignore_missing = ignore_missing))
+  
+  
+  normals_stats <- suppressWarnings(calc_annual_outside_normal(data = flow_data,
+                                                               normal_percentiles = normal_percentiles,
+                                                               roll_days = stats_days,
+                                                               roll_align = stats_align,
+                                                               water_year = water_year,
+                                                               water_year_start = water_year_start,
+                                                               start_year = start_year,
+                                                               end_year = end_year,
+                                                               exclude_years = exclude_years))
+  
+  ## COMBINE ALL STATS
+  ## -----------------
+  
+  # Create the megazord
+  all_stats <- merge(annual_stats, lowflow_stats, by = c("STATION_NUMBER", "Year"), all = TRUE)
+  all_stats <- merge(all_stats, totalQ_stats, by = c("STATION_NUMBER", "Year"), all = TRUE)
+  all_stats <- merge(all_stats, totalyield_stats, by = c("STATION_NUMBER", "Year"), all = TRUE)
+  all_stats <- merge(all_stats, timing_stats, by = c("STATION_NUMBER", "Year"), all = TRUE)
+  all_stats <- merge(all_stats, normals_stats, by = c("STATION_NUMBER", "Year"), all = TRUE)
+  all_stats <- merge(all_stats, month_stats, by = c("STATION_NUMBER", "Year"), all = TRUE)
+  
+  # Gather to name all columns with CY or WY for calendar or water year
+  all_stats <- tidyr::gather(all_stats, Stat, Value, 3:ncol(all_stats))
+  #all_stats <- dplyr::mutate(all_stats, Stat = paste0(ifelse(water_year, paste("WY_"), paste("CY_")), Stat))
+  
+  # Spread back using the same order
+  col_order <- c("STATION_NUMBER", "Year", unique(all_stats$Stat))
+  all_stats <- tidyr::spread(all_stats, Stat, Value)
+  all_stats <- all_stats[, col_order]
   
   # Remove excluded years
-  Qstat <- dplyr::filter(Qstat, Year >= start_year & Year <= end_year)
-  Qstat[Qstat$Year %in% exclude_years,-1] <- NA
+  all_stats <- dplyr::filter(all_stats, Year >= start_year & Year <= end_year)
+  all_stats[all_stats$Year %in% exclude_years, -(1:2)] <- NA
   
   
-  # Transpose data if selected
-  if(transpose){
+  # Give warning if any NA values or no basin areas
+  if ( anyNA(dplyr::select(all_stats, -dplyr::contains("Yield"))) & 
+       all(is.na(dplyr::select(all_stats, dplyr::contains("Yield"))))) 
+    warning("No basin area values provided or extracted from HYDAT, and one or more calculations included missing values and NA's were produced. Provide a basin_area if desired and/or filter data for complete years or months, or use to ignore_missing = TRUE to ignore missing values.", call. = FALSE)
+  
+  if ( !anyNA(dplyr::select(all_stats, -dplyr::contains("Yield"))) & 
+       all(is.na(dplyr::select(all_stats, dplyr::contains("Yield"))))) 
+    warning("No basin area values provided or extracted from HYDAT and NA's were produced for all 'Yield' calculations. Use basin_area argument to provide one if desired.", call. = FALSE)
+  
+  if ( anyNA(all_stats[,3:ncol(all_stats)]) & 
+       !all(is.na(dplyr::select(all_stats, dplyr::contains("Yield"))))) 
+    warning("One or more calculations included missing values and NA's were produced. Filter data for complete years or months, or use to ignore_missing = TRUE to ignore missing values.", call. = FALSE)
+  
+  
+  
+  # If transpose if selected, switch columns and rows
+  if (transpose) {
     options(scipen = 999)
-    Qstat_tpose <- tidyr::gather(Qstat,Statistic,Value,-Year)
-    Qstat_tpose_temp <- dplyr::mutate(Qstat_tpose,Value=round(Value,write_digits)) # for writing to csv
-    Qstat <- tidyr::spread(Qstat_tpose,Year,Value)
+    
+    # Get list of columns to order the Statistic column after transposing
+    stat_levels <- names(all_stats[-(1:2)])
+    
+    # Transpose the columns for rows
+    all_stats <- tidyr::gather(all_stats, Statistic, Value, -STATION_NUMBER, -Year)
+    all_stats <- tidyr::spread(all_stats, Year, Value)
+    
+    # Order the columns
+    all_stats$Statistic <- factor(all_stats$Statistic, levels = stat_levels)
+    all_stats <- dplyr::arrange(all_stats, STATION_NUMBER, Statistic)
   }
   
   
-  # Write the table if selected
-  if(write_table){
-    file_Qstat_table <- file.path(write_dir, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),
-                                                   "-all-annual-statistics.csv", sep=""))
-    temp <- Qstat
-    temp <- round(temp, write_digits)
-    if(transpose){
-      temp <- tidyr::spread(Qstat_tpose_temp,Year,Value)
-    }
-    utils::write.csv(temp,file=file_Qstat_table, row.names=FALSE)
+  # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
+  if("STATION_NUMBER" %in% orig_cols) {
+    names(all_stats)[names(all_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
+  } else {
+    all_stats <- dplyr::select(all_stats, -STATION_NUMBER)
   }
   
-  return(Qstat)
+  dplyr::as_tibble(all_stats)
   
   
 } 

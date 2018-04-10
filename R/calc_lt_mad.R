@@ -15,126 +15,145 @@
 #' @description Calculates the long-term mean annual discharge of a streamflow dataset. Averages all daily discharge values from all years,
 #'   unless specified.
 #'
-#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-#'    Not required if \code{HYDAT} argument is used.
-#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-#'    database are required. Not required if \code{flowdata} argument is used.
-#' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
-#'    by the year in which they end. Default \code{FALSE}.
-#' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
-#' @param start_year Integer. First year to consider for analysis. Leave blank if all years are required.
-#' @param end_year Integer. Last year to consider for analysis. Leave blank if all years are required.
-#' @param exclude_years Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.  
-#' @param months Integer. Vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Leave blank for all months. 
-#'    Default \code{1:12}.
-#' @param percent_MAD Numeric. Percent of long-term mean annual discharge to output. Default \code{100} (i.e. 100pct. MAD).
+#' @inheritParams calc_daily_stats
+#' @inheritParams calc_monthly_stats
+#' @param percent_MAD Numeric vector of percents of long-term mean annual discharge to add to the table (ex. 20 for 20 percent MAD).
+#'    Leave blank for no values to be calculated.
 #'
-#' @return A numeric value of a long-term mean of selected years and months.
+#' @return A tibble data frame of numeric values of a long-term mean (and percent of long-term mean if selected) of selected years and months.
 #' 
 #' @examples
 #' \dontrun{
 #' 
-#' calc_lt_mad(flowdata = data, start_year = 1980, end_year = 2010)
+#' calc_lt_mad(station_number = "08NM116", 
+#'             water_year = TRUE, 
+#'             exclude_years = (1990, 1992:1994))
 #' 
-#' calc_lt_mad(HYDAT = "08NM116",water_year = TRUE, exclude_years = (1990, 1992:1994))
-#' 
-#' calc_lt_mad(HYDAT = "08NM116", percent_MAD = 20)
+#' calc_lt_mad(station_number = "08NM116", 
+#'             percent_MAD = 20)
 #' 
 #' }
 #' @export
 
-#--------------------------------------------------------------
 
-calc_lt_mad <- function(flowdata=NULL,
-                         HYDAT=NULL,
-                         water_year=FALSE, 
-                         water_year_start=10,
-                         start_year=NULL,
-                         end_year=NULL,
-                         exclude_years=NULL,
-                         months=1:12,
-                         percent_MAD=100){
+calc_lt_mad <- function(data = NULL,
+                        dates = Date,
+                        values = Value,
+                        groups = STATION_NUMBER,
+                        station_number = NULL,
+                        roll_days = 1,
+                        roll_align = "right",
+                        water_year = FALSE,
+                        water_year_start = 10,
+                        start_year = 0,
+                        end_year = 9999,
+                        exclude_years = NULL,
+                        complete_years = FALSE,
+                        months = 1:12,
+                        percent_MAD = NA,
+                        transpose = FALSE){
   
   
-  #--------------------------------------------------------------
-  #  Error checking on the input parameters
+  ## ARGUMENT CHECKS
+  ## ---------------
   
-  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
-  if( is.null(HYDAT)) {
-    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
-    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
-    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
-    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
-    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
-    if( any(flowdata$Value <0, na.rm=TRUE))           {warning('flowdata cannot have negative values - check your data')}
-  }
+  rolling_days_checks(roll_days, roll_align)
+  water_year_checks(water_year, water_year_start)
+  years_checks(start_year, end_year, exclude_years)
+  complete_yrs_checks(complete_years)
+  transpose_checks(transpose)
   
-  if( !is.logical(water_year))         {stop("water_year argument must be logical (TRUE/FALSE)")}
-  if( !is.numeric(water_year_start) )  {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( length(water_year_start)>1)      {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( !water_year_start %in% c(1:12) ) {stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec)")}
+  if(!all(is.na(percent_MAD)) & all(percent_MAD <= 0))  
+    stop("Numbers in percent_MAD argument must > 0.", call. = FALSE)
   
-  if( length(start_year)>1)   {stop("only one start_year value can be selected")}
-  if( !is.null(start_year) )  {if( !start_year %in% c(0:5000) )  {stop("start_year must be an integer")}}
-  if( length(end_year)>1)     {stop("only one end_year value can be selected")}
-  if( !is.null(end_year) )    {if( !end_year %in% c(0:5000) )  {stop("end_year must be an integer")}}
   
-  if( !is.null(exclude_years) ) {
-    if( !all(exclude_years %in% c(0:5000)) ) {stop("exclude_years must be integers (ex. 1999 or c(1999,2000))")}}
-  if( (is.null(start_year) & is.null(end_year) & is.null(exclude_years)) & water_year ) {
-    message("water_year=TRUE ignored; no start_year, end_year, or exclude_years selected to filter dates")}
+  ## FLOW DATA CHECKS AND FORMATTING
+  ## -------------------------------
   
-  if( !is.numeric(months) )         {stop("months argument must be integers")}
-  if( !all(months %in% c(1:12)) )   {stop("months argument must be integers between 1 and 12 (Jan-Dec)")}
+  # Check if data is provided and import it
+  flow_data <- flowdata_import(data = data, 
+                               station_number = station_number)
   
-  if( all(percent_MAD <=0) )      {stop("percent_MAD must be a single number > 0")}
-
-  # If HYDAT station is listed, check if it exists and make it the flowdata
-  if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 )                                  {stop("Only one HYDAT station can be selected.")}
-    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
-    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
-  }
+  # Save the original columns (to check for STATION_NUMBER col at end) and ungroup if necessary
+  orig_cols <- names(flow_data)
+  flow_data <- dplyr::ungroup(flow_data)
   
-  #-------------------------------------------------------------
-  # Set the flowdata for analysis
+  # Check and rename columns
+  flow_data <- format_all_cols(data = flow_data,
+                               dates = as.character(substitute(dates)),
+                               values = as.character(substitute(values)),
+                               groups = as.character(substitute(groups)),
+                               rm_other_cols = TRUE)
   
-  # Select just Date and Value for analysis
-  flowdata <- dplyr::select(flowdata,Date,Value)
   
-  # add date variables to determine the min/max cal/water years
-  flowdata <- fasstr::add_date_variables(flowdata,water_year = T,water_year_start = water_year_start)
-  if (is.null(start_year)) {start_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))}
-  if (is.null(end_year)) {end_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))}
-  if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
+  ## PREPARE FLOW DATA
+  ## -----------------
   
-  #  Fill in the missing dates and the add the date variables again
-  flowdata <- fasstr::fill_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
-  flowdata <- fasstr::add_date_variables(flowdata,water_year = T,water_year_start = water_year_start)
+  # Fill missing dates, add date variables, and add AnalysisYear
+  flow_data <- analysis_prep(data = flow_data, 
+                             water_year = water_year, 
+                             water_year_start = water_year_start,
+                             year = TRUE)
   
-  # Set selected year-type column for analysis
-  if (water_year) {
-    flowdata$AnalysisYear <- flowdata$WaterYear
-  }  else {
-    flowdata$AnalysisYear <- flowdata$Year
-  }
+  # Add rolling means to end of dataframe
+  flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
+  colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
   
   # Filter for the selected year
-  flowdata <- dplyr::filter(flowdata,AnalysisYear>=start_year & AnalysisYear <= end_year)
-  flowdata <- dplyr::filter(flowdata,!(AnalysisYear %in% exclude_years))
-  flowdata <- dplyr::filter(flowdata,Month %in% months)
+  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
+  flow_data <- dplyr::filter(flow_data, Month %in% months)
+  
+  # Remove incomplete years if selected
+  flow_data <- filter_complete_yrs(complete_years = complete_years, 
+                                   flow_data)
+  
+  # Give warning if any NA values
+  missing_values_warning_noNA(flow_data$RollingValue)
+  
+  ## CALCULATE STATISTICS
+  ## --------------------
+  
+  ltmad_stats <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER),
+                              LTMAD = mean(RollingValue, na.rm = TRUE))
   
   
-  #--------------------------------------------------------------
-  # Complete the analysis
+  # Calculate the monthly and longterm percentiles
+  if(!all(is.na(percent_MAD))) {
+    for (pcnt in percent_MAD) {
+      ltmad_stats <- dplyr::mutate(ltmad_stats, Percent = LTMAD * pcnt / 100)
+      names(ltmad_stats)[names(ltmad_stats) == "Percent"] <- paste0(pcnt, "%MAD")
+      
+    }
+  }
   
-  # Calculate the long-term mean annual discharge
-  LTMAD <- mean(flowdata$Value,na.rm =T)*(percent_MAD/100)
+  # If transpose if selected, switch columns and rows
+  if (transpose) {
+    # Get list of columns to order the Statistic column after transposing
+    stat_levels <- names(ltmad_stats[-(1)])
+    
+    # Transpose the columns for rows
+    ltmad_stats <- tidyr::gather(ltmad_stats, Statistic, Value, -STATION_NUMBER)
+    
+    # Order the columns
+    ltmad_stats$Statistic <- factor(ltmad_stats$Statistic, levels = stat_levels)
+    ltmad_stats <- dplyr::arrange(ltmad_stats, STATION_NUMBER, Statistic)
+  }
+  
+  # Recheck if station_number was in original flow_data and rename or remove as necessary
+  if(as.character(substitute(groups)) %in% orig_cols) {
+    names(ltmad_stats)[names(ltmad_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
+  } else {
+    ltmad_stats <- dplyr::select(ltmad_stats, -STATION_NUMBER)
+  }
   
   
   
-  return(LTMAD)
+  # If just one value is in the table, return is as a value, otherwise return it as a tibble
+  if(nrow(ltmad_stats) == 1 & ncol(ltmad_stats) == 1){
+    dplyr::pull(dplyr::as_tibble(ltmad_stats)[1,1])
+  } else {
+    dplyr::as_tibble(ltmad_stats)
+  }
   
 }

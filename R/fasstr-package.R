@@ -1,0 +1,34 @@
+# Copyright 2017 Province of British Columbia
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and limitations under the License.
+
+#' @references 
+#' 
+#' Tidyhydat information:
+#' 
+#' 
+#' To download the latest version of hydat please:
+#'  \itemize{
+#'   \item use the \code{download_hydat()} function.
+#'   }
+#' 
+#'
+#'  For more information on HYDAT 
+#'  \itemize{
+#'    \item Please see this description of the database: goo.gl/H3NXJQ
+#'    \item This page is landing page for technical description of HYDAT:
+#'    \url{http://collaboration.cmc.ec.gc.ca/cmc/hydrometrics/www/}
+#'    \item This page links to a document that outlines database table definitions:
+#'    \url{http://collaboration.cmc.ec.gc.ca/cmc/hydrometrics/www/HYDAT_Definition_EN.pdf}
+#'    }
+#'
+#' @keywords internal
+"_PACKAGE"

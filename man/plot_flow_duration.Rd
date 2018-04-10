@@ -4,59 +4,74 @@
 \alias{plot_flow_duration}
 \title{Plot flow duration curves}
 \usage{
-plot_flow_duration(flowdata = NULL, HYDAT = NULL, water_year = FALSE,
-  water_year_start = 10, start_year = NULL, end_year = NULL,
-  exclude_years = NULL, incl_months = 1:12, incl_longterm = TRUE,
-  custom_months = NULL, log_discharge = TRUE, station_name = NA,
-  write_plot = FALSE, write_imgtype = "pdf", write_imgsize = c(6, 11),
-  write_dir = ".", na.rm = list(na.rm.global = FALSE))
+plot_flow_duration(data = NULL, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number = NULL, roll_days = 1,
+  roll_align = "right", water_year = FALSE, water_year_start = 10,
+  start_year = 0, end_year = 9999, exclude_years = NULL,
+  complete_years = FALSE, custom_months = NULL,
+  custom_months_label = "Custom-Months", ignore_missing = FALSE,
+  months = 1:12, incl_longterm = TRUE, log_discharge = TRUE,
+  include_title = FALSE)
 }
 \arguments{
-\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
+\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+Leave blank if using \code{station_number} argument.}
 
-\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flowdata} argument is used.}
+\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
+Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
-by the year in which they end. Default \code{FALSE}.}
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
+\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
+groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
+Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
 
-\item{start_year}{Integer. First year to consider for analysis. Leave blank if all years are required.}
+\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
+Leave blank if using \code{data} argument.}
 
-\item{end_year}{Integer. Last year to consider for analysis. Leave blank if all years are required.}
+\item{roll_days}{Numeric value of the number of days to apply a rolling mean. Default \code{1}.}
 
-\item{exclude_years}{Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.}
+\item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
+('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
-\item{incl_months}{Numeric. Months of data to plot. NA if no months required. Default \code{1:12}.}
+\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
+are designated by the calendar year in which they end. Default \code{FALSE}.}
 
-\item{incl_longterm}{Logical. Include longterm curve of all data. Default \code{TRUE}.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
+Default \code{10}.}
 
-\item{custom_months}{Integer. Vector of months to combine to plot (ex. \code{6:8} for Jun-Aug). Leave blank for no custom months to plot.}
+\item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
-\item{log_discharge}{Logical. Plot the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.}
+\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
 
-\item{station_name}{Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
-files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
-will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number.}
+\item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 
-\item{write_plot}{Logical. Write the plot to specified directory. Default \code{FALSE}.}
+\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 
-\item{write_imgtype}{Character. One of "pdf","png","jpeg","tiff", or "bmp" image types to write the plot as. Default \code{"pdf"}.}
+\item{custom_months}{Numeric vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Adds results to the end of table.
+If wanting months that overlap calendar years (ex. Oct-Mar), choose water_year and a water_year_month that begins before the first 
+month listed. Leave blank for no custom month summary.}
 
-\item{write_imgsize}{Numeric. Height and width, respectively, of saved plot. Default \code{c(6,11)}.}
+\item{custom_months_label}{Character string to label custom months. For example, if choosing months 7:9  you may choose 
+"Summer" or "Jul-Sep". Default \code{"Custom-Months"}.}
 
-\item{write_dir}{Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
-Default is the working directory.}
+\item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
+\code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
+with no missing dates will be returned. Default \code{FALSE}.}
 
-\item{na.rm}{TBD}
+\item{months}{Numeric vector of month curves to plot. NA if no months required. Default \code{1:12}.}
+
+\item{incl_longterm}{Logical value indicating whether to include longterm curve of all data. Default \code{TRUE}.}
+
+\item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
+
+\item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 }
 \value{
-A ggplot2 object with plots for each month, long-term, and custom months showing the percentage of time that 
-   flows are likely equal or exceeded for each time period.
+A list of ggplot2 objects with the following for each station provided:
+  \item{Flow_Duration}{a plot that contains flow duration curves for each month, long-term, and (option) customized months}
 }
 \description{
 Plots flow duration curves, percent time a flow value is equalled or exceeded, for a streamflow dataset. Plots 
@@ -66,9 +81,9 @@ Plots flow duration curves, percent time a flow value is equalled or exceeded, f
 \examples{
 \dontrun{
 
-plot_flow_duration(flowdata = flowdata, station_name = "MissionCreek", write_plot = TRUE)
-
-plot_flow_duration(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+plot_flow_duration(station_number = "08NM116", 
+                   water_year = TRUE, 
+                   water_year_start = 8)
 
 }
 }

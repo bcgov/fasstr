@@ -4,25 +4,36 @@
 \alias{fill_missing_dates}
 \title{Fill dates of missing flow values with NA}
 \usage{
-fill_missing_dates(flowdata = NULL, HYDAT = NULL, water_year = FALSE,
+fill_missing_dates(data = NULL, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number = NULL, water_year = FALSE,
   water_year_start = 10)
 }
 \arguments{
-\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
+\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+Leave blank if using \code{station_number} argument.}
 
-\item{HYDAT}{Character. Seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flowdata} argument is used.}
+\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
+Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
-by the year in which they end. Default \code{FALSE}.}
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
+\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
+groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
+Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
+
+\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
+Leave blank if using \code{data} argument.}
+
+\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
+are designated by the calendar year in which they end. Default \code{FALSE}.}
+
+\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
+Default \code{10}.}
 }
 \value{
-A data frame of the original flowdata or HYDAT data with additional rows of filled values of missing dates with NA
+A tibble data frame of the source data with additional rows of filled values of missing dates.
 }
 \description{
 Adds rows of dates with missing flow values to a streamflow dataset with daily flow values of NA. Missing dates will 
@@ -31,9 +42,9 @@ Adds rows of dates with missing flow values to a streamflow dataset with daily f
 \examples{
 \dontrun{
 
-fill_missing_dates(flowdata = flowdata)
+fill_missing_dates(data = flow_data)
 
-fill_missing_dates(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+fill_missing_dates(station_number = "08NM116", water_year = TRUE, water_year_start = 8)
 
 }
 }

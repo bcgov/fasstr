@@ -4,3 +4,6 @@
 ^CODE_OF_CONDUCT.md$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^README-.*\.png$
+^testing$
+^\.travis\.yml$

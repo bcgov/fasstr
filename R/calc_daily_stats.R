@@ -14,34 +14,15 @@
 #'
 #' @description Calculates the daily mean, median, maximum, minimum, and percentiles for each day of the year of daily flow values 
 #'    from a streamflow dataset. Calculate the statistics from all daily discharge values from all years, unless specified. Can determine
-#'    statistics of rolling mean days (e.g. 7-day flows) using the rolling_days argument.
-#'
-#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-#'    Not required if \code{HYDAT} argument is used.
-#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-#'    database are required. Not required if \code{flowdata} argument is used.
-#' @param percentiles Numeric. Vector of percentiles to calculate. Set to NA if none required. Default \code{c(5,25,75,95)}
-#' @param rolling_days  Numeric. The number of days to apply a rolling mean. Default \code{1}.
-#' @param rolling_align Character. Specifies whether the dates of the rolling mean should be specified by the first ('left'), last ('right),
-#'    or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.
-#' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
-#'    by the year in which they end. Default \code{FALSE}.
-#' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
-#' @param start_year Integer. First year to consider for analysis. Leave blank if all years are required.
-#' @param end_year Integer. Last year to consider for analysis. Leave blank if all years are required.
-#' @param exclude_years Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.  
-#' @param transpose Logical. Switch the rows and columns of the results table. Default \code{FALSE}.
-#' @param station_name Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
-#'    files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
-#'    will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number. 
-#' @param write_table Logical. Write the table as a .csv file to specified directory. Default \code{FALSE}.
-#' @param write_digits Numeric. Number of significant digits to round the results in the written table. Default \code{3}.
-#' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
-#'    Default is the working directory.
+#'    statistics of rolling mean days (e.g. 7-day flows) using the roll_days argument. Note that statistics are based on the numeric days
+#'    of year (1-365) and not the date (Jan1 - Dec 31) of year so day of year values for days after Feb 29 in leap years will be one value
+#'    higher than non-leap years.
 #'    
-#' @return A data frame with the following columns:
+#' @inheritParams calc_annual_stats
+#' @param percentiles Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(5,25,75,95)}.
+#' @param complete_years Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.          
+#'    
+#' @return A tibble data frame with the following columns:
 #'   \item{Date}{date (MMM-DD) of daily statistics}
 #'   \item{DayofYear}{day of year of daily statistics}
 #'   \item{Mean}{daily mean of all flows for a given day of the year}
@@ -59,187 +40,161 @@
 #' @examples
 #' \dontrun{
 #' 
-#'calc_daily_stats(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
 #' 
-#'calc_daily_stats(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
+#' calc_daily_stats(station_number = "08NM116", 
+#'                  water_year = TRUE, 
+#'                  water_year_start = 8, 
+#'                  percentiles = c(1:10))
 #'
 #' }
 #' @export
 
-#--------------------------------------------------------------
 
-calc_daily_stats <- function(flowdata=NULL,
-                               HYDAT=NULL,
-                               percentiles=c(5,25,75,95),
-                               rolling_days=1,
-                               rolling_align="right",
-                               water_year=FALSE,
-                               water_year_start=10,
-                               start_year=NULL,
-                               end_year=NULL,
-                               exclude_years=NULL, 
-                               transpose=FALSE,
-                               station_name=NA,
-                               write_table=FALSE,     
-                               write_digits=3,
-                               write_dir=".",
-                               na.rm=list(na.rm.global=FALSE)){
+
+calc_daily_stats <- function(data = NULL,
+                             dates = Date,
+                             values = Value,
+                             groups = STATION_NUMBER,
+                             station_number = NULL,
+                             percentiles = c(5,25,75,95),
+                             roll_days = 1,
+                             roll_align = "right",
+                             water_year = FALSE,
+                             water_year_start = 10,
+                             start_year = 0,
+                             end_year = 9999,
+                             exclude_years = NULL, 
+                             complete_years = FALSE,
+                             months = 1:12,
+                             transpose = FALSE,
+                             ignore_missing = FALSE){
   
   
-  #--------------------------------------------------------------
-  #  Error checking on the input parameters
+  ## ARGUMENT CHECKS
+  ## ---------------
   
-  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
-  if( is.null(HYDAT)) {
-    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
-    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
-    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
-    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
-    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
-    if( any(flowdata$Value <0, na.rm=TRUE))           {warning('flowdata cannot have negative values - check your data')}
-  }
+  rolling_days_checks(roll_days, roll_align)
+  percentiles_checks(percentiles)
+  water_year_checks(water_year, water_year_start)
+  years_checks(start_year, end_year, exclude_years)
+  months_checks(months)
+  transpose_checks(transpose)
+  ignore_missing_checks(ignore_missing)
+  complete_yrs_checks(complete_years)
+    
   
-  if( !is.logical(water_year))         {stop("water_year argument must be logical (TRUE/FALSE)")}
-  if( !is.numeric(water_year_start) )  {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( length(water_year_start)>1)      {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( !water_year_start %in% c(1:12) ) {stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec)")}
+  ## FLOW DATA CHECKS AND FORMATTING
+  ## -------------------------------
   
-  if( length(start_year)>1)   {stop("only one start_year value can be selected")}
-  if( !is.null(start_year) )  {if( !start_year %in% c(0:5000) )  {stop("start_year must be an integer")}}
-  if( length(end_year)>1)     {stop("only one end_year value can be selected")}
-  if( !is.null(end_year) )    {if( !end_year %in% c(0:5000) )  {stop("end_year must be an integer")}}
-  if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("list of exclude_years must be numeric - ex. 1999 or c(1999,2000)")}
+  # Check if data is provided and import it
+  flow_data <- flowdata_import(data = data, 
+                               station_number = station_number)
   
-  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
+  # Save the original columns (to check for STATION_NUMBER col at end) and ungroup if necessary
+  orig_cols <- names(flow_data)
+  flow_data <- dplyr::ungroup(flow_data)
   
-  if( !is.numeric(percentiles))                 {stop("percentiles argument must be numeric")}
-  if( !all(percentiles>0 & percentiles<100))    {stop("percentiles must be >0 and <100)")}
+  # Check and rename columns
+  flow_data <- format_all_cols(data = flow_data,
+                               dates = as.character(substitute(dates)),
+                               values = as.character(substitute(values)),
+                               groups = as.character(substitute(groups)),
+                               rm_other_cols = TRUE)
   
-  if( !is.numeric(rolling_days))                       {stop("rolling_days argument must be numeric")}
-  if( !all(rolling_days %in% c(1:180)) )               {stop("rolling_days argument must be integers > 0 and <= 180)")}
-  if( !rolling_align %in% c("right","left","center"))  {stop("rolling_align argument must be 'right', 'left', or 'center'")}
   
-  if( !is.logical(transpose))    {stop("transpose parameter must be logical (TRUE/FALSE)")}
-  if( !is.logical(write_table))  {stop("write_table parameter must be logical (TRUE/FALSE)")}
-  if( !is.numeric(write_digits))  {stop("csv.ndddigits parameter needs to be numeric")}
-  write_digits <- round(write_digits[1])
+  ## PREPARE FLOW DATA
+  ## -----------------
   
-  if( !dir.exists(as.character(write_dir))) {
-    message("directory for saved files does not exist, new directory will be created")
-    if( write_table & write_dir!="." ) {dir.create(write_dir)}
-  }
+  # Fill missing dates, add date variables, and add AnalysisYear
+  flow_data <- analysis_prep(data = flow_data, 
+                             water_year = water_year, 
+                             water_year_start = water_year_start,
+                             year = TRUE,
+                             doy = TRUE, 
+                             date = TRUE)
   
-  if( !is.list(na.rm))                        {stop("na.rm is not a list") }
-  if(! is.logical(unlist(na.rm)))             {stop("na.rm is list of logical (TRUE/FALSE) values only.")}
-  my.na.rm <- list(na.rm.global=FALSE)
-  if( !all(names(na.rm) %in% names(my.na.rm))){stop("Illegal element in na.rm")}
-  my.na.rm[names(na.rm)]<- na.rm
-  na.rm <- my.na.rm  # set the na.rm for the rest of the function.
-  
-  # If HYDAT station is listed, check if it exists and make it the flowdata
-  if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
-    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
-    if( is.na(station_name) ) {station_name <- HYDAT}
-    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
-  }
-  
-  #--------------------------------------------------------------
-  # Set the flowdata for analysis
-  
-  # Select just Date and Value for analysis
-  flowdata <- dplyr::select(flowdata,Date,Value)
-  
-  # add date variables to determine the min/max cal/water years
-  flowdata <- fasstr::add_date_variables(flowdata,water_year = T,water_year_start = water_year_start)
-  if (is.null(start_year)) {start_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))}
-  if (is.null(end_year)) {end_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))}
-  if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
-  
-  #  Fill in the missing dates and the add the date variables again
-  flowdata <- fasstr::fill_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
-  flowdata <- fasstr::add_date_variables(flowdata,water_year = T,water_year_start = water_year_start)
-  
-  # Set selected year-type and day of year, and date columns for analysis
-  if (water_year) {
-    flowdata$AnalysisYear <- flowdata$WaterYear
-    flowdata$AnalysisDoY <- flowdata$WaterDayofYear
-    if        (water_year_start==1)  {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1989-12-31")
-    } else if (water_year_start==2)  {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-01-31")
-    } else if (water_year_start==3)  {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-02-28")
-    } else if (water_year_start==4)  {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-03-31")
-    } else if (water_year_start==5)  {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-04-30")
-    } else if (water_year_start==6)  {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-05-31")
-    } else if (water_year_start==7)  {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-06-30")
-    } else if (water_year_start==8)  {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-07-31")
-    } else if (water_year_start==9)  {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-08-31")
-    } else if (water_year_start==10) {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-09-30")
-    } else if (water_year_start==11) {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-10-31")
-    } else if (water_year_start==12) {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-11-30")
-    }
-  }  else {
-    flowdata$AnalysisYear <- flowdata$Year
-    flowdata$AnalysisDoY <- flowdata$DayofYear
-    flowdata$AnalysisDate <- as.Date(flowdata$DayofYear, origin = "1899-12-31")
-  }
-  
-  # Apply rolling mean if designated, default of 1
-  flowdata <- fasstr::add_rolling_means(flowdata,days = rolling_days,align = rolling_align)
-  colnames(flowdata)[ncol(flowdata)] <- "RollingValue"
+  # Add rolling means to end of dataframe
+  flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
+  colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
   
   # Filter for the selected and excluded years and leap year values (last day)
-  flowdata <- dplyr::filter(flowdata,AnalysisYear>=start_year & AnalysisYear <= end_year)
-  flowdata <- dplyr::filter(flowdata,!(AnalysisYear %in% exclude_years))
-  flowdata <- dplyr::filter(flowdata,AnalysisDoY<366)
+  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
+  flow_data <- dplyr::filter(flow_data, AnalysisDoY < 366)
   
-  #--------------------------------------------------------------
-  # Complete analysis
   
-  #  Compute daily summary stats
-  Q_daily <- dplyr::summarise(dplyr::group_by(flowdata,AnalysisDate,AnalysisDoY),
-                              Mean=mean(RollingValue, na.rm=T),
-                              Median=median(RollingValue, na.rm=T),
-                              Minimum=min(RollingValue, na.rm=T),
-                              Maximum=max(RollingValue, na.rm=T))
   
+  # Remove incomplete years if selected
+  flow_data <- filter_complete_yrs(complete_years = complete_years, 
+                                   flow_data)
+  
+
+  ## CALCULATE STATISTICS
+  ## --------------------
+
+  # Calculate basic stats
+  daily_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, AnalysisDoY),
+                              Mean = mean(RollingValue, na.rm = ignore_missing),
+                              Median = stats::median(RollingValue, na.rm = ignore_missing),
+                              Minimum = min(RollingValue, na.rm = ignore_missing),
+                              Maximum = max(RollingValue, na.rm = ignore_missing))
+
   # Compute daily percentiles (if 10 or more years of data)
   if (!all(is.na(percentiles))){
     for (ptile in percentiles) {
-      Q_daily_ptile <- dplyr::summarise(dplyr::group_by(flowdata,AnalysisDate,AnalysisDoY),
-                                        Percentile=quantile(RollingValue,ptile/100, na.rm=TRUE))
-      colnames(Q_daily_ptile)[3] <- paste0("P",ptile)
-      Q_daily <- merge(Q_daily,Q_daily_ptile,by=c("AnalysisDate","AnalysisDoY"))
+      daily_stats_ptile <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, AnalysisDoY),
+                                        Percentile = stats::quantile(RollingValue, ptile / 100, na.rm = TRUE))
+      names(daily_stats_ptile)[names(daily_stats_ptile) == "Percentile"] <- paste0("P", ptile)
+
+      # Merge with daily_stats
+      daily_stats <- merge(daily_stats, daily_stats_ptile, by = c("STATION_NUMBER", "AnalysisDate", "AnalysisDoY"))
+
+      # Remove percentile if mean is NA (workaround for na.rm=FALSE in quantile)
+      daily_stats[, ncol(daily_stats)] <- ifelse(is.na(daily_stats$Mean), NA, daily_stats[, ncol(daily_stats)])
     }
   }
   
+  # Filter for months
+  daily_stats$Month <- lubridate::month(daily_stats$AnalysisDate)
+  daily_stats <- dplyr::filter(daily_stats, Month %in% months)
+  daily_stats <- dplyr::select(daily_stats, -Month)
+  
+
   # Final formatting
-  Q_daily <- dplyr::rename(Q_daily,"DayofYear"=AnalysisDoY,Date=AnalysisDate)
-  Q_daily$Date <- format(as.Date(Q_daily$Date),format="%b-%d")
-  col_order <- Q_daily$Date
-  col_names <- names(Q_daily[-1])
-  
-  
-  
-  # If transpose==TRUE
+  daily_stats <- dplyr::rename(daily_stats, DayofYear = AnalysisDoY, Date = AnalysisDate)
+  daily_stats$Date <- format(as.Date(daily_stats$Date), format = "%b-%d")
+  col_order <- daily_stats$Date
+
+
+  # If transpose if selected, switch columns and rows
   if (transpose) {
-    Q_daily <- tidyr::gather(Q_daily,Statistic,Value,-Date)
-    Q_daily <- tidyr::spread(Q_daily,Date,Value)
-    Q_daily <-  Q_daily[,c("Statistic",col_order)]
-    Q_daily <- Q_daily[match(col_names, Q_daily$Statistic),]
-    row.names(Q_daily) <- c(1:nrow(Q_daily))
+    # Get list of columns to order the Statistic column after transposing
+    stat_levels <- names(daily_stats[-(1:2)])
+
+    # Transpose the columns for rows
+    daily_stats <- tidyr::gather(daily_stats, Statistic, Value, -STATION_NUMBER, -Date)
+    daily_stats <- tidyr::spread(daily_stats, Date, Value)
+
+    # Order the columns
+    daily_stats <-  daily_stats[,c("STATION_NUMBER", "Statistic", col_order)]
+    daily_stats$Statistic <- factor(daily_stats$Statistic, levels = stat_levels)
+    daily_stats <- dplyr::arrange(daily_stats, STATION_NUMBER, Statistic)
   }
+
+  # Give warning if any NA values
+  missing_values_warning(daily_stats[, 4:ncol(daily_stats)])
   
-  #  Write the table
-  if (write_table) {
-    file.stat.csv <-file.path(write_dir, 
-                              paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),
-                                    "-daily-summary-stat.csv", sep=""))
-    temp <- Q_daily
-    temp[,2:ncol(temp)] <- round(temp[,2:ncol(temp)], write_digits)  # round the output
-    utils::write.csv(temp, file=file.stat.csv, row.names=FALSE)
+
+  # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
+  if("STATION_NUMBER" %in% orig_cols) {
+    names(daily_stats)[names(daily_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
+  } else {
+    daily_stats <- dplyr::select(daily_stats, -STATION_NUMBER)
   }
-  
-  return(Q_daily)
-  
-  
+
+
+
+  dplyr::as_tibble(daily_stats)
+
+
 }

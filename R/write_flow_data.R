@@ -10,209 +10,168 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Write a streamflow dataset as a .csv
+#' @title Write a streamflow dataset as a .xlsx, .xls, or .csv file
 #'
-#' @description Write a streamflow dataset as a .csv file to a directory. Can add missing dates or filter data by years before writing
-#'    using given arguments. Just list flowdata data frame or HYDAT station number to write its entirety.
+#' @description Write a streamflow dataset to a directory. Can fill missing dates or filter data by years or dates before writing using 
+#'    given arguments. Just list data frame or HYDAT station number to write its entirety. Can write as .xls, .xlsx, or .csv file types.
+#'    Writing as Excel file type uses the 'writexl' package.
 #'
-#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-#'    Not required if \code{HYDAT} argument is used.
-#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-#'    database are required. Not required if \code{flowdata} argument is used.
-#' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
-#'    by the year in which they end. Default \code{FALSE}.
-#' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
-#' @param start_year Integer. First year to consider for writing to csv. Leave blank if all years are required.
-#' @param end_year Integer. Last year to consider for writing to csv. Leave blank if all years are required.
-#' @param exclude_years Integer. Single year or vector of years to exclude from writing to csv. Leave blank if all years are required.  
-#' @param exclude_rm Logical. Will remove the excluded data if \code{TRUE}, otherwise excluded data remain as NA. Default \code{FALSE}.
-#' @param fill_missing_dates Logical. Fill dates with missing flow data with NA. Default \code{FALSE}.
-#' @param station_name Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
-#'    files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
-#'    will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number. 
-#' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
-#'    Default is the working directory.
-#' @param na Character. String to use for missing values in the data. Default \code{""} (blank).
-#' 
-#' @return A .csv file of streamflow data in a selected directory.
+#' @inheritParams calc_annual_stats
+#' @param start_year Numeric value of the first year of data to write. Leave blank to use the first year of the source data.
+#' @param end_year Numeric value of the last year of data to write. Leave blank to use the last year of the source data.
+#' @param start_date Date (YYYY-MM-DD) of first date of data to write. Leave blank if all dates required.
+#' @param end_date  Date (YYYY-MM-DD) of last date of data to write. Leave blank if all dates required.
+#' @param file Character string naming the output file. If none provided, a default file name (with .xlsx) is provided (see 
+#'    "Successfully created" message when using function for file name).
+#' @param fill_missing Logical value indicating whether to fill dates with missing flow data with NA. Default \code{FALSE}.
+#' @param digits Integer indicating the number of decimal places or significant digits used to round flow values. Use follows 
+#'    that of base::round() digits argument.
 #'
 #' @examples
 #' \dontrun{
 #' 
-#'write_flow_data(flowdata = flowdata, station_name = "MissionCreek", na="")
-#' 
-#'write_flow_data(HYDAT = "08NM116")
+#' write_flow_data(station_number = "08NM116", 
+#'                 file = "Mission_Creek_daily_flows.xlsx",
+#'                 fill_missing = TRUE)
 #' 
 #' }
 #' @export
 
-#--------------------------------------------------------------
 
-write_flow_data <- function(flowdata=NULL,
-                            HYDAT=NULL,
-                            water_year=FALSE,
-                            water_year_start=10,
-                            start_year=NULL,
-                            end_year=NULL,
-                            exclude_years=NULL,
-                            exclude_rm=FALSE,
-                            fill_missing_dates=FALSE,
-                            station_name="fasstr",
-                            write_dir=".",
-                            #write_digits=4,
-                            na=""){  
+
+write_flow_data <- function(data = NULL,
+                            dates = Date,
+                            values = Value,
+                            groups = STATION_NUMBER,
+                            station_number = NULL,
+                            water_year = FALSE,
+                            water_year_start = 10,
+                            start_year = 0,
+                            end_year = 9999,
+                            start_date = "0000-01-01",
+                            end_date = "3000-12-31",
+                            file = "",
+                            fill_missing = FALSE,
+                            digits = 10){  
   
-  #--------------------------------------------------------------
-  #  Error checking on the input parameters
-  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
-  if( is.null(HYDAT)) {
-    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
-    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
-    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
-    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
-    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
-    if( any(flowdata$Value <0, na.rm=TRUE))           {warning('flowdata cannot have negative values - check your data')}
+  
+  ## ARGUMENT CHECKS
+  ## ---------------
+  
+  water_year_checks(water_year, water_year_start)
+  years_checks(start_year, end_year, exclude_years = NULL)
+  
+  if (class(try(as.Date(start_date))) == "try-error") stop("start_date must be a date formatted YYYY-MM-DD.", call. = FALSE)
+  if (class(try(as.Date(end_date))) == "try-error")   stop("end_date must be a date formatted YYYY-MM-DD.", call. = FALSE)
+  if (start_date >= end_date)                         stop("start_date must be less than end_date.", call. = FALSE)
+  
+  if (!is.logical(fill_missing))            stop("fill_missing argument must be logical (TRUE/FALSE).", call. = FALSE)
+  
+  
+  
+  
+  ## FLOW DATA CHECKS AND FORMATTING
+  ## -------------------------------
+  
+  # Check if data is provided and import it
+  flow_data <- flowdata_import(data = data, 
+                               station_number = station_number)
+  
+  # Save the original columns (to check for STATION_NUMBER col at end) and ungroup if necessary
+  orig_cols <- names(flow_data)
+  flow_data <- dplyr::ungroup(flow_data)
+  
+  # Check and rename columns
+  flow_data <- format_all_cols(data = flow_data,
+                               dates = as.character(substitute(dates)),
+                               values = as.character(substitute(values)),
+                               groups = as.character(substitute(groups)),
+                               rm_other_cols = FALSE)
+  
+  
+  ## PREPARE FLOW DATA
+  ## -----------------
+  
+  # Fill in the missing dates and the add the date variables again
+  if (fill_missing) {
+    flow_data <- fill_missing_dates(data = flow_data, water_year = water_year, water_year_start = water_year_start)
   }
   
-  if( !is.logical(water_year))         {stop("water_year argument must be logical (TRUE/FALSE)")}
-  if( !is.numeric(water_year_start) )  {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( length(water_year_start)>1)      {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( !water_year_start %in% c(1:12) ) {stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec)")}
+  flow_data <- add_date_variables(data = flow_data, water_year = water_year, water_year_start = water_year_start)
   
-  if( length(start_year)>1)   {stop("only one start_year value can be selected")}
-  if( !is.null(start_year) )  {if( !start_year %in% c(0:5000) )  {stop("start_year must be an integer")}}
-  if( length(end_year)>1)     {stop("only one end_year value can be selected")}
-  if( !is.null(end_year) )    {if( !end_year %in% c(0:5000) )  {stop("end_year must be an integer")}}
-  if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("list of exclude_years must be numeric - ex. 1999 or c(1999,2000)")}
-  
-  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
-  
-  if( !is.logical(fill_missing_dates))  {stop("fill_missing_dates parameter must be logical (TRUE/FALSE)")}
-  if( !is.logical(exclude_rm))  {stop("exclude_rm parameter must be logical (TRUE/FALSE)")}
-  
-  # If HYDAT station is listed, check if it exists and make it the flowdata
-  if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
-    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
-    if (station_name=="fasstr") {station_name <- HYDAT}
-    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
+  # Set selected year-type column for analysis
+  if (water_year) {
+    flow_data$AnalysisYear <- flow_data$WaterYear
+  }  else {
+    flow_data$AnalysisYear <- flow_data$Year
   }
   
-  # Get station name from "STATION_NUMBER" columns if available
-  if (is.null(HYDAT) & "STATION_NUMBER" %in% names(flowdata)) {
-    station_name <- flowdata$STATION_NUMBER[1]
-  }
+  # Filter for the selected year (remove excluded years after)
+  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
   
-  # Fill missing dates
-  if (fill_missing_dates) {
-    flowdata <- fasstr::fill_missing_dates(flowdata=flowdata,
-                                                 HYDAT=NULL,
-                                                 water_year=water_year,
-                                                 water_year_start=water_year_start)
-  }
+  # Filter for specific dates, if selected
+  flow_data <- dplyr::filter(flow_data, Date >= start_date)
+  flow_data <- dplyr::filter(flow_data, Date <= end_date)
   
-  # Filter if start_year is selected
-  if (!is.null(start_year)) {
-    if (water_year) {
-      if (water_year_start==1)         {start_date <- as.Date(paste0(start_year,"-01-01"))
-      } else if (water_year_start==2)  {start_date <- as.Date(paste0(start_year-1,"-02-01"))
-      } else if (water_year_start==3)  {start_date <- as.Date(paste0(start_year-1,"-03-01"))
-      } else if (water_year_start==4)  {start_date <- as.Date(paste0(start_year-1,"-04-01"))
-      } else if (water_year_start==5)  {start_date <- as.Date(paste0(start_year-1,"-05-01"))
-      } else if (water_year_start==6)  {start_date <- as.Date(paste0(start_year-1,"-06-01"))
-      } else if (water_year_start==7)  {start_date <- as.Date(paste0(start_year-1,"-07-01"))
-      } else if (water_year_start==8)  {start_date <- as.Date(paste0(start_year-1,"-08-01"))
-      } else if (water_year_start==9)  {start_date <- as.Date(paste0(start_year-1,"-09-01"))
-      } else if (water_year_start==10) {start_date <- as.Date(paste0(start_year-1,"-10-01"))
-      } else if (water_year_start==11) {start_date <- as.Date(paste0(start_year-1,"-11-01"))
-      } else if (water_year_start==12) {start_date <- as.Date(paste0(start_year-1,"-12-01"))
-      }
-    } else if (!water_year) {
-      start_date <- as.Date(paste0(start_year,"-01-01"))
-    }
-    flowdata <- dplyr::filter(flowdata,Date>=start_date)
-  }
+  # Round the values
+  flow_data$Value <- round(flow_data$Value, digits = digits)
   
-  # Filter if end_year is selected
-  if (!is.null(end_year)) {
-    if (water_year) {
-      if (water_year_start==1)         {end_date <- as.Date(paste0(end_year,"-12-31"))
-      } else if (water_year_start==2)  {end_date <- as.Date(paste0(end_year,"-01-31"))
-      } else if (water_year_start==3)  {end_date <- as.Date(paste0(end_year,"-03-01"))-1
-      } else if (water_year_start==4)  {end_date <- as.Date(paste0(end_year,"-03-31"))
-      } else if (water_year_start==5)  {end_date <- as.Date(paste0(end_year,"-04-30"))
-      } else if (water_year_start==6)  {end_date <- as.Date(paste0(end_year,"-05-31"))
-      } else if (water_year_start==7)  {end_date <- as.Date(paste0(end_year,"-06-30"))
-      } else if (water_year_start==8)  {end_date <- as.Date(paste0(end_year,"-07-31"))
-      } else if (water_year_start==9)  {end_date <- as.Date(paste0(end_year,"-08-31"))
-      } else if (water_year_start==10) {end_date <- as.Date(paste0(end_year,"-09-30"))
-      } else if (water_year_start==11) {end_date <- as.Date(paste0(end_year,"-10-31"))
-      } else if (water_year_start==12) {end_date <- as.Date(paste0(end_year,"-11-30"))
-      }
-    } else if (!water_year) {
-      end_date <- as.Date(paste0(end_year,"-12-31"))
-    }
-    flowdata <- dplyr::filter(flowdata,Date<=end_date)
-  }
+  # Sort by station and date
+  flow_data <- dplyr::arrange(flow_data, STATION_NUMBER, Date)
   
-  # Remove excluded years
-  if (!is.null(exclude_years)) {
+  # Get list of stations for writing (if data argument used)
+  stns <- unique(flow_data$STATION_NUMBER)
+  
+  # Return the original names of the Date and Value columns
+  names(flow_data)[names(flow_data) == "STATION_NUMBER"] <- as.character(substitute(groups))
+  names(flow_data)[names(flow_data) == "Date"] <- as.character(substitute(dates))
+  names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(values))
+  
+  flow_data <-  dplyr::as_tibble(flow_data[,c(orig_cols)])
+  
+  
+  ## WRITE FLOW DATA
+  ## ---------------
+  
+  # If no file name provided
+  if (file == "") {#stop("file name must be provided, ending with either .xlsx, .xls, or .csv.", call. = FALSE)
     
-    for (yr in exclude_years) {
-      if (water_year) {
-        if (water_year_start==1)         {start_date <- as.Date(paste0(yr,"-01-01"))
-        } else if (water_year_start==2)  {start_date <- as.Date(paste0(yr-1,"-02-01"))
-        } else if (water_year_start==3)  {start_date <- as.Date(paste0(yr-1,"-03-01"))
-        } else if (water_year_start==4)  {start_date <- as.Date(paste0(yr-1,"-04-01"))
-        } else if (water_year_start==5)  {start_date <- as.Date(paste0(yr-1,"-05-01"))
-        } else if (water_year_start==6)  {start_date <- as.Date(paste0(yr-1,"-06-01"))
-        } else if (water_year_start==7)  {start_date <- as.Date(paste0(yr-1,"-07-01"))
-        } else if (water_year_start==8)  {start_date <- as.Date(paste0(yr-1,"-08-01"))
-        } else if (water_year_start==9)  {start_date <- as.Date(paste0(yr-1,"-09-01"))
-        } else if (water_year_start==10) {start_date <- as.Date(paste0(yr-1,"-10-01"))
-        } else if (water_year_start==11) {start_date <- as.Date(paste0(yr-1,"-11-01"))
-        } else if (water_year_start==12) {start_date <- as.Date(paste0(yr-1,"-12-01"))
-        }
-      } else if (!water_year) {
-        start_date <- as.Date(paste0(yr,"-01-01"))
+    # If station_number used
+    if (!is.null(station_number)) {
+      if (length(station_number) == 1) {
+        file <- paste0(station_number, "_daily_data.xlsx")
+      } else {
+        file <- paste0("HYDAT_daily_data.xlsx")
       }
       
-      if (water_year) {
-        if (water_year_start==1) {end_date <- as.Date(paste0(yr,"-12-31"))
-        } else if (water_year_start==2) {end_date <- as.Date(paste0(yr,"-01-31"))
-        } else if (water_year_start==3) {end_date <- as.Date(paste0(yr,"-03-01"))-1
-        } else if (water_year_start==4) {end_date <- as.Date(paste0(yr,"-03-31"))
-        } else if (water_year_start==5) {end_date <- as.Date(paste0(yr,"-04-30"))
-        } else if (water_year_start==6) {end_date <- as.Date(paste0(yr,"-05-31"))
-        } else if (water_year_start==7) {end_date <- as.Date(paste0(yr,"-06-30"))
-        } else if (water_year_start==8) {end_date <- as.Date(paste0(yr,"-07-31"))
-        } else if (water_year_start==9) {end_date <- as.Date(paste0(yr,"-08-31"))
-        } else if (water_year_start==10) {end_date <- as.Date(paste0(yr,"-09-30"))
-        } else if (water_year_start==11) {end_date <- as.Date(paste0(yr,"-10-31"))
-        } else if (water_year_start==12) {end_date <- as.Date(paste0(yr,"-11-30"))
-        }
-      } else if (!water_year) {
-        end_date <- as.Date(paste0(yr,"-12-31"))
+      # If data used
+    } else {
+      
+      if (length(stns) == 1 & stns != "XXXXXXX") {
+        file <- paste0(stns, "_daily_data.xlsx")
+      } else {
+        file <- paste0("fasstr_daily_data.xlsx")
       }
-    }
-    # Make the Values NA
-    flowdata <- dplyr::mutate(flowdata,Value=replace(Value, Date >= start_date & Date <= end_date, NA))
-    
-    # Remove the rows if exclude_rm
-    if (exclude_rm){
-      flowdata <- dplyr::filter(flowdata,Date < start_date | Date > end_date)
+      
     }
     
+  }    
+  
+  # Checks on file name and digits
+  filetype <- sub('.*\\.', '', file)
+  if (!filetype %in% c("xlsx", "xls", "csv")) stop("file name must end with .xlsx, .xls, or .csv.", call. = FALSE)
+  
+  if (length(digits) != 1) stop("Only one number can be provided to digits.", call. = FALSE)
+  if (!is.numeric(digits)) stop("digits must be a numeric value.", call. = FALSE)
+  
+  # Write the data
+  if(filetype == "csv") {
+    utils::write.csv(flow_data, file = file, row.names = FALSE, na = "")
+    message(paste0("Successfully created ", file, "."))
+  } else {
+    invisible(writexl::write_xlsx(flow_data, path = file))
+    message(paste0("Successfully created ", file, "."))
   }
   
-  #flowdata <- dplyr::mutate(flowdata,Value=round(Value,table_nddigits))
-  # Replace any NA's with na (NA default)
-  flowdata[is.na(flowdata)] <- na
-  
-  #Write the file
-  write.csv(flowdata,file = paste0(write_dir,"/",paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-daily-flows.csv"),
-            row.names = F)
 }
 

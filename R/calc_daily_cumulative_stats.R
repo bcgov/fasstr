@@ -16,30 +16,8 @@
 #'    Calculates the statistics from all daily discharge values from all years, unless specified. Defaults to volumetric cumulative 
 #'    flows, can use \code{use_yield} and \code{basin_area} to convert to runoff yield.
 #'
-#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-#'    Not required if \code{HYDAT} argument is used.
-#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-#'    database are required. Not required if \code{flowdata} argument is used.
-#' @param percentiles Numeric. Vector of percentiles to calculate. Set to NA if none required. Default \code{c(5,25,75,95)}
-#' @param basin_area Numeric. The upstream drainage basin area (in sq. km) of the station. Used to calculate runoff yields (mm)
-#'    or middle ('center') of the rolling n-day group of observations. Default \code{'right'}.
-#' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
-#'    by the year in which they end. Default \code{FALSE}.
-#' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
-#' @param start_year Integer. First year to consider for analysis. Leave blank if all years are required.
-#' @param end_year Integer. Last year to consider for analysis. Leave blank if all years are required.
-#' @param exclude_years Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.  
-#' @param use_yield Logical. Use runoff yield for total flows instead of total volume. \code{basin_area} required. Default \code{FALSE}.
-#' @param transpose Logical. Switch the rows and columns of the results table. Default \code{FALSE}.
-#' @param station_name Character. Name of hydrometric station or stream that will be used to create file names. Leave blank if not writing
-#'    files or if \code{HYDAT} is used or a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the name
-#'    will be the \code{HYDAT} value provided in the argument or column. Setting the station name will replace the HYDAT station number. 
-#' @param write_table Logical. Write the table as a .csv file to specified directory. Default \code{FALSE}.
-#' @param write_digits Numeric. Number of significant digits to round the results in the written table. Default \code{3}.
-#' @param write_dir Character. Directory folder name of where to write tables and plots. If directory does not exist, it will be created.
-#'    Default is the working directory.
+#' @inheritParams calc_daily_stats
+#' @inheritParams calc_annual_cumulative_stats
 #'    
 #' @return A data frame with the following columns, default units in cubic metres, millimetres if use_yield and basin_area provided:
 #'   \item{Date}{date (MMM-DD) of daily cumulative statistics}
@@ -59,190 +37,161 @@
 #' @examples
 #' \dontrun{
 #' 
-#'calc_daily_cumulative_stats(flowdata = flowdata, station_name = "MissionCreek", write_table = TRUE)
 #' 
-#'calc_daily_cumulative_stats(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8, percentiles = c(1:10))
+#' calc_daily_cumulative_stats(station_number = "08NM116",
+#'                             water_year = TRUE,
+#'                             water_year_start = 8, 
+#'                             percentiles = c(1:10))
 #'
 #' }
 #' @export
 
-#--------------------------------------------------------------
 
-calc_daily_cumulative_stats <- function(flowdata=NULL,
-                                          HYDAT=NULL,
-                                          percentiles=c(5,25,75,95),
-                                          basin_area=NA,
-                                          water_year=FALSE,
-                                          water_year_start=10,
-                                          start_year=NULL,
-                                          end_year=NULL,
-                                          exclude_years=NULL, 
-                                          use_yield=FALSE, 
-                                          transpose=FALSE,
-                                          station_name=NA,
-                                          write_table=FALSE,     
-                                          write_digits=3,
-                                          write_dir="."){
-  
-  
-  #--------------------------------------------------------------
-  #  Error checking on the input parameters
-  
-  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
-  if( is.null(HYDAT)) {
-    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
-    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
-    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
-    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
-    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
-    if( any(flowdata$Value <0, na.rm=TRUE))           {warning('flowdata cannot have negative values - check your data')}
-  }
-  
-  if( !is.logical(water_year))         {stop("water_year argument must be logical (TRUE/FALSE)")}
-  if( !is.numeric(water_year_start) )  {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( length(water_year_start)>1)      {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( !water_year_start %in% c(1:12) ) {stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec)")}
-  
-  if( length(start_year)>1)   {stop("only one start_year value can be selected")}
-  if( !is.null(start_year) )  {if( !start_year %in% c(0:5000) )  {stop("start_year must be an integer")}}
-  if( length(end_year)>1)     {stop("only one end_year value can be selected")}
-  if( !is.null(end_year) )    {if( !end_year %in% c(0:5000) )  {stop("end_year must be an integer")}}
-  if( !is.null(exclude_years) & !is.numeric(exclude_years)) {stop("list of exclude_years must be numeric - ex. 1999 or c(1999,2000)")}
-  
-  if( !is.na(station_name) & !is.character(station_name) )  {stop("station_name argument must be a character string.")}
-  
-  if( !is.numeric(percentiles))                 {stop("percentiles argument must be numeric")}
-  if( !all(percentiles>0 & percentiles<100))    {stop("percentiles must be >0 and <100)")}
-  
-  if( !is.na(basin_area) & !is.numeric(basin_area)) {stop("basin_area argument must be numeric")}
-  if( length(basin_area)>1)                         {stop("basin_area argument cannot have length > 1")}
-  
-  if( !is.logical(use_yield))  {stop("use_yield parameter must be logical (TRUE/FALSE)")}
 
-  if( !is.logical(transpose))    {stop("transpose parameter must be logical (TRUE/FALSE)")}
-  if( !is.logical(write_table))  {stop("write_table parameter must be logical (TRUE/FALSE)")}
-  if( !is.numeric(write_digits))  {stop("csv.ndddigits parameter needs to be numeric")}
-  write_digits <- round(write_digits[1])
+calc_daily_cumulative_stats <- function(data = NULL,
+                                        dates = Date,
+                                        values = Value,
+                                        groups = STATION_NUMBER,
+                                        station_number = NULL,
+                                        percentiles = c(5,25,75,95),
+                                        use_yield = FALSE, 
+                                        basin_area = NA,
+                                        water_year = FALSE,
+                                        water_year_start = 10,
+                                        start_year = 0,
+                                        end_year = 9999,
+                                        exclude_years = NULL, 
+                                        transpose = FALSE){
   
-  if( !dir.exists(as.character(write_dir))) {
-    message("directory for saved files does not exist, new directory will be created")
-    if( write_table & write_dir!="." ) {dir.create(write_dir)}
-  }
+  ## ARGUMENT CHECKS
+  ## ---------------
   
-  # If HYDAT station is listed, check if it exists and make it the flowdata
-  if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 ) {stop("Only one HYDAT station can be selected.")}
-    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
-    if( is.na(station_name) ) {station_name <- HYDAT}
-    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
-  }
+  percentiles_checks(percentiles)
+  water_year_checks(water_year, water_year_start)
+  years_checks(start_year, end_year, exclude_years)
+  transpose_checks(transpose)
+  use_yield_checks(use_yield)
   
-  # Looks for STATION_NUMBER column to search for basin_area
-  if ( is.na(basin_area) & "STATION_NUMBER" %in% names(flowdata)){
-    basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = flowdata$STATION_NUMBER[1])$DRAINAGE_AREA_GROSS)
-  }
-  # Check if no basin_area if use-yield is TRUE
-  if( use_yield & is.na(basin_area) )  {stop("no basin_area provided with use_yield")}
   
-  #--------------------------------------------------------------
-  # Set the flowdata for analysis
+  ## FLOW DATA CHECKS AND FORMATTING
+  ## -------------------------------
   
-  # Select just Date and Value for analysis
-  flowdata <- dplyr::select(flowdata,Date,Value)
+  # Check if data is provided and import it
+  flow_data <- flowdata_import(data = data, 
+                               station_number = station_number)
   
-  # add date variables to determine the min/max cal/water years
-  flowdata <- fasstr::add_date_variables(flowdata,water_year = T,water_year_start = water_year_start)
-  if (is.null(start_year)) {start_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))}
-  if (is.null(end_year)) {end_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))}
-  if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
+  # Save the original columns (to check for STATION_NUMBER col at end) and ungroup if necessary
+  orig_cols <- names(flow_data)
+  flow_data <- dplyr::ungroup(flow_data)
   
-  #  Fill in the missing dates and the add the date variables again
-  flowdata <- fasstr::fill_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
-  flowdata <- fasstr::add_date_variables(flowdata,water_year = T,water_year_start = water_year_start)
+  # Check and rename columns
+  flow_data <- format_all_cols(data = flow_data,
+                               dates = as.character(substitute(dates)),
+                               values = as.character(substitute(values)),
+                               groups = as.character(substitute(groups)),
+                               rm_other_cols = TRUE)
   
-  # Set selected year-type column for analysis
-  if (water_year) {
-    flowdata$AnalysisYear <- flowdata$WaterYear
-    flowdata$AnalysisDoY <- flowdata$WaterDayofYear
-    if        (water_year_start==1)  {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1989-12-31")
-    } else if (water_year_start==2)  {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-01-31")
-    } else if (water_year_start==3)  {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-02-28")
-    } else if (water_year_start==4)  {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-03-31")
-    } else if (water_year_start==5)  {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-04-30")
-    } else if (water_year_start==6)  {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-05-31")
-    } else if (water_year_start==7)  {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-06-30")
-    } else if (water_year_start==8)  {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-07-31")
-    } else if (water_year_start==9)  {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-08-31")
-    } else if (water_year_start==10) {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-09-30")
-    } else if (water_year_start==11) {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-10-31")
-    } else if (water_year_start==12) {flowdata$AnalysisDate <- as.Date(flowdata$WaterDayofYear, origin = "1899-11-30")
-    }
-  }  else {
-    flowdata$AnalysisYear <- flowdata$Year
-    flowdata$AnalysisDoY <- flowdata$DayofYear
-    flowdata$AnalysisDate <- as.Date(flowdata$DayofYear, origin = "1899-12-31")
-  }
+  ## SET UP BASIN AREA
+  ## -----------------
+  
+  if (use_yield) {
+    flow_data <- add_basin_area(flow_data, basin_area = basin_area)
+    flow_data$Basin_Area_sqkm_temp <- flow_data$Basin_Area_sqkm
+  }  
+  
+  
+  ## PREPARE FLOW DATA
+  ## -----------------
+  
+  # Fill missing dates, add date variables, and add AnalysisYear
+  flow_data <- analysis_prep(data = flow_data, 
+                             water_year = water_year, 
+                             water_year_start = water_year_start,
+                             year = TRUE,
+                             doy = TRUE, 
+                             date = TRUE)
   
   # Add cumulative flows
   if (use_yield){
-    flowdata <- fasstr::add_cumulative_yield(flowdata,water_year = water_year, water_year_start = water_year_start, basin_area = basin_area)
-    flowdata$Cumul_Flow <- flowdata$Cumul_Yield_mm
+    flow_data <- suppressWarnings(add_cumulative_yield(data = flow_data, water_year = water_year, 
+                                                       water_year_start = water_year_start, basin_area = basin_area))
+    flow_data$Cumul_Flow <- flow_data$Cumul_Yield_mm
   } else {
-    flowdata <- fasstr::add_cumulative_volume(flowdata,water_year = water_year, water_year_start = water_year_start)
-    flowdata$Cumul_Flow <- flowdata$Cumul_Volume_m3
+    flow_data <- add_cumulative_volume(data = flow_data, water_year = water_year, water_year_start = water_year_start)
+    flow_data$Cumul_Flow <- flow_data$Cumul_Volume_m3
   }
   
-  # Filter for the selected and excluded years
-  flowdata <- dplyr::filter(flowdata,AnalysisYear>=start_year & AnalysisYear <= end_year)
-  flowdata <- dplyr::filter(flowdata,!(AnalysisYear %in% exclude_years))
-  
-  # remove leap year values
-  flowdata <- dplyr::filter(flowdata,AnalysisDoY<366)
+  # Filter for the selected and excluded years and leap year values (last day)
+  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
+  flow_data <- dplyr::filter(flow_data, AnalysisDoY < 366)
   
   
-  #--------------------------------------------------------------
-  # Complete analysis
+  if (all(is.na(flow_data$Cumul_Flow))) 
+    stop("No basin_area values provided or extracted from HYDAT. Use basin_area argument to supply one.", call. = FALSE)
   
-  #  Compute daily cumulative summary stats
-  Q_total <- dplyr::summarise(dplyr::group_by(flowdata,AnalysisDate,AnalysisDoY),
-                              Mean=mean(Cumul_Flow, na.rm=T),
-                              Median=median(Cumul_Flow, na.rm=T),
-                              Minimum=min(Cumul_Flow, na.rm=T),
-                              Maximum=max(Cumul_Flow, na.rm=T))
-  # Compute daily percentiles
+  # Warning if some of the years contained partial data
+  comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
+                                 complete_yr = ifelse(sum(!is.na(Cumul_Flow)) == length(AnalysisYear), TRUE, FALSE))
+  if (!all(comp_years$complete_yr)) 
+    warning("One or more years contained partial data and were excluded. Only years with complete data were used for calculations.", call. = FALSE)
+  
+  
+  ## CALCULATE STATISTICS
+  ## --------------------
+  
+  # Calculate basic stats
+  daily_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, AnalysisDoY),
+                                  Mean = mean(Cumul_Flow, na.rm = TRUE),
+                                  Median = stats::median(Cumul_Flow, na.rm = TRUE),
+                                  Minimum = min(Cumul_Flow, na.rm = TRUE),
+                                  Maximum = max(Cumul_Flow, na.rm = TRUE))
+  
+  # Compute daily percentiles (if 10 or more years of data)
   if (!all(is.na(percentiles))){
     for (ptile in percentiles) {
-      Q_total_ptile <- dplyr::summarise(dplyr::group_by(flowdata,AnalysisDate,AnalysisDoY),
-                                        Percentile=quantile(Cumul_Flow,ptile/100, na.rm=TRUE))
-      colnames(Q_total_ptile)[3] <- paste0("P",ptile)
-      Q_total <- merge(Q_total,Q_total_ptile,by=c("AnalysisDate","AnalysisDoY"))
+      daily_stats_ptile <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, AnalysisDoY),
+                                            Percentile = stats::quantile(Cumul_Flow, ptile / 100, na.rm = TRUE))
+      names(daily_stats_ptile)[names(daily_stats_ptile) == "Percentile"] <- paste0("P", ptile)
+      
+      # Merge with daily_stats
+      daily_stats <- merge(daily_stats, daily_stats_ptile, by = c("STATION_NUMBER", "AnalysisDate", "AnalysisDoY"))
+      
+      # Remove percentile if mean is NA (workaround for na.rm=FALSE in quantile)
+      daily_stats[, ncol(daily_stats)] <- ifelse(is.na(daily_stats$Mean), NA, daily_stats[, ncol(daily_stats)])
     }
   }
   
   # Final formatting
-  Q_total <- dplyr::rename(Q_total,"DayofYear"=AnalysisDoY,Date=AnalysisDate)
-  Q_total$Date <- format(as.Date(Q_total$Date),format="%b-%d")
-  col_order <- Q_total$Date
-  col_names <- names(Q_total[-1])
+  daily_stats <- dplyr::rename(daily_stats, DayofYear = AnalysisDoY, Date = AnalysisDate)
+  daily_stats$Date <- format(as.Date(daily_stats$Date), format = "%b-%d")
+  col_order <- daily_stats$Date
   
-  # If transpose==TRUE
+  
+  # If transpose if selected, switch columns and rows
   if (transpose) {
-    Q_total <- tidyr::gather(Q_total,Statistic,Value,-Date)
-    Q_total <- tidyr::spread(Q_total,Date,Value)
-    Q_total <-  Q_total[,c("Statistic",col_order)]
-    Q_total <- Q_total[match(col_names, Q_total$Statistic),]
-    row.names(Q_total) <- c(1:nrow(Q_total))
+    # Get list of columns to order the Statistic column after transposing
+    stat_levels <- names(daily_stats[-(1:2)])
+    
+    # Transpose the columns for rows
+    daily_stats <- tidyr::gather(daily_stats, Statistic, Value, -STATION_NUMBER, -Date)
+    daily_stats <- tidyr::spread(daily_stats, Date, Value)
+    
+    # Order the columns
+    daily_stats <-  daily_stats[, c("STATION_NUMBER", "Statistic", col_order)]
+    daily_stats$Statistic <- factor(daily_stats$Statistic, levels = stat_levels)
+    daily_stats <- dplyr::arrange(daily_stats, STATION_NUMBER, Statistic)
   }
   
-  # Write the table
-  if (write_table) {
-    file.stat.csv <-file.path(write_dir, paste(paste0(ifelse(!is.na(station_name),station_name,paste0("fasstr"))),"-daily-cumulative",ifelse(use_yield,paste0("-yield"),paste0("-volume")),"-stats.csv", sep=""))
-    temp <- Q_total
-    temp[,2:ncol(temp)] <- round(temp[,2:ncol(temp)], write_digits)
-    utils::write.csv(temp, file=file.stat.csv, row.names=FALSE)
+  
+  # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
+  if("STATION_NUMBER" %in% orig_cols) {
+    names(daily_stats)[names(daily_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
+  } else {
+    daily_stats <- dplyr::select(daily_stats, -STATION_NUMBER)
   }
   
-  return(Q_total)
   
+  dplyr::as_tibble(daily_stats)
   
 }

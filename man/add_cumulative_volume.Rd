@@ -4,37 +4,49 @@
 \alias{add_cumulative_volume}
 \title{Add daily cumulative volumetric flows on an annual basis}
 \usage{
-add_cumulative_volume(flowdata = NULL, HYDAT = NULL, water_year = FALSE,
+add_cumulative_volume(data = NULL, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number = NULL, water_year = FALSE,
   water_year_start = 10)
 }
 \arguments{
-\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
+\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+Leave blank if using \code{station_number} argument.}
 
-\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flowdata} argument is used.}
+\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
+Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
-by the year in which they end. Default \code{FALSE}.}
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
+\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
+groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
+Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
+
+\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
+Leave blank if using \code{data} argument.}
+
+\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
+are designated by the calendar year in which they end. Default \code{FALSE}.}
+
+\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
+Default \code{10}.}
 }
 \value{
-A data frame of the original flowdata or HYDAT data with an additional column:
+A tibble data frame of the source data with an additional column:
   \item{Cumul_Volume_m3}{cumulative volumetric flows for each day for each year, in units of cubic metres}
 }
 \description{
-Add a column of daily cumulative volumetric flows on an annual basis to a streamflow dataset. Adds the volumetric discharge 
-   from each day with the previous day(s) for each year, in units of cubic metres. The cumulative flows restart every year.
+Add a column of daily cumulative volumetric flows on an annual basis to a streamflow dataset. Adds the volumetric 
+   discharge from each day with the previous day(s) for each year, in units of cubic metres. 
+   The cumulative flows restart every year and are only calculated in years with complete data.
 }
 \examples{
 \dontrun{
 
-add_cumulative_volume(flowdata = flowdata)
+add_cumulative_volume(data = flow_data)
 
-add_cumulative_volume(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+add_cumulative_volume(station_number = "08NM116", water_year = TRUE, water_year_start = 8)
 
 }
 }

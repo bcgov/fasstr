@@ -15,75 +15,73 @@
 #' @description Add a column of daily runoff yields to a streamflow dataset, in units of millimetres. Converts the discharge to a depth
 #'   of water based on the upstream drainge basin area.
 #'
-#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-#'    Not required if \code{HYDAT} argument is used.
-#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-#'    database are required. Not required if \code{flowdata} argument is used.
-#' @param basin_area Numeric. Upstream drainage basin area of the hydrometric station, in sq. km. Leave blank if \code{HYDAT} is used or 
-#'    a column in \code{flowdata} called 'STATION_NUMBER' contains a WSC station number, as the basin area will be extracted from HYDAT. 
-#'    Setting the basin area will replace the HYDAT basin area. 
+#' @inheritParams calc_annual_stats
+#' @inheritParams add_basin_area
 #'    
-#' @return A data frame of the original flowdata or HYDAT data with an additional column:
-#'   \item{Yield_MM}{daily runoff yield flow, in units of millimetres}
+#' @return A tibble data frame of the source data with an additional column:
+#'   \item{Yield_mm}{daily runoff yield flow, in units of millimetres}
 #'
 #' @examples
 #' \dontrun{
 #' 
-#'add_daily_yield(flowdata = flowdata, basin_area = 104.5)
+#' add_daily_yield(flow_data = flow_data, basin_area = 104.5)
 #' 
-#'add_daily_yield(HYDAT = "08NM116")
+#' add_daily_yield(station_number = "08NM116")
 #'
 #' }
 #' @export
 
 
-#--------------------------------------------------------------
+add_daily_yield <- function(data = NULL,
+                            values = Value,
+                            groups = STATION_NUMBER,  
+                            station_number = NULL,
+                            basin_area = NA){
+  
+  
+  
+  ## FLOW DATA CHECKS AND FORMATTING
+  ## -------------------------------
+  
+  # Check if data is provided and import it
+  flow_data <- flowdata_import(data = data, station_number = station_number)
 
-add_daily_yield <- function(flowdata=NULL,
-                                   HYDAT=NULL,
-                                   basin_area=NA){
+  # Save the original columns and groups from the flow_data to remove added columns
+  orig_cols <- names(flow_data)
+  
+  # Check and rename columns
+  flow_data <- format_groups_col(data = flow_data, groups = as.character(substitute(groups)))
+  flow_data <- format_values_col(data = flow_data, values = as.character(substitute(values)))
   
   
-  #--------------------------------------------------------------
-  #  Some basic error checking on the input parameters
+  ## SET UP BASIN AREA
+  ## -----------------
+
+  suppressWarnings(flow_data <- add_basin_area(flow_data, basin_area = basin_area))
+  flow_data$Basin_Area_sqkm_temp <- flow_data$Basin_Area_sqkm
   
-  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
-  if( is.null(HYDAT)) {
-    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
-    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
-    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
-    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
-    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
-    if( any(flowdata$Value <0, na.rm=TRUE))           {warning('flowdata cannot have negative values - check your data')}
+  ## ADD YIELD COLUMN
+  ## ----------------
+  
+  flow_data <- dplyr::mutate(flow_data, Yield_mm = Value * 86400 / (Basin_Area_sqkm_temp * 1000))
+  
+  # Return the original names of the Date and Value columns
+  names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(values))
+  names(flow_data)[names(flow_data) == "STATION_NUMBER"] <- as.character(substitute(groups))
+  
+  
+  ## Reformat to original names and groups
+  ## -------------------------------------
+  
+  # Return columns to original order plus new column
+  if("Yield_mm" %in% orig_cols){
+    flow_data <-  flow_data[, c(orig_cols)]
+  } else {
+    flow_data <-  flow_data[, c(orig_cols, paste("Yield_mm"))]
   }
   
-  if( !is.na(basin_area) & !is.numeric(basin_area)) {stop("basin_area argument must be numeric")}
-  if( length(basin_area)>1)                         {stop("basin_area argument cannot have length > 1")}
   
-  # If HYDAT station is listed, check if it exists and extract the flowdata and basin_area
-  if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 )                                  {stop("Only one HYDAT station can be selected.")}
-    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
-    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
-    if (is.na(basin_area)) {basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = HYDAT)$DRAINAGE_AREA_GROSS)}
-  }
+  dplyr::as_tibble(flow_data)
   
-  # If STATION_NUMBER column is in flowdata, extract the basin_area
-  if ( is.null(HYDAT) & is.na(basin_area) & "STATION_NUMBER" %in% names(flowdata) ){
-    basin_area <- suppressMessages(tidyhydat::hy_stations(station_number = flowdata$STATION_NUMBER[1])$DRAINAGE_AREA_GROSS)
-  }
-  if( is.na(basin_area) )  {stop("no basin_area provided")}
-  
-  
-  #--------------------------------------------------------------
-  # Add column to flowdata
-  
-  flowdata <- dplyr::mutate(flowdata,Yield_mm=Value*86400 /(basin_area*1000))
-  
-  
-  
-  return(flowdata)
 }
 

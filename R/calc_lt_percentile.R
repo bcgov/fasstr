@@ -14,125 +14,151 @@
 #'
 #' @description Calculates the long-term percentiles discharge of a streamflow dataset. Averages all daily discharge values from all years,
 #'   unless specified.
+#'   
+#' @inheritParams calc_daily_stats
+#' @inheritParams calc_monthly_stats
+#' @param percentiles Numeric vector of percentiles to calculate. Required.
 #'
-#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-#'    Not required if \code{HYDAT} argument is used.
-#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-#'    database are required. Not required if \code{flowdata} argument is used.
-#' @param percentiles Numeric. Long-term percentile(s) to calculate. Required.
-#' @param water_year Logical. Use water years to group flow data instead of calendar years. Water years are designated
-#'    by the year in which they end. Default \code{FALSE}.
-#' @param water_year_start Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.
-#' @param start_year Integer. First year to consider for analysis. Leave blank if all years are required.
-#' @param end_year Integer. Last year to consider for analysis. Leave blank if all years are required.
-#' @param exclude_years Integer. Single year or vector of years to exclude from analysis. Leave blank if all years are required.  
-#' @param months Integer. Vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Leave blank for all months. 
-#'    Default \code{1:12}.
-#'
-#' @return A numeric value of a long-term percentile of selected years and months.
+#' @return A tibble data frame of a long-term percentile of selected years and months.
 #' 
 #' @examples
 #' \dontrun{
 #' 
-#' calc_lt_percentile(flowdata = data, start_year = 1980, end_year = 2010, percentile = 90)
+#' calc_lt_percentile(station_number = "08NM116", 
+#'                    start_year = 1980, 
+#'                    end_year = 2010, 
+#'                    percentile = 90)
 #' 
-#' calc_lt_percentile(HYDAT = "08NM116", percentile = 20)
+#' calc_lt_percentile(station_number = "08NM116",
+#'                    percentile = 20)
 #' 
 #' }
 #' @export
 
-#--------------------------------------------------------------
 
-calc_lt_percentile <- function(flowdata=NULL,
-                                 HYDAT=NULL,
-                                 percentiles=NA,
-                                 water_year=FALSE, 
-                                 water_year_start=10,
-                                 start_year=NULL,
-                                 end_year=NULL,
-                                 exclude_years=NULL,
-                                 months=1:12){
+
+calc_lt_percentile <- function(data = NULL,
+                               dates = Date,
+                               values = Value,
+                               groups = STATION_NUMBER,
+                               station_number = NULL,
+                               percentiles = NA,
+                               roll_days = 1,
+                               roll_align = "right",
+                               water_year = FALSE,
+                               water_year_start = 10,
+                               start_year = 0,
+                               end_year = 9999,
+                               exclude_years = NULL, 
+                               complete_years = FALSE,
+                               months = 1:12,
+                               transpose = FALSE){
   
   
-  #--------------------------------------------------------------
-  #  Error checking on the input parameters
+  ## ARGUMENT CHECKS
+  ## ---------------
   
-  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
-  if( is.null(HYDAT)) {
-    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
-    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
-    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
-    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
-    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
-    if( any(flowdata$Value <0, na.rm=TRUE))           {warning('flowdata cannot have negative values - check your data')}
-  }
+  rolling_days_checks(roll_days, roll_align)
+  water_year_checks(water_year, water_year_start)
+  years_checks(start_year, end_year, exclude_years)
+  complete_yrs_checks(complete_years)
+  transpose_checks(transpose)
   
-  if( !is.logical(water_year))         {stop("water_year argument must be logical (TRUE/FALSE)")}
-  if( !is.numeric(water_year_start) )  {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( length(water_year_start)>1)      {stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec)")}
-  if( !water_year_start %in% c(1:12) ) {stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec)")}
+  if (is.na(percentiles)) stop("percentiles argument is required.", call. = FALSE)
+  percentiles_checks(percentiles)
   
-  if( length(start_year)>1)   {stop("only one start_year value can be selected")}
-  if( !is.null(start_year) )  {if( !start_year %in% c(0:5000) )  {stop("start_year must be an integer")}}
-  if( length(end_year)>1)     {stop("only one end_year value can be selected")}
-  if( !is.null(end_year) )    {if( !end_year %in% c(0:5000) )  {stop("end_year must be an integer")}}
   
-  if( !is.null(exclude_years) ) {
-    if( !all(exclude_years %in% c(0:5000)) ) {stop("exclude_years must be integers (ex. 1999 or c(1999,2000))")}}
-  if( (is.null(start_year) & is.null(end_year) & is.null(exclude_years)) & water_year ) {
-    message("water_year=TRUE ignored; no start_year, end_year, or exclude_years selected to filter dates")}
   
-  if( !is.numeric(months) )         {stop("months argument must be integers")}
-  if( !all(months %in% c(1:12)) )   {stop("months argument must be integers between 1 and 12 (Jan-Dec)")}
+  ## FLOW DATA CHECKS AND FORMATTING
+  ## -------------------------------
   
-  if( all(is.na(percentiles)) )                 {stop("percentiles argument is required")}
-  if( !all(is.na(percentiles)) & !is.numeric(percentiles) )                 {stop("percentiles argument must be numeric")}
-  if( !all(is.na(percentiles)) & (!all(percentiles>0 & percentiles<100)) )  {stop("percentiles must be >0 and <100)")}
-  # If HYDAT station is listed, check if it exists and make it the flowdata
-  if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 )                                  {stop("Only one HYDAT station can be selected.")}
-    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
-    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
-  }
+  # Check if data is provided and import it
+  flow_data <- flowdata_import(data = data, 
+                               station_number = station_number)
   
-  #--------------------------------------------------------------
-  # Set the flowdata for analysis
+  # Save the original columns (to check for STATION_NUMBER col at end) and ungroup if necessary
+  orig_cols <- names(flow_data)
+  flow_data <- dplyr::ungroup(flow_data)
   
-  # Select just Date and Value for analysis
-  flowdata <- dplyr::select(flowdata,Date,Value)
+  # Check and rename columns
+  flow_data <- format_all_cols(data = flow_data,
+                               dates = as.character(substitute(dates)),
+                               values = as.character(substitute(values)),
+                               groups = as.character(substitute(groups)),
+                               rm_other_cols = TRUE)
   
-  # add date variables to determine the min/max cal/water years
-  flowdata <- fasstr::add_date_variables(flowdata,water_year = T,water_year_start = water_year_start)
-  if (is.null(start_year)) {start_year <- ifelse(water_year,min(flowdata$WaterYear),min(flowdata$Year))}
-  if (is.null(end_year)) {end_year <- ifelse(water_year,max(flowdata$WaterYear),max(flowdata$Year))}
-  if (!(start_year <= end_year))    {stop("start_year parameter must be less than end_year parameter")}
   
-  #  Fill in the missing dates and the add the date variables again
-  flowdata <- fasstr::fill_missing_dates(flowdata, water_year = water_year, water_year_start = water_year_start)
-  flowdata <- fasstr::add_date_variables(flowdata,water_year = T,water_year_start = water_year_start)
+  ## PREPARE FLOW DATA
+  ## -----------------
   
-  # Set selected year-type column for analysis
-  if (water_year) {
-    flowdata$AnalysisYear <- flowdata$WaterYear
-  }  else {
-    flowdata$AnalysisYear <- flowdata$Year
-  }
+  # Fill missing dates, add date variables, and add AnalysisYear
+  flow_data <- analysis_prep(data = flow_data, 
+                             water_year = water_year, 
+                             water_year_start = water_year_start,
+                             year = TRUE)
+  
+  # Add rolling means to end of dataframe
+  flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
+  colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
+
   
   # Filter for the selected year
-  flowdata <- dplyr::filter(flowdata,AnalysisYear>=start_year & AnalysisYear <= end_year)
-  flowdata <- dplyr::filter(flowdata,!(AnalysisYear %in% exclude_years))
-  flowdata <- dplyr::filter(flowdata,Month %in% months)
+  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
+  flow_data <- dplyr::filter(flow_data, Month %in% months)
+  
+  # Remove incomplete years if selected
+  flow_data <- filter_complete_yrs(complete_years = complete_years, 
+                                   flow_data)
+  
+  
+  # Give warning if any NA values
+  missing_values_warning_noNA(flow_data$RollingValue)
   
   
   #--------------------------------------------------------------
   # Complete the analysis
   
+  ptile_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER))
   # Calculate the long-term percentile
- LTPtile <- as.numeric(quantile(flowdata$Value,percentiles/100, na.rm=TRUE))
+  for(ptile in percentiles){
+    ptile_statss <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER),
+                                 Percentile = stats::quantile(RollingValue, ptile / 100, na.rm = TRUE))
+    names(ptile_statss)[names(ptile_statss) == "Percentile"] <- paste0("P", ptile)
+    
+    # Merge with ptile_statss
+    ptile_stats <- merge(ptile_stats, ptile_statss, by = c("STATION_NUMBER"))
+  }
+  
+  
+  # If transpose if selected, switch columns and rows
+  if (transpose) {
+    # Get list of columns to order the Statistic column after transposing
+    stat_levels <- names(ptile_stats[-(1)])
+    
+    # Transpose the columns for rows
+    ptile_stats <- tidyr::gather(ptile_stats, Statistic, Value, -STATION_NUMBER)
+    
+    # Order the columns
+    ptile_stats$Statistic <- factor(ptile_stats$Statistic, levels = stat_levels)
+    ptile_stats <- dplyr::arrange(ptile_stats, STATION_NUMBER, Statistic)
+  }
+  
+  
+  # Recheck if station_number was in original flow_data and rename or remove as necessary
+  if(as.character(substitute(groups)) %in% orig_cols) {
+    names(ptile_stats)[names(ptile_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
+  } else {
+    ptile_stats <- dplyr::select(ptile_stats, -STATION_NUMBER)
+  }
+  
 
-  
-  return(LTPtile)
-  
+    
+  # If just one value is in the table, return is as a value, otherwise return it as a tibble
+  if(nrow(ptile_stats) == 1 & ncol(ptile_stats) == 1){
+    dplyr::pull(dplyr::as_tibble(ptile_stats)[1,1])
+  } else {
+    dplyr::as_tibble(ptile_stats)
+  }
+
 }

@@ -14,59 +14,52 @@
 #'
 #' @description Add a column of daily volumetric flows to a streamflow dataset, in units of cubic metres. Converts the discharge to a volume.
 #'
-#' @param flowdata Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-#'    YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-#'    Not required if \code{HYDAT} argument is used.
-#' @param HYDAT Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-#'    data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-#'    database are required. Not required if \code{flowdata} argument is used.
+#' @inheritParams calc_annual_stats
 #' 
-#' @return A data frame of the original flowdata or HYDAT data with an additional column:
+#' @return A tibble data frame of the source data with an additional column:
 #'   \item{Volume_m3}{daily total volumetric flow, in units of cubic metres}
 #'
 #' @examples
 #' \dontrun{
 #' 
-#'add_daily_volume(flowdata = flowdata)
+#' add_daily_volume(data = flow_data)
 #' 
-#'add_daily_volume(HYDAT = "08NM116")
+#' add_daily_volume(station_number = "08NM116")
 #'
 #' }
 #' @export
 
-#--------------------------------------------------------------
 
-add_daily_volume <- function(flowdata=NULL,
-                                  HYDAT=NULL){  # or left or centre
+add_daily_volume <- function(data = NULL,
+                             values = Value,  
+                             station_number = NULL){
   
   
-  #--------------------------------------------------------------
-  #  Some basic error checking on the input parameters
   
-  if( !is.null(HYDAT) & !is.null(flowdata))           {stop("must select either flowdata or HYDAT arguments, not both")}
-  if( is.null(HYDAT)) {
-    if( is.null(flowdata))                            {stop("one of flowdata or HYDAT arguments must be set")}
-    if( !is.data.frame(flowdata))                     {stop("flowdata arguments is not a data frame")}
-    if( !all(c("Date","Value") %in% names(flowdata))) {stop("flowdata data frame doesn't contain the variables 'Date' and 'Value'")}
-    if( !inherits(flowdata$Date[1], "Date"))          {stop("'Date' column in flowdata data frame is not a date")}
-    if( !is.numeric(flowdata$Value))                  {stop("'Value' column in flowdata data frame is not numeric")}
-    if( any(flowdata$Value <0, na.rm=TRUE))           {warning('flowdata cannot have negative values - check your data')}
-  }
+  ## FLOW DATA CHECKS AND FORMATTING
+  ## -------------------------------
   
-  # If HYDAT station is listed, check if it exists and make it the flowdata
-  if (!is.null(HYDAT)) {
-    if( length(HYDAT)>1 )                                  {stop("Only one HYDAT station can be selected.")}
-    if( !HYDAT %in% dplyr::pull(tidyhydat::allstations[1]) ) {stop("Station in 'HYDAT' parameter does not exist")}
-    flowdata <- suppressMessages(tidyhydat::hy_daily_flows(station_number =  HYDAT))
-  }
-
-  #--------------------------------------------------------------
-  # Add column to flowdata
+  # Check if data is provided and import it
+  flow_data <- flowdata_import(data = data, station_number = station_number)
   
-    flowdata <- dplyr::mutate(flowdata,Volume_m3=Value*86400)
-
+  # Check and rename columns
+  flow_data <-   format_values_col(data = flow_data, values = as.character(substitute(values)))
   
-
-  return(flowdata)
+  
+  ## ADD VOLUME COLUMN
+  ## -----------------
+  
+  flow_data <- dplyr::mutate(flow_data, Volume_m3 = Value * 86400)
+  
+  
+  ## Reformat to original names and groups
+  ## -------------------------------------
+  
+  # Return the original names Value column
+  names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(values))
+  
+  
+  dplyr::as_tibble(flow_data)
+  
 }
 

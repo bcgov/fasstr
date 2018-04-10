@@ -4,25 +4,28 @@
 \alias{add_date_variables}
 \title{Add year, month, and day of year variables}
 \usage{
-add_date_variables(flowdata = NULL, HYDAT = NULL, water_year = FALSE,
-  water_year_start = 10)
+add_date_variables(data = NULL, dates = Date, station_number = NULL,
+  water_year = FALSE, water_year_start = 10)
 }
 \arguments{
-\item{flowdata}{Data frame. A data frame of daily mean flow data that includes two columns: a 'Date' column with dates formatted 
-YYYY-MM-DD, and a numeric 'Value' column with the corresponding daily mean flow values in units of cubic metres per second. 
-Not required if \code{HYDAT} argument is used.}
+\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+Leave blank if using \code{station_number} argument.}
 
-\item{HYDAT}{Character. A seven digit Water Survey of Canada station number (e.g. \code{"08NM116"}) of which to extract daily streamflow 
-data from a HYDAT database. \href{https://github.com/ropensci/tidyhydat}{Installation} of the \code{tidyhydat} package and a HYDAT 
-database are required. Not required if \code{flowdata} argument is used.}
+\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
+Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{water_year}{Logical. Use water years to group flow data instead of calendar years. Water years are designated
-by the year in which they end. Default \code{FALSE}.}
+\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
+Leave blank if using \code{data} argument.}
 
-\item{water_year_start}{Integer. Month indicating the start of the water year. Used if \code{water_year=TRUE}. Default \code{10}.}
+\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
+are designated by the calendar year in which they end. Default \code{FALSE}.}
+
+\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
+Default \code{10}.}
 }
 \value{
-A data frame of the original flowdata or HYDAT data with additional columns:
+A tibble data frame of the source data with additional columns:
   \item{Year}{calendar year}
   \item{Month}{numeric month (1 to 12)}
   \item{MonthName}{month name (Jan-Dec)}
@@ -39,9 +42,9 @@ Add columns of Year (YYYY), Month (MM), MonthName (e.g. 'Jan'), and DayofYear (1
 \examples{
 \dontrun{
 
-add_date_variables(flowdata = flowdata)
+add_date_variables(data = flow_data)
 
-add_date_variables(HYDAT = "08NM116", water_year = TRUE, water_year_start = 8)
+add_date_variables(data = "08NM116", water_year = TRUE, water_year_start = 8)
 
 }
 }
