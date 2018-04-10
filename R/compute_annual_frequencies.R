@@ -241,8 +241,10 @@ compute_annual_frequencies <- function(data = NULL,
   
   plotdata2 <- dplyr::mutate(plotdata2, 
                              Measure = gsub('Q', "", Measure),
-                             Measure = gsub('^0+', "", Measure))
-
+                             Measure = gsub('^0+', "", Measure),
+                             Measure = substr(Measure, 1, nchar(Measure)-8),
+                             Measure = paste0(Measure, "-day"))
+  
 
   freqplot <- ggplot2::ggplot(data = plotdata2, ggplot2::aes(x = prob, y = value, group = Measure, color = Measure),
                               environment = environment())+
@@ -257,7 +259,7 @@ compute_annual_frequencies <- function(data = NULL,
                                                            labels = function(x){ifelse(x < 2, x, round(x,0))}))+
     ggplot2::scale_color_brewer(palette = "Set1") +
     ggplot2::theme_bw() +
-   # ggplot2::labs(color = 'Annual Statistics') +    
+    ggplot2::labs(color = paste0('Events and\nComputed Curve')) +    
     ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                    panel.grid = ggplot2::element_line(size = .2),
                    axis.title = ggplot2::element_text(size = 12),
@@ -267,9 +269,10 @@ compute_annual_frequencies <- function(data = NULL,
                    #legend.spacing = ggplot2::unit(0, "cm"),
                    #legend.justification = "top",
                    legend.text = ggplot2::element_text(size = 9),
-                   legend.title = ggplot2::element_blank())
+                   legend.title = ggplot2::element_text(size = 10))
     
 
+  legend.title.align = 1
   if(!use_max){ freqplot <- freqplot + ggplot2::theme(legend.justification = c(1, 1), legend.position = c(.98, .98))}
   if(use_max){ freqplot <- freqplot + ggplot2::theme(legend.justification = c(1,0), legend.position = c(.98, 0.02))}
   if(!use_log){ freqplot <- freqplot + ggplot2::scale_y_log10(breaks = scales::pretty_breaks(n = 10))}
@@ -372,7 +375,9 @@ compute_annual_frequencies <- function(data = NULL,
   
   fitted_quantiles_plot <- dplyr::mutate(fitted_quantiles_plot, 
                                          Measure = gsub('Q', "", Measure),
-                                         Measure = gsub('^0+', "", Measure))
+                                         Measure = gsub('^0+', "", Measure),
+                                         Measure = substr(Measure, 1, nchar(Measure)-8),
+                                         Measure = paste0(Measure, "-day"))
   freqplot <- freqplot +
     ggplot2::geom_line(data = fitted_quantiles_plot, ggplot2::aes(x = prob, y = quantile, group = Measure, color = Measure))
 
