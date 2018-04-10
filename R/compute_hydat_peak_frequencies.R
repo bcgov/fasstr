@@ -196,7 +196,7 @@ compute_hydat_peak_frequencies <- function(station_number = NULL,
                    panel.grid = ggplot2::element_line(size = .2),
                    axis.title = ggplot2::element_text(size = 12),
                    axis.text = ggplot2::element_text(size = 10),
-                   axis.title.x.top = ggplot2::element_text(size = 10),
+                   axis.title.x.top = ggplot2::element_text(size = 12),
                    legend.key.size = ggplot2::unit(.1,"in"),
                    legend.text = ggplot2::element_text(size = 9),
                    legend.title = ggplot2::element_blank())

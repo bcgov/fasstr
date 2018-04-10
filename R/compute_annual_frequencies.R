@@ -264,11 +264,11 @@ compute_annual_frequencies <- function(data = NULL,
                    panel.grid = ggplot2::element_line(size = .2),
                    axis.title = ggplot2::element_text(size = 12),
                    axis.text = ggplot2::element_text(size = 10),
-                   axis.title.x.top = ggplot2::element_text(size = 10),
+                   axis.title.x.top = ggplot2::element_text(size = 12),
                    #legend.position = "right", 
                    #legend.spacing = ggplot2::unit(0, "cm"),
                    #legend.justification = "top",
-                   legend.text = ggplot2::element_text(size = 9),
+                   legend.text = ggplot2::element_text(size = 10),
                    legend.title = ggplot2::element_text(size = 10))
     
 
