@@ -163,7 +163,7 @@ compute_annual_frequencies <- function(data = NULL,
   flow_data <- dplyr::filter(flow_data, Month %in% months)
 
   # Calculate the min or max of the rolling means for each year
-  flow_data <- dplyr::select(flow_data, -Date, -Value, -Year, -Month, -MonthName, -DayofYear, -WaterYear, -WaterDayofYear)
+  flow_data <- dplyr::select(flow_data, -Date, -Value, -Year, -Month, -MonthName, -DayofYear, -dplyr::contains("Water"))
   
   flow_data <- tidyr::gather(flow_data, Measure, value, -AnalysisYear)
   Q_stat <- dplyr::summarise(dplyr::group_by(flow_data, AnalysisYear, Measure),

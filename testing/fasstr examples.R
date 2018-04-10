@@ -2,8 +2,9 @@
 
 
 devtools::document()
-install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
-install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
+#install.packages("/Users/jongoetz/Documents/R/fasstr", repos = NULL, type = "source")
+install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
+devtools::install_github("bcgov/fasstr")
 #devtools::check()
 
 
@@ -308,7 +309,7 @@ test2 <- fasstr::plot_annual_trends(trendsdata = alldata, zyp_method = "yuepilon
 
 ### FREQUENCY
 
-data <- compute_annual_frequencies(station_number = "08HB048", water_year = TRUE)
+data <- compute_annual_frequencies(station_number = "08HB048", water_year = T)
 data <- compute_hydat_peak_frequencies(station_number = "08NM116")
 
 data <- compute_annual_frequencies(station_number = c("08HB048","08NM116"))
