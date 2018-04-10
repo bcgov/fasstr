@@ -51,16 +51,22 @@ Using fasstr
 
 All functions in `fasstr` require a daily mean streamflow dataset from one or more hydrometric stations. Long-term and continuous datasets are preferred for most analyses, but seasonal and partial data can be used. Other daily time series data, like temperature, precipitation or water levels, may also be used, but with certain caution as some calculations/conversions are based on units of streamflow (cubic metres per second). Data is provided to each function using the either the `data` argument, as a data frame, or the `station_number` argument, as a list of Water Survey of Canada HYDAT station numbers.
 
-Using the `data` option, a data frame of daily data containing columns of dates (YYYY-MM-DD in date format), values (mean daily discharge in cubic metres per second in numeric format), and, optionally, grouping identifiers (character string of station names or numbers) is called. By default the functions will look for columns identified as 'Date', 'Value', and 'STATION\_NUMBER', respectively, to be compatible with the `tidyhydat` defaults, but columns of different names can be identified using the `dates`, `values`, `groups` column arguments (ex. `values = Yield_mm`). The following is an example of an appropriate dataframe:
+Using the `data` option, a data frame of daily data containing columns of dates (YYYY-MM-DD in date format), values (mean daily discharge in cubic metres per second in numeric format), and, optionally, grouping identifiers (character string of station names or numbers) is called. By default the functions will look for columns identified as 'Date', 'Value', and 'STATION\_NUMBER', respectively, to be compatible with the `tidyhydat` defaults, but columns of different names can be identified using the `dates`, `values`, `groups` column arguments (ex. `values = Yield_mm`). The following is an example of an appropriate dataframe (STATION\_NUMBER not required):
 
 ``` r
-str(data)
-#> Classes 'tbl_df', 'tbl' and 'data.frame':    16102 obs. of  2 variables:
-#>  $ Date : Date, format: "1972-12-01" "1972-12-02" ...
-#>  $ Value: num  3 0.94 0.385 0.241 0.207 ...
+head(data)
+#> # A tibble: 6 x 3
+#>   STATION_NUMBER Date       Value
+#>   <chr>          <date>     <dbl>
+#> 1 08NM116        1949-04-01  1.13
+#> 2 08NM116        1949-04-02  1.53
+#> 3 08NM116        1949-04-03  2.07
+#> 4 08NM116        1949-04-04  2.07
+#> 5 08NM116        1949-04-05  2.21
+#> 6 08NM116        1949-04-06  2.21
 ```
 
-Alternatively, you can directly extract a flow data set directly from a HYDAT database by listing station numbers in the `station_number` argument (ex. `station_number = "08NM116"` or `station_number = c("08NM116", "08NM242")`). A data frame of daily streamflow data for all stations listed will be extracted using `tidyhydat`.
+Alternatively, you can directly extract a flow data set directly from a HYDAT database by listing station numbers in the `station_number` argument (ex. `station_number = "08NM116"` or `station_number = c("08NM116", "08NM242")`) while leavind the data arguments blank. A data frame of daily streamflow data for all stations listed will be extracted using `tidyhydat`.
 
 This package allows for multiple stations (or other groupings) to be analyzed in many of the functions provided identifiers are provided using the `groups` column argument (defaults to STATION\_NUMBER). If grouping column doesn't exist or is improperly named, then all values listed in the `values` column will be summarized.
 
@@ -72,11 +78,11 @@ These functions, that start with `add_*` and `fill_*`, add columns and rows, res
 
 #### Analysis
 
-The analysis functions summarize your discharge values into various statistics. `screen_*` functions summarize annual data for outliers and missing dates. `calc_*` functions calculate daily, monthly, annual, and long-term statistics (e.g. mean, median, maximum, minimum, percentiles, amongst others) of daily, rolling days, and cumulative flow data. `compute_*` functions also analyze data but produce more in-depth analyses, like frequency and trending analysis, and may produce multiple plots and tables as a result.
+The analysis functions summarize your discharge values into various statistics. `screen_*` functions summarize annual data for outliers and missing dates. `calc_*` functions calculate daily, monthly, annual, and long-term statistics (e.g. mean, median, maximum, minimum, percentiles, amongst others) of daily, rolling days, and cumulative flow data. `compute_*` functions also analyze data but produce more in-depth analyses, like frequency and trending analysis, and may produce multiple plots and tables as a result. All tables are in tibble data frame formats. Can use `write_flow_data()` or `write_results()` to customize saving tibbles to a local drive.
 
 #### Visualization
 
-The visualization functions, which begin with `plot_*` plot the various summary statistics and analyses as a way to visualize the data. While most plotting functions are as customizable as the analysis functions, some come pre-set with statistics that cannot be changed for consistency. Plots can be modified by the user using the `ggplot2` package and its functions.
+The visualization functions, which begin with `plot_*` plot the various summary statistics and analyses as a way to visualize the data. While most plotting functions are as customizable as the analysis functions, some come pre-set with statistics that cannot be changed for consistency. Plots can be modified by the user using the `ggplot2` package and its functions. All plots functions produce lists of plots (even if just one produced). Can use `write_plots()` to customize saving the lists of plots to a local drive (within folders or PDF documents).
 
 ### Function Options
 
@@ -107,7 +113,7 @@ Examples
 
 ### Summary statistics example: long-term statistics
 
-To determine the summary statistics of an entire dataset and by month (mean, median, maximum, minimum, and some percentiles) you can use the `calc_longterm_stats()` function. If the 'Mission Creek near East Kelowna' hydrometric station is of interest you can list the station number in the `HYDAT` argument to obtain the data (if `tidyhydat` and HYDAT are installed).
+To determine the summary statistics of an entire dataset and by month (mean, median, maximum, minimum, and some percentiles) you can use the `calc_longterm_stats()` function. If the 'Mission Creek near East Kelowna' hydrometric station is of interest you can list the station number in the `station_number` argument to obtain the data (if `tidyhydat` and HYDAT are installed).
 
 ``` r
 calc_longterm_stats(station_number = "08NM116", 
@@ -136,7 +142,7 @@ calc_longterm_stats(station_number = "08NM116",
 
 ### Plotting example 1: daily summary statistics
 
-To visualize the daily streamflow patterns on an annual basis, the `plot_daily_stats()` function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the `start_year` and `end_year` arguments. Multiple plots are produced with this function, so this example plots just the summary statistics (`[1]`).
+To visualize the daily streamflow patterns on an annual basis, the `plot_daily_stats()` function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the `start_year` and `end_year` arguments. We can also compare indivual years against the statistics using `include_year` argument like below.
 
 ``` r
 plot_daily_stats(station_number = "08NM116",
@@ -145,8 +151,6 @@ plot_daily_stats(station_number = "08NM116",
                  log_discharge = TRUE,
                  include_year = 1991,
                  ignore_missing = TRUE)
-#> Scale for 'colour' is already present. Adding another scale for
-#> 'colour', which will replace the existing scale.
 #> $Daily_Stats
 ```
 
@@ -221,7 +225,7 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 License
 -------
 
-    Copyright 2017 Province of British Columbia
+    Copyright 2018 Province of British Columbia
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
