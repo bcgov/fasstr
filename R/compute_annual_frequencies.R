@@ -349,6 +349,11 @@ compute_annual_frequencies <- function(data = NULL,
   #                                   "Selection" = unlist(analysis.options, use.names = FALSE))
 
 
+  rm(dPIII, pos = ".GlobalEnv")
+  rm(mPIII, pos = ".GlobalEnv")
+  rm(pPIII, pos = ".GlobalEnv")
+  rm(qPIII, pos = ".GlobalEnv")
+
   list(Q_stat = Q_stat,
        plotdata = dplyr::as_tibble(plotdata),  # has the plotting positions for each point in frequency analysis
        freqplot = freqplot,
