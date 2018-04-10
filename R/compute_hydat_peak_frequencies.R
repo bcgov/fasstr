@@ -190,11 +190,19 @@ compute_hydat_peak_frequencies <- function(station_number = NULL,
                                                              name = 'Return Period',
                                                              breaks = c(1.01,1.1,2,5,10,20,100,1000),
                                                              labels = function(x){ifelse(x < 2, x, round(x,0))}))+
-    ggplot2::theme(axis.title.x.top = ggplot2::element_text(size = 10),
-                   legend.title = ggplot2::element_blank(), legend.key.size = ggplot2::unit(.1,"in"))
+    ggplot2::scale_color_brewer(palette = "Set1") +
+    ggplot2::theme_bw() +
+    ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                   panel.grid = ggplot2::element_line(size = .2),
+                   axis.title = ggplot2::element_text(size = 12),
+                   axis.text = ggplot2::element_text(size = 10),
+                   axis.title.x.top = ggplot2::element_text(size = 10),
+                   legend.key.size = ggplot2::unit(.1,"in"),
+                   legend.text = ggplot2::element_text(size = 9),
+                   legend.title = ggplot2::element_blank())
   
-  if(!use_max){ freqplot <- freqplot + ggplot2::theme(legend.justification = c(1, 1), legend.position = c(1, 1))}
-  if(use_max){ freqplot <- freqplot + ggplot2::theme(legend.justification = c(1,0), legend.position = c(1, 0))}
+  if(!use_max){ freqplot <- freqplot + ggplot2::theme(legend.justification = c(1, 1), legend.position = c(.98, .98))}
+  if(use_max){ freqplot <- freqplot + ggplot2::theme(legend.justification = c(1,0), legend.position = c(.98, .02))}
   if(!use_log){ freqplot <- freqplot + ggplot2::scale_y_log10(breaks = scales::pretty_breaks(n = 10))}
   if(use_log){ freqplot <- freqplot + ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 10))}
   if(use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab("ln(Annual Maximum Flow (cms))")}  # adjust the Y axis label
@@ -276,6 +284,27 @@ compute_hydat_peak_frequencies <- function(station_number = NULL,
                                            "Return Period" = Return)
   
   
+  
+  ## Add fitted curves to the freqplot
+  fit_quantiles_plot <-  seq(to = 0.99, from = 0.01, by = .005)
+  fitted_quantiles_plot <- plyr::ldply(names(fit), function (measure, prob, fit, use_max, use_log){
+    # get the quantiles for each model
+    x <- fit[[measure]]
+    # if fitting minimums then you want EXCEEDANCE probabilities
+    if(use_max) prob <- 1 - prob
+    quant <- stats::quantile(x, prob = prob)
+    quant <- unlist(quant$quantiles)
+    if(x$distname == 'PIII' & !use_log)quant <- 10 ^ quant # PIII was fit to the log-values
+    if(use_max) prob <- 1 - prob  # reset for adding to data frame
+    if(use_log) quant <- exp(quant) # transforma back to original scale
+    res <- data.frame(Measure = measure, distr = x$distname, prob = prob, quantile = quant , stringsAsFactors = FALSE)
+    rownames(res) <- NULL
+    res
+  }, prob = fit_quantiles_plot, fit = fit, use_max = use_max, use_log = use_log)
+  
+  
+  freqplot <- freqplot +
+    ggplot2::geom_line(data = fitted_quantiles_plot, ggplot2::aes(x = prob, y = quantile, group = Measure, color = Measure))
   # analysis.summary <- list(#"station name" = station_name,
   #   "year type" = ifelse(!water_year, "Calendar Year (Jan-Dec)", "Water Year (Oct-Sep)"),
   #   "year range" = paste0(start_year, " - ", end_year),
