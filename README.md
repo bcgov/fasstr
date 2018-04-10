@@ -1,18 +1,16 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-<a rel="Exploration" href="https://github.com/BCDevExchange/docs/blob/master/discussion/projectstates.md"><img alt="Being designed and built, but in the lab. May change, disappear, or be buggy." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/exploration.svg" title="Being designed and built, but in the lab. May change, disappear, or be buggy." /></a>
+fasstr <img src="tools/readme/fasstr.png" align="right" />
+==========================================================
 
-[![Travis build status](https://travis-ci.org/bcgov/fasstr.svg?branch=master)](https://travis-ci.org/bcgov/fasstr)
-
-fasstr
-======
+<a rel="Exploration" href="https://github.com/BCDevExchange/docs/blob/master/discussion/projectstates.md"><img alt="Being designed and built, but in the lab. May change, disappear, or be buggy." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/exploration.svg" title="Being designed and built, but in the lab. May change, disappear, or be buggy." /></a> [![Travis build status](https://travis-ci.org/bcgov/fasstr.svg?branch=master)](https://travis-ci.org/bcgov/fasstr)
 
 The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http://www.r-project.org) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
 
 Features
 --------
 
-This package provides functions with quick solutions for streamflow data:
+This package provides functions with solutions for streamflow data:
 
 -   tidying (to prepare data for analyses; `add_*` and `fill_*` functions),
 -   screening (to look for outliers and missing data; `screen_*` functions),
@@ -22,9 +20,10 @@ This package provides functions with quick solutions for streamflow data:
 Useful features of functions include:
 
 -   the integration of the `tidyhydat` package to pull streamflow data from a Water Survey of Canada [HYDAT](https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html) database for analyses;
--   arguments for filtering of years and months in analyses and plotting (reducing need to tidy data beforehand);
+-   arguments for filtering of years and months in analyses and plotting (internally tidys your data);
 -   choosing water years for analyses instead of calendar years (and choice of start month);
 -   selecting for rolling day averages (e.g. 7-day rolling average);
+-   plotting options;
 -   choosing how missing dates are handled.
 
 Installation
@@ -52,7 +51,7 @@ Using fasstr
 
 All functions in `fasstr` require a daily mean streamflow dataset from one or more hydrometric stations. Long-term and continuous datasets are preferred for most analyses, but seasonal and partial data can be used. Other daily time series data, like temperature, precipitation or water levels, may also be used, but with certain caution as some calculations/conversions are based on units of streamflow (cubic metres per second). Data is provided to each function using the either the `data` argument, as a data frame, or the `station_number` argument, as a list of Water Survey of Canada HYDAT station numbers.
 
-Using the `data` option, a data frame of daily data containing columns of dates (YYYY-MM-DD in date format), values (mean daily discharge in cubic metres per second in numeric format), and, optionally, grouping identifiers (character string of station names or numbers) is called. By default the functions will look for columns identified as 'Date', 'Value', and 'STATION\_NUMBER' (grouping results by STATION\_NUMBER), respectively, but columns of different names can be identified using the `dates`, `values`, `groups` column arguments (PROVIDE EXAMPLE), respectively. The following is an example of an appropriate dataframe:
+Using the `data` option, a data frame of daily data containing columns of dates (YYYY-MM-DD in date format), values (mean daily discharge in cubic metres per second in numeric format), and, optionally, grouping identifiers (character string of station names or numbers) is called. By default the functions will look for columns identified as 'Date', 'Value', and 'STATION\_NUMBER', respectively, to be compatible with the `tidyhydat` defaults, but columns of different names can be identified using the `dates`, `values`, `groups` column arguments (ex. `values = Yield_mm`). The following is an example of an appropriate dataframe:
 
 ``` r
 str(data)
@@ -61,9 +60,9 @@ str(data)
 #>  $ Value: num  3 0.94 0.385 0.241 0.207 ...
 ```
 
-Alternatively, you can directly extract a HYDAT flow data set directly from a HYDAT database by listing HYDAT station numbers in the `station_number` argument (ex. `station_number = "08NM116"` or `station_number = c("08NM116", "08NM242")`). A data frame of daily streamflow data for all stations listed will be extracted using `tidyhydat`.
+Alternatively, you can directly extract a flow data set directly from a HYDAT database by listing station numbers in the `station_number` argument (ex. `station_number = "08NM116"` or `station_number = c("08NM116", "08NM242")`). A data frame of daily streamflow data for all stations listed will be extracted using `tidyhydat`.
 
-This package allows for multiple stations (or other groupings such as time-periods of a flow record (ex. pre/post an event)) to be analyzed in many of the functions provided station identifiers are provided using the `groups` column argument (defaults to STATION\_NUMBER). If grouping column doesn't exist or is improperly named, then all values listed in the `values` column will be summarized. Note that the plotting functions do not use the `groups` arguments (as just one plot is typically produced), so just one station/group should be provided.
+This package allows for multiple stations (or other groupings) to be analyzed in many of the functions provided identifiers are provided using the `groups` column argument (defaults to STATION\_NUMBER). If grouping column doesn't exist or is improperly named, then all values listed in the `values` column will be summarized.
 
 ### Function Types
 
@@ -73,7 +72,7 @@ These functions, that start with `add_*` and `fill_*`, add columns and rows, res
 
 #### Analysis
 
-The analysis functions summarize your discharge values into various statistics. `screen_*` functions summarize annual data for outliers and missing dates. `calc_*` functions calculate daily, monthly, annual, and long-term statistics (e.g. mean, median, maximum, minimum, percentiles, amongst others) of daily, rolling days, and cumulative flow data. `compute_*` functions also analyze data but produce more in-depth analyses, like frequency and trending analysis, and may produce plots and tables as a result.
+The analysis functions summarize your discharge values into various statistics. `screen_*` functions summarize annual data for outliers and missing dates. `calc_*` functions calculate daily, monthly, annual, and long-term statistics (e.g. mean, median, maximum, minimum, percentiles, amongst others) of daily, rolling days, and cumulative flow data. `compute_*` functions also analyze data but produce more in-depth analyses, like frequency and trending analysis, and may produce multiple plots and tables as a result.
 
 #### Visualization
 
@@ -91,15 +90,17 @@ To customize your analyses for specific time periods, you can designate the star
 
 To group analyses by water, or hydrologic, years instead of calendar years, if desired, you can use `water_year = TRUE` within most functions (default is `water_year = FALSE`). A water year can be defined as a 12-month period that comprises a complete hydrologic cycle (wet seasons can typically cross calendar year), typically starting with the month with minimum flows (the start of a new water recharge cycle). As water years commonly start in October, the default water year is October for `fasstr`. If another start month is desired, you can choose is using the `water_year_start` argument (numeric month) to designate the water year time period. The water year label is designated by the year it ends in (e.g. water year 2000 goes from Oct 1, 1999 to Sep 30, 2000). Start, end and excluded years will be based on the specified water year.
 
-For your own analyses, you can add date variables to your dataset using the `add_date_variables()` function.
+For your own analyses, you can add date variables to your dataset using the `add_date_variables()` or `add_seasons()` functions.
 
 #### Drainage Basin Area
 
-Yield runoff statistics calculated in the some of the functions require an upstream drainage basin area (in sq. km) using the `basin_area` argument, where required. If no basin areas are supplied, all yield results will be `NA`. To apply a basin area (10 sqkm for example) to all daily observations, set the argument as `basin_area = 10`. If there are multiple stations or groups to apply multiple basin areas (using the `groups` argument), set them individually using this option: `basin_area = c("08NM116" = 795,  "08NM242" = 22)`. If a STATION\_NUMBER column exists with HYDAT station numbers, the function will automatically use the basin areas provided in HYDAT, if available, so `basin_area` is not required. For your own analyses, you can add basin areas to your dataset using the `add_basin_area()` function.
+Yield runoff statistics (in millimetres) calculated in the some of the functions require an upstream drainage basin area (in sq. km) using the `basin_area` argument, where required. If no basin areas are supplied, all yield results will be `NA`. To apply a basin area (10 sqkm for example) to all daily observations, set the argument as `basin_area = 10`. If there are multiple stations or groups to apply multiple basin areas (using the `groups` argument), set them individually using this option: `basin_area = c("08NM116" = 795,  "08NM242" = 22)`. If a STATION\_NUMBER column exists with HYDAT station numbers, the function will automatically use the basin areas provided in HYDAT, if available, so `basin_area` is not required. For your own analyses, you can add basin areas to your dataset using the `add_basin_area()` function.
 
 #### Handling Missing Dates
 
 With the use of the `ignore_missing` argument in most function, you can decide how to handle dates with missing flow values in calculations. When you set `ignore_missing = TRUE` a statistic will be calculated for a given year, all years, or month regardless of if there are missing flow values. When `ignore_missing = FALSE` the returned value for the period will be `NA` if there are missing values.
+
+Some functions have an argument called `complete_years` which can be used, when set to `TRUE`, to filter out years that have partial datasets (for seasonal or other reasons) and only years with full data are used to calculate statistics.
 
 Examples
 --------
