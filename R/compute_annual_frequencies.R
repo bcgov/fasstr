@@ -151,7 +151,7 @@ compute_annual_frequencies <- function(data = NULL,
     flow_data_temp <- dplyr::select(flow_data, Date, Value)
     flow_data_temp <- add_rolling_means(flow_data_temp, roll_days = day, roll_align = roll_align)
     names(flow_data_temp)[names(flow_data_temp) == paste0("Q", day, "Day")] <- paste("Q", formatC(day, width = 3, format = "d",
-                                                                                                  flag = "0"), "-day-Avg", sep = "")
+                                                                                                  flag = "0"), "-day-avg", sep = "")
     flow_data_temp <- dplyr::select(flow_data_temp, -Value)
     flow_data <- merge(flow_data, flow_data_temp, by = "Date", all = TRUE)
   }
@@ -237,6 +237,12 @@ compute_annual_frequencies <- function(data = NULL,
   #   object 'Value' not found
   dates = "Date"
   values = "Value"
+  
+  
+  plotdata2 <- dplyr::mutate(plotdata2, 
+                             Measure = gsub('Q', "", Measure),
+                             Measure = gsub('^0+', "", Measure))
+
 
   freqplot <- ggplot2::ggplot(data = plotdata2, ggplot2::aes(x = prob, y = value, group = Measure, color = Measure),
                               environment = environment())+
@@ -249,17 +255,29 @@ compute_annual_frequencies <- function(data = NULL,
                                                            name = 'Return Period',
                                                            breaks = c(1.01,1.1,2,5,10,20,100,1000),
                                                            labels = function(x){ifelse(x < 2, x, round(x,0))}))+
-    ggplot2::theme(axis.title.x.top = ggplot2::element_text(size = 10),
-                   legend.title = ggplot2::element_blank(), legend.key.size = ggplot2::unit(.1,"in"))
+    ggplot2::scale_color_brewer(palette = "Set1") +
+    ggplot2::theme_bw() +
+   # ggplot2::labs(color = 'Annual Statistics') +    
+    ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                   panel.grid = ggplot2::element_line(size = .2),
+                   axis.title = ggplot2::element_text(size = 12),
+                   axis.text = ggplot2::element_text(size = 10),
+                   axis.title.x.top = ggplot2::element_text(size = 10),
+                   #legend.position = "right", 
+                   #legend.spacing = ggplot2::unit(0, "cm"),
+                   #legend.justification = "top",
+                   legend.text = ggplot2::element_text(size = 9),
+                   legend.title = ggplot2::element_blank())
+    
 
-  if(!use_max){ freqplot <- freqplot + ggplot2::theme(legend.justification = c(1, 1), legend.position = c(1, 1))}
-  if(use_max){ freqplot <- freqplot + ggplot2::theme(legend.justification = c(1,0), legend.position = c(1, 0))}
+  if(!use_max){ freqplot <- freqplot + ggplot2::theme(legend.justification = c(1, 1), legend.position = c(.98, .98))}
+  if(use_max){ freqplot <- freqplot + ggplot2::theme(legend.justification = c(1,0), legend.position = c(.98, 0.2))}
   if(!use_log){ freqplot <- freqplot + ggplot2::scale_y_log10(breaks = scales::pretty_breaks(n = 10))}
   if(use_log){ freqplot <- freqplot + ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 10))}
-  if(use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab("ln(Annual Maximum Flow (cms))")}  # adjust the Y axis label
-  if(use_log & !use_max){freqplot <- freqplot + ggplot2::ylab("ln(Annual Minimum Flow (cms))")}
-  if(!use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab("Annual Maximum Flow (cms)")}
-  if(!use_log & !use_max){freqplot <- freqplot + ggplot2::ylab("Annual Minimum Flow (cms)")}
+  if(use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab("ln(Annual Maximum Discharge (cms))")}  # adjust the Y axis label
+  if(use_log & !use_max){freqplot <- freqplot + ggplot2::ylab("ln(Annual Minimum Discharge (cms))")}
+  if(!use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab("Annual Maximum Discharge (cms)")}
+  if(!use_log & !use_max){freqplot <- freqplot + ggplot2::ylab("Annual Minimum Discharge (cms)")}
 
   #--------------------------------------------------------------
   # fit the distribution to each measure
@@ -310,7 +328,7 @@ compute_annual_frequencies <- function(data = NULL,
 
   #--------------------------------------------------------------
   # extracted the fitted quantiles from the fitted distribution
-
+  
   fitted_quantiles <- plyr::ldply(names(fit), function (measure, prob, fit, use_max, use_log){
     # get the quantiles for each model
     x <- fit[[measure]]
@@ -333,6 +351,30 @@ compute_annual_frequencies <- function(data = NULL,
                                            Distribution = distr,
                                            Probability = prob,
                                            "Return Period" = Return)
+
+  ## Add fitted curves to the freqplot
+  fit_quantiles_plot <-  seq(to = 0.99, from = 0.01, by = .005)
+  fitted_quantiles_plot <- plyr::ldply(names(fit), function (measure, prob, fit, use_max, use_log){
+    # get the quantiles for each model
+    x <- fit[[measure]]
+    # if fitting minimums then you want EXCEEDANCE probabilities
+    if(use_max) prob <- 1 - prob
+    quant <- stats::quantile(x, prob = prob)
+    quant <- unlist(quant$quantiles)
+    if(x$distname == 'PIII' & !use_log)quant <- 10 ^ quant # PIII was fit to the log-values
+    if(use_max) prob <- 1 - prob  # reset for adding to data frame
+    if(use_log) quant <- exp(quant) # transforma back to original scale
+    res <- data.frame(Measure = measure, distr = x$distname, prob = prob, quantile = quant , stringsAsFactors = FALSE)
+    rownames(res) <- NULL
+    res
+  }, prob = fit_quantiles_plot, fit = fit, use_max = use_max, use_log = use_log)
+  
+  
+  fitted_quantiles_plot <- dplyr::mutate(fitted_quantiles_plot, 
+                                         Measure = gsub('Q', "", Measure),
+                                         Measure = gsub('^0+', "", Measure))
+  freqplot <- freqplot +
+    ggplot2::geom_line(data = fitted_quantiles_plot, ggplot2::aes(x = prob, y = quantile, group = Measure, color = Measure))
 
 
   # analysis.summary <- list(#"station name" = station_name,
