@@ -34,7 +34,7 @@ To install the `fasstr` package, you need to install the `devtools` package then
 
 ``` r
 install.packages("devtools")
-devtools::install_github("bcgov/fasstr", ref = "devel")
+devtools::install_github("bcgov/fasstr")
 ```
 
 Then to call the `fasstr` functions you can either load the package using the `library()` function or access a specific function using a double-colon (e.g. `fasstr::calc_daily_stats()`). Several other packages will be installed in addition including [tidyhydat](https://cran.r-project.org/web/packages/tidyhydat/index.html) for data gathering, [zyp](https://cran.r-project.org/web/packages/zyp/index.html) for trending, [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html) for creating plots, and [dplyr](https://cran.r-project.org/web/packages/dplyr/index.html) and [tidyr](https://cran.r-project.org/web/packages/tidyr/index.html) for various data wrangling and summarizing functions, amongst others. Many of the other packages are required for the frequency analysis functions.
@@ -169,11 +169,11 @@ plot_flow_duration(station_number = "08NM116",
 This package also provides a function, `compute_frequency_analysis()`, to complete frequency analyses (using the same methods as [HEC-SSP](http://www.hec.usace.army.mil/software/hec-ssp/)). The default fitting distribution is 'log-Pearson Type III', but the 'Weibull' distribution can also be used. Other default plotting and fitting methods are described in the function documentation. For this example, the 7-day low-flow (low-flow is default) quantiles are calculated for the Mission Creek hydrometric station using the 'log-Pearson Type III' distribution. With this, several low-flow indicators can be determined (i.e. 7Q5, 7Q10).
 
 ``` r
-#freq_results <- compute_frequency_analysis(data = "08NM116",
-#                           start_year = 1981,
-#                           end_year = 2010,
-#                           rolling_days = 7)
-#freq_results$fitted_quantiles
+# freq_results <- compute_annual_frequencies(station_number = "08NM116",
+#                                            start_year = 1981,
+#                                            end_year = 2010,
+#                                            roll_days = 7)
+# freq_results$fitted_quantiles
 ```
 
 Project Status
