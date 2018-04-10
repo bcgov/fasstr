@@ -166,14 +166,26 @@ plot_flow_duration(station_number = "08NM116",
 
 ### Analysis example: low-flow frequency analysis
 
-This package also provides a function, `compute_frequency_analysis()`, to complete frequency analyses (using the same methods as [HEC-SSP](http://www.hec.usace.army.mil/software/hec-ssp/)). The default fitting distribution is 'log-Pearson Type III', but the 'Weibull' distribution can also be used. Other default plotting and fitting methods are described in the function documentation. For this example, the 7-day low-flow (low-flow is default) quantiles are calculated for the Mission Creek hydrometric station using the 'log-Pearson Type III' distribution. With this, several low-flow indicators can be determined (i.e. 7Q5, 7Q10).
+This package also provides a function, `compute_annual_frequencies()`, to complete frequency analyses (using the same methods as [HEC-SSP](http://www.hec.usace.army.mil/software/hec-ssp/)). The default fitting distribution is 'log-Pearson Type III', but the 'Weibull' distribution can also be used. Other default plotting and fitting methods are described in the function documentation. For this example, the 7-day low-flow (low-flow is default) quantiles are calculated for the Mission Creek hydrometric station using the 'log-Pearson Type III' distribution. With this, several low-flow indicators can be determined (i.e. 7Q5, 7Q10).
 
 ``` r
-# freq_results <- compute_annual_frequencies(station_number = "08NM116",
-#                                            start_year = 1981,
-#                                            end_year = 2010,
-#                                            roll_days = 7)
-# freq_results$fitted_quantiles
+freq_results <- compute_annual_frequencies(station_number = "08NM116",
+                                           start_year = 1981,
+                                           end_year = 2010,
+                                           roll_days = 7)
+freq_results$fitted_quantiles
+#>    Distribution Probability Return Period Q007-day-Avg
+#> 1          PIII       0.010    100.000000    0.1929445
+#> 2          PIII       0.050     20.000000    0.2770067
+#> 3          PIII       0.100     10.000000    0.3318582
+#> 4          PIII       0.200      5.000000    0.4084737
+#> 5          PIII       0.500      2.000000    0.5881156
+#> 6          PIII       0.800      1.250000    0.8122160
+#> 7          PIII       0.900      1.111111    0.9463443
+#> 8          PIII       0.950      1.052632    1.0651498
+#> 9          PIII       0.975      1.025641    1.1735280
+#> 10         PIII       0.980      1.020408    1.2066583
+#> 11         PIII       0.990      1.010101    1.3050198
 ```
 
 Project Status
