@@ -175,7 +175,7 @@ freq_results <- compute_annual_frequencies(station_number = "08NM116",
                                            end_year = 2010,
                                            roll_days = 7)
 freq_results$fitted_quantiles
-#>    Distribution Probability Return Period Q007-day-Avg
+#>    Distribution Probability Return Period Q007-day-avg
 #> 1          PIII       0.010    100.000000    0.1929445
 #> 2          PIII       0.050     20.000000    0.2770067
 #> 3          PIII       0.100     10.000000    0.3318582
@@ -188,6 +188,18 @@ freq_results$fitted_quantiles
 #> 10         PIII       0.980      1.020408    1.2066583
 #> 11         PIII       0.990      1.010101    1.3050198
 ```
+
+The probabilty of observed extreme events can also be plotted (using selected plotting position) along with the computed quantiles curve for comparison.
+
+``` r
+freq_results <- compute_annual_frequencies(station_number = "08NM116",
+                                           start_year = 1981,
+                                           end_year = 2010,
+                                           roll_days = c(1,3,7,30))
+freq_results$freqplot
+```
+
+![](tools/readme/README-plot3-1.png)
 
 Project Status
 --------------

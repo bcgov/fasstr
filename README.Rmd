@@ -171,6 +171,15 @@ freq_results <- compute_annual_frequencies(station_number = "08NM116",
 freq_results$fitted_quantiles
 ```
 
+The probabilty of observed extreme events can also be plotted (using selected plotting position) along with the computed quantiles curve for comparison.
+
+```{r plot3, warning = FALSE, fig.height = 4, fig.width = 7}
+freq_results <- compute_annual_frequencies(station_number = "08NM116",
+                                           start_year = 1981,
+                                           end_year = 2010,
+                                           roll_days = c(1,3,7,30))
+freq_results$freqplot
+```
 
 ## Project Status
 
