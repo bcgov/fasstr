@@ -12,12 +12,12 @@
 
 #' @references 
 #' 
-#' Tidyhydat information:
+#' tidyhydat information:
 #' 
 #' 
-#' To download the latest version of hydat please:
+#' To use the station_number argument of the fasstr functions, please download the latest version of HYDAT using the function:
 #'  \itemize{
-#'   \item use the \code{download_hydat()} function.
+#'   \item \code{tidyhydat::download_hydat()}
 #'   }
 #' 
 #'

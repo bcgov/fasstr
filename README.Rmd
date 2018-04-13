@@ -46,7 +46,7 @@ Useful features of functions include:
 ## Installation
 
 To install the `fasstr` package, you need to install the `devtools` package then the `fasstr` package
-```{r, echo = TRUE, eval = FALSE}
+```{r,  warning = FALSE, eval = FALSE}
 install.packages("devtools")
 devtools::install_github("bcgov/fasstr")
 ```
@@ -77,7 +77,11 @@ data <- data[,c(1,2,4)]
 head(data)
 ```
 
-Alternatively, you can directly extract a flow data set directly from a HYDAT database by listing station numbers in the `station_number` argument (ex. `station_number = "08NM116"` or `station_number = c("08NM116", "08NM242")`) while leavind the data arguments blank. A data frame of daily streamflow data for all stations listed will be extracted using `tidyhydat`. 
+Alternatively, you can directly extract a flow data set directly from a HYDAT database by listing station numbers in the `station_number` argument (ex. `station_number = "08NM116"` or `station_number = c("08NM116", "08NM242")`) while leavind the data arguments blank. A data frame of daily streamflow data for all stations listed will be extracted using `tidyhydat`.  Use the following function to download a HYDAT database:
+
+```{r tidyhydat, warning = FALSE, eval = FALSE}
+tidyhydat::download_hydat()
+```
 
 This package allows for multiple stations (or other groupings) to be analyzed in many of the functions provided identifiers are provided using the `groups` column argument (defaults to STATION_NUMBER). If grouping column doesn't exist or is improperly named, then all values listed in the `values` column will be summarized.
 

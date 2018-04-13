@@ -9,6 +9,22 @@ devtools::install_github("bcgov/fasstr")
 
 
 
+
+
+test <- plot_daily_stats(station_number = "08HB048", include_year = 1999, ignore_missing = T)
+
+
+
+
+for (i in names(test)) {
+  test[[i]] <- test[[i]] + ggplot2::ylab("YAHOOO")
+}
+
+
+
+
+
+
 ### FLOW_DATA
 ### ----------
 
@@ -54,7 +70,7 @@ plot_annual_stats(data = flow_data, values = Volume_m3)
 plot_annual_stats(data = flow_data, values = Yield_mm)
 plot_daily_cumulative_stats(data = flow_data)
 plot_daily_stats(data = flow_data)
-plot_daily_stats(data = flow_data, values = Cumul_Volume_m3)
+plot_daily_stats(data = flow_data, values = Volume_m3)
 plot_daily_stats(data = flow_data, values = Yield_mm)
 plot_data_screening(data = flow_data)
 plot_data_screening(data = flow_data, values = Volume_m3)
