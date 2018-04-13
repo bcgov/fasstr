@@ -1,7 +1,17 @@
+fasstr 0.2.1
+=========================
+
+##### Updated: 13 April 2018
+
+  * Reformatted examples script in testing folder as a temporary help document until a vignette is built
+  * Moved the previous examples script to a new testing script in the same folder
+
+
+
 fasstr 0.2.0
 =========================
 
-##### Updated on: 9 April 2018
+##### Updated: 9 April 2018
 
 ### NEW FEATURES
   * Summarize and plot by multiple groups (ex. stations) 
@@ -28,7 +38,7 @@ fasstr 0.2.0
 fasstr 0.1.0
 =========================
 
-##### Updated on: 9 Dec 2017
+##### Updated: 9 Dec 2017
 
 * Initial package beta version
 * Use HYDAT argument to extract HYDAT data using 'tidyhydat' package
