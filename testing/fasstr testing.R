@@ -24,6 +24,62 @@ for (i in names(test)) {
 
 
 
+#devtools::document()
+#install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
+#install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
+
+
+# Writes all data and plots
+
+
+library(fasstr)
+
+
+flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048")
+start_year = 1980
+end_year = 2010
+water_year = FALSE
+water_year_start = 9
+exclude_years = 1990:1993
+#include_year = 2000
+folder = "testing/Carnation/"
+main_dir = folder
+table_filetype = "xlsx"
+plot_filetype = "png"
+
+# 
+# folder <- "testing/MissionCreek/"
+# # Parameters
+# stn_number <- "08NM116"
+# start_year = 1981 #NULL
+# end_year = 2000 #NULL
+
+
+
+
+
+devtools::document()
+#install.packages("/Users/jongoetz/Documents/R/fasstr", repos = NULL, type = "source")
+install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
+
+
+
+write_full_analysis(station_number = "08HB048", 
+                    water_year = TRUE, 
+                    start_year = 1980, 
+                    end_year = 2010, 
+                    exclude_years = c(1995:1997, 1999),
+                    table_filetype = "xlsx",
+                    plot_filetype = "pdf",
+                    sections = 1)
+
+
+
+
+
+
+
+
 
 ### FLOW_DATA
 ### ----------
