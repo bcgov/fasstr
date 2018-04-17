@@ -2,8 +2,8 @@
 
 
 devtools::document()
-install.packages("/Users/jongoetz/Documents/R/fasstr", repos = NULL, type = "source")
-install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
+#install.packages("/Users/jongoetz/Documents/R/fasstr", repos = NULL, type = "source")
+install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 devtools::install_github("bcgov/fasstr")
 #devtools::check()
 
@@ -63,15 +63,18 @@ devtools::document()
 install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
 
-
+start_time <- Sys.time()
 write_full_analysis(station_number = "08HB048", 
                     #water_year = TRUE, 
                     #start_year = 1980, 
                     #end_year = 2010, 
                     #exclude_years = c(1995:1997, 1999),
-                    table_filetype = "xlsx",
-                    plot_filetype = "pdf",
-                    foldername = "Carn")
+                    #table_filetype = "xlsx",
+                    #plot_filetype = "png",
+                    foldername = "Carn",
+                    ignore_missing = TRUE)
+end_time <- Sys.time()
+
 
 ##
 
@@ -421,7 +424,7 @@ origin_date <- as.Date("1899-12-31")
 
 
 
-annual_stats <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% 
+flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% 
   select(Date,Value) %>% 
   calc_annual_stats()
 

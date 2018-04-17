@@ -2,14 +2,14 @@
 % Please edit documentation in R/write_full_analysis.R
 \name{write_full_analysis}
 \alias{write_full_analysis}
-\title{Calculate and write}
+\title{Write a suite of tables and plots of various statistics}
 \usage{
 write_full_analysis(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, basin_area = NA,
-  water_year = FALSE, water_year_start = 10, start_year = NULL,
-  end_year = NULL, exclude_years = NULL, ignore_missing = FALSE,
-  foldername = NULL, sections = 1:7, table_filetype = "xlsx",
-  plot_filetype = "png", zyp_method = "yuepilon", zyp_alpha = NA)
+  groups = STATION_NUMBER, station_number = NULL, foldername = NULL,
+  sections = 1:7, table_filetype = "xlsx", plot_filetype = "png",
+  basin_area = NA, water_year = FALSE, water_year_start = 10,
+  start_year = 0, end_year = 3000, exclude_years = NULL,
+  ignore_missing = FALSE, zyp_method = "yuepilon", zyp_alpha = NA)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -28,6 +28,23 @@ Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave bla
 \item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
 Leave blank if using \code{data} argument.}
+
+\item{foldername}{Name of folder to save everything}
+
+\item{sections}{Section of analysis to run
+\itemize{
+ \item{1: Timeseries}
+ \item{2: Long-term}
+ \item{3: Annual}
+ \item{4: Monthly}
+ \item{5: Daily}
+ \item{6: Annual Trends}
+ \item{7: Low-flow Frequencies}
+ }}
+
+\item{table_filetype}{Excel or csv filetype}
+
+\item{plot_filetype}{Type of image to save}
 
 \item{basin_area}{Upstream drainage basin area, in square kilometres, to apply to observations. Three options:
 
@@ -54,38 +71,25 @@ Default \code{10}.}
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
 with no missing dates will be returned. Default \code{FALSE}.}
 
-\item{foldername}{Name of folder to save everything}
-
-\item{sections}{Section of analysis to run
-\itemize{
- \item{1: Timeseries}
- \item{2: Long-term}
- \item{3: Annual}
- \item{4: Monthly}
- \item{5: Daily}
- \item{6: Annual Trends}
- \item{7: Frequency Analysis}
- }}
-
-\item{table_filetype}{Excel or csv filetype}
-
-\item{plot_filetype}{Type of image to save}
-
 \item{zyp_method}{Character string identifying the prewhitened trend method to use from 'zyp', either "zhang' or "yuepilon". 
 Default \code{"yuepilon"}.}
 
 \item{zyp_alpha}{Numeric value of the significance level (ex. 0.05) of when to plot a trend line. Leave blank for no line.}
 }
 \value{
-Folders upon folders
+Folders with plots and tables.
 }
 \description{
-Calculates all statiscs and writes them ina folder
+Calculates and writes tables and plots of a suite of statistics from various fasstr functions.
+   The statistics are grouped into 7 sections (see below) which are saved in distinct folders created in the
+   main directory ('foldername' argument). Due to the number of tables and plots to be made, this function may
+   take several minutes to complete.
 }
 \examples{
 \dontrun{
 
-write_full_analysis(station_number = "08NM116")
+write_full_analysis(station_number = "08NM116",
+                    foldername = "Mission Creek Stats")
 
 }
 }

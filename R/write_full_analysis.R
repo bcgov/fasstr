@@ -10,9 +10,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Calculate and write 
+#' @title Write a suite of tables and plots of various statistics
 #'
-#' @description Calculates all statiscs and writes them ina folder
+#' @description Calculates and writes tables and plots of a suite of statistics from various fasstr functions.
+#'    The statistics are grouped into 7 sections (see below) which are saved in distinct folders created in the
+#'    main directory ('foldername' argument). Due to the number of tables and plots to be made, this function may
+#'    take several minutes to complete.
 #'    
 #' @inheritParams compute_annual_trends
 #' @inheritParams plot_annual_trends
@@ -29,15 +32,16 @@
 #'  \item{4: Monthly}
 #'  \item{5: Daily}
 #'  \item{6: Annual Trends}
-#'  \item{7: Frequency Analysis}
+#'  \item{7: Low-flow Frequencies}
 #'  }
 #' 
-#' @return Folders upon folders
+#' @return Folders with plots and tables.
 #'
 #' @examples
 #' \dontrun{
 #' 
-#' write_full_analysis(station_number = "08NM116")
+#' write_full_analysis(station_number = "08NM116",
+#'                     foldername = "Mission Creek Stats")
 #'
 #' }
 #' @export
@@ -49,17 +53,17 @@ write_full_analysis <- function(data = NULL,
                                 values = Value,
                                 groups = STATION_NUMBER,
                                 station_number = NULL,
-                                basin_area = NA,
-                                water_year = FALSE,
-                                water_year_start = 10,
-                                start_year = NULL,
-                                end_year = NULL,
-                                exclude_years = NULL,
-                                ignore_missing = FALSE,
                                 foldername = NULL,
                                 sections = 1:7,
                                 table_filetype = "xlsx",
                                 plot_filetype = "png",
+                                basin_area = NA,
+                                water_year = FALSE,
+                                water_year_start = 10,
+                                start_year = 0,
+                                end_year = 3000,
+                                exclude_years = NULL,
+                                ignore_missing = FALSE,
                                 zyp_method = 'yuepilon',
                                 zyp_alpha = NA){
   
@@ -67,10 +71,6 @@ write_full_analysis <- function(data = NULL,
   
   ## ARGUMENT CHECKS
   ## ---------------
-  
-  # Argument checks
-  if (is.null(start_year)) {start_year <- 0}
-  if (is.null(end_year)) {end_year <- 3000}
   
   water_year_checks(water_year, water_year_start)
   years_checks(start_year, end_year, exclude_years)
@@ -95,8 +95,6 @@ write_full_analysis <- function(data = NULL,
   
   # Do this for now, until looping of include_year plots is sorted out
   if (length(station_number) > 1) stop("Only one station_number can be listed.", call. = FALSE)
-  
-
   
   
   
@@ -125,28 +123,38 @@ write_full_analysis <- function(data = NULL,
   flow_data <- add_rolling_means(data = flow_data)
   
   
-  
+  # Get the start and end years of the data to make a list of all included years
+  flow_data_temp <- analysis_prep(data = flow_data,
+                                  water_year = water_year,
+                                  water_year_start = water_year_start)
+  if (start_year < min(flow_data_temp$AnalysisYear)) {
+    start_year <- min(flow_data_temp$AnalysisYear)
+  }
+  if (end_year > max(flow_data_temp$AnalysisYear)) {
+    end_year <- max(flow_data_temp$AnalysisYear)
+  }
+  years_list <- seq(from = start_year, to = end_year, by = 1)[!(seq(from = start_year, to = end_year, by = 1) %in% exclude_years)]
   
   
   ### Folders Setup
   ###########################
-
+  
   # Create the main directory folder
   main_dir <- foldername
   dir.create(path = main_dir, showWarnings = FALSE)
   
   # Create the table of contents and meta data files
-  metadata <- data.frame(col1 = c("fasstr Complete Analyses","","Station:","Water Year","","Folder","1-TimeSeries","2-Longterm"),
-                         col2 = c("","","STTIONS",water_year,"","","MissingDate.pdf","FLowduration.pdf"))
-  table_contents <- data.frame(Folder = c(rep("1-TimeSeries",4),rep("2-Longterm",3)),
-                               File = c(rep("MissingDate.pdf",4),rep("FLowduration.pdf",3)),
-                               Type = c("table","plot","table","plot","table","plot","table"),
-                               Description = c(rep("...",7)))
-  write_results(metadata,paste0(main_dir, "fasstr Analysis Metadata.", table_filetype))
-  write_results(table_contents,paste0(main_dir, "fasstr Table of Contents.", table_filetype))
-
+  # metadata <- data.frame(col1 = c("fasstr Complete Analyses","","Station:","Water Year","","Folder","1-TimeSeries","2-Longterm"),
+  #                        col2 = c("","","STTIONS",water_year,"","","MissingDate.pdf","FLowduration.pdf"))
+  # table_contents <- data.frame(Folder = c(rep("1-TimeSeries",4),rep("2-Longterm",3)),
+  #                              File = c(rep("MissingDate.pdf",4),rep("FLowduration.pdf",3)),
+  #                              Type = c("table","plot","table","plot","table","plot","table"),
+  #                              Description = c(rep("...",7)))
+  # write_results(metadata,paste0(main_dir, "fasstr Analysis Metadata.", table_filetype))
+  # write_results(table_contents,paste0(main_dir, "fasstr Table of Contents.", table_filetype))
+  # 
+  # 
   
-
   
   
   
@@ -158,7 +166,7 @@ write_full_analysis <- function(data = NULL,
     # Create the folder
     timeseries_dir <- "1 - Timeseries/"
     dir.create(path = paste0(main_dir, timeseries_dir), showWarnings = FALSE)
-
+    
     # Write the flow data
     write_flow_data(data = flow_data, 
                     start_year = start_year, end_year = end_year,
@@ -172,19 +180,19 @@ write_full_analysis <- function(data = NULL,
     
     # Write flow data by year plots
     ts_annual_plot <- plot_flow_data(data = flow_data, 
-                                        start_year = start_year,end_year = end_year, exclude_years = exclude_years,
-                                        water_year = water_year, water_year_start = water_year_start,
-                                        plot_by_year = TRUE)
+                                     start_year = start_year,end_year = end_year, exclude_years = exclude_years,
+                                     water_year = water_year, water_year_start = water_year_start,
+                                     plot_by_year = TRUE)
     invisible(write_plots(plots = ts_annual_plot,
                           foldername = paste0(main_dir, timeseries_dir),
                           type = plot_filetype,
                           width = 14,
                           height = 8.5))
-
+    
     # Write flow data plot
     ts_full_plot <- plot_flow_data(data = flow_data, 
-                                      start_year = start_year,end_year = end_year, exclude_years = exclude_years,
-                                      water_year = water_year, water_year_start = water_year_start)
+                                   start_year = start_year,end_year = end_year, exclude_years = exclude_years,
+                                   water_year = water_year, water_year_start = water_year_start)
     invisible(write_plots(plots = ts_full_plot,
                           foldername = paste0(main_dir, timeseries_dir),
                           type = plot_filetype,
@@ -229,13 +237,15 @@ write_full_analysis <- function(data = NULL,
                                              start_year = start_year, end_year = end_year, exclude_years = exclude_years,
                                              water_year = water_year, water_year_start = water_year_start,
                                              percentiles = 1:99, 
-                                             transpose = TRUE), 
+                                             transpose = TRUE,
+                                             ignore_missing = ignore_missing), 
                   file = paste0(main_dir, longterm_dir, "Longterm_Statistics_and_Percentiles.", table_filetype))
     
     # Write the long-term stats plot
     lt_stats_plot <- plot_longterm_stats(data = flow_data,
                                          start_year = start_year, end_year = end_year, exclude_years = exclude_years,
-                                         water_year = water_year, water_year_start = water_year_start)
+                                         water_year = water_year, water_year_start = water_year_start,
+                                         ignore_missing = ignore_missing)
     invisible(write_plots(plots = lt_stats_plot, 
                           foldername = paste0(main_dir, longterm_dir), 
                           type = plot_filetype,
@@ -245,7 +255,8 @@ write_full_analysis <- function(data = NULL,
     # Write the flow duration plot
     lt_flowduration_plot <- plot_flow_duration(data = flow_data, 
                                                start_year = start_year, end_year = end_year, exclude_years = exclude_years, 
-                                               water_year = water_year, water_year_start = water_year_start)
+                                               water_year = water_year, water_year_start = water_year_start,
+                                               ignore_missing = ignore_missing)
     
     invisible(write_plots(plots = lt_flowduration_plot, 
                           foldername = paste0(main_dir, longterm_dir), 
@@ -267,7 +278,8 @@ write_full_analysis <- function(data = NULL,
     # Write each of the annual stats
     write_results(data = calc_annual_stats(data = flow_data, 
                                            start_year = start_year, end_year = end_year, exclude_years = exclude_years,
-                                           water_year = water_year, water_year_start = water_year_start), 
+                                           water_year = water_year, water_year_start = water_year_start,
+                                           ignore_missing = ignore_missing), 
                   file = paste0(main_dir, annual_dir, "Annual_Statistics.", table_filetype))
     write_results(data = calc_annual_cumulative_stats(data = flow_data, 
                                                       start_year = start_year, end_year = end_year, exclude_years = exclude_years,
@@ -277,7 +289,7 @@ write_full_analysis <- function(data = NULL,
     write_results(data = calc_annual_cumulative_stats(data = flow_data, 
                                                       start_year = start_year, end_year = end_year, exclude_years = exclude_years,
                                                       water_year = water_year, water_year_start = water_year_start,
-                                                      incl_seasons = TRUE, use_yield = TRUE),
+                                                      incl_seasons = TRUE, use_yield = TRUE, basin_area = basin_area),
                   digits = 1,
                   file = paste0(main_dir, annual_dir, "Annual_Cumualtive_Yield.", table_filetype))
     write_results(data = calc_annual_flow_timing(data = flow_data, 
@@ -290,14 +302,16 @@ write_full_analysis <- function(data = NULL,
                   file = paste0(main_dir, annual_dir, "Annual_Days_Outside_Normal.", table_filetype))
     write_results(data = calc_annual_lowflows(data = flow_data, 
                                               start_year = start_year, end_year = end_year, exclude_years = exclude_years,
-                                              water_year = water_year, water_year_start = water_year_start), 
+                                              water_year = water_year, water_year_start = water_year_start,
+                                              ignore_missing = ignore_missing), 
                   file = paste0(main_dir, annual_dir, "Annual_Lowflows.", table_filetype))
     
     
     # Write each of the annual stats plots
     ann_stat_plot <- plot_annual_stats(data = flow_data, 
                                        start_year = start_year, end_year = end_year, exclude_years = exclude_years,
-                                       water_year = water_year, water_year_start = water_year_start)
+                                       water_year = water_year, water_year_start = water_year_start,
+                                       ignore_missing = ignore_missing)
     ann_vol_plot <- plot_annual_cumulative_stats(data = flow_data, 
                                                  start_year = start_year, end_year = end_year, exclude_years = exclude_years,
                                                  water_year = water_year, water_year_start = water_year_start,
@@ -305,7 +319,7 @@ write_full_analysis <- function(data = NULL,
     ann_yield_plot <- plot_annual_cumulative_stats(data = flow_data, 
                                                    start_year = start_year, end_year = end_year, exclude_years = exclude_years,
                                                    water_year = water_year, water_year_start = water_year_start,
-                                                   incl_seasons = TRUE, use_yield = TRUE)
+                                                   incl_seasons = TRUE, use_yield = TRUE, basin_area = basin_area)
     ann_timing_plot <- plot_annual_flow_timing(data = flow_data, 
                                                start_year = start_year, end_year = end_year, exclude_years = exclude_years,
                                                water_year = water_year, water_year_start = water_year_start)
@@ -314,7 +328,8 @@ write_full_analysis <- function(data = NULL,
                                                 water_year = water_year, water_year_start = water_year_start)
     ann_lowflow_plot <- plot_annual_lowflows(data = flow_data, 
                                              start_year = start_year, end_year = end_year, exclude_years = exclude_years,
-                                             water_year = water_year, water_year_start = water_year_start)
+                                             water_year = water_year, water_year_start = water_year_start,
+                                             ignore_missing = ignore_missing)
     
     
     invisible(write_plots(plots = c(ann_stat_plot, ann_vol_plot, ann_yield_plot, ann_timing_plot, ann_norm_plot, ann_lowflow_plot), 
@@ -337,7 +352,8 @@ write_full_analysis <- function(data = NULL,
     # Write all the monthly stats
     write_results(data = calc_monthly_stats(data = flow_data, 
                                             start_year = start_year, end_year = end_year, exclude_years = exclude_years,
-                                            water_year = water_year, water_year_start = water_year_start), 
+                                            water_year = water_year, water_year_start = water_year_start,
+                                            ignore_missing = ignore_missing), 
                   file = paste0(main_dir, month_dir, "Monthly_Statistics.", table_filetype))
     write_results(data = calc_monthly_cumulative_stats(data = flow_data, 
                                                        start_year = start_year, end_year = end_year, exclude_years = exclude_years,
@@ -346,7 +362,7 @@ write_full_analysis <- function(data = NULL,
     write_results(data =  calc_monthly_cumulative_stats(data = flow_data, 
                                                         start_year = start_year, end_year = end_year, exclude_years = exclude_years,
                                                         water_year = water_year, water_year_start = water_year_start,
-                                                        use_yield = TRUE), 
+                                                        use_yield = TRUE, basin_area = basin_area), 
                   digits = 1,
                   file = paste0(main_dir, month_dir, "Monthly_Cumulative_Yield.", table_filetype))
     
@@ -354,7 +370,8 @@ write_full_analysis <- function(data = NULL,
     # Write the monthly stats plots
     mon_stat_plot <- plot_monthly_stats(data = flow_data, 
                                         start_year = start_year, end_year = end_year, exclude_years = exclude_years,
-                                        water_year = water_year, water_year_start = water_year_start)
+                                        water_year = water_year, water_year_start = water_year_start,
+                                        ignore_missing = ignore_missing)
     invisible(write_plots(plots = mon_stat_plot, 
                           foldername = paste0(main_dir, month_dir), 
                           type = plot_filetype,
@@ -368,7 +385,7 @@ write_full_analysis <- function(data = NULL,
     mon_yield_plot <- plot_monthly_cumulative_stats(data = flow_data, 
                                                     start_year = start_year, end_year = end_year, exclude_years = exclude_years,
                                                     water_year = water_year, water_year_start = water_year_start,
-                                                    use_yield = TRUE)
+                                                    use_yield = TRUE, basin_area = basin_area)
     invisible(write_plots(plots = c(mon_vol_plot, mon_yield_plot), 
                           foldername = paste0(main_dir, month_dir), 
                           type = plot_filetype,
@@ -376,46 +393,46 @@ write_full_analysis <- function(data = NULL,
                           height = 4))
     
     
-    # Write the monthly cumulative volumetric plots with years
-    mon_vol_years_plot <- list()
-    for(year in seq(from = start_year, to = end_year, by = 1)[!(seq(from = start_year, to = end_year, by = 1) %in% exclude_years)]) {
-      plot <- suppressMessages(plot_monthly_cumulative_stats(data = flow_data,
-                                                             start_year = start_year,
-                                                             end_year = end_year,
-                                                             water_year = water_year,
-                                                             water_year_start = water_year_start,
-                                                             exclude_years = exclude_years,
-                                                             include_year = year))
-      mon_vol_years_plot[[ paste0(names(plot), "_", year) ]] <- suppressMessages(plot$Monthly_Cumulative_Volumetric_Stats)
-
-    }
-    write_plots(plots = mon_vol_years_plot, 
-                foldername = paste0(main_dir, month_dir, "Monthly_Cumulative_Volumetric_Stats_with_Years"),
-                type = plot_filetype,
-                width = 8.5,
-                height = 4,
-                combined_pdf = ifelse(plot_filetype == "pdf", TRUE, FALSE))
-
-    # Write the monthly cumulative yield plots with years
-    mon_yield_years_plot <- list()
-    for(year in seq(from = start_year, to = end_year, by = 1)[!(seq(from = start_year, to = end_year, by = 1) %in% exclude_years)]) {
-      plot <- suppressMessages(plot_monthly_cumulative_stats(data = flow_data,
-                                                             start_year = start_year,
-                                                             end_year = end_year,
-                                                             water_year = water_year,
-                                                             water_year_start = water_year_start,
-                                                             exclude_years = exclude_years,
-                                                             include_year = year,
-                                                             use_yield = TRUE))
-      mon_yield_years_plot[[ paste0(names(plot), "_", year) ]] <- suppressMessages(plot$Monthly_Cumulative_Yield_Stats)
-
-    }
-    write_plots(plots = mon_yield_years_plot, 
-                foldername = paste0(main_dir, month_dir, "Monthly_Cumulative_Yield_Stats_with_Years"),
-                type = plot_filetype,
-                width = 8.5,
-                height = 4,
-                combined_pdf = ifelse(plot_filetype == "pdf", TRUE, FALSE))
+  #   # Write the monthly cumulative volumetric plots with years
+  #   mon_vol_years_plot <- list()
+  #   for(year in years_list) {
+  #     plot <- suppressMessages(plot_monthly_cumulative_stats(data = flow_data,
+  #                                                            start_year = start_year,
+  #                                                            end_year = end_year,
+  #                                                            water_year = water_year,
+  #                                                            water_year_start = water_year_start,
+  #                                                            exclude_years = exclude_years,
+  #                                                            include_year = year))
+  #     mon_vol_years_plot[[ paste0(names(plot), "_", year) ]] <- suppressMessages(plot$Monthly_Cumulative_Volumetric_Stats)
+  #     
+  #   }
+  #   write_plots(plots = mon_vol_years_plot, 
+  #               foldername = paste0(main_dir, month_dir, "Monthly_Cumulative_Volumetric_Stats_with_Years"),
+  #               type = plot_filetype,
+  #               width = 8.5,
+  #               height = 4,
+  #               combined_pdf = ifelse(plot_filetype == "pdf", TRUE, FALSE))
+  #   
+  #   # Write the monthly cumulative yield plots with years
+  #   mon_yield_years_plot <- list()
+  #   for(year in years_list) {
+  #     plot <- suppressMessages(plot_monthly_cumulative_stats(data = flow_data,
+  #                                                            start_year = start_year,
+  #                                                            end_year = end_year,
+  #                                                            water_year = water_year,
+  #                                                            water_year_start = water_year_start,
+  #                                                            exclude_years = exclude_years,
+  #                                                            include_year = year,
+  #                                                            use_yield = TRUE, basin_area = basin_area))
+  #     mon_yield_years_plot[[ paste0(names(plot), "_", year) ]] <- suppressMessages(plot$Monthly_Cumulative_Yield_Stats)
+  #     
+  #   }
+  #   write_plots(plots = mon_yield_years_plot, 
+  #               foldername = paste0(main_dir, month_dir, "Monthly_Cumulative_Yield_Stats_with_Years"),
+  #               type = plot_filetype,
+  #               width = 8.5,
+  #               height = 4,
+  #               combined_pdf = ifelse(plot_filetype == "pdf", TRUE, FALSE))
   }
   
   
@@ -431,7 +448,8 @@ write_full_analysis <- function(data = NULL,
     # Write all daily stats
     write_results(data = calc_daily_stats(data = flow_data, 
                                           start_year = start_year, end_year = end_year, exclude_years = exclude_years,
-                                          water_year = water_year, water_year_start = water_year_start), 
+                                          water_year = water_year, water_year_start = water_year_start,
+                                          ignore_missing = ignore_missing), 
                   file = paste0(main_dir, daily_dir, "Daily_Statistics.", table_filetype))
     write_results(data = calc_daily_cumulative_stats(data = flow_data, 
                                                      start_year = start_year, end_year = end_year, exclude_years = exclude_years,
@@ -440,7 +458,7 @@ write_full_analysis <- function(data = NULL,
     write_results(data =  calc_daily_cumulative_stats(data = flow_data, 
                                                       start_year = start_year, end_year = end_year, exclude_years = exclude_years,
                                                       water_year = water_year, water_year_start = water_year_start,
-                                                      use_yield = TRUE), 
+                                                      use_yield = TRUE, basin_area = basin_area), 
                   digits = 1,
                   file = paste0(main_dir, daily_dir, "Daily_Cumulative_Yield.", table_filetype))
     
@@ -449,7 +467,8 @@ write_full_analysis <- function(data = NULL,
     # Write the daily stats plots
     day_stat_plot <- plot_daily_stats(data = flow_data, 
                                       start_year = start_year, end_year = end_year, exclude_years = exclude_years,
-                                      water_year = water_year, water_year_start = water_year_start)
+                                      water_year = water_year, water_year_start = water_year_start,
+                                      ignore_missing = ignore_missing)
     day_vol_plot <- plot_daily_cumulative_stats(data = flow_data, 
                                                 start_year = start_year, end_year = end_year, exclude_years = exclude_years,
                                                 water_year = water_year, water_year_start = water_year_start)
@@ -466,14 +485,15 @@ write_full_analysis <- function(data = NULL,
     
     # Write the daily statistics plots with years
     day_stats_year_plots <- list()
-    for(year in seq(from = start_year, to = end_year, by = 1)[!(seq(from = start_year, to = end_year, by = 1) %in% exclude_years)]) {
+    for(year in years_list) {
       plot <- suppressMessages(plot_daily_stats(data = flow_data,
                                                 start_year = start_year,
                                                 end_year = end_year,
                                                 water_year = water_year,
                                                 water_year_start = water_year_start,
                                                 exclude_years = exclude_years,
-                                                include_year = year))
+                                                include_year = year,
+                                                ignore_missing = ignore_missing))
       day_stats_year_plots[[ paste0(names(plot), "_", year) ]] <- suppressMessages(plot$Daily_Stats)
       
     }
@@ -485,7 +505,7 @@ write_full_analysis <- function(data = NULL,
     
     # Write the daily cumulative volumetric plots with years
     day_vol_year_plots <- list()
-    for(year in seq(from = start_year, to = end_year, by = 1)[!(seq(from = start_year, to = end_year, by = 1) %in% exclude_years)]) {
+    for(year in years_list) {
       plot <- suppressMessages(plot_daily_cumulative_stats(data = flow_data,
                                                            start_year = start_year,
                                                            end_year = end_year,
@@ -504,7 +524,7 @@ write_full_analysis <- function(data = NULL,
     
     # Write the daily cumulative yield plots with years
     day_yield_year_plots <- list()
-    for(year in seq(from = start_year, to = end_year, by = 1)[!(seq(from = start_year, to = end_year, by = 1) %in% exclude_years)]) {
+    for(year in years_list) {
       plot <- suppressMessages(plot_daily_cumulative_stats(data = flow_data,
                                                            start_year = start_year,
                                                            end_year = end_year,
@@ -512,7 +532,7 @@ write_full_analysis <- function(data = NULL,
                                                            water_year_start = water_year_start,
                                                            exclude_years = exclude_years,
                                                            include_year = year,
-                                                           use_yield = TRUE))
+                                                           use_yield = TRUE, basin_area = basin_area))
       day_yield_year_plots[[ paste0(names(plot), "_", year) ]] <- suppressMessages(plot$Daily_Cumulative_Yield_Stats)
       
     }
@@ -537,7 +557,8 @@ write_full_analysis <- function(data = NULL,
     # Write the trends results
     ann_trends <- compute_annual_trends(data = flow_data, 
                                         start_year = start_year,end_year = end_year, exclude_years = exclude_years, 
-                                        water_year = water_year, water_year_start = water_year_start, 
+                                        water_year = water_year, water_year_start = water_year_start,
+                                        ignore_missing = ignore_missing, 
                                         zyp_method = "yuepilon")
     write_results(data = ann_trends, 
                   file = paste0(main_dir, trending_dir, "Annual_Trends_Results.", table_filetype))
@@ -558,44 +579,44 @@ write_full_analysis <- function(data = NULL,
   ##########################
   
   if (7 %in% sections) {
-
-  # Create the folder
-  freq_dir <- "7 - LowFlowFrequencies/"
-  dir.create(path = paste0(main_dir, freq_dir), showWarnings = FALSE)
-
-  freq_results <- compute_annual_frequencies(data = flow_data, 
-                                             start_year = start_year,end_year = end_year, exclude_years = exclude_years, 
-                                             water_year = water_year, water_year_start = water_year_start)
-  
-  freq_ann_data <- tidyr::spread(freq_results$Q_stat, Measure, value)
-  write_results(data = freq_ann_data, 
-                file = paste0(main_dir, freq_dir, "Annual_Lowflows.", table_filetype))
-  
-  freq_plot_data <- freq_results$plotdata
-  write_results(data = freq_plot_data, 
-                file = paste0(main_dir, freq_dir, "Plotting_Data.", table_filetype))
-  
-  freq_plots <- list("Frequency_Plot" = freq_results$freqplot)
-  invisible(write_plots(plots = freq_plots,
-                        foldername = paste0(main_dir, freq_dir), 
-                        type = "png",
-                        width = 8.5,
-                        height = 5))
-  
-  #freq_fitting <- freq_results$fit
-  
-  freq_quantiles <- freq_results$fitted_quantiles
-  write_results(data = freq_quantiles, 
-                file = paste0(main_dir, freq_dir, "Fitted_Quantiles.", table_filetype),
-                digits = 4)
-  
-  
+    
+    # Create the folder
+    freq_dir <- "7 - Low-flow Frequencies/"
+    dir.create(path = paste0(main_dir, freq_dir), showWarnings = FALSE)
+    
+    freq_results <- compute_annual_frequencies(data = flow_data, 
+                                               start_year = start_year,end_year = end_year, exclude_years = exclude_years, 
+                                               water_year = water_year, water_year_start = water_year_start,
+                                               ignore_missing = ignore_missing)
+    
+    freq_ann_data <- tidyr::spread(freq_results$Q_stat, Measure, value)
+    write_results(data = freq_ann_data, 
+                  file = paste0(main_dir, freq_dir, "Annual_Lowflows.", table_filetype))
+    
+    freq_plot_data <- freq_results$plotdata
+    write_results(data = freq_plot_data, 
+                  file = paste0(main_dir, freq_dir, "Plotting_Data.", table_filetype))
+    
+    freq_plots <- list("Frequency_Plot" = freq_results$freqplot)
+    invisible(write_plots(plots = freq_plots,
+                          foldername = paste0(main_dir, freq_dir), 
+                          type = "png",
+                          width = 8.5,
+                          height = 5))
+    
+    #freq_fitting <- freq_results$fit
+    
+    freq_quantiles <- freq_results$fitted_quantiles
+    write_results(data = freq_quantiles, 
+                  file = paste0(main_dir, freq_dir, "Fitted_Quantiles.", table_filetype),
+                  digits = 4)
+    
+    
   }
-
   
   
   
-  message(paste0("calc_everything() analysis complete. Go to ", main_dir, " folder for results."))
+  message(paste0("write_full_analysis() . Go to ", main_dir, " folder for results."))
   
 }
 
