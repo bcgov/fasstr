@@ -429,6 +429,17 @@ missing_complete_yr_warning <- function(x) {
     warning("One or more years contained partial or missing data and NA's were produced. Only time periods with complete data were calculated.", call. = FALSE)
 }
 
+zyp_method_checks <- function(zyp_method) {
+  if (is.na(zyp_method) | !zyp_method %in% c("yuepilon", "zhang") )   
+    stop('zyp_trending argument must be either "yuepilon" or "zhang"', call. = FALSE)
+}
+
+zyp_alpha_checks <- function(zyp_alpha){
+  if(!is.na(zyp_alpha) & !is.numeric(zyp_alpha) )              
+    stop("zyp_alpha must be numeric.", call. = FALSE)
+  if(!is.na(zyp_alpha) & !all(zyp_alpha > 0 & zyp_alpha < 1))  
+    stop("timing_percent must be > 0 and < 1)", call. = FALSE)
+}
 
 
 

@@ -37,7 +37,7 @@ calc_everything(station_number = "08HB048",
                 end_year = 2010, 
                 exclude_years = c(1995:1997, 1999),
                 folder = "testing/Carnation/",
-                sections = 4,
+                sections = 1,
                 table_filetype = "csv",
                 plot_filetype = "png")
 
@@ -49,20 +49,31 @@ calc_everything(station_number = "08HB048",
 
 
 
-calc_everything <- function(station_number = NULL,
+calc_everything <- function(data = NULL,
+                            dates = Date,
+                            values = Value,
+                            groups = STATION_NUMBER,
+                            station_number = NULL,
+                            basin_area = NA,
                             water_year = FALSE,
                             water_year_start = 10,
                             start_year = NULL,
                             end_year = NULL,
                             exclude_years = NULL,
+                            ignore_missing = FALSE,
                             folder = "fasstr analysis",
                             table_filetype = "xlsx",
                             plot_filetype = "pdf",
                             sections = 1:7){
   
   
-  ### Data and analysis setup
-  ###########################
+  
+  ## ARGUMENT CHECKS
+  ## ---------------
+  
+  water_year_checks(water_year, water_year_start)
+  years_checks(start_year, end_year, exclude_years)
+  ignore_missing_checks(ignore_missing)
   
   # Do this for now, until looping of include_year plots is sorted out
   if (length(station_number) > 1) stop("Only one station_number can be listed.", call. = FALSE)
@@ -71,6 +82,11 @@ calc_everything <- function(station_number = NULL,
   if (is.null(start_year)) {start_year <- 0}
   if (is.null(end_year)) {end_year <- 3000}
   
+  
+
+  ### Data and analysis setup
+  ###########################
+
   
   # Create the folder
   dir.create(path = folder, showWarnings = FALSE)

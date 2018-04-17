@@ -96,8 +96,7 @@ compute_annual_trends <- function(data = NULL,
   ## ARGUMENT CHECKS
   ## ---------------
   
-  if (is.na(zyp_method) | !zyp_method %in% c("yuepilon", "zhang") )   
-    stop('zyp_trending argument must be either "yuepilon" or "zhang"', call. = FALSE)
+  zyp_method_checks(zyp_method)
   if (!is.logical(incl_data))  
     stop("incl_data argument must be logical (TRUE/FALSE).", call. = FALSE)
   

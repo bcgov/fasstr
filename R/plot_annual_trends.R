@@ -57,10 +57,7 @@ plot_annual_trends <- function(trends_results = NULL,
   if(!all(c("lbound", "trend", "trendp", "tau", "sig", "linear", "n_years") %in% names(trends_results)))
     stop("Must provide a data frame of compute_annual_trends() results with incl_data = TRUE.", call. = FALSE)
   
-  if(!is.na(zyp_alpha) & !is.numeric(zyp_alpha) )              
-    stop("zyp_alpha must be numeric.", call. = FALSE)
-  if(!is.na(zyp_alpha) & !all(zyp_alpha > 0 & zyp_alpha < 1))  
-    stop("timing_percent must be > 0 and < 1)", call. = FALSE)
+  zyp_alpha_checks(zyp_alpha)
   
   
   ## EXTRACT DATA AND RESULTS
