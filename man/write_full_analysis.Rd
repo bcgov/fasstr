@@ -54,6 +54,8 @@ Default \code{10}.}
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
 with no missing dates will be returned. Default \code{FALSE}.}
 
+\item{foldername}{Name of folder to save everything}
+
 \item{sections}{Section of analysis to run
 \itemize{
  \item{1: Timeseries}
@@ -73,8 +75,6 @@ with no missing dates will be returned. Default \code{FALSE}.}
 Default \code{"yuepilon"}.}
 
 \item{zyp_alpha}{Numeric value of the significance level (ex. 0.05) of when to plot a trend line. Leave blank for no line.}
-
-\item{folder}{Name of folder to save everything}
 }
 \value{
 Folders upon folders

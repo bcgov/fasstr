@@ -2,7 +2,7 @@
 
 
 devtools::document()
-#install.packages("/Users/jongoetz/Documents/R/fasstr", repos = NULL, type = "source")
+install.packages("/Users/jongoetz/Documents/R/fasstr", repos = NULL, type = "source")
 install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 devtools::install_github("bcgov/fasstr")
 #devtools::check()
@@ -65,20 +65,15 @@ install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
 
 
 write_full_analysis(station_number = "08HB048", 
-                    water_year = TRUE, 
-                    start_year = 1980, 
-                    end_year = 2010, 
-                    exclude_years = c(1995:1997, 1999),
+                    #water_year = TRUE, 
+                    #start_year = 1980, 
+                    #end_year = 2010, 
+                    #exclude_years = c(1995:1997, 1999),
                     table_filetype = "xlsx",
                     plot_filetype = "pdf",
-                    sections = 1)
+                    foldername = "Carn")
 
-
-
-
-
-
-
+##
 
 
 ### FLOW_DATA

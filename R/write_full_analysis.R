@@ -18,7 +18,7 @@
 #' @inheritParams plot_annual_trends
 #' @param zyp_method Character string identifying the prewhitened trend method to use from 'zyp', either "zhang' or "yuepilon". 
 #'    Default \code{"yuepilon"}.
-#' @param folder Name of folder to save everything
+#' @param foldername Name of folder to save everything
 #' @param table_filetype Excel or csv filetype
 #' @param plot_filetype Type of image to save
 #' @param sections Section of analysis to run
@@ -68,6 +68,10 @@ write_full_analysis <- function(data = NULL,
   ## ARGUMENT CHECKS
   ## ---------------
   
+  # Argument checks
+  if (is.null(start_year)) {start_year <- 0}
+  if (is.null(end_year)) {end_year <- 3000}
+  
   water_year_checks(water_year, water_year_start)
   years_checks(start_year, end_year, exclude_years)
   ignore_missing_checks(ignore_missing)
@@ -92,9 +96,7 @@ write_full_analysis <- function(data = NULL,
   # Do this for now, until looping of include_year plots is sorted out
   if (length(station_number) > 1) stop("Only one station_number can be listed.", call. = FALSE)
   
-  # Argument checks
-  if (is.null(start_year)) {start_year <- 0}
-  if (is.null(end_year)) {end_year <- 3000}
+
   
   
   
@@ -275,7 +277,7 @@ write_full_analysis <- function(data = NULL,
     write_results(data = calc_annual_cumulative_stats(data = flow_data, 
                                                       start_year = start_year, end_year = end_year, exclude_years = exclude_years,
                                                       water_year = water_year, water_year_start = water_year_start,
-                                                      include_seasons = TRUE, use_yield = TRUE),
+                                                      incl_seasons = TRUE, use_yield = TRUE),
                   digits = 1,
                   file = paste0(main_dir, annual_dir, "Annual_Cumualtive_Yield.", table_filetype))
     write_results(data = calc_annual_flow_timing(data = flow_data, 
@@ -555,17 +557,41 @@ write_full_analysis <- function(data = NULL,
   ### Low Flow Frequency
   ##########################
   
-  #if (7 %in% sections) {
-  #  
+  if (7 %in% sections) {
+
   # Create the folder
-  # freq_dir <- "7 - LowFlowFrequencies/"
-  # dir.create(path = paste0(main_dir, freq_dir), showWarnings = FALSE)
-  # 
-  # lowflow_results <- fasstr_annual_freq_analysis(flowdata=flow_data,
-  #                                                #HYDAT = stn_number,
-  #                                                report_dir = paste0(main_dir,freq_dir),start_year = start_year,end_year = end_year)
-  # }
-  # 
+  freq_dir <- "7 - LowFlowFrequencies/"
+  dir.create(path = paste0(main_dir, freq_dir), showWarnings = FALSE)
+
+  freq_results <- compute_annual_frequencies(data = flow_data, 
+                                             start_year = start_year,end_year = end_year, exclude_years = exclude_years, 
+                                             water_year = water_year, water_year_start = water_year_start)
+  
+  freq_ann_data <- tidyr::spread(freq_results$Q_stat, Measure, value)
+  write_results(data = freq_ann_data, 
+                file = paste0(main_dir, freq_dir, "Annual_Lowflows.", table_filetype))
+  
+  freq_plot_data <- freq_results$plotdata
+  write_results(data = freq_plot_data, 
+                file = paste0(main_dir, freq_dir, "Plotting_Data.", table_filetype))
+  
+  freq_plots <- list("Frequency_Plot" = freq_results$freqplot)
+  invisible(write_plots(plots = freq_plots,
+                        foldername = paste0(main_dir, freq_dir), 
+                        type = "png",
+                        width = 8.5,
+                        height = 5))
+  
+  #freq_fitting <- freq_results$fit
+  
+  freq_quantiles <- freq_results$fitted_quantiles
+  write_results(data = freq_quantiles, 
+                file = paste0(main_dir, freq_dir, "Fitted_Quantiles.", table_filetype),
+                digits = 4)
+  
+  
+  }
+
   
   
   
