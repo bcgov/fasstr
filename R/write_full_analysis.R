@@ -620,7 +620,7 @@ write_full_analysis <- function(data = NULL,
   
   
   
-  message(paste0("write_full_analysis() . Go to ", main_dir, " folder for results."))
+  message(paste0("write_full_analysis() has completed write all tables and plots. Go to ", main_dir, " folder for files."))
   
 }
 
