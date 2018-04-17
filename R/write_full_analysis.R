@@ -17,14 +17,18 @@
 #'    main directory ('foldername' argument). Due to the number of tables and plots to be made, this function may
 #'    take several minutes to complete.
 #'    
+#'    If using \code{ignore_missing = FALSE} (default) and there is missing data, some tables and plots may be empty
+#'    and produce warnings. Use \code{ignore_missing = TRUE} to ignore the missing values or filter your data to complete years.
+#'    
 #' @inheritParams compute_annual_trends
 #' @inheritParams plot_annual_trends
 #' @param zyp_method Character string identifying the prewhitened trend method to use from 'zyp', either "zhang' or "yuepilon". 
-#'    Default \code{"yuepilon"}.
-#' @param foldername Name of folder to save everything
-#' @param table_filetype Excel or csv filetype
-#' @param plot_filetype Type of image to save
-#' @param sections Section of analysis to run
+#'    Only required if section 7 is included. Default \code{"yuepilon"}.
+#' @param foldername Name of folder to create on disk (if it does not exist) to create all folders and save tables and plots. 
+#' @param table_filetype Table type to write. One of "csv", "xls", or "xlsx". Default \code{"xlsx"}.
+#' @param plot_filetype Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
+#'    Deafult \code{"png"}.
+#' @param sections Sections of analysis to run (default is all (\code{1:7})):
 #' \itemize{
 #'  \item{1: Timeseries}
 #'  \item{2: Long-term}
