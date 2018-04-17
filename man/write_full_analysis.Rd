@@ -29,9 +29,9 @@ Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave bla
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
 Leave blank if using \code{data} argument.}
 
-\item{foldername}{Name of folder to save everything}
+\item{foldername}{Name of folder to create on disk (if it does not exist) to create all folders and save tables and plots.}
 
-\item{sections}{Section of analysis to run
+\item{sections}{Sections of analysis to run (default is all (\code{1:7})):
 \itemize{
  \item{1: Timeseries}
  \item{2: Long-term}
@@ -42,9 +42,10 @@ Leave blank if using \code{data} argument.}
  \item{7: Low-flow Frequencies}
  }}
 
-\item{table_filetype}{Excel or csv filetype}
+\item{table_filetype}{Table type to write. One of "csv", "xls", or "xlsx". Default \code{"xlsx"}.}
 
-\item{plot_filetype}{Type of image to save}
+\item{plot_filetype}{Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
+Deafult \code{"png"}.}
 
 \item{basin_area}{Upstream drainage basin area, in square kilometres, to apply to observations. Three options:
 
@@ -72,7 +73,7 @@ Default \code{10}.}
 with no missing dates will be returned. Default \code{FALSE}.}
 
 \item{zyp_method}{Character string identifying the prewhitened trend method to use from 'zyp', either "zhang' or "yuepilon". 
-Default \code{"yuepilon"}.}
+Only required if section 7 is included. Default \code{"yuepilon"}.}
 
 \item{zyp_alpha}{Numeric value of the significance level (ex. 0.05) of when to plot a trend line. Leave blank for no line.}
 }
@@ -84,6 +85,9 @@ Calculates and writes tables and plots of a suite of statistics from various fas
    The statistics are grouped into 7 sections (see below) which are saved in distinct folders created in the
    main directory ('foldername' argument). Due to the number of tables and plots to be made, this function may
    take several minutes to complete.
+   
+   If using \code{ignore_missing = FALSE} (default) and there is missing data, some tables and plots may be empty
+   and produce warnings. Use \code{ignore_missing = TRUE} to ignore the missing values or filter your data to complete years.
 }
 \examples{
 \dontrun{

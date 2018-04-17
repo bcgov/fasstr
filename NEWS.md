@@ -1,3 +1,10 @@
+fasstr 0.2.3
+=========================
+
+##### Updated: 17 April 2018
+
+  * Updated write_full_analysis() documentation
+
 fasstr 0.2.2
 =========================
 
