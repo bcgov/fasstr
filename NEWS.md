@@ -1,3 +1,12 @@
+fasstr 0.2.2
+=========================
+
+##### Updated: 17 April 2018
+
+  * Added write_full_analysis() function to write almost almost all plots and tables in a folder
+  * Added some interal checks functions
+  
+
 fasstr 0.2.1
 =========================
 
