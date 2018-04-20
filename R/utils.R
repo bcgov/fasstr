@@ -99,6 +99,8 @@ format_dates_col <- function(data,
       stop("Dates in dates column must be formatted as dates (YYYY-MM-DD).", call. = FALSE)
     } else {
       data$Date <- as.Date(data$Date, "%Y-%m-%d")
+      if (any(is.na(data$Date)))
+        stop("At least one date in dates column is not a date (YYYY-MM-DD).", call. = FALSE)
     }
   }
   
