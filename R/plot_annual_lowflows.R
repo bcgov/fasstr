@@ -17,13 +17,15 @@
 #'    streamflow dataset. Plots statistics from all daily discharge values from all years, unless specified. Data
 #'    calculated from calc_annual_lowflows() function.
 #'
-#' @inheritParams calc_annual_flow_timing
+#' @inheritParams calc_annual_lowflows
 #' @inheritParams plot_annual_stats
 #'    
 #' @return A list of ggplot2 objects with the following for each station provided:
 #'   \item{Annual_Minimums}{ggplot2 object of annual minimums of selected n-day rolling means}
 #'   \item{Annual_Minimums_Days}{ggplot2 object of the day of years of annual minimums of selected n-day rolling means}
 #'   
+#' @seealso \code{\link{calc_annual_lowflows}}
+#' 
 #' @examples
 #' \dontrun{
 #' 

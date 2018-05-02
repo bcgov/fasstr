@@ -30,6 +30,7 @@
 #'   \item{Two_Seasons_Yield}{if include_seasons = TRUE, two seasons runoff yields, in millimetres}
 #'   \item{Four_Seasons_Yield}{if include_seasons = TRUE, four seasons runoff yields, in millimetres}
 #'   
+#' @seealso \code{\link{calc_annual_cumulative_stats}}
 #'   
 #' @examples
 #' \dontrun{

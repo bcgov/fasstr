@@ -38,3 +38,6 @@ plot_annual_trends(trends_results = trends,
 
 }
 }
+\seealso{
+\code{\link{compute_annual_trends}}
+}

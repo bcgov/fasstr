@@ -30,6 +30,8 @@
 #'   \item{5-95 Percentiles Range}{a ribbon showing the range of data between the monthly 5th and 95th percentiles}
 #'   \item{Max-Min Range}{a ribbon showing the range of data between the monthly minimum and maximums}
 #'   
+#' @seealso \code{\link{calc_longterm_stats}}
+#'   
 #' @examples
 #' \dontrun{
 #' 

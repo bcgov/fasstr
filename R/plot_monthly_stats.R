@@ -26,6 +26,8 @@
 #'   \item{Monthly Minimum Flows}{minimum of all daily flows for a given month and year}
 #'   \item{Monthly P'n' Flows}{(optional) each n-th percentile selected for a given month and year}
 #'   
+#' @seealso \code{\link{calc_monthly_stats}}
+#'   
 #' @examples
 #' \dontrun{
 #' 

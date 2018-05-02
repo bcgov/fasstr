@@ -66,3 +66,6 @@ plot_data_screening(station_number = "08NM116",
 
 }
 }
+\seealso{
+\code{\link{screen_flow_data}}
+}

@@ -28,7 +28,9 @@
 #'   \item{Median}{annual median of all daily flows}
 #'   \item{Maximum}{annual maximum of all daily flows}
 #'   \item{Minimum}{annual minimum of all daily flows}
-#' 
+#'   
+#' @seealso \code{\link{calc_annual_stats}}
+#'   
 #' @examples
 #' \dontrun{
 #' 

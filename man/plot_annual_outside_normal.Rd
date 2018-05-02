@@ -77,3 +77,6 @@ plot_annual_outside_normal(station_number = "08NM116",
 
 }
 }
+\seealso{
+\code{\link{calc_annual_outside_normal}}
+}

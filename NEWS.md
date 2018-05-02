@@ -3,8 +3,9 @@ fasstr 0.2.4
 
 ##### Updated: ####
 
-  * added warning if not all dates are dates
-  * added reference in annual_flow_timing() function
+  * added warning if not all dates are dates in column
+  * added references in annual_flow_timing() and trending functions
+  * added 'See Also' documentation for many related functions
   
 
 fasstr 0.2.3

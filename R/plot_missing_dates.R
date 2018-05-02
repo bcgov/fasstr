@@ -22,6 +22,8 @@
 #' @return A list of ggplot2 objects with the following for each station provided:
 #'   \item{Missing_Dates}{a plot that contains the number of missing dates for each year and month}
 #'   
+#' @seealso \code{\link{screen_flow_data}}
+#'   
 #' @examples
 #' \dontrun{
 #' 

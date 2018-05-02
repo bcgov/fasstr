@@ -33,6 +33,8 @@
 #'   \item{95 Percentile-Max Range}{a ribbon showing the range of data between the daily cumulative 95th percentile and the maximum}
 #'   \item{'Year' Flows}{(optional) the daily cumulative flows for the designated year}
 #'   
+#' @seealso \code{\link{calc_daily_cumulative_stats}}
+#'   
 #' @examples
 #' \dontrun{
 #' 

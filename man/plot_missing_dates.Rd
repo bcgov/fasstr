@@ -61,3 +61,6 @@ plot_missing_dates(station_number = "08NM116",
 
 }
 }
+\seealso{
+\code{\link{screen_flow_data}}
+}

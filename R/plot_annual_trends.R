@@ -25,7 +25,9 @@
 #' 
 #' @return A list of ggplot2 objects with plots of trended annual statistics, as the name of each object, with a trend line
 #'    plotted if less than the zyp_alpha provided.
-#'
+#'   
+#' @seealso \code{\link{compute_annual_trends}}
+#'   
 #' @examples
 #' \dontrun{
 #' 

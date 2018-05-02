@@ -111,3 +111,7 @@ calc_all_annual_stats(station_number = "08NM116",
 
 }
 }
+\seealso{
+\code{\link{calc_annual_stats}}, \code{\link{calc_annual_lowflows}}, \code{\link{calc_annual_cumulative_stats}}, 
+   \code{\link{calc_annual_flow_timing}}, \code{\link{calc_monthly_stats}}, \code{\link{calc_annual_outside_normal}}
+}
