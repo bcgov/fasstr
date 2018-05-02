@@ -1,3 +1,12 @@
+fasstr 0.2.4
+=========================
+
+##### Updated: ####
+
+  * added warning if not all dates are dates
+  * added reference in annual_flow_timing() function
+  
+
 fasstr 0.2.3
 =========================
 

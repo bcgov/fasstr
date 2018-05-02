@@ -19,6 +19,14 @@
 #' @inheritParams calc_annual_stats
 #' @param percent_total Numeric vector of percents of total annual flows to determine dates. Default \code{c(25,33.3,50,75)}.
 #' 
+#' @references 
+#' \itemize{
+#'  \item{Barnett, T.P., Pierce, D.W., Hidalgo, H.G., Bonfils, C., Santer, B.D., Das, T., Bala, G., Wood, A.W.,
+#'        Nozawa, T., Mirin, A.A., Cayan, D.R., Dettinger, M.D., 2008. Human-Induced Clanges in the Hydrology of 
+#'        the Western United States. Science 319, 1080-1083.}
+#'        }
+#' 
+#' 
 #' @return A tibble data frame with the following columns:
 #'   \item{Year}{calendar or water year selected}
 #'   \item{DoY_'n'pct_TotalQ}{day of year for each n-percent of total volumetric discharge}
