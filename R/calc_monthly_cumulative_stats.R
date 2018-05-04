@@ -125,12 +125,12 @@ calc_monthly_cumulative_stats <- function(data = NULL,
   flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
   flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
   
-  if (all(is.na(flow_data$Cumul_Total))) 
-    stop("No basin_area values provided or extracted from HYDAT. Use basin_area argument to supply one.", call. = FALSE)
+  # if (all(is.na(flow_data$Cumul_Total))) 
+  #   stop("No basin_area values provided or extracted from HYDAT. Use basin_area argument to supply one.", call. = FALSE)
 
   # Warning if some of the years contained partial data
   comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
-                                 complete_yr = ifelse(sum(!is.na(Cumul_Total)) == length(AnalysisYear), TRUE, FALSE))
+                                 complete_yr = ifelse(sum(!is.na(Value)) == length(AnalysisYear), TRUE, FALSE))
   if (!all(comp_years$complete_yr)) 
     warning("One or more years contained partial data and were excluded. Only years with complete data were used for calculations.", call. = FALSE)
 
@@ -138,14 +138,14 @@ calc_monthly_cumulative_stats <- function(data = NULL,
   flow_data <- dplyr::filter(flow_data, complete_yr == "TRUE")
   flow_data <- dplyr::select(flow_data, -complete_yr)
 
-  ## CALCULATE STATISTICS
+    ## CALCULATE STATISTICS
   ## --------------------
 
   # Calculate monthly totals for all years
   monthly_data <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
-                                   Monthly_Total = max(Cumul_Total, na.rm = TRUE))
+                                   Monthly_Total = max(Cumul_Total, na.rm = FALSE))
   
-    # Calculate the monthly and longterm stats
+  # Calculate the monthly and longterm stats
   monthly_cumul <- dplyr::summarize(dplyr::group_by(monthly_data, STATION_NUMBER, MonthName),
                                     Mean = mean(Monthly_Total, na.rm = FALSE),
                                     Median = stats::median(Monthly_Total, na.rm = FALSE),

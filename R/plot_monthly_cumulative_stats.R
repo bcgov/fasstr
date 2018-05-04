@@ -145,13 +145,11 @@ plot_monthly_cumulative_stats <- function(data = NULL,
     }
   }
     
-    
+  monthly_stats[is.na(monthly_stats)] <- 0
   
   ## PLOT STATS
   ## ----------
 
- # monthly_stats$Month <- match(monthly_stats$Month, month.abb)
-  
   # Create the daily stats plots
   monthly_plots <- dplyr::group_by(monthly_stats, STATION_NUMBER)
   monthly_plots <- tidyr::nest(monthly_plots)

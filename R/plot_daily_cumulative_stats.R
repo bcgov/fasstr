@@ -168,11 +168,11 @@ plot_daily_cumulative_stats <- function(data = NULL,
     
   } 
     
-    
-    
+  daily_stats[is.na(daily_stats)] <- 0
+
   ## PLOT STATS
   ## ----------
-  
+
   # Create the daily stats plots
   daily_plots <- dplyr::group_by(daily_stats, STATION_NUMBER)
   daily_plots <- tidyr::nest(daily_plots)
@@ -204,12 +204,12 @@ plot_daily_cumulative_stats <- function(data = NULL,
              {if (use_yield) ggplot2::ylab("Cumulative Runoff Yield (mm)")} +
              ggplot2::theme_bw() +
              ggplot2::labs(color = 'Daily Statistics', fill = "Daily Ranges") +
-             {if (include_title & .y != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nDaily Statistics'), fill = "Daily Ranges") } +    
-             ggplot2::theme(axis.text=ggplot2::element_text(size = 10, colour = "grey25"),
-                            axis.title=ggplot2::element_text(size = 12, colour = "grey25"),
-                            axis.title.y=ggplot2::element_text(margin = ggplot2::margin(0,0,0,0)),
+             {if (include_title & .y != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nDaily Statistics'), fill = "Daily Ranges") } +
+             ggplot2::theme(axis.text = ggplot2::element_text(size = 10, colour = "grey25"),
+                            axis.title = ggplot2::element_text(size = 12, colour = "grey25"),
+                            axis.title.y = ggplot2::element_text(margin = ggplot2::margin(0,0,0,0)),
                             axis.ticks = ggplot2::element_line(size = .1, colour = "grey25"),
-                            axis.ticks.length=ggplot2::unit(0.05, "cm"),
+                            axis.ticks.length = ggplot2::unit(0.05, "cm"),
                             panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                             panel.grid.minor = ggplot2::element_blank(),
                             panel.grid.major = ggplot2::element_line(size = .1),
@@ -235,7 +235,7 @@ plot_daily_cumulative_stats <- function(data = NULL,
     names(plots) <- paste0(daily_plots$STATION_NUMBER, ifelse(use_yield, "_Daily_Cumulative_Yield_Stats", "_Daily_Cumulative_Volumetric_Stats"))
   }
 
-  plots
-  
+ plots
+
 }
 
