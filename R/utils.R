@@ -148,7 +148,7 @@ format_groups_col <- function(data,
   
   # Rename values to "Value" (and change original if required so no duplication)
   if ("STATION_NUMBER" %in% colnames(data) & groups != "STATION_NUMBER") {
-    names(data)[names(groups) == "STATION_NUMBER"] <- "STATION_NUMBER_orig"
+    names(data)[names(data) == "STATION_NUMBER"] <- "STATION_NUMBER_orig"
   }
   
   names(data)[names(data) == groups] <- "STATION_NUMBER"
