@@ -30,7 +30,9 @@
 #'   \item{5-95 Percentiles Range}{a ribbon showing the range of data between the daily 5th and 95th percentiles}
 #'   \item{Max-Min Range}{a ribbon showing the range of data between the daily minimum and maximums}
 #'   \item{'Year' Flows}{(on annual plots) the daily flows for the designated year}
-#'    
+#'   
+#' @seealso \code{\link{calc_daily_stats}}
+#'   
 #' @examples
 #' \dontrun{
 #' 

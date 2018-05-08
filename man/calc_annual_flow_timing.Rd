@@ -75,3 +75,10 @@ calc_annual_flow_timing(station_number = "08NM116",
 
 }
 }
+\references{
+\itemize{
+ \item{Barnett, T.P., Pierce, D.W., Hidalgo, H.G., Bonfils, C., Santer, B.D., Das, T., Bala, G., Wood, A.W.,
+       Nozawa, T., Mirin, A.A., Cayan, D.R., Dettinger, M.D., 2008. Human-Induced Clanges in the Hydrology of 
+       the Western United States. Science 319, 1080-1083.}
+       }
+}

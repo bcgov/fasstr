@@ -54,6 +54,21 @@
 #'   \item{min}{the minimum of all values used for trending}
 #'   \item{max}{the maximum of all values used for trending}
 #'   Transposing data creates a column of "Trends_Statistics" and subsequent columns of each trends statistic for each annual statistic.
+#' 
+#' @references References from zyp package:
+#' \itemize{
+#'  \item{Wang, X.L. and Swail, V.R., 2001. Changes in extreme wave heights in northern hemisphere oceans and 
+#'        related atmospheric circulation regimes. Journal of Climate, 14: 2204-2221.}
+#'  \item{Yue, S., P. Pilon, B. Phinney and G. Cavadias, 2002. The influence of autocorrelation on the ability
+#'        to detect trend in hydrological series. Hydrological Processes, 16: 1807-1829.}
+#'  \item{Zhang, X., Vincent, L.A., Hogg, W.D. and Niitsoo, A., 2000. Temperature and Precipitation Trends in
+#'        Canada during the 20th Century. Atmosphere-Ocean 38(3): 395-429.}
+#'  \item{Sen, P.K., 1968. Estimates of the Regression Coefficient Based on Kendall's Tau. Journal of the 
+#'        American Statistical Association Vol. 63, No. 324: 1379-1389.}
+#'        }
+#'      
+#' @seealso \code{\link[zyp]{zyp-package}}, \code{\link[zyp]{zyp.trend.dataframe}}, \code{\link{calc_all_annual_stats}},
+#'  \code{\link{plot_annual_trends}}
 #'   
 #' @examples
 #' \dontrun{

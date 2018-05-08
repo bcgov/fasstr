@@ -26,7 +26,9 @@
 #'   \item{Days_Below_Normal}{number of days per year below the daily normal (default 25th percentile)}
 #'   \item{Days_Above_Normal}{number of days per year above the daily normal (default 75th percentile)}
 #'   \item{Days_Outside_Normal}{number of days per year below and above the daily normal (default 25/75th percentile)}
-#'
+#'   
+#' @seealso \code{\link{calc_annual_outside_normal}}
+#' 
 #' @examples
 #' \dontrun{
 #' 

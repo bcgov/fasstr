@@ -26,6 +26,8 @@
 #' @return A list of ggplot2 objects with the following for each station provided:
 #'   \item{Flow_Duration}{a plot that contains flow duration curves for each month, long-term, and (option) customized months}
 #'   
+#' @seealso \code{\link{calc_longterm_stats}}
+#'   
 #' @examples
 #' \dontrun{
 #' 

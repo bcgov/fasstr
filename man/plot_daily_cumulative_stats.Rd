@@ -86,3 +86,6 @@ plot_daily_cumulative_stats(station_number = "08NM116",
 
 }
 }
+\seealso{
+\code{\link{calc_daily_cumulative_stats}}
+}

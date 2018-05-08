@@ -86,3 +86,6 @@ plot_monthly_cumulative_stats(station_number = "08NM116",
 
 }
 }
+\seealso{
+\code{\link{calc_monthly_cumulative_stats}}
+}

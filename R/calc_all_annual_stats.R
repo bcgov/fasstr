@@ -49,6 +49,9 @@
 #' @return A tibble data frame with column "Year" and then 107 (default) variables from the fasstr annual functions.
 #'    See listed functions above for default variables. Transposing data creates a column of "Statistics" and subsequent
 #'    columns for each year selected.
+#' 
+#' @seealso \code{\link{calc_annual_stats}}, \code{\link{calc_annual_lowflows}}, \code{\link{calc_annual_cumulative_stats}}, 
+#'    \code{\link{calc_annual_flow_timing}}, \code{\link{calc_monthly_stats}}, \code{\link{calc_annual_outside_normal}}
 #'
 #' @examples
 #' \dontrun{

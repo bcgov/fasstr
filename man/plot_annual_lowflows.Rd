@@ -76,3 +76,6 @@ plot_annual_lowflows(data = "08NM116",
 
 }
 }
+\seealso{
+\code{\link{calc_annual_lowflows}}
+}

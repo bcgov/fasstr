@@ -127,8 +127,8 @@ calc_daily_cumulative_stats <- function(data = NULL,
   flow_data <- dplyr::filter(flow_data, AnalysisDoY < 366)
   
   
-  if (all(is.na(flow_data$Cumul_Flow))) 
-    stop("No basin_area values provided or extracted from HYDAT. Use basin_area argument to supply one.", call. = FALSE)
+  #if (all(is.na(flow_data$Cumul_Flow))) 
+  #  stop("No basin_area values provided or extracted from HYDAT. Use basin_area argument to supply one.", call. = FALSE)
   
   # Warning if some of the years contained partial data
   comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
@@ -136,16 +136,16 @@ calc_daily_cumulative_stats <- function(data = NULL,
   if (!all(comp_years$complete_yr)) 
     warning("One or more years contained partial data and were excluded. Only years with complete data were used for calculations.", call. = FALSE)
   
-  
+  flow_data
   ## CALCULATE STATISTICS
   ## --------------------
   
   # Calculate basic stats
   daily_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, AnalysisDoY),
-                                  Mean = mean(Cumul_Flow, na.rm = TRUE),
-                                  Median = stats::median(Cumul_Flow, na.rm = TRUE),
-                                  Minimum = min(Cumul_Flow, na.rm = TRUE),
-                                  Maximum = max(Cumul_Flow, na.rm = TRUE))
+                                  Mean = mean(Cumul_Flow, na.rm = FALSE),
+                                  Median = stats::median(Cumul_Flow, na.rm = FALSE),
+                                  Minimum = min(Cumul_Flow, na.rm = FALSE),
+                                  Maximum = max(Cumul_Flow, na.rm = FALSE))
   
   # Compute daily percentiles (if 10 or more years of data)
   if (!all(is.na(percentiles))){
@@ -191,6 +191,8 @@ calc_daily_cumulative_stats <- function(data = NULL,
     daily_stats <- dplyr::select(daily_stats, -STATION_NUMBER)
   }
   
+  logical_cols <- sapply(daily_stats, is.logical) 
+  daily_stats[logical_cols] <- lapply(daily_stats[logical_cols], as.numeric) 
   
   dplyr::as_tibble(daily_stats)
   

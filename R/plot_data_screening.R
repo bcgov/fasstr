@@ -26,7 +26,9 @@
 #'   \item{Maximum}{annual maximum of all daily flows for a given year}
 #'   \item{Mean}{annual mean of all daily flows for a given year}
 #'   \item{StandardDeviation}{annual 1 standard deviation of all daily flows for a given year}
-#'
+#'   
+#' @seealso \code{\link{screen_flow_data}}
+#'   
 #' @examples
 #' \dontrun{
 #' 

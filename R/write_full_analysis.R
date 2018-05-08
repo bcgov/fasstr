@@ -584,6 +584,18 @@ write_full_analysis <- function(data = NULL,
   
   if (7 %in% sections) {
     
+    data_check <- calc_annual_lowflows(data = flow_data, 
+                         start_year = start_year, end_year = end_year, exclude_years = exclude_years,
+                         water_year = water_year, water_year_start = water_year_start,
+                         ignore_missing = ignore_missing)
+    data_check <- dplyr::select(data_check, Min_1_Day, Min_3_Day, Min_7_Day, Min_30_Day)
+    
+    if (any(as.numeric(colSums(!is.na(data_check))) < 3)) {
+      warning("Not enough annual data (3 years) for frequency analysis. Consider filtering for appropriate years or use ignore_missing = TRUE,", 
+              call. = FALSE)
+      
+    } else {
+    
     # Create the folder
     freq_dir <- "7 - Low-flow Frequencies/"
     dir.create(path = paste0(main_dir, freq_dir), showWarnings = FALSE)
@@ -616,11 +628,12 @@ write_full_analysis <- function(data = NULL,
                   digits = 4)
     
     
+    }
   }
   
   
   
-  message(paste0("write_full_analysis() . Go to ", main_dir, " folder for results."))
+  message(paste0("Success! write_full_analysis() has saved all tables and plots. Go to ", main_dir, " folder for files."))
   
 }
 

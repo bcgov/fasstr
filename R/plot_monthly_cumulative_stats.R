@@ -33,6 +33,8 @@
 #'   \item{95 Percentile-Max Range}{a ribbon showing the range of data between the monthly cumulative 95th percentile and the maximum}
 #'   \item{'Year' Flows}{(optional) the monthly cumulative flows for the designated year}
 #'   
+#' @seealso \code{\link{calc_monthly_cumulative_stats}}
+#'   
 #' @examples
 #' \dontrun{
 #' 
@@ -143,13 +145,11 @@ plot_monthly_cumulative_stats <- function(data = NULL,
     }
   }
     
-    
+  monthly_stats[is.na(monthly_stats)] <- 0
   
   ## PLOT STATS
   ## ----------
 
- # monthly_stats$Month <- match(monthly_stats$Month, month.abb)
-  
   # Create the daily stats plots
   monthly_plots <- dplyr::group_by(monthly_stats, STATION_NUMBER)
   monthly_plots <- tidyr::nest(monthly_plots)

@@ -1,3 +1,16 @@
+fasstr 0.2.4
+=========================
+
+##### Updated: 8 May 2018
+
+  * Fixed bug where groups function did not work if not "STATION_NUMBER"
+  * Added warning if not all dates are dates in column
+  * Added references in annual_flow_timing() and trending functions
+  * Added 'See Also' documentation for many related functions
+  * Removed error from daily and monthly cumulative stats/plots with no basin area (now produces NA)
+  * Updated write_full_analysis so no section 7 is completed with insufficient data
+  
+
 fasstr 0.2.3
 =========================
 
