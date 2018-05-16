@@ -1,0 +1,13 @@
+---
+title: "'fasstr' Trending Analysis"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r options, include=FALSE}
+knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")))
+```

@@ -9,11 +9,24 @@ devtools::install_github("bcgov/fasstr")
 
 
 
-
+daily_stats <- dplyr::summarize(dplyr::group_by(test, STATION_NUMBER, AnalysisDate, AnalysisDoY),
+                                Mean = ifelse mean(Cumul_Flow, na.rm = TRUE),
+                                Median = stats::median(Cumul_Flow, na.rm = TRUE),
+                                Minimum = min(Cumul_Flow, na.rm = TRUE),
+                                Maximum = max(Cumul_Flow, na.rm = TRUE))
 
 test <- plot_daily_stats(station_number = "08HB048", include_year = 1999, ignore_missing = T)
 
+test2 <- test$data
 
+results <- calc_annual_lowflows(station_number = "08HA066", ignore_missing = F)
+results <- dplyr::select(results, Min_1_Day, Min_3_Day, Min_7_Day, Min_30_Day)
+any(as.numeric(colSums(!is.na(results))) < 3)
+
+
+
+logical_cols <- sapply(test, is.logical) 
+test[logical_cols] <- lapply(test[logical_cols], as.numeric) 
 
 
 for (i in names(test)) {
@@ -60,10 +73,26 @@ plot_filetype = "png"
 
 devtools::document()
 #install.packages("/Users/jongoetz/Documents/R/fasstr", repos = NULL, type = "source")
-install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
+install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
 
 start_time <- Sys.time()
+write_full_analysis(station_number = "08HA066", 
+                    #water_year = TRUE, 
+                    #start_year = 1980, 
+                    #end_year = 2010, 
+                    #exclude_years = c(1995:1997, 1999),
+                    #table_filetype = "xlsx",
+                    #plot_filetype = "png",
+                    foldername = "Carn2",
+                    ignore_missing = TRUE,
+                    sections = 7)
+end_time <- Sys.time()
+
+
+
+devtools::install_github("bcgov/fasstr")
+library(fasstr)
 write_full_analysis(station_number = "08HB048", 
                     #water_year = TRUE, 
                     #start_year = 1980, 
@@ -73,7 +102,7 @@ write_full_analysis(station_number = "08HB048",
                     #plot_filetype = "png",
                     foldername = "Carn",
                     ignore_missing = TRUE)
-end_time <- Sys.time()
+
 
 
 ##
@@ -99,8 +128,8 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>%
   add_cumulative_yield(basin_area = 10.3) %>% 
   add_seasons()
 
-results <- calc_longterm_stats(data = flow_data)
-results <- calc_annual_stats(data = flow_data)
+results <- calc_longterm_stats(data = flow_data, groups = WaterYear)
+results <- calc_annual_stats(data = flow_data, groups = Parameter)
 results <- calc_all_annual_stats(data = flow_data)
 results <- calc_annual_cumulative_stats(data = flow_data)
 results <- calc_annual_flow_timing(data = flow_data)
@@ -272,7 +301,7 @@ results <- calc_annual_stats(station_number = "08HB048")
 results <- calc_all_annual_stats(station_number = "08HB048")
 results <- calc_annual_cumulative_stats(station_number = "08HB048", use_yield = T, incl_seasons = T)
 results <- calc_annual_flow_timing(station_number = "08HB048")
-results <- calc_annual_lowflows(station_number = "08HB048")
+results <- calc_annual_lowflows(station_number = "08HA066")
 results <- calc_annual_outside_normal(station_number = "08HB048")
 results <- calc_daily_stats(station_number = "08HB048", months = 6:7)
 results <- calc_daily_cumulative_stats(station_number = "08NM116", start_year = 1990)
@@ -281,21 +310,21 @@ results <- calc_lt_mad(station_number = "08HB048")
 results <- calc_lt_percentile(station_number = "08HB048", percentiles = 50, complete_years = T)
 results <- calc_monthly_cumulative_stats(station_number = "08HB048")
 results <- calc_monthly_stats(station_number = "08HB048")
-results <- screen_flow_data(station_number = "08HB048")
+results <- screen_flow_data(station_number = "08HA066")
 
-plot_flow_data(station_number = "08HB048", exclude_years = 2000)
+plot_flow_data(station_number = "08HA066")
 plot_annual_cumulative_stats(station_number = "08HB048", incl_seasons = T)
 plot_annual_flow_timing(station_number = "08HB048")
 plot_annual_outside_normal(station_number = "08HB048")
 plot_annual_stats(station_number = "08HB048")
 plot_annual_lowflows(station_number = "08HB048")
-plot_daily_cumulative_stats(station_number = "08HB048")
-plot_daily_stats(station_number = "08HB048", include_year = 1999)
+plot_daily_cumulative_stats(station_number = "08HA066", use_yield = T, start_year = 1980)
+plot_daily_stats(station_number = "08HB048", start_year = 1973)
 plot_data_screening(station_number = "08HB048")
 plot_flow_duration(station_number = "08HB048", custom_months = 1:3, custom_months_label = "WINTER", ignore_missing = T)
 plot_longterm_stats(station_number = "08HB048")
 plot_missing_dates(station_number = "08HB048")
-plot_monthly_cumulative_stats(station_number = "08HB048")
+plot_monthly_cumulative_stats(station_number = "08HA066", use_yield = T)
 plot_monthly_stats(station_number = "08HB048")
 plot_annual_cumulative_stats(station_number = "08HB048", use_yield = T)
 
@@ -379,8 +408,8 @@ test2 <- fasstr::plot_annual_trends(trendsdata = alldata, zyp_method = "yuepilon
 
 ### FREQUENCY
 
-data <- compute_annual_frequencies(station_number = "08HB048", water_year = T)
-data <- compute_hydat_peak_frequencies(station_number = "08NM116")
+data <- compute_annual_frequencies(station_number = "08HB048", water_year = F, start_year = 1980, end_year = 2010, exclude_years = 1999)
+data <- compute_hydat_peak_frequencies(station_number = "08NM116", use_max = TRUE)
 
 data <- compute_annual_frequencies(station_number = c("08HB048","08NM116"))
 data <- compute_frequency_stat(station_number = "08NM116", roll_day = 7, return_period = 10)
