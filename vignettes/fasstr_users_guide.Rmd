@@ -13,7 +13,7 @@ knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")))
 ```
 The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http://www.r-project.org) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
 
-This guide contains the following sections to help understand the usage of the `fasstr` functions and arguments:
+This vignette guide contains the following sections to help understand the usage of the `fasstr` functions and arguments:
 
 1. Installation and Loading
 2. Flow Data Options
@@ -96,6 +96,17 @@ calc_longterm_stats(station_number = "08NM116")
 calc_longterm_stats(station_number = c("08NM116", "08NM242"))
 ```
 
+After using this argument in your initial function, you do not list it again in subsequent functions but would use the `data` argument. For example:
+
+```{r, echo=TRUE, eval=FALSE}
+flow_data <- fill_missing_dates(station_number = "08NM116")
+flow_data <- add_date_variables(data = flowdata)
+# or
+flow_data <- fill_missing_dates(station_number = "08NM116") %>%
+  add_date_variables()
+```
+
+
 This package allows for multiple stations (or other groupings) to be analyzed in many of the functions; provided they are identified using the `groups` column argument (defaults to STATION_NUMBER). If grouping column doesn't exist or is improperly named, then all values listed in the `values` column will be summarized.
 
 
@@ -116,16 +127,28 @@ There are several functions that are used to prepare your flow dataset for your 
 
 The functions are set up to easily incorporate the use of the pipe operator, like the following:
 
-```{r exampletidy, warning=FALSE, width=Inf}
+```{r, warning=FALSE}
 fill_missing_dates(station_number = "08NM116") %>% 
   select(Date, Value) %>%  # keeps just the Date and Value columns
   add_date_variables() %>% 
   add_rolling_means(roll_days = 7)
+# AND SHOW THE EXAMPLE, EVAL ISNT WORKING
 ```
 
 
 ##### Filling missing dates
 
+Use fill_missing_dates() to fill any days with missing flow values or missing dates with NA. Missing dates will be filled in gaps between data and completely fill the first and last years (based on selected year type).
+
+Run and compare the following two lines to see how data is filled:
+
+```{r, warning=FALSE, eval=FALSE}
+# Very gappy in early years:
+tidyhydat::hy_daily_flows(station_number = "08NM116")
+
+# Gaps filled with NA:
+fill_missing_dates(station_number = "08NM116")
+```
 
 ##### Adding date variables and seasons
 
