@@ -32,8 +32,6 @@ This guide contains the following sections to help understand the usage of the f
 
 ## 1. Getting Started
 
-DOES IT NEED TO BE INSTALLED BEFORE READING VIGNETTES????
-
 To install the `fasstr` package, you will first need to install `devtools`, if not already done so, and then `fasstr` using the following code. It may take a few moments as there are several dependecy packages will also be installed, including [tidyhydat](https://cran.r-project.org/web/packages/tidyhydat/index.html) for downloading Water Survey of Canada hydrometric data, [zyp](https://cran.r-project.org/web/packages/zyp/index.html) for trending, [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html) for creating plots, and [dplyr](https://cran.r-project.org/web/packages/dplyr/index.html) and [tidyr](https://cran.r-project.org/web/packages/tidyr/index.html) for various data wrangling and summarizing functions, amongst others. 
 
 ```{r, echo=TRUE, eval=FALSE}
@@ -366,26 +364,102 @@ Volume Frequency:
 
 ## 8. Customizing Functions - Data filtering and options
 
-In the functions there are various arguments that help filter and customize the results and plotting.
-
-#### Missing dates
-
-ignore_missing
+One of the strengths of fasstr is the ability to customize how data is filtered and analyzed within functions, thereby minimizing the lines of code in your scripting.
+Described here are some of the options available to the functions of this package. Not all functions have all these options, see the documentation for each function to see which argument options are available.
 
 
-#### Date Filtering
+### Missing Dates
 
-Water Year and Start Month
+Dealing with data gaps is important ...
 
-Start and End Years
+Most functions will automatically (`ignore_missing = FALSE`) not calculate a statistic for that period if there is missing data (base `na.rm = FALSE`) and will produce an NA value or will not plot. For example, if there at least one missing day for a given year, an annual statistic will not be calcuated for that year. A warning message will appear in the console indicating as such. See the following code for an example with missing dates:
 
-Excluded Years
+```{r, eval=FALSE}
+calc_annual_stats(station_number = "08NM116")
+```
 
-Complete Years
+If you want to calculate the statistics regardless of missing dates, use the `ignore_missing = TRUE` argument, as such:
 
-Months
+```{r, eval=FALSE}
+calc_annual_stats(station_number = "08NM116", 
+                  ignore_missing = TRUE)
+```
 
-#### Rolling Days
+
+### Dates Filtering
+
+#### Water Year and Start Month
+
+May want a different time period
+    
+To have years starting in October
+    ```{r, eval=FALSE}
+calc_annual_stats(station_number = "08NM116", 
+    start_year = 1980, end_year = 2010,
+    water_year = TRUE)
+    ```
+    
+To have years starting in August
+    ```{r, eval=FALSE}
+    calc_annual_stats(station_number = "08NM116", 
+    start_year = 1980, end_year = 2010,
+    water_year = TRUE,
+    water_year_start = 8)
+```
+
+#### Start and End Years
+
+If you have missing data in certain years or you have a specific period to analyze, you can filter using several options:
+
+Start and end years
+```{r, eval=FALSE}
+calc_annual_stats(station_number = "08NM116", 
+                  start_year = 1980, 
+                  end_year = 2010)
+```
+
+#### Exclude Years
+
+# Removing certain years (outliers, bad data, etc) using exclude_years
+```{r, eval=FALSE}
+calc_annual_stats(station_number = "08NM116", 
+                  start_year = 1980, 
+                  end_year = 2010,
+                  exclude_years = 1982)
+```
+
+```{r, eval=FALSE}
+calc_annual_stats(station_number = "08NM116", 
+                  start_year = 1980, 
+                  end_year = 2010,
+                  exclude_years = c(1982:1984))
+```
+
+#### Complete Years
+
+If your data has missing dates, but you would like to use only those years with complete data, some functions utilize the `complete_years` argument where the data will automatically be filtered for years with complete data and statistics will be calculated. The following code will only calculte the longterm statistics with years of complete data.
+
+```{r, eval=FALSE}
+calc_longterm_stats(station_number = "08NM116", complete_years = TRUE)
+```
+
+Some functions require years with complete data, so years with gaps will be ignored:
+```{r, eval=FALSE}
+calc_annual_flow_timing(station_number = "08NM116")
+```
+
+#### Months
+
+# Some functions allow you use data from selected months
+# This example shows the annual stats for just June-August (Default 1:12)
+```{r, eval=FALSE}
+calc_annual_stats(station_number = "08NM116", 
+                  start_year = 1980, end_year = 2010,
+                  months = 6:8)
+```
+
+
+### Rolling Days
 
 Roll days
 
@@ -394,7 +468,7 @@ Roll align
 Some just one.
 
 
-#### Percentiles and Other Statistics
+### Percentiles and Other Statistics
 
 Mean/Median/Max/min
 

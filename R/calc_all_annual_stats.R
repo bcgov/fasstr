@@ -32,7 +32,7 @@
 #' @param annual_percentiles Numeric vector of percentiles to calculate annually. Set to NA if none required. Used for calc_annual_stats()
 #'    function. Default \code{c(10,90)}.
 #' @param monthly_percentiles Numeric vector of percentiles to calculate monthly for each year. Set to NA if none required. Used for 
-#'    calc_monthly_stats() function. Default \code{c(10,90)}.
+#'    calc_monthly_stats() function. Default \code{c(10,20)}.
 #' @param stats_days Numeric vector of the number of days to apply a rolling mean on basic stats. Default \code{c(1)}.
 #'    Used for calc_annual_stats() and calc_monthly_stats() functions.
 #' @param stats_align Character string identifying the direction of the rolling mean on basic stats from the specified date, either by 
