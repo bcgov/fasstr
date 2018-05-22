@@ -12,8 +12,8 @@
 
 #' @title Add daily cumulative volumetric flows on an annual basis
 #'
-#' @description Add a column of daily cumulative volumetric flows on an annual basis to a streamflow dataset. Adds the volumetric 
-#'    discharge from each day with the previous day(s) for each year, in units of cubic metres. 
+#' @description Add a column of rolling daily cumulative volumetric flows on an annual basis to a streamflow dataset. Adds the 
+#'    volumetric discharge from each day with the previous day(s) for each year, in units of cubic metres. 
 #'    The cumulative flows restart every year and are only calculated in years with complete data.
 #'
 #' @inheritParams calc_annual_stats

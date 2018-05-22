@@ -1,3 +1,15 @@
+fasstr 0.2.5
+=========================
+
+##### Updated: 18 May 2018
+
+  * Added vignettes:
+    * 'fasstr' Users Guide
+    * Trending Analysis Guide
+    * Volume Frequency Analysis Guide
+  * Updated documentation for some functions
+
+
 fasstr 0.2.4
 =========================
 

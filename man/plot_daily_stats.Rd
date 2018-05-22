@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_daily_stats.R
 \name{plot_daily_stats}
 \alias{plot_daily_stats}
-\title{Plot the daily summary statistics}
+\title{Plot daily summary statistics}
 \usage{
 plot_daily_stats(data = NULL, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number = NULL, roll_days = 1,

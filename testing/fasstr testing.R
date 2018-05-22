@@ -2,7 +2,7 @@
 
 
 devtools::document()
-#install.packages("/Users/jongoetz/Documents/R/fasstr", repos = NULL, type = "source")
+install.packages("/Users/jongoetz/Documents/R/fasstr", repos = NULL, type = "source")
 install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 devtools::install_github("bcgov/fasstr")
 #devtools::check()

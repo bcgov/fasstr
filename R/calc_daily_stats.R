@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Calculate the daily summary statistics
+#' @title Calculate daily summary statistics
 #'
 #' @description Calculates the daily mean, median, maximum, minimum, and percentiles for each day of the year of daily flow values 
 #'    from a streamflow dataset. Calculate the statistics from all daily discharge values from all years, unless specified. Can determine
