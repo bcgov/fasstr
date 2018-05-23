@@ -77,16 +77,17 @@ install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
 
 start_time <- Sys.time()
-write_full_analysis(station_number = "08HA066", 
+write_full_analysis(station_number = "08NM116", 
                     #water_year = TRUE, 
-                    #start_year = 1980, 
+                    start_year = 1975, 
                     #end_year = 2010, 
                     #exclude_years = c(1995:1997, 1999),
                     #table_filetype = "xlsx",
                     #plot_filetype = "png",
-                    foldername = "Carn2",
-                    ignore_missing = TRUE,
-                    sections = 7)
+                    foldername = "Mission Creek"#,
+                   # ignore_missing = TRUE,
+                    #sections = 7
+                   )
 end_time <- Sys.time()
 
 
@@ -367,7 +368,7 @@ plot_annual_flow_timing(station_number = c("08HB048","08NM116"))
 plot_annual_outside_normal(station_number = c("08HB048","08NM116"))
 plot_annual_stats(station_number = c("08HB048","08NM116"), include_title = T)
 plot_daily_cumulative_stats(station_number = c("08HB048","08NM116"))
-plot_daily_stats(station_number = c("08HB048","08NM116"), complete_years = T, include_title = T)
+test <- plot_daily_stats(station_number = c("08HB048","08NM116"), complete_years = T, include_title = T)
 plot_data_screening(station_number = c("08HB048","08NM116"))
 plot_flow_duration(station_number = c("08HB048","08NM116"))
 plot_longterm_stats(station_number = c("08HB048","08NM116"))

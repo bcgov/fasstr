@@ -6,12 +6,12 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
+  
 ```{r options, include=FALSE}
 knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")))
 ```
 
-The Flow Analysis Summary Statistics Tool for R (fasstr) is a set of [R](http://www.r-project.org) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
+fasstr, the Flow Analysis Summary Statistics Tool for R, is a set of [R](http://www.r-project.org) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
 
 This vignette documents the usage of the many functions and arguments provided in fasstr. This vignette is a high-level adjunct to the details found in the various function documentations (see `help(package = "fasstr")` for documentations). You’ll learn how to install the package and a HYDAT database, input data into fasstr functions, add relevant columns and rows to daily data, screen data for outliers and missing dates, calculate and visualize various summary statisics, trend annual flows, and complete volume frequency analyses.
 
@@ -32,13 +32,15 @@ This guide contains the following sections to help understand the usage of the f
 
 ## 1. Getting Started
 
-To install the `fasstr` package, you will first need to install `devtools`, if not already done so, and then `fasstr` using the following code. It may take a few moments as there are several dependecy packages will also be installed, including [tidyhydat](https://cran.r-project.org/web/packages/tidyhydat/index.html) for downloading Water Survey of Canada hydrometric data, [zyp](https://cran.r-project.org/web/packages/zyp/index.html) for trending, [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html) for creating plots, and [dplyr](https://cran.r-project.org/web/packages/dplyr/index.html) and [tidyr](https://cran.r-project.org/web/packages/tidyr/index.html) for various data wrangling and summarizing functions, amongst others. 
+### Installing and loading fasstr
+
+To install the `fasstr` you will first need to install `devtools`, if not already done so, and then `fasstr` using the following code. It may take a few moments as there are several dependecy packages will also be installed, including [tidyhydat](https://cran.r-project.org/web/packages/tidyhydat/index.html) for downloading Water Survey of Canada hydrometric data, [zyp](https://cran.r-project.org/web/packages/zyp/index.html) for trending, [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html) for creating plots, and [dplyr](https://cran.r-project.org/web/packages/dplyr/index.html) and [tidyr](https://cran.r-project.org/web/packages/tidyr/index.html) for various data wrangling and summarizing functions, amongst others. 
 
 ```{r, echo=TRUE, eval=FALSE}
 install.packages("devtools")
 devtools::install_github("bcgov/fasstr")
 ```
-  
+
 To call the `fasstr` functions you can either load the package using the `library()` function or access a specific function using a double-colon (e.g. `fasstr::calc_daily_stats()`). `fasstr` also exports the pipe, ` %>%`, so it can be used for tidy workflows. For this vignette, the `dplyr` package will also be installed.
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
@@ -46,23 +48,32 @@ library(fasstr)
 library(dplyr)
 ```
 
-To use the `station_number` argument of the `fasstr` functions, you will need to download a HYDAT database to your computer using the following `tidyhydat` function. The function will save the database on your computer and know where to find it each time you open R or RStudio.
+### Downloading HYDAT
+
+To use the `station_number` argument of the `fasstr` functions, you will need to download a HYDAT database to your computer using the following `tidyhydat` function. The function will save the database on your computer and know where to find it each time you open R or RStudio. Due to the size of the database, it will take several minutes to download.
 
 ```{r, echo=TRUE, eval=FALSE}
 tidyhydat::download_hydat()
 ```
-  
+
+As HYDAT is updated frequently you may want to periodically update it yourself using the function above. You can check the local version using the following code:
+
+```{r, echo=TRUE, eval=FALSE}
+tidyhydat::hy_version()
+```
+
+
 
 ## 2. Flow Data Inputs
 
-All functions in `fasstr` require a daily mean streamflow dataset from one or more hydrometric stations. Long-term and continuous datasets are preferred for most analyses, but seasonal and partial data can be used. Data is provided to each function using either arguments:
+All functions in `fasstr` require a daily mean streamflow dataset from one or more hydrometric stations. Long-term and continuous datasets are preferred for most analyses, but seasonal and partial data can be used. Data is provided to each function using one of the following arguments:
 
 - `data`, as a data frame, or
 - `station_number`, as a list of Water Survey of Canada HYDAT station numbers.
 
 ### 'data' (and dates, values, and groups)
 
-Using the `data` option, a data frame of daily data containing columns of dates (YYYY-MM-DD in date format), values (mean daily discharge in cubic metres per second in numeric format), and, optionally, grouping identifiers (character string of station names or numbers) is called. By default the functions will look for columns identified as 'Date', 'Value', and 'STATION_NUMBER', respectively, to be compatible with the `tidyhydat` defaults, but columns of different names can be identified using the `dates`, `values`, `groups` column arguments (ex.  `values = Yield_mm`). The following is an example of an appropriate dataframe with default column names (STATION_NUMBER not required):
+Using the `data` option, a data frame of daily data containing columns of dates (YYYY-MM-DD in date format), values (mean daily discharge in cubic metres per second in numeric format), and, optionally, grouping identifiers (character string of station names or numbers) is called. By default the functions will look for columns identified as 'Date', 'Value', and 'STATION_NUMBER', respectively, to be compatible with the HYDAT default columns. However, columns of different names can be identified using the `dates`, `values`, `groups` column arguments (ex.  `values = Yield_mm`). The following is an example of an appropriate data frame with default column names (STATION_NUMBER not required):
 
 ```{r setup, include = FALSE}
 data <- tidyhydat::hy_daily_flows("08NM116")
@@ -73,13 +84,13 @@ data <- data[,c(1,2,4)]
 head(data)
 ```
 
-The following is an example if your daily data dataframe has the default columns names:
+The following is an example fasstr calculation if your daily data data frame has the default columns names (no need to list them):
 
 ```{r, echo=TRUE, eval=FALSE}
 calc_longterm_stats(data = flow_data)
 ```
 
-The following is an example if your daily data dataframe has the the columns names of "Stations", "Dates", and "Flows":
+The following is an example if your daily data data frame has the the columns names of "Stations", "Dates", and "Flows":
 
 ```{r, echo=TRUE, eval=FALSE}
 calc_longterm_stats(data = flow_data,
@@ -88,7 +99,7 @@ calc_longterm_stats(data = flow_data,
                     groups = Stations)
 ```
 
-The `data` argument is listed first in the list of arguments for each function, so the dataframe can be passed onto other functions using the pipe operator, `%>%`, in a tidy workflow.
+The `data` argument is listed first in the list of arguments for each function, so the data frame can be passed onto other functions using the pipe operator, `%>%`, in a tidy workflow.
 
 ### 'station_number'
 
@@ -102,18 +113,31 @@ calc_longterm_stats(station_number = c("08NM116", "08NM242"))
 This package allows for multiple stations (or other groupings) to be analyzed in many of the functions; provided they are identified using the `groups` column argument (defaults to STATION_NUMBER). If grouping column doesn't exist or is improperly named, then all values listed in the `values` column will be summarized.
 
 
-## 3. Function Outputs
+## 3. Function Types and Outputs
 
-Tibble data frames, same as data frames.
-Writing functions can save as csv, xls, xlsx files `write_results()` function (see section XXXX for more information).
+fasstr provides various functions to help in streamflow analyses. They can be generally categorized into the following groups (with more details in the sections below):
 
-ggplot2 objects, all plots within a list, so provided `write_plots()` function to directly save the list of plots within a directory or single PDF document. (see section XXX for more information)
-so they can be modified using ggplot2 functions
+- data cleaning (to prepare data for analyses; `add_*` and `fill_*` functions),
+- data screening (to look for outliers and missing data; `screen_*` functions),
+- calculating summary statistics (longterm, annual, monthly and daily statistics; `calc_*`functions),
+- computing analyses (volume frequency analyses and trending; `compute_*` functions),
+- visualizing (plotting the various statistics; `plot_*` functions), and
+- writing (to save your data and plots; `write_*` functions)
+
+### Tibbles
+
+Functions that produce tables create them as tibble data frames, which are a more modern take on data frames. More information on tibbles can be found [here](https://cran.r-project.org/web/packages/tibble/vignettes/tibble.html). To facilitate the writing of the fasstr tibbles to a directory as .csv, .xls, or .xlsx files with some functionality of rounding digits, the `write_results()` function can be used (see section 9 for more information)..
+
+### ggplots
+
+Functions that produce plots create them as lists of ggplot2 objects. The use of ggplots allows for further customization of plots for the user (axis titles, colours, etc.). All plotting functions produce lists to be consistent with table naming conventions of fasstr, allow multiple plots to be created with one function, and to easily allow the saving of multiple plots to a directory. To assist with the saving of lists of plots, a provided function called `write_plots()` will directly save the list of plots within a directory or single PDF document, with the fasstr plot objects names (see section 9 for more information).  Individual plots can be subsetted from their lists using either the dollar sign, \$ (e.g. `one_plot <- plots$plotname`), or double square brackets, [ ] (e.g. `one_plot <- plots[[plotname]]` or `one_plot <- plots[[1]]`).
+
+Some functions produce both tibbles and plots as lists, and can be subsequently subsetted as desired.
 
 
 ## 4. Data Cleaning Functions
 
-There are several functions that are used to prepare your flow dataset for your own analysis. These functions start with `add_` or `fill_` and add columns or rows, respectively, to your flow dataframe. These functions include:
+There are several functions that are used to prepare your flow dataset for your own analysis. These functions start with `add_` or `fill_` and add columns or rows, respectively, to your flow data frame. These functions include:
 
 - `fill_missing_dates()` - fills in missing dates or dates with no flow values with NA
 - `add_date_variables()` - add year, month, and day of year variables (and water years if selected)
@@ -125,7 +149,6 @@ There are several functions that are used to prepare your flow dataset for your 
 - `add_cumulative_volume()` - add daily cumulative volumetric flows on an annual basis (in cubic metres)
 - `add_cumulative_yield()` - add daily cumulative runoff yield flows on an annual basis (in millimetres)
 
-
 The functions are set up to easily incorporate the use of the pipe operator, like the following:
 
 ```{r exampletidy, warning=FALSE}
@@ -135,12 +158,9 @@ fill_missing_dates(station_number = "08HA011") %>%
   add_rolling_means(roll_days = 7)
 ```
 
-
 ### Filling missing dates
 
-To ensure that analyses do not skip over dates, this function looks for gaps in dates, adds the dates and fills in the flow values with NA. It does not do any gap filling, it just gives those values NA. It also fills dates to create complete start and end years. For example, if data starts in April, all flow values starting in the previous January will be filled with NA. The timing of the year depends on the `water_year` and `water_year_start` arguments. When `water_year = FALSE` (default), it will fill to complete calendar years (Jan-Dec). If `water_year = TRUE` then it will fill to compelte water years, defaulting to Oct-Sep, or other year periods with a different starting month with `water_year_start`.
-
-Ideal to fill missing dates before using other `add_*` functions so dates added are not missing the other new values.
+To ensure that analyses do not skip over dates, the `fill_missing_dates()` function looks for gaps in dates and adds the dates and fills in the flow values with NA. It does not do any gap filling (linear or correlations, for example), it just gives those values NA. It also fills dates to create complete start and end years. For example, if data starts in April, all flow values starting from January will be filled with NA. The timing of the year depends on the `water_year` and `water_year_start` arguments. When `water_year = FALSE` (default), it will fill to complete calendar years (Jan-Dec). If `water_year = TRUE` then it will fill to complete water years, defaulting to Oct-Sep, or other year periods with a different starting month with `water_year_start`.
 
 Run and compare the following lines to see how missing dates are filled:
 
@@ -153,9 +173,11 @@ tidyhydat::hy_daily_flows(station_number = "08NM116") %>%
   fill_missing_dates()
 ```
 
+It is ideal to fill missing dates before using other `add_*` functions so dates added are not missing the other new values.
+
 ### Adding date variables and seasons
 
-Default 'Year', 'Month' (numeric), 'MonthName' (month abbreviation), and 'DayofYear.' If `water_year = TRUE` then it will add 'WaterYear' and 'WaterDayofYear' columns in addition. Water year will start depending on the `water_year_start` argument, that defaults to "9", or October.
+The `add_date_variables()` function added useful dates columns for summarizing data. The function defaults include 'Year' (calendar year), 'Month' (numeric), 'MonthName' (month abbreviation; e.g. Jan), and 'DayofYear' (the day of year from 1-365). If `water_year = TRUE` for this function then it will also add 'WaterYear' and 'WaterDayofYear' (starting on the first day of the water year) columns in addition. Water year will start depending on the `water_year_start` argument, that defaults to "9" for October.
 
 Run and compare the following lines to see how the date columns are added:
 
@@ -170,7 +192,9 @@ add_date_variables(station_number = "08NM116", water_year = TRUE)
 add_date_variables(station_number = "08NM116", water_year = TRUE, water_year_start = 8)
 ```
 
-To added some seasons columns to the data...
+The `add_seasons()` functions added two columns of season identifiers: Seasons2 (two 6-month seasons) and Seasons4 (four 3-month seasons). The start of the two and four seasons coincides with the start month of each year ('Jan-Jun' and 'Jan-Mar' for the first two and four calendar year seasons, respectively, or 'Oct-Mar' and 'Apr-Sep' for the first two and four water year seasons starting in Oct, respectively). Each season is designated by the calendar or water year in which it occurs.
+
+Run and compare the following lines to see how seasons columns are added:
 
 ```{r, eval=FALSE}
 #  Seasons starting January
@@ -186,21 +210,45 @@ add_seasons(station_number = "08NM116", water_year = TRUE, water_year_start = 12
 
 ### Adding rolling means
 
-Adds columns of rollings means.
-`roll_days` indicate the rolling mean days, single or mulitple days
-`roll_align` indicates the alignment of the rolling mean compared to the date. Options are `left`, `right`, and `center`, left meaning.....
+Adding rolling means, or running means or averages of daily data can be done unsing the `add_rolling_means()` functions. Based on the selected "n" rolling days using the `roll_days` argument, a column for each "n" will be added. One rolling mean column can be added by listing one number (e.g. `roll_days = 7`) or multiple columns can be added by listing each one (e.g. `roll_days = c(3,7,30)`).
 
- if using right or centre and data begins at the start of a desired period, there may be 
- 
- show example, the 3 days with "left" show the date is on the "left" or first of all 3 flow values. The 5 days with "center" show the date is in the centre of all 5 flow values (if an even number, then half the flows are after the date, and the other half are the date and the previous flow values). The 7 days with "right" show the date is on the "right" or last of all 7 flow values.
- 
-```{r, warning=FALSE, eval=FALSE}
+Where the alignment of the rolling mean is compared to the date is important to know when analyzing data.  The alignment, using the `roll_align` argument, determine the date at which the rolling means occur. If `roll_align = "right"`, the default, then the date will have the mean of that date's flow value and the previous n-1 days. If `roll_align = "left"`, then the date will have the mean of that date's flow value and the next n-1 days. If `roll_align = "center"`, then the date will be in the center of the rolling values. For odd roll_days with center alignment, the date will have the mean of that date's flow value and half of n-1 days before and half of n-1 days after. For even roll_days with center alignment, the date will have the mean of that date's flow and half of n days after, and the remaining before ((n/2)-1 days before the date).
+
+- `roll_align = "right"` - 
+- `roll_align = "left"` - 
+- `roll_align = "center"` 
+    - odd numbered `roll_days` - 
+    - even numbered `roll_days` - 
+
+For example, the 3 days with "left" show the date is on the "left" or first of all 5 flow values. The 4 days with "center" show the date is in the centre of all 5 flow values (if an even number, then half the flows are after the date, and the other half are the date and the previous flow values). The 7 days with "right" show the date is on the "right" or last of all 7 flow values.
+
+```{r, warning=FALSE, eval=TRUE}
 add_rolling_means(station_number = "08HA011", roll_days = 3, roll_align = "left") %>% 
-  add_rolling_means(roll_days = 5, roll_align = "center") %>% 
+  add_rolling_means(roll_days = 4, roll_align = "center") %>% 
   add_rolling_means(roll_days = 7, roll_align = "right")
 ```
- 
 
+```{r, warning=FALSE, eval=TRUE, echo=FALSE}
+head(add_rolling_means(station_number = "08HA011", roll_days = 5, roll_align = "left") %>% 
+  dplyr::rename("Q5Day_left" = Q5Day) %>% 
+  add_rolling_means(roll_days = 5, roll_align = "center") %>% 
+  dplyr::rename("Q5Day_center" = Q5Day) %>% 
+  add_rolling_means(roll_days = 5, roll_align = "right") %>% 
+  dplyr::rename("Q5Day_right" = Q5Day) %>% 
+  dplyr::select(-STATION_NUMBER, -Parameter, -Symbol))
+
+```
+
+```{r, warning=FALSE, eval=TRUE, echo=FALSE}
+head(add_rolling_means(station_number = "08HA011", roll_days = 6, roll_align = "left") %>% 
+  dplyr::rename("Q6Day_left" = Q6Day) %>% 
+  add_rolling_means(roll_days = 6, roll_align = "center") %>% 
+  dplyr::rename("Q6Day_center" = Q6Day) %>% 
+  add_rolling_means(roll_days = 6, roll_align = "right") %>% 
+  dplyr::rename("Q6Day_right" = Q6Day) %>% 
+  dplyr::select(-STATION_NUMBER, -Parameter, -Symbol))
+
+```
 
 ### Adding basin areas
 
@@ -391,20 +439,20 @@ calc_annual_stats(station_number = "08NM116",
 #### Water Year and Start Month
 
 May want a different time period
-    
+
 To have years starting in October
-    ```{r, eval=FALSE}
+```{r, eval=FALSE}
 calc_annual_stats(station_number = "08NM116", 
-    start_year = 1980, end_year = 2010,
-    water_year = TRUE)
-    ```
-    
+                  start_year = 1980, end_year = 2010,
+                  water_year = TRUE)
+```
+
 To have years starting in August
-    ```{r, eval=FALSE}
-    calc_annual_stats(station_number = "08NM116", 
-    start_year = 1980, end_year = 2010,
-    water_year = TRUE,
-    water_year_start = 8)
+```{r, eval=FALSE}
+calc_annual_stats(station_number = "08NM116", 
+                  start_year = 1980, end_year = 2010,
+                  water_year = TRUE,
+                  water_year_start = 8)
 ```
 
 #### Start and End Years
@@ -461,6 +509,34 @@ calc_annual_stats(station_number = "08NM116",
 
 ### Rolling Days
 
+
+# Some functions (mostly calc_***_stats() functions) allow you to analyze rolling mean days instead of 
+# the daily mean (roll_days default is 1)
+
+```{r, eval=FALSE}
+# This calculates the annual 7-day rolling mean statistics
+calc_annual_stats(station_number = "08NM116", 
+                  start_year = 1980, end_year = 2010,
+                  roll_days = 7)
+plot_annual_stats(station_number = "08NM116", 
+                  start_year = 1980, end_year = 2010,
+                  roll_days = 7)
+```
+
+```{r, eval=FALSE}
+
+# This calculates the annual 7-day rolling mean statistics with align left (see add_rolling_days() above)
+calc_annual_stats(station_number = "08NM116", 
+                  start_year = 1980, end_year = 2010,
+                  roll_days = 7,
+                  roll_align = "left")
+plot_annual_stats(station_number = "08NM116", 
+                  start_year = 1980, end_year = 2010,
+                  roll_days = 7,
+                  roll_align = "left")
+```
+
+
 Roll days
 
 Roll align
@@ -476,7 +552,30 @@ Percentiles
 
 Others
 
+Functions come with their default settings for what is calculated and they can be changed with argument setting.
+Look at the help files to see default and arguments
 
+calc_annual_stats defauls to Mean, Meidan, Maximum, and Minimum stats with 10th and 90th percentiles
+you can change just the percentiles using the argument
+```{r, eval=FALSE}
+calc_annual_stats(station_number = "08NM116", 
+start_year = 1980, end_year = 2010,
+percentiles = c(1:5,20,30))
+plot_annual_stats(station_number = "08NM116", 
+start_year = 1980, end_year = 2010,
+percentiles = c(60,70,80))
+```
+
+For annual flow timing, you can change the percent of total annual flow you want to know the date of:
+Default 25, 33.3, 50, and 75 percent of total flow
+```{r, eval=FALSE}
+calc_annual_flow_timing(station_number = "08NM116", 
+start_year = 1980, end_year = 2010)
+# Just timing of half flow
+calc_annual_flow_timing(station_number = "08NM116", 
+start_year = 1980, end_year = 2010, 
+percent_total = 50)
+```
 
 
 #### Table Options
@@ -487,10 +586,31 @@ Transpose
 #### Plot Options
 
 Log discharge
+Normal scale:
+```{r, eval=FALSE}
+plot_annual_stats(station_number = "08NM116", 
+start_year = 1980, end_year = 2010)
+```
+
+Normal scale:
+```{r, eval=FALSE}
+plot_annual_stats(station_number = "08NM116", 
+start_year = 1980, end_year = 2010,
+log_discharge = TRUE)
+```
 
 Titles
 
 Yiled or volume as value
+
+Add year
+
+Some plotting functions provide the ability to plot indiviual years on plots where stats from all years are summarize
+(ex. plot_daily_stats, plot_daily_cumulative stats, plot_monthly_cumulative_stats)
+```{r, eval=FALSE}
+plot_daily_stats(station_number = "08NM116", complete_years = TRUE,
+include_year = 2010)
+```
 
 
 
