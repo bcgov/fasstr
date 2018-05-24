@@ -13,7 +13,7 @@ knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")))
 
 fasstr, the Flow Analysis Summary Statistics Tool for R, is a set of [R](http://www.r-project.org) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
 
-This vignette documents the usage of the many functions and arguments provided in fasstr. This vignette is a high-level adjunct to the details found in the various function documentations (see `help(package = "fasstr")` for documentations). You’ll learn how to install the package and a HYDAT database, input data into fasstr functions, add relevant columns and rows to daily data, screen data for outliers and missing dates, calculate and visualize various summary statisics, trend annual flows, and complete volume frequency analyses.
+This vignette documents the usage of the many functions and arguments provided in fasstr. This vignette is a high-level adjunct to the details found in the various function documentations (see `help(package = "fasstr")` for documentations). You’ll learn how to install the package and a HYDAT database, input data into fasstr functions, add relevant columns and rows to daily data, screen data for outliers and missing dates, calculate and visualize various summary statistics, trend annual flows, and complete volume frequency analyses.
 
 This guide contains the following sections to help understand the usage of the fasstr functions and arguments:
 
@@ -90,7 +90,7 @@ The following is an example fasstr calculation if your daily data data frame has
 calc_longterm_stats(data = flow_data)
 ```
 
-The following is an example if your daily data data frame has the the columns names of "Stations", "Dates", and "Flows":
+The following is an example if your daily data data frame has the columns names of "Stations", "Dates", and "Flows":
 
 ```{r, echo=TRUE, eval=FALSE}
 calc_longterm_stats(data = flow_data,
@@ -119,7 +119,7 @@ fasstr provides various functions to help in streamflow analyses. They can be ge
 
 - data cleaning (to prepare data for analyses; `add_*` and `fill_*` functions),
 - data screening (to look for outliers and missing data; `screen_*` functions),
-- calculating summary statistics (longterm, annual, monthly and daily statistics; `calc_*`functions),
+- calculating summary statistics (long-term, annual, monthly and daily statistics; `calc_*`functions),
 - computing analyses (volume frequency analyses and trending; `compute_*` functions),
 - visualizing (plotting the various statistics; `plot_*` functions), and
 - writing (to save your data and plots; `write_*` functions)
@@ -210,23 +210,17 @@ add_seasons(station_number = "08NM116", water_year = TRUE, water_year_start = 12
 
 ### Adding rolling means
 
-Adding rolling means, or running means or averages of daily data can be done unsing the `add_rolling_means()` functions. Based on the selected "n" rolling days using the `roll_days` argument, a column for each "n" will be added. One rolling mean column can be added by listing one number (e.g. `roll_days = 7`) or multiple columns can be added by listing each one (e.g. `roll_days = c(3,7,30)`).
+Adding rolling means, or running means or averages of daily data can be done using the `add_rolling_means()` functions. Based on the selected "n" rolling days using the `roll_days` argument, a column for each "n" will be added. One rolling mean column can be added by listing one number (e.g. `roll_days = 7`) or multiple columns can be added by listing each one (e.g. `roll_days = c(3,7,30)`). Each column will be named "Q'n'Day" where n is the number (eg. Q7Day or Q30Day).
 
-Where the alignment of the rolling mean is compared to the date is important to know when analyzing data.  The alignment, using the `roll_align` argument, determine the date at which the rolling means occur. If `roll_align = "right"`, the default, then the date will have the mean of that date's flow value and the previous n-1 days. If `roll_align = "left"`, then the date will have the mean of that date's flow value and the next n-1 days. If `roll_align = "center"`, then the date will be in the center of the rolling values. For odd roll_days with center alignment, the date will have the mean of that date's flow value and half of n-1 days before and half of n-1 days after. For even roll_days with center alignment, the date will have the mean of that date's flow and half of n days after, and the remaining before ((n/2)-1 days before the date).
+Where the alignment of the rolling mean is compared to the date is important to know when analyzing data.  The alignment, using the `roll_align` argument, determine the date at which the rolling means occur. 
 
-- `roll_align = "right"` - 
-- `roll_align = "left"` - 
+- `roll_align = "right"` - the date will have the mean of that date's flow value and the previous n-1 days
+- `roll_align = "left"` - the date will have the mean of that date's flow value and the next n-1 days
 - `roll_align = "center"` 
-    - odd numbered `roll_days` - 
-    - even numbered `roll_days` - 
-
-For example, the 3 days with "left" show the date is on the "left" or first of all 5 flow values. The 4 days with "center" show the date is in the centre of all 5 flow values (if an even number, then half the flows are after the date, and the other half are the date and the previous flow values). The 7 days with "right" show the date is on the "right" or last of all 7 flow values.
-
-```{r, warning=FALSE, eval=TRUE}
-add_rolling_means(station_number = "08HA011", roll_days = 3, roll_align = "left") %>% 
-  add_rolling_means(roll_days = 4, roll_align = "center") %>% 
-  add_rolling_means(roll_days = 7, roll_align = "right")
-```
+    - odd numbered `roll_days` - date will have the mean of that date's flow value and half of n-1 days before and half of n-1 days after
+    - even numbered `roll_days` - date will have the mean of that date's flow and half of n days after, and the remaining before ((n/2)-1 days before the date) (i.e. the first of the middle two dates)
+    
+Odd roll_days example (column headers have alignment direction added):
 
 ```{r, warning=FALSE, eval=TRUE, echo=FALSE}
 head(add_rolling_means(station_number = "08HA011", roll_days = 5, roll_align = "left") %>% 
@@ -239,6 +233,8 @@ head(add_rolling_means(station_number = "08HA011", roll_days = 5, roll_align = "
 
 ```
 
+Even roll_days example:
+
 ```{r, warning=FALSE, eval=TRUE, echo=FALSE}
 head(add_rolling_means(station_number = "08HA011", roll_days = 6, roll_align = "left") %>% 
   dplyr::rename("Q6Day_left" = Q6Day) %>% 
@@ -250,16 +246,26 @@ head(add_rolling_means(station_number = "08HA011", roll_days = 6, roll_align = "
 
 ```
 
+
 ### Adding basin areas
 
+To add a column of basin areas, for viewing or analyzing, the `add_basin_area()` function can be used. The basin area will be extracted from HYDAT, if available, under two conditions where the `basin_area` argument can be left blank:
+
+- if the `station_number` argument is used
+- if your `data` data frame has a grouping column of HYDAT station numbers 
+
+If you would like to apply your own basin area size(s) or override the HYDAT areas, you use the `basin_area` argument in the following ways:
+
+- for a single station or applying to all stations, list a single number (i.e. `basin_area = 800`)
+- for different areas for multiple stations, you list each basin area for each station (i.e. `basin_area = c("08NM116" = 800, "08NM242" = 4)`)
 
 Run and compare the following lines to see how basin area columns are added:
 
 ```{r, eval=FALSE}
-# If you have a column with HYDAT station number (with station_number or data/groups arguments) then it will automatically look up the number
+# Using the station_number argument or data frame as HYDAT groupings
 add_basin_area(station_number = "08NM116")
 
-# If no basin area provided or you want to use a different one provided, sue the basin_area argument
+# If no basin area provided or you want to use a different one provided, use the basin_area argument
 add_basin_area(station_number = "08NM116", basin_area = 800)
 
 # If you have multiple stations you need to apply basin_areas to, use the basin_area argument as a list and name each station
@@ -268,10 +274,10 @@ add_basin_area(station_number = c("08NM116","08NM242"), basin_area = c("08NM116"
 
 ### Adding daily volumetric or yield flows
 
-Add columns of total dishcharge converted from daily mean into volumetric flows, named "Volume_m3" in cubic metres per second, or runoff yield, named "Yield_mm" in millimetres. Volumetric gives the total volume per day, and the yield gives the total water depth, provided an upstream drainage basin area is provided. Basin area can be prpvoded using the `basin_area` argument, or if there is a `groups` column of HYDAT station numbers in your data then it will automatically be etracted from HYDAT, if available. (see section XXXX for more information on basin areas).
+Converting daily mean discharge into other units can be useful for different analyses. Columns of total discharge converted from daily mean into volumetric flows, named "Volume_m3" in cubic metres per second, or runoff yield, named "Yield_mm" in millimetres can be used using the `add_daily_volume()` and `add_daily_yield()` functions, respectively. Volumetric gives the total volume per day, and the yield gives the total water depth, provided an upstream drainage basin area is provided. Basin area can be provided using the `basin_area` argument, or if there is a `groups` column of HYDAT station numbers in your data then it will automatically be extracted from HYDAT, if available. (see `adding basin areas above or section 8 for more information).
 
 ```{r, eval=FALSE}
-# Add a column of converted disharge (m3/s) into volume (m3)
+# Add a column of converted discharge (m3/s) into volume (m3)
 add_daily_volume(station_number = "08NM116")    
 
 # Add a column of converted disharge (m3/s) into yield (mm), with HYDAT station number groups

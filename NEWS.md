@@ -8,6 +8,7 @@ fasstr 0.2.5
     * Trending Analysis Guide
     * Volume Frequency Analysis Guide
   * Updated documentation for some functions
+  * Removed colour brewer Set1 on some annual plots due to a lack of colours in set
 
 
 fasstr 0.2.4
