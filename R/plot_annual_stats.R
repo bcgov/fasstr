@@ -129,7 +129,7 @@ plot_annual_stats <- function(data = NULL,
            ggplot2::expand_limits(y = 0) +
            ggplot2::ylab(y_axis_title)+
            ggplot2::xlab("Year") +
-           ggplot2::scale_color_brewer(palette = "Set1") +
+          # ggplot2::scale_color_brewer(palette = "Set1") +
            ggplot2::theme_bw() +
            ggplot2::labs(color = 'Annual Statistics') +    
            {if (include_title & .y != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nAnnual Statistics')) }+    
