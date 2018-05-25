@@ -1,6 +1,6 @@
 ---
 title: "fasstr Users Guide"
-output: rmarkdown::html_vignette
+output: pdf_document #pdf_document rmarkdown::html_vignette word_document
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
@@ -11,7 +11,7 @@ vignette: >
 knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")))
 ```
 
-fasstr, the Flow Analysis Summary Statistics Tool for R, is a set of [R](http://www.r-project.org) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
+fasstr, the Flow Analysis Summary Statistics Tool for R, is a set of [R](http://www.r-project.org) functions to prepare, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
 
 This vignette documents the usage of the many functions and arguments provided in fasstr. This vignette is a high-level adjunct to the details found in the various function documentations (see `help(package = "fasstr")` for documentations). You’ll learn how to install the package and a HYDAT database, input data into fasstr functions, add relevant columns and rows to daily data, screen data for outliers and missing dates, calculate and visualize various summary statistics, trend annual flows, and complete volume frequency analyses.
 
@@ -103,7 +103,7 @@ The `data` argument is listed first in the list of arguments for each function, 
 
 ### 'station_number'
 
-Alternatively, you can directly extract flow data directly from a HYDAT database by listing station numbers in the `station_number` argument while leaving the data arguments blank. The following is an example of listing stations:
+Alternatively, you can directly extract flow data directly from a HYDAT database by listing station numbers in the `station_number` argument while leaving the data arguments blank. Data frames from HYDAT also include 'Parameter' and 'Symbol' columns. The following is an example of listing stations:
 
 ```{r, echo=TRUE, eval=FALSE}
 calc_longterm_stats(station_number = "08NM116")
@@ -265,11 +265,12 @@ Run and compare the following lines to see how basin area columns are added:
 # Using the station_number argument or data frame as HYDAT groupings
 add_basin_area(station_number = "08NM116")
 
-# If no basin area provided or you want to use a different one provided, use the basin_area argument
+# Using the basin_area argument
 add_basin_area(station_number = "08NM116", basin_area = 800)
 
-# If you have multiple stations you need to apply basin_areas to, use the basin_area argument as a list and name each station
-add_basin_area(station_number = c("08NM116","08NM242"), basin_area = c("08NM116" = 800, "08NM242" = 4))
+# Using the basin_area argument with multiple stations
+add_basin_area(station_number = c("08NM116","08NM242"), 
+               basin_area = c("08NM116" = 800, "08NM242" = 4))
 ```
 
 ### Adding daily volumetric or yield flows
@@ -293,14 +294,30 @@ add_daily_yield(station_number = "08NM116", basin_area = 800)
 These functions create a rolling cumulative of daily total flows on an annual basis, as volumetric flows, named "Cumul_Volume_m3" in cubic metres per second, or runoff yield flows, named "Cumul_Yield_mm" in millimetres. A total flow for a given a day is the sum of all previous days and that day, within a given year (Jan 15 cumulative flow value is the sum of all total flows from Jan 1-15). It restarts for each year (selected calendar or water year) and no values are calculated if there is missing data for a given year.
 
 ```{r, eval=FALSE}
-# Add a column of converted disharge (m3/s) into cumulative volumes (m3)
+# Add a column of cumulative volumes (m3)
 add_cumulative_volume(station_number = "08NM116") 
 
-# Add a column of converted disharge (m3/s) into cumulative yield (mm), with HYDAT station number groups
+# Add a column of cumulative yield (mm), with HYDAT station number groups
 add_cumulative_yield(station_number = "08NM116")   
 
-# Add a column of converted disharge (m3/s) into cumulative yield (mm), with setting the basin area
-add_cumulative_yield(station_number = "08NM116", basin_area = 800)  
+# Add a column of cumulative yield (mm), with setting the basin area
+add_cumulative_yield(station_number = "08NM116", 
+                     basin_area = 800)  
+```
+
+
+Formatted for tidy formatting:
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE}
+fill_missing_dates(station_number = "08NM116") %>% 
+  add_date_variables(water_year = TRUE) %>%
+  add_seasons() %>% 
+  add_rolling_means() %>%
+  add_basin_area() %>% 
+  add_daily_volume() %>%
+  add_daily_yield() %>%
+  add_cumulative_volume() %>% 
+  add_cumulative_yield()
 ```
 
 
@@ -308,11 +325,33 @@ add_cumulative_yield(station_number = "08NM116", basin_area = 800)
 
 If you are looking at some data for the first time, it may be useful to explore the data quality and availability. The following fuctions will help to explore the data:
 
+- `plot_flow_data()` - plot daily mean streamflow
 - `screen_flow_data()` - calculate annual summary and missing data statistics
 - `plot_data_screening()` - plot annual summary statistics for data screening
 - `plot_missing_dates()` - plot annual and monthly missing dates
 
+
+To view the entire daily flow data set to view for gaps and outliers, or changes in flow with time, the `plot_flow_data()` function will plot all daily data in the data frame. The plot can be filtered by years and dates.
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE, fig.height = 2.5, fig.width = 7}
+plot_flow_data(station_number = "08NM116") 
+```
+
 Screening does this. To view that data, you can plot the data screening and plot the missing dates.
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE}
+screen_flow_data(station_number = "08NM116")
+```
+
+Screening does this. To view that data, you can plot the data screening and plot the missing dates.
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE, fig.height = 3, fig.width = 7}
+plot_data_screening(station_number = "08NM116") 
+```
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE, fig.height = 4, fig.width = 7}
+plot_missing_dates(station_number = "08NM116") 
+```
 
 
 ## 6. Calculating Statistics
@@ -337,12 +376,47 @@ and their corresponding plotting functions:
 
 Mean, med, max min are standards, and percentiles can be selected.
 
+```{r, eval=TRUE, warning=FALSE, message=FALSE}
+calc_longterm_stats(station_number = "08NM116", start_year = 1974)
+```
+
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE}
+calc_annual_stats(station_number = "08NM116", start_year = 1974)
+```
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE}
+calc_monthly_stats(station_number = "08NM116", start_year = 1974)
+```
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE}
+calc_daily_stats(station_number = "08NM116", start_year = 1974)
+```
+
 Plotting main statistics. Long-term, monthly, and daily come pre-set with percentiles and cannot be adjusted.  If listed `values` column is either 'Volume_m3' or 'Yield_mm' (from their respective `add_*` functions) then the discharge axis title will adjust accordingly.
 
 
-Can also plot flow duration curves using the function:
+```{r, eval=TRUE, warning=FALSE, message=FALSE, fig.height = 2.5, fig.width = 7}
+plot_longterm_stats(station_number = "08NM116", start_year = 1974) 
+```
 
-- `plot_flow_duration()` - plot flow duration curves
+```{r, eval=TRUE, warning=FALSE, message=FALSE, fig.height = 2.5, fig.width = 7}
+plot_annual_stats(station_number = "08NM116", start_year = 1974) 
+```
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE, fig.height = 4, fig.width = 7}
+plot_monthly_stats(station_number = "08NM116", start_year = 1974)[1]
+```
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE, fig.height = 2.5, fig.width = 7}
+plot_daily_stats(station_number = "08NM116", start_year = 1974) 
+```
+
+Can also include a year using the argument
+```{r, eval=TRUE, warning=FALSE, message=FALSE, fig.height = 2.5, fig.width = 7}
+plot_daily_stats(station_number = "08NM116", start_year = 1974,
+                 include_year = 2000) 
+```
 
 ### Cumulative Flow Statistics
 
@@ -360,10 +434,88 @@ and their corresponding plotting functions:
 
 For example, the annual provide the total annual and seasonal (optional) flows, and the monthly and daily period cumulate for each month or day until the end of the year. These functions default to volumetric flows, but using the `use_yield` and `basin_area` arguments, the runoff yield can be calculated for each period. If there is a `groups` column of HYDAT station numbers, then the function will automatically pull the basin area out of HYDAT if available; otherwise a basin area will be required. Only calculated using years of complete data.
 
+```{r, eval=TRUE, warning=FALSE, message=FALSE}
+calc_annual_cumulative_stats(station_number = "08NM116", start_year = 1974)
+```
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE}
+calc_annual_cumulative_stats(station_number = "08NM116", start_year = 1974,
+                             incl_seasons = TRUE)
+```
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE}
+calc_monthly_cumulative_stats(station_number = "08NM116", start_year = 1974)
+```
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE}
+calc_daily_cumulative_stats(station_number = "08NM116", start_year = 1974)
+```
+
 Plotting statistics. Monthly and daily come pre-set with percentiles and cannot be adjusted.
 
+```{r, eval=TRUE, warning=FALSE, message=FALSE, fig.height = 3, fig.width = 7}
+plot_annual_cumulative_stats(station_number = "08NM116", start_year = 1974) 
+```
 
-### Various Annual Statistics
+```{r, eval=TRUE, warning=FALSE, message=FALSE, fig.height = 3, fig.width = 7}
+plot_monthly_cumulative_stats(station_number = "08NM116", start_year = 1974) 
+```
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE, fig.height = 3, fig.width = 7}
+plot_daily_cumulative_stats(station_number = "08NM116", start_year = 1974, use_yield = TRUE) 
+```
+
+
+
+
+
+
+### Long-term Statistics
+
+The functions summarize the data over the entire record:
+
+- `calc_lt_mad()` - calculate the long-term mean annual discharge
+- `calc_lt_percentile()` - calculate the long-term percentiles
+- `calc_flow_percentile()` - calculate the percentile rank of a flow value
+
+`calc_lt_mad()` calculates the mean of all the daily flows. It can also be known as the long-term mean annual discharge, MAD.
+
+```{r, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
+calc_lt_mad(station_number = "08NM116", start_year = 1974,
+            percent_MAD = c(5,10,20))
+```
+
+`calc_lt_percentile()` calculates the selected long-term percentiles of all the daily flow values.
+
+```{r, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
+calc_lt_percentile(station_number = "08NM116", start_year = 1974,
+                   percentiles = c(25,50,75))
+```
+
+`calc_flow_percentile()` calculates the percentile rank of a specified flow value, as `flow_value`. It compares all daily flow values determines where the specified flow values ranks amongst all flows.
+
+```{r, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
+calc_flow_percentile(station_number = "08NM116", start_year = 1974,
+                     flow_value = 6.270)
+```
+
+Can also plot flow duration curves using the function:
+
+- `plot_flow_duration()` - plot flow duration curves
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE, fig.height = 3, fig.width = 7}
+plot_flow_duration(station_number = "08NM116", start_year = 1974) 
+```
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE, fig.height = 3, fig.width = 7}
+plot_flow_duration(station_number = "08NM116", start_year = 1974,
+                   months = 7:9,
+                   incl_longterm = FALSE) 
+```
+
+
+
+### Annual Statistics
 
 These are other annual statistic functions that produce....:
 
@@ -380,26 +532,41 @@ and their corresponding plotting functions:
 
 The `calc_annual_flow_timing()` calculates the day of year when a portion of an total annual volumetric flow has occurred. Using the `percent_total` argument, one or multiple portions of annual flow can be calculated. Using 50 as the percent is similar to the centre of volume (see link?). The day of year and date will be produced.
 
+```{r, eval=TRUE, warning=FALSE, message=FALSE}
+calc_annual_flow_timing(station_number = "08NM116", start_year = 1974)
+```
+
 The `calc_annual_lowflows()` calculates the annual minimum values, day of years, and dates of specified rolling mean days. 
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE}
+calc_annual_lowflows(station_number = "08NM116", start_year = 1974)
+```
 
 The `calc_annual_outside_normal()` calculates the number of days per year that are above and below "normal", "normal" typically defined as 25th and 75th percentiles. The normal limits can be determined using the `normal_percentiles` argument, listing the lower and upper normal ranges, respectively (e.g. c(25, 75)). The function calculates the lower and upper percentiles for each day of the year over all years, and sums all days that are above or below the daily normal ranges for a given year.
 
+```{r, eval=TRUE, warning=FALSE, message=FALSE}
+calc_annual_outside_normal(station_number = "08NM116", start_year = 1974)
+```
+
 The `calc_all_annual_stats()` calculates all statistics that have a single annual value. This includes all the `calc_annual_*` and the `calc_monthly_statistics()` functions. Several argumements provided for customization of the statistics. There is no corresponding plotting function for this calculation function.
 
+```{r, eval=TRUE, warning=FALSE, message=FALSE}
+colnames(calc_all_annual_stats(station_number = "08NM116", start_year = 1974))
+```
 
-### Single-value Statistics
+Plots:
 
-The functions summarize the data over the entire record:
+```{r, eval=TRUE, warning=FALSE, message=FALSE, fig.height = 4.5, fig.width = 7}
+plot_annual_flow_timing(station_number = "08NM116", start_year = 1974) 
+```
 
-- `calc_lt_mad()` - calculate the long-term mean annual discharge
-- `calc_lt_percentile()` - calculate the long-term percentiles
-- `calc_flow_percentile()` - calculate the percentile rank of a flow value
+```{r, eval=TRUE, warning=FALSE, message=FALSE, fig.height = 4.5, fig.width = 7}
+plot_annual_lowflows(station_number = "08NM116", start_year = 1974) 
+```
 
-`calc_lt_mad()` calculates the mean of all the daily flows. It can also be known as the long-term mean annual discharge, MAD.
-
-`calc_lt_percentile()` calculates the selected long-term percentiles of all the daily flow values.
-
-`calc_flow_percentile()` calculates the percentile rank of a specified flow value, as `flow_value`. It compares all daily flow values determines where the specified flow values ranks amongst all flows.
+```{r, eval=TRUE, warning=FALSE, message=FALSE, fig.height = 4.5, fig.width = 7}
+plot_annual_outside_normal(station_number = "08NM116", start_year = 1974) 
+```
 
 
 ## 7. Analyses
@@ -474,7 +641,7 @@ calc_annual_stats(station_number = "08NM116",
 
 #### Exclude Years
 
-# Removing certain years (outliers, bad data, etc) using exclude_years
+Removing certain years (outliers, bad data, etc) using exclude_years
 ```{r, eval=FALSE}
 calc_annual_stats(station_number = "08NM116", 
                   start_year = 1980, 
@@ -504,8 +671,8 @@ calc_annual_flow_timing(station_number = "08NM116")
 
 #### Months
 
-# Some functions allow you use data from selected months
-# This example shows the annual stats for just June-August (Default 1:12)
+Some functions allow you use data from selected months
+This example shows the annual stats for just June-August (Default 1:12)
 ```{r, eval=FALSE}
 calc_annual_stats(station_number = "08NM116", 
                   start_year = 1980, end_year = 2010,
@@ -516,8 +683,8 @@ calc_annual_stats(station_number = "08NM116",
 ### Rolling Days
 
 
-# Some functions (mostly calc_***_stats() functions) allow you to analyze rolling mean days instead of 
-# the daily mean (roll_days default is 1)
+Some functions (mostly calc_***_stats() functions) allow you to analyze rolling mean days instead of 
+the daily mean (roll_days default is 1)
 
 ```{r, eval=FALSE}
 # This calculates the annual 7-day rolling mean statistics
@@ -531,7 +698,8 @@ plot_annual_stats(station_number = "08NM116",
 
 ```{r, eval=FALSE}
 
-# This calculates the annual 7-day rolling mean statistics with align left (see add_rolling_days() above)
+# This calculates the annual 7-day rolling mean statistics 
+# with align left (see add_rolling_days() above)
 calc_annual_stats(station_number = "08NM116", 
                   start_year = 1980, end_year = 2010,
                   roll_days = 7,
@@ -634,11 +802,6 @@ Writing data and plots:
 
 
 
-### WHERE TO PUT ME?!
-
-Produce plots:
-
-- `plot_flow_data()` - plot daily mean streamflow
 
 
 
