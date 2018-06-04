@@ -24,6 +24,7 @@ This vignette guide contains a brief guide on the trending analysis functions fo
 1. Trending Methodology
 2. Computing Trends
 3. Plotting Trends
+4. Interpreting Trends
 
 
 
@@ -88,8 +89,7 @@ nruns	        | the number of runs required to converge upon a trend (zyp)
 autocor	      | the autocorrelation of the final detrended timeseries (zyp)
 valid_frac  	| the fraction of the data which is valid (not NA) once autocorrelation is removed (zyp)
 linear      	| the least squares fit trend on the same data (zyp)
-intercept   	| the lower bound of the trend's confidence interval (zyp)
-lbound	      | the intercept of the Sen's slope (trend) (zyp)
+intercept     | the intercept of the Sen's slope (trend) (zyp)
 min_year    	| the minimum year used in the trending
 max_year      | the maximum year used in the trending
 n_years       | the number of years with data for trending
@@ -103,14 +103,14 @@ If the argument `incl_data` is TRUE, then each year of data will be appended on 
 Example default:
 
 ```{r, eval=TRUE}
-compute_annual_trends(station_number = "08NM116",
+fasstr::compute_annual_trends(station_number = "08NM116",
                       zyp_method = "yuepilon",
                       start_year = 1973, end_year = 2013)
 ```
 
 Example with custom:
 ```{r, eval=TRUE}
-compute_annual_trends(station_number = "08NM116",
+fasstr::compute_annual_trends(station_number = "08NM116",
                       zyp_method = "yuepilon",
                       start_year = 1973, end_year = 2013,
                       annual_percentiles = c(10,90),
@@ -144,6 +144,11 @@ trends_plots$Annual_somethinngggg
 ```
 
 
+## 4. Interpreting Trends
+
+sens slope
+
+bounds
 
 ## References
 
