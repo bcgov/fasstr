@@ -267,7 +267,7 @@ calc_all_annual_stats <- function(data = NULL,
   
   
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
-  if("STATION_NUMBER" %in% orig_cols) {
+  if(as.character(substitute(groups)) %in% orig_cols) {
     names(all_stats)[names(all_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
     all_stats <- dplyr::select(all_stats, -STATION_NUMBER)

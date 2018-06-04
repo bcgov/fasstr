@@ -167,7 +167,7 @@ calc_annual_lowflows <- function(data = NULL,
   
   
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
-  if("STATION_NUMBER" %in% orig_cols) {
+  if(as.character(substitute(groups)) %in% orig_cols) {
     names(lowflow_stats)[names(lowflow_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
     lowflow_stats <- dplyr::select(lowflow_stats, -STATION_NUMBER)

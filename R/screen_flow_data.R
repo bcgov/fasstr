@@ -227,7 +227,7 @@ screen_flow_data <- function(data = NULL,
   }
   
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
-  if("STATION_NUMBER" %in% orig_cols) {
+  if(as.character(substitute(groups)) %in% orig_cols) {
     names(Q_summary)[names(Q_summary) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
     Q_summary <- dplyr::select(Q_summary, -STATION_NUMBER)

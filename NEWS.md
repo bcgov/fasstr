@@ -7,6 +7,7 @@ fasstr 0.2.5
     * 'fasstr' Users Guide
     * Trending Analysis Guide
     * Volume Frequency Analysis Guide
+  * Fixed bug where 'groups' column was not kept in resulting tibble, and add_basin_area()
   * Updated documentation for some functions
   * Removed colour brewer Set1 on some annual plots due to a lack of colours in set
 

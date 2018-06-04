@@ -185,14 +185,16 @@ calc_daily_cumulative_stats <- function(data = NULL,
   
   
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
-  if("STATION_NUMBER" %in% orig_cols) {
+  if(as.character(substitute(groups)) %in% orig_cols) {
     names(daily_stats)[names(daily_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
     daily_stats <- dplyr::select(daily_stats, -STATION_NUMBER)
   }
   
+  
   logical_cols <- sapply(daily_stats, is.logical) 
   daily_stats[logical_cols] <- lapply(daily_stats[logical_cols], as.numeric) 
+  
   
   dplyr::as_tibble(daily_stats)
   
