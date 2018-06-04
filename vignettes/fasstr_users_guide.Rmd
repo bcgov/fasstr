@@ -223,6 +223,7 @@ Where the alignment of the rolling mean is compared to the date is important to 
 Odd roll_days example (column headers have alignment direction added):
 
 ```{r, warning=FALSE, eval=TRUE, echo=FALSE}
+library(fasstr)
 head(add_rolling_means(station_number = "08HA011", roll_days = 5, roll_align = "left") %>% 
   dplyr::rename("Q5Day_left" = Q5Day) %>% 
   add_rolling_means(roll_days = 5, roll_align = "center") %>% 
@@ -236,6 +237,7 @@ head(add_rolling_means(station_number = "08HA011", roll_days = 5, roll_align = "
 Even roll_days example:
 
 ```{r, warning=FALSE, eval=TRUE, echo=FALSE}
+library(fasstr)
 head(add_rolling_means(station_number = "08HA011", roll_days = 6, roll_align = "left") %>% 
   dplyr::rename("Q6Day_left" = Q6Day) %>% 
   add_rolling_means(roll_days = 6, roll_align = "center") %>% 
