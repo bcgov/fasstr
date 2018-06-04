@@ -102,14 +102,14 @@ If the argument `incl_data` is TRUE, then each year of data will be appended on 
 
 Example default:
 
-```{r, eval=TRUE}
+```{r, eval=FALSE}
 fasstr::compute_annual_trends(station_number = "08NM116",
                       zyp_method = "yuepilon",
                       start_year = 1973, end_year = 2013)
 ```
 
 Example with custom:
-```{r, eval=TRUE}
+```{r, eval=FALSE}
 fasstr::compute_annual_trends(station_number = "08NM116",
                       zyp_method = "yuepilon",
                       start_year = 1973, end_year = 2013,
