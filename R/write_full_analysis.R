@@ -106,7 +106,7 @@ write_full_analysis <- function(data = NULL,
   ## -------------------------------
   
   # Check if data is provided and import it
-  flow_data <- flowdata_import(data = data, 
+  flow_data <- flowdata_import(data = flow_data, 
                                station_number = station_number)
   
   # Save the original columns (to check for STATION_NUMBER col at end) and ungroup if necessary
@@ -120,6 +120,9 @@ write_full_analysis <- function(data = NULL,
                                groups = as.character(substitute(groups)),
                                rm_other_cols = TRUE)
   
+  if (all(flow_data$STATION_NUMBER == "XXXXXXX")) {
+    flow_data <- dplyr::select(flow_data, -STATION_NUMBER)
+  }
   
   # Data setup
   flow_data <- fill_missing_dates(data = flow_data, water_year = water_year, water_year_start = water_year_start)

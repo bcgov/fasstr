@@ -35,7 +35,17 @@ for (i in names(test)) {
 
 
 
-flow_data <- read.csv("testing/08MH152_with_USA_DATA.csv")  %>% add_basin_area(groups = ID) #%>% rename("STATION_NUMBER" = ID)
+flow_data <- read.csv("testing/08MH152_with_USA_DATA.csv") %>% 
+  fill_missing_dates(groups = ID) %>% 
+  add_basin_area(groups = ID) %>% 
+  add_date_variables(water_year = T) %>%
+  add_rolling_means(groups = ID) %>%
+  add_daily_volume() %>%
+  add_cumulative_volume(groups = ID) %>% 
+  add_daily_yield(basin_area = 10.3, groups = ID) %>%
+  add_cumulative_yield(basin_area = 10.3, groups = ID) %>% 
+  add_seasons()
+
 str(data)
 #devtools::document()
 #install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
@@ -78,6 +88,7 @@ install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
 start_time <- Sys.time()
 write_full_analysis(data = flow_data,
+                    groups = ID,
                     #water_year = TRUE, 
                     start_year = 2007, 
                     #end_year = 2010, 

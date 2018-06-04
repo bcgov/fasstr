@@ -7,8 +7,11 @@ fasstr 0.2.5
     * 'fasstr' Users Guide
     * Trending Analysis Guide (to be completed)
     * Volume Frequency Analysis Guide (to be completed)
-  * Fixed bug where 'groups' column was not kept in resulting tibble, and add_basin_area()
+  * Fixed bug where 'groups' column was not kept in resulting tibble, and add_basin_area(), add_rolling_means()
   * Plots of longterm_stats, daily_stats, and flow_duration plot nothing (instead of error) if all data is NA
+  * write_full_analysis updates:
+    * will plot everything even if all data is NA for a function
+    * STATION_NUMBER column removed if all is "XXXXXXX" (still need to fix if groups != "STATION_NUMBER")
   * Updated documentation for some functions
   * Removed colour brewer Set1 on some annual plots due to a lack of colours in set
 
