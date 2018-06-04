@@ -1,13 +1,14 @@
 fasstr 0.2.5
 =========================
 
-##### Updated: 18 May 2018
+##### Updated: 4 June 2018
 
   * Added vignettes:
     * 'fasstr' Users Guide
-    * Trending Analysis Guide
-    * Volume Frequency Analysis Guide
+    * Trending Analysis Guide (to be completed)
+    * Volume Frequency Analysis Guide (to be completed)
   * Fixed bug where 'groups' column was not kept in resulting tibble, and add_basin_area()
+  * Plots of longterm_stats, daily_stats, and flow_duration plot nothing (instead of error) if all data is NA
   * Updated documentation for some functions
   * Removed colour brewer Set1 on some annual plots due to a lack of colours in set
 

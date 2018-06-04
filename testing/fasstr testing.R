@@ -35,8 +35,8 @@ for (i in names(test)) {
 
 
 
-
-
+flow_data <- read.csv("testing/08MH152_with_USA_DATA.csv")  %>% add_basin_area(groups = ID) #%>% rename("STATION_NUMBER" = ID)
+str(data)
 #devtools::document()
 #install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
 #install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
@@ -77,14 +77,14 @@ install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
 
 start_time <- Sys.time()
-write_full_analysis(station_number = "08NM116", 
+write_full_analysis(data = flow_data,
                     #water_year = TRUE, 
-                    start_year = 1975, 
+                    start_year = 2007, 
                     #end_year = 2010, 
                     #exclude_years = c(1995:1997, 1999),
                     #table_filetype = "xlsx",
                     #plot_filetype = "png",
-                    foldername = "Mission Creek"#,
+                    foldername = "Bertrand"#,
                    # ignore_missing = TRUE,
                     #sections = 7
                    )
@@ -129,21 +129,21 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>%
   add_cumulative_yield(basin_area = 10.3) %>% 
   add_seasons()
 
-results <- calc_longterm_stats(data = flow_data, groups = WaterYear)
-results <- calc_annual_stats(data = flow_data, groups = Parameter)
-results <- calc_all_annual_stats(data = flow_data)
-results <- calc_annual_cumulative_stats(data = flow_data)
-results <- calc_annual_flow_timing(data = flow_data)
-results <- calc_annual_lowflows(data = flow_data)
-results <- calc_annual_outside_normal(data = flow_data)
-results <- calc_daily_stats(data = flow_data)
-results <- calc_daily_cumulative_stats(data = flow_data)
-results <- calc_flow_percentile(data = flow_data, flow_value =  0.801)
+results <- calc_longterm_stats(data = flow_data, groups = ID)
+results <- calc_annual_stats(data = flow_data, groups = ID)
+results <- calc_all_annual_stats(data = flow_data, groups = ID)
+results <- calc_annual_cumulative_stats(data = flow_data, groups = ID)
+results <- calc_annual_flow_timing(data = flow_data, groups = ID)
+results <- calc_annual_lowflows(data = flow_data, groups = ID)
+results <- calc_annual_outside_normal(data = flow_data, groups = ID)
+results <- calc_daily_stats(data = flow_data, groups = ID)
+results <- calc_daily_cumulative_stats(data = flow_data, groups = ID)
+results <- calc_flow_percentile(data = flow_data, flow_value =  0.801, groups = ID)
 results <- calc_lt_mad(data = flow_data)
 results <- calc_lt_percentile(data = flow_data, percentiles =  50)
-results <- calc_monthly_cumulative_stats(data = flow_data)
-results <- calc_monthly_stats(data = flow_data)
-results <- screen_flow_data(data = flow_data)
+results <- calc_monthly_cumulative_stats(data = flow_data, groups = ID)
+results <- calc_monthly_stats(data = flow_data, groups = ID)
+results <- screen_flow_data(data = flow_data, groups = ID)
 
 plot_flow_data(data = flow_data)
 plot_annual_cumulative_stats(data = flow_data, incl_seasons = T)
@@ -177,9 +177,9 @@ trending_plots <- plot_annual_trends(trending)
 
 # Multiple stations and custom Date and Value column names
 flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) %>% 
-  rename(Datesss = Date, Valuesss = Value) %>% 
-  fill_missing_dates(dates = Datesss, values = Valuesss) %>% 
-  add_basin_area() %>% 
+  rename(Datesss = Date, Valuesss = Value, Station = STATION_NUMBER) %>% 
+  fill_missing_dates(dates = Datesss, values = Valuesss, groups = Station) %>% 
+  add_basin_area(groups = Station) %>% 
   add_date_variables(dates = Datesss) %>% 
   add_rolling_means(dates = Datesss, values = Valuesss) %>% 
   add_daily_volume(values = Valuesss) %>% 

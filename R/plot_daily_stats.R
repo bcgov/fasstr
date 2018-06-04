@@ -127,7 +127,9 @@ plot_daily_stats <- function(data = NULL,
   daily_stats <- dplyr::mutate(daily_stats, Date = as.Date(DayofYear, origin = origin_date))
   daily_stats <- dplyr::mutate(daily_stats, AnalysisDate = Date)
   
-  
+  if (all(sapply(daily_stats[4:11], function(x)all(is.na(x))))) {
+    daily_stats[is.na(daily_stats)] <- 1
+  }
   
   ## ADD YEAR IF SELECTED
   ## --------------------

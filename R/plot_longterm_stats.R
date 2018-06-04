@@ -107,9 +107,13 @@ plot_longterm_stats <- function(data = NULL,
   longterm_stats_longterm <- dplyr::select(longterm_stats_longterm, STATION_NUMBER, "LT_Mean" = Mean, "LT_Med" = Median)
   longterm_stats <- dplyr::left_join(longterm_stats_months, longterm_stats_longterm, by = "STATION_NUMBER")
   
+  if (all(sapply(longterm_stats[3:ncol(longterm_stats)], function(x)all(is.na(x))))) {
+    longterm_stats[is.na(longterm_stats)] <- 1
+  }
+  
   # Create axis label based on input columns
-  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (m3)",
-                         ifelse(as.character(substitute(values)) == "Yield_mm", "Runoff Yield (mm)", 
+  y_axis_title <- ifelse(as.character(substitute(Value)) == "Volume_m3", "Volume (m3)",
+                         ifelse(as.character(substitute(Value)) == "Yield_mm", "Runoff Yield (mm)", 
                                 "Discharge (cms)"))
   # Plot
   lt_plots <- dplyr::group_by(longterm_stats, STATION_NUMBER)

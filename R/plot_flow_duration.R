@@ -132,7 +132,10 @@ plot_flow_duration <- function(data = NULL,
     colour_list[[ custom_months_label ]] = "grey60"
   }
 
-
+  if (all(is.na(percentiles_data$Value))) {
+    percentiles_data[is.na(percentiles_data)] <- 1
+  }
+  
   ## PLOT STATS
   ## ----------
   
