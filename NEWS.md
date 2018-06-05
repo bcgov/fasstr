@@ -3,10 +3,14 @@ fasstr 0.2.5
 
 ##### Updated: 4 June 2018
 
+New
   * Added vignettes:
     * 'fasstr' Users Guide
     * Trending Analysis Guide (to be completed)
     * Volume Frequency Analysis Guide (to be completed)
+  * New write_objects_list() function to write all plots and tables from a list of objects (help with frquency analysis writing)
+    
+Updates
   * Fixed bug where 'groups' column was not kept in resulting tibble, and add_basin_area(), add_rolling_means()
   * Plots of longterm_stats, daily_stats, and flow_duration plot nothing (instead of error) if all data is NA
   * write_full_analysis updates:
