@@ -140,21 +140,22 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>%
   add_cumulative_yield(basin_area = 10.3) %>% 
   add_seasons()
 
-results <- calc_longterm_stats(data = flow_data, groups = ID)
-results <- calc_annual_stats(data = flow_data, groups = ID)
-results <- calc_all_annual_stats(data = flow_data, groups = ID)
-results <- calc_annual_cumulative_stats(data = flow_data, groups = ID)
-results <- calc_annual_flow_timing(data = flow_data, groups = ID)
-results <- calc_annual_lowflows(data = flow_data, groups = ID)
-results <- calc_annual_outside_normal(data = flow_data, groups = ID)
-results <- calc_daily_stats(data = flow_data, groups = ID)
-results <- calc_daily_cumulative_stats(data = flow_data, groups = ID)
-results <- calc_flow_percentile(data = flow_data, flow_value =  0.801, groups = ID)
+results <- screen_flow_data(data = flow_data)
+results <- calc_longterm_stats(data = flow_data)
+results <- calc_annual_stats(data = flow_data)
+results <- calc_all_annual_stats(data = flow_data)
+results <- calc_annual_cumulative_stats(data = flow_data)
+results <- calc_annual_flow_timing(data = flow_data)
+results <- calc_annual_lowflows(data = flow_data)
+results <- calc_annual_outside_normal(data = flow_data)
+results <- calc_daily_stats(data = flow_data)
+results <- calc_daily_cumulative_stats(data = flow_data)
+results <- calc_flow_percentile(data = flow_data, flow_value =  0.801)
 results <- calc_lt_mad(data = flow_data)
 results <- calc_lt_percentile(data = flow_data, percentiles =  50)
-results <- calc_monthly_cumulative_stats(data = flow_data, groups = ID)
-results <- calc_monthly_stats(data = flow_data, groups = ID)
-results <- screen_flow_data(data = flow_data, groups = ID)
+results <- calc_monthly_cumulative_stats(data = flow_data)
+results <- calc_monthly_stats(data = flow_data)
+
 
 plot_flow_data(data = flow_data)
 plot_annual_cumulative_stats(data = flow_data, incl_seasons = T)
@@ -188,7 +189,7 @@ trending_plots <- plot_annual_trends(trending)
 
 # Multiple stations and custom Date and Value column names
 flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) %>% 
-  rename(Datesss = Date, Valuesss = Value, Station = STATION_NUMBER) %>% 
+  rename(Datesss = Date, Valuesss = Value) %>% 
   fill_missing_dates(dates = Datesss, values = Valuesss, groups = Station) %>% 
   add_basin_area(groups = Station) %>% 
   add_date_variables(dates = Datesss) %>% 
@@ -298,7 +299,7 @@ trending_plots <- plot_annual_trends(trending)
 ### ----------
 
 # Single stations
-flow_data <- fill_missing_dates(station_number = "08HB048")
+flow_data <- fill_missing_dates(station_number = "08HB048") 
 flow_data <- add_basin_area(station_number = "08HB048")
 flow_data <- add_seasons(station_number = "08HB048")
 flow_data <- add_date_variables(station_number = "08HB048", water_year = T)
