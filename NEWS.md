@@ -1,13 +1,14 @@
 fasstr 0.2.5
 =========================
 
-##### Updated: 4 June 2018
+##### Updated: 7 June 2018
 
 New
   * Added vignettes:
     * 'fasstr' Users Guide
     * Trending Analysis Guide (to be completed)
     * Volume Frequency Analysis Guide (to be completed)
+    * Under the Hood (to be completed)
   * New write_objects_list() function to write all plots and tables from a list of objects (help with frquency analysis writing)
     
 Updates
