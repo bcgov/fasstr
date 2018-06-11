@@ -152,6 +152,11 @@ calc_annual_stats <- function(data = NULL,
                                      Minimum = min (RollingValue, na.rm = ignore_missing))
   annual_stats <- dplyr::ungroup(annual_stats)
   
+  #Remove Nans and Infs
+  annual_stats$Mean[is.nan(annual_stats$Mean)] <- NA
+  annual_stats$Maximum[is.infinite(annual_stats$Maximum)] <- NA
+  annual_stats$Minimum[is.infinite(annual_stats$Minimum)] <- NA
+  
   # Calculate annual percentiles
   if(!all(is.na(percentiles))) {
     for (ptile in percentiles) {

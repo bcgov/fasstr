@@ -171,8 +171,11 @@ compute_annual_frequencies <- function(data = NULL,
                                             max(value, na.rm = ignore_missing),
                                             min(value, na.rm = ignore_missing)))
   Q_stat <- dplyr::rename(Q_stat, Year = AnalysisYear)
+  
+  # remove any Inf values
+  Q_stat$value[is.infinite(Q_stat$value)] <- NA
 
-  # Data checks
+    # Data checks
   if (nrow(Q_stat) < 3) stop(paste0("Need at least 3 years of observations for analysis. There are only ", 
                                         nrow(Q_stat), 
                                         " years available."), call. = FALSE)

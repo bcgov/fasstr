@@ -128,6 +128,11 @@ screen_flow_data <- function(data = NULL,
                                 Median = stats::median(RollingValue, na.rm = TRUE),
                                 StandardDeviation = stats::sd(RollingValue, na.rm = TRUE))
   
+  #Remove Nans and Infs
+  Q_summary$Mean[is.nan(Q_summary$Mean)] <- NA
+  Q_summary$Maximum[is.infinite(Q_summary$Maximum)] <- NA
+  Q_summary$Minimum[is.infinite(Q_summary$Minimum)] <- NA
+  
   # Calculate for each month for each year
   Q_summary_month <-   dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
                                         n_missing_Q = sum(is.na(RollingValue)))
