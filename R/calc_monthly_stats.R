@@ -146,6 +146,11 @@ calc_monthly_stats <- function(data = NULL,
     }
   }
   
+  #Remove Nans and Infs
+  monthly_stats$Mean[is.nan(monthly_stats$Mean)] <- NA
+  monthly_stats$Maximum[is.infinite(monthly_stats$Maximum)] <- NA
+  monthly_stats$Minimum[is.infinite(monthly_stats$Minimum)] <- NA
+  
   # Rename year column
   monthly_stats <-   dplyr::rename(monthly_stats, Year = AnalysisYear, Month = MonthName)
   
