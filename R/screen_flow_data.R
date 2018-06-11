@@ -65,6 +65,7 @@ screen_flow_data <- function(data = NULL,
                              water_year = FALSE,
                              water_year_start = 10,
                              start_year = 0,
+                             months = 1:12,
                              end_year = 9999,
                              transpose = FALSE){             
   
@@ -75,6 +76,7 @@ screen_flow_data <- function(data = NULL,
   rolling_days_checks(roll_days, roll_align)
   water_year_checks(water_year, water_year_start)
   years_checks(start_year, end_year, exclude_years = NULL)
+  months_checks(months = months)
   transpose_checks(transpose)
   
   
@@ -112,6 +114,8 @@ screen_flow_data <- function(data = NULL,
   
   # Filter for the selected year (remove excluded years after)
   flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, Month %in% months)
+  
   
   
   ## CALCULATE STATISTICS

@@ -48,6 +48,7 @@ plot_missing_dates <- function(data = NULL,
                                water_year_start = 10,
                                start_year = 0,
                                end_year = 9999,
+                               months = 1:12,
                                include_title = FALSE){           
   
   
@@ -79,11 +80,12 @@ plot_missing_dates <- function(data = NULL,
                                    water_year = water_year,
                                    water_year_start = water_year_start,
                                    start_year = start_year,
-                                   end_year = end_year)
+                                   end_year = end_year,
+                                   months = months)
   
 
-  missing_plotdata <- flow_summary[,c(1,2,11:22)]
-  missing_plotdata <- tidyr::gather(missing_plotdata, Month, Value, 3:14)
+  missing_plotdata <- flow_summary[,c(1,2,11:ncol(flow_summary))]
+  missing_plotdata <- tidyr::gather(missing_plotdata, Month, Value, 3:ncol(missing_plotdata))
   
   missing_plotdata <- dplyr::mutate(missing_plotdata, Month = substr(Month, 1, 3))
   
