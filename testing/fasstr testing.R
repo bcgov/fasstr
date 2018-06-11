@@ -26,7 +26,7 @@ end_time <- Sys.time()
 
 
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% dplyr::select(-STATION_NUMBER)
-test <- compute_full_analysis(data = flow_data, ignore_missing = TRUE, foldername = "TEST FOLDER", write_to_dir = T, sections = 3)
+test <- compute_full_analysis(data = flow_data, ignore_missing = TRUE, foldername = "TEST FOLDER", write_to_dir = T, sections = 3, plot_filetype = "pdf")
 
 test <- compute_full_analysis(station_number = "08HB048", foldername = "TEST FOLDER", write_to_dir = T, sections = 3)
 end_time <- Sys.time()
@@ -53,6 +53,12 @@ data <- data[,c(2,1,4)]
 
 
 
+test <- calc_daily_stats(stati="08HB048", ignore_missing = TRUE)
+  test$dates2 <- as.Date.character(test$Date, "%b-%d")
+test <- test %>% 
+  add_date_variables(dates = "dates2")
+
+test
 
 x <- list(data = NULL,
               dates = as.character(substitute(Date)),
@@ -522,7 +528,7 @@ results <- calc_lt_mad(station_number = "08HB048")
 results <- calc_lt_percentile(station_number = "08HB048", percentiles = 50, complete_years = T)
 results <- calc_monthly_cumulative_stats(station_number = "08HB048")
 results <- calc_monthly_stats(station_number = "08HB048")
-results <- screen_flow_data(station_number = "08HA066")
+results <- screen_flow_data(station_number = "08HB048", months = 7:9)
 
 plot_flow_data(station_number = "08HB048")
 plot_annual_cumulative_stats(station_number = "08HB048", incl_seasons = T)
@@ -535,12 +541,12 @@ plot_daily_stats(station_number = "08HB048", start_year = 1973)
 plot_data_screening(station_number = "08HB048")
 plot_flow_duration(station_number = "08HB048", custom_months = 1:3, custom_months_label = "WINTER", ignore_missing = T)
 plot_longterm_stats(station_number = "08HB048", ignore_missing = T)
-plot_missing_dates(station_number = "08HB048")
+plot_missing_dates(station_number = "08HB048", months = 1)
 plot_monthly_cumulative_stats(station_number = "08HB048", use_yield = T)
 plot_monthly_stats(station_number = "08HB048")
 plot_annual_cumulative_stats(station_number = "08HB048", use_yield = T)
 
-trending <- compute_annual_trends(station_number = "08HB048", zyp_method = "yuepilon")
+trending <- compute_annual_trends(station_number = "08HB048", zyp_method = "yuepilon", ignore_missing = T)
 trending_plots <- plot_annual_trends(trending)
 
 write_flow_data(station_number = c("08HB048","08NM116"))

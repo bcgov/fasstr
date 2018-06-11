@@ -10,7 +10,7 @@ plot_flow_duration(data = NULL, dates = Date, values = Value,
   start_year = 0, end_year = 9999, exclude_years = NULL,
   complete_years = FALSE, custom_months = NULL,
   custom_months_label = "Custom-Months", ignore_missing = FALSE,
-  months = 1:12, incl_longterm = TRUE, log_discharge = TRUE,
+  months = 1:12, include_longterm = TRUE, log_discharge = TRUE,
   include_title = FALSE)
 }
 \arguments{
@@ -63,7 +63,7 @@ with no missing dates will be returned. Default \code{FALSE}.}
 
 \item{months}{Numeric vector of month curves to plot. NA if no months required. Default \code{1:12}.}
 
-\item{incl_longterm}{Logical value indicating whether to include longterm curve of all data. Default \code{TRUE}.}
+\item{include_longterm}{Logical value indicating whether to include longterm curve of all data. Default \code{TRUE}.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
 

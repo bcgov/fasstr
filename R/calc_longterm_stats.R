@@ -17,6 +17,7 @@
 #'
 #' @inheritParams calc_daily_stats
 #' @param percentiles Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.
+#' @param include_longterm Logical value indicating whether to include longterm calculation of all data. Default \code{TRUE}.
 #' @param custom_months Numeric vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Adds results to the end of table.
 #'    If wanting months that overlap calendar years (ex. Oct-Mar), choose water_year and a water_year_month that begins before the first 
 #'    month listed. Leave blank for no custom month summary.
@@ -63,7 +64,9 @@ calc_longterm_stats <- function(data = NULL,
                                 start_year = 0,
                                 end_year = 9999,
                                 exclude_years = NULL,
+                                months = 1:12,
                                 complete_years = FALSE,
+                                include_longterm = TRUE,
                                 custom_months = NULL,
                                 custom_months_label = "Custom-Months",
                                 transpose = FALSE,
@@ -77,11 +80,12 @@ calc_longterm_stats <- function(data = NULL,
   percentiles_checks(percentiles)
   water_year_checks(water_year, water_year_start)
   years_checks(start_year, end_year, exclude_years)
+  months_checks(months = months)
   transpose_checks(transpose)
   ignore_missing_checks(ignore_missing)
   complete_yrs_checks(complete_years)
   custom_months_checks(custom_months, custom_months_label)
-  
+  include_longterm_checks(include_longterm)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -118,6 +122,8 @@ calc_longterm_stats <- function(data = NULL,
   # Filter for the selected years
   flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
   flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
+  flow_data <- dplyr::filter(flow_data, Month %in% months)
+  
   
   # Remove incomplete years if selected
   flow_data <- filter_complete_yrs(complete_years = complete_years, 
@@ -134,14 +140,21 @@ calc_longterm_stats <- function(data = NULL,
                                Median = stats::median(RollingValue, na.rm = ignore_missing),
                                Maximum = max(RollingValue, na.rm = ignore_missing),
                                Minimum = min(RollingValue, na.rm = ignore_missing))
-  longterm_stats   <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER),
-                                   Mean = mean(RollingValue, na.rm = ignore_missing),
-                                   Median = stats::median(RollingValue, na.rm = ignore_missing),
-                                   Maximum = max(RollingValue, na.rm = ignore_missing),
-                                   Minimum = min(RollingValue, na.rm = ignore_missing))
-  longterm_stats <- dplyr::mutate(longterm_stats, MonthName = as.factor("Long-term"))
+  Q_months <- dplyr::ungroup(Q_months)
   
-  longterm_stats <- rbind(dplyr::ungroup(Q_months), dplyr::ungroup(longterm_stats))  #dplyr::bindrows gives unnecessary warnings
+  if (include_longterm) {
+    longterm_stats   <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER),
+                                         Mean = mean(RollingValue, na.rm = ignore_missing),
+                                         Median = stats::median(RollingValue, na.rm = ignore_missing),
+                                         Maximum = max(RollingValue, na.rm = ignore_missing),
+                                         Minimum = min(RollingValue, na.rm = ignore_missing))
+    longterm_stats <- dplyr::ungroup(longterm_stats)
+    longterm_stats <- dplyr::mutate(longterm_stats, MonthName = as.factor("Long-term"))
+    
+    longterm_stats <- rbind(Q_months, longterm_stats)  #dplyr::bindrows gives unnecessary warnings
+  } else {
+    longterm_stats <- Q_months
+  }
   
   
   # Calculate the monthly and longterm percentiles
@@ -151,16 +164,23 @@ calc_longterm_stats <- function(data = NULL,
       Q_months_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, MonthName),
                                          Percentile = ifelse(!is.na(mean(RollingValue, na.rm = FALSE)) | ignore_missing, 
                                                              stats::quantile(RollingValue, ptile / 100, na.rm = TRUE), NA))
-      longterm_stats_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER),
-                                           Percentile = ifelse(!is.na(mean(RollingValue, na.rm = FALSE)) | ignore_missing, 
-                                                               stats::quantile(RollingValue, ptile / 100, na.rm = TRUE), NA))
-      longterm_stats_ptile <- dplyr::mutate(longterm_stats_ptile, MonthName = "Long-term")
-      
       names(Q_months_ptile)[names(Q_months_ptile) == "Percentile"] <- paste0("P", ptile)
-      names(longterm_stats_ptile)[names(longterm_stats_ptile) == "Percentile"] <- paste0("P", ptile)
+      Q_months_ptile <- dplyr::ungroup(Q_months_ptile)
       
-      longterm_stats_ptile <- rbind(dplyr::ungroup(Q_months_ptile), dplyr::ungroup(longterm_stats_ptile))  #dplyr::bindrows gives unnecessary warnings
       
+      if (include_longterm) {
+        longterm_stats_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER),
+                                                 Percentile = ifelse(!is.na(mean(RollingValue, na.rm = FALSE)) | ignore_missing, 
+                                                                     stats::quantile(RollingValue, ptile / 100, na.rm = TRUE), NA))
+        longterm_stats_ptile <- dplyr::mutate(longterm_stats_ptile, MonthName = "Long-term")
+        
+        names(longterm_stats_ptile)[names(longterm_stats_ptile) == "Percentile"] <- paste0("P", ptile)
+        longterm_stats_ptile <- dplyr::ungroup(longterm_stats_ptile)
+        
+        longterm_stats_ptile <- rbind(dplyr::ungroup(Q_months_ptile), dplyr::ungroup(longterm_stats_ptile))  #dplyr::bindrows gives unnecessary warnings
+      } else {
+        longterm_stats_ptile <- Q_months_ptile
+      }
       # Merge with longterm_stats
       longterm_stats <- merge(longterm_stats,longterm_stats_ptile, by = c("STATION_NUMBER", "MonthName"))
     }

@@ -443,6 +443,10 @@ zyp_alpha_checks <- function(zyp_alpha){
     stop("timing_percent must be > 0 and < 1)", call. = FALSE)
 }
 
+include_longterm_checks <- function(include_longterm){
+  if (length(include_longterm) > 1)   stop("Only one include_longterm logical value can be listed.", call. = FALSE)
+  if (!is.logical(include_longterm))  stop("include_longterm argument must be logical (TRUE/FALSE).", call. = FALSE)
+}
 
 
 
