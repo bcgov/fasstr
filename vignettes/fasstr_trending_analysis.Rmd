@@ -42,7 +42,6 @@ Autocorrelation
 And these are used in the analysis:
 
 - `compute_annual_trends()` - calculate prewhitened nonlinear annual trends on streamflow data
-- `plot_annual_trends()` - plot prewhitened nonlinear annual trends on streamflow data
 
 ## 2. Computing Trends
 
@@ -127,22 +126,11 @@ fasstr::compute_annual_trends(station_number = "08NM116",
 
 ## 3. Plotting Trends
 
-To plot you need to a tibble of results with data
 
-`trends_results`
-`groups`
 `zyp_alpha` to plot a line, NA if not
 
 
 Example with custom:
-```{r, eval=FALSE}
-trends_results <- compute_annual_trends()
-trends_plots <- plot_annual_trends(trends_results = trends_results,
-                                   zyp_alpha = 0.05,
-                                   groups = STATION_NUMBER)
-trends_plots$Annual_somethinngggg
-
-```
 
 
 ## 4. Interpreting Trends

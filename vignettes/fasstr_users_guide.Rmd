@@ -578,13 +578,16 @@ plot_annual_outside_normal(station_number = "08NM116", start_year = 1974)
 Trending:
 
 - `compute_annual_trends()` - calculate prewhitened nonlinear annual trends on streamflow data
-- `plot_annual_trends()` - plot prewhitened nonlinear annual trends on streamflow data
 
 Volume Frequency: 
 
 - `compute_annual_frequencies()` - perform an annual low or high-flow frequency analysis
 - `compute_frequency_stat()` - calculate an annual frequency analysis statistic
 - `compute_hydat_peak_frequencies()` - perform a flow frequency analysis on annual statistics
+
+Full Analysis:
+
+- `compute_full_analysis()` - calculate a suite of analyses from the fasstr functions
 
 
 ## 8. Customizing Functions - Data filtering and options
