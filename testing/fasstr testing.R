@@ -7,7 +7,8 @@ install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 devtools::install_github("bcgov/fasstr")
 #devtools::check()
 
-
+library(fasstr)
+library(dplyr)
 start_time <- Sys.time()
 test <- compute_full_analysis(#data = flow_data,
                               station_number = "08HB048", 
@@ -24,6 +25,11 @@ test <- compute_full_analysis(#data = flow_data,
 end_time <- Sys.time()
 
 
+flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% dplyr::select(-STATION_NUMBER)
+test <- compute_full_analysis(data = flow_data, ignore_missing = TRUE, foldername = "TEST FOLDER", write_to_dir = T, sections = 3)
+
+test <- compute_full_analysis(station_number = "08HB048", foldername = "TEST FOLDER", write_to_dir = T, sections = 3)
+end_time <- Sys.time()
 
 dirs <- list.files(path = "Carn/")
 data <- data.frame()

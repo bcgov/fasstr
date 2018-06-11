@@ -12,7 +12,7 @@ compute_annual_trends(data = NULL, dates = Date, values = Value,
   stats_days = 1, stats_align = "right", lowflow_days = c(1, 3, 7, 30),
   lowflow_align = "right", timing_percent = c(25, 33, 50, 75),
   normal_percentiles = c(25, 75), ignore_missing = FALSE,
-  incl_data = TRUE)
+  include_plots = TRUE, zyp_alpha = NA)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -86,32 +86,15 @@ normal range. Default \code{c(25,75)}.}
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
 with no missing dates will be returned. Default \code{FALSE}.}
 
-\item{incl_data}{Logical value indicating whether to include the trending data with the results. Default \code{TRUE}.}
+\item{include_plots}{Logical value indicating if annual trending plots should be included. Default \code{TRUE}.}
+
+\item{zyp_alpha}{Numeric value of the significance level (ex. 0.05) of when to plot a trend line. Leave blank for no line.}
 }
 \value{
-A data frame containing trends with the following outputs from the zyp package:
-  \item{Statistic}{the annual statistic used for trending.}
-  \item{lbound}{the lower bound of the trend's confidence interval}
-  \item{trend}{the Sens' slope (trend) per unit time}
-  \item{trendp}{the Sen's slope (trend) over the time period}
-  \item{ubound}{the upper bound of the trend's confidence interval}
-  \item{tau}{Kendall's tau statistic computed on the final detrended timeseries}
-  \item{sig}{Kendall's P-value computed for the final detrended timeseries}
-  \item{nruns}{the number of runs required to converge upon a trend}
-  \item{autocor}{the autocorrelation of the final detrended timeseries}
-  \item{valid_frac}{the fraction of the data which is valid (not NA) once autocorrelation is removed}
-  \item{linear}{the least squares fit trend on the same dat}
-  \item{intercept}{the lower bound of the trend's confidence interval}
-  \item{lbound}{the intercept of the Sen's slope (trend)}
-  and the following additional columns:
-  \item{min_year}{the minimum year used in the trending}
-  \item{max_year}{the maximum year used in the trending}
-  \item{n_years}{the number of years with data for trending}
-  \item{mean}{the mean of all values used for trending}
-  \item{median}{the median of all values used for trending}
-  \item{min}{the minimum of all values used for trending}
-  \item{max}{the maximum of all values used for trending}
-  Transposing data creates a column of "Trends_Statistics" and subsequent columns of each trends statistic for each annual statistic.
+A list of tibbles and optional plots from the trending analysis including:
+  \item{Annual_Trends_Data}{a tibbble of the annual statistics used for trending}
+  \item{Annual_Trends_Results}{a tibble of the results of the zyp trending analysis}
+  \item{Annual_*}{each ggplot2 object for each annual trended statistic}
 }
 \description{
 Calculates prewhitened nonlinear trends on annual streamflow data. Uses the
@@ -150,6 +133,5 @@ References from zyp package:
        }
 }
 \seealso{
-\code{\link[zyp]{zyp-package}}, \code{\link[zyp]{zyp.trend.dataframe}}, \code{\link{calc_all_annual_stats}},
- \code{\link{plot_annual_trends}}
+\code{\link[zyp]{zyp-package}}, \code{\link[zyp]{zyp.trend.dataframe}}, \code{\link{calc_all_annual_stats}}
 }

@@ -1,7 +1,7 @@
 fasstr 0.2.5
 =========================
 
-##### Updated: 7 June 2018
+##### Updated: 11 June 2018
 
 New
   * Added vignettes:
@@ -11,12 +11,14 @@ New
     * Under the Hood (to be completed)
   * New write_objects_list() function to write all plots and tables from a list of objects (help with frquency analysis writing)
     
-Updates
+Major Function Updates
+  * Renamed write_full_analysis to compute_full_analysis which creates a list object with all results with option to write everything.
+  * Joined compute_annual_trends and plot_annual_trends.  It now consists of a list with a tibble of annual data, a tibble of trending results, and all trending plots
+  
+Other Updates:
   * Fixed bug where 'groups' column was not kept in resulting tibble, and add_basin_area(), add_rolling_means()
+  * Removed Nan and Inf values from calc_monthly_stats when no data existed for a month
   * Plots of longterm_stats, daily_stats, and flow_duration plot nothing (instead of error) if all data is NA
-  * write_full_analysis updates:
-    * will plot everything even if all data is NA for a function
-    * STATION_NUMBER column removed if all is "XXXXXXX" (still need to fix if groups != "STATION_NUMBER")
   * Updated documentation for some functions
   * Removed colour brewer Set1 on some annual plots due to a lack of colours in set
 
