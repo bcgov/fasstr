@@ -10,26 +10,44 @@ devtools::install_github("bcgov/fasstr")
 library(fasstr)
 library(dplyr)
 start_time <- Sys.time()
-test <- compute_full_analysis(#data = flow_data,
-                              station_number = "08HB048", 
-                               water_year = TRUE, 
-                               start_year = 1980, 
-                               end_year = 2010, 
-                               exclude_years = c(1982:1985, 1987),
+test <- compute_full_analysis(data = flow_data,
+                              #station_number = "08HB048", 
+                               water_year = FALSE, 
+                               #start_year = 2008, 
+                               #end_year = 2017, 
+                               #exclude_years = c(1982:1985, 1987),
                               # table_filetype = "csv",
                                #plot_filetype = "png",,
-                               sections = c(7),
+                             #  sections = c(1),
                                write_to_dir = TRUE,
-                               foldername = "Carn",
-                               ignore_missing = TRUE)
+                               foldername = "Bertrand",
+                               ignore_missing = F,
+                             zyp_alpha = 0.05)
 end_time <- Sys.time()
 
 
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% dplyr::select(-STATION_NUMBER)
 test <- compute_full_analysis(data = flow_data, ignore_missing = TRUE, foldername = "TEST FOLDER", write_to_dir = T, sections = 3, plot_filetype = "pdf")
 
-test <- compute_full_analysis(station_number = "08HB048", foldername = "TEST FOLDER", write_to_dir = T, sections = 3)
+test <- compute_full_analysis(station_number = "08HB048", foldername = "TEST FOLDER", write_to_dir = F, sections = 3)
 end_time <- Sys.time()
+
+
+
+
+
+
+
+bert <- compute_annual_trends(flow_data, zyp_method = "yuepilon", zyp_alpha = 0.05)
+
+
+
+
+
+
+
+
+
 
 dirs <- list.files(path = "Carn/")
 data <- data.frame()
@@ -518,7 +536,7 @@ results <- calc_longterm_stats(station_number = "08HB048", ignore_missing = T)
 results <- calc_annual_stats(station_number = "08HB048")
 results <- calc_all_annual_stats(station_number = "08HB048")
 results <- calc_annual_cumulative_stats(station_number = "08HB048", use_yield = T, incl_seasons = T)
-results <- calc_annual_flow_timing(station_number = "08HB048")
+results <- calc_annual_flow_timing(station_number = "08HB048", water_year = T, months = 11)
 results <- calc_annual_lowflows(station_number = "08HA066")
 results <- calc_annual_outside_normal(station_number = "08HB048")
 results <- calc_daily_stats(station_number = "08HB048", months = 6:7)
