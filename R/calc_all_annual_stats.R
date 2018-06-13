@@ -163,7 +163,7 @@ calc_all_annual_stats <- function(data = NULL,
                                                                 start_year = start_year,
                                                                 end_year = end_year,
                                                                 exclude_years = exclude_years,
-                                                                incl_seasons = TRUE))
+                                                                include_seasons = TRUE))
   
   totalyield_stats <- suppressWarnings(calc_annual_cumulative_stats(data = flow_data,
                                                                     use_yield = TRUE,
@@ -173,7 +173,7 @@ calc_all_annual_stats <- function(data = NULL,
                                                                     start_year = start_year,
                                                                     end_year = end_year,
                                                                     exclude_years = exclude_years,
-                                                                    incl_seasons = TRUE))
+                                                                    include_seasons = TRUE))
   
   
   timing_stats <- suppressWarnings(calc_annual_flow_timing(data = flow_data,

@@ -331,7 +331,7 @@ compute_full_analysis <- function(data = NULL,
                                             exclude_years = exclude_years,
                                             water_year = water_year,
                                             water_year_start = water_year_start,
-                                            incl_seasons = TRUE)
+                                            include_seasons = TRUE)
     
     
     # Annual yield
@@ -339,7 +339,7 @@ compute_full_analysis <- function(data = NULL,
                                               exclude_years = exclude_years,
                                               water_year = water_year, 
                                               water_year_start = water_year_start,
-                                              incl_seasons = TRUE, 
+                                              include_seasons = TRUE, 
                                               use_yield = TRUE, 
                                               basin_area = basin_area)
     
@@ -361,7 +361,8 @@ compute_full_analysis <- function(data = NULL,
     # Annual lowflows
     ann_lowflow <- calc_annual_lowflows(data = flow_data,
                                         exclude_years = exclude_years,
-                                        water_year = water_year, water_year_start = water_year_start,
+                                        water_year = water_year, 
+                                        water_year_start = water_year_start,
                                         ignore_missing = ignore_missing)
     
     
@@ -376,12 +377,14 @@ compute_full_analysis <- function(data = NULL,
                                                  exclude_years = exclude_years,
                                                  water_year = water_year, 
                                                  water_year_start = water_year_start,
-                                                 incl_seasons = TRUE)
+                                                 include_seasons = TRUE)
     ann_yield_plot <- plot_annual_cumulative_stats(data = flow_data,
                                                    exclude_years = exclude_years,
                                                    water_year = water_year, 
                                                    water_year_start = water_year_start,
-                                                   incl_seasons = TRUE, use_yield = TRUE, basin_area = basin_area)
+                                                   include_seasons = TRUE, 
+                                                   use_yield = TRUE,
+                                                   basin_area = basin_area)
     ann_timing_plot <- plot_annual_flow_timing(data = flow_data,
                                                exclude_years = exclude_years,
                                                water_year = water_year, 

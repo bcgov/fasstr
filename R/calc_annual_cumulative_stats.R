@@ -21,7 +21,7 @@
 #' @inheritParams calc_annual_stats
 #' @inheritParams add_basin_area
 #' @param use_yield Logical value indicating whether to use yield runoff, in mm, instead of volumetric. Default \code{FALSE}.
-#' @param incl_seasons Logical value indication whether to include seasonal yields and total discharges. Default \code{TRUE}.
+#' @param include_seasons Logical value indication whether to include seasonal yields and total discharges. Default \code{TRUE}.
 #' 
 #' @return A tibble data frame with the following columns, ending with '_TotalQ_m3' or '_Yield_mm' based on selection:
 #'   \item{Year}{calendar or water year selected}
@@ -41,7 +41,7 @@
 #' calc_annual_cumulative_stats(station_number = "08NM116", 
 #'                              water_year = TRUE, 
 #'                              water_year_start = 8,
-#'                              incl_seasons = TRUE)
+#'                              include_seasons = TRUE)
 #'
 #' }
 #' @export
@@ -60,7 +60,7 @@ calc_annual_cumulative_stats <- function(data = NULL,
                                          start_year = 0,
                                          end_year = 9999,
                                          exclude_years = NULL, 
-                                         incl_seasons = FALSE,
+                                         include_seasons = FALSE,
                                          transpose = FALSE){
   
   
@@ -72,7 +72,7 @@ calc_annual_cumulative_stats <- function(data = NULL,
   water_year_checks(water_year, water_year_start)
   years_checks(start_year, end_year, exclude_years)
   transpose_checks(transpose)
-  incl_seasons_checks(incl_seasons)
+  include_seasons_checks(include_seasons)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -144,7 +144,7 @@ calc_annual_cumulative_stats <- function(data = NULL,
   
   # Calculate seasonal stats
   
-  if(incl_seasons) {
+  if(include_seasons) {
     
     # Calculate two-seasons stats
     seasons2_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, Seasons2),
