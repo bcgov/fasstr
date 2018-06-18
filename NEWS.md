@@ -1,7 +1,7 @@
 fasstr 0.2.5
 =========================
 
-Updated: 12 June 2018
+Updated: 18 June 2018
 
 #### New:
 
