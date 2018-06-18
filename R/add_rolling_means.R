@@ -113,7 +113,7 @@ add_rolling_means <- function(data = NULL,
   names(flow_data)[names(flow_data) == "Value"] <- as.character(substitute(values))
   
   # Remove the STATION_NUMBER columns if one wasn't in flowdata originally
-  if(!"STATION_NUMBER" %in% orig_cols) {
+  if(!as.character(substitute(groups)) %in% orig_cols) {
     flow_data <- dplyr::select(flow_data, -STATION_NUMBER)
   }
   

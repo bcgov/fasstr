@@ -153,7 +153,7 @@ calc_annual_outside_normal <- function(data = NULL,
 
 
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
-  if("STATION_NUMBER" %in% orig_cols) {
+  if(as.character(substitute(groups)) %in% orig_cols) {
     names(normals_stats)[names(normals_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
     normals_stats <- dplyr::select(normals_stats, -STATION_NUMBER)

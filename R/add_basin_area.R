@@ -58,7 +58,7 @@ add_basin_area <- function(data = NULL,
   
   # Format the groups column
   flow_data <- format_groups_col(data = flow_data,
-                                 groups = "STATION_NUMBER")
+                                 groups = as.character(substitute(groups)))
   
   
   ## CHECKS ON BASIN AREA

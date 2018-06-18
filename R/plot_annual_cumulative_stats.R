@@ -57,7 +57,7 @@ plot_annual_cumulative_stats <- function(data = NULL,
                                          start_year = 0,
                                          end_year = 9999,
                                          exclude_years = NULL, 
-                                         incl_seasons = FALSE,
+                                         include_seasons = FALSE,
                                          log_discharge = FALSE,
                                          include_title = FALSE){
   
@@ -95,7 +95,7 @@ plot_annual_cumulative_stats <- function(data = NULL,
                                                    start_year = start_year,
                                                    end_year = end_year,
                                                    exclude_years = exclude_years, 
-                                                   incl_seasons = incl_seasons)
+                                                   include_seasons = include_seasons)
   
   
   # Extract each annual/seasonal datasets
@@ -104,7 +104,7 @@ plot_annual_cumulative_stats <- function(data = NULL,
   annual_data <- dplyr::mutate(annual_data, Statistic = substr(Statistic, 1, 6))
   
   # Calc seasonal data if specified
-  if(incl_seasons) {
+  if(include_seasons) {
     
     # Two Seasons
     seasons2_data <- cumulative_stats[,c(1,2,4,5)]
@@ -155,7 +155,7 @@ plot_annual_cumulative_stats <- function(data = NULL,
   
   
   # If include seasons, then add them to the list of plots
-  if (incl_seasons) {
+  if (include_seasons) {
     
     # Plot 2-seasons
     s2_plots <- dplyr::group_by(seasons2_data, STATION_NUMBER)

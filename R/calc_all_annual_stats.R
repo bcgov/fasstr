@@ -32,7 +32,7 @@
 #' @param annual_percentiles Numeric vector of percentiles to calculate annually. Set to NA if none required. Used for calc_annual_stats()
 #'    function. Default \code{c(10,90)}.
 #' @param monthly_percentiles Numeric vector of percentiles to calculate monthly for each year. Set to NA if none required. Used for 
-#'    calc_monthly_stats() function. Default \code{c(10,90)}.
+#'    calc_monthly_stats() function. Default \code{c(10,20)}.
 #' @param stats_days Numeric vector of the number of days to apply a rolling mean on basic stats. Default \code{c(1)}.
 #'    Used for calc_annual_stats() and calc_monthly_stats() functions.
 #' @param stats_align Character string identifying the direction of the rolling mean on basic stats from the specified date, either by 
@@ -163,7 +163,7 @@ calc_all_annual_stats <- function(data = NULL,
                                                                 start_year = start_year,
                                                                 end_year = end_year,
                                                                 exclude_years = exclude_years,
-                                                                incl_seasons = TRUE))
+                                                                include_seasons = TRUE))
   
   totalyield_stats <- suppressWarnings(calc_annual_cumulative_stats(data = flow_data,
                                                                     use_yield = TRUE,
@@ -173,7 +173,7 @@ calc_all_annual_stats <- function(data = NULL,
                                                                     start_year = start_year,
                                                                     end_year = end_year,
                                                                     exclude_years = exclude_years,
-                                                                    incl_seasons = TRUE))
+                                                                    include_seasons = TRUE))
   
   
   timing_stats <- suppressWarnings(calc_annual_flow_timing(data = flow_data,
@@ -267,7 +267,7 @@ calc_all_annual_stats <- function(data = NULL,
   
   
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
-  if("STATION_NUMBER" %in% orig_cols) {
+  if(as.character(substitute(groups)) %in% orig_cols) {
     names(all_stats)[names(all_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
     all_stats <- dplyr::select(all_stats, -STATION_NUMBER)

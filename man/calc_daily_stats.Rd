@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_daily_stats.R
 \name{calc_daily_stats}
 \alias{calc_daily_stats}
-\title{Calculate the daily summary statistics}
+\title{Calculate daily summary statistics}
 \usage{
 calc_daily_stats(data = NULL, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number = NULL, percentiles = c(5, 25,

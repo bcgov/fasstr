@@ -357,9 +357,9 @@ use_yield_checks <- function(use_yield) {
   if (!is.logical(use_yield))  stop("use_yield argument must be logical (TRUE/FALSE).", call. = FALSE)
 }
 
-incl_seasons_checks <- function(incl_seasons) {
-  if (length(incl_seasons) > 1)   stop("Only one incl_seasons logical value can be listed.", call. = FALSE)
-  if (!is.logical(incl_seasons))  stop("incl_seasons argument must be logical (TRUE/FALSE).", call. = FALSE)
+include_seasons_checks <- function(include_seasons) {
+  if (length(include_seasons) > 1)   stop("Only one include_seasons logical value can be listed.", call. = FALSE)
+  if (!is.logical(include_seasons))  stop("include_seasons argument must be logical (TRUE/FALSE).", call. = FALSE)
 }
 
 percent_total_checks <- function(percent_total) {
@@ -443,6 +443,10 @@ zyp_alpha_checks <- function(zyp_alpha){
     stop("timing_percent must be > 0 and < 1)", call. = FALSE)
 }
 
+include_longterm_checks <- function(include_longterm){
+  if (length(include_longterm) > 1)   stop("Only one include_longterm logical value can be listed.", call. = FALSE)
+  if (!is.logical(include_longterm))  stop("include_longterm argument must be logical (TRUE/FALSE).", call. = FALSE)
+}
 
 
 

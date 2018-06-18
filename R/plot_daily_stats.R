@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Plot the daily summary statistics
+#' @title Plot daily summary statistics
 #'
 #' @description Plot the daily mean, median, maximum, minimum, and percentiles for each day of the year of daily flow values 
 #'    from a streamflow dataset. Plots the statistics from all daily discharge values from all years, unless specified. Can determine
@@ -127,7 +127,9 @@ plot_daily_stats <- function(data = NULL,
   daily_stats <- dplyr::mutate(daily_stats, Date = as.Date(DayofYear, origin = origin_date))
   daily_stats <- dplyr::mutate(daily_stats, AnalysisDate = Date)
   
-  
+  if (all(sapply(daily_stats[4:11], function(x)all(is.na(x))))) {
+    daily_stats[is.na(daily_stats)] <- 1
+  }
   
   ## ADD YEAR IF SELECTED
   ## --------------------

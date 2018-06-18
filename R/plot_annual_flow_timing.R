@@ -119,7 +119,7 @@ plot_annual_flow_timing <- function(data = NULL,
         ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
         ggplot2::ylab("Day of Year") +
         ggplot2::xlab("Year") +
-        ggplot2::scale_color_brewer(palette = "Set1") +
+        #ggplot2::scale_color_brewer(palette = "Set1") +
         ggplot2::theme_bw() +
         ggplot2::guides(colour = FALSE) +
         {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +

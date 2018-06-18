@@ -7,7 +7,7 @@
 plot_missing_dates(data = NULL, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number = NULL, roll_days = 1,
   roll_align = "right", water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, include_title = FALSE)
+  start_year = 0, end_year = 9999, months = 1:12, include_title = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -41,6 +41,9 @@ Default \code{10}.}
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
 \item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
+
+\item{months}{Numeric vector of months to include in analysis (e.g.. \code{6:8} for Jun-Aug). Leave blank to summarize 
+all months (default \code{1:12}).}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 }

@@ -21,7 +21,7 @@
 #' @inheritParams calc_longterm_stats
 #' @inheritParams plot_annual_stats
 #' @param months Numeric vector of month curves to plot. NA if no months required. Default \code{1:12}.
-#' @param incl_longterm Logical value indicating whether to include longterm curve of all data. Default \code{TRUE}.
+#' @param include_longterm Logical value indicating whether to include longterm curve of all data. Default \code{TRUE}.
 #'
 #' @return A list of ggplot2 objects with the following for each station provided:
 #'   \item{Flow_Duration}{a plot that contains flow duration curves for each month, long-term, and (option) customized months}
@@ -57,7 +57,7 @@ plot_flow_duration <- function(data = NULL,
                                custom_months_label = "Custom-Months",
                                ignore_missing = FALSE,
                                months = 1:12,
-                               incl_longterm = TRUE,
+                               include_longterm = TRUE,
                                log_discharge = TRUE,
                                include_title = FALSE){
   
@@ -69,9 +69,8 @@ plot_flow_duration <- function(data = NULL,
   log_discharge_checks(log_discharge)
   custom_months_checks(custom_months, custom_months_label)
   include_title_checks(include_title)
-  
-  if (length(incl_longterm) > 1)   stop("Only one incl_longterm logical value can be listed.", call. = FALSE)
-  if (!is.logical(incl_longterm))  stop("incl_longterm argument must be logical (TRUE/FALSE).", call. = FALSE)
+  include_longterm_checks(include_longterm)
+    
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -112,7 +111,7 @@ plot_flow_duration <- function(data = NULL,
   
   # Filter for months and longterm selected to plot
   include <- month.abb[months]
-  if (incl_longterm) { include <- c(include, "Long-term") }
+  if (include_longterm) { include <- c(include, "Long-term") }
   if (!is.null(custom_months)) { include <- c(include, "Custom-Months") }
   percentiles_data <- dplyr::filter(percentiles_data, Month %in% include)
   
@@ -132,7 +131,10 @@ plot_flow_duration <- function(data = NULL,
     colour_list[[ custom_months_label ]] = "grey60"
   }
 
-
+  if (all(is.na(percentiles_data$Value))) {
+    percentiles_data[is.na(percentiles_data)] <- 1
+  }
+  
   ## PLOT STATS
   ## ----------
   

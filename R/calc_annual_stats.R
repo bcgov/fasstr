@@ -152,6 +152,11 @@ calc_annual_stats <- function(data = NULL,
                                      Minimum = min (RollingValue, na.rm = ignore_missing))
   annual_stats <- dplyr::ungroup(annual_stats)
   
+  #Remove Nans and Infs
+  annual_stats$Mean[is.nan(annual_stats$Mean)] <- NA
+  annual_stats$Maximum[is.infinite(annual_stats$Maximum)] <- NA
+  annual_stats$Minimum[is.infinite(annual_stats$Minimum)] <- NA
+  
   # Calculate annual percentiles
   if(!all(is.na(percentiles))) {
     for (ptile in percentiles) {
@@ -199,7 +204,7 @@ calc_annual_stats <- function(data = NULL,
   
   
   # Recheck if station_number/grouping was in original data and rename or remove as necessary
-  if("STATION_NUMBER" %in% orig_cols) {
+  if(as.character(substitute(groups)) %in% orig_cols) {
     names(annual_stats)[names(annual_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
     annual_stats <- dplyr::select(annual_stats, -STATION_NUMBER)

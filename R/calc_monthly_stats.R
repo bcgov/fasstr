@@ -146,6 +146,11 @@ calc_monthly_stats <- function(data = NULL,
     }
   }
   
+  #Remove Nans and Infs
+  monthly_stats$Mean[is.nan(monthly_stats$Mean)] <- NA
+  monthly_stats$Maximum[is.infinite(monthly_stats$Maximum)] <- NA
+  monthly_stats$Minimum[is.infinite(monthly_stats$Minimum)] <- NA
+  
   # Rename year column
   monthly_stats <-   dplyr::rename(monthly_stats, Year = AnalysisYear, Month = MonthName)
   
@@ -235,7 +240,7 @@ calc_monthly_stats <- function(data = NULL,
   
 
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
-  if("STATION_NUMBER" %in% orig_cols) {
+  if(as.character(substitute(groups)) %in% orig_cols) {
     names(monthly_stats)[names(monthly_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
     monthly_stats <- dplyr::select(monthly_stats, -STATION_NUMBER)

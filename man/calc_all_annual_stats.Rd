@@ -56,7 +56,7 @@ Default \code{10}.}
 function. Default \code{c(10,90)}.}
 
 \item{monthly_percentiles}{Numeric vector of percentiles to calculate monthly for each year. Set to NA if none required. Used for 
-calc_monthly_stats() function. Default \code{c(10,90)}.}
+calc_monthly_stats() function. Default \code{c(10,20)}.}
 
 \item{stats_days}{Numeric vector of the number of days to apply a rolling mean on basic stats. Default \code{c(1)}.
 Used for calc_annual_stats() and calc_monthly_stats() functions.}

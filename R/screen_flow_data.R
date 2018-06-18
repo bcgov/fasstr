@@ -65,6 +65,7 @@ screen_flow_data <- function(data = NULL,
                              water_year = FALSE,
                              water_year_start = 10,
                              start_year = 0,
+                             months = 1:12,
                              end_year = 9999,
                              transpose = FALSE){             
   
@@ -75,6 +76,7 @@ screen_flow_data <- function(data = NULL,
   rolling_days_checks(roll_days, roll_align)
   water_year_checks(water_year, water_year_start)
   years_checks(start_year, end_year, exclude_years = NULL)
+  months_checks(months = months)
   transpose_checks(transpose)
   
   
@@ -112,6 +114,8 @@ screen_flow_data <- function(data = NULL,
   
   # Filter for the selected year (remove excluded years after)
   flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, Month %in% months)
+  
   
   
   ## CALCULATE STATISTICS
@@ -127,6 +131,11 @@ screen_flow_data <- function(data = NULL,
                                 Mean = ifelse(n_Q == 0, NA, mean(RollingValue,na.rm = TRUE)),
                                 Median = stats::median(RollingValue, na.rm = TRUE),
                                 StandardDeviation = stats::sd(RollingValue, na.rm = TRUE))
+  
+  #Remove Nans and Infs
+  Q_summary$Mean[is.nan(Q_summary$Mean)] <- NA
+  Q_summary$Maximum[is.infinite(Q_summary$Maximum)] <- NA
+  Q_summary$Minimum[is.infinite(Q_summary$Minimum)] <- NA
   
   # Calculate for each month for each year
   Q_summary_month <-   dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
@@ -227,7 +236,7 @@ screen_flow_data <- function(data = NULL,
   }
   
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
-  if("STATION_NUMBER" %in% orig_cols) {
+  if(as.character(substitute(groups)) %in% orig_cols) {
     names(Q_summary)[names(Q_summary) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
     Q_summary <- dplyr::select(Q_summary, -STATION_NUMBER)

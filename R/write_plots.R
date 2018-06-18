@@ -19,7 +19,7 @@
 #' @param plots List of plots to write to disk.
 #' @param foldername Name of folder to create on disk (if it does not exist) to write each plot from list. 
 #'    If using \code{combined_pdf} argument, then it will be the name of the PDF document.
-#' @param type Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
+#' @param plot_type Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
 #'    Image type will be overwritten if using \code{combined_pdf} is used.
 #' @param width Numeric plot width in \code{units}. If not supplied, uses the size of current graphics device.
 #' @param height Numeric plot height in \code{units}. If not supplied, uses the size of current graphics device.
@@ -37,7 +37,7 @@
 
 write_plots <- function(plots = NULL,
                         foldername = "",
-                        type = NULL, 
+                        plot_type = NULL, 
                         width = NA,
                         height = NA,
                         units = "in",
@@ -48,14 +48,14 @@ write_plots <- function(plots = NULL,
   # ---------------
   
   # Check list of plots
-  if (is.null(plots)) stop("Must provice a list of plots.", call. = FALSE)
+  if (is.null(plots)) stop("Must provide a list of plots.", call. = FALSE)
   if (!is.list(plots)) stop("Object provided is a not a list.", call. = FALSE)
   if (!all(sapply(plots, inherits, what = "gg"))) stop("Not all objects in list are plots.", call. = FALSE)
   
   # Check device type
   if (!combined_pdf) {
-    if (is.null(type)) stop("Must provide an image type to save.", call. = FALSE)
-    if (!type %in% c("png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", "svg")) 
+    if (is.null(plot_type)) stop("Must provide an image plot_type to save.", call. = FALSE)
+    if (!plot_type %in% c("png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", "svg")) 
       stop("Use of the file types required.", call. = FALSE)
   }
   
@@ -119,7 +119,7 @@ write_plots <- function(plots = NULL,
     
     # Filter through each plot
     for (i in names(plots)) {
-      suppressWarnings(ggplot2::ggsave(filename = paste0(foldername, i, ".", type), 
+      suppressWarnings(ggplot2::ggsave(filename = paste0(foldername, i, ".", plot_type), 
                                        plot = plots[[i]],
                                        width = width,
                                        height = height,

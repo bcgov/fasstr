@@ -8,7 +8,7 @@ calc_annual_cumulative_stats(data = NULL, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number = NULL, use_yield = FALSE,
   basin_area = NA, water_year = FALSE, water_year_start = 10,
   start_year = 0, end_year = 9999, exclude_years = NULL,
-  incl_seasons = FALSE, transpose = FALSE)
+  include_seasons = FALSE, transpose = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -51,7 +51,7 @@ Default \code{10}.}
 
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 
-\item{incl_seasons}{Logical value indication whether to include seasonal yields and total discharges. Default \code{TRUE}.}
+\item{include_seasons}{Logical value indication whether to include seasonal yields and total discharges. Default \code{TRUE}.}
 
 \item{transpose}{Logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.}
 }
@@ -81,7 +81,7 @@ Calculates annual and seasonal total flows, volumetric or runoff yield flows, fr
 calc_annual_cumulative_stats(station_number = "08NM116", 
                              water_year = TRUE, 
                              water_year_start = 8,
-                             incl_seasons = TRUE)
+                             include_seasons = TRUE)
 
 }
 }

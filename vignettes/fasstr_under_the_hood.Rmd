@@ -1,0 +1,62 @@
+---
+title: "fasstr Under the Hood"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r options, include=FALSE}
+#knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")))
+```
+
+```{r, include=FALSE}
+#library(fasstr)
+```
+
+### UNDER CONSTRUCTION
+
+The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http://www.r-project.org) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
+
+This vignette guide contains a look at the internal steps and functions used complete the analyses in this package.
+
+Cleaning Functions
+
+- Argument checks
+- flowdata_import - setting up data from data or station_number
+- prepping - original columns, original grouping (will regroup at end), ungrouping
+- formatting columns for analysis
+- cleaning data with appropriate dates, water years and rolling day and cumulative flows for grouping and analyzing
+- add columns or rows
+- return original column names (and maybe remove STATION_NUMBER)
+- return original grouping
+
+
+Tables
+
+- Argument checks
+- flowdata_import - setting up data from data or station_number
+- prepping - original columns and ungrouping
+- formatting columns for analysis
+- cleaning data with appropriate dates, water years and rolling day and cumulative flows for grouping and analyzing
+- filtering for selected years and months
+- summarizing (grouping by STATION_NUMBER)
+- more filtering if necessary
+- transposing
+- warnings for missing values
+- returning column names to original
+
+Plots
+
+- Argument checks
+- flowdata_import - setting up data from data or station_number
+- formatting columns for analysis
+- calculate stats using functions
+- setting some plotting objects (labels etc)
+- create a tibble of plots
+    - group by station_number
+    - nest
+    - new column using purrr to create plots
+- grab column of plots into list with names

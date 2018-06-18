@@ -7,13 +7,249 @@ install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 devtools::install_github("bcgov/fasstr")
 #devtools::check()
 
+library(fasstr)
+library(dplyr)
+start_time <- Sys.time()
+test <- compute_full_analysis(data = flow_data,
+                              #station_number = "08HB048", 
+                               water_year = FALSE, 
+                               #start_year = 2008, 
+                               #end_year = 2017, 
+                               #exclude_years = c(1982:1985, 1987),
+                              # table_filetype = "csv",
+                               #plot_filetype = "png",,
+                             #  sections = c(1),
+                               write_to_dir = TRUE,
+                               foldername = "Bertrand",
+                               ignore_missing = F,
+                             zyp_alpha = 0.05)
+end_time <- Sys.time()
+
+
+flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% dplyr::select(-STATION_NUMBER)
+test <- compute_full_analysis(data = flow_data, ignore_missing = TRUE, foldername = "TEST FOLDER", write_to_dir = T, sections = 3, plot_filetype = "pdf")
+
+test <- compute_full_analysis(station_number = "08HB048", foldername = "TEST FOLDER", write_to_dir = F, sections = 3)
+end_time <- Sys.time()
 
 
 
+
+
+
+
+bert <- compute_annual_trends(flow_data, zyp_method = "yuepilon", zyp_alpha = 0.05)
+
+
+
+
+
+
+
+
+
+
+dirs <- list.files(path = "Carn/")
+data <- data.frame()
+for (i in dirs) {
+  subdirs <- list.files(path = paste0("Carn/", i))
+  
+  dir_data <- data.frame("Subdirectory" = subdirs)
+  dir_data$Directory <- i
+  data <- rbind(data,dir_data)
+}
+
+
+data$fileExt <- sub('.*\\.', '', data$Subdirectory)
+data$FileType <- ifelse(data$fileExt %in% c("xlsx", "xls", "csv"), "Table", 
+                    ifelse(data$fileExt %in% c("png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", "svg"), "Plot",
+                           "Folder with Plots"))
+
+data <- data[,c(2,1,4)]
+
+
+
+
+
+test <- calc_daily_stats(stati="08HB048", ignore_missing = TRUE)
+  test$dates2 <- as.Date.character(test$Date, "%b-%d")
+test <- test %>% 
+  add_date_variables(dates = "dates2")
+
+test
+
+x <- list(data = NULL,
+              dates = as.character(substitute(Date)),
+              values = as.character(substitute(Value)),
+              groups = as.character(substitute(STATION_NUMBER)),
+              station_number = NULL,
+              foldername = NULL,
+              sections = 1:7,
+              table_filetype = "xlsx",
+              plot_filetype = "png",
+              basin_area = NA,
+              water_year = FALSE,
+              water_year_start = 10,
+              start_year = 0,
+              end_year = 3000,
+              exclude_years = NULL,
+              ignore_missing = FALSE,
+              zyp_method = 'yuepilon',
+              zyp_alpha = NA,
+              write_to_dir = FALSE)
+
+
+
+x <- data.frame("Argument" = names(x),
+           "Option" = as.character(unname(x)))
+x <- x[c(1,5,2:4,6:nrow(x)),]
+
+
+
+# metadata <- list(data = as.character(substitute(data)),
+#                  dates = as.character(substitute(Date)),
+#                  values = as.character(substitute(Value)),
+#                  groups = as.character(substitute(STATION_NUMBER)),
+#                  station_number = station_number,
+#                  foldername = foldername,
+#                  sections = sections,
+#                  table_filetype = table_filetype,
+#                  plot_filetype = plot_filetype,
+#                  basin_area = basin_area,
+#                  water_year = water_year,
+#                  water_year_start = water_year_start,
+#                  start_year = start_year,
+#                  end_year = end_year,
+#                  exclude_years = exclude_years,
+#                  ignore_missing = ignore_missing,
+#                  zyp_method = zyp_method,
+#                  zyp_alpha = zyp_alpha,
+#                  write_to_dir = write_to_dir)
+# 
+# metadata <- data.frame("Argument" = names(metadata),
+#                        "Option" = as.character(unname(metadata)))
+# 
+# write_results(data = metadata,
+#               file = paste0(main_dir, "MetaData.", table_filetype))
+
+# return(list("Screening" = list("Daily_Flows" = flow_data,
+#                                "Daily_Flows_Plot" = ts_full_plot,
+#                                "Daily_Flows_by_Year_Plot" = ts_annual_plot,
+#                                "Flow_Screening" = flow_screening,
+#                                "Flow_Screening_Plot" = ts_screen_plot,
+#                                "Missing_Dates_Plot" = ts_missing_plot),
+#             "Longterm" = list("Longterm_Summary_Stats_Percentiles" = lt_stats,
+#                               "Longterm_Summary_Stats_Plot" = lt_stats_plot,
+#                               "Flow_Duration_Curves" = lt_flowduration_plot),
+#             "Annual" = list("Annual_Summary_Stats" = ann_stats,
+#                             "Annual_Summary_Stats_Plot" = ann_stats_plot,
+#                             "Annual_Cumul_Volume_Stats_m3" = ann_vol,
+#                             "Annual_Cumul_Volume_Stats_m3_Plot" = ann_vol_plot,
+#                             "Annual_Cumul_Yield_Stats_mm" = ann_yield,
+#                             "Annual_Cumul_Yield_Stats_mm_Plot" = ann_yield_plot,
+#                             "Annual_Flow_Timing" = ann_timing,
+#                             "Annual_Flow_Timing_Plot" = ann_timing_plot,
+#                             "Annual_Days_Outside_Normal" = ann_norm,
+#                             "Annual_Days_Outside_Normal_Plot" = ann_norm_plot,
+#                             "Annual_Low_Flows" = ann_lowflow,
+#                             "Annual_Low_Flows_Plot" = ann_lowflow_plot),
+#             "Monthly" = list("Monthly_Summary_Stats" = mon_stats,
+#                              "Monthly_Summary_Stats_Plot" = mon_stats_plot,
+#                              "Monthly_Total_Cumul_Volumes_m3" = mon_vol,
+#                              "Monthly_Total_Cumul_Volumes_m3_Plot" = mon_vol_plot,
+#                              "Monthly_Total_Cumul_Yield_mm" = mon_yield,
+#                              "Monthly_Total_Cumul_Yield_mm_Plot" = mon_yield_plot),
+#             "Daily" = list("Daily_Summary_Stats" = day_stats,
+#                            "Daily_Summary_Stats_Plot" = day_stats_plot,
+#                            "Daily_Total_Cumul_Volumes_m3" = day_vol,
+#                            "Daily_Total_Cumul_Volumes_m3_Plot" = day_vol_plot,
+#                            "Daily_Total_Cumul_Yield_mm" = day_yield,
+#                            "Daily_Total_Cumul_Yield_mm_Plot" = day_yield_plot,
+#                            "Daily_Total_Cumul_Volumes_m3_with_Years" = day_stats_year_plots,
+#                            "Daily_Summary_Stats_with_Years" = day_vol_year_plots,
+#                            "Daily_Total_Cumul_Yield_mm_with_Years" = day_yield_year_plots),
+#             "Trending" = list("Annual_Trends_Data" = ann_data,
+#                               "Annual_Trends_Results" = ann_results,
+#                               "Annual_Trends_Plots" = ann_trends_plots),
+#             "Lowflow_Frequencies" = list()
+# )
+# )
+
+
+
+list.dirs()
+
+class(test[[1]][[1]])
+
+## Attributes
+
+
+# Recheck if station_number/grouping was in original data and rename or remove as necessary
+if(as.character(substitute(groups)) %in% orig_cols) {
+  names(annual_stats)[names(annual_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
+} else {
+  annual_stats <- dplyr::select(annual_stats, -STATION_NUMBER)
+}
+
+if (is.null(station_number)) {
+  attr(annual_stats, "data.source") <- paste0("data = ", as.character(substitute(data)))
+} else {
+  attr(annual_stats, "data.source") <- paste0("station_number = ", paste0(station_number))
+}
+
+
+
+
+attr(annual_stats, "rolling.days") <- paste0("roll_days = ", roll_days, " & roll_align = ", roll_align)
+attr(results, "year.period") <- ifelse(!water_year | (water_year & water_year_start == 1), "Jan-Dec",
+                                            ifelse(water_year_start == 2, "Feb-Jan",
+                                                   ifelse(water_year_start == 3, "Mar-Feb",
+                                                          ifelse(water_year_start == 4, "Apr-Mar",
+                                                                 ifelse(water_year_start == 5, "May-Apr",
+                                                                        ifelse(water_year_start == 6, "Jun-May", 
+                                                                               ifelse(water_year_start == 7, "Jul-Jun", 
+                                                                                      ifelse(water_year_start == 8, "Aug-Jul", 
+                                                                                             ifelse(water_year_start == 9, "Sep-Aug",
+                                                                                                    ifelse(water_year_start == 10, "Oct-Sep",
+                                                                                                           ifelse(water_year_start == 11, "Nov-Oct", "Dec-Nov")))))))))))
+
+
+# data source
+# rolling days and alignment
+# water year and month
+# start, end, excluded years
+# months
+# ignore missing
+
+
+
+
+
+
+
+
+
+
+
+
+daily_stats <- dplyr::summarize(dplyr::group_by(test, STATION_NUMBER, AnalysisDate, AnalysisDoY),
+                                Mean = ifelse mean(Cumul_Flow, na.rm = TRUE),
+                                Median = stats::median(Cumul_Flow, na.rm = TRUE),
+                                Minimum = min(Cumul_Flow, na.rm = TRUE),
+                                Maximum = max(Cumul_Flow, na.rm = TRUE))
 
 test <- plot_daily_stats(station_number = "08HB048", include_year = 1999, ignore_missing = T)
 
+test2 <- test$data
 
+results <- calc_annual_lowflows(station_number = "08HA066", ignore_missing = F)
+results <- dplyr::select(results, Min_1_Day, Min_3_Day, Min_7_Day, Min_30_Day)
+any(as.numeric(colSums(!is.na(results))) < 3)
+
+
+
+logical_cols <- sapply(test, is.logical) 
+test[logical_cols] <- lapply(test[logical_cols], as.numeric) 
 
 
 for (i in names(test)) {
@@ -22,8 +258,18 @@ for (i in names(test)) {
 
 
 
+flow_data <- read.csv("testing/08MH152_with_USA_DATA.csv") %>% 
+  fill_missing_dates(groups = ID) %>% 
+  add_basin_area(groups = ID) %>% 
+  add_date_variables(water_year = T) %>%
+  add_rolling_means(groups = ID) %>%
+  add_daily_volume() %>%
+  add_cumulative_volume(groups = ID) %>% 
+  add_daily_yield(basin_area = 10.3, groups = ID) %>%
+  add_cumulative_yield(basin_area = 10.3, groups = ID) %>% 
+  add_seasons()
 
-
+str(data)
 #devtools::document()
 #install.packages("/Users/jongoetz/Documents/R/fasstr",repos = NULL, type = "source")
 #install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
@@ -60,10 +306,28 @@ plot_filetype = "png"
 
 devtools::document()
 #install.packages("/Users/jongoetz/Documents/R/fasstr", repos = NULL, type = "source")
-install.packages("C:/Users/jgoetz/R/fasstr",repos = NULL, type = "source")
+install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source")
 
 
 start_time <- Sys.time()
+write_full_analysis(data = flow_data,
+                    groups = ID,
+                    #water_year = TRUE, 
+                    start_year = 2007, 
+                    #end_year = 2010, 
+                    #exclude_years = c(1995:1997, 1999),
+                    #table_filetype = "xlsx",
+                    #plot_filetype = "png",
+                    foldername = "Bertrand"#,
+                   # ignore_missing = TRUE,
+                    #sections = 7
+                   )
+end_time <- Sys.time()
+
+
+
+devtools::install_github("bcgov/fasstr")
+library(fasstr)
 write_full_analysis(station_number = "08HB048", 
                     #water_year = TRUE, 
                     #start_year = 1980, 
@@ -73,7 +337,7 @@ write_full_analysis(station_number = "08HB048",
                     #plot_filetype = "png",
                     foldername = "Carn",
                     ignore_missing = TRUE)
-end_time <- Sys.time()
+
 
 
 ##
@@ -99,6 +363,7 @@ flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>%
   add_cumulative_yield(basin_area = 10.3) %>% 
   add_seasons()
 
+results <- screen_flow_data(data = flow_data)
 results <- calc_longterm_stats(data = flow_data)
 results <- calc_annual_stats(data = flow_data)
 results <- calc_all_annual_stats(data = flow_data)
@@ -113,7 +378,7 @@ results <- calc_lt_mad(data = flow_data)
 results <- calc_lt_percentile(data = flow_data, percentiles =  50)
 results <- calc_monthly_cumulative_stats(data = flow_data)
 results <- calc_monthly_stats(data = flow_data)
-results <- screen_flow_data(data = flow_data)
+
 
 plot_flow_data(data = flow_data)
 plot_annual_cumulative_stats(data = flow_data, incl_seasons = T)
@@ -148,8 +413,8 @@ trending_plots <- plot_annual_trends(trending)
 # Multiple stations and custom Date and Value column names
 flow_data <- tidyhydat::hy_daily_flows(station_number = c("08HB048","08NM116")) %>% 
   rename(Datesss = Date, Valuesss = Value) %>% 
-  fill_missing_dates(dates = Datesss, values = Valuesss) %>% 
-  add_basin_area() %>% 
+  fill_missing_dates(dates = Datesss, values = Valuesss, groups = Station) %>% 
+  add_basin_area(groups = Station) %>% 
   add_date_variables(dates = Datesss) %>% 
   add_rolling_means(dates = Datesss, values = Valuesss) %>% 
   add_daily_volume(values = Valuesss) %>% 
@@ -257,7 +522,7 @@ trending_plots <- plot_annual_trends(trending)
 ### ----------
 
 # Single stations
-flow_data <- fill_missing_dates(station_number = "08HB048")
+flow_data <- fill_missing_dates(station_number = "08HB048") 
 flow_data <- add_basin_area(station_number = "08HB048")
 flow_data <- add_seasons(station_number = "08HB048")
 flow_data <- add_date_variables(station_number = "08HB048", water_year = T)
@@ -267,12 +532,12 @@ flow_data <- add_cumulative_volume(station_number = "08HB048")
 flow_data <- add_daily_yield(station_number = "08HB048")
 flow_data <- add_cumulative_yield(station_number = "08HB048", basin_area = 10.2)
 
-results <- calc_longterm_stats(station_number = "08HB048", ignore_missing = F)
+results <- calc_longterm_stats(station_number = "08HB048", ignore_missing = T)
 results <- calc_annual_stats(station_number = "08HB048")
 results <- calc_all_annual_stats(station_number = "08HB048")
 results <- calc_annual_cumulative_stats(station_number = "08HB048", use_yield = T, incl_seasons = T)
-results <- calc_annual_flow_timing(station_number = "08HB048")
-results <- calc_annual_lowflows(station_number = "08HB048")
+results <- calc_annual_flow_timing(station_number = "08HB048", water_year = T, months = 11)
+results <- calc_annual_lowflows(station_number = "08HA066")
 results <- calc_annual_outside_normal(station_number = "08HB048")
 results <- calc_daily_stats(station_number = "08HB048", months = 6:7)
 results <- calc_daily_cumulative_stats(station_number = "08NM116", start_year = 1990)
@@ -281,25 +546,25 @@ results <- calc_lt_mad(station_number = "08HB048")
 results <- calc_lt_percentile(station_number = "08HB048", percentiles = 50, complete_years = T)
 results <- calc_monthly_cumulative_stats(station_number = "08HB048")
 results <- calc_monthly_stats(station_number = "08HB048")
-results <- screen_flow_data(station_number = "08HB048")
+results <- screen_flow_data(station_number = "08HB048", months = 7:9)
 
-plot_flow_data(station_number = "08HB048", exclude_years = 2000)
+plot_flow_data(station_number = "08HB048")
 plot_annual_cumulative_stats(station_number = "08HB048", incl_seasons = T)
 plot_annual_flow_timing(station_number = "08HB048")
 plot_annual_outside_normal(station_number = "08HB048")
-plot_annual_stats(station_number = "08HB048")
+plot_annual_stats(station_number = "08HB048", percentiles = 1:20)
 plot_annual_lowflows(station_number = "08HB048")
-plot_daily_cumulative_stats(station_number = "08HB048")
-plot_daily_stats(station_number = "08HB048", include_year = 1999)
+plot_daily_cumulative_stats(station_number = "08HB048", use_yield = T, start_year = 1980)
+plot_daily_stats(station_number = "08HB048", start_year = 1973)
 plot_data_screening(station_number = "08HB048")
 plot_flow_duration(station_number = "08HB048", custom_months = 1:3, custom_months_label = "WINTER", ignore_missing = T)
-plot_longterm_stats(station_number = "08HB048")
-plot_missing_dates(station_number = "08HB048")
-plot_monthly_cumulative_stats(station_number = "08HB048")
+plot_longterm_stats(station_number = "08HB048", ignore_missing = T)
+plot_missing_dates(station_number = "08HB048", months = 1)
+plot_monthly_cumulative_stats(station_number = "08HB048", use_yield = T)
 plot_monthly_stats(station_number = "08HB048")
 plot_annual_cumulative_stats(station_number = "08HB048", use_yield = T)
 
-trending <- compute_annual_trends(station_number = "08HB048", zyp_method = "yuepilon")
+trending <- compute_annual_trends(station_number = "08HB048", zyp_method = "yuepilon", ignore_missing = T)
 trending_plots <- plot_annual_trends(trending)
 
 write_flow_data(station_number = c("08HB048","08NM116"))
@@ -334,11 +599,11 @@ results <- screen_flow_data(station_number = c("08HB048","08NM116"))
 
 plot_flow_data(station_number = c("08HB048","08NM116"))
 plot_annual_cumulative_stats(station_number = c("08HB048","08NM116"))
-plot_annual_flow_timing(station_number = c("08HB048","08NM116"))
+plot_annual_flow_timing(station_number = c("08HB048","08NM116"), percent_total = 1:20)
 plot_annual_outside_normal(station_number = c("08HB048","08NM116"))
 plot_annual_stats(station_number = c("08HB048","08NM116"), include_title = T)
 plot_daily_cumulative_stats(station_number = c("08HB048","08NM116"))
-plot_daily_stats(station_number = c("08HB048","08NM116"), complete_years = T, include_title = T)
+test <- plot_daily_stats(station_number = c("08HB048","08NM116"), complete_years = T, include_title = T)
 plot_data_screening(station_number = c("08HB048","08NM116"))
 plot_flow_duration(station_number = c("08HB048","08NM116"))
 plot_longterm_stats(station_number = c("08HB048","08NM116"))
@@ -379,8 +644,8 @@ test2 <- fasstr::plot_annual_trends(trendsdata = alldata, zyp_method = "yuepilon
 
 ### FREQUENCY
 
-data <- compute_annual_frequencies(station_number = "08HB048", water_year = T)
-data <- compute_hydat_peak_frequencies(station_number = "08NM116")
+data <- compute_annual_frequencies(station_number = "08HB048", water_year = F, start_year = 1980, end_year = 2010, exclude_years = 1999)
+data <- compute_hydat_peak_frequencies(station_number = "08NM116", use_max = TRUE)
 
 data <- compute_annual_frequencies(station_number = c("08HB048","08NM116"))
 data <- compute_frequency_stat(station_number = "08NM116", roll_day = 7, return_period = 10)

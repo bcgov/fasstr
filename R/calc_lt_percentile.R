@@ -64,7 +64,7 @@ calc_lt_percentile <- function(data = NULL,
   complete_yrs_checks(complete_years)
   transpose_checks(transpose)
   
-  if (is.na(percentiles)) stop("percentiles argument is required.", call. = FALSE)
+  if (all(is.na(percentiles))) stop("percentiles argument is required.", call. = FALSE)
   percentiles_checks(percentiles)
   
   

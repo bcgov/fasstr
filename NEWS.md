@@ -1,7 +1,36 @@
+fasstr 0.2.5
+=========================
+
+Updated: 18 June 2018
+
+#### New:
+
+  * New write_objects_list() function to write all plots and tables from a list of objects (help with frquency analysis writing)
+  * Added vignettes:
+    * 'fasstr' Users Guide (to be completed)
+    * Trending Analysis Guide (to be completed)
+    * Volume Frequency Analysis Guide (to be completed)
+    * Under the Hood (to be completed)
+    
+#### Major Function Updates:
+
+  * Renamed write_full_analysis to compute_full_analysis which creates a list object with all results with option to write everything. Fixed various bugs and issues.
+  * Joined compute_annual_trends and plot_annual_trends.  It now consists of a list with a tibble of annual data, a tibble of trending results, and all trending plots
+  * Added 'months' argument to calc_long_term() and all screening and missing data functions; also an include_longterm argument for longterm to choose whether to include or not
+  
+#### Other Updates:
+
+  * Fixed bug where 'groups' column was not kept in resulting tibble, and add_basin_area(), add_rolling_means()
+  * Removed Nan and Inf values from calc_monthly_stats when no data existed for a month
+  * Plots of longterm_stats, daily_stats, and flow_duration plot nothing (instead of error) if all data is NA
+  * Updated documentation for some functions
+  * Removed colour brewer Set1 on some annual plots due to a lack of colours in set
+
+
 fasstr 0.2.4
 =========================
 
-##### Updated: 8 May 2018
+Updated: 8 May 2018
 
   * Fixed bug where groups function did not work if not "STATION_NUMBER"
   * Added warning if not all dates are dates in column
@@ -14,14 +43,14 @@ fasstr 0.2.4
 fasstr 0.2.3
 =========================
 
-##### Updated: 17 April 2018
+Updated: 17 April 2018
 
   * Updated write_full_analysis() documentation
 
 fasstr 0.2.2
 =========================
 
-##### Updated: 17 April 2018
+Updated: 17 April 2018
 
   * Added write_full_analysis() function to write almost almost all plots and tables in a folder
   * Added some interal checks functions
@@ -30,7 +59,7 @@ fasstr 0.2.2
 fasstr 0.2.1
 =========================
 
-##### Updated: 13 April 2018
+Updated: 13 April 2018
 
   * Reformatted examples script in testing folder as a temporary help document until a vignette is built
   * Moved the previous examples script to a new testing script in the same folder
@@ -40,7 +69,7 @@ fasstr 0.2.1
 fasstr 0.2.0
 =========================
 
-##### Updated: 9 April 2018
+Updated: 9 April 2018
 
 ### NEW FEATURES
   * Summarize and plot by multiple groups (ex. stations) 
@@ -67,7 +96,7 @@ fasstr 0.2.0
 fasstr 0.1.0
 =========================
 
-##### Updated: 9 Dec 2017
+Updated: 9 Dec 2017
 
 * Initial package beta version
 * Use HYDAT argument to extract HYDAT data using 'tidyhydat' package
