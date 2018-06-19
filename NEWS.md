@@ -1,3 +1,11 @@
+fasstr 0.2.5.1
+=========================
+
+Updated: 19 June 2018
+
+* Fixed write_objects_list to save in folder it creates
+* Fixed calc_daily_stats to remove partial data years
+
 fasstr 0.2.5
 =========================
 

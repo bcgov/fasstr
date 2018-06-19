@@ -95,7 +95,7 @@ write_objects_list <- function(list = NULL,
   
   for (i in names(list)) {
     if (inherits( list[[i]], what = "gg")) {
-      ggplot2::ggsave(filename = paste0(i, ".", plot_type), 
+      ggplot2::ggsave(filename = paste0(foldername, i, ".", plot_type), 
                       plot = list[[i]],
                       width = width,
                       height = height,
@@ -103,7 +103,7 @@ write_objects_list <- function(list = NULL,
                       dpi = dpi)
     } else if (inherits(list[[i]], what = "data.frame")) {
       write_results(data = list[[i]], 
-                    file = paste0(i, ".", table_type))
+                    file = paste0(foldername, i, ".", table_type))
     } else {
       warning(paste0("Object in list, ", as.character(substitute(list)), "$", i, ", is not a ggplot or data frame object and was not saved."), call. = FALSE)
     }

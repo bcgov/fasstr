@@ -135,8 +135,11 @@ calc_daily_cumulative_stats <- function(data = NULL,
                                  complete_yr = ifelse(sum(!is.na(Cumul_Flow)) == length(AnalysisYear), TRUE, FALSE))
   if (!all(comp_years$complete_yr)) 
     warning("One or more years contained partial data and were excluded. Only years with complete data were used for calculations.", call. = FALSE)
-  
-  flow_data
+
+  flow_data <- merge(flow_data, comp_years, by = c("STATION_NUMBER", "AnalysisYear"))
+  flow_data <- dplyr::filter(flow_data, complete_yr == "TRUE")
+  flow_data <- dplyr::select(flow_data, -complete_yr)
+
   ## CALCULATE STATISTICS
   ## --------------------
   
@@ -146,56 +149,56 @@ calc_daily_cumulative_stats <- function(data = NULL,
                                   Median = stats::median(Cumul_Flow, na.rm = FALSE),
                                   Minimum = min(Cumul_Flow, na.rm = FALSE),
                                   Maximum = max(Cumul_Flow, na.rm = FALSE))
-  
+
   # Compute daily percentiles (if 10 or more years of data)
   if (!all(is.na(percentiles))){
     for (ptile in percentiles) {
       daily_stats_ptile <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, AnalysisDoY),
                                             Percentile = stats::quantile(Cumul_Flow, ptile / 100, na.rm = TRUE))
       names(daily_stats_ptile)[names(daily_stats_ptile) == "Percentile"] <- paste0("P", ptile)
-      
+
       # Merge with daily_stats
       daily_stats <- merge(daily_stats, daily_stats_ptile, by = c("STATION_NUMBER", "AnalysisDate", "AnalysisDoY"))
-      
+
       # Remove percentile if mean is NA (workaround for na.rm=FALSE in quantile)
       daily_stats[, ncol(daily_stats)] <- ifelse(is.na(daily_stats$Mean), NA, daily_stats[, ncol(daily_stats)])
     }
   }
-  
+
   # Final formatting
   daily_stats <- dplyr::rename(daily_stats, DayofYear = AnalysisDoY, Date = AnalysisDate)
   daily_stats$Date <- format(as.Date(daily_stats$Date), format = "%b-%d")
   col_order <- daily_stats$Date
-  
-  
+
+
   # If transpose if selected, switch columns and rows
   if (transpose) {
     # Get list of columns to order the Statistic column after transposing
     stat_levels <- names(daily_stats[-(1:2)])
-    
+
     # Transpose the columns for rows
     daily_stats <- tidyr::gather(daily_stats, Statistic, Value, -STATION_NUMBER, -Date)
     daily_stats <- tidyr::spread(daily_stats, Date, Value)
-    
+
     # Order the columns
     daily_stats <-  daily_stats[, c("STATION_NUMBER", "Statistic", col_order)]
     daily_stats$Statistic <- factor(daily_stats$Statistic, levels = stat_levels)
     daily_stats <- dplyr::arrange(daily_stats, STATION_NUMBER, Statistic)
   }
-  
-  
+
+
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
   if(as.character(substitute(groups)) %in% orig_cols) {
     names(daily_stats)[names(daily_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
     daily_stats <- dplyr::select(daily_stats, -STATION_NUMBER)
   }
-  
-  
-  logical_cols <- sapply(daily_stats, is.logical) 
-  daily_stats[logical_cols] <- lapply(daily_stats[logical_cols], as.numeric) 
-  
-  
+
+
+  logical_cols <- sapply(daily_stats, is.logical)
+  daily_stats[logical_cols] <- lapply(daily_stats[logical_cols], as.numeric)
+
+
   dplyr::as_tibble(daily_stats)
   
 }
