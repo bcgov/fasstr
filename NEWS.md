@@ -1,3 +1,17 @@
+fasstr 0.2.6
+=========================
+
+Updated: 22 June 2018
+
+#### New:
+
+  * plot_annual_means() function to plot annual mean and long-term means
+    
+#### Updates:
+
+  * calc_ and plot_annual_stats description update
+  
+
 fasstr 0.2.5.1
 =========================
 
