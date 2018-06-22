@@ -13,7 +13,7 @@
 
 #' @title Plot annual summary statistics
 #'
-#' @description Plot annual monthly mean, median, maximum, minimum, and percentiles of daily flow values from a streamflow 
+#' @description Plot annual mean, median, maximum, minimum, and percentiles of daily flow values from a streamflow 
 #'    dataset. Plots the statistics from all daily discharge values from all years, unless specified. Data 
 #'    calculated using calc_annual_stats() function.
 #'
