@@ -71,7 +71,7 @@ A tibble data frame with the following columns:
   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 }
 \description{
-Calculates annual monthly mean, median, maximum, minimum, and percentiles of daily flow values from a streamflow 
+Calculates annual mean, median, maximum, minimum, and percentiles of daily flow values from a streamflow 
    dataset. Calculates the statistics from all daily discharge values from all years, unless specified.
 }
 \examples{
