@@ -114,11 +114,13 @@ plot_annual_means <- function(data = NULL,
                                    breaks = scales::pretty_breaks(n = 10)) +
        ggplot2::scale_x_continuous(breaks = function(x, n = 10) pretty(x, n)[pretty(x, n) %% 1 == 0] ) +
        ggplot2::ylab("Annual Discharge (cms)") +
+       {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
        ggplot2::theme_bw() +
        ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                       panel.grid = ggplot2::element_line(size = .2),
                       axis.title = ggplot2::element_text(size = 12),
-                      axis.text = ggplot2::element_text(size = 10))
+                      axis.text = ggplot2::element_text(size = 10),
+                      plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
     ))
 
   # Create a list of named plots extracted from the tibble

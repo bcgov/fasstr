@@ -398,6 +398,11 @@ compute_full_analysis <- function(data = NULL,
                                              water_year = water_year, 
                                              water_year_start = water_year_start,
                                              ignore_missing = ignore_missing)
+    ann_means_plot <- plot_annual_means(data = flow_data,
+                                        exclude_years = exclude_years,
+                                        water_year = water_year, 
+                                        water_year_start = water_year_start,
+                                        ignore_missing = ignore_missing)
     
     
     
@@ -413,7 +418,8 @@ compute_full_analysis <- function(data = NULL,
                                                "Annual_Days_Outside_Normal" = ann_norm,
                                                "Annual_Days_Outside_Normal_Plot" = ann_norm_plot,
                                                "Annual_Low_Flows" = ann_lowflow,
-                                               "Annual_Low_Flows_Plot" = ann_lowflow_plot)))
+                                               "Annual_Low_Flows_Plot" = ann_lowflow_plot,
+                                               "Annual_Means_plot" =  ann_means_plot)))
     
     if (write_to_dir) {
       # Create the folder
@@ -440,7 +446,9 @@ compute_full_analysis <- function(data = NULL,
                     file = paste0(main_dir, annual_dir, "Annual_Low_Flows.", table_filetype))
       
       
-      invisible(write_plots(plots = c(ann_stats_plot, ann_vol_plot, ann_yield_plot, ann_timing_plot, ann_norm_plot, ann_lowflow_plot),
+      invisible(write_plots(plots = c(ann_stats_plot, ann_vol_plot, ann_yield_plot, 
+                                      ann_timing_plot, ann_norm_plot, ann_lowflow_plot,
+                                      ann_means_plot),
                             foldername = paste0(main_dir, annual_dir),
                             plot_type = plot_filetype,
                             width = 10,
