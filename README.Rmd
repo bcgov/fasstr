@@ -10,7 +10,9 @@ output:
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "tools/readme/README-"
+  fig.path = "tools/readme/README-",
+  warning = FALSE,
+  message = FALSE
 )
 ```
 
@@ -46,14 +48,14 @@ Useful features of functions include:
 ## Installation
 
 To install the `fasstr` package, you need to install the `devtools` package then the `fasstr` package
-```{r,  warning = FALSE, eval = FALSE}
+```{r, eval = FALSE}
 install.packages("devtools")
-devtools::install_github("bcgov/fasstr")
+devtools::install_github("bcgov/fasstr", build_vignettes = TRUE)
 ```
   
 Then to call the `fasstr` functions you can either load the package using the `library()` function or access a specific function using a double-colon (e.g. `fasstr::calc_daily_stats()`). Several other packages will be installed in addition including  [tidyhydat](https://cran.r-project.org/web/packages/tidyhydat/index.html) for data gathering, [zyp](https://cran.r-project.org/web/packages/zyp/index.html) for trending, [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html) for creating plots, and [dplyr](https://cran.r-project.org/web/packages/dplyr/index.html) and [tidyr](https://cran.r-project.org/web/packages/tidyr/index.html) for various data wrangling and summarizing functions, amongst others. Many of the other packages are required for the frequency analysis functions.
 
-```{r, eval = TRUE, echo = TRUE, message = FALSE, warning = FALSE}
+```{r, eval = TRUE, echo = TRUE}
 library(fasstr)
 ```
 
@@ -73,13 +75,13 @@ data <- tidyhydat::hy_daily_flows("08NM116")
 data <- data[,c(1,2,4)]
 ```
 
-```{r flow_data, warning = FALSE}
+```{r flow_data}
 head(data)
 ```
 
 Alternatively, you can directly extract a flow data set directly from a HYDAT database by listing station numbers in the `station_number` argument (ex. `station_number = "08NM116"` or `station_number = c("08NM116", "08NM242")`) while leavind the data arguments blank. A data frame of daily streamflow data for all stations listed will be extracted using `tidyhydat`.  Use the following function to download a HYDAT database:
 
-```{r tidyhydat, warning = FALSE, eval = FALSE}
+```{r tidyhydat, eval = FALSE}
 tidyhydat::download_hydat()
 ```
 
@@ -133,7 +135,7 @@ Some functions have an argument called `complete_years` which can be used, when 
 
 To determine the summary statistics of an entire dataset and by month (mean, median, maximum, minimum, and some percentiles) you can use the `calc_longterm_stats()` function. If the 'Mission Creek near East Kelowna' hydrometric station is of interest you can list the station number in the `station_number` argument to obtain the data (if `tidyhydat` and HYDAT are installed). 
 
-```{r example1, warning = FALSE}
+```{r example1}
 calc_longterm_stats(station_number = "08NM116", 
                     start_year = 1981, 
                     end_year = 2010,
@@ -145,7 +147,7 @@ calc_longterm_stats(station_number = "08NM116",
 
 To visualize the daily streamflow patterns on an annual basis, the `plot_daily_stats()` function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the `start_year` and `end_year` arguments. We can also compare indivual years against the statistics using `include_year` argument like below.
 
-```{r plot1, warning = FALSE, fig.height = 4, fig.width = 10, message=FALSE}
+```{r plot1, fig.height = 4, fig.width = 10}
 plot_daily_stats(station_number = "08NM116",
                  start_year = 1981,
                  end_year = 2010,
@@ -158,7 +160,7 @@ plot_daily_stats(station_number = "08NM116",
 
 Flow duration curves can be produced using the `plot_flow_duration()` function.
 
-```{r plot2, warning = FALSE, fig.height = 4, fig.width = 7}
+```{r plot2, fig.height = 4, fig.width = 7}
 plot_flow_duration(station_number = "08NM116",
                    start_year = 1981,
                    end_year = 2010)
@@ -168,7 +170,7 @@ plot_flow_duration(station_number = "08NM116",
 
 This package also provides a function, `compute_annual_frequencies()`, to complete frequency analyses (using the same methods as [HEC-SSP](http://www.hec.usace.army.mil/software/hec-ssp/)). The default fitting distribution is 'log-Pearson Type III', but the 'Weibull' distribution can also be used. Other default plotting and fitting methods are described in the function documentation. For this example, the 7-day low-flow (low-flow is default) quantiles are calculated for the Mission Creek hydrometric station using the 'log-Pearson Type III' distribution. With this, several low-flow indicators can be determined (i.e. 7Q5, 7Q10).
 
-```{r example2, warning = FALSE}
+```{r example2}
 freq_results <- compute_annual_frequencies(station_number = "08NM116",
                                            start_year = 1981,
                                            end_year = 2010,
@@ -178,7 +180,7 @@ freq_results$fitted_quantiles
 
 The probabilty of observed extreme events can also be plotted (using selected plotting position) along with the computed quantiles curve for comparison.
 
-```{r plot3, warning = FALSE, fig.height = 4, fig.width = 7}
+```{r plot3, fig.height = 4, fig.width = 7}
 freq_results <- compute_annual_frequencies(station_number = "08NM116",
                                            start_year = 1981,
                                            end_year = 2010,

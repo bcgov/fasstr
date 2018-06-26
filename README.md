@@ -33,7 +33,7 @@ To install the `fasstr` package, you need to install the `devtools` package then
 
 ``` r
 install.packages("devtools")
-devtools::install_github("bcgov/fasstr")
+devtools::install_github("bcgov/fasstr", build_vignettes = TRUE)
 ```
 
 Then to call the `fasstr` functions you can either load the package using the `library()` function or access a specific function using a double-colon (e.g. `fasstr::calc_daily_stats()`). Several other packages will be installed in addition including [tidyhydat](https://cran.r-project.org/web/packages/tidyhydat/index.html) for data gathering, [zyp](https://cran.r-project.org/web/packages/zyp/index.html) for trending, [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html) for creating plots, and [dplyr](https://cran.r-project.org/web/packages/dplyr/index.html) and [tidyr](https://cran.r-project.org/web/packages/tidyr/index.html) for various data wrangling and summarizing functions, amongst others. Many of the other packages are required for the frequency analysis functions.

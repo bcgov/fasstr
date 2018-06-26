@@ -9,7 +9,11 @@ Updated: 22 June 2018
     
 #### Updates:
 
-  * calc_ and plot_annual_stats description update
+  * Renamed compute_frequency_stat() to compute_frequency_quantile()
+  * calc_ and plot_annual_stats, compute_frequency description updates
+  * Renamed Timeseries folder to Screening in compute_full_analysis() function
+  * README Updates
+  * Vignettes (renamed full_analysis)
   
 
 fasstr 0.2.5.1
