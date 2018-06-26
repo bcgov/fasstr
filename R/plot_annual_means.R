@@ -96,7 +96,7 @@ plot_annual_means <- function(data = NULL,
   annual_stats <- dplyr::left_join(annual_stats, lt_mad, by = "STATION_NUMBER")
   annual_stats <- dplyr::mutate(annual_stats, 
                                 MAD_diff = Mean - LTMAD)
-  annual_stats <- annual_stats[complete.cases(annual_stats$Mean), ]
+  annual_stats <- annual_stats[stats::complete.cases(annual_stats$Mean), ]
   
   
   ## PLOT STATS

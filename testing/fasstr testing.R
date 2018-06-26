@@ -42,11 +42,11 @@ bert <- compute_annual_trends(flow_data, zyp_method = "yuepilon", zyp_alpha = 0.
 
 
 
+freq <- compute_annual_frequencies(station_number = "08HB048")
 
 
 
-
-
+write_objects_list(freq, foldername = "testt", plot_type = "png", table_type = "xlsx")
 
 
 dirs <- list.files(path = "Carn/")

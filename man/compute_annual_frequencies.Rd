@@ -77,15 +77,14 @@ with no missing dates will be returned. Default \code{FALSE}.}
 }
 \value{
 A list with the following elements:
-  \item{Q_stat}{Data frame with Computed annual summary statistics used in analysis}
-  \item{plotdata}{Data frame with Co-ordinates used in frequency plot.}
+  \item{Q_stat}{Data frame with computed annual summary statistics used in analysis}
+  \item{plotdata}{Data frame with co-ordinates used in frequency plot.}
   \item{freqplot}{ggplot2 object with frequency plot}
   \item{fit}{List of fitted objects from fitdistrplus.}
   \item{fitted_quantiles}{Data frame with fitted quantiles.}
-  \item{overview}{Data frame overview of parameters used in analysis.}
 }
 \description{
-Performs a flow frequency analysis on annual statistics from a streamflow dataset. Defaults to low-flow frequency 
+Performs a flow volume frequency analysis on annual statistics from a streamflow dataset. Defaults to low-flow frequency 
    analysis using annual minimums. Use \code{use_max} for annual high flow frequency analyses. Calculates the statistics from all 
    daily discharge values from all years, unless specified. Function will calculate using all values in the provided data (no grouped
    analysis). Analysis methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
