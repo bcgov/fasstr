@@ -101,8 +101,7 @@ plot_annual_stats <- function(data = NULL,
   
   
   annual_stats <- tidyr::gather(annual_stats, Statistic, Value, -Year, -STATION_NUMBER)
-  
-  
+
   ## PLOT STATS
   ## ----------
   
@@ -118,14 +117,16 @@ plot_annual_stats <- function(data = NULL,
     plot = purrr::map2(data, STATION_NUMBER, 
      ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
            ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
-           ggplot2::geom_line(alpha = 0.5) +
-           ggplot2::geom_point() +
+           ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
+           ggplot2::geom_point(na.rm = TRUE) +
            {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(.$Value, na.rm = T) * 1.05))}+
            {if(log_discharge) ggplot2::expand_limits(y = c(min(.$Value, na.rm = T) * .95, max(.$Value, na.rm = T) * 1.05))} +
-           {if(log_discharge) ggplot2::scale_y_log10(expand = c(0,0))} +
-           {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0))} +
+           {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0), breaks = scales::pretty_breaks(n = 7))} +
+           {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 7, base = 10))} +
            {if(log_discharge) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"), 
                                                            mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))} +
+           ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
+           {if(length(unique(annual_stats$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(annual_stats$Year))}+
            ggplot2::expand_limits(y = 0) +
            ggplot2::ylab(y_axis_title)+
            ggplot2::xlab("Year") +

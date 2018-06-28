@@ -112,11 +112,11 @@ plot_annual_flow_timing <- function(data = NULL,
   timing_plots <- dplyr::mutate(timing_plots,
                               plot = purrr::map2(data, STATION_NUMBER, 
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
-        ggplot2::geom_line(alpha = 0.5) +
-        ggplot2::geom_point() +
+        ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
+        ggplot2::geom_point(na.rm = TRUE) +
         {if(length(percent_total) > 1) ggplot2::facet_wrap(~Statistic, scales = "free_y", ncol = 1, strip.position = "right")} +
-        ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
-        ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
+        ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
+        {if(length(unique(timing_stats$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(timing_stats$Year))}+
         ggplot2::ylab("Day of Year") +
         ggplot2::xlab("Year") +
         #ggplot2::scale_color_brewer(palette = "Set1") +

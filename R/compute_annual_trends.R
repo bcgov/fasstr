@@ -200,8 +200,8 @@ compute_annual_trends <- function(data = NULL,
         int <- trends_results_stat$intercept - trends_results_stat$trend * trends_results_stat$min_year
         # Plot each metric
         trends_plot <- ggplot2::ggplot(trends_data_stat, ggplot2::aes(x = Year, y = Value)) +
-          ggplot2::geom_point() +
-          ggplot2::geom_line(alpha = 0.3) +
+          ggplot2::geom_point(na.rm = TRUE) +
+          ggplot2::geom_line(alpha = 0.3, na.rm = TRUE) +
           ggplot2::ggtitle(paste0(stat,"   (Sig. = ", round(trends_results_stat$sig, 3), ")")) +
           #{if(length(unique(trends_results$STATION_NUMBER)) > 1) ggplot2::ggtitle(paste0(stn, ": ", stat,"   (Sig. = ", round(trends_results_stat$sig, 3), ")"))} +
           ggplot2::xlab("Year") +

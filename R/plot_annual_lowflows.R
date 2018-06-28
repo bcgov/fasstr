@@ -139,10 +139,11 @@ plot_annual_lowflows <- function(data = NULL,
   doy_plots <- dplyr::mutate(doy_plots,
                               plot = purrr::map2(data, STATION_NUMBER, 
         ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
-          ggplot2::geom_line(alpha = 0.5)+
-          ggplot2::geom_point()+
+          ggplot2::geom_line(alpha = 0.5, na.rm = TRUE)+
+          ggplot2::geom_point(na.rm = TRUE)+
           ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "right")+
-          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6))+
+          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
+          {if(length(unique(lowflow_doy$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(lowflow_doy$Year))}+
           ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
           ggplot2::ylab("Day of Year")+
           ggplot2::xlab("Year")+
@@ -162,10 +163,11 @@ plot_annual_lowflows <- function(data = NULL,
   flow_plots <- dplyr::mutate(flow_plots,
                              plot = purrr::map2(data, STATION_NUMBER, 
            ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
-             ggplot2::geom_line(alpha = 0.5)+
-             ggplot2::geom_point()+
+             ggplot2::geom_line(alpha = 0.5, na.rm = TRUE)+
+             ggplot2::geom_point(na.rm = TRUE)+
              ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "right")+
-             ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6))+
+             ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
+             {if(length(unique(lowflow_values$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(lowflow_values$Year))}+
              ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
              ggplot2::ylab(y_axis_title)+
              ggplot2::xlab("Year")+

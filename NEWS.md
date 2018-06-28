@@ -1,7 +1,7 @@
 fasstr 0.2.6
 =========================
 
-Updated: 22 June 2018
+Updated: 28 June 2018
 
 #### New:
 
@@ -9,6 +9,7 @@ Updated: 22 June 2018
     
 #### Updates:
 
+  * Axes breaks and ticks on most plots
   * Renamed compute_frequency_stat() to compute_frequency_quantile()
   * calc_ and plot_annual_stats, compute_frequency description updates
   * Renamed Timeseries folder to Screening in compute_full_analysis() function

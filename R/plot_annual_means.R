@@ -108,11 +108,12 @@ plot_annual_means <- function(data = NULL,
   tidy_plots <- dplyr::mutate(tidy_plots,
     plot = purrr::map2(data, STATION_NUMBER,
      ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = MAD_diff)) +
-       ggplot2::geom_bar(stat = "identity", fill = "cornflowerblue") +
+       ggplot2::geom_bar(stat = "identity", fill = "cornflowerblue", na.rm = TRUE) +
        ggplot2::geom_hline(yintercept = 0, size = 0.1) +
        ggplot2::scale_y_continuous(labels = function(x) round(x + unique(.$LTMAD),3),
                                    breaks = scales::pretty_breaks(n = 10)) +
-       ggplot2::scale_x_continuous(breaks = function(x, n = 10) pretty(x, n)[pretty(x, n) %% 1 == 0] ) +
+       ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
+       {if(length(unique(annual_stats$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(annual_stats$Year))}+
        ggplot2::ylab("Annual Discharge (cms)") +
        {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
        ggplot2::theme_bw() +
