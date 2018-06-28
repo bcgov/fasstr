@@ -42,11 +42,11 @@ bert <- compute_annual_trends(flow_data, zyp_method = "yuepilon", zyp_alpha = 0.
 
 
 
+freq <- compute_annual_frequencies(station_number = "08HB048")
 
 
 
-
-
+write_objects_list(freq, foldername = "testt", plot_type = "png", table_type = "xlsx")
 
 
 dirs <- list.files(path = "Carn/")
@@ -69,6 +69,39 @@ data <- data[,c(2,1,4)]
 
 
 
+library(fasstr)
+library(ggplot2)
+HistoricQ_07CD001 <-plot_daily_stats(station_number = "07CD001",
+                                     start_year = 1957,
+                                     end_year = 2016,
+                                     months = 4:11,
+                                     log_discharge = FALSE,
+                                     include_year = 2016,
+                                     ignore_missing = TRUE,
+                                     include_title = FALSE)
+plot <- HistoricQ_07CD001$Daily_Stats + 
+  ggtitle("Clearwater River at Draper") +
+  ggplot2::theme(axis.text = ggplot2::element_text(size = 10, colour = "grey25"),
+                 axis.title = ggplot2::element_text(size = 12, colour = "grey25"),
+                 axis.ticks = ggplot2::element_line(size = .1, colour = "grey25"),
+                 axis.ticks.length = ggplot2::unit(0.05, "cm"),
+                 axis.title.y = ggplot2::element_text(margin = ggplot2::margin(0,0,0,0)),
+                 panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                 panel.grid.minor = ggplot2::element_blank(),
+                 panel.grid.major = ggplot2::element_line(size = .1),
+                 legend.text = ggplot2::element_text(size = 5, colour = "grey25"),
+                 legend.title = ggplot2::element_text(size = 7, colour = "grey25"),
+                 legend.box = "vertical",
+                 legend.justification = "top",
+                 legend.key.size = ggplot2::unit(0.4, "cm"),
+                 legend.spacing = ggplot2::unit(0, "cm"))
+ggsave("lewis_plot.png", plot, height = 8, width = 14)
+ggsave("lewis_plot.png", plot, height = 4, width = 7)
+
+
+
+
+plot <- 
 
 
 test <- calc_daily_stats(stati="08HB048", ignore_missing = TRUE)
@@ -549,27 +582,44 @@ results <- calc_monthly_stats(station_number = "08HB048")
 results <- screen_flow_data(station_number = "08HB048", months = 7:9)
 
 plot_flow_data(station_number = "08HB048")
-plot_annual_cumulative_stats(station_number = "08HB048", incl_seasons = T)
+plot_annual_cumulative_stats(station_number = "08HB048")
 plot_annual_flow_timing(station_number = "08HB048")
 plot_annual_outside_normal(station_number = "08HB048")
-plot_annual_stats(station_number = "08HB048", percentiles = 1:20)
+plot_annual_stats(station_number = "08HB048", percentiles = 1:20, log_discharge = T, start_year = 2014)
 plot_annual_lowflows(station_number = "08HB048")
-plot_daily_cumulative_stats(station_number = "08HB048", use_yield = T, start_year = 1980)
-plot_daily_stats(station_number = "08HB048", start_year = 1973)
+plot_daily_cumulative_stats(station_number = "08HB048", use_yield = T, start_year = 1980, log_discharge = T)
+plot_daily_stats(station_number = "08HB048")
+plot_flow_duration(station_number = "08HB048", custom_months = 1:3, custom_months_label = "WINTER", ignore_missing = F, log_discharge = T)
+plot_flow_data(station_number = "08HB048", log_discharge = T, start_year = 2014)
+plot_longterm_stats(station_number = "08HB048", ignore_missing = T, log_discharge = F)
 plot_data_screening(station_number = "08HB048")
-plot_flow_duration(station_number = "08HB048", custom_months = 1:3, custom_months_label = "WINTER", ignore_missing = T)
-plot_longterm_stats(station_number = "08HB048", ignore_missing = T)
-plot_missing_dates(station_number = "08HB048", months = 1)
-plot_monthly_cumulative_stats(station_number = "08HB048", use_yield = T)
-plot_monthly_stats(station_number = "08HB048")
+plot_missing_dates(station_number = "08HB048")
+plot_monthly_cumulative_stats(station_number = "08HB048", use_yield = T, log_discharge = T)
+plot_monthly_stats(station_number = "08HB048", log_discharge = F)
 plot_annual_cumulative_stats(station_number = "08HB048", use_yield = T)
-
 trending <- compute_annual_trends(station_number = "08HB048", zyp_method = "yuepilon", ignore_missing = T)
 trending_plots <- plot_annual_trends(trending)
 
 write_flow_data(station_number = c("08HB048","08NM116"))
 
 
+
+data <- calc_annual_stats(station_number = "08HB048", start_year = 2014)
+data <- calc_annual_stats(station_number = "08HB048")
+
+ggplot(data = data, aes(x= Year, y=Mean))+
+  geom_point()+
+  geom_line()+
+  ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
+  {if(length(unique(Year)) < 4) ggplot2::scale_x_continuous(breaks = unique(Year), na.value =TRUE)}
+  
+
+
+ggplot(data = data, aes(x= as.Date(paste(Year, "01", "01", sep = "-")), y=Mean))+
+  geom_point()+
+  geom_line()+
+  ggplot2::scale_x_date(date_labels = "%Y", breaks = scales::pretty_breaks())
+  
 # Multiple stations
 flow_data <- fill_missing_dates(station_number = c("08HB048","08NM116"))
 flow_data <- add_basin_area(station_number = c("08HB048","08NM116"))

@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 
-#' @title Calculate an annual frequency analysis statistic
+#' @title Calculate an annual frequency analysis quantile
 #'
 #' @description Performs a volume frequency analysis on annual statistics from a streamflow dataset and calculates a statistic based on
 #'    the provided mean n-days and return period of the statistic, defaults to minimum flows. For example, to determine the 7Q10 of a 
@@ -24,12 +24,12 @@
 #' @param return_period Numeric vector of the estimated time interval, in years, between flow events of a similar size, 
 #'    inverse of probability, used to estimate the frequency statistic. Required.
 #' 
-#' @return A numeric value of the frequency analysis result, given the roll_days and return_period
+#' @return A numeric value of the frequency analysis quantile, given the roll_days and return_period
 #'   
 #' @examples
 #' \dontrun{
 #' 
-#' compute_frequency_stat(station_number = "08NM116",
+#' compute_frequency_quantile(station_number = "08NM116",
 #'                        roll_days = 7,
 #'                        return_period = 10)
 #'                             
@@ -37,7 +37,7 @@
 #' @export
 
 
-compute_frequency_stat <- function(data = NULL,
+compute_frequency_quantile <- function(data = NULL,
                                    dates = Date,
                                    values = Value,
                                    station_number = NULL,

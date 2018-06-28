@@ -186,16 +186,16 @@ plot_daily_stats <- function(data = NULL,
   daily_plots <- dplyr::mutate(daily_plots,
                                plot = purrr::map2(data, STATION_NUMBER, 
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = AnalysisDate)) +
-            ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maximum")) +
-            ggplot2::geom_ribbon(ggplot2::aes(ymin = P5, ymax = P95, fill = "5-95 Percentiles")) +
-            ggplot2::geom_ribbon(ggplot2::aes(ymin = P25, ymax = P75, fill = "25-75 Percentiles")) +
-            ggplot2::geom_line(ggplot2::aes(y = Median, colour = "Median"), size = .5) +
-            ggplot2::geom_line(ggplot2::aes(y = Mean, colour = "Mean"), size = .5) +
+            ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maximum"), na.rm = TRUE) +
+            ggplot2::geom_ribbon(ggplot2::aes(ymin = P5, ymax = P95, fill = "5-95 Percentiles"), na.rm = TRUE) +
+            ggplot2::geom_ribbon(ggplot2::aes(ymin = P25, ymax = P75, fill = "25-75 Percentiles"), na.rm = TRUE) +
+            ggplot2::geom_line(ggplot2::aes(y = Median, colour = "Median"), size = .5, na.rm = TRUE) +
+            ggplot2::geom_line(ggplot2::aes(y = Mean, colour = "Mean"), size = .5, na.rm = TRUE) +
             ggplot2::scale_fill_manual(values = c("Minimum-Maximum" = "lightblue2", "5-95 Percentiles" = "lightblue3",
                                                   "25-75 Percentiles" = "lightblue4")) +
             ggplot2::scale_color_manual(values = c("Mean" = "paleturquoise", "Median" = "dodgerblue4"), labels = c("Mean", "Median")) +
-            {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0))}+
-            {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0))} +
+            {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8))}+
+            {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
             {if(log_discharge) ggplot2::annotation_logticks(base= 10, "left", colour = "grey25", size = 0.3,
                                                             short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
                                                             long = ggplot2::unit(.2, "cm"))} +
@@ -220,7 +220,7 @@ plot_daily_stats <- function(data = NULL,
                            legend.key.size = ggplot2::unit(0.4, "cm"),
                            legend.spacing = ggplot2::unit(0, "cm")) +
             ggplot2::guides(colour = ggplot2::guide_legend(order = 1), fill = ggplot2::guide_legend(order = 2)) +
-            {if (is.numeric(include_year)) ggplot2::geom_line(ggplot2::aes(y = RollingValue, colour = "yr.colour"), size = 0.5) } +
+            {if (is.numeric(include_year)) ggplot2::geom_line(ggplot2::aes(y = RollingValue, colour = "yr.colour"), size = 0.5, na.rm = TRUE) } +
             {if (is.numeric(include_year)) ggplot2::scale_color_manual(values = c("Mean" = "paleturquoise", "Median" = "dodgerblue4", "yr.colour" = "red"),
                                                                        labels = c("Mean", "Median", paste0(include_year, " Flows"))) }
         ))

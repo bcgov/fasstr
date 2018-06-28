@@ -1,5 +1,5 @@
 ---
-title: "'fasstr' Writing Full Analysis"
+title: "'fasstr' Computing Full Analysis"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >

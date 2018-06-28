@@ -69,7 +69,7 @@ A list of ggplot2 objects for with the following plots (percentile plots optiona
   \item{Minimum}{annual minimum of all daily flows}
 }
 \description{
-Plot annual monthly mean, median, maximum, minimum, and percentiles of daily flow values from a streamflow 
+Plot annual mean, median, maximum, minimum, and percentiles of daily flow values from a streamflow 
    dataset. Plots the statistics from all daily discharge values from all years, unless specified. Data 
    calculated using calc_annual_stats() function.
 }

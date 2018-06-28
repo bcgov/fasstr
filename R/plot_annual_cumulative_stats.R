@@ -127,8 +127,8 @@ plot_annual_cumulative_stats <- function(data = NULL,
   annual_plots <- dplyr::mutate(annual_plots,
                               ann_plot = purrr::map2(data, STATION_NUMBER, 
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, colour = Statistic)) +
-        ggplot2::geom_line(alpha = 0.5) +
-        ggplot2::geom_point()+
+        ggplot2::geom_line(alpha = 0.5,na.rm = TRUE) +
+        ggplot2::geom_point(na.rm = TRUE)+
         ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
         ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
         ggplot2::ylab("Total Discharge (cubic metres)") +
@@ -163,10 +163,11 @@ plot_annual_cumulative_stats <- function(data = NULL,
     s2_plots <- dplyr::mutate(s2_plots,
                               s2_plot = purrr::map2(data, STATION_NUMBER, 
         ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, colour = Statistic)) +
-          ggplot2::geom_line(alpha = 0.5) +
-          ggplot2::geom_point() +
+          ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
+          ggplot2::geom_point(na.rm = TRUE) +
           ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "right") +
-          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
+          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
+          {if(length(unique(seasons2_data$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(seasons2_data$Year))}+
           ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
           ggplot2::ylab("Total Discharge (cubic metres)") +
           {if (use_yield) ggplot2::ylab("Runoff Yield (mm)")} +
@@ -188,10 +189,11 @@ plot_annual_cumulative_stats <- function(data = NULL,
     s4_plots <- dplyr::mutate(s4_plots,
                             s4_plot = purrr::map2(data, STATION_NUMBER,
         ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, colour = Statistic)) +
-          ggplot2::geom_line(alpha = 0.5) +
-          ggplot2::geom_point() +
+          ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
+          ggplot2::geom_point(na.rm = TRUE) +
           ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "right") +
-          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
+          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
+          {if(length(unique(seasons4_data$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(seasons4_data$Year))}+
           ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
           ggplot2::ylab("Total Discharge (cubic metres)") +
           {if (use_yield) ggplot2::ylab("Runoff Yield (mm)")} +

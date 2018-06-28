@@ -148,9 +148,9 @@ plot_flow_duration <- function(data = NULL,
   flow_plots <- dplyr::mutate(flow_plots,
                             plot = purrr::map2(data, STATION_NUMBER,
     ~ggplot2::ggplot(data = ., ggplot2::aes(x = Percentile, y = Value, colour = Month)) +
-      ggplot2::geom_line() +
-      {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0))} +
-      {if (!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 10),expand = c(0, 0))} +
+      ggplot2::geom_line(na.rm = TRUE) +
+      {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
+      {if (!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0, 0))} +
       ggplot2::scale_x_continuous(expand = c(0,0), breaks = scales::pretty_breaks(n = 10)) +
       ggplot2::ylab(y_axis_title) +
       ggplot2::xlab("% Time flow equalled or exceeded") +

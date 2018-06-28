@@ -1,3 +1,22 @@
+fasstr 0.2.6
+=========================
+
+Updated: 28 June 2018
+
+#### New:
+
+  * plot_annual_means() function to plot annual mean and long-term means
+    
+#### Updates:
+
+  * Axes breaks and ticks on most plots
+  * Renamed compute_frequency_stat() to compute_frequency_quantile()
+  * calc_ and plot_annual_stats, compute_frequency description updates
+  * Renamed Timeseries folder to Screening in compute_full_analysis() function
+  * README Updates
+  * Vignettes (renamed full_analysis)
+  
+
 fasstr 0.2.5.1
 =========================
 

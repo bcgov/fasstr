@@ -135,11 +135,11 @@ plot_flow_data <- function(data = NULL,
     flow_plots <- dplyr::mutate(flow_plots,
                                 plot = purrr::map2(data, STATION_NUMBER, 
           ~ggplot2::ggplot(data = ., ggplot2::aes(x = Date, y = RollingValue)) +
-            ggplot2::geom_line(colour = "dodgerblue4") +
+            ggplot2::geom_line(colour = "dodgerblue4", na.rm = TRUE) +
             ggplot2::ylab(y_axis_title) +
             {if(plot_by_year) ggplot2::facet_wrap(~AnalysisYear, scales = "free_x")} +
-            {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 8),expand = c(0, 0))} +
-            {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0))} +
+            {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 8), expand = c(0, 0))} +
+            {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
             {if(plot_by_year) ggplot2::scale_x_date(date_labels = "%b", expand = c(0,0))} +
             {if(!plot_by_year) ggplot2::scale_x_date(breaks = scales::pretty_breaks(n = 12))} +
             {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(.$RollingValue) * 1.05))} +
@@ -173,11 +173,14 @@ plot_flow_data <- function(data = NULL,
     plots <- list()
     
     plot <- ggplot2::ggplot(data = flow_data, ggplot2::aes(x = Date, y = RollingValue, colour = STATION_NUMBER)) +
-      ggplot2::geom_line() +
+      ggplot2::geom_line(na.rm = TRUE) +
       ggplot2::ylab(y_axis_title) +
       {if(plot_by_year) ggplot2::facet_wrap(~AnalysisYear, scales = "free_x")} +
-      {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 8),expand = c(0, 0))} +
-      {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0))} +
+      {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 8), expand = c(0, 0))} +
+      {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
+      {if(log_discharge) ggplot2::annotation_logticks(base= 10, "left", colour = "grey25", size = 0.3,
+                                                      short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
+                                                      long = ggplot2::unit(.2, "cm"))} +
       {if(plot_by_year) ggplot2::scale_x_date(date_labels = "%b", expand = c(0,0))} +
       {if(!plot_by_year) ggplot2::scale_x_date(breaks = scales::pretty_breaks(n = 12))} +
       {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(flow_data$RollingValue) * 1.05))} +

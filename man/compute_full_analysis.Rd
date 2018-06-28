@@ -32,7 +32,7 @@ Leave blank if using \code{data} argument.}
 
 \item{sections}{Sections of analysis to run (default is all (\code{1:7})):
 \itemize{
- \item{1: Timeseries}
+ \item{1: Screening}
  \item{2: Long-term}
  \item{3: Annual}
  \item{4: Monthly}

@@ -121,21 +121,21 @@ plot_longterm_stats <- function(data = NULL,
   lt_plots <- dplyr::mutate(lt_plots,
                                plot = purrr::map2(data, STATION_NUMBER, 
            ~ggplot2::ggplot(data = ., ggplot2::aes(x = Month, group = 1)) +
-             ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maxium")) +
-             ggplot2::geom_ribbon(ggplot2::aes(ymin = P5, ymax = P95, fill = "5-95 Percentiles")) +
-             ggplot2::geom_ribbon(ggplot2::aes(ymin = P25, ymax = P75, fill = "25-75 Percentiles")) +
-             ggplot2::geom_line(ggplot2::aes(y = LT_Mean, colour = "Long-term Mean"), size = 0.7, linetype = 2) +
-             ggplot2::geom_line(ggplot2::aes(y = LT_Med, colour = "Long-term Median"), size = 0.7, linetype = 2) +
-             ggplot2::geom_line(ggplot2::aes(y = Mean, color = "Monthly Mean"), size = 0.7) +
-             ggplot2::geom_line(ggplot2::aes(y = Median, color = "Monthly Median"), size = 0.7) +
-             ggplot2::geom_point(ggplot2::aes(y = Mean, color = "Monthly Mean"), size = 2) +
-             ggplot2::geom_point(ggplot2::aes(y = Median, color = "Monthly Median"), size = 2) +
+             ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maxium"), na.rm = TRUE) +
+             ggplot2::geom_ribbon(ggplot2::aes(ymin = P5, ymax = P95, fill = "5-95 Percentiles"), na.rm = TRUE) +
+             ggplot2::geom_ribbon(ggplot2::aes(ymin = P25, ymax = P75, fill = "25-75 Percentiles"), na.rm = TRUE) +
+             ggplot2::geom_line(ggplot2::aes(y = LT_Mean, colour = "Long-term Mean"), size = 0.7, linetype = 2, na.rm = TRUE) +
+             ggplot2::geom_line(ggplot2::aes(y = LT_Med, colour = "Long-term Median"), size = 0.7, linetype = 2, na.rm = TRUE) +
+             ggplot2::geom_line(ggplot2::aes(y = Mean, color = "Monthly Mean"), size = 0.7, na.rm = TRUE) +
+             ggplot2::geom_line(ggplot2::aes(y = Median, color = "Monthly Median"), size = 0.7, na.rm = TRUE) +
+             ggplot2::geom_point(ggplot2::aes(y = Mean, color = "Monthly Mean"), size = 2, na.rm = TRUE) +
+             ggplot2::geom_point(ggplot2::aes(y = Median, color = "Monthly Median"), size = 2, na.rm = TRUE) +
              ggplot2::scale_color_manual(values = c("Monthly Mean" = "skyblue2", "Monthly Median" = "dodgerblue4",
                                                     "Long-term Mean" = "forestgreen", "Long-term Median" = "darkorchid4")) +
              ggplot2::scale_fill_manual(values = c("25-75 Percentiles" = "lightblue4", "5-95 Percentiles" = "lightblue3",
                                                    "Minimum-Maxium" = "lightblue2")) +
-             {if(log_discharge) ggplot2::scale_y_log10(expand = c(0,0))} +
-             {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0))} +
+             {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8))}+
+             {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
              {if(log_discharge) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(0.07, "cm"),
                                                              mid = ggplot2::unit(0.15, "cm"), long = ggplot2::unit(0.2, "cm"))} +
              ggplot2::scale_x_discrete(expand = c(0.01,0.01)) +

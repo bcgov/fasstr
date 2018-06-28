@@ -120,13 +120,14 @@ plot_monthly_stats <- function(data = NULL,
   monthly_plots <- dplyr::mutate(monthly_plots,
                               plot = purrr::map2(data, STATION_NUMBER,
           ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, colour = Month)) +
-            ggplot2::geom_line(alpha = 0.5) +
-            ggplot2::geom_point() +
+            ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
+            ggplot2::geom_point(na.rm = TRUE) +
             ggplot2::facet_wrap(~Month, scales = "fixed") +
             #ggplot2::ggtitle(paste0("Monthly ", stat, " Flows")) +
-            ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
-            {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))} +
-            {if(log_discharge) ggplot2::scale_y_log10()} +
+            ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6))+
+            {if(length(unique(monthly_data$Year)) < 6) ggplot2::scale_x_continuous(breaks = unique(monthly_data$Year))}+
+            {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 6))} +
+            {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
             {if(log_discharge) ggplot2::annotation_logticks(base = 10, "left", colour = "grey25", size = 0.3,
                                                             short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
                                                             long = ggplot2::unit(.2, "cm"))} +
@@ -146,8 +147,6 @@ plot_monthly_stats <- function(data = NULL,
                                                     "Oct" = "orchid", "Nov" = "purple3", "Dec" = "midnightblue"))
                               ))
 
-  #monthly_plots <- dplyr::mutate(monthly_plots, plot = purrr::map2(plot, Statistic,
-  #                                                                 ~. + ggplot2::ggtitle("WHHHAT")))
 
   # Create a list of named plots extracted from the tibble
   plots <- monthly_plots$plot

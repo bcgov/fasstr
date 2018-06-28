@@ -12,7 +12,7 @@
 
 #' @title Calculate annual summary statistics
 #'
-#' @description Calculates annual monthly mean, median, maximum, minimum, and percentiles of daily flow values from a streamflow 
+#' @description Calculates annual mean, median, maximum, minimum, and percentiles of daily flow values from a streamflow 
 #'    dataset. Calculates the statistics from all daily discharge values from all years, unless specified.
 #'
 #' @param data A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
