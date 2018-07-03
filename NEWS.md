@@ -1,3 +1,13 @@
+fasstr 0.2.7
+=========================
+
+Updated: 3 July 2018
+
+#### Updates:
+
+  * Vignette updates
+  
+  
 fasstr 0.2.6
 =========================
 

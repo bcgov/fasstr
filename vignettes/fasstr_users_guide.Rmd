@@ -9,8 +9,8 @@ vignette: >
   
 ```{r options, include=FALSE}
 knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")),
-                      warning = FALSE, 
-                      message = FALSE)
+warning = FALSE, 
+message = FALSE)
 ```
 
 fasstr, the Flow Analysis Summary Statistics Tool for R, is a set of [R](http://www.r-project.org) functions to prepare, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
@@ -227,20 +227,20 @@ Where the alignment of the rolling mean is compared to the date is important to 
 - `roll_align = "right"` - the date will have the mean of that date's flow value and the previous n-1 days
 - `roll_align = "left"` - the date will have the mean of that date's flow value and the next n-1 days
 - `roll_align = "center"` 
-    - odd numbered `roll_days` - date will have the mean of that date's flow value and half of n-1 days before and half of n-1 days after
-    - even numbered `roll_days` - date will have the mean of that date's flow and half of n days after, and the remaining before ((n/2)-1 days before the date) (i.e. the first of the middle two dates)
-    
+- odd numbered `roll_days` - date will have the mean of that date's flow value and half of n-1 days before and half of n-1 days after
+- even numbered `roll_days` - date will have the mean of that date's flow and half of n days after, and the remaining before ((n/2)-1 days before the date) (i.e. the first of the middle two dates)
+
 Odd roll_days example (column headers have alignment direction added):
 
 ```{r,  echo=FALSE}
 library(fasstr)
 head(add_rolling_means(station_number = "08HA011", roll_days = 5, roll_align = "left") %>% 
-  dplyr::rename("Q5Day_left" = Q5Day) %>% 
-  add_rolling_means(roll_days = 5, roll_align = "center") %>% 
-  dplyr::rename("Q5Day_center" = Q5Day) %>% 
-  add_rolling_means(roll_days = 5, roll_align = "right") %>% 
-  dplyr::rename("Q5Day_right" = Q5Day) %>% 
-  dplyr::select(-STATION_NUMBER, -Parameter, -Symbol))
+       dplyr::rename("Q5Day_left" = Q5Day) %>% 
+       add_rolling_means(roll_days = 5, roll_align = "center") %>% 
+       dplyr::rename("Q5Day_center" = Q5Day) %>% 
+       add_rolling_means(roll_days = 5, roll_align = "right") %>% 
+       dplyr::rename("Q5Day_right" = Q5Day) %>% 
+       dplyr::select(-STATION_NUMBER, -Parameter, -Symbol))
 
 ```
 
@@ -249,12 +249,12 @@ Even roll_days example:
 ```{r,  echo=FALSE}
 library(fasstr)
 head(add_rolling_means(station_number = "08HA011", roll_days = 6, roll_align = "left") %>% 
-  dplyr::rename("Q6Day_left" = Q6Day) %>% 
-  add_rolling_means(roll_days = 6, roll_align = "center") %>% 
-  dplyr::rename("Q6Day_center" = Q6Day) %>% 
-  add_rolling_means(roll_days = 6, roll_align = "right") %>% 
-  dplyr::rename("Q6Day_right" = Q6Day) %>% 
-  dplyr::select(-STATION_NUMBER, -Parameter, -Symbol))
+       dplyr::rename("Q6Day_left" = Q6Day) %>% 
+       add_rolling_means(roll_days = 6, roll_align = "center") %>% 
+       dplyr::rename("Q6Day_center" = Q6Day) %>% 
+       add_rolling_means(roll_days = 6, roll_align = "right") %>% 
+       dplyr::rename("Q6Day_right" = Q6Day) %>% 
+       dplyr::select(-STATION_NUMBER, -Parameter, -Symbol))
 
 ```
 
@@ -477,8 +477,8 @@ plot_daily_stats(station_number = "08NM116",
 The `calc_` and `plot_` functions will summarize any values provided to the functions, with the default column being 'Value'.  While for fasstr this defaults to daily mean flows, any daily value can be summarized (water level, precipiation amount, etc.).  As there are no units presented in the `calc_` functions this should not be problem for most other calculations.  However, the plots come standard with a "Discharge (cms)" y-axis, which can be changed afterwards using ggplot2 functions.
 
 To facilitate the plotting of the daily volume or yield statistics from fasstr, after adding them to your flow data using the `add_daily_volume()` or `add_daily_yield()` functions, by listing the `values` argument as either 'Volume_m3' or 'Yield_mm' (from their respective `add_*` functions), the discharge axis title will adjust accordingly.
-  
-  
+
+
 ```{r, fig.height = 2.5, fig.width = 7}
 add_daily_volume(station_number = "08NM116") %>%
   plot_annual_stats(values = "Volume_m3",
@@ -488,7 +488,7 @@ add_daily_volume(station_number = "08NM116") %>%
 ```{r, fig.height = 2.5, fig.width = 7}
 add_daily_yield(station_number = "08NM116") %>%
   plot_daily_stats(values = "Yield_mm",
-                    start_year = 1974) 
+                   start_year = 1974) 
 ```
 
 
@@ -747,19 +747,17 @@ The plots and tables are grouped into the following lists (and folders if writin
 
 ## 8. Customizing Functions with Arguments - Data Filtering and Options
 
-One of the strengths of fasstr is the ability to customize how data is filtered and analyzed within functions, thereby minimizing the lines of code in your scripting. Described here are some of the options available to the functions of this package. Not all functions have all these options so please see the documentation for each function to see which argument options are available (ex. `?calc_annual_stats`).
+Customizing how data is filtered and analyzed in the fasstr functions provides great flexibility in their use. Described here are some of the options available in fasstr functions. Not all functions have all these options so please see the documentation for each function to see which argument options are available (ex. `?calc_annual_stats`).
 
 ### Missing Dates
 
-Dealing with data gaps is important ...
-
-Most functions will automatically (`ignore_missing = FALSE`) not calculate a statistic for that period if there is missing data (base `na.rm = FALSE`) and will produce an NA value or will not plot. For example, if there at least one missing day for a given year, an annual statistic will not be calcuated for that year. A warning message will appear in the console indicating as such. See the following code for an example with missing dates:
+Most functions will automatically (`ignore_missing = FALSE`) not calculate a statistic for a given period (a year or month or day of year, for example) if there is a date with missing data (NA value) and will result in an NA value or will not plot (base `na.rm = FALSE`). For example, if there at least one missing day for a given year, an annual statistic will not be calcuated for that year. A warning message will appear in the console indicating as such. See the following code for an example with missing dates:
 
 ```{r, eval=FALSE}
 calc_annual_stats(station_number = "08NM116")
 ```
 
-If you want to calculate the statistics regardless of missing dates, use the `ignore_missing = TRUE` argument, as such:
+If you want to calculate the statistics regardless of missing dates, use the `ignore_missing = TRUE` argument. Otherwise you may need to filter for complete data years (see the `screen_flow_data()` function).
 
 ```{r, eval=FALSE}
 calc_annual_stats(station_number = "08NM116", 
@@ -769,41 +767,43 @@ calc_annual_stats(station_number = "08NM116",
 
 ### Dates Filtering
 
+There are several options in the function that allow you choose your year type (i.e. start and end months) and to filter for specific time periods. If there is a specific period, years or months, to be analyzed there are several options to customize the data supplied. While filtering of data can be done to your flow data set before supplying it to a function (using dplyr filtering, for example), these options provide quick solutions for filtering.
+
 #### Water Year and Start Month
 
-May want a different time period
+By default, the functions will analyze/group/filter data by calendar years (Jan-Dec). However, some analyses require use of water years (the start of a year when precipitation begins to recharge surface and groundwater water reserves, thereby reducing the potential for double-counting high or low flow events that may occur in late December into January). If use of water years is desired, then set `water_year = TRUE` within the function. By default it will start your water year in October, although the start month can be changed using the `water_year_start` argument and supply the month (as numeric value). The water year is designated by the calendar year in which it ends. For example, a water year from Oct 2000 to Sep 2001 would be the water year 2001.
 
-To have years starting in October
+Example of a default water year, starting in October:
+
 ```{r, eval=FALSE}
 calc_annual_stats(station_number = "08NM116", 
-                  start_year = 1980, 
-                  end_year = 2010,
+                  ignore_missing = TRUE,
                   water_year = TRUE)
 ```
 
-To have years starting in August
+Example of a water year starting in August:
+
 ```{r, eval=FALSE}
 calc_annual_stats(station_number = "08NM116", 
-                  start_year = 1980, 
-                  end_year = 2010,
+                  ignore_missing = TRUE,
                   water_year = TRUE,
                   water_year_start = 8)
 ```
 
-#### Start and End Years
+#### Selecting and excluding years
 
-If you have missing data in certain years or you have a specific period to analyze, you can filter using several options:
+To specify select years used in your analysis, the `start_year` and `end_year` arguments (providing a single value) can constrain the years. Using the `exclude_years` argument (providing a single or vector of years) will allow you to remove certain years from the analysis. Leaving these arguments blank will include all years in the dataset for the analysis.
 
-Start and end years
+Example of filtering for start and end years:
+
 ```{r, eval=FALSE}
 calc_annual_stats(station_number = "08NM116", 
                   start_year = 1980, 
                   end_year = 2010)
 ```
 
-#### Exclude Years
+Examples of removing certain years (outliers, bad data, etc) using exclude_years:
 
-Removing certain years (outliers, bad data, etc) using exclude_years
 ```{r, eval=FALSE}
 calc_annual_stats(station_number = "08NM116", 
                   start_year = 1980, 
@@ -827,15 +827,18 @@ calc_longterm_stats(station_number = "08NM116",
                     complete_years = TRUE)
 ```
 
-Some functions require years with complete data, so years with gaps will be ignored:
+Some functions, like below, require years with complete data, so years with missing dates will be ignored:
+
 ```{r, eval=FALSE}
 calc_annual_flow_timing(station_number = "08NM116")
 ```
 
-#### Months
+#### Selecting for months
 
-Some functions allow you use data from selected months
-This example shows the annual stats for just June-August (Default 1:12)
+Some functions allow you to specify select months used in your analysis, using the `months` argument. By providing a vector of months (1 through 12) only those months will be used in an anlysis. For example, using the months argument with the `calc_annual_stats()` function will calculate the annual statistics for only those months listed; so if summer statstics are required you can supply `months = 6:8` to the function to filter it. Leaving this arguments blank will include all months in the dataset for the analysis.
+
+Example of filtering for months June through August:
+
 ```{r, eval=FALSE}
 calc_annual_stats(station_number = "08NM116", 
                   start_year = 1980, 
@@ -843,118 +846,147 @@ calc_annual_stats(station_number = "08NM116",
                   months = 6:8)
 ```
 
+A few functions, including the `calc_longterm_stats()`, `plot_longterm_stats()`, and `plot_flow_duration()` functions will allow you to add a customized time period to your data frame or plot. Using the `custom_months` argument you can list a vector of months (numeric 1:12). By default the data will be labelled as "Custom-Months" but can be customized by providing a character string to the `custom_months_label` argument.
 
-### Rolling Days
-
-
-Some functions (mostly calc_***_stats() functions) allow you to analyze rolling mean days instead of 
-the daily mean (roll_days default is 1)
+Example of custom months and labelling:
 
 ```{r, eval=FALSE}
-# This calculates the annual 7-day rolling mean statistics
+calc_longterm_stats(station_number = "08NM116", 
+                    start_year = 1980, 
+                    end_year = 2010,
+                    custom_months = 6:8,
+                    custom_months_label = "Summer")
+```
+
+### Rolling averages
+
+Some functions allow you to specify analyzing the data using rolling mean data, as opposed to the daily means. For those functions with the `roll_days` and `roll_align` arguments, analyses will be computed on the daily mean by default (can leave them blank is so).  If choosing to conduct an analysis on 7-day rolling means, you would set `roll_days = 7`.  Some functions allow multiple rolling days to be provided (see function documentation). The `roll_align` argument determine the direction of the rolling mean: see the "Adding rolling means" portion in Section 4 to see how the `roll_days` and `roll_align` work together.
+
+Example of a 7-day rolling mean analysis (single `roll_day` use):
+
+```{r, eval=FALSE}
 calc_annual_stats(station_number = "08NM116", 
                   start_year = 1980,
                   end_year = 2010,
                   roll_days = 7)
-plot_annual_stats(station_number = "08NM116", 
-                  start_year = 1980, 
-                  end_year = 2010,
-                  roll_days = 7)
 ```
 
-```{r, eval=FALSE}
+Example of a 7- and 30-day rolling mean analysis (multiple `roll_day` use):
 
-# This calculates the annual 7-day rolling mean statistics 
-# with align left (see add_rolling_days() above)
+```{r, fig.height = 3, fig.width = 7}
+plot_annual_lowflows(station_number = "08NM116", 
+                     start_year = 1980, 
+                     end_year = 2010,
+                     roll_days = c(7,30))[[1]]
+```
+
+
+### Percentiles and other statistics
+
+Each fasstr function comes with their default statistics to be calculated. While some cannot be changed (some plotting functions), most have the ability to customize what is calculated. Look up the default settings for each function in their documentation (`?calc_longterm_stats` for example).
+
+By default, the basic summary statistics functions will calculate the mean, median, maximum, and minimum values for each time period; these will automatically be calculated can cannot be removed by an argument option (can remove afterwards if necessary). These functions also calculate default percentiles, which can be customized by changing the desired percentiles by providing a numeric vector of numbers (between 0 and 100) to the `percentiles` argument.
+
+This example shows the default percentiles for the `calc_annual_stats()` function (10 and 90th percentiles):
+
+```{r, eval=FALSE}
+calc_annual_stats(station_number = "08NM116", 
+                  start_year = 1980, 
+                  end_year = 2010)
+```
+
+This example shows custom percentiles for the `calc_annual_stats()` function (5 and 25th percentiles):
+
+```{r, eval=FALSE}
 calc_annual_stats(station_number = "08NM116", 
                   start_year = 1980, 
                   end_year = 2010,
-                  roll_days = 7,
-                  roll_align = "left")
-plot_annual_stats(station_number = "08NM116", 
-                  start_year = 1980, 
-                  end_year = 2010,
-                  roll_days = 7,
-                  roll_align = "left")
+                  percentiles = c(5,25))
 ```
 
+The following are some examples of how to customize results from other types of functions. See function documentations for full argument uses.
 
-Roll days
+Example of calculating dates of the 10 and 20 percent of total annual flow:
 
-Roll align
-
-Some just one.
-
-
-### Percentiles and Other Statistics
-
-Mean/Median/Max/min
-
-Percentiles
-
-Others
-
-Functions come with their default settings for what is calculated and they can be changed with argument setting.
-Look at the help files to see default and arguments
-
-calc_annual_stats defauls to Mean, Meidan, Maximum, and Minimum stats with 10th and 90th percentiles
-you can change just the percentiles using the argument
-```{r, eval=FALSE}
-calc_annual_stats(station_number = "08NM116", 
-start_year = 1980, end_year = 2010,
-percentiles = c(1:5,20,30))
-plot_annual_stats(station_number = "08NM116", 
-start_year = 1980, end_year = 2010,
-percentiles = c(60,70,80))
-```
-
-For annual flow timing, you can change the percent of total annual flow you want to know the date of:
-Default 25, 33.3, 50, and 75 percent of total flow
 ```{r, eval=FALSE}
 calc_annual_flow_timing(station_number = "08NM116", 
-start_year = 1980, end_year = 2010)
-# Just timing of half flow
-calc_annual_flow_timing(station_number = "08NM116", 
-start_year = 1980, end_year = 2010, 
-percent_total = 50)
+                        start_year = 1980, 
+                        end_year = 2010,
+                        percent_total = c(10,20))
 ```
 
+Example of plotting the number of days per years outside of the 10th and 90th percentiles (25th and 75th percentiles are default):
 
-#### Table Options
+```{r, fig.height = 4.5, fig.width = 7}
+plot_annual_outside_normal(station_number = "08NM116", 
+                           start_year = 1980, 
+                           end_year = 2010,
+                           normal_percentiles = c(10,90))
+```
 
-Transpose
+#### Data frame options
 
+An option when working with the functions that produce data frames is to transpose the rows and columns of the data. Most functions by default provide data results such there are columns of statistics for each station and time period. See the example here:
 
-#### Plot Options
+```{r, eval=FALSE}
+calc_longterm_stats(station_number = "08NM116", 
+                    start_year = 1980, 
+                    end_year = 2010)
+```
+
+In some circumstance, however, it may be more convenient to wrangle the data such that there are columns for stations (or groupings) and a single column with all statistics, and then the values are placed in colums for each respective time period. See the following example when setting `transpose = TRUE`.
+
+```{r, eval=FALSE}
+calc_longterm_stats(station_number = "08NM116", 
+                    start_year = 1980, 
+                    end_year = 2010,
+                    transpose = TRUE)
+```
+
+#### Plot options
+
 
 Log discharge
-Normal scale:
-```{r, eval=FALSE}
+
+Example of plotting with a linear scale (default `log_discharge = FALSE`):
+
+```{r, fig.height = 2.5, fig.width = 7}
 plot_annual_stats(station_number = "08NM116", 
-start_year = 1980, end_year = 2010)
+                  start_year = 1980,
+                  end_year = 2010)
 ```
 
-Normal scale:
-```{r, eval=FALSE}
+Example of plotting with a logarithmic scale (default `log_discharge = TRUE`):
+
+```{r, fig.height = 2.5, fig.width = 7}
 plot_annual_stats(station_number = "08NM116", 
-start_year = 1980, end_year = 2010,
-log_discharge = TRUE)
+                  start_year = 1980,
+                  end_year = 2010,
+                  log_discharge = TRUE)
 ```
 
-Titles
 
-Yiled or volume as value
+Title adds the station number (or grouping), and in some cases the statistics as well.
 
-Add year
+Example of including a title when plotting (`include_title = TRUE`):
 
-Some plotting functions provide the ability to plot indiviual years on plots where stats from all years are summarize
-(ex. plot_daily_stats, plot_daily_cumulative stats, plot_monthly_cumulative_stats)
-```{r, eval=FALSE}
-plot_daily_stats(station_number = "08NM116", 
-                 complete_years = TRUE,
-                 include_year = 2010)
+```{r, fig.height = 2.5, fig.width = 7}
+plot_annual_stats(station_number = "08NM116", 
+                  start_year = 1980,
+                  end_year = 2010,
+                  include_title = TRUE)
 ```
 
+Example of including a title when plotting (`include_title = TRUE`) where the statistic is also displayed:
+
+```{r, fig.height = 4.5, fig.width = 9}
+plot_monthly_stats(station_number = "08NM116", 
+                  start_year = 1980,
+                  end_year = 2010,
+                  include_title = TRUE)[[1]]
+```
+
+***
 
 
 ## 9. Writing Tables and Plots
