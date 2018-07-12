@@ -18,8 +18,8 @@
 #' @param list List of data frames and plots to write to disk.
 #' @param foldername Name of folder to create on disk (if it does not exist) to write each plot from list. 
 #'    If using \code{combined_pdf} argument, then it will be the name of the PDF document.
-#' @param table_type Table file type to write. One of "csv", "xls", or "xslx".
-#' @param plot_type Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
+#' @param table_filetype Table file type to write. One of "csv", "xls", or "xslx".
+#' @param plot_filetype Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
 #'    Image type will be overwritten if using \code{combined_pdf} is used.
 #' @param width Numeric plot width in \code{units}. If not supplied, uses the size of current graphics device.
 #' @param height Numeric plot height in \code{units}. If not supplied, uses the size of current graphics device.
@@ -36,8 +36,8 @@
 
 write_objects_list <- function(list = NULL,
                                foldername = "",
-                               table_type = NULL, 
-                               plot_type = NULL, 
+                               table_filetype = NULL, 
+                               plot_filetype = NULL, 
                                width = NA,
                                height = NA,
                                units = "in",
@@ -53,12 +53,12 @@ write_objects_list <- function(list = NULL,
   for (i in names(list)) {
     if (inherits( list[[i]], what = "data.frame")) {
       
-      if (is.null(table_type))  stop("Must provide an table type to save using the table_type argument. One of 'csv', 'xls', or 'xlsx'.", call. = FALSE)
+      if (is.null(table_filetype))  stop("Must provide an table type to save using the table_filetype argument. One of 'csv', 'xls', or 'xlsx'.", call. = FALSE)
       
     } else if (inherits(list[[i]], what = "gg")) {
       
-      if (is.null(plot_type)) stop("Must provide an image type to save using the plot_type argument. Once of 'png', 'eps', 'ps', 'tex', 'pdf', 'jpeg', 'tiff', 'bmp', or 'svg'.", call. = FALSE)
-      if (!plot_type %in% c("png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", "svg")) 
+      if (is.null(plot_filetype)) stop("Must provide an image type to save using the plot_filetype argument. Once of 'png', 'eps', 'ps', 'tex', 'pdf', 'jpeg', 'tiff', 'bmp', or 'svg'.", call. = FALSE)
+      if (!plot_filetype %in% c("png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", "svg")) 
         stop("Use of the file types required.", call. = FALSE)
       
       
@@ -95,7 +95,7 @@ write_objects_list <- function(list = NULL,
   
   for (i in names(list)) {
     if (inherits( list[[i]], what = "gg")) {
-      ggplot2::ggsave(filename = paste0(foldername, i, ".", plot_type), 
+      ggplot2::ggsave(filename = paste0(foldername, i, ".", plot_filetype), 
                       plot = list[[i]],
                       width = width,
                       height = height,
@@ -103,7 +103,7 @@ write_objects_list <- function(list = NULL,
                       dpi = dpi)
     } else if (inherits(list[[i]], what = "data.frame")) {
       write_results(data = list[[i]], 
-                    file = paste0(foldername, i, ".", table_type))
+                    file = paste0(foldername, i, ".", table_filetype))
     } else {
       warning(paste0("Object in list, ", as.character(substitute(list)), "$", i, ", is not a ggplot or data frame object and was not saved."), call. = FALSE)
     }
