@@ -5,7 +5,8 @@ Updated: 3 July 2018
 
 #### Updates:
 
-  * Vignette updates
+  * Completed Users Guide vignette
+  * Updated filetype argument in the write_ functions
   
   
 fasstr 0.2.6
