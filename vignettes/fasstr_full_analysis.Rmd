@@ -1,6 +1,5 @@
 ---
-title: "'fasstr' Computing Full Analysis"
-date: "`r Sys.Date()`"
+title: "Computing a Full Analysis with fasstr"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -12,11 +11,110 @@ vignette: >
 knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")))
 ```
 
-### UNDER CONSTRUCTION
+### July 2018
 
 The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http://www.r-project.org) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
 
+This vignette documents the usage of the `compute_full_analysis()` function in fasstr. This vignette is a high-level adjunct to the details found in the function documentation (see `?compute_full_analysis()`). You’ll learn what arguments to provide to the function to customize your analysis, what analyses are computed, and what outputs are produced.
 
 
+## Description
+
+The `compute_full_analysis()` function produces a suite of analysis tables and plots from the various fasstr functions. The analyses are grouped into seven groups, or sections, (see below) which are stored in lists in the created object. To directly save all results on your computer and explore the files individually, you can write all plots and tables into directory using the logical `write_to_dir` argument.
+
+All of the data selection (data or station_number arguments), data filtering, water year selection, missing dates options, basin area, and zyp trending arguments are used in this function to customize your data and analysis.
+
+
+## Sections
+
+All of the functions used can be categoires into different temporal and analysis-type sections.
+
+Sections that are saved as lists in the object, and as folders when writing:
+
+1) Screening
+2) Long-term
+3) Annual
+4) Monthly
+5) Daily
+6) Annual Trends
+7) Low-flow Frequencies
+
+
+## Writing to a directory
+
+writing
+
+- folder
+- fielyptes
+
+
+When writing the files, two files are created in the main directory folder:
+
+1) Table of Contents
+2) Analysis Metadata
+
+
+## Examples
+
+
+
+## Objects Created
+
+The following is a table that lists of all objects or files (if `write_to_dir = TRUE)` created using the `compute_full_analysis()` function, with their respective section list / folder, type of object, and the function use to produce the object:
+
+List / Directory          |	Object / File                             |	Type              | Function
+--------------------------|-------------------------------------------|-------------------|------------------------------
+1 - Screening             |	Annual_Daily_Flows    		                | Plot              | plot_flow_data(plot_by_year=TRUE)
+1 - Screening	            | Daily_Flows    		                        | Plot              | plot_flow_data()
+1 - Screening	            | Daily_Flows     	                  	    | Table             | write_flow_data()
+1 - Screening	            |	Data_Screening    	                  	  | Plot              | plot_data_screening()
+1 - Screening	            |	Flow_Screening     	                  	  | Table             | screen_flow_data()
+1 - Screening	            |	Missing_Dates    		                      | Plot              | plot_missing_dates()
+2 - Long-term	            |	Flow_Duration    		                      | Plot              | plot_flow_duration()
+2 - Long-term	            |	Long-term_Stats    		                    | Plot              | plot_longterm_stats()
+2 - Long-term	            |	Longterm_Statistics_and_Percentiles     	| Table             | calc_longterm_stats()
+3 - Annual	              |	Annual_Cumulative_Volumes     	          | Table             | calc_annual_cumulative_stats(include_seasons=TRUE)
+3 - Annual	              |	Annual_Cumulative_Yield     	            | Table             | calc_annual_cumulative_stats(use_yield=TRUE, include_seasons=TRUE)
+3 - Annual	              |	Annual_Days_Outside_Normal            	  | Plot              | plot_annual_outside_normal()
+3 - Annual	              |	Annual_Days_Outside_Normal     	          | Table             | calc_annual_outside_normal
+3 - Annual	              |	Annual_Flow_Timing    	                  | Plot              | plot_annual_flow_timing()
+3 - Annual	              |	Annual_Flow_Timing     	                  | Table             | calc_annual_flow_timing()
+3 - Annual	              |	Annual_Low_Flows                        	| Plot              | plot_annual_lowflows()
+3 - Annual	              |	Annual_Low_Flows     	                    | Table             | calc_annual_lowflows()
+3 - Annual	              |	Annual_Low_Flows_Dates                   	| Plot              | plot_annual_lowflows()
+3 - Annual	              |	Annual_Means    	                        | Plot              | plot_annual_means()
+3 - Annual	              |	Annual_Stats                            	| Plot              | plot_annual_stats()
+3 - Annual	              |	Annual_Summary_Statistics               	| Table             | calc_annual_stats()
+3 - Annual	              |	Annual_Total_Volume                   	  | Plot              | plot_annual_cumulative_stats()
+3 - Annual	              |	Annual_Yield    	                        | Plot              | plot_annual_cumulative_stats(use_yield=TRUE)
+3 - Annual	              |	Four_Seasons_Total_Volume    	            | Plot              | plot_annual_cumulative_stats(include_seasons=TRUE)
+3 - Annual	              |	Four_Seasons_Yield                      	| Plot              | plot_annual_cumulative_stats(use_yield=TRUE, include_seasons=TRUE)
+3 - Annual	              |	Two_Seasons_Total_Volume                	| Plot              | plot_annual_cumulative_stats(include_seasons=TRUE)
+3 - Annual	              |	Two_Seasons_Yield    	                    | Plot              | plot_annual_cumulative_stats(use_yield=TRUE, include_seasons=TRUE)
+4 - Monthly	              |	Maximum_Monthly_Stats    	                | Plot              | plot_monthly_stats()
+4 - Monthly	              |	Mean_Monthly_Stats    	                  | Plot              | plot_monthly_stats()
+4 - Monthly	              |	Median_Monthly_Stats    	                | Plot              | plot_monthly_stats()
+4 - Monthly	              |	Minimum_Monthly_Stats                 	  | Plot              | plot_monthly_stats()
+4 - Monthly	              |	Monthly_Cumulative_Volumes     	          | Table             | calc_monthly_cumulative_stats()
+4 - Monthly	              |	Monthly_Cumulative_Volumetric_Stats    	  | Plot              | plot_monthly_cumulative_stats()
+4 - Monthly	              |	Monthly_Cumulative_Yield     	            | Table             | calc_monthly_cumulative_stats(use_yield=TRUE)
+4 - Monthly	              |	Monthly_Cumulative_Yield_Stats    	      | Plot              | plot_monthly_cumulative_stats(use_yield=TRUE)
+4 - Monthly	              |	Monthly_Summary_Statistics          	    | Table             | calc_monthly_stats()
+5 - Daily	                |	Daily_Cumulative_Volumes            	    | Table             | calc_daily_cumulative_stats()
+5 - Daily	                |	Daily_Cumulative_Volumes_with_Years	      | List / Folder with Plots | plot_daily_cumulative_stats(include_year)
+5 - Daily	                |	Daily_Cumulative_Volumetric_Stats    	    | Plot              | plot_daily_cumulative_stats()
+5 - Daily	                |	Daily_Cumulative_Yield     	              | Table             | calc_daily_cumulative_stats(use_yield=TRUE)
+5 - Daily 	              |	Daily_Cumulative_Yield_Stats          	  | Plot              | plot_daily_cumulative_stats(use_yield=TRUE)
+5 - Daily	                |	Daily_Cumulative_Yield_with_Years     	  | List / Folder with Plots | plot_daily_cumulative_stats(use_yield=TRUE, include_year)
+5 - Daily	                |	Daily_Statistics_with_Years	              | List / Folder with Plots | plot_daily_stats(include_year)
+5 - Daily	                |	Daily_Stats    	                          | Plot              | plot_daily_stats()
+5 - Daily	                |	Daily_Summary_Statistics              	  | Table             | calc_daily_stats()
+6 - Trending              |	Annual_Trends_Data     	                  | Table             | compute_annual_trends()
+6 - Trending              |	Annual_Trends_Results                 	  | Table             | compute_annual_trends()
+6 - Trending              |	Annual_Trends_Results_Plots           	  | List / Folder with Plots | compute_annual_trends(include_plots=TRUE)
+7 - Low-flow Frequencies  |	Annual_Lowflows                       	  | Table             | compute_annual_frequencies()
+7 - Low-flow Frequencies  |	Fitted_Quantiles     	                    | Table             | compute_annual_frequencies()
+7 - Low-flow Frequencies  |	Frequency_Plot                        	  | Plot              | compute_annual_frequencies()
+7 - Low-flow Frequencies  |	Plotting_Data                         	  | Table             | compute_annual_frequencies()
 
 
