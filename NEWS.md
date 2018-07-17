@@ -8,6 +8,10 @@ Updated: 3 July 2018
   * Completed Users Guide vignette
   * Updated filetype argument in the write_ functions
   
+#### Bug Fixes
+
+  * Added trendline to trends plots in compute_full_analysis
+  
   
 fasstr 0.2.6
 =========================

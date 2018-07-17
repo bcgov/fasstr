@@ -11,6 +11,10 @@ vignette: >
 knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")))
 ```
 
+```{r, include=FALSE}
+library(fasstr)
+```
+
 ### July 2018
 
 The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http://www.r-project.org) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
@@ -18,18 +22,16 @@ The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http:
 This vignette documents the usage of the `compute_full_analysis()` function in fasstr. This vignette is a high-level adjunct to the details found in the function documentation (see `?compute_full_analysis()`). You’ll learn what arguments to provide to the function to customize your analysis, what analyses are computed, and what outputs are produced.
 
 
-## Description
+## Function Use
 
-The `compute_full_analysis()` function produces a suite of analysis tables and plots from the various fasstr functions. The analyses are grouped into seven groups, or sections, (see below) which are stored in lists in the created object. To directly save all results on your computer and explore the files individually, you can write all plots and tables into directory using the logical `write_to_dir` argument.
+The `compute_full_analysis()` function produces a suite of analysis tables and plots from the various fasstr functions. The analyses are grouped into seven groups, or sections, (see below) which are stored in lists in the created object. To directly save all results on your computer and explore the files individually, you can write all plots and tables into directory using the logical `write_to_dir` argument. Due to the number of analyses computed, running this function may take several minutes.
 
 All of the data selection (data or station_number arguments), data filtering, water year selection, missing dates options, basin area, and zyp trending arguments are used in this function to customize your data and analysis.
 
 
-## Sections
+## Function Outputs
 
-All of the functions used can be categoires into different temporal and analysis-type sections.
-
-Sections that are saved as lists in the object, and as folders when writing:
+This function will by default create a list of all the tibbles and plots. When the logical `write_to_dir` argument is set to TRUE then it will also write all the tibbles and plots within a provided directory. All of the outputs can be categorized into seven different time-frame and analysis-type sections to help with organizing the outputs. The outputs will be grouped into the following categories:
 
 1) Screening
 2) Long-term
@@ -39,28 +41,69 @@ Sections that are saved as lists in the object, and as folders when writing:
 6) Annual Trends
 7) Low-flow Frequencies
 
+While by default the function will create all outputs from all categories, there is the option to select which categories are analyzed using the `sections` argument. By default the sections argument is `1:7`, with numbers 1 through 7 representing each of the categories as listed above. So `sections = 1` would output only the screening outputs; while `sections = c(1,3,5:7)` would output all but the long-term and monthly sections.
 
-## Writing to a directory
-
-writing
-
-- folder
-- fielyptes
+To see all the outputs created and which categories and fasstr function are used to calculate them, see the table at the bottom of this vignette.
 
 
-When writing the files, two files are created in the main directory folder:
+### Object List
 
-1) Table of Contents
-2) Analysis Metadata
+When using the function all of the objects will be saved within a list with a first level of lists with each of the categories as listed above (ex. `$Screening` or `$Annual`). Within each of those lists are the outputted objects, or another list of objects (ex. `$Screening$Flow_Screening` or `$Annual$Annual_Flow_Timing`). Using subsetting techniques to extract an individual tibble or plot.
+
+The following is an example of how to run the function and then how extract individual objects from the list:
+
+``` {r, eval=FALSE}
+mission_creek <- compute_full_analysis(station_number = "08NM116",
+                                       start_year = 1981,
+                                       end_year = 2000)
+
+screening_plot <- mission_creek$Screening$Flow_Screening_plot
+
+daily_stats <- mission_creek$Daily$Daily_Summary_Stats
+
+daily_stats_with_1985 <- mission_creek$Daily$Daily_Summary_Stats_with_Years$Daily_Stats_1985
+
+trends_results <- mission_creek$Trending$Annual_Trends_Results
+
+```
 
 
-## Examples
+### Excel and Image Files (Writing)
+
+This function also provides a option to directly save all results into a folder, thereby allowing the user to explore the outputs in Excel (or csv) and image file formats.  To do so, set `write_to_dir = TRUE` within the function. You will also be required to provide the name of a folder to create using the `foldername` argument. It will by default save it in the working directory, but a file pathway to another directory can also be provided. By default it will save all tibbles in "xlsx" format and all plots in "png" format, but can be altered using the `table_filetype` and `plot_filetype` arguments, respectively, if necessary.
+
+The following is an example of how to save all files on your computer:
+
+``` {r, eval=FALSE}
+mission_creek <- compute_full_analysis(station_number = "08NM116",
+                                       start_year = 1981,
+                                       end_year = 2000,
+                                       write_to_dir = TRUE,
+                                       foldername = "Mission Creek")
+
+```
+
+The following is an example of how to save all files on your computer, with custom file types:
+
+``` {r, eval=FALSE}
+mission_creek <- compute_full_analysis(station_number = "08NM116",
+                                       start_year = 1981,
+                                       end_year = 2000,
+                                       write_to_dir = TRUE,
+                                       foldername = "Mission Creek",
+                                       plot_filetype = "pdf",
+                                       table_filetype = "csv")
+
+```
+
+When writing into a directory there are two additional files created in the main directory folder. The first, called the "Table of Contents" provides an Excel file with listings of all files created, and which folder and type of file it is. The other file, called "Analysis Metadata", provides information regarding the analysis data inputs, options, and methods.
 
 
 
-## Objects Created
 
-The following is a table that lists of all objects or files (if `write_to_dir = TRUE)` created using the `compute_full_analysis()` function, with their respective section list / folder, type of object, and the function use to produce the object:
+## Objects and Files Created
+
+The following is a table that lists of all objects and files (if `write_to_dir = TRUE)` created using the `compute_full_analysis()` function, with their respective section list / folder, type of object, and the function use to produce the object:
 
 List / Directory          |	Object / File                             |	Type              | Function
 --------------------------|-------------------------------------------|-------------------|------------------------------

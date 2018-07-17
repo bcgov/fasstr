@@ -1,10 +1,70 @@
 
 
 
+stns <- c("08MA002","08MA001","08LF002","08LG010","08LF027")
+stns <- c("08LG006")
+
+
+for (i in stns) {
+  data <- add_date_variables(station_number = i)
+  data <- add_rolling_means(data, roll_days = 30)
+  fasstr::write_flow_data(data)
+}
+
+
+data <- add_date_variables(station_number = stns)
+data <- add_rolling_means(data, roll_days = 30)
+fasstr::write_flow_data(data)
+
+dat <- tidyhydat::hy_stations(station_number = stns)
+
+min_30 <- calc_annual_lowflows(station_number = stns, roll_days = 30, months = 7:9, start_year = 1978, end_year = 2015)
+
+### Westwold
+t <- screen_flow_data(station_number = "08LE020")
+falkland_trend <- fasstr::compute_full_analysis(station_number = "08LE020", water_year = TRUE,
+                                          start_year = 1967, end_year = 2015,
+                                          write_to_dir = T)#, foldername = "08LE020",
+                                          #sections = 6, zyp_alpha = 0.05)
+
+
+
+
+plot_flow_data(station_number = "08LE068", start_year = 1976, end_year = 1976)
+
+lake <- tidyhydat::hy_daily_levels("08LE068")
+plot_flow_data(lake)
+
+plot_daily_stats(station_number = "08LE020", complete_years = T, log_discharge = F, water_year = T)
+
+library(FlowScreen)
+
+data <- tidyhydat::hy_daily_flows("08LE020") %>% 
+ # fill_missing_dates() %>% 
+  rename(ID = STATION_NUMBER,
+         Flow = Value,
+         SYM = Symbol) %>% 
+  select(-Parameter) %>% 
+  mutate(Agency = "WSC",
+         PARAM = 1)
+ts <- create.ts(data)
+ts <- ts %>% 
+  filter(hyear >= 1976)
+
+regime(ts)
+metrics <- metrics.all(ts)
+
+jknjkn <- pk.cov(ts)
+
+
+
+###
+
+
 devtools::document()
-#install.packages("/Users/jongoetz/Documents/R/fasstr", repos = NULL, type = "source")
+#install.packages("/Users/jongoetz/Documents/R/fasstr", repos = NULL, type = "source",)
 install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source", build_vignettes = TRUE)
-devtools::install_github("bcgov/fasstr")
+devtools::install_github("bcgov/fasstr", ref = "devel",  build_vignettes = TRUE)
 #devtools::check()
 
 library(fasstr)

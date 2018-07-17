@@ -647,12 +647,12 @@ compute_full_analysis <- function(data = NULL,
     all_objects <- append(all_objects,    
                           list("Daily" = list("Daily_Summary_Stats" = day_stats,
                                               "Daily_Summary_Stats_Plot" = day_stats_plot,
+                                              "Daily_Summary_Stats_with_Years" = day_stats_year_plots,
                                               "Daily_Total_Cumul_Volumes_m3" = day_vol,
                                               "Daily_Total_Cumul_Volumes_m3_Plot" = day_vol_plot,
                                               "Daily_Total_Cumul_Yield_mm" = day_yield,
                                               "Daily_Total_Cumul_Yield_mm_Plot" = day_yield_plot,
-                                              "Daily_Total_Cumul_Volumes_m3_with_Years" = day_stats_year_plots,
-                                              "Daily_Summary_Stats_with_Years" = day_vol_year_plots,
+                                              "Daily_Total_Cumul_Volumes_m3_with_Years" = day_vol_year_plots,
                                               "Daily_Total_Cumul_Yield_mm_with_Years" = day_yield_year_plots)))
     
     if (write_to_dir) {
@@ -713,7 +713,8 @@ compute_full_analysis <- function(data = NULL,
                                         water_year = water_year,
                                         water_year_start = water_year_start,
                                         ignore_missing = ignore_missing,
-                                        zyp_method = "yuepilon")
+                                        zyp_method = "yuepilon",
+                                        zyp_alpha = zyp_alpha)
     ann_data <- ann_trends$Annual_Trends_Data
     ann_results <- ann_trends$Annual_Trends_Results
     ann_trends_plots <-  ann_trends[c(3:length(names(ann_trends)))]
@@ -830,14 +831,14 @@ compute_full_analysis <- function(data = NULL,
       subdirs <- list.files(path = paste0(main_dir, i))
       
       # Create a table with each file name, paste in the subdirectory name and attached to dataframe
-      dir_data <- data.frame("Subdirectory" = subdirs)
+      dir_data <- data.frame("File" = subdirs)
       dir_data$Directory <- i
       tbl_contents <- rbind(tbl_contents, dir_data)
     }
     
     # Create a FileType columns listing if file is a plot or table
-    tbl_contents$fileExt <- sub('.*\\.', '', tbl_contents$Subdirectory)
-    tbl_contents$FileType <- ifelse(tbl_contents$fileExt %in% c("xlsx", "xls", "csv"), "Table", 
+    tbl_contents$fileExt <- sub('.*\\.', '', tbl_contents$File)
+    tbl_contents$Type <- ifelse(tbl_contents$fileExt %in% c("xlsx", "xls", "csv"), "Table", 
                                     ifelse(tbl_contents$fileExt %in% c("png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", "svg"), "Plot",
                                            "Folder with Plots"))
     
