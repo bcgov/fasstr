@@ -148,9 +148,9 @@ plot_annual_stats <- function(data = NULL,
   # Create a list of named plots extracted from the tibble
   plots <- tidy_plots$plot
   if (nrow(tidy_plots) == 1) {
-    names(plots) <- "Annual_Stats"
+    names(plots) <- "Annual_Statistics"
   } else {
-    names(plots) <- paste0(tidy_plots$STATION_NUMBER, "_Annual_Stats")
+    names(plots) <- paste0(tidy_plots$STATION_NUMBER, "_Annual_Statistics")
   }
   
   plots
