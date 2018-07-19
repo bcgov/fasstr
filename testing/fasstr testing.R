@@ -1,5 +1,13 @@
 
 
+devtools::document()
+#install.packages("/Users/jongoetz/Documents/R/fasstr", repos = NULL, type = "source",)
+install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source", build_vignettes = TRUE)
+devtools::install_github("bcgov/fasstr", ref = "devel",  build_vignettes = TRUE)
+#devtools::check()
+
+
+
 
 stns <- c("08MA002","08MA001","08LF002","08LG010","08LF027")
 stns <- c("08LG006")
@@ -59,13 +67,11 @@ jknjkn <- pk.cov(ts)
 
 
 ###
+test <- compute_annual_trends(station_number = "08NM116", zyp_method = "yuepilon",
+                              start_year = 1990, end_year = 2001)
+freq <- compute_annual_frequencies(station_number = "08NM116",
+                                   start_year = 1990, end_year = 2001)
 
-
-devtools::document()
-#install.packages("/Users/jongoetz/Documents/R/fasstr", repos = NULL, type = "source",)
-install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source", build_vignettes = TRUE)
-devtools::install_github("bcgov/fasstr", ref = "devel",  build_vignettes = TRUE)
-#devtools::check()
 
 library(fasstr)
 library(dplyr)
