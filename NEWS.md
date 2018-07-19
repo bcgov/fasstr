@@ -1,12 +1,14 @@
 fasstr 0.2.7
 =========================
 
-Updated: 3 July 2018
+Updated: 19 July 2018
 
 #### Updates:
 
   * Completed Users Guide vignette
+  * Completed Full Analysis vignette
   * Updated filetype argument in the write_ functions
+  * Updated some plot object names
   
 #### Bug Fixes
 
