@@ -8,6 +8,95 @@ devtools::install_github("bcgov/fasstr", ref = "devel",  build_vignettes = TRUE)
 
 
 
+library(dplyr)
+
+bc_stns <- tidyhydat::hy_stn_data_range(prov_terr_state_loc = "BC") %>% 
+  filter(DATA_TYPE == "Q",
+         RECORD_LENGTH > 19) %>% 
+  pull(STATION_NUMBER)
+
+bc_stns2 <- tidyhydat::hy_annual_stats(station_number = bc_stns) %>% 
+  filter(Parameter == "Flow",
+         Sum_stat == "MEAN") %>% 
+  group_by(STATION_NUMBER) %>% 
+  summarise(n_year = sum(!is.na(Value))) %>% 
+  filter(n_year > 19) %>% 
+  pull(STATION_NUMBER)
+
+
+#stns <- c("08HB048","08NM116")
+
+time_1 <- Sys.time()
+stat <- data.frame()
+for (i in bc_stns2) {
+  
+  MAD <- calc_lt_mad(station_number = i, 
+                     complete_years = TRUE,
+                     percent_MAD = c(5,20))
+  colnames(MAD) <- c("STATION_NUMBER", "LTMAD","MAD_5p", "MAD_20p")
+  
+  lowflow_1d <- compute_frequency_quantile(station_number = i,
+                                        return_period = 5,
+                                        roll_days = 1)
+  lowflow_1d <- data.frame(STATION_NUMBER = i,
+                        LF_1d = lowflow_1d)
+  lowflow_30d <- compute_frequency_quantile(station_number = i,
+                                           return_period = 5,
+                                           roll_days = 30)
+  lowflow_30d <- data.frame(STATION_NUMBER = i,
+                           LF_30d = lowflow_30d)
+  
+  
+  
+  stat_stn <- merge(MAD, lowflow_1d, by = "STATION_NUMBER")
+  stat_stn <- merge(stat_stn, lowflow_30d, by = "STATION_NUMBER")
+  
+  stat_stn$LTMAD_ptile <- as.numeric(calc_flow_percentile(station_number = i, 
+                                                           complete_years = TRUE,
+                                                           flow_value = stat_stn$LTMAD)[2])
+  stat_stn$MAD_5p_ptile <- as.numeric(calc_flow_percentile(station_number = i, 
+                                        complete_years = TRUE,
+                                        flow_value = stat_stn$MAD_5p)[2])
+  stat_stn$MAD_20p_ptile <- as.numeric(calc_flow_percentile(station_number = i, 
+                                           complete_years = TRUE,
+                                           flow_value = stat_stn$MAD_20p)[2])
+  stat_stn$LF_1d_ptile <- ifelse(is.na(stat_stn$LF_1d), NA,
+                              as.numeric(calc_flow_percentile(station_number = i, 
+                                              complete_years = TRUE,
+                                              flow_value = stat_stn$LF_1d)[2]))
+  stat_stn$LF_30d_ptile <- ifelse(is.na(stat_stn$LF_30d), NA,
+                                 as.numeric(calc_flow_percentile(station_number = i, 
+                                                                 complete_years = TRUE,
+                                                                 flow_value = stat_stn$LF_30d)[2]))
+  
+  
+  stat <- rbind(stat, stat_stn)
+}
+time_2 <- Sys.time()
+
+
+plotly::ggplotly(ggplot(data = stat, aes(x= MAD_20p, y= LF_30d))+
+  geom_point())
+
+
+
+stats2 <- stat %>% 
+  mutate(area = substr(STATION_NUMBER, 1,3),
+         ratio = LF_1d / MAD_20p)#%>% 
+ # filter(ratio>=1)
+
+
+
+ggplot(data = stats2)+
+  geom_boxplot(aes(x=area, y=ratio))
+
+
+#%>% 
+ # filter(MAD_20p < 100)
+
+plotly::ggplotly(ggplot(data = stats2, aes(x= MAD_20p, y= LF_30d, color = area))+
+  geom_smooth(method = "lm", alpha = 0.5)+
+geom_point())
 
 stns <- c("08MA002","08MA001","08LF002","08LG010","08LF027")
 stns <- c("08LG006")
@@ -67,10 +156,10 @@ jknjkn <- pk.cov(ts)
 
 
 ###
-test <- compute_annual_trends(station_number = "08NM116", zyp_method = "yuepilon",
-                              start_year = 1990, end_year = 2001)
-freq <- compute_annual_frequencies(station_number = "08NM116",
-                                   start_year = 1990, end_year = 2001)
+test <- fasstr::compute_annual_trends(station_number = "08NM116",
+                                      zyp_method = "yuepilon",
+                                      start_year = 1973, end_year = 2013)
+freq <- compute_annual_frequencies(station_number = "08NA024")
 
 
 library(fasstr)

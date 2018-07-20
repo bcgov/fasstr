@@ -439,8 +439,8 @@ zyp_method_checks <- function(zyp_method) {
 zyp_alpha_checks <- function(zyp_alpha){
   if(!is.na(zyp_alpha) & !is.numeric(zyp_alpha) )              
     stop("zyp_alpha must be numeric.", call. = FALSE)
-  if(!is.na(zyp_alpha) & !all(zyp_alpha > 0 & zyp_alpha < 1))  
-    stop("timing_percent must be > 0 and < 1)", call. = FALSE)
+  if(!is.na(zyp_alpha) & !all(zyp_alpha >= 0 & zyp_alpha <= 1))  
+    stop("timing_percent must be >= 0 and <= 1)", call. = FALSE)
 }
 
 include_longterm_checks <- function(include_longterm){
