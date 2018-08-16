@@ -4,11 +4,12 @@
 \alias{plot_daily_cumulative_stats}
 \title{Plot cumulative daily flow statistics}
 \usage{
-plot_daily_cumulative_stats(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, use_yield = FALSE,
-  basin_area = NA, water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, exclude_years = NULL,
-  log_discharge = FALSE, include_title = FALSE, include_year = NULL)
+plot_daily_cumulative_stats(data = NULL, dates = Date,
+  values = Value, groups = STATION_NUMBER, station_number = NULL,
+  use_yield = FALSE, basin_area = NA, water_year = FALSE,
+  water_year_start = 10, start_year = 0, end_year = 9999,
+  exclude_years = NULL, log_discharge = FALSE, include_title = FALSE,
+  include_year = NULL)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

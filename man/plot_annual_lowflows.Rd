@@ -5,10 +5,11 @@
 \title{Plot annual lowflows}
 \usage{
 plot_annual_lowflows(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, roll_days = c(1, 3, 7,
-  30), roll_align = "right", water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, exclude_years = NULL, months = 1:12,
-  ignore_missing = FALSE, log_discharge = FALSE, include_title = FALSE)
+  groups = STATION_NUMBER, station_number = NULL, roll_days = c(1, 3,
+  7, 30), roll_align = "right", water_year = FALSE,
+  water_year_start = 10, start_year = 0, end_year = 9999,
+  exclude_years = NULL, months = 1:12, ignore_missing = FALSE,
+  log_discharge = FALSE, include_title = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

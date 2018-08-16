@@ -5,10 +5,10 @@
 \title{Calculate annual flow timing}
 \usage{
 calc_annual_flow_timing(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, percent_total = c(25,
-  33.3, 50, 75), water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, exclude_years = NULL,
-  transpose = FALSE)
+  groups = STATION_NUMBER, station_number = NULL,
+  percent_total = c(25, 33.3, 50, 75), water_year = FALSE,
+  water_year_start = 10, start_year = 0, end_year = 9999,
+  exclude_years = NULL, transpose = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

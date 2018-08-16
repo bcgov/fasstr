@@ -8,10 +8,10 @@ compute_frequency_quantile(data = NULL, dates = Date, values = Value,
   station_number = NULL, roll_days = NA, roll_align = "right",
   return_period = NA, use_max = FALSE, use_log = FALSE,
   prob_plot_position = c("weibull", "median", "hazen"),
-  fit_distr = c("PIII", "weibull"), fit_distr_method = ifelse(fit_distr ==
-  "PIII", "MOM", "MLE"), water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, exclude_years = NULL, months = 1:12,
-  ignore_missing = FALSE)
+  fit_distr = c("PIII", "weibull"), fit_distr_method = ifelse(fit_distr
+  == "PIII", "MOM", "MLE"), water_year = FALSE, water_year_start = 10,
+  start_year = 0, end_year = 9999, exclude_years = NULL,
+  months = 1:12, ignore_missing = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
