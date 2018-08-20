@@ -719,7 +719,7 @@ The `compute_annual_trends()` function outputs several objects in a list:
 
 ### Annual Volume Frequency Analysis
 
-There are three fasstr functions that perform volume frequency analyses on annual low-flow or high-flow data. The analysis follows the volume frequency analysis methods as used in the U.S. Army Corps of Engineers Statistical Software Package ([HEC-SSP](http://www.hec.usace.army.mil/software/hec-ssp/)). The analyses produce plotting of annual series and quantiles fitted from various distributions. See the [frequency analysis vignette](fasstr_frequency_analysis.html) for more information. 
+There are four fasstr functions that perform volume frequency analyses on annual low-flow or high-flow data. The analysis follows the volume frequency analysis methods as used in the U.S. Army Corps of Engineers Statistical Software Package ([HEC-SSP](http://www.hec.usace.army.mil/software/hec-ssp/)). The analyses produce plotting of annual series and quantiles fitted from various distributions. See the [frequency analysis vignette](fasstr_frequency_analysis.html) for more information. 
 
 The `compute_annual_frequencies()` performs an annual daily (or rolling mean) low-flow (by default) or high-flow (using `use_max = TRUE` argument) frequency analysis on annual series. This analysis uses the daily mean lows or highs. The `compute_hydat_peak_frequencies()` function performs an annual instantaneous low (by default) or high peak frequency analysis. The "data" argument cannot be used for the HYDAT peak analysis. Both functions output several object in a list:
 
@@ -730,6 +730,8 @@ The `compute_annual_frequencies()` performs an annual daily (or rolling mean) lo
 5. $fitted_quantiles - Tibble with fitted quantiles.
 
 The `compute_frequency_quantile()` function performs annual daily (or rolling mean) low-flow (by default) or high-flow (using `use_max = TRUE` argument) frequency analysis on annual series but only returns the fitted quantile based on the selected return period. Both the numeric arguments "roll_days" and "return_period" are required. It results in a single value.  For example, supplying `roll_days = 7` and `return_period = 10` to the function with a dataset will return the 7-day low-flow with a 10-year return period (i.e. 7Q10).
+
+To compute a volume frequency analysis on custom data, use the `compute_frequency_analysis()` function. The data points to be used in the analysis must be provided in a data frame with a column of events (or years), the flow values (values), and the measure (or the type of value it is, "7-day lows", for example. All other data filtering options are not included.
 
 ### Full Analysis
 
