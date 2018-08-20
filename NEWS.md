@@ -1,7 +1,11 @@
 fasstr 0.2.7
 =========================
 
-Updated: 19 July 2018
+Updated: 20 August 2018
+
+#### New:
+
+  * compute_frequency_analysis() function to calculate a frequency analysis with custom data (update other frequency analysis functions to use this function internally)
 
 #### Updates:
 
