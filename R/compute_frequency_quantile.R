@@ -19,6 +19,7 @@
 #'    values from all years and months, unless specified.Function will calculate using all values in the provided data (no grouped 
 #'    analysis). Analysis methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
 #'
+#' @inheritParams compute_frequency_analysis
 #' @inheritParams compute_annual_frequencies
 #' @param roll_days Numeric value of the number of days to apply a rolling mean. Required.
 #' @param return_period Numeric vector of the estimated time interval, in years, between flow events of a similar size, 
@@ -30,8 +31,8 @@
 #' \dontrun{
 #' 
 #' compute_frequency_quantile(station_number = "08NM116",
-#'                        roll_days = 7,
-#'                        return_period = 10)
+#'                            roll_days = 7,
+#'                            return_period = 10)
 #'                             
 #' }
 #' @export

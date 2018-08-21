@@ -12,9 +12,9 @@ compute_annual_frequencies(data = NULL, dates = Date, values = Value,
   0.01, 0.001, 1e-04), fit_distr = c("PIII", "weibull"),
   fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
   fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1,
-  0.05, 0.01), water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, exclude_years = NULL,
-  months = 1:12, ignore_missing = FALSE)
+  0.05, 0.01), plot_curve = TRUE, water_year = FALSE,
+  water_year_start = 10, start_year = 0, end_year = 9999,
+  exclude_years = NULL, months = 1:12, ignore_missing = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -35,7 +35,7 @@ Leave blank if using \code{data} argument.}
 \item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
 ('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
-\item{use_max}{Logical valve to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}
+\item{use_max}{Logical value to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}
 
 \item{use_log}{Logical value to indicate log-scale tranforming of flow data before analysis. Default \code{FALSE}.}
 
@@ -56,6 +56,8 @@ or "MLE" (maximum likelihood estimation). Selected as \code{"MOM"} if \code{fit_
 
 \item{fit_quantiles}{Numeric vector of quantiles to be estimated from the fitted distribution. 
 Default \code{c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)}.}
+
+\item{plot_curve}{Logical value to indicate plotting the computed curve on the probability plot. Default \code{TRUE}.}
 
 \item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
 are designated by the calendar year in which they end. Default \code{FALSE}.}

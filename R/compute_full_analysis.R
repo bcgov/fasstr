@@ -769,16 +769,16 @@ compute_full_analysis <- function(data = NULL,
                                                  water_year_start = water_year_start,
                                                  ignore_missing = ignore_missing)
       
-      # freq_ann_data <- tidyr::spread(freq_results$Q_stat, Measure, value)
-      freq_ann_data <- freq_results$Q_stat
+      # freq_ann_data <- tidyr::spread(freq_results$Freq_Analysis_Data, Measure, value)
+      freq_ann_data <- freq_results$Freq_Analysis_Data
       
-      freq_plot_data <- freq_results$plotdata
+      freq_plot_data <- freq_results$Freq_Plot_Data
       
-      freq_plots <- list("Frequency_Plot" = freq_results$freqplot)
+      freq_plots <- list("Frequency_Plot" = freq_results$Freq_Plot)
       
       #freq_fitting <- freq_results$fit
       
-      freq_quantiles <- freq_results$fitted_quantiles
+      freq_quantiles <- freq_results$Freq_Fitted_Quantiles
       
       
       all_objects <- append(all_objects,    

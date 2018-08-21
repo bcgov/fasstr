@@ -14,14 +14,12 @@ compute_frequency_quantile(data = NULL, dates = Date, values = Value,
   months = 1:12, ignore_missing = FALSE)
 }
 \arguments{
-\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
-Leave blank if using \code{station_number} argument.}
+\item{data}{A data frame of annual flow data that contains columns of years, flow values, and measures (data type).}
 
 \item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
 Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
-Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second. Default \code{"Value"}.}
 
 \item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
@@ -35,7 +33,7 @@ Leave blank if using \code{data} argument.}
 \item{return_period}{Numeric vector of the estimated time interval, in years, between flow events of a similar size, 
 inverse of probability, used to estimate the frequency statistic. Required.}
 
-\item{use_max}{Logical valve to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}
+\item{use_max}{Logical value to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}
 
 \item{use_log}{Logical value to indicate log-scale tranforming of flow data before analysis. Default \code{FALSE}.}
 
@@ -84,8 +82,8 @@ Performs a volume frequency analysis on annual statistics from a streamflow data
 \dontrun{
 
 compute_frequency_quantile(station_number = "08NM116",
-                       roll_days = 7,
-                       return_period = 10)
+                           roll_days = 7,
+                           return_period = 10)
                             
 }
 }

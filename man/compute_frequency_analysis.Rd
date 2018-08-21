@@ -11,7 +11,7 @@ compute_frequency_analysis(data = NULL, events = Year,
   0.1, 0.02, 0.01, 0.001, 1e-04), fit_distr = c("PIII", "weibull"),
   fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
   fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1,
-  0.05, 0.01))
+  0.05, 0.01), plot_curve = TRUE)
 }
 \arguments{
 \item{data}{A data frame of annual flow data that contains columns of years, flow values, and measures (data type).}
@@ -23,7 +23,7 @@ compute_frequency_analysis(data = NULL, events = Year,
 \item{measures}{Column in \code{data} that contains measure identifiers (example data: '7-day low' or 'Annual Max'). 
 Default \code{"Measure"}.}
 
-\item{use_max}{Logical valve to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}
+\item{use_max}{Logical value to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}
 
 \item{use_log}{Logical value to indicate log-scale tranforming of flow data before analysis. Default \code{FALSE}.}
 
@@ -44,6 +44,8 @@ or "MLE" (maximum likelihood estimation). Selected as \code{"MOM"} if \code{fit_
 
 \item{fit_quantiles}{Numeric vector of quantiles to be estimated from the fitted distribution. 
 Default \code{c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)}.}
+
+\item{plot_curve}{Logical value to indicate plotting the computed curve on the probability plot. Default \code{TRUE}.}
 }
 \value{
 A list with the following elements:

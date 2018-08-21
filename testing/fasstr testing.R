@@ -7,6 +7,33 @@ devtools::install_github("bcgov/fasstr", ref = "devel",  build_vignettes = TRUE)
 #devtools::check()
 
 
+Q_stat <- add_date_variables(station_number = "08HB048") %>% 
+  add_rolling_means(roll_days = 7) %>% 
+  filter(DayofYear == 200) %>% 
+  select(Year, value = Q7Day) %>% 
+  mutate(Year = as.character(Year),
+         Measure22 = "7-day") %>% 
+  rename(TESTING=Year)
+
+Q_stat2 <- Q_stat[1,]
+Q_stat2$TESTING = "1988b"
+Q_stat2$value = 100
+Q_stat2$Measure22 = "7-day"
+
+
+Q_stat <- bind_rows(Q_stat, Q_stat2)
+
+test <- compute_frequency_analysis(data = Q_stat,
+                                   events = TESTING,
+                                   values = value,
+                                   measures = Measure22)
+
+test2 <- compute_annual_frequencies(station_number = "08HB048",
+                                    plot_curve = TRUE)[[3]]
+test3 <- compute_hydat_peak_frequencies(station_number = "08HB048")[[3]]
+
+
+library(fasstr)
 
 library(dplyr)
 

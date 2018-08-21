@@ -9,8 +9,15 @@ Updated: 20 August 2018
 
 #### Updates:
 
+  * frequency analysis updates:
+      * option to plot the computed curve or not
+      * changed the names of the outputted objects
+      * changed the measure names (rolling-day names of the annual_freq analysis (ex from Q007-day-avg to 7-Day))
+      * All parameter documentation info in the compute_frequency_analysis function
+      * updated full_analysis to include new changes
   * Completed Users Guide vignette
   * Completed Full Analysis vignette
+  * Completed Frequency Analysis Vignette
   * Updated filetype argument in the write_ functions
   * Updated some plot object names
   

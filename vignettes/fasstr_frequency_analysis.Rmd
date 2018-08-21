@@ -1,6 +1,5 @@
 ---
 title: "'fasstr' Frequency Analysis"
-date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -10,6 +9,10 @@ vignette: >
 
 ```{r options, include=FALSE}
 knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")))
+```
+
+```{r, include=FALSE}
+library(fasstr)
 ```
 
 ### UNDER CONSTRUCTION
@@ -28,5 +31,128 @@ Viewing the volume duration plot
 Analystical Freuency analysis options (ft dist, and method)
 ...
 
+## Introduction
+
+These functions plot probabilties of flow using chosen plotting and calcualtes quantiles based on fitting data to distribtuiobns
+
+5 outputs for most functions, more details below
+
+1) Freq_Analysis_Data - data used for analysis
+2) Freq_Plot_Data - data probabilites plotted
+3) Freq_Plot - plot of probabilities
+4) Freq_Fitting - the fitdistplus::fitdist object that contains info on the computed curve
+5) Freq_Fitted_Quantiles - the fitted quanties
 
 
+## Functions and Data Inputs
+
+
+compute_annual_frequencies() - station_number or data (other daily data)
+Outputs all 5 
+
+compute_HYDAT_peak_frequencies() - station_number
+
+compute_frequency_quantile() - returns just the quantile of a certain window and return period
+
+compute_frequency_analysis() - custom data (annual or otherwise)
+Main function within the other functions.  Must provide a dataset with three columns:
+
+1) events - the year or other label to identify the specific flow event (could have 1999a and 1999b if doing a peaks over threshold)
+2) values - the flow value
+3) measures - the type of flow value/event (i.e. "Inst. Peak" or "7-Day Low")
+
+Here is an example of data taken from annual lowflows
+
+```{r, echo=TRUE, comment=NA}
+low_flows <- calc_annual_lowflows(station_number = "08NM116", 
+                                  start_year = 1980, 
+                                  end_year = 2000,
+                                  roll_days = 7)
+low_flows <- dplyr::select(low_flows, Year, Value = Min_7_Day)
+low_flows <- dplyr::mutate(low_flows, Measure = "7-Day")
+low_flows
+```
+
+
+
+## Methods, Options, and Outputs
+
+The data used for the analysis is outputed into Freq_Analysis_Data where it lists the event or year and flow value for each measure.
+
+```{r, include=TRUE}
+freq_analysis <- compute_annual_frequencies(station_number = "08NM116",
+                                            roll_days = 7,
+                                            plot_curve = FALSE)
+```
+
+```{r, echo=TRUE, comment=NA}
+freq_analysis$Freq_Analysis_Data
+```
+
+### Frequency Plotting
+
+Takes the data and ranks it, default low to high, or high to low is `use_max = TRUE`. Then the probabilities of each event are determined using the following generalize plotting equation:
+
+P = (m - A) / (n + 1 - A - B)
+
+where:
+
+- m is the rank of the value
+- n the total number of events in the data
+- A & B are the constants depending on which plotting position is used (weibull, media or hazen)
+
+The probability plotting postions are selected using the `prob_plot_position` argument, listing `'weibull'` where A and B are 0, `'median'` where A and B are 0.3, or `'hazen'` where A and B are 0.5. Plotting position does not have an effect on the computer curve. 
+
+If the log data is used... `use_log`
+
+The ranked data, used for plotting is provided in the plotdata dataframe. It includes the data ranks in order for each measure, with the value and its probability, and the DISTPROB?????
+
+```{r, echo=TRUE, comment=NA}
+freq_analysis$Freq_Plot_Data
+```
+
+
+Using that data, it is plotted.  Can choose the vertical lines to plot using the `prob_scale_points` argument to list the breaks. Example of plot:
+
+```{r, echo=TRUE, fig.height = 4, fig.width = 7}
+freq_analysis$Freq_Plot
+```
+
+### Frequency Analysis
+
+required distirbtuin "PIII" or "weibull."  TO use logPearson III, must also choose `use_log`
+and ditribution fitting methods.  For PIII, you wil use method of moments or "MOM", but weibull can use "MOM" or "MLE"
+
+#### Fitting Parameters
+
+This packages use the fitdistrplus package to fit the data, and the results from the function are saved in the Freq_Fitting object in the list. The fitdist object contain information regarding the fitting process, including the shape, location, and scale parameters.  See the documentatioon for more information on the information. As per the documetnaiton, there are several ways to view the fitdist object, three of these including using the generic print(), summary() and plot() functions.
+
+```{r, echo=TRUE, comment=NA}
+print(freq_analysis$Freq_Fitting$`7-Day`)
+```
+
+```{r, echo=TRUE, comment=NA}
+summary(freq_analysis$Freq_Fitting$`7-Day`)
+```
+
+```{r, echo=TRUE, comment=NA, fig.height = 6, fig.width = 7}
+plot(freq_analysis$Freq_Fitting$`7-Day`)
+```
+
+To see how how the curve fits against the plotted events, you can
+
+```{r, include=TRUE, comment=NA, fig.height = 6, fig.width = 7}
+freq_analysis <- compute_annual_frequencies(station_number = "08NM116",
+                                            roll_days = 7,
+                                            plot_curve = TRUE)
+freq_analysis$Freq_Plot
+```
+
+#### Fitted Quantiles
+
+Based on the fitting parameters, the results are in this table...
+Can choose which quantiles bvy choosing the fit_quaniles aregument. the default is:
+
+```{r, echo=TRUE, comment=NA}
+freq_analysis$Freq_Fitted_Quantiles
+```

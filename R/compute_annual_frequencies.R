@@ -19,21 +19,7 @@
 #'    analysis). Analysis methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
 #'
 #' @inheritParams calc_annual_stats
-#' @param use_max  Logical valve to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.
-#' @param use_log  Logical value to indicate log-scale tranforming of flow data before analysis. Default \code{FALSE}.
-#' @param prob_plot_position Character string indicating the plotting positions used in the frequency plots, one of "weibull",
-#'    "median", or "hazen". Points are plotted against  (i-a)/(n+1-a-b) where \code{i} is the rank of the value; \code{n} is the 
-#'    sample size and \code{a} and \code{b} are defined as: (a=0, b=0) for Weibull plotting positions; (a=.2; b=.3) for Median 
-#'    plotting postions; and (a=.5; b=.5) for Hazen plotting positions. Default \code{"weibull"}.
-#' @param prob_scale_points  Numeric vector of probabilities to be plotted along the X axis in the frequency plot. Inverse of 
-#'    return period. Default \code{c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001)}.
-#' @param fit_distr Character string identifying the distribution to fit annual data, one of "PIII" (Pearson Log III distribution) 
-#'    or "weibull" (Weibull distribution). Default \code{"PIII"}.
-#' @param fit_distr_method  Character string identifying the method used to fit the distribution, one of  "MOM" (method of moments) 
-#'    or "MLE" (maximum likelihood estimation). Selected as \code{"MOM"} if \code{fit_distr}=="PIII" (default) or \code{"MLE"} if 
-#'     \code{fit_distr}=="weibull".
-#' @param fit_quantiles Numeric vector of quantiles to be estimated from the fitted distribution. 
-#'    Default \code{c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)}.
+#' @inheritParams compute_frequency_analysis
 #' 
 #' @return A list with the following elements:
 #'   \item{Q_stat}{Data frame with computed annual summary statistics used in analysis}
@@ -67,6 +53,7 @@ compute_annual_frequencies <- function(data = NULL,
                                        fit_distr = c("PIII", "weibull"),
                                        fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
                                        fit_quantiles = c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),
+                                       plot_curve = TRUE,
                                        water_year = FALSE,
                                        water_year_start = 10,
                                        start_year = 0,
@@ -131,8 +118,6 @@ compute_annual_frequencies <- function(data = NULL,
   
   flow_data <- dplyr::select(flow_data, Date, Value)
   
-  if(fit_distr[1] == 'weibull' & any(flow_data$Value < 0, na.rm = TRUE))
-    stop("Cannot fit weibull distribution with negative flow values.", call. = FALSE)
   
   ## PREPARE FLOW DATA
   ## -----------------
@@ -149,8 +134,9 @@ compute_annual_frequencies <- function(data = NULL,
   for (day in roll_days) {
     flow_data_temp <- dplyr::select(flow_data, Date, Value)
     flow_data_temp <- add_rolling_means(flow_data_temp, roll_days = day, roll_align = roll_align)
-    names(flow_data_temp)[names(flow_data_temp) == paste0("Q", day, "Day")] <- paste("Q", formatC(day, width = 3, format = "d",
-                                                                                                  flag = "0"), "-day-avg", sep = "")
+    # names(flow_data_temp)[names(flow_data_temp) == paste0("Q", day, "Day")] <- paste("Q", formatC(day, width = 3, format = "d",
+    #                                                                                               flag = "0"), "-day-avg", sep = "")
+    names(flow_data_temp)[names(flow_data_temp) == paste0("Q", day, "Day")] <- paste0(day, "-Day")
     flow_data_temp <- dplyr::select(flow_data_temp, -Value)
     flow_data <- merge(flow_data, flow_data_temp, by = "Date", all = TRUE)
   }
@@ -164,17 +150,17 @@ compute_annual_frequencies <- function(data = NULL,
   # Calculate the min or max of the rolling means for each year
   flow_data <- dplyr::select(flow_data, -Date, -Value, -Year, -Month, -MonthName, -DayofYear, -dplyr::contains("Water"))
   
-  flow_data <- tidyr::gather(flow_data, Measure, value, -AnalysisYear)
+  flow_data <- tidyr::gather(flow_data, Measure, Value, -AnalysisYear)
   flow_data$Measure <- factor(flow_data$Measure, levels = unique(flow_data$Measure))
   
   Q_stat <- dplyr::summarise(dplyr::group_by(flow_data, AnalysisYear, Measure),
-                             value = ifelse(use_max,
-                                            max(value, na.rm = ignore_missing),
-                                            min(value, na.rm = ignore_missing)))
+                             Value = ifelse(use_max,
+                                            max(Value, na.rm = ignore_missing),
+                                            min(Value, na.rm = ignore_missing)))
   Q_stat <- dplyr::rename(Q_stat, Year = AnalysisYear)
   
-  # remove any Inf values
-  Q_stat$value[is.infinite(Q_stat$value)] <- NA
+  # remove any Inf Values
+  Q_stat$Value[is.infinite(Q_stat$Value)] <- NA
 
     # Data checks
   if (nrow(Q_stat) < 3) stop(paste0("Need at least 3 years of observations for analysis. There are only ", 
@@ -187,7 +173,7 @@ compute_annual_frequencies <- function(data = NULL,
   
   analysis <- compute_frequency_analysis(data = Q_stat,
                                          events = "Year",
-                                         values = "value",
+                                         values = "Value",
                                          measures = "Measure",
                                          use_max = use_max,
                                          use_log = use_log,
@@ -195,7 +181,8 @@ compute_annual_frequencies <- function(data = NULL,
                                          prob_scale_points = prob_scale_points,
                                          fit_distr = fit_distr,
                                          fit_distr_method = fit_distr_method,
-                                         fit_quantiles = fit_quantiles)
+                                         fit_quantiles = fit_quantiles,
+                                         plot_curve = plot_curve)
     
   return(analysis)
   

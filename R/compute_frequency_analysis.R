@@ -23,7 +23,7 @@
 #' @param values  Column in \code{data} that contains numeric flow values, in units of cubic metres per second. Default \code{"Value"}.
 #' @param measures  Column in \code{data} that contains measure identifiers (example data: '7-day low' or 'Annual Max'). 
 #'    Default \code{"Measure"}.
-#' @param use_max  Logical valve to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.
+#' @param use_max  Logical value to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.
 #' @param use_log  Logical value to indicate log-scale tranforming of flow data before analysis. Default \code{FALSE}.
 #' @param prob_plot_position Character string indicating the plotting positions used in the frequency plots, one of "weibull",
 #'    "median", or "hazen". Points are plotted against  (i-a)/(n+1-a-b) where \code{i} is the rank of the value; \code{n} is the 
@@ -38,6 +38,7 @@
 #'     \code{fit_distr}=="weibull".
 #' @param fit_quantiles Numeric vector of quantiles to be estimated from the fitted distribution. 
 #'    Default \code{c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)}.
+#' @param plot_curve Logical value to indicate plotting the computed curve on the probability plot. Default \code{TRUE}.
 #' 
 #' @return A list with the following elements:
 #'   \item{Q_stat}{Data frame with computed annual summary statistics used in analysis}
@@ -69,7 +70,8 @@ compute_frequency_analysis <- function(data = NULL,
                                        prob_scale_points = c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001),
                                        fit_distr = c("PIII", "weibull"),
                                        fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
-                                       fit_quantiles = c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)
+                                       fit_quantiles = c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),
+                                       plot_curve = TRUE
                                        ){
   
   # replicate the frequency analysis of the HEC-SSP program
@@ -99,6 +101,8 @@ compute_frequency_analysis <- function(data = NULL,
     stop("Cannot fit Weibull distribution on log-scale.", call. = FALSE)
   if (fit_distr[1] != "PIII" & fit_distr_method[1] == "MOM") 
     stop('MOM only can be used with PIII distribution.', call. = FALSE)
+  if (!is.logical(plot_curve))
+    stop("plot_curve must be logical (TRUE or FALSE).")
   
   
   # Check if data is provided
@@ -115,8 +119,8 @@ compute_frequency_analysis <- function(data = NULL,
 
   if (!as.character(substitute(values)) %in% names(data)) 
     stop("Values not found in data frame. Rename values column to 'Value' or identify the column using 'values' argument.", call. = FALSE)
-  names(data)[names(data) == as.character(substitute(values))] <- "value"
-  if (!is.numeric(data$value))  
+  names(data)[names(data) == as.character(substitute(values))] <- "Value"
+  if (!is.numeric(data$Value))  
     stop("Values in values column must be numeric.", call. = FALSE)
   
   if (!as.character(substitute(measures)) %in% names(data)) 
@@ -126,6 +130,9 @@ compute_frequency_analysis <- function(data = NULL,
   
   # Set the Q_stat dataframe
   Q_stat <-  data
+  
+  if(fit_distr[1] == 'weibull' & any(Q_stat$Value < 0, na.rm = TRUE))
+    stop("Cannot fit weibull distribution with negative flow values.", call. = FALSE)
   
   ## Define functions for analysis
   ##------------------------------
@@ -153,14 +160,14 @@ compute_frequency_analysis <- function(data = NULL,
   # Plot the data on the distrubtion
   
   # Compute the summary table for output
-  Q_stat_output <- tidyr::spread(Q_stat, Measure, value)
+  Q_stat_output <- tidyr::spread(Q_stat, Measure, Value)
   
   # See if a (natural) log-transform is to be used in the frequency analysis?
   # This flag also controls how the data is shown in the frequency plot
-  if(use_log)Q_stat$value <- log(Q_stat$value)
+  if(use_log)Q_stat$Value <- log(Q_stat$Value)
   
-  # make the plot. Remove any missing or infinite or NaN values
-  Q_stat <- Q_stat[is.finite(Q_stat$value),]  # remove missing/ Inf/ NaN values
+  # make the plot. Remove any missing or infinite or NaN Values
+  Q_stat <- Q_stat[is.finite(Q_stat$Value),]  # remove missing/ Inf/ NaN Values
   
   # get the plotting positions
   # From the HEC-SSP package, the  plotting positions are (m-a)/(n+1-a-b)
@@ -170,8 +177,8 @@ compute_frequency_analysis <- function(data = NULL,
   if(prob_plot_position[1] == 'hazen'  ){a <- 0.5; b <- 0.5}
   plotdata <- plyr::ddply(Q_stat, "Measure", function(x, a, b, use_max){
     # sort the data
-    x <- x[ order(x$value),]
-    x$prob <- ((1:length(x$value)) - a)/((length(x$value) + 1 - a - b))
+    x <- x[ order(x$Value),]
+    x$prob <- ((1:length(x$Value)) - a)/((length(x$Value) + 1 - a - b))
     if(use_max)x$prob <- 1 - x$prob   # they like to use p(exceedance) if using a minimum
     x$dist.prob <- stats::qnorm(1 - x$prob)
     x
@@ -180,16 +187,17 @@ compute_frequency_analysis <- function(data = NULL,
   # change the measure labels in the plot
   plotdata2 <- plotdata
   
-  # Setting dates and values to actual values. Some sort of environment() error in plotting due to function environment with dates and values
+  # Setting dates and Values to actual Values. Some sort of environment() error in plotting due to function environment with dates and Values
   # Error in as.list.environment(x, all.names = TRUE) :
   #   object 'Value' not found
   events = "Year"
   values = "Value"
+  measures = "Measure"
   
   
   plotdata2$Measure <- factor(plotdata2$Measure, levels = unique(plotdata2$Measure))
   
-  freqplot <- ggplot2::ggplot(data = plotdata2, ggplot2::aes(x = prob, y = value, group = Measure, color = Measure),
+  freqplot <- ggplot2::ggplot(data = plotdata2, ggplot2::aes(x = prob, y = Value, group = Measure, color = Measure),
                               environment = environment())+
     #ggplot2::ggtitle(paste(station_name, " Volume Frequency Analysis"))+
     ggplot2::geom_point()+
@@ -202,7 +210,7 @@ compute_frequency_analysis <- function(data = NULL,
                                                              labels = function(x){ifelse(x < 2, x, round(x,0))}))+
     ggplot2::scale_color_brewer(palette = "Set1") +
     ggplot2::theme_bw() +
-    ggplot2::labs(color = paste0('Events and\nComputed Curve')) +    
+    ggplot2::labs(color = paste0('Events')) +    
     ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                    panel.grid = ggplot2::element_line(size = .2),
                    axis.title = ggplot2::element_text(size = 12),
@@ -238,24 +246,24 @@ compute_frequency_analysis <- function(data = NULL,
   
   fit <- plyr::dlply(Q_stat, "Measure", function(x, distr, fit_method){
     start=NULL
-    # PIII is fit to log-of values unless use_log has been set, in which case data has previous been logged
-    if(distr == 'PIII' & !use_log){x$value <- log10(x$value)}
-    # get starting values
+    # PIII is fit to log-of Values unless use_log has been set, in which case data has previous been logged
+    if(distr == 'PIII' & !use_log){x$Value <- log10(x$Value)}
+    # get starting Values
     if(distr == 'PIII'){
       # Note that the above forgot to mulitply the scale by the sign of skewness .
       # Refer to Page 24 of the Bulletin 17c
-      m <- mean(x$value)
-      v <- stats::var(x$value)
-      s <- stats::sd(x$value)
-      g <- e1071::skewness(x$value, type = 2)
+      m <- mean(x$Value)
+      v <- stats::var(x$Value)
+      s <- stats::sd(x$Value)
+      g <- e1071::skewness(x$Value, type = 2)
       
       # This can be corrected, but HEC Bulletin 17b does not do these corrections
       # Correct the sample skew for bias using the recommendation of
       # Bobee, B. and R. Robitaille (1977). "The use of the Pearson Type 3 and Log Pearson Type 3 distributions revisited."
       # Water Resources Reseach 13(2): 427-443, as used by Kite
-      #n <- length(x$value)
+      #n <- length(x$Value)
       #g <- g*(sqrt(n*(n-1))/(n-2))*(1+8.5/n)
-      # We will use method of moment estimates as starting values for the MLE search
+      # We will use method of moment estimates as starting Values for the MLE search
       
       my_shape <- (2 / g) ^ 2
       my_scale <- sqrt(v) / sqrt(my_shape) * sign(g)
@@ -264,8 +272,8 @@ compute_frequency_analysis <- function(data = NULL,
       start <- list(shape = my_shape, location = my_location, scale = my_scale)
     }
     
-    if(fit_method == "MLE") {fit <- fitdistrplus::fitdist(x$value, distr, start = start, control = list(maxit = 1000)) }# , trace=1, REPORT=1))
-    if(fit_method == "MOM") {fit <- fitdistrplus::fitdist(x$value, distr, start = start,
+    if(fit_method == "MLE") {fit <- fitdistrplus::fitdist(x$Value, distr, start = start, control = list(maxit = 1000)) }# , trace=1, REPORT=1))
+    if(fit_method == "MOM") {fit <- fitdistrplus::fitdist(x$Value, distr, start = start,
                                                           method = "mme", order = 1:3, memp = ePIII, control = list(maxit = 1000))
     } # fixed at MOM estimates
     fit
@@ -282,7 +290,7 @@ compute_frequency_analysis <- function(data = NULL,
     if(use_max) prob <- 1 - prob
     quant <- stats::quantile(x, prob = prob)
     quant <- unlist(quant$quantiles)
-    if(x$distname == 'PIII' & !use_log)quant <- 10 ^ quant # PIII was fit to the log-values
+    if(x$distname == 'PIII' & !use_log)quant <- 10 ^ quant # PIII was fit to the log-Values
     if(use_max) prob <- 1 - prob  # reset for adding to data frame
     if(use_log) quant <- exp(quant) # transforma back to original scale
     res <- data.frame(Measure = measure, distr = x$distname, prob = prob, quantile = quant , stringsAsFactors = FALSE)
@@ -292,6 +300,9 @@ compute_frequency_analysis <- function(data = NULL,
   
   # get the transposed version
   fitted_quantiles$Return <- 1 / fitted_quantiles$prob
+  
+  fitted_quantiles$Measure <- factor(fitted_quantiles$Measure, levels = unique(fitted_quantiles$Measure))
+  
   fitted_quantiles_output <- tidyr::spread(fitted_quantiles, Measure, quantile)
   fitted_quantiles_output <- dplyr::rename(fitted_quantiles_output,
                                            Distribution = distr,
@@ -307,7 +318,7 @@ compute_frequency_analysis <- function(data = NULL,
     if(use_max) prob <- 1 - prob
     quant <- stats::quantile(x, prob = prob)
     quant <- unlist(quant$quantiles)
-    if(x$distname == 'PIII' & !use_log)quant <- 10 ^ quant # PIII was fit to the log-values
+    if(x$distname == 'PIII' & !use_log)quant <- 10 ^ quant # PIII was fit to the log-Values
     if(use_max) prob <- 1 - prob  # reset for adding to data frame
     if(use_log) quant <- exp(quant) # transforma back to original scale
     res <- data.frame(Measure = measure, distr = x$distname, prob = prob, quantile = quant , stringsAsFactors = FALSE)
@@ -316,15 +327,25 @@ compute_frequency_analysis <- function(data = NULL,
   }, prob = fit_quantiles_plot, fit = fit, use_max = use_max, use_log = use_log)
   
   
-  freqplot <- freqplot +
-    ggplot2::geom_line(data = fitted_quantiles_plot, ggplot2::aes(x = prob, y = quantile, group = Measure, color = Measure))
+  if (plot_curve) {
+    freqplot <- freqplot +
+      ggplot2::geom_line(data = fitted_quantiles_plot, ggplot2::aes(x = prob, y = quantile, group = Measure, color = Measure)) +
+      ggplot2::labs(color = paste0('Events and\nComputed Curve'))  
+  }
   
   
-  freq_results <- list(Q_stat = Q_stat,
-                       plotdata = dplyr::as_tibble(plotdata),  # has the plotting positions for each point in frequency analysis
-                       freqplot = freqplot,
-                       fit = fit,               # list of fits of freq.distr to each measure
-                       fitted_quantiles = fitted_quantiles_output#,             # fitted quantiles and their transposition
+  
+  # Other modifications for outputs
+  
+  row.names(Q_stat) <- 1:nrow(Q_stat)
+  
+  
+  
+  freq_results <- list(Freq_Analysis_Data = dplyr::as_tibble(Q_stat),
+                       Freq_Plot_Data = dplyr::as_tibble(plotdata),  # has the plotting positions for each point in frequency analysis
+                       Freq_Plot = freqplot,
+                       Freq_Fitting = fit,               # list of fits of freq.distr to each measure
+                       Freq_Fitted_Quantiles = dplyr::as_tibble(fitted_quantiles_output)#,             # fitted quantiles and their transposition
   )
   
   

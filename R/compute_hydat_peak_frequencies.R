@@ -17,6 +17,7 @@
 #'    daily discharge values from all years, unless specified. Function will calculate using all values in the provided data (no grouped
 #'    analysis). Analysis methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
 #'
+#' @inheritParams compute_frequency_analysis
 #' @inheritParams compute_annual_frequencies
 #' @param station_number A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 #'    which to extract annual peak minimum or maximum instantaneous streamflow data from a HYDAT database. Requires \code{tidyhydat} 
@@ -52,7 +53,8 @@ compute_hydat_peak_frequencies <- function(station_number = NULL,
                                            fit_quantiles = c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),
                                            start_year = 0,
                                            end_year = 9999,
-                                           exclude_years = NULL){
+                                           exclude_years = NULL,
+                                           plot_curve = TRUE){
   
   # replicate the frequency analysis of the HEC-SSP program
   # refer to Chapter 7 of the user manual
@@ -108,7 +110,7 @@ compute_hydat_peak_frequencies <- function(station_number = NULL,
   if (!use_max & nrow(inst_peaks) == 0) stop("No minimum peak flow data available for this station_number.", call. = FALSE) 
 
   inst_peaks$Year <- lubridate::year(inst_peaks$Date)
-  inst_peaks <- dplyr::select(inst_peaks, Year, Measure = PEAK_CODE, value = Value)
+  inst_peaks <- dplyr::select(inst_peaks, Year, Measure = PEAK_CODE, Value)
   inst_peaks <- dplyr::mutate(inst_peaks, Measure = paste0("Instantaneous ", ifelse(use_max,"Maximum", "Minimum")))
   
   # Filter peak data
@@ -129,7 +131,7 @@ compute_hydat_peak_frequencies <- function(station_number = NULL,
   
   analysis <- compute_frequency_analysis(data = Q_stat,
                                          events = "Year",
-                                         values = "value",
+                                         values = "Value",
                                          measures = "Measure",
                                          use_max = use_max,
                                          use_log = use_log,
@@ -137,7 +139,8 @@ compute_hydat_peak_frequencies <- function(station_number = NULL,
                                          prob_scale_points = prob_scale_points,
                                          fit_distr = fit_distr,
                                          fit_distr_method = fit_distr_method,
-                                         fit_quantiles = fit_quantiles)
+                                         fit_quantiles = fit_quantiles,
+                                         plot_curve = plot_curve)
   
   return(analysis)
   
