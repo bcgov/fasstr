@@ -13,7 +13,7 @@ warning = FALSE,
 message = FALSE)
 ```
 
-### July 2018
+### August 2018
 
 fasstr, the Flow Analysis Summary Statistics Tool for R, is a set of [R](http://www.r-project.org) functions to prepare, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.
 
@@ -723,11 +723,11 @@ There are four fasstr functions that perform volume frequency analyses on annual
 
 The `compute_annual_frequencies()` performs an annual daily (or rolling mean) low-flow (by default) or high-flow (using `use_max = TRUE` argument) frequency analysis on annual series. This analysis uses the daily mean lows or highs. The `compute_hydat_peak_frequencies()` function performs an annual instantaneous low (by default) or high peak frequency analysis. The "data" argument cannot be used for the HYDAT peak analysis. Both functions output several object in a list:
 
-1. $Q_stat - Tibble of computed annual minimums (or maximums)
-2. $plotdata - Tibble of plotting coordinates used in the frequency plot
-3. $freqplot - ggplot2 object of the frequency plot
-4. $fit - List of fitted objects to fit the quantiles
-5. $fitted_quantiles - Tibble with fitted quantiles.
+1. $Freq_Analysis_Data - Tibble of computed annual minimums (or maximums)
+2. $Freq_Plot_Data - Tibble of plotting coordinates used in the frequency plot
+3. $Freq_Plot - ggplot2 object of the frequency plot
+4. $Freq_Fitting - List of fitted objects to fit the quantiles
+5. $Freq_Fitted_Quantiles - Tibble with fitted quantiles.
 
 The `compute_frequency_quantile()` function performs annual daily (or rolling mean) low-flow (by default) or high-flow (using `use_max = TRUE` argument) frequency analysis on annual series but only returns the fitted quantile based on the selected return period. Both the numeric arguments "roll_days" and "return_period" are required. It results in a single value.  For example, supplying `roll_days = 7` and `return_period = 10` to the function with a dataset will return the 7-day low-flow with a 10-year return period (i.e. 7Q10).
 

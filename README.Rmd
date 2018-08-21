@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 
 </div>
 
-The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http://www.r-project.org) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
+The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http://www.r-project.org) functions to clean/prepare, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
 
 
 
@@ -31,7 +31,7 @@ The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http:
 
 This package provides functions with solutions for streamflow data:
 
-- tidying (to prepare data for analyses; `add_*` and `fill_*` functions),
+- cleaning (to prepare data for analyses; `add_*` and `fill_*` functions),
 - screening (to look for outliers and missing data; `screen_*` functions),
 - analyzing (basic summary statistics, frequency analyses, trending ;`calc_*` and `compute_*` functions), and 
 - visualizing (to plot statistics; `plot_*` functions), amongst others.
@@ -89,7 +89,7 @@ This package allows for multiple stations (or other groupings) to be analyzed in
 
 ### Function Types
 
-#### Tidying 
+#### Cleaning 
 
 These functions, that start with `add_*` and `fill_*`, add columns and rows, respectively, to your streamflow data frame to help set up your data for further analysis. Examples include adding rolling means, adding date variables (Year, Month, DayofYear, etc.), adding basin areas, adding columns of volumetric and yield discharge, and filling dates with missing flow values with `NA`.
 
@@ -185,7 +185,7 @@ freq_results <- compute_annual_frequencies(station_number = "08NM116",
                                            start_year = 1981,
                                            end_year = 2010,
                                            roll_days = c(1,3,7,30))
-freq_results$freqplot
+freq_results$Freq_Plot
 ```
 
 ## Project Status

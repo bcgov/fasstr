@@ -22,11 +22,11 @@
 #' @inheritParams compute_frequency_analysis
 #' 
 #' @return A list with the following elements:
-#'   \item{Q_stat}{Data frame with computed annual summary statistics used in analysis}
-#'   \item{plotdata}{Data frame with co-ordinates used in frequency plot.}
-#'   \item{freqplot}{ggplot2 object with frequency plot}
-#'   \item{fit}{List of fitted objects from fitdistrplus.}
-#'   \item{fitted_quantiles}{Data frame with fitted quantiles.}
+#'   \item{Freq_Analysis_Data}{Data frame with computed annual summary statistics used in analysis.}
+#'   \item{Freq_Plot_Data}{Data frame with co-ordinates used in frequency plot.}
+#'   \item{Freq_Plot}{ggplot2 object with frequency plot}
+#'   \item{Freq_Fitting}{List of fitted objects from fitdistrplus.}
+#'   \item{Freq_Fitted_Quantiles}{Data frame with fitted quantiles.}
 #'   
 #'   
 #' @examples

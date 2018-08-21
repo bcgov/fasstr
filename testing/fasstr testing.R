@@ -7,6 +7,17 @@ devtools::install_github("bcgov/fasstr", ref = "devel",  build_vignettes = TRUE)
 #devtools::check()
 
 
+low_flows <- calc_annual_lowflows(station_number = "08NM116", 
+                                  start_year = 1980, 
+                                  end_year = 2000,
+                                  roll_days = 7)
+low_flows <- dplyr::select(low_flows, Year, Value = Min_7_Day)
+low_flows <- dplyr::mutate(low_flows, Measure = "7-Day")
+test <- compute_frequency_analysis(data = low_flows)
+test[[3]]
+
+
+
 Q_stat <- add_date_variables(station_number = "08HB048") %>% 
   add_rolling_means(roll_days = 7) %>% 
   filter(DayofYear == 200) %>% 
@@ -29,7 +40,7 @@ test <- compute_frequency_analysis(data = Q_stat,
                                    measures = Measure22)
 
 test2 <- compute_annual_frequencies(station_number = "08HB048",
-                                    plot_curve = TRUE)[[3]]
+                                    plot_curve = TRUE)
 test3 <- compute_hydat_peak_frequencies(station_number = "08HB048")[[3]]
 
 

@@ -5,14 +5,14 @@ fasstr <img src="tools/readme/fasstr.PNG" align="right" />
 
 <a rel="Exploration" href="https://github.com/BCDevExchange/docs/blob/master/discussion/projectstates.md"><img alt="Being designed and built, but in the lab. May change, disappear, or be buggy." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/exploration.svg" title="Being designed and built, but in the lab. May change, disappear, or be buggy." /></a> [![Travis build status](https://travis-ci.org/bcgov/fasstr.svg?branch=master)](https://travis-ci.org/bcgov/fasstr)
 
-The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http://www.r-project.org) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
+The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http://www.r-project.org) functions to clean/prepare, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
 
 Features
 --------
 
 This package provides functions with solutions for streamflow data:
 
--   tidying (to prepare data for analyses; `add_*` and `fill_*` functions),
+-   cleaning (to prepare data for analyses; `add_*` and `fill_*` functions),
 -   screening (to look for outliers and missing data; `screen_*` functions),
 -   analyzing (basic summary statistics, frequency analyses, trending ;`calc_*` and `compute_*` functions), and
 -   visualizing (to plot statistics; `plot_*` functions), amongst others.
@@ -76,7 +76,7 @@ This package allows for multiple stations (or other groupings) to be analyzed in
 
 ### Function Types
 
-#### Tidying
+#### Cleaning
 
 These functions, that start with `add_*` and `fill_*`, add columns and rows, respectively, to your streamflow data frame to help set up your data for further analysis. Examples include adding rolling means, adding date variables (Year, Month, DayofYear, etc.), adding basin areas, adding columns of volumetric and yield discharge, and filling dates with missing flow values with `NA`.
 
@@ -155,7 +155,7 @@ plot_daily_stats(station_number = "08NM116",
                  log_discharge = TRUE,
                  include_year = 1991,
                  ignore_missing = TRUE)
-#> $Daily_Stats
+#> $Daily_Statistics
 ```
 
 ![](tools/readme/README-plot1-1.png)
@@ -183,18 +183,7 @@ freq_results <- compute_annual_frequencies(station_number = "08NM116",
                                            end_year = 2010,
                                            roll_days = 7)
 freq_results$fitted_quantiles
-#>    Distribution Probability Return Period Q007-day-avg
-#> 1          PIII       0.010    100.000000    0.1929445
-#> 2          PIII       0.050     20.000000    0.2770067
-#> 3          PIII       0.100     10.000000    0.3318582
-#> 4          PIII       0.200      5.000000    0.4084737
-#> 5          PIII       0.500      2.000000    0.5881156
-#> 6          PIII       0.800      1.250000    0.8122160
-#> 7          PIII       0.900      1.111111    0.9463443
-#> 8          PIII       0.950      1.052632    1.0651498
-#> 9          PIII       0.975      1.025641    1.1735280
-#> 10         PIII       0.980      1.020408    1.2066583
-#> 11         PIII       0.990      1.010101    1.3050198
+#> NULL
 ```
 
 The probabilty of observed extreme events can also be plotted (using selected plotting position) along with the computed quantiles curve for comparison.
@@ -204,7 +193,7 @@ freq_results <- compute_annual_frequencies(station_number = "08NM116",
                                            start_year = 1981,
                                            end_year = 2010,
                                            roll_days = c(1,3,7,30))
-freq_results$freqplot
+freq_results$Freq_Plot
 ```
 
 ![](tools/readme/README-plot3-1.png)
