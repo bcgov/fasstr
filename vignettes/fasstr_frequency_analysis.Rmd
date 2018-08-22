@@ -33,7 +33,7 @@ Analystical Freuency analysis options (ft dist, and method)
 
 ## Introduction
 
-These functions plot probabilties of flow using chosen plotting and calcualtes quantiles based on fitting data to distribtuiobns
+These functions plot probabilties of flow using chosen plotting and calcualtes quantiles based on fitting data to distribtuiobns 7Q10, etc
 
 5 outputs for most functions, more details below
 
@@ -47,12 +47,22 @@ These functions plot probabilties of flow using chosen plotting and calcualtes q
 ## Functions and Data Inputs
 
 
-compute_annual_frequencies() - station_number or data (other daily data)
-Outputs all 5 
+#### Annual Daily Minimums/Maximums
 
-compute_HYDAT_peak_frequencies() - station_number
+To determine frequencies of annual daily minimum or daily maximum flows, or of any duration days, from a daily streamflow data set, the `compute_annual_frequencies()` and `compute_frequency_quantile()` functions will take daily data, either from HYDAT using the `station_number` argument or your own data frame of data using the `data` argument to complete an analysis. As with most fasstr functions, options for rolling days, missing values, and date filtering can be completed using the function arguments (roll_days, water_years, etc).
 
-compute_frequency_quantile() - returns just the quantile of a certain window and return period
+The `compute_annual_frequencies()` function will produce all five outputs from the analysis, as listed above, including the plotting data, plot, and computed quantiles. If just the quantile is desired, and assuming your data fits the distributions without looking at the other information, the `compute_frequency_quantile()` funtion can be used. By supplying the desired duration (roll_days argument) and the desired return period (return_period argument) a single quantile value will be returned from the data.
+
+
+#### Annual Instantaneous Minimums/Maximums from HYDAT
+
+To determine frequencies of annual instantaneous minimum or maximum flows from stations from HYDAT, the `compute_HYDAT_peak_frequencies()` function will extract the data, if available, and complete the analysis. As this data is extracted from HYDAT by listing the station using the `station_number` argument and no filtering is completed on the data, the `data` argument and most of the filtering arguments are not available for this function. If you have a data frame of your own instantaneous maximums or minimums, a custom analysis can be completed using the `compute_frequency_analysis()` function as described below.
+
+
+#### Custom Data
+
+
+
 
 compute_frequency_analysis() - custom data (annual or otherwise)
 Main function within the other functions.  Must provide a dataset with three columns:
@@ -112,7 +122,9 @@ freq_analysis$Freq_Plot_Data
 ```
 
 
-Using that data, it is plotted.  Can choose the vertical lines to plot using the `prob_scale_points` argument to list the breaks. Example of plot:
+Using that data, it is plotted.  
+Can choose to see if there are outliers in the data.
+Can choose the vertical lines to plot using the `prob_scale_points` argument to list the breaks. Example of plot:
 
 ```{r, echo=TRUE, fig.height = 4, fig.width = 7}
 freq_analysis$Freq_Plot
@@ -141,7 +153,7 @@ plot(freq_analysis$Freq_Fitting$`7-Day`)
 
 To see how how the curve fits against the plotted events, you can
 
-```{r, include=TRUE, comment=NA, fig.height = 6, fig.width = 7}
+```{r, echo=TRUE, fig.height = 4, fig.width = 7}
 freq_analysis <- compute_annual_frequencies(station_number = "08NM116",
                                             roll_days = 7,
                                             plot_curve = TRUE)
