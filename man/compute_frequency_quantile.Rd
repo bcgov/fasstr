@@ -7,7 +7,6 @@
 compute_frequency_quantile(data = NULL, dates = Date, values = Value,
   station_number = NULL, roll_days = NA, roll_align = "right",
   return_period = NA, use_max = FALSE, use_log = FALSE,
-  prob_plot_position = c("weibull", "median", "hazen"),
   fit_distr = c("PIII", "weibull"), fit_distr_method = ifelse(fit_distr
   == "PIII", "MOM", "MLE"), water_year = FALSE, water_year_start = 10,
   start_year = 0, end_year = 9999, exclude_years = NULL,
@@ -36,11 +35,6 @@ inverse of probability, used to estimate the frequency statistic. Required.}
 \item{use_max}{Logical value to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}
 
 \item{use_log}{Logical value to indicate log-scale tranforming of flow data before analysis. Default \code{FALSE}.}
-
-\item{prob_plot_position}{Character string indicating the plotting positions used in the frequency plots, one of "weibull",
-"median", or "hazen". Points are plotted against  (i-a)/(n+1-a-b) where \code{i} is the rank of the value; \code{n} is the 
-sample size and \code{a} and \code{b} are defined as: (a=0, b=0) for Weibull plotting positions; (a=.2; b=.3) for Median 
-plotting postions; and (a=.5; b=.5) for Hazen plotting positions. Default \code{"weibull"}.}
 
 \item{fit_distr}{Character string identifying the distribution to fit annual data, one of "PIII" (Pearson Log III distribution) 
 or "weibull" (Weibull distribution). Default \code{"PIII"}.}
