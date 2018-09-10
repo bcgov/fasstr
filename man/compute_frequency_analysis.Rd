@@ -2,7 +2,7 @@
 % Please edit documentation in R/compute_frequency_analysis.R
 \name{compute_frequency_analysis}
 \alias{compute_frequency_analysis}
-\title{Perform a custom annual low or high-flow frequency analysis}
+\title{Perform a custom annual frequency analysis}
 \usage{
 compute_frequency_analysis(data = NULL, events = Year,
   values = Value, measures = Measure, use_max = FALSE,
@@ -14,14 +14,14 @@ compute_frequency_analysis(data = NULL, events = Year,
   0.05, 0.01), plot_curve = TRUE)
 }
 \arguments{
-\item{data}{A data frame of annual flow data that contains columns of years, flow values, and measures (data type).}
+\item{data}{A data frame of flow data that contains columns of events, flow values, and measures (data type).}
 
 \item{events}{Column in \code{data} that contains event identifiers, typically year values. Default \code{"Year"}.}
 
 \item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second. Default \code{"Value"}.}
 
-\item{measures}{Column in \code{data} that contains measure identifiers (example data: '7-day low' or 'Annual Max'). 
-Default \code{"Measure"}.}
+\item{measures}{Column in \code{data} that contains measure identifiers (example data: '7-day low' or 'Annual Max'). Can have multiple
+measures (ex. '7-day low' and '30-day low') in column if multiple statistics are desired. Default \code{"Measure"}.}
 
 \item{use_max}{Logical value to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}
 
@@ -56,15 +56,23 @@ A list with the following elements:
   \item{Freq_Fitted_Quantiles}{Data frame with fitted quantiles.}
 }
 \description{
-Performs a flow volume frequency analysis from a streamflow dataset. Defaults to low-flow frequency 
-   analysis using minimums. Use \code{use_max} for high flow frequency analyses. Calculates the statistics from events
-   and flow values provided. Function will calculate using all values in the provided data (no grouped
-   analysis). Analysis methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
+Performs a flow volume frequency analysis from a streamflow dataset. Defaults to ranking by minimums; 
+   use \code{use_max} for to rank by maximum flows. Calculates the statistics from events
+   and flow values provided. Columns of events (years), their values (mins or maxs), and identifiers (lowflows, highlows, etc),
+   Function will calculate using all values in the provided data (no grouped analysis). Analysis methodology replicates that 
+   from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
 }
 \examples{
 \dontrun{
 
-compute_frequency_analysis(data = Q_stat,
+low_flows <- calc_annual_lowflows(station_number = "08NM116", 
+                                  start_year = 1980, 
+                                  end_year = 2000,
+                                  roll_days = 7)
+low_flows <- dplyr::select(low_flows, Year, Value = Min_7_Day)
+low_flows <- dplyr::mutate(low_flows, Measure = "7-Day")
+
+compute_frequency_analysis(data = low_flows,
                            events = Year,
                            values = Value,
                            measure = Measure)

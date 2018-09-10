@@ -11,18 +11,19 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 
-#' @title Perform a custom annual low or high-flow frequency analysis
+#' @title Perform a custom annual frequency analysis
 #'
-#' @description Performs a flow volume frequency analysis from a streamflow dataset. Defaults to low-flow frequency 
-#'    analysis using minimums. Use \code{use_max} for high flow frequency analyses. Calculates the statistics from events
-#'    and flow values provided. Function will calculate using all values in the provided data (no grouped
-#'    analysis). Analysis methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
+#' @description Performs a flow volume frequency analysis from a streamflow dataset. Defaults to ranking by minimums; 
+#'    use \code{use_max} for to rank by maximum flows. Calculates the statistics from events
+#'    and flow values provided. Columns of events (years), their values (mins or maxs), and identifiers (lowflows, highlows, etc),
+#'    Function will calculate using all values in the provided data (no grouped analysis). Analysis methodology replicates that 
+#'    from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
 #'
-#' @param data  A data frame of annual flow data that contains columns of years, flow values, and measures (data type).
+#' @param data  A data frame of flow data that contains columns of events, flow values, and measures (data type).
 #' @param events Column in \code{data} that contains event identifiers, typically year values. Default \code{"Year"}.
 #' @param values  Column in \code{data} that contains numeric flow values, in units of cubic metres per second. Default \code{"Value"}.
-#' @param measures  Column in \code{data} that contains measure identifiers (example data: '7-day low' or 'Annual Max'). 
-#'    Default \code{"Measure"}.
+#' @param measures  Column in \code{data} that contains measure identifiers (example data: '7-day low' or 'Annual Max'). Can have multiple
+#'    measures (ex. '7-day low' and '30-day low') in column if multiple statistics are desired. Default \code{"Measure"}.
 #' @param use_max  Logical value to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.
 #' @param use_log  Logical value to indicate log-scale tranforming of flow data before analysis. Default \code{FALSE}.
 #' @param prob_plot_position Character string indicating the plotting positions used in the frequency plots, one of "weibull",
@@ -51,7 +52,14 @@
 #' @examples
 #' \dontrun{
 #' 
-#' compute_frequency_analysis(data = Q_stat,
+#' low_flows <- calc_annual_lowflows(station_number = "08NM116", 
+#'                                   start_year = 1980, 
+#'                                   end_year = 2000,
+#'                                   roll_days = 7)
+#' low_flows <- dplyr::select(low_flows, Year, Value = Min_7_Day)
+#' low_flows <- dplyr::mutate(low_flows, Measure = "7-Day")
+#' 
+#' compute_frequency_analysis(data = low_flows,
 #'                            events = Year,
 #'                            values = Value,
 #'                            measure = Measure)
@@ -180,7 +188,8 @@ compute_frequency_analysis <- function(data = NULL,
     x <- x[ order(x$Value),]
     x$prob <- ((1:length(x$Value)) - a)/((length(x$Value) + 1 - a - b))
     if(use_max)x$prob <- 1 - x$prob   # they like to use p(exceedance) if using a minimum
-    x$dist.prob <- stats::qnorm(1 - x$prob)
+    #x$dist.prob <- stats::qnorm(1 - x$prob) temporarilty remove
+    x$return <- 1/x$prob
     x
   }, a = a, b = b, use_max = use_max)
   
@@ -320,7 +329,7 @@ compute_frequency_analysis <- function(data = NULL,
     quant <- unlist(quant$quantiles)
     if(x$distname == 'PIII' & !use_log)quant <- 10 ^ quant # PIII was fit to the log-Values
     if(use_max) prob <- 1 - prob  # reset for adding to data frame
-    if(use_log) quant <- exp(quant) # transforma back to original scale
+    #if(use_log) quant <- exp(quant) # transforma back to original scale
     res <- data.frame(Measure = measure, distr = x$distname, prob = prob, quantile = quant , stringsAsFactors = FALSE)
     rownames(res) <- NULL
     res
@@ -339,6 +348,10 @@ compute_frequency_analysis <- function(data = NULL,
   
   row.names(Q_stat) <- 1:nrow(Q_stat)
   
+  
+  plotdata <- dplyr::rename(plotdata, 
+                            Probability = prob,
+                            "Return Period" = return)
   
   
   freq_results <- list(Freq_Analysis_Data = dplyr::as_tibble(Q_stat),

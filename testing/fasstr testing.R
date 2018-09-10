@@ -7,6 +7,24 @@ devtools::install_github("bcgov/fasstr", ref = "devel",  build_vignettes = TRUE)
 #devtools::check()
 
 
+library(fasstr)
+
+
+
+low_flows <- calc_annual_lowflows(station_number = "08NM116", 
+                                  start_year = 1980, 
+                                  end_year = 2000,
+                                  roll_days = 7)
+low_flows <- dplyr::select(low_flows, Year, Value = Min_7_Day)
+low_flows <- dplyr::mutate(low_flows, Measure = "7-Day")
+
+test <- compute_frequency_analysis(data = low_flows,
+                           events = Year,
+                           values = Value,
+                           measure = Measure,
+                           use_log = FALSE)
+test$Freq_Fitted_Quantiles
+
 low_flows <- calc_annual_lowflows(station_number = "08NM116", 
                                   start_year = 1980, 
                                   end_year = 2000,

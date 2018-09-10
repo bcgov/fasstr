@@ -13,7 +13,7 @@ compute_frequency_quantile(data = NULL, dates = Date, values = Value,
   months = 1:12, ignore_missing = FALSE)
 }
 \arguments{
-\item{data}{A data frame of annual flow data that contains columns of years, flow values, and measures (data type).}
+\item{data}{A data frame of flow data that contains columns of events, flow values, and measures (data type).}
 
 \item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
 Date' (default). Leave blank if using \code{station_number} argument.}
