@@ -329,7 +329,7 @@ compute_frequency_analysis <- function(data = NULL,
     quant <- unlist(quant$quantiles)
     if(x$distname == 'PIII' & !use_log)quant <- 10 ^ quant # PIII was fit to the log-Values
     if(use_max) prob <- 1 - prob  # reset for adding to data frame
-    #if(use_log) quant <- exp(quant) # transforma back to original scale
+    #if(use_log) quant <- exp(quant) # transforma back to original scale     #commented out sep10 by JG
     res <- data.frame(Measure = measure, distr = x$distname, prob = prob, quantile = quant , stringsAsFactors = FALSE)
     rownames(res) <- NULL
     res
