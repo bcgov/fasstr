@@ -51,27 +51,6 @@ flowdata_import <- function(data = NULL, station_number = NULL){
 }
 
 
-## Check for dates, values, and groups proper formatting
-## -----------------------------------------------------
-
-format_all_cols <- function(data,
-                            dates = "Date",
-                            values = "Value",
-                            groups = "STATION_NUMBER",
-                            rm_other_cols = FALSE){
-  
-  # Check format all columns
-  data <- format_dates_col(data, dates = dates)
-  data <- format_values_col(data, values = values)
-  data <- format_groups_col(data, groups = groups)
-  
-  if (rm_other_cols) {
-    data <- dplyr::select(data, STATION_NUMBER, Date, Value)
-  }
-  
-  data
-}
-
 
 ## Check for dates and proper formatting
 ## -------------------------------------
@@ -159,15 +138,28 @@ format_groups_col <- function(data,
   data
 }
 
+## Check for dates, values, and groups proper formatting
+## -----------------------------------------------------
 
-one_station_number_stop <- function(station_number) {
-  if (length(station_number) > 1) stop("Multiple station_numbers were provided, only one can be listed for this function.", call. = FALSE)
+format_all_cols <- function(data,
+                            dates = "Date",
+                            values = "Value",
+                            groups = "STATION_NUMBER",
+                            rm_other_cols = FALSE){
+  
+  # Check format all columns
+  data <- format_dates_col(data, dates = dates)
+  data <- format_values_col(data, values = values)
+  data <- format_groups_col(data, groups = groups)
+  
+  if (rm_other_cols) {
+    data <- dplyr::select(data, STATION_NUMBER, Date, Value)
+  }
+  
+  data
 }
 
-one_station_number_stop_data <- function(data){
-  if (length(unique(data$STATION_NUMBER)) > 1) 
-    stop("Multiple station numbers were provided in the groups column, only one can be listed for this function. Filter for one station or remove the column.", call. = FALSE)
-}
+
 
 
 ## Fill missing dates, add date variables and add AnalysisYear, DoY, and/or Date
@@ -247,26 +239,17 @@ filter_complete_yrs <- function(complete_years, flow_data) {
 }
 
 
-## Transpose Data
-## --------------
-
-# data_transpose <- function(data){
-#   # Get list of columns to order the Statistic column after transposing
-#   stat_levels <- names(data[-(1:2)])
-#   
-#   # Transpose the columns for rows
-#   data <- tidyr::gather(data, Statistic, Value, -STATION_NUMBER, names(data[2]))
-#   data <- tidyr::spread(data, names(data[2]), Value)
-#   
-#   # Order the columns
-#   data$Statistic <- factor(data$Statistic, levels = stat_levels)
-#   data <- dplyr::arrange(data, STATION_NUMBER, Statistic)
-# }
-
-
-
-
 ## Various check functions
+
+
+one_station_number_stop <- function(station_number) {
+  if (length(station_number) > 1) stop("Multiple station_numbers were provided, only one can be listed for this function.", call. = FALSE)
+}
+
+one_station_number_stop_data <- function(data){
+  if (length(unique(data$STATION_NUMBER)) > 1) 
+    stop("Multiple station numbers were provided in the groups column, only one can be listed for this function. Filter for one station or remove the column.", call. = FALSE)
+}
 
 rolling_days_checks <- function(roll_days, roll_align , multiple = FALSE) {
   if (!multiple) {

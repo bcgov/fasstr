@@ -6,6 +6,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+  
 
 ```{r options, include=FALSE}
 knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")))
@@ -23,9 +24,9 @@ This vignette documents the usage of the `compute_annual_trends()` function in f
 
 ## Overview
 
-Computing an anntual trending analysis with fasstr allows for options and customization of both the inputs and outputs. This function takes 107 annual streamflow metrics (calculated using other annual fasstr functions) and calculate non-parametric trends using the [zyp](https://cran.r-project.org/web/packages/zyp/index.html) R package. See the zyp documentation for more information on the methods.
+Computing an annual trending analysis with fasstr allows for options and customization of both the inputs and outputs. This function takes 107 annual streamflow metrics (calculated using other annual fasstr functions) and calculate non-parametric trends using the [zyp](https://cran.r-project.org/web/packages/zyp/index.html) R package. See the zyp documentation for more information on the methods.
 
-Each annual metric/time-series is analyzed for for trends using Trend-Free-Pre-Whitening to remove lag-1 correlation (may artificially detect a significant trend). The slope of each metric over time is estimated using the Theil-Sen approach. If the estimated slope is different from zero, then the data are detrended by the slope and the AR(1) 1s calculated for the detrended time series. The residuals and the trend are combined and
+Each annual metric/time-series is analyzed for trends using Trend-Free-Pre-Whitening to remove lag-1 correlation (may artificially detect a significant trend). The slope of each metric over time is estimated using the Theil-Sen approach. If the estimated slope is different from zero, then the data are detrended by the slope and the AR(1) 1s calculated for the detrended time series. The residuals and the trend are combined and
 then tested for significance using the Mann-Kendall trend test.
 
 The trending function results in a list containing two tibble data frame outputs and, if selected, a trends plot for each metric.
@@ -68,12 +69,39 @@ lowflow_align        | calc_annual_lowflows | "right"
 timing_percent       | calc_annual_flow_timing | c(25,33.3,50,75)
 normal_percentiles   | calc_annual_outside_normal | c(25,75)
 
+#### Examples
+
+Example with default arguments:
+
+```{r, eval=FALSE}
+compute_annual_trends(station_number = "08NM116",
+                      zyp_method = "yuepilon",
+                      start_year = 1973, end_year = 2013)
+```
+
+Example with custom arguments:
+
+```{r, eval=FALSE}
+compute_annual_trends(station_number = "08NM116",
+                      zyp_method = "yuepilon",
+                      start_year = 1973, end_year = 2013,
+                      annual_percentiles = c(10,90),
+                      monthly_percentiles = c(10,20),
+                      stats_days = 1,
+                      stats_align = "right",
+                      lowflow_days = c(1,3,7,30),
+                      lowflow_align = "right",
+                      timing_percent = c(25,33,50,75),
+                      normal_percentiles = c(25,75))
+```
+
+
 This annual data is provided in the **Annual_Trends_Data** tibble objects.  The following is an example of the output, including all the annual metrics and a first few years of data used for the zyp trends analysis:
 
 ```{r, comment=NA, echo=FALSE}
 trends <- compute_annual_trends(station_number = "08NM116",
-                      zyp_method = "yuepilon",
-                      start_year = 1973, end_year = 2013)
+                                zyp_method = "yuepilon",
+                                start_year = 1973, end_year = 2013)
 
 data <- as.data.frame(trends[[1]])[,2:5]
 data[2] <- round(data[2],3)
@@ -123,18 +151,8 @@ median      	| the median of all values used for trending
 min	          | the minimum of all values used for trending
 max	          | the maximum of all values used for trending 
 
-The following is an example of the first 6 metrics of the **Annual_Trends_Results** tibble:
 
-```{r, comment=NA, echo=FALSE}
-trends <- compute_annual_trends(station_number = "08NM116",
-                      zyp_method = "yuepilon", zyp_alpha = 0.05,
-                      start_year = 1973, end_year = 2013)
-
-results <- head(as.data.frame(trends[[2]]))
-results
-```
-
-The following is an example of the outputed **Annual_Trends_Results** tibble from the Mission Creek HYDAT station from 1973 to 2013:
+The following is an example of the outputted **Annual_Trends_Results** tibble from the Mission Creek HYDAT station from 1973 to 2013:
 
 ```{r, echo=TRUE, comment=NA}
 trends_analysis$Annual_Trends_Results
@@ -142,9 +160,15 @@ trends_analysis$Annual_Trends_Results
 
 ### Annual Trends Plots
 
-Plot for each statistic
+To provide the fasstr user the ability to visualize the trends, a time-series plot for each metric is provided when `include_plots = TRUE` (default; set it to `FALSE` to produce no plots). Each plot will show the annual value for all years and if a numerical `zyp_alpha` value, a significance level indicating the trend exists, is provided (typically `0.05`) then a trend line will also be plotted through the data.  To plot no lines, set `zyp_alpha = NA` (default) and to plot the lines regardless of significance, set `zyp_alpha = 1`. The metric name along with the significance level will be included as the title of the plot.
 
-setting a zyp_alpha will plot a line if the significance value is equal or less than the alpha value.  TO plot a line through all of them, set eh value to 1. Example below witha alpha of 0.05. NA if nothing.
+The following plots demonstrate examples of where the `zyp_alpha` value is set to 0.05 and a trend is not, and is plotted, respectively.
+
+```{r, echo = FALSE, include=FALSE}
+trends <- compute_annual_trends(station_number = "08NM116",
+                                zyp_method = "yuepilon", zyp_alpha = 0.05,
+                                start_year = 1973, end_year = 2013)
+```
 
 ```{r,  echo=FALSE, comment=NA, fig.height = 3, fig.width = 7}
 trends[[51]]
@@ -155,35 +179,7 @@ trends$`Sep_Maximum`
 ```
 
 
-## 3. Plotting Trends
 
 
-
-
-
-
-Example default:
-
-```{r, eval=FALSE}
-fasstr::compute_annual_trends(station_number = "08NM116",
-                      zyp_method = "yuepilon",
-                      start_year = 1973, end_year = 2013)
-```
-
-Example with custom:
-```{r, eval=FALSE}
-fasstr::compute_annual_trends(station_number = "08NM116",
-                      zyp_method = "yuepilon",
-                      start_year = 1973, end_year = 2013,
-                      annual_percentiles = c(10,90),
-                      monthly_percentiles = c(10,20),
-                      stats_days = 1,
-                      stats_align = "right",
-                      lowflow_days = c(1,3,7,30),
-                      lowflow_align = "right",
-                      timing_percent = c(25,33,50,75),
-                      normal_percentiles = c(25,75),
-                      incl_data = TRUE)
-```
 
 

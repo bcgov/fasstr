@@ -1,6 +1,5 @@
 ---
-title: "fasstr Under the Hood"
-date: "`r Sys.Date()`"
+title: "Under the fasstr Hood"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -20,43 +19,96 @@ vignette: >
 
 The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http://www.r-project.org) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
 
-This vignette guide contains a look at the internal steps and functions used complete the analyses in this package.
-
-Cleaning Functions
-
-- Argument checks
-- flowdata_import - setting up data from data or station_number
-- prepping - original columns, original grouping (will regroup at end), ungrouping
-- formatting columns for analysis
-- cleaning data with appropriate dates, water years and rolling day and cumulative flows for grouping and analyzing
-- add columns or rows
-- return original column names (and maybe remove STATION_NUMBER)
-- return original grouping
+This vignette guide contains a look at the steps and internal functions used within the various fasstr functions.
 
 
-Tables
 
-- Argument checks
-- flowdata_import - setting up data from data or station_number
-- prepping - original columns and ungrouping
-- formatting columns for analysis
-- cleaning data with appropriate dates, water years and rolling day and cumulative flows for grouping and analyzing
-- filtering for selected years and months
-- summarizing (grouping by STATION_NUMBER)
-- more filtering if necessary
-- transposing
-- warnings for missing values
-- returning column names to original
+### Data Importing and Checking
 
-Plots
+requires a data frame or a station number.
 
-- Argument checks
-- flowdata_import - setting up data from data or station_number
-- formatting columns for analysis
-- calculate stats using functions
+fasstr extracts daily streamflow data from HYDAT.  Data extracted from HYDAT is formatted with the columns STATION_NUMBER, Date, Parameter, Value, and Symbol, so when using the `station_number` argument all of these will be returned in the data set.  fasstr only deals withthe STATION_NUMBER, Date, and Value columns.  something about how data mathces this... 
+
+
+There is a utils.R file in the package that contains many internal functions (not exported) used throughout the various functions. flowdata_import() function checks that either data or station_number are provided, it extracts the HYDAT data if station_number is provided, and checks if the data is a data frame.
+
+origuinal colmns names are saved so they may be reutned at some point, and any gouping is removed toa llow for goruping wiht the function
+
+Then to check if the data has the approprite formats for the analysis, there are several functions. If from HYDAT, the data is set up properly. its uses the util functions... Depending on what columns are required it will use the specific functions, or it will format all if all are required,
+
+now the data is formatted for analysis.
+
+
+### Data Cleaning and Preparing
+
+
+#### Cleaning Functions
+
+For cleaning functions, the columns are added or rows are inserted. Then if any of the column names were changed in the formatting, they are returned to their original names, and if there was a grouping beforehand, that group is returned.
+
+
+#### Analysis Functions
+
+For analyses, those cleaning functions are used to prepare the dat.
+Then to prepare for analysis, dates are filled and dates columns are added prepre_function() . Any other columsna re added as necassey (rolling means, etc)
+
+
+### Data Filtering
+
+- Filtering of the data 
+- years, months, etc
+- Some functions require to use data from years that have compelte data, there is another function for that.
+
+
+### Calculating Statistics
+
+- calculating the data - grouping (byt station numbers and then by whatever variable (month, years, day, etc)), summarizing, mutating the calculaings
+
+
+### Final Data Wrangling
+
+- more filtering
+- warnings if NA's
+- transpose if necessary
+
+- Then ungrouping the dataa
+- and returning some columns names back to the original if necessary
+
+
+
+### Plotting Statistics
+
 - setting some plotting objects (labels etc)
 - create a tibble of plots
     - group by station_number
     - nest
     - new column using purrr to create plots
 - grab column of plots into list with names
+
+
+
+
+## utils.R functions
+
+R file for list of functions that are used repeatedly throughout the various fasstr functions and to minimize repitition.
+
+Several data formatting and wrangling functions
+
+- **flowdata_import()** - checks if either `station_number` or `data` arguments are provided; extracts HYDAT data or sets up data for next steps.
+- **format_dates_col()** - checks for proper dates formats in column; renames columns to "Date" if not.
+- **format_values_col()** - checks for proper numeric formats in column; renames columns to "Value" if not.
+- **format_groups_col()** - checks for proper formats in column; renames columns to "STATION_NUMBER" if not; if no groups provided, a temporary STATION_NUMBER of "XXXXXXX" is created for analysis.
+- **format_all_cols()** - checks for proper formats of all dates, values, and groups columns; uses all three functions listed above; option to remove all other columns if `rm_other_cols = TRUE`.
+- **analysis_prep()** - fills missing dates with NA; adds dates columns of Years, day of years, and dates; formatted to calendar or water year as specified.
+- **filter_complete_yrs()** - filters data for years with which there is only complete annual data; required for some analyses.
+
+Most other functions in utils.R are argument checks.
+
+
+
+## Documentation
+
+Many of the arguments are described in the calc_annual_stats() and plot_annual_stats() functions, and many of the functions reference their argument descriptions using @inheritParams, unless there are specific arguments to describe for a function. 
+
+
+
