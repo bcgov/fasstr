@@ -23,73 +23,80 @@ This vignette guide contains a look at the steps and internal functions used wit
 
 ### Data Importing and Checking
 
-The fasstr functions primarily require daily mean streamflow data in cubic metres per second. As such, columns of dates and values are required. Many fasstr functions can analyze multiple stations (using grouping functions) so a column to group data by (typically station numbers) can be provided. Other types of data can be used (climate, water level, etc), but plots and some conversions are based on the units of discharge. As there are two ways to provide daily data to the fasstr functions, the "data" and the "station_number" arguments, there are several internal functions stored in the utils.R file that checks the data and formats the columns for analysis. The following describes the steps to ensure data is consistently set up for analysis.
+The fasstr functions primarily require daily mean streamflow data in cubic metres per second. As such, columns of dates and values are required. Many fasstr functions can analyze multiple stations (using grouping functions) so a column to group data by (typically station numbers) can be provided. Other types of data can be used (climate, water level, etc), but plots and some conversions are based on the units of discharge. As there are two ways to provide daily data to the fasstr functions, the "data" and the "station_number" arguments, there are several internal functions stored in the utils.R file that checks the data and formats the columns to ensure the data is prepared for the analysis. The following describes the steps to ensure data is consistently set up for analysis.
 
-The first step is to import the daily data. The internal flowdata_import() function provides checks on the "data" and "station_number" arguments, and either extracts daily data from HYDAT, or makes sure that "data" is in fact a data frame.
+The first step is to import daily data. The internal flowdata_import() function provides checks on the "data" and "station_number" arguments, and either extracts daily data from HYDAT (returns an error if the number isn't in HYDAT), or makes sure that "data" is in fact a data frame.
 
-At this point, all the column names of the data are saved as in a vector and any grouping (tidy grouping) is removed. The column names are saved as they may be changed in the following steps and the original names will be returned at the end of the analysis.  Any grouping is removed to allow for the appropriate grouping of the analysis. For the cleaning functions (add_ and fill_) any grouping will be returned.
+At this point in a fasstr function, all the column names of the data are saved as in a vector and any grouping (tidy grouping) is removed. The column names are saved as they may be changed in the following steps and the original names will be returned at the end of the analysis.  Any grouping is removed to allow for the appropriate grouping of the analysis. For the cleaning functions (add_ and fill_) any grouping will be returned.
 
-The next step ... consistenscy in columnnames for anlaysis.
+The next step is to ensure the column names of dates, values, and groups are consistent as "Date", "Value", and "STATION_NUMBER" (to match the HYDAT outputs), respectively, for the analysis. This is required as grouping and summarizing functions in the following steps use these specific column names, and provided data may not use the same names. The faciliate the column renaming and checking, there are several internal functions in the utils.R. For each of the three columns there is a function that checks if it exists, the proper formatting, and renames the columns to the appropraite name.  These functions are format_dates_col(), format_values_col(), and format_groups_col(). If no grouping is provided, a fake STATION_NUMBER of "XXXXXXX" is provided (and removed at the end of the fasstr function). As all three columns are required for many fasstr functions, there is a formal_all_cols() that uses all three fucntions, with an option to remove all other columns.
 
-fasstr extracts daily streamflow data from HYDAT.  Data extracted from HYDAT is formatted with the columns STATION_NUMBER, Date, Parameter, Value, and Symbol, so when using the `station_number` argument all of these will be returned in the data set.  fasstr only deals withthe STATION_NUMBER, Date, and Value columns.  something about how data mathces this... 
+At this point in a function there is now a data frame of data, usually called flow_data that has three columns of "Date", "Value", and "STATION_NUMBER", that is ready to be cleaned for analysis.
 
-
-There is a utils.R file in the package that contains many internal functions (not exported) used throughout the various functions. flowdata_import() function checks that either data or station_number are provided, it extracts the HYDAT data if station_number is provided, and checks if the data is a data frame.
-
-
-Then to check if the data has the approprite formats for the analysis, there are several functions. If from HYDAT, the data is set up properly. its uses the util functions... Depending on what columns are required it will use the specific functions, or it will format all if all are required,
-
-now the data is formatted for analysis.
-
-
-Some functions use different data sources than daily data... frequency analysis HYDAT_peaks and compute_frequency_analysis() functions.
-
-
-### Data Cleaning and Preparing
-
-
-#### Cleaning Functions (add_ and fill_)
-
-For cleaning functions, the columns are added or rows are inserted. Then if any of the column names were changed in the formatting, they are returned to their original names, and if there was a grouping beforehand, that group is returned.
-
-
-#### Analysis Functions (calc_ and compute_)
-
-As the analysese group by various dates (years, months, days, etc) they need to be added. It is also important to fill any missing dates with NA so that 
-
-
-For analyses, those cleaning functions are used to prepare the dat.
-
-Then to prepare for analysis, dates are filled and dates columns are added prepre_function() . 
-
-As either calendar or water years can be selected, and they each have their own column names when using add_date_variables(), columns of AnalysisYear, AnalysisDoY, and AnalysisDate are created (and choose the calendar or water year) and used to group/summarize data in the analyses. The analysis date columns are ultimately returned to their original names (Year, DayofYear, Date) in the results.
-Any other columsna re added as necassey (rolling means, etc)
-
-
-### Data Filtering
-
-- Filtering of the data 
-- years, months, etc
-- Some functions require to use data from years that have compelte data, there is another function for that.
-
-
-### Calculating Statistics
-
-- calculating the data - grouping (byt station numbers and then by whatever variable (month, years, day, etc)), summarizing, mutating the calculaings
-
-
-### Final Data Wrangling
-
-- more filtering
-- warnings if NA's
-- transpose if necessary
-
-- Then ungrouping the dataa
-- and returning some columns names back to the original if necessary
+Note: some functions use different data sources than daily data. The compute_HYDAT_peaks_frequencies() does not permit the "data" argument and just extracts data from HYDAT (and sets it up appropriately) and the compute_frequency_analysis() function requires a unique dataset (see ?compute_frequency_analysis for more information on the function).
 
 
 
-### Plotting Statistics
+### Cleaning Functions (add_ and fill_)
+
+The fasstr cleaning functions (start with add_ or fill_) just add rows or columns of data so there are fewer steps than the other fasstr functions.
+
+After the data has been prepped with the appropriate columns, the columns are added with their equations or other functions, or dates are filled with NA if they are missing. Then if any of the column names were changed in the formatting, they are returned to their original names, and if there was a grouping beforehand, that grouping is returned.
+
+
+
+### Analysis Functions (calc_ and compute_)
+
+The fasstr analysis functions (start with calc_ or compute_ or screen_) require steps of cleaning (adding appropriate columns), filtering, analyzing and any final data wrangling.
+
+
+#### Data Cleaning and Preparing
+
+After the data has been prepped with the appropriate columns, additional columns of dates (years, months, days), rolling days, basin areas, yields or volumes may be added, depending on the analysis. Dates with no data are also filled with NA values so that complete years can be analyzed (and appropriate warnings made if NA's are produced). To facilitate these steps there is an internal function in the utils.R file called analysis_prep().  This function will fill the missing dates and add colums of Years, Months, DayofYears, and Dates to the data frame.  It also creates columns called AnalysisYear, AnalysisDoY, and AnalysisDate, that extracts the date variables from the appropriate calendar or water years date columns. This is to provide consistency to the analysis functions (as Year or WaterYear could be used depending on the water_year argument choice). The analysis date columns are ultimately returned to their original names (Year, DayofYear, Date) in the results. Any other columns are added as necessary using the necessary cleaning functions.
+
+At this point in a function the data frame of data, flow_data, has three columns of "Date", "Value", and "STATION_NUMBER", and any other date and necessary column required to be filtered for analysis.
+
+
+#### Data Filtering
+
+With all the necessary columns of data for analysis, the data can be filtered for the years, months, dates, etc as specified in the fasstr function arguments.  These are mostly completed with simple tidy filtering functions. However when using the complete_years argument in some of the fasstr functions, there is an internal function in the utils.R file called filter_complete_yrs() that removes data from years with incomplete data.
+
+At this point in a function the data frame of data, flow_data, has three columns of "Date", "Value", and "STATION_NUMBER", and any other date and necessary column, and is filtered for the analysis.
+
+
+#### Calculating Statistics
+
+Now that the data contains all the necessary data to summarize, using the tidy methods of the tidyverse (predominately tidyr and dplyr packages), data is grouped by the necessary variables. Data is usually grouped by STATION_NUMBER and then whatever time-frame variable the function calls for (years, months, days, etc).
+
+Then the data is typically analyzed using the dplyr::summarize() function (for means, median, minimums, etc).  If an analysis considers if missing data is available or not, then the na.rm argument is set to the ignore_missing function provided in the fasstr functions. If NAN or Inf values are produced in the results, then they are replaced with NA for consistency. If percentiles are being calculated, another code chunk will loop through each percentile selected and attach to the data.
+
+Data is then ungrouped to allow for further data wrangling and outputting.
+
+
+#### Final Data Wrangling
+
+To finalize the data results there are usually some final data filtering or wrangling steps. Some of these include some additonal filtering (usually when using the exclude_years argument; replaces data with NA), providing warnings if NA's are produced in the data, renaming the analysis date columns (AnalysisYear to Year; as reversing above cleaning functions), and returning the names of the groups (i.e. STATION_NUMBER column) if different, or removing it if it wasn't provided (as listed in the original column names vector described above).
+
+If the option to transpose the results data was set to TRUE with the transpose argument, then the data is gathered and spread such that each statistics is a single row as opposed to a column in the original results.
+
+After all wrangling, the final results are returned from the function as a tibble.
+
+
+### Plotting Functions (plot_)
+
+The fasstr plotting functions (start with plot_) take the data calculated in the analysis functions and then plot the data with set or custom plotting templates.
+
+#### Calculating Statistics
+
+using flowdata_import() function to get the HYDAT or data frame and set all data to Date, Value, and STATION_NUMBER columns using the format_all_cols() function.
+
+Then using the appropriate fasstr function, the statistics are calculated. Any final data wrangling is also completed to set it up for the plotting functions.
+
+#### Plotting Statistics
+
+Some variables may be created for labeling
+
+As many plots may be created, fasstr function utilize tidyverse packages (dplyr, tidyr, and purrr) to create a tibble of plots.  See this [link](http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/) for more information on the methods.
 
 - setting some plotting objects (labels etc)
 - create a tibble of plots
