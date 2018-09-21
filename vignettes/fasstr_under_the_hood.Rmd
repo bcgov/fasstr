@@ -25,7 +25,7 @@ This vignette guide contains a look at the steps and internal functions used wit
 
 The fasstr functions primarily require daily mean streamflow data in cubic metres per second. As such, columns of dates and values are required. Many fasstr functions can analyze multiple stations (using grouping functions) so a column to group data by (typically station numbers) can be provided. Other types of data can be used (climate, water level, etc), but plots and some conversions are based on the units of discharge. As there are two ways to provide daily data to the fasstr functions, the "data" and the "station_number" arguments, there are several internal functions stored in the utils.R file that checks the data and formats the columns to ensure the data is prepared for the analysis. The following describes the steps to ensure data is consistently set up for analysis.
 
-The first step is to import daily data. The internal flowdata_import() function provides checks on the "data" and "station_number" arguments, and either extracts daily data from HYDAT (returns an error if the number isn't in HYDAT), or makes sure that "data" is in fact a data frame.
+The first step is to import daily data. The internal flowdata_import() function provides checks on the "data" and "station_number" arguments, and either extracts daily data from HYDAT (returns an error if the number isn't in HYDAT) using the tidyhydat package, or makes sure that "data" is in fact a data frame.
 
 At this point in a fasstr function, all the column names of the data are saved as in a vector and any grouping (tidy grouping) is removed. The column names are saved as they may be changed in the following steps and the original names will be returned at the end of the analysis.  Any grouping is removed to allow for the appropriate grouping of the analysis. For the cleaning functions (add_ and fill_) any grouping will be returned.
 
@@ -95,20 +95,20 @@ Then using the appropriate fasstr function, the statistics are calculated. Any f
 #### Plotting Statistics
 
 Some variables may be created for labeling
+Some values with NA are provided with subtitute values for plotting so that the plot is still produced, but the data is not shown in the plot.  The user can then modify the function to get they data they need.
 
-As many plots may be created, fasstr function utilize tidyverse packages (dplyr, tidyr, and purrr) to create a tibble of plots.  See this [link](http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/) for more information on the methods.
+As many plots may be created, fasstr function utilize tidyverse packages (dplyr, tidyr, and purrr) to create a tibble of plots.  See this [link](http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/) for more information on the methods. This method allows for the creation of many plots in an efficient manner.
 
-- setting some plotting objects (labels etc)
-- create a tibble of plots
-    - group by station_number
-    - nest
-    - new column using purrr to create plots
-- grab column of plots into list with names
+- Group the data by STATION_NUMBER (or other grouping depending on the function) for each plot using dplyr::group().
+- Then using tidyr::nest() a tibble is created with two columns, the first being the STATION_NUMBER and the second being a tibble of data for each STATION_NUMBER (a tibble of tibbles).
+- Then using dplyr::mutate() a column of ggplots is created; and using purrr::map2() all of the plots can be created simultaneously (thus saving time in the function).
+- As this type of table isn't entirely user-friendly, each plot is extracted into a list and named appropriately.
 
-
+### Writing Functions (write_)
 
 
-## utils.R functions
+
+### Internal Functions (utils.R file)
 
 R file for list of functions that are used repeatedly throughout the various fasstr functions and to minimize repitition.
 
@@ -126,9 +126,27 @@ Most other functions in utils.R are argument checks.
 
 
 
-## Documentation
+### Documentation
 
 Many of the arguments are described in the calc_annual_stats() and plot_annual_stats() functions, and many of the functions reference their argument descriptions using @inheritParams, unless there are specific arguments to describe for a function. 
 
+
+### Package Dependencies
+
+- **dplyr** - used for many tidy functions (grouping, summarizing, etc)
+- **e1071** - used in the frequency analyses for determining skewness for the fitting distributions
+- **fitdistrplus** - used in the frequency analyses for fitting data to the distributions
+- **ggplot2** - used for plotting the data
+- **grDevices** - 
+- **lubridate** - used for easy creation of date columns
+- **PearsonDS** - used in the frequency analyses for fitting data to the distributions
+- **plyr** - used in the frequency analyses to handle data
+- **purrr** - used in the plotting functions to plot many plots simultaneously
+- **RcppRoll** - used to add rolling means
+- **scales** - used in the plotting functions to customize plots
+- **tidyhydat** - used to extract data from a HYDAT database
+- **tidyr** - used for many tidy functions (gather, spread, etc)
+- **writexl** - used to write data as Excel files
+- **zyp** - used in the trending function to calculate the trends
 
 
