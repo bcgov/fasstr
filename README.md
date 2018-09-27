@@ -55,15 +55,15 @@ Using the `data` option, a data frame of daily data containing columns of dates 
 
 ``` r
 head(data)
-#> # A tibble: 6 x 3
-#>   STATION_NUMBER Date       Value
-#>   <chr>          <date>     <dbl>
-#> 1 08NM116        1949-04-01  1.13
-#> 2 08NM116        1949-04-02  1.53
-#> 3 08NM116        1949-04-03  2.07
-#> 4 08NM116        1949-04-04  2.07
-#> 5 08NM116        1949-04-05  2.21
-#> 6 08NM116        1949-04-06  2.21
+# A tibble: 6 x 3
+  STATION_NUMBER Date       Value
+  <chr>          <date>     <dbl>
+1 08NM116        1949-04-01  1.13
+2 08NM116        1949-04-02  1.53
+3 08NM116        1949-04-03  2.07
+4 08NM116        1949-04-04  2.07
+5 08NM116        1949-04-05  2.21
+6 08NM116        1949-04-06  2.21
 ```
 
 Alternatively, you can directly extract a flow data set directly from a HYDAT database by listing station numbers in the `station_number` argument (ex. `station_number = "08NM116"` or `station_number = c("08NM116", "08NM242")`) while leavind the data arguments blank. A data frame of daily streamflow data for all stations listed will be extracted using `tidyhydat`. Use the following function to download a HYDAT database:
@@ -125,23 +125,23 @@ calc_longterm_stats(station_number = "08NM116",
                     end_year = 2010,
                     custom_months = 7:9, 
                     custom_months_label = "Summer")
-#> # A tibble: 14 x 8
-#>    STATION_NUMBER Month      Mean Median Maximum Minimum   P10   P90
-#>  * <chr>          <fct>     <dbl>  <dbl>   <dbl>   <dbl> <dbl> <dbl>
-#>  1 08NM116        Jan        1.22  1        9.5    0.160 0.540  1.85
-#>  2 08NM116        Feb        1.16  0.970    4.41   0.140 0.474  1.99
-#>  3 08NM116        Mar        1.85  1.40     9.86   0.380 0.705  3.80
-#>  4 08NM116        Apr        8.32  6.26    37.9    0.505 1.63  17.5 
-#>  5 08NM116        May       23.6  20.8     74.4    3.83  9.33  41.2 
-#>  6 08NM116        Jun       21.5  19.5     84.5    0.450 6.10  38.9 
-#>  7 08NM116        Jul        6.48  3.90    54.5    0.332 1.02  15   
-#>  8 08NM116        Aug        2.13  1.57    13.3    0.427 0.775  4.29
-#>  9 08NM116        Sep        2.19  1.58    14.6    0.364 0.735  4.35
-#> 10 08NM116        Oct        2.10  1.60    15.2    0.267 0.794  3.98
-#> 11 08NM116        Nov        2.04  1.73    11.7    0.260 0.560  3.90
-#> 12 08NM116        Dec        1.30  1.05     7.30   0.342 0.5    2.33
-#> 13 08NM116        Long-term  6.17  1.89    84.5    0.140 0.680 19.3 
-#> 14 08NM116        Summer     3.61  1.98    54.5    0.332 0.799  7.64
+# A tibble: 14 x 8
+   STATION_NUMBER Month      Mean Median Maximum Minimum   P10   P90
+ * <chr>          <fct>     <dbl>  <dbl>   <dbl>   <dbl> <dbl> <dbl>
+ 1 08NM116        Jan        1.22  1        9.5    0.160 0.540  1.85
+ 2 08NM116        Feb        1.16  0.970    4.41   0.140 0.474  1.99
+ 3 08NM116        Mar        1.85  1.40     9.86   0.380 0.705  3.80
+ 4 08NM116        Apr        8.32  6.26    37.9    0.505 1.63  17.5 
+ 5 08NM116        May       23.6  20.8     74.4    3.83  9.33  41.2 
+ 6 08NM116        Jun       21.5  19.5     84.5    0.450 6.10  38.9 
+ 7 08NM116        Jul        6.48  3.90    54.5    0.332 1.02  15   
+ 8 08NM116        Aug        2.13  1.57    13.3    0.427 0.775  4.29
+ 9 08NM116        Sep        2.19  1.58    14.6    0.364 0.735  4.35
+10 08NM116        Oct        2.10  1.60    15.2    0.267 0.794  3.98
+11 08NM116        Nov        2.04  1.73    11.7    0.260 0.560  3.90
+12 08NM116        Dec        1.30  1.05     7.30   0.342 0.5    2.33
+13 08NM116        Long-term  6.17  1.89    84.5    0.140 0.680 19.3 
+14 08NM116        Summer     3.61  1.98    54.5    0.332 0.799  7.64
 ```
 
 ### Plotting example 1: daily summary statistics
@@ -155,7 +155,7 @@ plot_daily_stats(station_number = "08NM116",
                  log_discharge = TRUE,
                  include_year = 1991,
                  ignore_missing = TRUE)
-#> $Daily_Statistics
+$Daily_Statistics
 ```
 
 ![](tools/readme/README-plot1-1.png)
@@ -168,7 +168,7 @@ Flow duration curves can be produced using the `plot_flow_duration()` function.
 plot_flow_duration(station_number = "08NM116",
                    start_year = 1981,
                    end_year = 2010)
-#> $Flow_Duration
+$Flow_Duration
 ```
 
 ![](tools/readme/README-plot2-1.png)
@@ -182,8 +182,21 @@ freq_results <- compute_annual_frequencies(station_number = "08NM116",
                                            start_year = 1981,
                                            end_year = 2010,
                                            roll_days = 7)
-freq_results$fitted_quantiles
-#> NULL
+freq_results$Freq_Fitted_Quantiles
+# A tibble: 11 x 4
+   Distribution Probability `Return Period` `7-Day`
+   <chr>              <dbl>           <dbl>   <dbl>
+ 1 PIII               0.01           100      0.193
+ 2 PIII               0.05            20      0.277
+ 3 PIII               0.1             10      0.332
+ 4 PIII               0.2              5      0.408
+ 5 PIII               0.5              2      0.588
+ 6 PIII               0.8              1.25   0.812
+ 7 PIII               0.9              1.11   0.946
+ 8 PIII               0.95             1.05   1.07 
+ 9 PIII               0.975            1.03   1.17 
+10 PIII               0.98             1.02   1.21 
+11 PIII               0.99             1.01   1.31 
 ```
 
 The probabilty of observed extreme events can also be plotted (using selected plotting position) along with the computed quantiles curve for comparison.

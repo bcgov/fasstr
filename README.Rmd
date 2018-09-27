@@ -75,7 +75,7 @@ data <- tidyhydat::hy_daily_flows("08NM116")
 data <- data[,c(1,2,4)]
 ```
 
-```{r flow_data}
+```{r flow_data, comment=NA}
 head(data)
 ```
 
@@ -135,7 +135,7 @@ Some functions have an argument called `complete_years` which can be used, when 
 
 To determine the summary statistics of an entire dataset and by month (mean, median, maximum, minimum, and some percentiles) you can use the `calc_longterm_stats()` function. If the 'Mission Creek near East Kelowna' hydrometric station is of interest you can list the station number in the `station_number` argument to obtain the data (if `tidyhydat` and HYDAT are installed). 
 
-```{r example1}
+```{r example1, comment=NA}
 calc_longterm_stats(station_number = "08NM116", 
                     start_year = 1981, 
                     end_year = 2010,
@@ -147,7 +147,7 @@ calc_longterm_stats(station_number = "08NM116",
 
 To visualize the daily streamflow patterns on an annual basis, the `plot_daily_stats()` function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the `start_year` and `end_year` arguments. We can also compare indivual years against the statistics using `include_year` argument like below.
 
-```{r plot1, fig.height = 4, fig.width = 10}
+```{r plot1, fig.height = 4, fig.width = 10, comment=NA}
 plot_daily_stats(station_number = "08NM116",
                  start_year = 1981,
                  end_year = 2010,
@@ -160,7 +160,7 @@ plot_daily_stats(station_number = "08NM116",
 
 Flow duration curves can be produced using the `plot_flow_duration()` function.
 
-```{r plot2, fig.height = 4, fig.width = 7}
+```{r plot2, fig.height = 4, fig.width = 7, comment=NA}
 plot_flow_duration(station_number = "08NM116",
                    start_year = 1981,
                    end_year = 2010)
@@ -170,17 +170,17 @@ plot_flow_duration(station_number = "08NM116",
 
 This package also provides a function, `compute_annual_frequencies()`, to complete frequency analyses (using the same methods as [HEC-SSP](http://www.hec.usace.army.mil/software/hec-ssp/)). The default fitting distribution is 'log-Pearson Type III', but the 'Weibull' distribution can also be used. Other default plotting and fitting methods are described in the function documentation. For this example, the 7-day low-flow (low-flow is default) quantiles are calculated for the Mission Creek hydrometric station using the 'log-Pearson Type III' distribution. With this, several low-flow indicators can be determined (i.e. 7Q5, 7Q10).
 
-```{r example2}
+```{r example2, comment=NA}
 freq_results <- compute_annual_frequencies(station_number = "08NM116",
                                            start_year = 1981,
                                            end_year = 2010,
                                            roll_days = 7)
-freq_results$fitted_quantiles
+freq_results$Freq_Fitted_Quantiles
 ```
 
 The probabilty of observed extreme events can also be plotted (using selected plotting position) along with the computed quantiles curve for comparison.
 
-```{r plot3, fig.height = 4, fig.width = 7}
+```{r plot3, fig.height = 4, fig.width = 7, comment=NA}
 freq_results <- compute_annual_frequencies(station_number = "08NM116",
                                            start_year = 1981,
                                            end_year = 2010,
