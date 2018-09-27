@@ -7,21 +7,18 @@
 compute_frequency_quantile(data = NULL, dates = Date, values = Value,
   station_number = NULL, roll_days = NA, roll_align = "right",
   return_period = NA, use_max = FALSE, use_log = FALSE,
-  prob_plot_position = c("weibull", "median", "hazen"),
-  fit_distr = c("PIII", "weibull"), fit_distr_method = ifelse(fit_distr ==
-  "PIII", "MOM", "MLE"), water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, exclude_years = NULL, months = 1:12,
-  ignore_missing = FALSE)
+  fit_distr = c("PIII", "weibull"), fit_distr_method = ifelse(fit_distr
+  == "PIII", "MOM", "MLE"), water_year = FALSE, water_year_start = 10,
+  start_year = 0, end_year = 9999, exclude_years = NULL,
+  months = 1:12, ignore_missing = FALSE)
 }
 \arguments{
-\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
-Leave blank if using \code{station_number} argument.}
+\item{data}{A data frame of flow data that contains columns of events, flow values, and measures (data type).}
 
 \item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
 Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
-Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second. Default \code{"Value"}.}
 
 \item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
@@ -35,14 +32,9 @@ Leave blank if using \code{data} argument.}
 \item{return_period}{Numeric vector of the estimated time interval, in years, between flow events of a similar size, 
 inverse of probability, used to estimate the frequency statistic. Required.}
 
-\item{use_max}{Logical valve to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}
+\item{use_max}{Logical value to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}
 
 \item{use_log}{Logical value to indicate log-scale tranforming of flow data before analysis. Default \code{FALSE}.}
-
-\item{prob_plot_position}{Character string indicating the plotting positions used in the frequency plots, one of "weibull",
-"median", or "hazen". Points are plotted against  (i-a)/(n+1-a-b) where \code{i} is the rank of the value; \code{n} is the 
-sample size and \code{a} and \code{b} are defined as: (a=0, b=0) for Weibull plotting positions; (a=.2; b=.3) for Median 
-plotting postions; and (a=.5; b=.5) for Hazen plotting positions. Default \code{"weibull"}.}
 
 \item{fit_distr}{Character string identifying the distribution to fit annual data, one of "PIII" (Pearson Log III distribution) 
 or "weibull" (Weibull distribution). Default \code{"PIII"}.}
@@ -84,8 +76,8 @@ Performs a volume frequency analysis on annual statistics from a streamflow data
 \dontrun{
 
 compute_frequency_quantile(station_number = "08NM116",
-                       roll_days = 7,
-                       return_period = 10)
+                           roll_days = 7,
+                           return_period = 10)
                             
 }
 }

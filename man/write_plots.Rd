@@ -4,8 +4,9 @@
 \alias{write_plots}
 \title{Write plots from a list into a directory or PDF document}
 \usage{
-write_plots(plots = NULL, foldername = "", plot_type = NULL, width = NA,
-  height = NA, units = "in", dpi = 300, combined_pdf = FALSE)
+write_plots(plots = NULL, foldername = "", plot_filetype = NULL,
+  width = NA, height = NA, units = "in", dpi = 300,
+  combined_pdf = FALSE)
 }
 \arguments{
 \item{plots}{List of plots to write to disk.}
@@ -13,7 +14,7 @@ write_plots(plots = NULL, foldername = "", plot_type = NULL, width = NA,
 \item{foldername}{Name of folder to create on disk (if it does not exist) to write each plot from list. 
 If using \code{combined_pdf} argument, then it will be the name of the PDF document.}
 
-\item{plot_type}{Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
+\item{plot_filetype}{Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
 Image type will be overwritten if using \code{combined_pdf} is used.}
 
 \item{width}{Numeric plot width in \code{units}. If not supplied, uses the size of current graphics device.}

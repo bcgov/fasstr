@@ -4,8 +4,9 @@
 \alias{write_objects_list}
 \title{Write all data frames and plots from a list of objects into a directory}
 \usage{
-write_objects_list(list = NULL, foldername = "", table_type = NULL,
-  plot_type = NULL, width = NA, height = NA, units = "in", dpi = 300)
+write_objects_list(list = NULL, foldername = "",
+  table_filetype = NULL, plot_filetype = NULL, width = NA,
+  height = NA, units = "in", dpi = 300)
 }
 \arguments{
 \item{list}{List of data frames and plots to write to disk.}
@@ -13,9 +14,9 @@ write_objects_list(list = NULL, foldername = "", table_type = NULL,
 \item{foldername}{Name of folder to create on disk (if it does not exist) to write each plot from list. 
 If using \code{combined_pdf} argument, then it will be the name of the PDF document.}
 
-\item{table_type}{Table file type to write. One of "csv", "xls", or "xslx".}
+\item{table_filetype}{Table file type to write. One of "csv", "xls", or "xslx".}
 
-\item{plot_type}{Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
+\item{plot_filetype}{Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
 Image type will be overwritten if using \code{combined_pdf} is used.}
 
 \item{width}{Numeric plot width in \code{units}. If not supplied, uses the size of current graphics device.}

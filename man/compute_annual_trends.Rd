@@ -9,8 +9,8 @@ compute_annual_trends(data = NULL, dates = Date, values = Value,
   basin_area = NA, water_year = FALSE, water_year_start = 10,
   start_year = 0, end_year = 9999, exclude_years = NULL,
   annual_percentiles = c(10, 90), monthly_percentiles = c(10, 20),
-  stats_days = 1, stats_align = "right", lowflow_days = c(1, 3, 7, 30),
-  lowflow_align = "right", timing_percent = c(25, 33, 50, 75),
+  stats_days = 1, stats_align = "right", lowflow_days = c(1, 3, 7,
+  30), lowflow_align = "right", timing_percent = c(25, 33, 50, 75),
   normal_percentiles = c(25, 75), ignore_missing = FALSE,
   include_plots = TRUE, zyp_alpha = NA)
 }

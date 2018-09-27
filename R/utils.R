@@ -19,27 +19,29 @@ dplyr::`%>%`
 
 flowdata_import <- function(data = NULL, station_number = NULL){
   
-  # Check if data is provided
+  # Check if both data and station_number are or arent't provided, must choose one
   if (is.null(station_number) & is.null(data))    
     stop("Must select one of data or station_number arguments to supply data.", call. = FALSE)
   if (!is.null(station_number) & !is.null(data))  
     stop("Must select either data or station_number arguments, not both, to supply data.", call. = FALSE)
   
+  # If a station_number is provided, check if they exist in HYDAT, if they do extract the daily data
   if (is.null(data)) {
     if (!file.exists(file.path(tidyhydat::hy_dir(),"HYDAT.sqlite3")))
       stop("A HYDAT database has not been downloaded yet using the tidyhydat::download_hydat() function. 
        Download HYDAT before using station_number argument.", call. = FALSE)
-    
     if (!is.character(station_number))  stop("station_number must be a character vector containing HYDAT station number(s).", call. = FALSE)
     if (!all(station_number %in% dplyr::pull(suppressMessages(tidyhydat::hy_stations()[1])))) 
       stop("One or more station numbers listed do not have historical daily flows in HYDAT.", call. = FALSE)
     data <- as.data.frame(suppressMessages(tidyhydat::hy_daily_flows(station_number =  station_number)))
+    
+  # If data is provided, make sure it's a data frame
   } else {
     if (!is.data.frame(data))  stop("data argument is not a data frame.", call. = FALSE)
     data <- as.data.frame(data)
   }
   
-  # Others
+  # Convert Parameter and Symbol columns (if they exist) to characters
   if ("Parameter" %in% names(data)) {
     data$Parameter <- as.character(data$Parameter)
   }
@@ -48,29 +50,9 @@ flowdata_import <- function(data = NULL, station_number = NULL){
   }
   
   data
+  
 }
 
-
-## Check for dates, values, and groups proper formatting
-## -----------------------------------------------------
-
-format_all_cols <- function(data,
-                            dates = "Date",
-                            values = "Value",
-                            groups = "STATION_NUMBER",
-                            rm_other_cols = FALSE){
-  
-  # Check format all columns
-  data <- format_dates_col(data, dates = dates)
-  data <- format_values_col(data, values = values)
-  data <- format_groups_col(data, groups = groups)
-  
-  if (rm_other_cols) {
-    data <- dplyr::select(data, STATION_NUMBER, Date, Value)
-  }
-  
-  data
-}
 
 
 ## Check for dates and proper formatting
@@ -79,15 +61,14 @@ format_all_cols <- function(data,
 format_dates_col <- function(data,
                              dates = "Date"){
   
-  # Check if exists
+  # Check if column exists
   if (!dates %in% names(data))  
     stop("Dates not found in data frame. Rename dates column to 'Date' or identify the column using 'dates' argument.", call. = FALSE)
   
-  # Rename values to "Value" (and change original if required so no duplication)
+  # Rename values to "Date" (and change original if required so no duplication)
   if ("Date" %in% colnames(data) & dates != "Date") {
     names(data)[names(data) == "Date"] <- "Date_orig"
   }
-  
   names(data)[names(data) == dates] <- "Date"
   
   # Check formatting
@@ -114,7 +95,7 @@ format_dates_col <- function(data,
 format_values_col <- function(data,
                               values = "Value"){
   
-  # Check if exists
+  # Check if column exists
   if (!values %in% names(data)) 
     stop("values not found in data frame. Rename values column to 'Value' or identify the column using 'values' argument.", call. = FALSE)
   
@@ -122,7 +103,6 @@ format_values_col <- function(data,
   if ("Value" %in% colnames(data) & values != "Value") {
     names(data)[names(data) == "Value"] <- "Value_orig"
   }
-  
   names(data)[names(data) == values] <- "Value"
   
   # Check formatting
@@ -138,7 +118,7 @@ format_values_col <- function(data,
 format_groups_col <- function(data,
                               groups = "STATION_NUMBER"){
   
-  # Check if exists
+  # Check if column exists
   if (groups != "STATION_NUMBER" & !groups %in% names(data)) 
     stop("Groups not found in data frame. Leave blank for no grouping, rename groups column to 'STATION_NUMBER', or identify the column using 'groups' argument.", call. = FALSE)
   
@@ -146,28 +126,42 @@ format_groups_col <- function(data,
     data[, groups] <- "XXXXXXX"
   }
   
-  # Rename values to "Value" (and change original if required so no duplication)
+  # Rename values to "STATION_NUMBER" (and change original if required so no duplication)
   if ("STATION_NUMBER" %in% colnames(data) & groups != "STATION_NUMBER") {
     names(data)[names(data) == "STATION_NUMBER"] <- "STATION_NUMBER_orig"
   }
   
   names(data)[names(data) == groups] <- "STATION_NUMBER"
   
-  # Check formatting
+  # Change formaet to character
   data$STATION_NUMBER <- as.character(data$STATION_NUMBER)
   
   data
 }
 
+## Check for dates, values, and groups proper formatting
+## -----------------------------------------------------
 
-one_station_number_stop <- function(station_number) {
-  if (length(station_number) > 1) stop("Multiple station_numbers were provided, only one can be listed for this function.", call. = FALSE)
+format_all_cols <- function(data,
+                            dates = "Date",
+                            values = "Value",
+                            groups = "STATION_NUMBER",
+                            rm_other_cols = FALSE){
+  
+  # Check format all columns
+  data <- format_dates_col(data, dates = dates)
+  data <- format_values_col(data, values = values)
+  data <- format_groups_col(data, groups = groups)
+  
+  # Remove all other columns if TRUE
+  if (rm_other_cols) {
+    data <- dplyr::select(data, STATION_NUMBER, Date, Value)
+  }
+  
+  data
 }
 
-one_station_number_stop_data <- function(data){
-  if (length(unique(data$STATION_NUMBER)) > 1) 
-    stop("Multiple station numbers were provided in the groups column, only one can be listed for this function. Filter for one station or remove the column.", call. = FALSE)
-}
+
 
 
 ## Fill missing dates, add date variables and add AnalysisYear, DoY, and/or Date
@@ -247,26 +241,17 @@ filter_complete_yrs <- function(complete_years, flow_data) {
 }
 
 
-## Transpose Data
-## --------------
-
-# data_transpose <- function(data){
-#   # Get list of columns to order the Statistic column after transposing
-#   stat_levels <- names(data[-(1:2)])
-#   
-#   # Transpose the columns for rows
-#   data <- tidyr::gather(data, Statistic, Value, -STATION_NUMBER, names(data[2]))
-#   data <- tidyr::spread(data, names(data[2]), Value)
-#   
-#   # Order the columns
-#   data$Statistic <- factor(data$Statistic, levels = stat_levels)
-#   data <- dplyr::arrange(data, STATION_NUMBER, Statistic)
-# }
-
-
-
-
 ## Various check functions
+
+
+one_station_number_stop <- function(station_number) {
+  if (length(station_number) > 1) stop("Multiple station_numbers were provided, only one can be listed for this function.", call. = FALSE)
+}
+
+one_station_number_stop_data <- function(data){
+  if (length(unique(data$STATION_NUMBER)) > 1) 
+    stop("Multiple station numbers were provided in the groups column, only one can be listed for this function. Filter for one station or remove the column.", call. = FALSE)
+}
 
 rolling_days_checks <- function(roll_days, roll_align , multiple = FALSE) {
   if (!multiple) {
@@ -439,8 +424,8 @@ zyp_method_checks <- function(zyp_method) {
 zyp_alpha_checks <- function(zyp_alpha){
   if(!is.na(zyp_alpha) & !is.numeric(zyp_alpha) )              
     stop("zyp_alpha must be numeric.", call. = FALSE)
-  if(!is.na(zyp_alpha) & !all(zyp_alpha > 0 & zyp_alpha < 1))  
-    stop("timing_percent must be > 0 and < 1)", call. = FALSE)
+  if(!is.na(zyp_alpha) & !all(zyp_alpha >= 0 & zyp_alpha <= 1))  
+    stop("timing_percent must be >= 0 and <= 1)", call. = FALSE)
 }
 
 include_longterm_checks <- function(include_longterm){

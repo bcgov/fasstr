@@ -230,9 +230,9 @@ plot_daily_stats <- function(data = NULL,
   # Create a list of named plots extracted from the tibble
   plots <- daily_plots$plot
   if (nrow(daily_plots) == 1) {
-    names(plots) <- "Daily_Stats"
+    names(plots) <- "Daily_Statistics"
   } else {
-    names(plots) <- paste0(daily_plots$STATION_NUMBER, "_Daily_Stats")
+    names(plots) <- paste0(daily_plots$STATION_NUMBER, "_Daily_Statistics")
   }
   
   plots

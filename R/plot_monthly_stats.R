@@ -151,9 +151,9 @@ plot_monthly_stats <- function(data = NULL,
   # Create a list of named plots extracted from the tibble
   plots <- monthly_plots$plot
   if (length(unique(monthly_plots$STATION_NUMBER)) == 1) {
-    names(plots) <- paste0(monthly_plots$Statistic, "_Monthly_Stats")
+    names(plots) <- paste0(monthly_plots$Statistic, "_Monthly_Statistics")
   } else {
-    names(plots) <- paste0(monthly_plots$STATION_NUMBER, "_", monthly_plots$Statistic, "_Monthly_Stats")
+    names(plots) <- paste0(monthly_plots$STATION_NUMBER, "_", monthly_plots$Statistic, "_Monthly_Statistics")
   }
 
   plots

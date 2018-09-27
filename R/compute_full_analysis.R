@@ -226,25 +226,25 @@ compute_full_analysis <- function(data = NULL,
       
       invisible(write_plots(plots = ts_full_plot,
                             foldername = paste0(main_dir, timeseries_dir),
-                            plot_type = plot_filetype,
+                            plot_filetype = plot_filetype,
                             width = 14,
                             height = 5))
       
       invisible(write_plots(plots = ts_annual_plot,
                             foldername = paste0(main_dir, timeseries_dir),
-                            plot_type = plot_filetype,
+                            plot_filetype = plot_filetype,
                             width = 14,
                             height = 8.5))
       
       invisible(write_plots(plots = ts_screen_plot,
                             foldername = paste0(main_dir, timeseries_dir),
-                            plot_type = plot_filetype,
+                            plot_filetype = plot_filetype,
                             width = 8.5,
                             height = 5))
       
       invisible(write_plots(plots = ts_missing_plot,
                             foldername = paste0(main_dir, timeseries_dir),
-                            plot_type = plot_filetype,
+                            plot_filetype = plot_filetype,
                             width = 8.5,
                             height = 5))
       
@@ -299,13 +299,13 @@ compute_full_analysis <- function(data = NULL,
       
       invisible(write_plots(plots = lt_stats_plot,
                             foldername = paste0(main_dir, longterm_dir),
-                            plot_type = plot_filetype,
+                            plot_filetype = plot_filetype,
                             width = 11,
                             height = 5))
       
       invisible(write_plots(plots = lt_flowduration_plot,
                             foldername = paste0(main_dir, longterm_dir),
-                            plot_type = plot_filetype,
+                            plot_filetype = plot_filetype,
                             width = 11,
                             height = 7))
     }
@@ -450,7 +450,7 @@ compute_full_analysis <- function(data = NULL,
                                       ann_timing_plot, ann_norm_plot, ann_lowflow_plot,
                                       ann_means_plot),
                             foldername = paste0(main_dir, annual_dir),
-                            plot_type = plot_filetype,
+                            plot_filetype = plot_filetype,
                             width = 10,
                             height = 5.5))
     }
@@ -533,13 +533,13 @@ compute_full_analysis <- function(data = NULL,
       
       invisible(write_plots(plots = mon_stats_plot,
                             foldername = paste0(main_dir, month_dir),
-                            plot_type = plot_filetype,
+                            plot_filetype = plot_filetype,
                             width = 11,
                             height = 5))
       
       invisible(write_plots(plots = c(mon_vol_plot, mon_yield_plot),
                             foldername = paste0(main_dir, month_dir),
-                            plot_type = plot_filetype,
+                            plot_filetype = plot_filetype,
                             width = 8.5,
                             height = 4))
       
@@ -647,12 +647,12 @@ compute_full_analysis <- function(data = NULL,
     all_objects <- append(all_objects,    
                           list("Daily" = list("Daily_Summary_Stats" = day_stats,
                                               "Daily_Summary_Stats_Plot" = day_stats_plot,
+                                              "Daily_Summary_Stats_with_Years" = day_stats_year_plots,
                                               "Daily_Total_Cumul_Volumes_m3" = day_vol,
                                               "Daily_Total_Cumul_Volumes_m3_Plot" = day_vol_plot,
                                               "Daily_Total_Cumul_Yield_mm" = day_yield,
                                               "Daily_Total_Cumul_Yield_mm_Plot" = day_yield_plot,
-                                              "Daily_Total_Cumul_Volumes_m3_with_Years" = day_stats_year_plots,
-                                              "Daily_Summary_Stats_with_Years" = day_vol_year_plots,
+                                              "Daily_Total_Cumul_Volumes_m3_with_Years" = day_vol_year_plots,
                                               "Daily_Total_Cumul_Yield_mm_with_Years" = day_yield_year_plots)))
     
     if (write_to_dir) {
@@ -672,24 +672,24 @@ compute_full_analysis <- function(data = NULL,
       
       invisible(write_plots(plots = c(day_stats_plot, day_vol_plot, day_yield_plot),
                             foldername = paste0(main_dir, daily_dir),
-                            plot_type = plot_filetype,
+                            plot_filetype = plot_filetype,
                             width = 8.5,
                             height = 4))
       
       write_plots(plots = day_stats_year_plots, foldername = paste0(main_dir, daily_dir, "Daily_Statistics_with_Years"),
-                  plot_type = plot_filetype,
+                  plot_filetype = plot_filetype,
                   width = 8.5,
                   height = 4,
                   combined_pdf = ifelse(plot_filetype == "pdf", TRUE, FALSE))
       
       write_plots(plots = day_vol_year_plots, foldername = paste0(main_dir, daily_dir, "Daily_Cumulative_Volumes_with_Years"),
-                  plot_type = plot_filetype,
+                  plot_filetype = plot_filetype,
                   width = 8.5,
                   height = 4,
                   combined_pdf = ifelse(plot_filetype == "pdf", TRUE, FALSE))
       
       write_plots(plots = day_yield_year_plots, foldername = paste0(main_dir, daily_dir, "Daily_Cumulative_Yield_with_Years"),
-                  plot_type = plot_filetype,
+                  plot_filetype = plot_filetype,
                   width = 8.5,
                   height = 4,
                   combined_pdf = ifelse(plot_filetype == "pdf", TRUE, FALSE))
@@ -713,7 +713,8 @@ compute_full_analysis <- function(data = NULL,
                                         water_year = water_year,
                                         water_year_start = water_year_start,
                                         ignore_missing = ignore_missing,
-                                        zyp_method = "yuepilon")
+                                        zyp_method = "yuepilon",
+                                        zyp_alpha = zyp_alpha)
     ann_data <- ann_trends$Annual_Trends_Data
     ann_results <- ann_trends$Annual_Trends_Results
     ann_trends_plots <-  ann_trends[c(3:length(names(ann_trends)))]
@@ -736,7 +737,7 @@ compute_full_analysis <- function(data = NULL,
       
       invisible(write_plots(plots = ann_trends_plots,
                             foldername = paste0(main_dir, trending_dir , "Annual_Trends_Results_Plots"),
-                            plot_type = plot_filetype,
+                            plot_filetype = plot_filetype,
                             width = 8.5,
                             height = 3,
                             combined_pdf = ifelse(plot_filetype == "pdf", TRUE, FALSE)))
@@ -768,16 +769,16 @@ compute_full_analysis <- function(data = NULL,
                                                  water_year_start = water_year_start,
                                                  ignore_missing = ignore_missing)
       
-      # freq_ann_data <- tidyr::spread(freq_results$Q_stat, Measure, value)
-      freq_ann_data <- freq_results$Q_stat
+      # freq_ann_data <- tidyr::spread(freq_results$Freq_Analysis_Data, Measure, value)
+      freq_ann_data <- freq_results$Freq_Analysis_Data
       
-      freq_plot_data <- freq_results$plotdata
+      freq_plot_data <- freq_results$Freq_Plot_Data
       
-      freq_plots <- list("Frequency_Plot" = freq_results$freqplot)
+      freq_plots <- list("Frequency_Plot" = freq_results$Freq_Plot)
       
       #freq_fitting <- freq_results$fit
       
-      freq_quantiles <- freq_results$fitted_quantiles
+      freq_quantiles <- freq_results$Freq_Fitted_Quantiles
       
       
       all_objects <- append(all_objects,    
@@ -797,7 +798,7 @@ compute_full_analysis <- function(data = NULL,
         
         invisible(write_plots(plots = freq_plots,
                               foldername = paste0(main_dir, freq_dir),
-                              plot_type = "png",
+                              plot_filetype = "png",
                               width = 8.5,
                               height = 5))
         
@@ -830,14 +831,14 @@ compute_full_analysis <- function(data = NULL,
       subdirs <- list.files(path = paste0(main_dir, i))
       
       # Create a table with each file name, paste in the subdirectory name and attached to dataframe
-      dir_data <- data.frame("Subdirectory" = subdirs)
+      dir_data <- data.frame("File" = subdirs)
       dir_data$Directory <- i
       tbl_contents <- rbind(tbl_contents, dir_data)
     }
     
     # Create a FileType columns listing if file is a plot or table
-    tbl_contents$fileExt <- sub('.*\\.', '', tbl_contents$Subdirectory)
-    tbl_contents$FileType <- ifelse(tbl_contents$fileExt %in% c("xlsx", "xls", "csv"), "Table", 
+    tbl_contents$fileExt <- sub('.*\\.', '', tbl_contents$File)
+    tbl_contents$Type <- ifelse(tbl_contents$fileExt %in% c("xlsx", "xls", "csv"), "Table", 
                                     ifelse(tbl_contents$fileExt %in% c("png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", "svg"), "Plot",
                                            "Folder with Plots"))
     

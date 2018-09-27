@@ -161,9 +161,9 @@ plot_longterm_stats <- function(data = NULL,
   # Create a list of named plots extracted from the tibble
   plots <- lt_plots$plot
   if (nrow(lt_plots) == 1) {
-    names(plots) <- "Long-term_Stats"
+    names(plots) <- "Long-term_Statistics"
   } else {
-    names(plots) <- paste0(lt_plots$STATION_NUMBER, "_Long-term_Stats")
+    names(plots) <- paste0(lt_plots$STATION_NUMBER, "_Long-term_Statistics")
   }
   
   plots

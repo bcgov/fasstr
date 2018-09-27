@@ -19,6 +19,7 @@
 #'    values from all years and months, unless specified.Function will calculate using all values in the provided data (no grouped 
 #'    analysis). Analysis methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
 #'
+#' @inheritParams compute_frequency_analysis
 #' @inheritParams compute_annual_frequencies
 #' @param roll_days Numeric value of the number of days to apply a rolling mean. Required.
 #' @param return_period Numeric vector of the estimated time interval, in years, between flow events of a similar size, 
@@ -30,32 +31,31 @@
 #' \dontrun{
 #' 
 #' compute_frequency_quantile(station_number = "08NM116",
-#'                        roll_days = 7,
-#'                        return_period = 10)
+#'                            roll_days = 7,
+#'                            return_period = 10)
 #'                             
 #' }
 #' @export
 
 
 compute_frequency_quantile <- function(data = NULL,
-                                   dates = Date,
-                                   values = Value,
-                                   station_number = NULL,
-                                   roll_days = NA,
-                                   roll_align = "right",
-                                   return_period = NA,
-                                   use_max = FALSE,
-                                   use_log = FALSE,
-                                   prob_plot_position = c("weibull", "median", "hazen"),
-                                   fit_distr = c("PIII", "weibull"),
-                                   fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
-                                   water_year = FALSE,
-                                   water_year_start = 10,
-                                   start_year = 0,
-                                   end_year = 9999,
-                                   exclude_years = NULL,
-                                   months = 1:12,
-                                   ignore_missing = FALSE){
+                                       dates = Date,
+                                       values = Value,
+                                       station_number = NULL,
+                                       roll_days = NA,
+                                       roll_align = "right",
+                                       return_period = NA,
+                                       use_max = FALSE,
+                                       use_log = FALSE,
+                                       fit_distr = c("PIII", "weibull"),
+                                       fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
+                                       water_year = FALSE,
+                                       water_year_start = 10,
+                                       start_year = 0,
+                                       end_year = 9999,
+                                       exclude_years = NULL,
+                                       months = 1:12,
+                                       ignore_missing = FALSE){
   
   
   # replicate the frequency analysis of the HEC-SSP program
@@ -110,8 +110,6 @@ compute_frequency_quantile <- function(data = NULL,
                              roll_align = roll_align,
                              use_max = use_max,
                              use_log = use_log,
-                             prob_plot_position = prob_plot_position,
-                             prob_scale_points = c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001),
                              fit_distr = fit_distr,
                              fit_distr_method = fit_distr_method,
                              fit_quantiles = fit_quantiles,

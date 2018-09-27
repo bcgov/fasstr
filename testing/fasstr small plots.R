@@ -264,7 +264,7 @@ screening +
          width = wdth,
          units = "cm")
 
-missing <- plot_missing_dates(station_number = "08NM116", mon)[[1]]
+missing <- plot_missing_dates(station_number = "08NM116", months = 1:6)[[1]]
 missing + 
   ylab(NULL) +
   xlab(NULL) +
@@ -281,6 +281,25 @@ missing +
          height = hght,
          width = wdth,
          units = "cm")
+
+ann_means <- plot_annual_means(station_number = "08NM116", start_year = 1995)[[1]]
+ann_means + 
+  ylab(NULL) +
+  xlab(NULL) +
+  ggtitle(NULL) +
+  theme(axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank(),
+        legend.position="none",
+        panel.border = element_rect(size=.5),
+        plot.margin=grid::unit(mgins, "mm"),
+        strip.text.x = element_text(margin = margin(.01,0,0.04,0, "cm"), size = 7),
+        panel.spacing = unit(.05, "lines"))+
+  ggsave("cheatsheet_annmeans.png",
+         height = hght,
+         width = wdth,
+         units = "cm")
+
 
 
 

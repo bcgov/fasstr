@@ -1,3 +1,37 @@
+fasstr 0.2.7
+=========================
+
+Updated: 27 September 2018
+
+#### New:
+
+  * compute_frequency_analysis() function to calculate a frequency analysis with custom data (update other frequency analysis functions to use this function internally)
+  * Vignettes completed:
+      * Users Guide
+      * Full Analysis Guide
+      * Trends Analysis Guide
+      * Frequency Analysis Guide
+      * Under the Hood
+
+#### Updates:
+
+  * frequency analysis updates:
+      * option to plot the computed curve or not
+      * changed the names of the outputted objects
+      * changed the measure names (rolling-day names of the annual_freq analysis (ex from Q007-day-avg to 7-Day))
+      * All parameter documentation info in the compute_frequency_analysis function
+      * updated full_analysis to include new changes
+  * Completed Users Guide vignette
+  * Completed Full Analysis vignette
+  * Completed Frequency Analysis Vignette
+  * Updated filetype argument in the write_ functions
+  * Updated some plot object names
+  
+#### Bug Fixes
+
+  * Added trendline to trends plots in compute_full_analysis
+  
+  
 fasstr 0.2.6
 =========================
 
