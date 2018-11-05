@@ -2,7 +2,7 @@
 title: "Computing a Full Analysis with fasstr"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Computing a Full Analysis with fasstr}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
