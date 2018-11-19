@@ -1,3 +1,15 @@
+fasstr 0.2.8
+=========================
+
+Updated: 19 November 2018
+
+#### Bugs Fixed:
+
+  * compute_full_analysis() now plots all daily statistics plots with years
+
+
+
+
 fasstr 0.2.7
 =========================
 

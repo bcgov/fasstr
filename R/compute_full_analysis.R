@@ -608,7 +608,7 @@ compute_full_analysis <- function(data = NULL,
                                                 exclude_years = exclude_years,
                                                 include_year = year,
                                                 ignore_missing = ignore_missing))
-      day_stats_year_plots[[ paste0(names(plot), "_", year) ]] <- suppressMessages(plot$Daily_Stats)
+      day_stats_year_plots[[ paste0(names(plot), "_", year) ]] <- suppressMessages(plot$Daily_Statistics)
       
     }
     
