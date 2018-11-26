@@ -1,11 +1,15 @@
 fasstr 0.2.8
 =========================
 
-Updated: 19 November 2018
+Updated: 26 November 2018
 
 #### Bugs Fixed:
 
   * compute_full_analysis() now plots all daily statistics plots with years
+  
+#### New:
+
+  * New internal function add_water_months() to streamline some processes
 
 
 
