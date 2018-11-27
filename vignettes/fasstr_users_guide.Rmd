@@ -575,22 +575,22 @@ plot_daily_cumulative_stats(station_number = "08NM116",
 
 The functions summarize the data over the entire record:
 
-- `calc_lt_mad()` - calculate the long-term mean annual discharge
-- `calc_lt_percentile()` - calculate the long-term percentiles
+- `calc_longterm_mad()` - calculate the long-term mean annual discharge
+- `calc_longterm_percentile()` - calculate the long-term percentiles
 - `calc_flow_percentile()` - calculate the percentile rank of a flow value
 
-`calc_lt_mad()` calculates the mean of all the daily flows. It can also be known as the long-term mean annual discharge, MAD.
+`calc_longterm_mad()` calculates the mean of all the daily flows. It can also be known as the long-term mean annual discharge, MAD.
 
 ```{r,  echo=TRUE, comment=NA}
-calc_lt_mad(station_number = "08NM116", 
+calc_longterm_mad(station_number = "08NM116", 
             start_year = 1974,
             percent_MAD = c(5,10,20))
 ```
 
-`calc_lt_percentile()` calculates the selected long-term percentiles of all the daily flow values.
+`calc_longterm_percentile()` calculates the selected long-term percentiles of all the daily flow values.
 
 ```{r,  echo=TRUE, comment=NA}
-calc_lt_percentile(station_number = "08NM116",
+calc_longterm_percentile(station_number = "08NM116",
                    start_year = 1974,
                    percentiles = c(25,50,75))
 ```

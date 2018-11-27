@@ -1,8 +1,15 @@
 fasstr 0.2.8
 =========================
 
-Updated: 26 November 2018
+Updated: 27 November 2018
 
+#### Updates:
+
+  * Renamed calc_lt_mad() and calc_lt_percentile() to calc_longterm_mad() and calc_longterm_percentile(), respectively.
+  * changed add_seasons() function from adding two 4 and 2 seasons columns to adding own custom seasons of desired lengths. All subsequent function and documentation updated were also completed.
+  * Renamed some annual and seasonal total volume axes, column names, and plots names.
+  * Updated the licence year in .R files.
+  
 #### Bugs Fixed:
 
   * compute_full_analysis() now plots all daily statistics plots with years
