@@ -104,6 +104,8 @@ To provide examples of the outputs, an annual analysis will be completed on a Mi
 
 ```{r, include=TRUE}
 freq_analysis <- compute_annual_frequencies(station_number = "08NM116",
+                                            start_year = 1981,
+                                            end_year = 2010,
                                             roll_days = 7,
                                             plot_curve = FALSE)
 ```

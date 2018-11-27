@@ -131,8 +131,8 @@ plot_annual_cumulative_stats <- function(data = NULL,
         ggplot2::geom_point(na.rm = TRUE)+
         ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
         ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
-        ggplot2::ylab("Total Discharge (cubic metres)") +
-        {if (use_yield) ggplot2::ylab("Runoff Yield (mm)")} +
+        ggplot2::ylab("Volume (m3)") +
+        {if (use_yield) ggplot2::ylab("Yield (mm)")} +
         ggplot2::xlab("Year")+
         ggplot2::scale_color_brewer(palette = "Set1") +
         ggplot2::theme_bw() +
@@ -148,9 +148,9 @@ plot_annual_cumulative_stats <- function(data = NULL,
   # Create a list of named plots extracted from the tibble
   plots <- annual_plots$ann_plot
   if (nrow(annual_plots) == 1) {
-    names(plots) <- paste0(ifelse(use_yield, "Annual_Yield", "Annual_Total_Volume"))
+    names(plots) <- paste0(ifelse(use_yield, "Total_Yield", "Total_Volume"))
   } else {
-    names(plots) <- paste0(annual_plots$STATION_NUMBER, ifelse(use_yield, "_Annual_Yield", "_Annual_Total_Volume"))
+    names(plots) <- paste0(annual_plots$STATION_NUMBER, ifelse(use_yield, "_Total_Yield", "_Total_Volume"))
   }
   
   
@@ -169,8 +169,8 @@ plot_annual_cumulative_stats <- function(data = NULL,
           ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
           {if(length(unique(seasons2_data$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(seasons2_data$Year))}+
           ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
-          ggplot2::ylab("Total Discharge (cubic metres)") +
-          {if (use_yield) ggplot2::ylab("Runoff Yield (mm)")} +
+          ggplot2::ylab("Volume (m3)") +
+          {if (use_yield) ggplot2::ylab("Yield (mm)")} +
           ggplot2::xlab("Year")+
           ggplot2::scale_color_brewer(palette = "Set1") +
           ggplot2::theme_bw() +
@@ -195,8 +195,8 @@ plot_annual_cumulative_stats <- function(data = NULL,
           ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
           {if(length(unique(seasons4_data$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(seasons4_data$Year))}+
           ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
-          ggplot2::ylab("Total Discharge (cubic metres)") +
-          {if (use_yield) ggplot2::ylab("Runoff Yield (mm)")} +
+          ggplot2::ylab("Volume (m3)") +
+          {if (use_yield) ggplot2::ylab("Yield (mm)")} +
           ggplot2::xlab("Year")+
           ggplot2::scale_color_brewer(palette = "Set1") +
           ggplot2::theme_bw() +
@@ -214,11 +214,11 @@ plot_annual_cumulative_stats <- function(data = NULL,
     s4_plots <- s4_plots$s4_plot
     
     if (nrow(annual_plots) == 1) {
-      names(s2_plots) <- paste0(ifelse(use_yield, "Two_Seasons_Yield", "Two_Seasons_Total_Volume"))
-      names(s4_plots) <- paste0(ifelse(use_yield, "Four_Seasons_Yield", "Four_Seasons_Total_Volume"))
+      names(s2_plots) <- paste0(ifelse(use_yield, "Two_Seasons_Yield", "Two_Seasons_Volume"))
+      names(s4_plots) <- paste0(ifelse(use_yield, "Four_Seasons_Yield", "Four_Seasons_Volume"))
     } else {
-      names(s2_plots) <- paste0(annual_plots$STATION_NUMBER, ifelse(use_yield, "_Two_Seasons_Yield", "_Two_Seasons_Total_Volume"))
-      names(s4_plots) <- paste0(annual_plots$STATION_NUMBER, ifelse(use_yield, "_Four_Seasons_Yield", "_Four_Seasons_Total_Volume"))
+      names(s2_plots) <- paste0(annual_plots$STATION_NUMBER, ifelse(use_yield, "_Two_Seasons_Yield", "_Two_Seasons_Volume"))
+      names(s4_plots) <- paste0(annual_plots$STATION_NUMBER, ifelse(use_yield, "_Four_Seasons_Yield", "_Four_Seasons_Volume"))
     }
     
     # Add the seasonal plots to the plot list

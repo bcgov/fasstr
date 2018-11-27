@@ -216,7 +216,9 @@ compute_frequency_analysis <- function(data = NULL,
                                 sec.axis = ggplot2::sec_axis(trans = ~1/.,
                                                              name = 'Return Period',
                                                              breaks = c(1.01,1.1,2,5,10,20,100,1000),
-                                                             labels = function(x){ifelse(x < 2, x, round(x,0))}))+
+                                                             labels = function(x){ifelse(x < 2, x, round(x,0))}
+                                                            )
+                                )+
     ggplot2::scale_color_brewer(palette = "Set1") +
     ggplot2::theme_bw() +
     ggplot2::labs(color = paste0('Events')) +    

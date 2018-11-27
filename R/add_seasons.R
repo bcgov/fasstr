@@ -10,40 +10,48 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Add two and four seasons identifier columns
+#' @title Add a column of seasons
 #' 
-#' @description Add columns of Seasons2 (two 6-month seasons) and Seasons4 (four 3-month seasons) to a data frame with a column of dates 
-#'    called 'Date'. The start of the two and four seasons coincides with the start month of each year ('Jan-Jun' and 'Jan-Mar' for 
-#'    the first two and four calendar year seasons, respectively, or 'Oct-Mar' and 'Apr-Sep' for the first two and four water year
-#'    seasons starting in Oct, respectively). Each season is designated by the calendar or water year in which it occurs.
+#' @description Adds a column of seasons identifiers to a data frame with a column of dates called 'Date'. The length of seasons,
+#'    in months, is provided using the seasons_length argument. As seasons are grouped by months the length of the seasons must be
+#'    divisible into 12 with one of the following season lengths: 1, 2, 3, 4, 6, or 12 months. The start of the first season 
+#'    coincides with the start month of each year; 'Jan-Jun' for 6-month seasons starting with calendar years or 'Dec-Feb' for 3-month
+#'    seasons starting with water year starting in December.
 #'
 #' @inheritParams calc_annual_stats
+#' @param seasons_length Numeric value indicating the desired length of seasons in months, divisible into 12. Required.
 #' 
-#' @return A tibble data frame of the source data with additional columns:
-#'   \item{Seasons2}{two seasons identifiers}
-#'   \item{Seasons4}{four seasons identifiers}
+#' @return A tibble data frame of the source data with additional column:
+#'   \item{Season}{season identifier labelled by the start and end month of the season}
 #'
 #' @examples
 #' \dontrun{
 #' 
-#' add_seasons(station_number = "08NM116", water_year = TRUE, water_year_start = 8)
+#' add_seasons(station_number = "08NM116", 
+#'             water_year = TRUE, 
+#'             water_year_start = 12,
+#'             seasons_length = 3)
 #'
 #' }
 #' @export
 
 
 add_seasons <- function(data = NULL,
-                        dates = Date,
-                        station_number = NULL,
-                        water_year = FALSE,
-                        water_year_start = 10){
+                            dates = Date,
+                            station_number = NULL,
+                            water_year = FALSE,
+                            water_year_start = 10,
+                            seasons_length = NA){
   
   
   ## ARGUMENT CHECKS
   ## ---------------
   
   water_year_checks(water_year, water_year_start)
-  
+  if (is.na(seasons_length))         stop("seasons_length argument (number of months per season) is required.", call. = FALSE)
+  if (!is.numeric(seasons_length))   stop("seasons_length argument must be a number divisible into 12.", call. = FALSE)
+  if (length(seasons_length)>1)      stop("seasons_length argument must be a number divisible into 12.", call. = FALSE)
+  if (!12%%seasons_length==0)        stop("seasons_length argument must be a number divisible into 12.", call. = FALSE)
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
@@ -53,6 +61,8 @@ add_seasons <- function(data = NULL,
   
   # Save the original columns from the flow_data to remove added columns
   orig_cols <- names(flow_data)
+  if ("Season" %in% orig_cols) stop("Seasons column already exists, please rename or remove to add a new seasons column.",
+                                    call. = FALSE)
   
   # Get groups of flow_data to return after
   flow_data_groups <- dplyr::group_vars(flow_data)
@@ -69,97 +79,39 @@ add_seasons <- function(data = NULL,
   # Add dates
   flow_data <- add_date_variables(data = flow_data, water_year = water_year, water_year_start = water_year_start)
   
+  # Add water months (utils.R function)
+  flow_data <- add_water_months(flow_data, water_year, water_year_start)
   
-  # Add 2 and 4 seasons to each year, with the start of the first season on the first month of the year
-  # Calendar Year seasons
-  if (!water_year) {
-    
-    # Create seasons variables
-    flow_data <- dplyr::mutate(flow_data, Seasons4 = ifelse(Month <= 3, "Jan-Mar",
-                                                            ifelse(Month %in% 4:6, "Apr-Jun",
-                                                                   ifelse(Month %in% 7:9, "Jul-Sep", "Oct-Dec"))))
-    flow_data <- dplyr::mutate(flow_data, Seasons2 = ifelse(Month <= 6, "Jan-Jun", "Jul-Dec"))
-    
-    
-    # Apply levels to seasons
-    flow_data$Seasons2 <- factor(flow_data$Seasons2, levels = c("Jan-Jun", "Jul-Dec"))
-    flow_data$Seasons4 <- factor(flow_data$Seasons4, levels = c("Jan-Mar", "Apr-Jun", "Jul-Sep", "Oct-Dec"))
+  # Create the order of months list
+  month_list <- dplyr::group_by(flow_data, MonthName)
+  month_list <- dplyr::summarise(month_list, Value = min(AnalysisMonth))
+  month_list <- dplyr::pull(month_list, 1)
+  
+  # Loop through each season to add a temporary label
+  for (i in sort(1:(12/seasons_length), decreasing = TRUE)){
+    flow_data <- dplyr::mutate(flow_data,
+                               Seasons_temp = ifelse(AnalysisMonth < (seasons_length*i + 1),
+                                                     paste0("S", i),
+                                                     Seasons_temp))
   }
   
-  
-  # Water Year seasons
-  if (water_year) {
+  # Create temp data frame to gather the MonthNames for labelling the seasons (if > 1 season per year)
+  if (seasons_length == 1) {
+    flow_data <- dplyr::mutate(flow_data, Season = MonthName)
     
-    # Create seasons variables
-    if (water_year_start %in% c(1, 4, 7, 10)) { 
-      flow_data <- dplyr::mutate(flow_data, Seasons4 = ifelse(Month <= 3, "Jan-Mar",
-                                                              ifelse(Month %in% 4:6, "Apr-Jun",
-                                                                     ifelse(Month %in% 7:9, "Jul-Sep", "Oct-Dec"))))
-      if (water_year_start %in% c(1,7)) {
-        flow_data <- dplyr::mutate(flow_data, Seasons2 = ifelse(Month <= 6, "Jan-Jun", "Jul-Dec"))
-      } else if (water_year_start %in% c(4,10)) {
-        flow_data <- dplyr::mutate(flow_data, Seasons2 = ifelse(Month %in% 4:9, "Apr-Sep", "Oct-Mar"))
-      }
-    } else if (water_year_start %in% c(2, 5, 8, 11)) { 
-      flow_data <- dplyr::mutate(flow_data, Seasons4 = ifelse(Month %in% c(1, 11:12), "Nov-Jan",
-                                                              ifelse(Month %in% 2:4, "Feb-Apr",
-                                                                     ifelse(Month %in% 5:7, "May-Jul", "Aug-Oct"))))
-      if (water_year_start %in% c(2,8)) {
-        flow_data <- dplyr::mutate(flow_data, Seasons2 = ifelse(Month %in% 2:7, "Feb-Jul", "Aug-Jan"))
-      } else if (water_year_start %in% c(5,11)) {
-        flow_data <- dplyr::mutate(flow_data, Seasons2 = ifelse(Month %in% c(5:10), "May-Oct", "Nov-Apr"))
-      }
-    } else if (water_year_start %in% c(3, 6, 9, 12)) { 
-      flow_data <- dplyr::mutate(flow_data, Seasons4 = ifelse(Month %in% c(12, 1:2), "Dec-Feb",
-                                                              ifelse(Month %in% 3:5, "Mar-May",
-                                                                     ifelse(Month %in% 6:8, "Jun-Aug", "Sep-Nov"))))
-      if (water_year_start %in% c(3,9)) {
-        flow_data <- dplyr::mutate(flow_data, Seasons2 = ifelse(Month %in% 3:8, "Mar-Aug", "Sep-Apr"))
-      } else if (water_year_start %in% c(6,12)) {
-        flow_data <- dplyr::mutate(flow_data, Seasons2 = ifelse(Month %in% c(6:11), "Jun-Nov", "Dec-May"))
-      }
-      
-    }
+  } else {
+    season_name <- dplyr::group_by(flow_data, Seasons_temp)
+    season_name <- dplyr::summarise(season_name,
+                                    Season = paste(month_list[min(AnalysisMonth)],
+                                                   month_list[max(AnalysisMonth)], 
+                                                   sep = "-"))
     
-    # Apply levels to seasons
-    if (water_year_start == 1) {
-      flow_data$Seasons2 <- factor(flow_data$Seasons2, levels = c("Jan-Jun", "Jul-Dec"))
-      flow_data$Seasons4 <- factor(flow_data$Seasons4, levels = c("Jan-Mar", "Apr-Jun", "Jul-Sep", "Oct-Dec"))
-    } else if (water_year_start == 2) {
-      flow_data$Seasons2 <- factor(flow_data$Seasons2, levels = c("Feb-Jul", "Aug-Jan"))
-      flow_data$Seasons4 <- factor(flow_data$Seasons4, levels = c("Feb-Apr", "May-Jul", "Aug-Oct", "Nov-Jan"))
-    } else if (water_year_start == 3) {
-      flow_data$Seasons2 <- factor(flow_data$Seasons2, levels = c("Mar-Aug", "Sep-Apr"))
-      flow_data$Seasons4 <- factor(flow_data$Seasons4, levels = c("Mar-May", "Jun-Aug", "Sep-Nov", "Dec-Feb"))
-    } else if (water_year_start == 4) {
-      flow_data$Seasons2 <- factor(flow_data$Seasons2, levels = c("Apr-Sep", "Oct-Mar"))
-      flow_data$Seasons4 <- factor(flow_data$Seasons4, levels = c("Apr-Jun", "Jul-Sep", "Oct-Dec", "Jan-Mar"))
-    } else if (water_year_start == 5) {
-      flow_data$Seasons2 <- factor(flow_data$Seasons2, levels = c("May-Oct", "Nov-Apr"))
-      flow_data$Seasons4 <- factor(flow_data$Seasons4, levels = c("May-Jul", "Aug-Oct", "Nov-Jan", "Feb-Apr"))
-    } else if (water_year_start == 6) {
-      flow_data$Seasons2 <- factor(flow_data$Seasons2, levels = c("Jun-Nov", "Dec-May"))
-      flow_data$Seasons4 <- factor(flow_data$Seasons4, levels = c("Jun-Aug", "Sep-Nov", "Dec-Feb", "Mar-May"))
-    } else if (water_year_start == 7) {
-      flow_data$Seasons2 <- factor(flow_data$Seasons2, levels = c("Jul-Dec", "Jan-Jun"))
-      flow_data$Seasons4 <- factor(flow_data$Seasons4, levels = c("Jul-Sep", "Oct-Dec", "Jan-Mar", "Apr-Jun"))
-    } else if (water_year_start == 8) {
-      flow_data$Seasons2 <- factor(flow_data$Seasons2, levels = c("Aug-Jan", "Feb-Jul"))
-      flow_data$Seasons4 <- factor(flow_data$Seasons4, levels = c("Aug-Oct", "Nov-Jan", "Feb-Apr", "May-Jul"))
-    } else if (water_year_start == 9) {
-      flow_data$Seasons2 <- factor(flow_data$Seasons2, levels = c("Sep-Apr", "Mar-Aug"))
-      flow_data$Seasons4 <- factor(flow_data$Seasons4, levels = c("Sep-Nov", "Dec-Feb", "Mar-May", "Jun-Aug"))
-    } else if (water_year_start == 10) {
-      flow_data$Seasons2 <- factor(flow_data$Seasons2, levels = c("Oct-Mar", "Apr-Sep"))
-      flow_data$Seasons4 <- factor(flow_data$Seasons4, levels = c("Oct-Dec", "Jan-Mar","Apr-Jun", "Jul-Sep"))
-    } else if (water_year_start == 11) {
-      flow_data$Seasons2 <- factor(flow_data$Seasons2, levels = c("Nov-Apr", "May-Oct"))
-      flow_data$Seasons4 <- factor(flow_data$Seasons4, levels = c("Nov-Jan", "Feb-Apr", "May-Jul", "Aug-Oct"))
-    } else if (water_year_start == 12) {
-      flow_data$Seasons2 <- factor(flow_data$Seasons2, levels = c("Dec-May", "Jun-Nov"))
-      flow_data$Seasons4 <- factor(flow_data$Seasons4, levels = c("Dec-Feb", "Mar-May", "Jun-Aug", "Sep-Nov"))
-    }
+    flow_data <- dplyr::left_join(flow_data, season_name, by = "Seasons_temp", all = TRUE)
   }
+  
+  flow_data <- dplyr::select(flow_data, -Seasons_temp, -AnalysisMonth)
+  flow_data$Season <- factor(flow_data$Season, levels = dplyr::pull(season_name, 2))
+  
   
   
   ## Reformat to original names and groups
@@ -169,10 +121,10 @@ add_seasons <- function(data = NULL,
   names(flow_data)[names(flow_data) == "Date"] <- as.character(substitute(dates))
   
   # Return columns to original order plus new column
-  if(all(c("Seasons2", "Seasons4") %in% orig_cols)){
+  if(all(c("Season") %in% orig_cols)){
     flow_data <-  flow_data[, c(orig_cols)]
   } else {
-    flow_data <-  flow_data[, c(orig_cols, "Seasons2", "Seasons4")]
+    flow_data <-  flow_data[, c(orig_cols, "Season")]
   }
   
   # Regroup by the original groups
