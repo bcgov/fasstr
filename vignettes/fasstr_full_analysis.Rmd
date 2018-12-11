@@ -2,7 +2,7 @@
 title: "Computing a Full Analysis with fasstr"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Computing a Full Analysis with fasstr}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -114,7 +114,7 @@ List / Directory          |	Object / File                             |	Type    
 2 - Long-term	            |	Flow_Duration    		                      | Plot              | plot_flow_duration()
 2 - Long-term	            |	Long-term_Stats    		                    | Plot              | plot_longterm_stats()
 2 - Long-term	            |	Longterm_Statistics_and_Percentiles     	| Table             | calc_longterm_stats()
-3 - Annual	              |	Annual_Cumulative_Volumes     	          | Table             | calc_annual_cumulative_stats(include_seasons=TRUE)
+3 - Annual	              |	Annual_Cumulative_Volume     	          | Table             | calc_annual_cumulative_stats(include_seasons=TRUE)
 3 - Annual	              |	Annual_Cumulative_Yield     	            | Table             | calc_annual_cumulative_stats(use_yield=TRUE, include_seasons=TRUE)
 3 - Annual	              |	Annual_Days_Outside_Normal            	  | Plot              | plot_annual_outside_normal()
 3 - Annual	              |	Annual_Days_Outside_Normal     	          | Table             | calc_annual_outside_normal
@@ -136,13 +136,13 @@ List / Directory          |	Object / File                             |	Type    
 4 - Monthly	              |	Mean_Monthly_Stats    	                  | Plot              | plot_monthly_stats()
 4 - Monthly	              |	Median_Monthly_Stats    	                | Plot              | plot_monthly_stats()
 4 - Monthly	              |	Minimum_Monthly_Stats                 	  | Plot              | plot_monthly_stats()
-4 - Monthly	              |	Monthly_Cumulative_Volumes     	          | Table             | calc_monthly_cumulative_stats()
+4 - Monthly	              |	Monthly_Cumulative_Volume     	          | Table             | calc_monthly_cumulative_stats()
 4 - Monthly	              |	Monthly_Cumulative_Volumetric_Stats    	  | Plot              | plot_monthly_cumulative_stats()
 4 - Monthly	              |	Monthly_Cumulative_Yield     	            | Table             | calc_monthly_cumulative_stats(use_yield=TRUE)
 4 - Monthly	              |	Monthly_Cumulative_Yield_Stats    	      | Plot              | plot_monthly_cumulative_stats(use_yield=TRUE)
 4 - Monthly	              |	Monthly_Summary_Statistics          	    | Table             | calc_monthly_stats()
-5 - Daily	                |	Daily_Cumulative_Volumes            	    | Table             | calc_daily_cumulative_stats()
-5 - Daily	                |	Daily_Cumulative_Volumes_with_Years	      | List / Folder with Plots | plot_daily_cumulative_stats(include_year)
+5 - Daily	                |	Daily_Cumulative_Volume            	    | Table             | calc_daily_cumulative_stats()
+5 - Daily	                |	Daily_Cumulative_Volume_with_Years	      | List / Folder with Plots | plot_daily_cumulative_stats(include_year)
 5 - Daily	                |	Daily_Cumulative_Volumetric_Stats    	    | Plot              | plot_daily_cumulative_stats()
 5 - Daily	                |	Daily_Cumulative_Yield     	              | Table             | calc_daily_cumulative_stats(use_yield=TRUE)
 5 - Daily 	              |	Daily_Cumulative_Yield_Stats          	  | Plot              | plot_daily_cumulative_stats(use_yield=TRUE)
@@ -242,7 +242,7 @@ plot_flow_duration(station_number = "08NM116",
 #### 3. Annual
 
 
-**Annual_Cumulative_Volumes**
+**Annual_Cumulative_Volume**
 
 ```{r,  echo=FALSE, comment=NA}
 head(as.data.frame(calc_annual_cumulative_stats(station_number = "08NM116",
@@ -417,7 +417,7 @@ head(as.data.frame(calc_monthly_cumulative_stats(station_number = "08NM116",
                                    start_year = 1990, end_year = 2001)))
 ```
 
-**Monthly_Cumulative_Volumes**
+**Monthly_Cumulative_Volume**
 
 ```{r,  echo=FALSE, fig.height = 3, fig.width = 7, comment=NA}
 plot_monthly_cumulative_stats(station_number = "08NM116",
@@ -461,7 +461,7 @@ plot_daily_stats(station_number = "08NM116", include_year = 1990,
                start_year = 1990, end_year = 2001)[[1]]
 ```
 
-**Daily_Cumulative_Volumes**
+**Daily_Cumulative_Volume**
 
 ```{r,  echo=FALSE, comment=NA}
 head(as.data.frame(calc_daily_cumulative_stats(station_number = "08NM116",
@@ -475,7 +475,7 @@ plot_daily_cumulative_stats(station_number = "08NM116",
                start_year = 1990, end_year = 2001)[[1]]
 ```
 
-**Daily_Cumulative_Volumes_with_Years** (a folder with a plot for each year)
+**Daily_Cumulative_Volume_with_Years** (a folder with a plot for each year)
 
 ```{r,  echo=FALSE, fig.height = 3, fig.width = 7, comment=NA}
 plot_daily_cumulative_stats(station_number = "08NM116", include_year = 1990,

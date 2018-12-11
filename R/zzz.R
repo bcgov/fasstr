@@ -74,7 +74,10 @@
           "Min_1_Day",
           "Min_3_Day",
           "Min_7_Day",
-          "Min_30_Day")
+          "Min_30_Day",
+          "AnalysisMonth",
+          "Seasons_temp",
+          "Season")
       )
     invisible()
   }

@@ -1,4 +1,4 @@
-# Copyright 2017 Province of British Columbia
+# Copyright 2018 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@
 #' @param use_yield Logical value indicating whether to use yield runoff, in mm, instead of volumetric. Default \code{FALSE}.
 #' @param include_seasons Logical value indication whether to include seasonal yields and total discharges. Default \code{TRUE}.
 #' 
-#' @return A tibble data frame with the following columns, ending with '_TotalQ_m3' or '_Yield_mm' based on selection:
+#' @return A tibble data frame with the following columns, ending with '_Volume_m3' or '_Yield_mm' based on selection:
 #'   \item{Year}{calendar or water year selected}
-#'   \item{Annual_*}{annual total flow, in m3 or mm}
+#'   \item{Total_*}{annual (or selected months) total flow, in m3 or mm}
 #'   Default seasonal columns:
 #'   \item{MMM-MMM_*}{first of two season total flows, in m3 or mm}
 #'   \item{MMM-MMM_*}{second of two season total flows, in m3 or mm}
@@ -60,6 +60,7 @@ calc_annual_cumulative_stats <- function(data = NULL,
                                          start_year = 0,
                                          end_year = 9999,
                                          exclude_years = NULL, 
+                                         months = 1:12,
                                          include_seasons = FALSE,
                                          transpose = FALSE){
   
@@ -73,6 +74,7 @@ calc_annual_cumulative_stats <- function(data = NULL,
   years_checks(start_year, end_year, exclude_years)
   transpose_checks(transpose)
   include_seasons_checks(include_seasons)
+  months_checks(months)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -110,7 +112,12 @@ calc_annual_cumulative_stats <- function(data = NULL,
                              water_year = water_year, 
                              water_year_start = water_year_start,
                              year = TRUE)
-  flow_data <- add_seasons(data = flow_data, water_year = water_year, water_year_start = water_year_start)
+  flow_data <- add_seasons(data = flow_data, water_year = water_year, water_year_start = water_year_start,
+                           seasons_length = 6)
+  flow_data <- dplyr::rename(flow_data, Seasons2 = Season)
+  flow_data <- add_seasons(data = flow_data, water_year = water_year, water_year_start = water_year_start,
+                           seasons_length = 3)
+  flow_data <- dplyr::rename(flow_data, Seasons4 = Season)
 
   
   # Add cumulative flows
@@ -132,12 +139,14 @@ calc_annual_cumulative_stats <- function(data = NULL,
   ## --------------------
   
   # Calculate annual stats
-  annual_stats <-   dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
+  flow_data_months <- dplyr::filter(flow_data, Month %in% months)
+  
+  annual_stats <-   dplyr::summarize(dplyr::group_by(flow_data_months, STATION_NUMBER, AnalysisYear),
                                      Cumulative_total = sum(daily_total, na.rm = FALSE))
   annual_stats <- dplyr::ungroup(annual_stats)
   names(annual_stats)[names(annual_stats) == "Cumulative_total"] <- ifelse(!use_yield,
-                                                                           paste("Annual_TotalQ_m3"),
-                                                                           paste("Annual_Yield_mm"))
+                                                                           paste("Total_Volume_m3"),
+                                                                           paste("Total_Yield_mm"))
   annual_stats <- dplyr::rename(annual_stats, Year = AnalysisYear)
   
   
@@ -150,7 +159,7 @@ calc_annual_cumulative_stats <- function(data = NULL,
     seasons2_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, Seasons2),
                                        Cumulative_total  = sum(daily_total, na.rm = FALSE))
     seasons2_stats <- dplyr::ungroup(seasons2_stats)
-    seasons2_stats <- dplyr::mutate(seasons2_stats, Seasons2 = paste0(Seasons2, "_", ifelse(!use_yield, paste("TotalQ_m3"), paste("Yield_mm"))))
+    seasons2_stats <- dplyr::mutate(seasons2_stats, Seasons2 = paste0(Seasons2, "_", ifelse(!use_yield, paste("Volume_m3"), paste("Yield_mm"))))
     s2_order <- unique(seasons2_stats$Seasons2)
     seasons2_stats <- tidyr::spread(seasons2_stats, Seasons2, Cumulative_total)
     seasons2_stats <- dplyr::select(seasons2_stats, STATION_NUMBER, Year = AnalysisYear, s2_order)
@@ -160,7 +169,7 @@ calc_annual_cumulative_stats <- function(data = NULL,
     seasons4_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, Seasons4),
                                        Cumulative_total  = sum(daily_total, na.rm = FALSE))
     seasons4_stats <- dplyr::ungroup(seasons4_stats)
-    seasons4_stats <- dplyr::mutate(seasons4_stats, Seasons4 = paste0(Seasons4, "_", ifelse(!use_yield, paste("TotalQ_m3"), paste("Yield_mm"))))
+    seasons4_stats <- dplyr::mutate(seasons4_stats, Seasons4 = paste0(Seasons4, "_", ifelse(!use_yield, paste("Volume_m3"), paste("Yield_mm"))))
     s4_order <- unique(seasons4_stats$Seasons4)
     seasons4_stats <- tidyr::spread(seasons4_stats, Seasons4, Cumulative_total)
     seasons4_stats <- dplyr::select(seasons4_stats, STATION_NUMBER, Year = AnalysisYear, s4_order)

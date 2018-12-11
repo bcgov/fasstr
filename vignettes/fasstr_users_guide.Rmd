@@ -2,7 +2,7 @@
 title: "fasstr R Package Users Guide"
 output: rmarkdown::html_vignette #pdf_document rmarkdown::html_vignette word_document
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{fasstr R Package Users Guide}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,7 +13,6 @@ warning = FALSE,
 message = FALSE)
 ```
 
-### August 2018
 
 fasstr, the Flow Analysis Summary Statistics Tool for R, is a set of [R](http://www.r-project.org) functions to prepare, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.
 
@@ -147,7 +146,7 @@ There are several functions that are used to prepare your flow dataset for your 
 
 - `fill_missing_dates()` - fills in missing dates or dates with no flow values with NA
 - `add_date_variables()` - add year, month, and day of year variables (and water years if selected)
-- `add_seasons()` - add two and four seasons identifier columns
+- `add_seasons()` - add a columns of seasons
 - `add_rolling_means()` - add rolling n-day averages (e.g. 7-day rolling average)
 - `add_basin_area()` - add a basin area column to daily flows
 - `add_daily_volume()` - add daily volumetric flows (in cubic metres)
@@ -183,7 +182,7 @@ It is ideal to fill missing dates before using other `add_*` functions so dates 
 
 ### Adding date variables and seasons
 
-The `add_date_variables()` function added useful dates columns for summarizing data. The function defaults include 'Year' (calendar year), 'Month' (numeric), 'MonthName' (month abbreviation; e.g. Jan), and 'DayofYear' (the day of year from 1-365). If `water_year = TRUE` for this function then it will also add 'WaterYear' and 'WaterDayofYear' (starting on the first day of the water year; i.e. water year starting Oct 1 = WaterDayofYear of 1) columns in addition. The month of the start of the water year is chosen using the `water_year_start` argument, which defaults to "9" for October.
+The `add_date_variables()` function adds useful dates columns for summarizing data. The function defaults include 'Year' (calendar year), 'Month' (numeric), 'MonthName' (month abbreviation; e.g. Jan), and 'DayofYear' (the day of year from 1-365). If `water_year = TRUE` for this function then it will also add 'WaterYear' and 'WaterDayofYear' (starting on the first day of the water year; i.e. water year starting Oct 1 = WaterDayofYear of 1) columns in addition. The month of the start of the water year is chosen using the `water_year_start` argument, which defaults to "9" for October.
 
 Run and compare the following lines to see how the date columns are added:
 
@@ -201,22 +200,25 @@ add_date_variables(station_number = "08NM116",
                    water_year_start = 8)
 ```
 
-The `add_seasons()` functions added two columns of season identifiers: Seasons2 (two 6-month seasons) and Seasons4 (four 3-month seasons). The start of the two and four seasons coincides with the start month of each year ('Jan-Jun' and 'Jan-Mar' for the first two and four calendar year seasons, respectively, or 'Oct-Mar' and 'Apr-Sep' for the first two and four water year seasons starting in Oct, respectively). Each season is designated by the calendar or water year in which it occurs.
 
+The `add_seasons()` function adds a column of seasons identifiers called "Season". The length of seasons, in months, is provided using the `seasons_length` argument. As seasons are grouped by months the length of the seasons must be divisible into 12 with one of the following season lengths: 1, 2, 3, 4, 6, or 12 months. The start of the first season coincides with the start month of each year; 'Jan-Jun' for 6-month seasons starting with calendar years or 'Dec-Feb' for 3-month seasons starting with water year starting in December.
 Run and compare the following lines to see how seasons columns are added:
 
 ```{r, eval=FALSE}
-#  Seasons starting January
-add_seasons(station_number = "08NM116")
+#  2 seasons starting January
+add_seasons(station_number = "08NM116",
+            seasons_length = 6)
 
-#  Seasons starting October
+#  4 seasons starting October
 add_seasons(station_number = "08NM116", 
-            water_year = TRUE)
+            water_year = TRUE,
+            seasons_length = 3)
 
-#  Seasons starting December
+#  4 Seasons starting December
 add_seasons(station_number = "08NM116", 
             water_year = TRUE, 
-            water_year_start = 12)
+            water_year_start = 12,
+            seasons_length = 3)
 ```
 
 
@@ -329,7 +331,7 @@ By utilizing the 'data' argument as the first one list, it enables the user to w
 ```{r, comment=NA}
 fill_missing_dates(station_number = "08NM116") %>% 
   add_date_variables(water_year = TRUE) %>%
-  add_seasons() %>% 
+  add_seasons(seasons_length = 3) %>% 
   add_rolling_means() %>%
   add_basin_area() %>% 
   add_daily_volume() %>%
@@ -573,22 +575,22 @@ plot_daily_cumulative_stats(station_number = "08NM116",
 
 The functions summarize the data over the entire record:
 
-- `calc_lt_mad()` - calculate the long-term mean annual discharge
-- `calc_lt_percentile()` - calculate the long-term percentiles
+- `calc_longterm_mad()` - calculate the long-term mean annual discharge
+- `calc_longterm_percentile()` - calculate the long-term percentiles
 - `calc_flow_percentile()` - calculate the percentile rank of a flow value
 
-`calc_lt_mad()` calculates the mean of all the daily flows. It can also be known as the long-term mean annual discharge, MAD.
+`calc_longterm_mad()` calculates the mean of all the daily flows. It can also be known as the long-term mean annual discharge, MAD.
 
 ```{r,  echo=TRUE, comment=NA}
-calc_lt_mad(station_number = "08NM116", 
+calc_longterm_mad(station_number = "08NM116", 
             start_year = 1974,
             percent_MAD = c(5,10,20))
 ```
 
-`calc_lt_percentile()` calculates the selected long-term percentiles of all the daily flow values.
+`calc_longterm_percentile()` calculates the selected long-term percentiles of all the daily flow values.
 
 ```{r,  echo=TRUE, comment=NA}
-calc_lt_percentile(station_number = "08NM116",
+calc_longterm_percentile(station_number = "08NM116",
                    start_year = 1974,
                    percentiles = c(25,50,75))
 ```

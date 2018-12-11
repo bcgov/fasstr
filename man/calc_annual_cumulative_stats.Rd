@@ -8,7 +8,8 @@ calc_annual_cumulative_stats(data = NULL, dates = Date,
   values = Value, groups = STATION_NUMBER, station_number = NULL,
   use_yield = FALSE, basin_area = NA, water_year = FALSE,
   water_year_start = 10, start_year = 0, end_year = 9999,
-  exclude_years = NULL, include_seasons = FALSE, transpose = FALSE)
+  exclude_years = NULL, months = 1:12, include_seasons = FALSE,
+  transpose = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -51,14 +52,17 @@ Default \code{10}.}
 
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 
+\item{months}{Numeric vector of months to include in analysis (e.g.. \code{6:8} for Jun-Aug). Leave blank to summarize 
+all months (default \code{1:12}).}
+
 \item{include_seasons}{Logical value indication whether to include seasonal yields and total discharges. Default \code{TRUE}.}
 
 \item{transpose}{Logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.}
 }
 \value{
-A tibble data frame with the following columns, ending with '_TotalQ_m3' or '_Yield_mm' based on selection:
+A tibble data frame with the following columns, ending with '_Volume_m3' or '_Yield_mm' based on selection:
   \item{Year}{calendar or water year selected}
-  \item{Annual_*}{annual total flow, in m3 or mm}
+  \item{Total_*}{annual (or selected months) total flow, in m3 or mm}
   Default seasonal columns:
   \item{MMM-MMM_*}{first of two season total flows, in m3 or mm}
   \item{MMM-MMM_*}{second of two season total flows, in m3 or mm}

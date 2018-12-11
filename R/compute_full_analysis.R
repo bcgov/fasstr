@@ -430,7 +430,7 @@ compute_full_analysis <- function(data = NULL,
                     file = paste0(main_dir, annual_dir, "Annual_Summary_Statistics.", table_filetype))
       
       write_results(data = ann_vol,
-                    file = paste0(main_dir, annual_dir, "Annual_Cumulative_Volumes.", table_filetype))
+                    file = paste0(main_dir, annual_dir, "Annual_Cumulative_Volume.", table_filetype))
       
       write_results(data = ann_yield,
                     digits = 1,
@@ -511,8 +511,8 @@ compute_full_analysis <- function(data = NULL,
     all_objects <- append(all_objects,    
                           list("Monthly" = list("Monthly_Summary_Stats" = mon_stats,
                                                 "Monthly_Summary_Stats_Plot" = mon_stats_plot,
-                                                "Monthly_Total_Cumul_Volumes_m3" = mon_vol,
-                                                "Monthly_Total_Cumul_Volumes_m3_Plot" = mon_vol_plot,
+                                                "Monthly_Total_Cumul_Volume_m3" = mon_vol,
+                                                "Monthly_Total_Cumul_Volume_m3_Plot" = mon_vol_plot,
                                                 "Monthly_Total_Cumul_Yield_mm" = mon_yield,
                                                 "Monthly_Total_Cumul_Yield_mm_Plot" = mon_yield_plot)))
     
@@ -525,7 +525,7 @@ compute_full_analysis <- function(data = NULL,
                     file = paste0(main_dir, month_dir, "Monthly_Summary_Statistics.", table_filetype))
       
       write_results(data = mon_vol,
-                    file = paste0(main_dir, month_dir, "Monthly_Cumulative_Volumes.", table_filetype))
+                    file = paste0(main_dir, month_dir, "Monthly_Cumulative_Volume.", table_filetype))
       
       write_results(data =  mon_yield,
                     digits = 1,
@@ -608,7 +608,7 @@ compute_full_analysis <- function(data = NULL,
                                                 exclude_years = exclude_years,
                                                 include_year = year,
                                                 ignore_missing = ignore_missing))
-      day_stats_year_plots[[ paste0(names(plot), "_", year) ]] <- suppressMessages(plot$Daily_Stats)
+      day_stats_year_plots[[ paste0(names(plot), "_", year) ]] <- suppressMessages(plot$Daily_Statistics)
       
     }
     
@@ -648,11 +648,11 @@ compute_full_analysis <- function(data = NULL,
                           list("Daily" = list("Daily_Summary_Stats" = day_stats,
                                               "Daily_Summary_Stats_Plot" = day_stats_plot,
                                               "Daily_Summary_Stats_with_Years" = day_stats_year_plots,
-                                              "Daily_Total_Cumul_Volumes_m3" = day_vol,
-                                              "Daily_Total_Cumul_Volumes_m3_Plot" = day_vol_plot,
+                                              "Daily_Total_Cumul_Volume_m3" = day_vol,
+                                              "Daily_Total_Cumul_Volume_m3_Plot" = day_vol_plot,
                                               "Daily_Total_Cumul_Yield_mm" = day_yield,
                                               "Daily_Total_Cumul_Yield_mm_Plot" = day_yield_plot,
-                                              "Daily_Total_Cumul_Volumes_m3_with_Years" = day_vol_year_plots,
+                                              "Daily_Total_Cumul_Volume_m3_with_Years" = day_vol_year_plots,
                                               "Daily_Total_Cumul_Yield_mm_with_Years" = day_yield_year_plots)))
     
     if (write_to_dir) {
@@ -664,7 +664,7 @@ compute_full_analysis <- function(data = NULL,
                     file = paste0(main_dir, daily_dir, "Daily_Summary_Statistics.", table_filetype))
       
       write_results(data = day_vol,
-                    file = paste0(main_dir, daily_dir, "Daily_Cumulative_Volumes.", table_filetype))
+                    file = paste0(main_dir, daily_dir, "Daily_Cumulative_Volume.", table_filetype))
       
       write_results(data =  day_yield,
                     digits = 1,
@@ -682,7 +682,7 @@ compute_full_analysis <- function(data = NULL,
                   height = 4,
                   combined_pdf = ifelse(plot_filetype == "pdf", TRUE, FALSE))
       
-      write_plots(plots = day_vol_year_plots, foldername = paste0(main_dir, daily_dir, "Daily_Cumulative_Volumes_with_Years"),
+      write_plots(plots = day_vol_year_plots, foldername = paste0(main_dir, daily_dir, "Daily_Cumulative_Volume_with_Years"),
                   plot_filetype = plot_filetype,
                   width = 8.5,
                   height = 4,

@@ -1,4 +1,4 @@
-# Copyright 2017 Province of British Columbia
+# Copyright 2018 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -10,49 +10,48 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Calculate the long-term percentiles
+#' @title Calculate the long-term mean annual discharge
 #'
-#' @description Calculates the long-term percentiles discharge of a streamflow dataset. Averages all daily discharge values from all years,
+#' @description Calculates the long-term mean annual discharge of a streamflow dataset. Averages all daily discharge values from all years,
 #'   unless specified.
-#'   
+#'
 #' @inheritParams calc_daily_stats
 #' @inheritParams calc_monthly_stats
-#' @param percentiles Numeric vector of percentiles to calculate. Required.
+#' @param percent_MAD Numeric vector of percents of long-term mean annual discharge to add to the table (ex. 20 for 20 percent MAD).
+#'    Leave blank for no values to be calculated.
 #'
-#' @return A tibble data frame of a long-term percentile of selected years and months.
+#' @return A tibble data frame of numeric values of a long-term mean (and percent of long-term mean if selected) of selected years and months.
 #' 
 #' @examples
 #' \dontrun{
 #' 
-#' calc_lt_percentile(station_number = "08NM116", 
-#'                    start_year = 1980, 
-#'                    end_year = 2010, 
-#'                    percentile = 90)
+#' calc_longterm_mad(station_number = "08NM116", 
+#'             water_year = TRUE, 
+#'             exclude_years = (1990, 1992:1994))
 #' 
-#' calc_lt_percentile(station_number = "08NM116",
-#'                    percentile = 20)
+#' calc_longterm_mad(station_number = "08NM116", 
+#'             percent_MAD = 20)
 #' 
 #' }
 #' @export
 
 
-
-calc_lt_percentile <- function(data = NULL,
-                               dates = Date,
-                               values = Value,
-                               groups = STATION_NUMBER,
-                               station_number = NULL,
-                               percentiles = NA,
-                               roll_days = 1,
-                               roll_align = "right",
-                               water_year = FALSE,
-                               water_year_start = 10,
-                               start_year = 0,
-                               end_year = 9999,
-                               exclude_years = NULL, 
-                               complete_years = FALSE,
-                               months = 1:12,
-                               transpose = FALSE){
+calc_longterm_mad <- function(data = NULL,
+                        dates = Date,
+                        values = Value,
+                        groups = STATION_NUMBER,
+                        station_number = NULL,
+                        roll_days = 1,
+                        roll_align = "right",
+                        water_year = FALSE,
+                        water_year_start = 10,
+                        start_year = 0,
+                        end_year = 9999,
+                        exclude_years = NULL,
+                        complete_years = FALSE,
+                        months = 1:12,
+                        percent_MAD = NA,
+                        transpose = FALSE){
   
   
   ## ARGUMENT CHECKS
@@ -64,9 +63,8 @@ calc_lt_percentile <- function(data = NULL,
   complete_yrs_checks(complete_years)
   transpose_checks(transpose)
   
-  if (all(is.na(percentiles))) stop("percentiles argument is required.", call. = FALSE)
-  percentiles_checks(percentiles)
-  
+  if(!all(is.na(percent_MAD)) & all(percent_MAD <= 0))  
+    stop("Numbers in percent_MAD argument must > 0.", call. = FALSE)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -100,7 +98,6 @@ calc_lt_percentile <- function(data = NULL,
   # Add rolling means to end of dataframe
   flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
   colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
-
   
   # Filter for the selected year
   flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
@@ -111,54 +108,52 @@ calc_lt_percentile <- function(data = NULL,
   flow_data <- filter_complete_yrs(complete_years = complete_years, 
                                    flow_data)
   
-  
   # Give warning if any NA values
   missing_values_warning_noNA(flow_data$RollingValue)
   
+  ## CALCULATE STATISTICS
+  ## --------------------
   
-  #--------------------------------------------------------------
-  # Complete the analysis
+  ltmad_stats <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER),
+                              LTMAD = mean(RollingValue, na.rm = TRUE))
   
-  ptile_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER))
-  # Calculate the long-term percentile
-  for(ptile in percentiles){
-    ptile_statss <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER),
-                                 Percentile = stats::quantile(RollingValue, ptile / 100, na.rm = TRUE))
-    names(ptile_statss)[names(ptile_statss) == "Percentile"] <- paste0("P", ptile)
-    
-    # Merge with ptile_statss
-    ptile_stats <- merge(ptile_stats, ptile_statss, by = c("STATION_NUMBER"))
+  
+  # Calculate the monthly and longterm percentiles
+  if(!all(is.na(percent_MAD))) {
+    for (pcnt in percent_MAD) {
+      ltmad_stats <- dplyr::mutate(ltmad_stats, Percent = LTMAD * pcnt / 100)
+      names(ltmad_stats)[names(ltmad_stats) == "Percent"] <- paste0(pcnt, "%MAD")
+      
+    }
   }
-  
   
   # If transpose if selected, switch columns and rows
   if (transpose) {
     # Get list of columns to order the Statistic column after transposing
-    stat_levels <- names(ptile_stats[-(1)])
+    stat_levels <- names(ltmad_stats[-(1)])
     
     # Transpose the columns for rows
-    ptile_stats <- tidyr::gather(ptile_stats, Statistic, Value, -STATION_NUMBER)
+    ltmad_stats <- tidyr::gather(ltmad_stats, Statistic, Value, -STATION_NUMBER)
     
     # Order the columns
-    ptile_stats$Statistic <- factor(ptile_stats$Statistic, levels = stat_levels)
-    ptile_stats <- dplyr::arrange(ptile_stats, STATION_NUMBER, Statistic)
+    ltmad_stats$Statistic <- factor(ltmad_stats$Statistic, levels = stat_levels)
+    ltmad_stats <- dplyr::arrange(ltmad_stats, STATION_NUMBER, Statistic)
   }
-  
   
   # Recheck if station_number was in original flow_data and rename or remove as necessary
   if(as.character(substitute(groups)) %in% orig_cols) {
-    names(ptile_stats)[names(ptile_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
+    names(ltmad_stats)[names(ltmad_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
-    ptile_stats <- dplyr::select(ptile_stats, -STATION_NUMBER)
+    ltmad_stats <- dplyr::select(ltmad_stats, -STATION_NUMBER)
   }
   
-
-    
+  
+  
   # If just one value is in the table, return is as a value, otherwise return it as a tibble
-  if(nrow(ptile_stats) == 1 & ncol(ptile_stats) == 1){
-    dplyr::pull(dplyr::as_tibble(ptile_stats)[1,1])
+  if(nrow(ltmad_stats) == 1 & ncol(ltmad_stats) == 1){
+    dplyr::pull(dplyr::as_tibble(ltmad_stats)[1,1])
   } else {
-    dplyr::as_tibble(ptile_stats)
+    dplyr::as_tibble(ltmad_stats)
   }
-
+  
 }

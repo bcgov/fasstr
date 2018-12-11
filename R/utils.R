@@ -241,6 +241,24 @@ filter_complete_yrs <- function(complete_years, flow_data) {
 }
 
 
+
+## add water year months (reorders the months to the start of the water year)
+
+add_water_months <- function(data, water_year, water_year_start){
+  
+  if (!water_year) {
+    data <- dplyr::mutate(data,
+                          AnalysisMonth = Month)
+  } else {
+    data <- dplyr::mutate(data,
+                          AnalysisMonth = ifelse(Month < water_year_start,
+                                                 Month - water_year_start + 13,
+                                                 Month - water_year_start + 1))
+  }
+  
+  data
+}
+
 ## Various check functions
 
 

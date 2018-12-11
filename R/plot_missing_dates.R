@@ -1,4 +1,4 @@
-# Copyright 2017 Province of British Columbia
+# Copyright 2018 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -142,8 +142,7 @@ plot_missing_dates <- function(data = NULL,
   miss_plots <- dplyr::mutate(miss_plots,
                              plot = purrr::map2(data, STATION_NUMBER, 
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value)) +
-        ggplot2::geom_line(colour = "dodgerblue4", na.rm = TRUE) +
-        ggplot2::geom_point(colour = "firebrick3", na.rm = TRUE) +
+        ggplot2::geom_bar(colour = "cornflowerblue", fill = "cornflowerblue", na.rm = TRUE, stat = "identity") +
         ggplot2::facet_wrap(~Month, ncol = 3, scales = "fixed") +
         ggplot2::ylab("Missing Days") +
         ggplot2::xlab("Year") +

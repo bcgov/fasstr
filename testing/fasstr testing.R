@@ -2,14 +2,53 @@
 
 devtools::document()
 #install.packages("/Users/jongoetz/Documents/R/fasstr", repos = NULL, type = "source",)
-install.packages("C:/Users/jgoetz/R/fasstr devel",repos = NULL, type = "source", build_vignettes = TRUE)
-devtools::install_github("bcgov/fasstr", ref = "devel",  build_vignettes = TRUE)
+install.packages("C:/Users/jgoetz/R/fasstr_devel",repos = NULL, type = "source", build_vignettes = TRUE)
+devtools::install_github("bcgov/fasstr", ref = "devel",  force = TRUE)
+devtools::install_github("bcgov/fasstr",  build_vignettes = TRUE, force = TRUE)
+remotes::install_github("bcgov/fasstr", , force = TRUE)
 #devtools::check()
+
 
 
 library(fasstr)
 
 
+all <- compute_full_analysis(station_number = "08HB048", sections = 3)
+
+s <- plot_annual_cumulative_stats(station_number = "08HB048", include_seasons = TRUE)
+s <- calc_annual_cumulative_stats(station_number = "08HB048", include_seasons = TRUE, 
+                                  months = 1:6, use_yield =F)
+
+all <- calc_all_annual_stats(station_number = "08HB048")
+
+t <- add_seasons_new(station_number = "08HB048", seasons_length = 4, water_year = TRUE, water_year_start = 12) %>% 
+  add_seasons_new(seasons_length = 6)
+str(t)
+
+
+add_seasons(station_number = "08HB048")
+
+calc_annual_cumulative_stats(station_number = "08HB048", months = c(12,1), water_year = TRUE, water_year_start = 12)
+
+
+
+
+
+l
+
+
+
+
+
+
+add_daily_volume(station_number = "08HB048") %>% 
+  write_results("volumetesting.xlsx")
+
+
+
+library(fasstr)
+
+test <- compute_full_analysis(station_number = "08HB048", start_year = 1973, sections = 5)
 
 low_flows <- calc_annual_lowflows(station_number = "08NM116", 
                                   start_year = 1980, 

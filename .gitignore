@@ -6,3 +6,4 @@ out/
 internal.R
 *.DS_Store
 inst/doc
+fasstr_devel.Rproj

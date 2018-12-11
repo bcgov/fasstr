@@ -1,4 +1,4 @@
-# Copyright 2017 Province of British Columbia
+# Copyright 2018 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -186,8 +186,8 @@ compute_annual_trends <- function(data = NULL,
       
       trends_data_stn <- dplyr::mutate(trends_data_stn,
                                        Units= "Discharge (cms)",
-                                       Units = replace(Units, grepl("Yield_mm", Statistic), "Runoff Yield (mm)"),
-                                       Units = replace(Units, grepl("TotalQ_m3", Statistic), "Total Discharge (cubic metres)"),
+                                       Units = replace(Units, grepl("Yield_mm", Statistic), "Yield (mm)"),
+                                       Units = replace(Units, grepl("Volume_m3", Statistic), "Volume (m3)"),
                                        Units = replace(Units, grepl("DoY", Statistic), "Day of Year"),
                                        Units = replace(Units, grepl("Days", Statistic), "Number of Days"))
       
