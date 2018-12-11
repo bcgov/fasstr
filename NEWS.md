@@ -1,15 +1,17 @@
 fasstr 0.2.8
 =========================
 
-Updated: 27 November 2018
+Updated: 11 December 2018
 
 #### Updates:
 
+  # README updates
   * Renamed calc_lt_mad() and calc_lt_percentile() to calc_longterm_mad() and calc_longterm_percentile(), respectively.
   * Changed the plot_missing_dates points and lines to bar plots.
   * changed add_seasons() function from adding two 4 and 2 seasons columns to adding own custom seasons of desired lengths. All subsequent function and documentation updated were also completed.
   * Renamed some annual and seasonal total volume axes, column names, and plots names.
   * Updated the licence year in .R files.
+  * Temporarily removed 'Return Period' axis from frequency plots due to ggplot2 3.0.1 issues.
   
 #### Bugs Fixed:
 
