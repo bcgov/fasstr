@@ -26,7 +26,6 @@
 #' 
 #' 
 #' calc_flow_percentile(station_number = "08NM116", 
-#'                      water_year = TRUE, 
 #'                      exclude_years = (1990, 1992:1994),
 #'                      flow_value = 10)
 #' 
@@ -46,8 +45,7 @@ calc_flow_percentile <- function(data = NULL,
                                  roll_days = 1,
                                  roll_align = "right",
                                  flow_value = NA,
-                                 water_year = FALSE,
-                                 water_year_start = 10,
+                                 water_year_start = 1,
                                  start_year = 0,
                                  end_year = 9999,
                                  exclude_years = NULL,
@@ -59,7 +57,7 @@ calc_flow_percentile <- function(data = NULL,
   ## ---------------
   
   rolling_days_checks(roll_days, roll_align)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   complete_yrs_checks(complete_years)
   
@@ -89,19 +87,17 @@ calc_flow_percentile <- function(data = NULL,
   ## PREPARE FLOW DATA
   ## -----------------
   
-  # Fill missing dates, add date variables, and add AnalysisYear
+  # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
-                             water_year_start = water_year_start,
-                             year = TRUE)
+                             water_year_start = water_year_start)
   
   # Add rolling means to end of dataframe
   flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
   colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
   
   # Filter for the selected year
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
-  flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, !(WaterYear %in% exclude_years))
   flow_data <- dplyr::filter(flow_data, Month %in% months)
   
   # Remove incomplete years if selected

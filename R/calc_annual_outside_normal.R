@@ -32,7 +32,6 @@
 #' \dontrun{
 #' 
 #' calc_annual_outside_normal(station_number = "08NM116", 
-#'                            water_year = TRUE, 
 #'                            water_year_start = 8)
 #'
 #' }
@@ -48,8 +47,7 @@ calc_annual_outside_normal <- function(data = NULL,
                                        normal_percentiles = c(25, 75),
                                        roll_days = 1,
                                        roll_align = "right",
-                                       water_year = FALSE,
-                                       water_year_start = 10,
+                                       water_year_start = 1,
                                        start_year = 0,
                                        end_year = 9999,
                                        exclude_years = NULL, 
@@ -61,7 +59,7 @@ calc_annual_outside_normal <- function(data = NULL,
   ## ---------------
   
   rolling_days_checks(roll_days, roll_align, multiple = FALSE)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)
   transpose_checks(transpose)
@@ -91,25 +89,22 @@ calc_annual_outside_normal <- function(data = NULL,
   ## PREPARE FLOW DATA
   ## -----------------
   
-  # Fill missing dates, add date variables, and add AnalysisYear
+  # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
-                             water_year_start = water_year_start,
-                             year = TRUE,
-                             doy = TRUE)
+                             water_year_start = water_year_start)
   
   # Add rolling means to end of dataframe
   flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
   colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
   
   # Filter the data for the start and end years
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
-  flow_data <- dplyr::mutate(flow_data, Value = replace(Value, AnalysisYear %in% exclude_years, NA))
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
+  flow_data <- dplyr::mutate(flow_data, Value = replace(Value, WaterYear %in% exclude_years, NA))
   
   # Determine years with complete data and filter for only those years
-  comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
-                                 complete_yr = ifelse(sum(!is.na(RollingValue)) == length(AnalysisYear), TRUE, FALSE))
-  flow_data <- merge(flow_data, comp_years, by = c("STATION_NUMBER", "AnalysisYear"))
+  comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
+                                 complete_yr = ifelse(sum(!is.na(RollingValue)) == length(WaterYear), TRUE, FALSE))
+  flow_data <- merge(flow_data, comp_years, by = c("STATION_NUMBER", "WaterYear"))
   flow_data <- dplyr::mutate(flow_data, Value = replace(Value, complete_yr == "FALSE", NA))
 
   
@@ -117,19 +112,19 @@ calc_annual_outside_normal <- function(data = NULL,
   ## --------------------
   
   #Compute the normal limits for each day of the year and add each to the flow_data
-  daily_normals <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDoY),
+  daily_normals <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, DayofYear),
                                     LOWER = stats::quantile(RollingValue, prob = normal_percentiles[1] / 100, na.rm = TRUE),
                                     UPPER = stats::quantile(RollingValue, prob = normal_percentiles[2] / 100, na.rm = TRUE))
   daily_normals <- dplyr::ungroup(daily_normals)
-  flow_data_temp <- merge(flow_data, daily_normals, by = c("STATION_NUMBER", "AnalysisDoY"))
+  flow_data_temp <- merge(flow_data, daily_normals, by = c("STATION_NUMBER", "DayofYear"))
   
   #Compute the number of days above and below normal for each year
-  normals_stats <- dplyr::summarise(dplyr::group_by(flow_data_temp, STATION_NUMBER, AnalysisYear),
+  normals_stats <- dplyr::summarise(dplyr::group_by(flow_data_temp, STATION_NUMBER, WaterYear),
                             Days_Below_Normal = sum(Value < LOWER, na.rm = FALSE),
                             Days_Above_Normal = sum(Value > UPPER, na.rm = FALSE),
                             Days_Outside_Normal = Days_Below_Normal + Days_Above_Normal)
   normals_stats <- dplyr::ungroup(normals_stats)
-  normals_stats <- dplyr::rename(normals_stats, Year = AnalysisYear)
+  normals_stats <- dplyr::rename(normals_stats, Year = WaterYear)
   
   
   #Remove any excluded

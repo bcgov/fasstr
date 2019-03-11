@@ -1,3 +1,21 @@
+fasstr 0.3
+=========================
+
+Updated: 
+
+#### Updates:
+
+  * Removed logical "water_year" argument and now "water_year_start" controls the start of year alone (default now 1 for January)
+  * Internal coding (MonthName levels coding cleaned up) 
+  
+#### Bugs Fixed:
+
+  * 
+  
+#### New:
+
+  * 
+
 fasstr 0.2.8
 =========================
 

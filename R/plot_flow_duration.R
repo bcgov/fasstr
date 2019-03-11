@@ -32,7 +32,6 @@
 #' \dontrun{
 #' 
 #' plot_flow_duration(station_number = "08NM116", 
-#'                    water_year = TRUE, 
 #'                    water_year_start = 8)
 #'
 #' }
@@ -47,8 +46,7 @@ plot_flow_duration <- function(data = NULL,
                                station_number = NULL,
                                roll_days = 1,
                                roll_align = "right",
-                               water_year = FALSE,
-                               water_year_start = 10,
+                               water_year_start = 1,
                                start_year = 0,
                                end_year = 9999,
                                exclude_years = NULL,
@@ -93,7 +91,6 @@ plot_flow_duration <- function(data = NULL,
                                           percentiles = c(.01,.1,.2:9.8,10:90,90.2:99.8,99.9,99.99),
                                           roll_days = roll_days,
                                           roll_align = roll_align,
-                                          water_year = water_year,
                                           water_year_start = water_year_start,
                                           start_year = start_year,
                                           end_year = end_year,

@@ -30,7 +30,6 @@
 #' \dontrun{
 #' 
 #' plot_flow_data(station_number = "08NM116", 
-#'                water_year = TRUE, 
 #'                water_year_start = 8)
 #'
 #' }
@@ -45,8 +44,7 @@ plot_flow_data <- function(data = NULL,
                            station_number = NULL,
                            roll_days = 1,
                            roll_align = "right",
-                           water_year = FALSE,
-                           water_year_start = 10,
+                           water_year_start = 1,
                            start_year = 0,
                            end_year = 9999,
                            exclude_years = NULL,
@@ -62,7 +60,7 @@ plot_flow_data <- function(data = NULL,
   ## ---------------
   
   rolling_days_checks(roll_days, roll_align)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years = NULL)
   log_discharge_checks(log_discharge)
   include_title_checks(include_title)
@@ -98,25 +96,23 @@ plot_flow_data <- function(data = NULL,
   ## PREPARE FLOW DATA
   ## -----------------
   
-  # Fill missing dates, add date variables, and add AnalysisYear
+  # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
-                             water_year_start = water_year_start,
-                             year = TRUE)
+                             water_year_start = water_year_start)
   
   # Add rolling means to end of dataframe
   flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
   colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
   
   # Filter for the selected year (remove excluded years after)
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
 
   # Filter for specific dates, if selected
   flow_data <- dplyr::filter(flow_data, Date >= start_date)
   flow_data <- dplyr::filter(flow_data, Date <= end_date)
   
   # Remove selected excluded years
-  flow_data <- dplyr::mutate(flow_data, RollingValue = replace(RollingValue, AnalysisYear %in% exclude_years, NA))
+  flow_data <- dplyr::mutate(flow_data, RollingValue = replace(RollingValue, WaterYear %in% exclude_years, NA))
   
   if (anyNA(flow_data$RollingValue)) 
     warning(paste0("Did not plot ", sum(is.na(flow_data$RollingValue)),
@@ -137,7 +133,7 @@ plot_flow_data <- function(data = NULL,
           ~ggplot2::ggplot(data = ., ggplot2::aes(x = Date, y = RollingValue)) +
             ggplot2::geom_line(colour = "dodgerblue4", na.rm = TRUE) +
             ggplot2::ylab(y_axis_title) +
-            {if(plot_by_year) ggplot2::facet_wrap(~AnalysisYear, scales = "free_x")} +
+            {if(plot_by_year) ggplot2::facet_wrap(~WaterYear, scales = "free_x")} +
             {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 8), expand = c(0, 0))} +
             {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
             {if(plot_by_year) ggplot2::scale_x_date(date_labels = "%b", expand = c(0,0))} +
@@ -175,7 +171,7 @@ plot_flow_data <- function(data = NULL,
     plot <- ggplot2::ggplot(data = flow_data, ggplot2::aes(x = Date, y = RollingValue, colour = STATION_NUMBER)) +
       ggplot2::geom_line(na.rm = TRUE) +
       ggplot2::ylab(y_axis_title) +
-      {if(plot_by_year) ggplot2::facet_wrap(~AnalysisYear, scales = "free_x")} +
+      {if(plot_by_year) ggplot2::facet_wrap(~WaterYear, scales = "free_x")} +
       {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 8), expand = c(0, 0))} +
       {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
       {if(log_discharge) ggplot2::annotation_logticks(base= 10, "left", colour = "grey25", size = 0.3,

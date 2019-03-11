@@ -58,8 +58,7 @@ compute_full_analysis <- function(data = NULL,
                                   station_number = NULL,
                                   sections = 1:7,
                                   basin_area = NA,
-                                  water_year = FALSE,
-                                  water_year_start = 10,
+                                  water_year_start = 1,
                                   start_year = 0,
                                   end_year = 3000,
                                   exclude_years = NULL,
@@ -76,7 +75,7 @@ compute_full_analysis <- function(data = NULL,
   ## ARGUMENT CHECKS
   ## ---------------
   
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   ignore_missing_checks(ignore_missing)
   
@@ -127,8 +126,8 @@ compute_full_analysis <- function(data = NULL,
   }
   
   # Data setup
-  flow_data <- fill_missing_dates(data = flow_data, water_year = water_year, water_year_start = water_year_start)
-  flow_data <- add_date_variables(data = flow_data, water_year = water_year, water_year_start = water_year_start)
+  flow_data <- fill_missing_dates(data = flow_data, water_year_start = water_year_start)
+  flow_data <- add_date_variables(data = flow_data, water_year_start = water_year_start)
   flow_data <- add_rolling_means(data = flow_data)
   
   # Set up basin_area
@@ -138,18 +137,17 @@ compute_full_analysis <- function(data = NULL,
   
   # Get the start and end years of the data to make a list of all included years
   flow_data <- analysis_prep(data = flow_data,
-                             water_year = water_year,
                              water_year_start = water_year_start)
-  if (start_year < min(flow_data$AnalysisYear)) {
-    start_year <- min(flow_data$AnalysisYear)
+  if (start_year < min(flow_data$WaterYear)) {
+    start_year <- min(flow_data$WaterYear)
   }
-  if (end_year > max(flow_data$AnalysisYear)) {
-    end_year <- max(flow_data$AnalysisYear)
+  if (end_year > max(flow_data$WaterYear)) {
+    end_year <- max(flow_data$WaterYear)
   }
   years_list <- seq(from = start_year, to = end_year, by = 1)[!(seq(from = start_year, to = end_year, by = 1) %in% exclude_years)]
   
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
-  flow_data <- dplyr::select(flow_data, -AnalysisYear)
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
+  flow_data <- dplyr::select(flow_data, -WaterYear)
   
   
   ### Folders Setup
@@ -174,31 +172,28 @@ compute_full_analysis <- function(data = NULL,
     
     # Write the data screening
     flow_screening = screen_flow_data(data = flow_data,
-                                      water_year = water_year,
                                       water_year_start = water_year_start)
     
     # Write flow data plot
     ts_full_plot <- plot_flow_data(data = flow_data,
                                    exclude_years = exclude_years,
-                                   water_year = water_year, 
                                    water_year_start = water_year_start)
     
     # Write flow data by year plots
     ts_annual_plot <- plot_flow_data(data = flow_data,
                                      exclude_years = exclude_years,
-                                     water_year = water_year, 
                                      water_year_start = water_year_start,
                                      plot_by_year = TRUE)
     
     # Write screening plots
     ts_screen_plot <- plot_data_screening(data = flow_data,
                                           start_year = start_year, end_year = end_year,
-                                          water_year = water_year, water_year_start = water_year_start)
+                                          water_year_start = water_year_start)
     
     # Write missing dates plots
     ts_missing_plot <- plot_missing_dates(data = flow_data,
                                           start_year = start_year, end_year = end_year,
-                                          water_year = water_year, water_year_start = water_year_start)
+                                          water_year_start = water_year_start)
     
     
     all_objects <- append(all_objects,
@@ -217,7 +212,6 @@ compute_full_analysis <- function(data = NULL,
       
       # Write the flow data
       write_flow_data(data = flow_data,
-                      water_year = water_year, 
                       water_year_start = water_year_start,
                       file = paste0(main_dir, timeseries_dir, "Daily_Flows.", table_filetype))
       
@@ -263,7 +257,6 @@ compute_full_analysis <- function(data = NULL,
     # Write the long-term stats with percentiles
     lt_stats <- calc_longterm_stats(data = flow_data,
                                     exclude_years = exclude_years,
-                                    water_year = water_year, 
                                     water_year_start = water_year_start,
                                     percentiles = 1:99,
                                     transpose = TRUE,
@@ -273,7 +266,6 @@ compute_full_analysis <- function(data = NULL,
     # Write the long-term stats plot
     lt_stats_plot <- plot_longterm_stats(data = flow_data,
                                          exclude_years = exclude_years,
-                                         water_year = water_year, 
                                          water_year_start = water_year_start,
                                          ignore_missing = ignore_missing)
     
@@ -281,7 +273,7 @@ compute_full_analysis <- function(data = NULL,
     # Write the flow duration plot
     lt_flowduration_plot <- plot_flow_duration(data = flow_data,
                                                exclude_years = exclude_years,
-                                               water_year = water_year, water_year_start = water_year_start,
+                                               water_year_start = water_year_start,
                                                ignore_missing = ignore_missing)
     
     all_objects <- append(all_objects,    
@@ -321,7 +313,6 @@ compute_full_analysis <- function(data = NULL,
     # Annual stats
     ann_stats <- calc_annual_stats(data = flow_data,
                                    exclude_years = exclude_years,
-                                   water_year = water_year, 
                                    water_year_start = water_year_start,
                                    ignore_missing = ignore_missing)
     
@@ -329,7 +320,6 @@ compute_full_analysis <- function(data = NULL,
     # Annual volume
     ann_vol <- calc_annual_cumulative_stats(data = flow_data,
                                             exclude_years = exclude_years,
-                                            water_year = water_year,
                                             water_year_start = water_year_start,
                                             include_seasons = TRUE)
     
@@ -337,7 +327,6 @@ compute_full_analysis <- function(data = NULL,
     # Annual yield
     ann_yield <- calc_annual_cumulative_stats(data = flow_data,
                                               exclude_years = exclude_years,
-                                              water_year = water_year, 
                                               water_year_start = water_year_start,
                                               include_seasons = TRUE, 
                                               use_yield = TRUE, 
@@ -347,21 +336,18 @@ compute_full_analysis <- function(data = NULL,
     # Annual flow timing
     ann_timing <- calc_annual_flow_timing(data = flow_data,
                                           exclude_years = exclude_years,
-                                          water_year = water_year, 
                                           water_year_start = water_year_start)
     
     
     # Annual days outside normal
     ann_norm <- calc_annual_outside_normal(data = flow_data,
                                            exclude_years = exclude_years,
-                                           water_year = water_year,
                                            water_year_start = water_year_start)
     
     
     # Annual lowflows
     ann_lowflow <- calc_annual_lowflows(data = flow_data,
                                         exclude_years = exclude_years,
-                                        water_year = water_year, 
                                         water_year_start = water_year_start,
                                         ignore_missing = ignore_missing)
     
@@ -370,37 +356,30 @@ compute_full_analysis <- function(data = NULL,
     # Write each of the annual stats plots
     ann_stats_plot <- plot_annual_stats(data = flow_data,
                                         exclude_years = exclude_years,
-                                        water_year = water_year, 
                                         water_year_start = water_year_start,
                                         ignore_missing = ignore_missing)
     ann_vol_plot <- plot_annual_cumulative_stats(data = flow_data,
                                                  exclude_years = exclude_years,
-                                                 water_year = water_year, 
                                                  water_year_start = water_year_start,
                                                  include_seasons = TRUE)
     ann_yield_plot <- plot_annual_cumulative_stats(data = flow_data,
                                                    exclude_years = exclude_years,
-                                                   water_year = water_year, 
                                                    water_year_start = water_year_start,
                                                    include_seasons = TRUE, 
                                                    use_yield = TRUE,
                                                    basin_area = basin_area)
     ann_timing_plot <- plot_annual_flow_timing(data = flow_data,
                                                exclude_years = exclude_years,
-                                               water_year = water_year, 
                                                water_year_start = water_year_start)
     ann_norm_plot <- plot_annual_outside_normal(data = flow_data,
                                                 exclude_years = exclude_years,
-                                                water_year = water_year, 
                                                 water_year_start = water_year_start)
     ann_lowflow_plot <- plot_annual_lowflows(data = flow_data,
                                              exclude_years = exclude_years,
-                                             water_year = water_year, 
                                              water_year_start = water_year_start,
                                              ignore_missing = ignore_missing)
     ann_means_plot <- plot_annual_means(data = flow_data,
                                         exclude_years = exclude_years,
-                                        water_year = water_year, 
                                         water_year_start = water_year_start,
                                         ignore_missing = ignore_missing)
     
@@ -467,20 +446,17 @@ compute_full_analysis <- function(data = NULL,
     # Write all the monthly stats
     mon_stats <- calc_monthly_stats(data = flow_data,
                                     exclude_years = exclude_years,
-                                    water_year = water_year,
                                     water_year_start = water_year_start,
                                     ignore_missing = ignore_missing)
     
     
     mon_vol <- calc_monthly_cumulative_stats(data = flow_data,
                                              exclude_years = exclude_years,
-                                             water_year = water_year, 
                                              water_year_start = water_year_start)
     
     
     mon_yield <- calc_monthly_cumulative_stats(data = flow_data,
                                                exclude_years = exclude_years,
-                                               water_year = water_year, 
                                                water_year_start = water_year_start,
                                                use_yield = TRUE, 
                                                basin_area = basin_area)
@@ -490,7 +466,6 @@ compute_full_analysis <- function(data = NULL,
     # Write the monthly stats plots
     mon_stats_plot <- plot_monthly_stats(data = flow_data,
                                          exclude_years = exclude_years,
-                                         water_year = water_year,
                                          water_year_start = water_year_start,
                                          ignore_missing = ignore_missing)
     
@@ -498,11 +473,9 @@ compute_full_analysis <- function(data = NULL,
     # Write the monthly cumulative plots
     mon_vol_plot <- plot_monthly_cumulative_stats(data = flow_data,
                                                   exclude_years = exclude_years,
-                                                  water_year = water_year, 
                                                   water_year_start = water_year_start)
     mon_yield_plot <- plot_monthly_cumulative_stats(data = flow_data,
                                                     exclude_years = exclude_years,
-                                                    water_year = water_year, 
                                                     water_year_start = water_year_start,
                                                     use_yield = TRUE,
                                                     basin_area = basin_area)
@@ -556,20 +529,17 @@ compute_full_analysis <- function(data = NULL,
     # Write all daily stats
     day_stats <- calc_daily_stats(data = flow_data,
                                   exclude_years = exclude_years,
-                                  water_year = water_year, 
                                   water_year_start = water_year_start,
                                   ignore_missing = ignore_missing)
     
     
     day_vol <- calc_daily_cumulative_stats(data = flow_data,
                                            exclude_years = exclude_years,
-                                           water_year = water_year,
                                            water_year_start = water_year_start)
     
     
     day_yield <- calc_daily_cumulative_stats(data = flow_data,
                                              exclude_years = exclude_years,
-                                             water_year = water_year,
                                              water_year_start = water_year_start,
                                              use_yield = TRUE,
                                              basin_area = basin_area)
@@ -580,16 +550,13 @@ compute_full_analysis <- function(data = NULL,
     # Write the daily stats plots
     day_stats_plot <- plot_daily_stats(data = flow_data,
                                        exclude_years = exclude_years,
-                                       water_year = water_year,
                                        water_year_start = water_year_start,
                                        ignore_missing = ignore_missing)
     day_vol_plot <- plot_daily_cumulative_stats(data = flow_data,
                                                 exclude_years = exclude_years,
-                                                water_year = water_year,
                                                 water_year_start = water_year_start)
     day_yield_plot <- plot_daily_cumulative_stats(data = flow_data,
                                                   exclude_years = exclude_years,
-                                                  water_year = water_year,
                                                   water_year_start = water_year_start,
                                                   use_yield = TRUE,
                                                   basin_area = basin_area)
@@ -603,7 +570,6 @@ compute_full_analysis <- function(data = NULL,
       plot <- suppressMessages(plot_daily_stats(data = flow_data,
                                                 start_year = start_year,
                                                 end_year = end_year,
-                                                water_year = water_year,
                                                 water_year_start = water_year_start,
                                                 exclude_years = exclude_years,
                                                 include_year = year,
@@ -619,7 +585,6 @@ compute_full_analysis <- function(data = NULL,
       plot <- suppressMessages(plot_daily_cumulative_stats(data = flow_data,
                                                            start_year = start_year,
                                                            end_year = end_year,
-                                                           water_year = water_year,
                                                            water_year_start = water_year_start,
                                                            exclude_years = exclude_years,
                                                            include_year = year))
@@ -634,7 +599,6 @@ compute_full_analysis <- function(data = NULL,
       plot <- suppressMessages(plot_daily_cumulative_stats(data = flow_data,
                                                            start_year = start_year,
                                                            end_year = end_year,
-                                                           water_year = water_year,
                                                            water_year_start = water_year_start,
                                                            exclude_years = exclude_years,
                                                            include_year = year,
@@ -710,7 +674,6 @@ compute_full_analysis <- function(data = NULL,
     # Write the trends results
     ann_trends <- compute_annual_trends(data = flow_data,
                                         exclude_years = exclude_years,
-                                        water_year = water_year,
                                         water_year_start = water_year_start,
                                         ignore_missing = ignore_missing,
                                         zyp_method = "yuepilon",
@@ -752,7 +715,7 @@ compute_full_analysis <- function(data = NULL,
     
     data_check <- calc_annual_lowflows(data = flow_data,
                                        start_year = start_year, end_year = end_year, exclude_years = exclude_years,
-                                       water_year = water_year, water_year_start = water_year_start,
+                                       water_year_start = water_year_start,
                                        ignore_missing = ignore_missing)
     data_check <- dplyr::select(data_check, Min_1_Day, Min_3_Day, Min_7_Day, Min_30_Day)
     
@@ -765,7 +728,6 @@ compute_full_analysis <- function(data = NULL,
       
       freq_results <- compute_annual_frequencies(data = flow_data,
                                                  exclude_years = exclude_years,
-                                                 water_year = water_year, 
                                                  water_year_start = water_year_start,
                                                  ignore_missing = ignore_missing)
       
@@ -857,7 +819,6 @@ compute_full_analysis <- function(data = NULL,
                      groups = as.character(substitute(STATION_NUMBER)),
                      station_number = ifelse(!is.null(station_number), station_number, ""),
                      basin_area = basin_area,
-                     water_year = water_year,
                      water_year_start = water_year_start,
                      start_year = start_year,
                      end_year = end_year,

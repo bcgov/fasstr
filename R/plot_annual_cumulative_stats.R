@@ -37,7 +37,6 @@
 #' 
 #' 
 #' plot_annual_cumulative_stats(station_number = "08NM116", 
-#'                              water_year = TRUE, 
 #'                              water_year_start = 8)
 #'
 #' }
@@ -52,8 +51,7 @@ plot_annual_cumulative_stats <- function(data = NULL,
                                          station_number = NULL,
                                          use_yield = FALSE, 
                                          basin_area = NA,
-                                         water_year = FALSE,
-                                         water_year_start = 10,
+                                         water_year_start = 1,
                                          start_year = 0,
                                          end_year = 9999,
                                          exclude_years = NULL, 
@@ -90,7 +88,6 @@ plot_annual_cumulative_stats <- function(data = NULL,
   cumulative_stats <- calc_annual_cumulative_stats(data = flow_data,
                                                    use_yield = use_yield, 
                                                    basin_area = ifelse(use_yield, basin_area, 0),
-                                                   water_year = water_year,
                                                    water_year_start = water_year_start,
                                                    start_year = start_year,
                                                    end_year = end_year,

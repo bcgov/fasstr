@@ -39,7 +39,6 @@
 #' \dontrun{
 #' 
 #' calc_annual_cumulative_stats(station_number = "08NM116", 
-#'                              water_year = TRUE, 
 #'                              water_year_start = 8,
 #'                              include_seasons = TRUE)
 #'
@@ -55,8 +54,7 @@ calc_annual_cumulative_stats <- function(data = NULL,
                                          station_number = NULL,
                                          use_yield = FALSE, 
                                          basin_area = NA,
-                                         water_year = FALSE,
-                                         water_year_start = 10,
+                                         water_year_start = 1,
                                          start_year = 0,
                                          end_year = 9999,
                                          exclude_years = NULL, 
@@ -70,7 +68,7 @@ calc_annual_cumulative_stats <- function(data = NULL,
   ## ---------------
 
   use_yield_checks(use_yield)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   transpose_checks(transpose)
   include_seasons_checks(include_seasons)
@@ -107,15 +105,13 @@ calc_annual_cumulative_stats <- function(data = NULL,
   ## PREPARE FLOW DATA
   ## -----------------
   
-  # Fill missing dates, add date variables, and add AnalysisYear
+  # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
-                             water_year_start = water_year_start,
-                             year = TRUE)
-  flow_data <- add_seasons(data = flow_data, water_year = water_year, water_year_start = water_year_start,
+                             water_year_start = water_year_start)
+  flow_data <- add_seasons(data = flow_data, water_year_start = water_year_start,
                            seasons_length = 6)
   flow_data <- dplyr::rename(flow_data, Seasons2 = Season)
-  flow_data <- add_seasons(data = flow_data, water_year = water_year, water_year_start = water_year_start,
+  flow_data <- add_seasons(data = flow_data, water_year_start = water_year_start,
                            seasons_length = 3)
   flow_data <- dplyr::rename(flow_data, Seasons4 = Season)
 
@@ -131,7 +127,7 @@ calc_annual_cumulative_stats <- function(data = NULL,
   
   
   # Filter data FOR SELECTED YEARS FOR REMAINDER OF CALCS
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
   
   
   
@@ -141,13 +137,13 @@ calc_annual_cumulative_stats <- function(data = NULL,
   # Calculate annual stats
   flow_data_months <- dplyr::filter(flow_data, Month %in% months)
   
-  annual_stats <-   dplyr::summarize(dplyr::group_by(flow_data_months, STATION_NUMBER, AnalysisYear),
+  annual_stats <-   dplyr::summarize(dplyr::group_by(flow_data_months, STATION_NUMBER, WaterYear),
                                      Cumulative_total = sum(daily_total, na.rm = FALSE))
   annual_stats <- dplyr::ungroup(annual_stats)
   names(annual_stats)[names(annual_stats) == "Cumulative_total"] <- ifelse(!use_yield,
                                                                            paste("Total_Volume_m3"),
                                                                            paste("Total_Yield_mm"))
-  annual_stats <- dplyr::rename(annual_stats, Year = AnalysisYear)
+  annual_stats <- dplyr::rename(annual_stats, Year = WaterYear)
   
   
   
@@ -156,23 +152,23 @@ calc_annual_cumulative_stats <- function(data = NULL,
   if(include_seasons) {
     
     # Calculate two-seasons stats
-    seasons2_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, Seasons2),
+    seasons2_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear, Seasons2),
                                        Cumulative_total  = sum(daily_total, na.rm = FALSE))
     seasons2_stats <- dplyr::ungroup(seasons2_stats)
     seasons2_stats <- dplyr::mutate(seasons2_stats, Seasons2 = paste0(Seasons2, "_", ifelse(!use_yield, paste("Volume_m3"), paste("Yield_mm"))))
     s2_order <- unique(seasons2_stats$Seasons2)
     seasons2_stats <- tidyr::spread(seasons2_stats, Seasons2, Cumulative_total)
-    seasons2_stats <- dplyr::select(seasons2_stats, STATION_NUMBER, Year = AnalysisYear, s2_order)
+    seasons2_stats <- dplyr::select(seasons2_stats, STATION_NUMBER, Year = WaterYear, s2_order)
     
     
     # Calculate four-seasons stats
-    seasons4_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, Seasons4),
+    seasons4_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear, Seasons4),
                                        Cumulative_total  = sum(daily_total, na.rm = FALSE))
     seasons4_stats <- dplyr::ungroup(seasons4_stats)
     seasons4_stats <- dplyr::mutate(seasons4_stats, Seasons4 = paste0(Seasons4, "_", ifelse(!use_yield, paste("Volume_m3"), paste("Yield_mm"))))
     s4_order <- unique(seasons4_stats$Seasons4)
     seasons4_stats <- tidyr::spread(seasons4_stats, Seasons4, Cumulative_total)
-    seasons4_stats <- dplyr::select(seasons4_stats, STATION_NUMBER, Year = AnalysisYear, s4_order)
+    seasons4_stats <- dplyr::select(seasons4_stats, STATION_NUMBER, Year = WaterYear, s4_order)
   
     
     # Merge with annual stats  

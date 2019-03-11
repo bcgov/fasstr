@@ -31,10 +31,7 @@
 #' @param roll_align Character string identifying the direction of the rolling mean from the specified date, either by the first 
 #'    ('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.
 #' @param percentiles Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.
-#' @param water_year Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-#'    are designated by the calendar year in which they end. Default \code{FALSE}.
-#' @param water_year_start Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
-#'    Default \code{10}.
+#' @param water_year_start Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.
 #' @param start_year Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.
 #' @param end_year Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.
 #' @param exclude_years Numeric vector of years to exclude from analysis. Leave blank to include all years.             
@@ -63,7 +60,6 @@
 #' calc_annual_stats(data = flow_data)
 #' 
 #' calc_annual_stats(station_number = "08NM116",
-#'                   water_year = TRUE, 
 #'                   water_year_start = 8, 
 #'                   percentiles = c(1:10))
 #'
@@ -82,8 +78,7 @@ calc_annual_stats <- function(data = NULL,
                               roll_days = 1,
                               roll_align = "right",
                               percentiles = c(10,90),
-                              water_year = FALSE,
-                              water_year_start = 10,
+                              water_year_start = 1,
                               start_year = 0,
                               end_year = 9999,
                               exclude_years = NULL, 
@@ -97,7 +92,7 @@ calc_annual_stats <- function(data = NULL,
   
   rolling_days_checks(roll_days, roll_align)
   percentiles_checks(percentiles)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)
   transpose_checks(transpose)
@@ -126,18 +121,16 @@ calc_annual_stats <- function(data = NULL,
   ## PREPARE FLOW DATA
   ## -----------------
 
-  # Fill missing dates, add date variables, and add AnalysisYear
+  # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
-                             water_year_start = water_year_start,
-                             year = TRUE)
+                             water_year_start = water_year_start)
   
   # Add rolling means to end of dataframe
   flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
   colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
   
   # Filter for the selected year (remove excluded years after)
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
   flow_data <- dplyr::filter(flow_data, Month %in% months)
   
   
@@ -145,7 +138,7 @@ calc_annual_stats <- function(data = NULL,
   ## --------------------
   
   # Calculate basic stats
-  annual_stats <-   dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
+  annual_stats <-   dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
                                      Mean = mean(RollingValue, na.rm = ignore_missing),
                                      Median = stats::median(RollingValue, na.rm = ignore_missing),
                                      Maximum = max (RollingValue, na.rm = ignore_missing),
@@ -161,13 +154,13 @@ calc_annual_stats <- function(data = NULL,
   if(!all(is.na(percentiles))) {
     for (ptile in percentiles) {
       # Calculate percentiles
-      annual_stats_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
+      annual_stats_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
                                              Percentile = stats::quantile(RollingValue, ptile / 100, na.rm = TRUE))
       annual_stats_ptile <- dplyr::ungroup(annual_stats_ptile)
       names(annual_stats_ptile)[names(annual_stats_ptile) == "Percentile"] <- paste0("P", ptile)
       
       # Merge with stats
-      annual_stats <- merge(annual_stats, annual_stats_ptile, by = c("STATION_NUMBER", "AnalysisYear"))
+      annual_stats <- merge(annual_stats, annual_stats_ptile, by = c("STATION_NUMBER", "WaterYear"))
       
       # Remove percentile if mean is NA (workaround for na.rm=FALSE in quantile)
       annual_stats[, ncol(annual_stats)] <- ifelse(is.na(annual_stats$Mean), NA, annual_stats[, ncol(annual_stats)])
@@ -179,7 +172,7 @@ calc_annual_stats <- function(data = NULL,
   ## ----------------
 
   # Rename year column
-  annual_stats <- dplyr::rename(annual_stats, Year = AnalysisYear)
+  annual_stats <- dplyr::rename(annual_stats, Year = WaterYear)
   
   # Remove selected excluded years
   annual_stats[annual_stats$Year %in% exclude_years, -(1:2)] <- NA

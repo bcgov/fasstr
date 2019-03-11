@@ -6,10 +6,9 @@
 \usage{
 calc_longterm_mad(data = NULL, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number = NULL, roll_days = 1,
-  roll_align = "right", water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, exclude_years = NULL,
-  complete_years = FALSE, months = 1:12, percent_MAD = NA,
-  transpose = FALSE)
+  roll_align = "right", water_year_start = 1, start_year = 0,
+  end_year = 9999, exclude_years = NULL, complete_years = FALSE,
+  months = 1:12, percent_MAD = NA, transpose = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -34,11 +33,7 @@ Leave blank if using \code{data} argument.}
 \item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
 ('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
-\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the calendar year in which they end. Default \code{FALSE}.}
-
-\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
-Default \code{10}.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
@@ -67,7 +62,6 @@ Calculates the long-term mean annual discharge of a streamflow dataset. Averages
 \dontrun{
 
 calc_longterm_mad(station_number = "08NM116", 
-            water_year = TRUE, 
             exclude_years = (1990, 1992:1994))
 
 calc_longterm_mad(station_number = "08NM116", 

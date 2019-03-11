@@ -43,7 +43,6 @@
 #' \dontrun{
 #' 
 #' calc_annual_lowflows(station_number = "08NM116", 
-#'                      water_year = TRUE, 
 #'                      water_year_start = 8, 
 #'                      roll_days = c(3,7))
 #'
@@ -59,8 +58,7 @@ calc_annual_lowflows <- function(data = NULL,
                                  station_number = NULL,
                                  roll_days = c(1, 3, 7, 30),
                                  roll_align = "right",
-                                 water_year = FALSE,
-                                 water_year_start = 10,
+                                 water_year_start = 1,
                                  start_year = 0,
                                  end_year = 9999,
                                  exclude_years = NULL, 
@@ -73,7 +71,7 @@ calc_annual_lowflows <- function(data = NULL,
   ## ---------------
   
   rolling_days_checks(roll_days, roll_align, multiple = TRUE)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)
   transpose_checks(transpose)
@@ -103,22 +101,19 @@ calc_annual_lowflows <- function(data = NULL,
   ## -----------------
   
   # Fill in the missing dates and the add the date variables again
-  # Fill missing dates, add date variables, and add AnalysisYear and DOY
+  # Fill missing dates, add date variables, and add WaterYear and DOY
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
-                             water_year_start = water_year_start,
-                             year = TRUE,
-                             doy = TRUE)
+                             water_year_start = water_year_start)
   
   # Filter data for one year prior and one year after the selected data for proper rolling means
-  flow_data <- dplyr::filter(flow_data, Year >= start_year - 1 & Year <= end_year + 1)
+  flow_data <- dplyr::filter(flow_data, CalendarYear >= start_year - 1 & CalendarYear <= end_year + 1)
   
   
   ## CALCULATE STATISTICS
   ## --------------------
   
   # Loop through each rolling_day and compute annual min values and their dates
-  lowflow_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear))
+  lowflow_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear))
   for (day in roll_days) {
     # Add specified rolling mean
     flow_data_temp <- fasstr::add_rolling_means(data = flow_data, roll_days = day, roll_align = roll_align)
@@ -128,18 +123,18 @@ calc_annual_lowflows <- function(data = NULL,
     flow_data_temp <- dplyr::filter(flow_data_temp, Month %in% months)
     
     # Calculate the mins and dates
-    lowflow_stats_temp <- dplyr::summarize(dplyr::group_by(flow_data_temp, STATION_NUMBER, AnalysisYear),
+    lowflow_stats_temp <- dplyr::summarize(dplyr::group_by(flow_data_temp, STATION_NUMBER, WaterYear),
                                            MIN_VALUE = min(RollingValue, na.rm = ignore_missing),	     
-                                           MIN_DAY = ifelse(is.na(MIN_VALUE), NA, AnalysisDoY[which(RollingValue == MIN_VALUE)]),
+                                           MIN_DAY = ifelse(is.na(MIN_VALUE), NA, DayofYear[which(RollingValue == MIN_VALUE)]),
                                            MIN_DATE= ifelse(is.na(MIN_VALUE), NA, Date[which(RollingValue == MIN_VALUE)]))
     class(lowflow_stats_temp$MIN_DATE) <- "Date" # fixes ifelse and date issue
     names(lowflow_stats_temp)[names(lowflow_stats_temp) == "MIN_VALUE"] <- paste0("Min_", day, "_Day")
     names(lowflow_stats_temp)[names(lowflow_stats_temp) == "MIN_DAY"] <- paste0("Min_", day, "_Day_DoY")
     names(lowflow_stats_temp)[names(lowflow_stats_temp) == "MIN_DATE"] <- paste0("Min_", day, "_Day_Date")
     
-    lowflow_stats <- merge(lowflow_stats, lowflow_stats_temp, by = c("STATION_NUMBER", "AnalysisYear"), all = TRUE)
+    lowflow_stats <- merge(lowflow_stats, lowflow_stats_temp, by = c("STATION_NUMBER", "WaterYear"), all = TRUE)
   }
-  lowflow_stats <-   dplyr::rename(lowflow_stats, Year = AnalysisYear)
+  lowflow_stats <-   dplyr::rename(lowflow_stats, Year = WaterYear)
   
   # Filter for start and end years and make excluded years data NA
   lowflow_stats <- dplyr::filter(lowflow_stats, Year >= start_year & Year <= end_year)

@@ -46,7 +46,6 @@
 #' \dontrun{
 #' 
 #' calc_annual_flow_timing(station_number = "08NM116", 
-#'                         water_year = TRUE, 
 #'                         water_year_start = 8, 
 #'                         percent_total = 50)
 #'
@@ -60,8 +59,7 @@ calc_annual_flow_timing <- function(data = NULL,
                                     groups = STATION_NUMBER,
                                     station_number = NULL,
                                     percent_total = c(25, 33.3, 50, 75),
-                                    water_year = FALSE,
-                                    water_year_start = 10,
+                                    water_year_start = 1,
                                     start_year = 0,
                                     end_year = 9999,
                                     exclude_years = NULL, 
@@ -72,7 +70,7 @@ calc_annual_flow_timing <- function(data = NULL,
   ## ---------------
   
   percent_total_checks(percent_total)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   transpose_checks(transpose)
   
@@ -100,36 +98,33 @@ calc_annual_flow_timing <- function(data = NULL,
   ## -----------------
   
   # Fill in the missing dates and the add the date variables again
-  # Fill missing dates, add date variables, and add AnalysisYear and DOY
+  # Fill missing dates, add date variables, and add WaterYear and DOY
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
-                             water_year_start = water_year_start,
-                             year = TRUE,
-                             doy = TRUE)
-  flow_data <- add_cumulative_volume(flow_data, water_year = water_year, water_year_start = water_year_start)
+                             water_year_start = water_year_start)
+  flow_data <- add_cumulative_volume(flow_data, water_year_start = water_year_start)
   
   # Filter for the selected year (remove excluded years after)
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
   
   
   ## CALCULATE STATISTICS
   ## --------------------
   
   # Loop through percents
-  timing_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear))
+  timing_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear))
   
   for (percent in percent_total) {
-    timing_pcnt <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
-                                    TOTALQ_DAY  =  AnalysisDoY[ match(TRUE, Cumul_Volume_m3 > percent / 100 * 
+    timing_pcnt <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
+                                    TOTALQ_DAY  =  DayofYear[ match(TRUE, Cumul_Volume_m3 > percent / 100 * 
                                                                         ((mean(Value, na.rm = TRUE)) * length(Value) * 60 * 60 * 24))],
                                     TOTALQ_DATE =  Date[ match(TRUE, Cumul_Volume_m3 > percent / 100 *
                                                                  ((mean(Value, na.rm = TRUE)) * length(Value) * 60 * 60 * 24))])
     names(timing_pcnt)[names(timing_pcnt) == "TOTALQ_DAY"] <- paste0("DoY_", percent, "pct_TotalQ")
     names(timing_pcnt)[names(timing_pcnt) == "TOTALQ_DATE"] <- paste0("Date_", percent, "pct_TotalQ")
-    timing_stats <- merge(timing_stats, timing_pcnt, by = c("STATION_NUMBER", "AnalysisYear"), all = TRUE)
+    timing_stats <- merge(timing_stats, timing_pcnt, by = c("STATION_NUMBER", "WaterYear"), all = TRUE)
     
   }
-  timing_stats <-   dplyr::rename(timing_stats, Year = AnalysisYear)
+  timing_stats <-   dplyr::rename(timing_stats, Year = WaterYear)
   
   
   # Make excluded years data NA

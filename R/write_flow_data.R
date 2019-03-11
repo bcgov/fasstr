@@ -44,8 +44,7 @@ write_flow_data <- function(data = NULL,
                             values = Value,
                             groups = STATION_NUMBER,
                             station_number = NULL,
-                            water_year = FALSE,
-                            water_year_start = 10,
+                            water_year_start = 1,
                             start_year = 0,
                             end_year = 9999,
                             start_date = "0000-01-01",
@@ -58,7 +57,7 @@ write_flow_data <- function(data = NULL,
   ## ARGUMENT CHECKS
   ## ---------------
   
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years = NULL)
   
   if (class(try(as.Date(start_date))) == "try-error") stop("start_date must be a date formatted YYYY-MM-DD.", call. = FALSE)
@@ -94,20 +93,14 @@ write_flow_data <- function(data = NULL,
   
   # Fill in the missing dates and the add the date variables again
   if (fill_missing) {
-    flow_data <- fill_missing_dates(data = flow_data, water_year = water_year, water_year_start = water_year_start)
+    flow_data <- fill_missing_dates(data = flow_data, water_year_start = water_year_start)
   }
   
-  flow_data <- add_date_variables(data = flow_data, water_year = water_year, water_year_start = water_year_start)
+  flow_data <- add_date_variables(data = flow_data, water_year_start = water_year_start)
   
-  # Set selected year-type column for analysis
-  if (water_year) {
-    flow_data$AnalysisYear <- flow_data$WaterYear
-  }  else {
-    flow_data$AnalysisYear <- flow_data$Year
-  }
-  
+
   # Filter for the selected year (remove excluded years after)
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
   
   # Filter for specific dates, if selected
   flow_data <- dplyr::filter(flow_data, Date >= start_date)

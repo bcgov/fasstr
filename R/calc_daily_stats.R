@@ -42,7 +42,6 @@
 #' 
 #' 
 #' calc_daily_stats(station_number = "08NM116", 
-#'                  water_year = TRUE, 
 #'                  water_year_start = 8, 
 #'                  percentiles = c(1:10))
 #'
@@ -59,8 +58,7 @@ calc_daily_stats <- function(data = NULL,
                              percentiles = c(5,25,75,95),
                              roll_days = 1,
                              roll_align = "right",
-                             water_year = FALSE,
-                             water_year_start = 10,
+                             water_year_start = 1,
                              start_year = 0,
                              end_year = 9999,
                              exclude_years = NULL, 
@@ -75,7 +73,7 @@ calc_daily_stats <- function(data = NULL,
   
   rolling_days_checks(roll_days, roll_align)
   percentiles_checks(percentiles)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)
   transpose_checks(transpose)
@@ -105,12 +103,9 @@ calc_daily_stats <- function(data = NULL,
   ## PREPARE FLOW DATA
   ## -----------------
   
-  # Fill missing dates, add date variables, and add AnalysisYear
+  # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
                              water_year_start = water_year_start,
-                             year = TRUE,
-                             doy = TRUE, 
                              date = TRUE)
   
   # Add rolling means to end of dataframe
@@ -118,9 +113,9 @@ calc_daily_stats <- function(data = NULL,
   colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
   
   # Filter for the selected and excluded years and leap year values (last day)
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
-  flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
-  flow_data <- dplyr::filter(flow_data, AnalysisDoY < 366)
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, !(WaterYear %in% exclude_years))
+  flow_data <- dplyr::filter(flow_data, DayofYear < 366)
   
   
   
@@ -133,7 +128,7 @@ calc_daily_stats <- function(data = NULL,
   ## --------------------
 
   # Calculate basic stats
-  daily_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, AnalysisDoY),
+  daily_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, DayofYear),
                               Mean = mean(RollingValue, na.rm = ignore_missing),
                               Median = stats::median(RollingValue, na.rm = ignore_missing),
                               Minimum = min(RollingValue, na.rm = ignore_missing),
@@ -142,12 +137,12 @@ calc_daily_stats <- function(data = NULL,
   # Compute daily percentiles (if 10 or more years of data)
   if (!all(is.na(percentiles))){
     for (ptile in percentiles) {
-      daily_stats_ptile <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, AnalysisDoY),
+      daily_stats_ptile <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, DayofYear),
                                         Percentile = stats::quantile(RollingValue, ptile / 100, na.rm = TRUE))
       names(daily_stats_ptile)[names(daily_stats_ptile) == "Percentile"] <- paste0("P", ptile)
 
       # Merge with daily_stats
-      daily_stats <- merge(daily_stats, daily_stats_ptile, by = c("STATION_NUMBER", "AnalysisDate", "AnalysisDoY"))
+      daily_stats <- merge(daily_stats, daily_stats_ptile, by = c("STATION_NUMBER", "AnalysisDate", "DayofYear"))
 
       # Remove percentile if mean is NA (workaround for na.rm=FALSE in quantile)
       daily_stats[, ncol(daily_stats)] <- ifelse(is.na(daily_stats$Mean), NA, daily_stats[, ncol(daily_stats)])
@@ -161,7 +156,7 @@ calc_daily_stats <- function(data = NULL,
   
 
   # Final formatting
-  daily_stats <- dplyr::rename(daily_stats, DayofYear = AnalysisDoY, Date = AnalysisDate)
+  daily_stats <- dplyr::rename(daily_stats, DayofYear = DayofYear, Date = AnalysisDate)
   daily_stats$Date <- format(as.Date(daily_stats$Date), format = "%b-%d")
   col_order <- daily_stats$Date
 

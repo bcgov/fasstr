@@ -41,7 +41,6 @@
 #' \dontrun{
 #' 
 #' plot_annual_flow_timing(station_number = "08NM116", 
-#'                         water_year = TRUE, 
 #'                         water_year_start = 8, 
 #'                         percent_total = 50)
 #'
@@ -55,8 +54,7 @@ plot_annual_flow_timing <- function(data = NULL,
                                     groups = STATION_NUMBER,
                                     station_number = NULL,
                                     percent_total = c(25,33.3,50,75),
-                                    water_year = FALSE,
-                                    water_year_start = 10,
+                                    water_year_start = 1,
                                     start_year = 0,
                                     end_year = 9999,
                                     exclude_years = NULL,
@@ -90,7 +88,6 @@ plot_annual_flow_timing <- function(data = NULL,
                                           dates = Date,
                                           values = Value,
                                           percent_total = percent_total,
-                                          water_year = water_year,
                                           water_year_start = water_year_start,
                                           start_year = start_year,
                                           end_year = end_year,

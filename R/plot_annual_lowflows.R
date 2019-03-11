@@ -30,7 +30,6 @@
 #' \dontrun{
 #' 
 #' plot_annual_lowflows(data = "08NM116", 
-#'                      water_year = TRUE, 
 #'                      water_year_start = 8, 
 #'                      roll_days = c(3,7))
 #'
@@ -46,8 +45,7 @@ plot_annual_lowflows <- function(data = NULL,
                                  station_number = NULL,
                                  roll_days = c(1, 3, 7, 30),
                                  roll_align = "right",
-                                 water_year = FALSE,
-                                 water_year_start = 10,
+                                 water_year_start = 1,
                                  start_year = 0,
                                  end_year = 9999,
                                  exclude_years = NULL,
@@ -86,7 +84,6 @@ plot_annual_lowflows <- function(data = NULL,
   lowflow_stats <- calc_annual_lowflows(data = flow_data,
                                         roll_days = roll_days,
                                         roll_align = roll_align,
-                                        water_year = water_year,
                                         water_year_start = water_year_start,
                                         start_year = start_year,
                                         end_year = end_year,

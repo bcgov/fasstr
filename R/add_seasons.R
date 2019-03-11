@@ -28,7 +28,6 @@
 #' \dontrun{
 #' 
 #' add_seasons(station_number = "08NM116", 
-#'             water_year = TRUE, 
 #'             water_year_start = 12,
 #'             seasons_length = 3)
 #'
@@ -39,15 +38,14 @@
 add_seasons <- function(data = NULL,
                             dates = Date,
                             station_number = NULL,
-                            water_year = FALSE,
-                            water_year_start = 10,
+                            water_year_start = 1,
                             seasons_length = NA){
   
   
   ## ARGUMENT CHECKS
   ## ---------------
   
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   if (is.na(seasons_length))         stop("seasons_length argument (number of months per season) is required.", call. = FALSE)
   if (!is.numeric(seasons_length))   stop("seasons_length argument must be a number divisible into 12.", call. = FALSE)
   if (length(seasons_length)>1)      stop("seasons_length argument must be a number divisible into 12.", call. = FALSE)
@@ -77,10 +75,10 @@ add_seasons <- function(data = NULL,
   ## ----------------------
   
   # Add dates
-  flow_data <- add_date_variables(data = flow_data, water_year = water_year, water_year_start = water_year_start)
+  flow_data <- add_date_variables(data = flow_data, water_year_start = water_year_start)
   
   # Add water months (utils.R function)
-  flow_data <- add_water_months(flow_data, water_year, water_year_start)
+  flow_data <- add_water_months(flow_data, water_year_start)
   
   # Create the order of months list
   month_list <- dplyr::group_by(flow_data, MonthName)
