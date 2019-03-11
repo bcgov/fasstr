@@ -156,47 +156,10 @@ calc_monthly_stats <- function(data = NULL,
   
   
   # Set the levels of the months for proper ordering
-  if (water_year) {
-    if (water_year_start == 1) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
-    } else if (water_year_start == 2) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan"))
-    } else if (water_year_start == 3) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb"))
-    } else if (water_year_start == 4) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"))
-    } else if (water_year_start == 5) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"))
-    } else if (water_year_start == 6) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May"))
-    } else if (water_year_start == 7) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun"))
-    } else if (water_year_start == 8) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"))
-    } else if (water_year_start == 9) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"))
-    } else if (water_year_start == 10) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"))
-    } else if (water_year_start == 11) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"))
-    } else if (water_year_start == 12) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"))
-    }
-  } else {           
-    monthly_stats$Month <- factor(monthly_stats$Month,
-                              levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+  if (!water_year) {
+    flow_data$MonthName <- factor(flow_data$MonthName, levels = month.abb)
+  } else {
+    flow_data$MonthName <- factor(flow_data$MonthName, levels = month.abb[c(water_year_start:12, 1:water_year_start-1)])
   }
   
   # Reorder months and row.names
