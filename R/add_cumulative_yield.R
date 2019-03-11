@@ -28,7 +28,7 @@
 #' 
 #'add_cumulative_yield(data = flow_data, area = 105.6)
 #' 
-#'add_cumulative_yield(station_number = "08NM116", water_year = TRUE, water_year_start = 8)
+#'add_cumulative_yield(station_number = "08NM116", water_year_start = 8)
 #'
 #' }
 #' @export
@@ -40,15 +40,14 @@ add_cumulative_yield <- function(data = NULL,
                                  groups = STATION_NUMBER,
                                  station_number = NULL,
                                  basin_area = NA,
-                                 water_year = FALSE,
-                                 water_year_start = 10){
+                                 water_year_start = 1){
   
   
   
   ## ARGUMENT CHECKS
   ## ---------------
   
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -81,9 +80,7 @@ add_cumulative_yield <- function(data = NULL,
   
   # Fill missing dates, add date variables, and add AnalysisYear
   flow_data_temp <- analysis_prep(data = flow_data, 
-                                  water_year = water_year, 
-                                  water_year_start = water_year_start,
-                                  year = TRUE)
+                                  water_year_start = water_year_start)
   
   
   ## ADD VOLUME COLUMN
@@ -100,7 +97,7 @@ add_cumulative_yield <- function(data = NULL,
   
   # Add cumulative volume column and ungroup (remove analysisyear group)
   flow_data_temp <- dplyr::ungroup(flow_data_temp)
-  flow_data_temp <- dplyr::mutate(dplyr::group_by(flow_data_temp, STATION_NUMBER, AnalysisYear, add = TRUE), 
+  flow_data_temp <- dplyr::mutate(dplyr::group_by(flow_data_temp, STATION_NUMBER, WaterYear, add = TRUE), 
                                   Cumul_Yield_mm = cumsum_na(Value) * 86400 / (Basin_Area_sqkm_temp * 1000))
   flow_data_temp <- dplyr::ungroup(flow_data_temp)
   

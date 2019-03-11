@@ -37,7 +37,6 @@
 #' \dontrun{
 #' 
 #' plot_daily_stats(station_number = "08NM116",
-#'                  water_year = TRUE, 
 #'                  water_year_start = 8)
 #'
 #' }
@@ -51,8 +50,7 @@ plot_daily_stats <- function(data = NULL,
                              station_number = NULL,
                              roll_days = 1,
                              roll_align = "right",
-                             water_year = FALSE,
-                             water_year_start = 10,
+                             water_year_start = 1,
                              start_year = 0,
                              end_year = 9999,
                              exclude_years = NULL,
@@ -87,22 +85,19 @@ plot_daily_stats <- function(data = NULL,
                                rm_other_cols = TRUE)
   
   
-  if (water_year) {
-    # Create origin date to apply to data for plotting
-    if (water_year_start==1)         {origin_date <- as.Date("1899-12-31")
-    } else if (water_year_start==2)  {origin_date <- as.Date("1899-01-31")
-    } else if (water_year_start==3)  {origin_date <- as.Date("1899-02-28")
-    } else if (water_year_start==4)  {origin_date <- as.Date("1899-03-31")
-    } else if (water_year_start==5)  {origin_date <- as.Date("1899-04-30")
-    } else if (water_year_start==6)  {origin_date <- as.Date("1899-05-31")
-    } else if (water_year_start==7)  {origin_date <- as.Date("1899-06-30")
-    } else if (water_year_start==8)  {origin_date <- as.Date("1899-07-31")
-    } else if (water_year_start==9)  {origin_date <- as.Date("1899-08-31")
-    } else if (water_year_start==10) {origin_date <- as.Date("1899-09-30")
-    } else if (water_year_start==11) {origin_date <- as.Date("1899-10-31")
-    } else if (water_year_start==12) {origin_date <- as.Date("1899-11-30")}
-  }  else {
-    origin_date <- as.Date("1899-12-31")
+  # Create origin date to apply to flow_data and Q_daily later on
+  if (water_year_start == 1)         {origin_date <- as.Date("1899-12-31")
+  } else if (water_year_start == 2)  {origin_date <- as.Date("1899-01-31")
+  } else if (water_year_start == 3)  {origin_date <- as.Date("1899-02-28")
+  } else if (water_year_start == 4)  {origin_date <- as.Date("1899-03-31")
+  } else if (water_year_start == 5)  {origin_date <- as.Date("1899-04-30")
+  } else if (water_year_start == 6)  {origin_date <- as.Date("1899-05-31")
+  } else if (water_year_start == 7)  {origin_date <- as.Date("1899-06-30")
+  } else if (water_year_start == 8)  {origin_date <- as.Date("1899-07-31")
+  } else if (water_year_start == 9)  {origin_date <- as.Date("1899-08-31")
+  } else if (water_year_start == 10) {origin_date <- as.Date("1899-09-30")
+  } else if (water_year_start == 11) {origin_date <- as.Date("1899-10-31")
+  } else if (water_year_start == 12) {origin_date <- as.Date("1899-11-30")
   }
   
   
@@ -114,7 +109,6 @@ plot_daily_stats <- function(data = NULL,
                                  percentiles = c(5,25,75,95),
                                  roll_days = roll_days,
                                  roll_align = roll_align,
-                                 water_year = water_year,
                                  water_year_start = water_year_start,
                                  start_year = start_year,
                                  end_year = end_year,
@@ -136,26 +130,19 @@ plot_daily_stats <- function(data = NULL,
   
   if(!is.null(include_year)){
     
-    year_data <- fill_missing_dates(data = flow_data, water_year = water_year, water_year_start = water_year_start)
-    year_data <- add_date_variables(data = year_data, water_year = water_year, water_year_start = water_year_start)
+    year_data <- fill_missing_dates(data = flow_data, water_year_start = water_year_start)
+    year_data <- add_date_variables(data = year_data, water_year_start = water_year_start)
     year_data <- add_rolling_means(data = year_data, roll_days = roll_days, roll_align = roll_align)
     colnames(year_data)[ncol(year_data)] <- "RollingValue"
     
-    if (water_year) {
-      year_data$AnalysisYear <- year_data$WaterYear
-      year_data$AnalysisDoY <- year_data$WaterDayofYear
-    }  else {
-      year_data$AnalysisYear <- year_data$Year
-      year_data$AnalysisDoY <- year_data$DayofYear
-    }
-    year_data <- dplyr::mutate(year_data, AnalysisDate = as.Date(AnalysisDoY, origin = origin_date))
-    year_data <- dplyr::filter(year_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
-    year_data <- dplyr::filter(year_data, !(AnalysisYear %in% exclude_years))
-    year_data <- dplyr::filter(year_data, AnalysisDoY < 366)
+    year_data <- dplyr::mutate(year_data, AnalysisDate = as.Date(DayofYear, origin = origin_date))
+    year_data <- dplyr::filter(year_data, WaterYear >= start_year & WaterYear <= end_year)
+    year_data <- dplyr::filter(year_data, !(WaterYear %in% exclude_years))
+    year_data <- dplyr::filter(year_data, DayofYear < 366)
     
     year_data <- dplyr::filter(year_data, Month %in% months)
     
-    year_data <- dplyr::filter(year_data, AnalysisYear == include_year)
+    year_data <- dplyr::filter(year_data, WaterYear == include_year)
     
     year_data <- dplyr::select(year_data, STATION_NUMBER, AnalysisDate, RollingValue)
     

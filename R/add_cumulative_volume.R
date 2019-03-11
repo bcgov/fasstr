@@ -26,7 +26,7 @@
 #' 
 #'add_cumulative_volume(data = flow_data)
 #' 
-#'add_cumulative_volume(station_number = "08NM116", water_year = TRUE, water_year_start = 8)
+#'add_cumulative_volume(station_number = "08NM116", water_year_start = 8)
 #'
 #' }
 #' @export
@@ -37,15 +37,14 @@ add_cumulative_volume <- function(data = NULL,
                                   values = Value,
                                   groups = STATION_NUMBER,
                                   station_number = NULL,
-                                  water_year = FALSE,
-                                  water_year_start = 10){
+                                  water_year_start = 1){
   
   
   
   ## ARGUMENT CHECKS
   ## ---------------
   
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -71,11 +70,9 @@ add_cumulative_volume <- function(data = NULL,
   ## FLOW DATA PREP
   ## --------------
   
-  # Fill missing dates, add date variables, and add AnalysisYear
+  # Fill missing dates, add date variables
   flow_data_temp <- analysis_prep(data = flow_data, 
-                                  water_year = water_year, 
-                                  water_year_start = water_year_start,
-                                  year = TRUE)
+                                  water_year_start = water_year_start)
   
   
   ## ADD VOLUME COLUMN
@@ -92,7 +89,7 @@ add_cumulative_volume <- function(data = NULL,
   
   # Add cumulative volume column and ungroup (remove analysisyear group)
   flow_data_temp <- dplyr::ungroup(flow_data_temp)
-  flow_data_temp <- dplyr::mutate(dplyr::group_by(flow_data_temp, STATION_NUMBER, AnalysisYear), 
+  flow_data_temp <- dplyr::mutate(dplyr::group_by(flow_data_temp, STATION_NUMBER, WaterYear), 
                                   Cumul_Volume_m3 = cumsum_na(Value) * 86400)
   flow_data_temp <- dplyr::ungroup(flow_data_temp)
   

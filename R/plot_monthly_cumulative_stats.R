@@ -39,7 +39,6 @@
 #' \dontrun{
 #' 
 #' plot_monthly_cumulative_stats(station_number = "08NM116", 
-#'                               water_year = TRUE, 
 #'                               water_year_start = 8)
 #'
 #' }
@@ -54,8 +53,7 @@ plot_monthly_cumulative_stats <- function(data = NULL,
                                           station_number = NULL,
                                           use_yield = FALSE, 
                                           basin_area = NA,
-                                          water_year = FALSE,
-                                          water_year_start = 10,
+                                          water_year_start = 1,
                                           start_year = 0,
                                           end_year = 9999,
                                           exclude_years = NULL,
@@ -93,7 +91,6 @@ plot_monthly_cumulative_stats <- function(data = NULL,
                                                  percentiles = c(5,25,75,95),
                                                  use_yield = use_yield, 
                                                  basin_area = basin_area,
-                                                 water_year = water_year,
                                                  water_year_start = water_year_start,
                                                  start_year = start_year,
                                                  end_year = end_year,
@@ -105,31 +102,25 @@ plot_monthly_cumulative_stats <- function(data = NULL,
   
   if(!is.null(include_year)){
     
-    year_data <- fill_missing_dates(data = flow_data, water_year = water_year, water_year_start = water_year_start)
-    year_data <- add_date_variables(data = year_data, water_year = water_year, water_year_start = water_year_start)
+    year_data <- fill_missing_dates(data = flow_data, water_year_start = water_year_start)
+    year_data <- add_date_variables(data = year_data, water_year_start = water_year_start)
     
     # Add cumulative flows
     if (use_yield){
-      year_data <- add_cumulative_yield(data = year_data, water_year = water_year, water_year_start = water_year_start, basin_area = basin_area)
+      year_data <- add_cumulative_yield(data = year_data, water_year_start = water_year_start, basin_area = basin_area)
       year_data$Cumul_Flow <- year_data$Cumul_Yield_mm
     } else {
-      year_data <- add_cumulative_volume(data = year_data, water_year = water_year, water_year_start = water_year_start)
+      year_data <- add_cumulative_volume(data = year_data, water_year_start = water_year_start)
       year_data$Cumul_Flow <- year_data$Cumul_Volume_m3
     }
     
-    if (water_year) {
-      year_data$AnalysisYear <- year_data$WaterYear
-    }  else {
-      year_data$AnalysisYear <- year_data$Year
-    }
-    
-    year_data <- dplyr::filter(year_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
-    year_data <- dplyr::filter(year_data, !(AnalysisYear %in% exclude_years))
+    year_data <- dplyr::filter(year_data, WaterYear >= start_year & WaterYear <= end_year)
+    year_data <- dplyr::filter(year_data, !(WaterYear %in% exclude_years))
     
    
-    year_data <- dplyr::filter(year_data, AnalysisYear == include_year)
+    year_data <- dplyr::filter(year_data, WaterYear == include_year)
     
-    year_data <- dplyr::summarize(dplyr::group_by(year_data, STATION_NUMBER, AnalysisYear, MonthName),
+    year_data <- dplyr::summarize(dplyr::group_by(year_data, STATION_NUMBER, WaterYear, MonthName),
                                      Monthly_Total = max(Cumul_Flow, na.rm = FALSE))
     year_data <- dplyr::rename(year_data, "Month" = MonthName)
     

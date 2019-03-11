@@ -38,7 +38,6 @@
 #' \dontrun{
 #' 
 #' calc_monthly_cumulative_stats(station_number = "08NM116",
-#'                               water_year = TRUE, 
 #'                               water_year_start = 8, 
 #'                               percentiles = c(1:10))
 #'
@@ -55,8 +54,7 @@ calc_monthly_cumulative_stats <- function(data = NULL,
                                           percentiles = c(5,25,75,95),
                                           use_yield = FALSE, 
                                           basin_area = NA,
-                                          water_year = FALSE,
-                                          water_year_start = 10,
+                                          water_year_start = 1,
                                           start_year = 0,
                                           end_year = 9999,
                                           exclude_years = NULL, 
@@ -68,7 +66,7 @@ calc_monthly_cumulative_stats <- function(data = NULL,
   ## ---------------
   
   percentiles_checks(percentiles)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   transpose_checks(transpose)
 
@@ -105,36 +103,35 @@ calc_monthly_cumulative_stats <- function(data = NULL,
   ## PREPARE FLOW DATA
   ## -----------------
   
-  # Fill missing dates, add date variables, and add AnalysisYear
+  # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
-                             water_year_start = water_year_start,
-                             year = TRUE)
+                             water_year_start = water_year_start)
   
   # Add cumulative flows
   if (use_yield){
-    flow_data <- suppressWarnings(add_cumulative_yield(data = flow_data, water_year = water_year, 
-                                                       water_year_start = water_year_start, basin_area = basin_area))
+    flow_data <- suppressWarnings(add_cumulative_yield(data = flow_data, 
+                                                       water_year_start = water_year_start, 
+                                                       basin_area = basin_area))
     names(flow_data)[names(flow_data) == "Cumul_Yield_mm"] <- paste("Cumul_Total")
   } else {
-    flow_data <- add_cumulative_volume(data = flow_data, water_year = water_year, water_year_start = water_year_start)
+    flow_data <- add_cumulative_volume(data = flow_data, water_year_start = water_year_start)
     names(flow_data)[names(flow_data) == "Cumul_Volume_m3"] <- paste("Cumul_Total")
   }
   
   # Filter for the selected and excluded years and leap year values (last day)
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
-  flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, !(WaterYear %in% exclude_years))
   
   # if (all(is.na(flow_data$Cumul_Total))) 
   #   stop("No basin_area values provided or extracted from HYDAT. Use basin_area argument to supply one.", call. = FALSE)
 
   # Warning if some of the years contained partial data
-  comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
-                                 complete_yr = ifelse(sum(!is.na(Value)) == length(AnalysisYear), TRUE, FALSE))
+  comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
+                                 complete_yr = ifelse(sum(!is.na(Value)) == length(WaterYear), TRUE, FALSE))
   if (!all(comp_years$complete_yr)) 
     warning("One or more years contained partial data and were excluded. Only years with complete data were used for calculations.", call. = FALSE)
 
-  flow_data <- merge(flow_data, comp_years, by = c("STATION_NUMBER", "AnalysisYear"))
+  flow_data <- merge(flow_data, comp_years, by = c("STATION_NUMBER", "WaterYear"))
   flow_data <- dplyr::filter(flow_data, complete_yr == "TRUE")
   flow_data <- dplyr::select(flow_data, -complete_yr)
 
@@ -142,7 +139,7 @@ calc_monthly_cumulative_stats <- function(data = NULL,
   ## --------------------
 
   # Calculate monthly totals for all years
-  monthly_data <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
+  monthly_data <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear, MonthName),
                                    Monthly_Total = max(Cumul_Total, na.rm = FALSE))
   
   # Calculate the monthly and longterm stats

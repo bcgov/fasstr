@@ -19,7 +19,7 @@
 #' @param percentiles Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.
 #' @param include_longterm Logical value indicating whether to include longterm calculation of all data. Default \code{TRUE}.
 #' @param custom_months Numeric vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Adds results to the end of table.
-#'    If wanting months that overlap calendar years (ex. Oct-Mar), choose water_year and a water_year_month that begins before the first 
+#'    If wanting months that overlap calendar years (ex. Oct-Mar), choose water_year_start that begins before the first 
 #'    month listed. Leave blank for no custom month summary.
 #' @param custom_months_label Character string to label custom months. For example, if choosing months 7:9  you may choose 
 #'    "Summer" or "Jul-Sep". Default \code{"Custom-Months"}.
@@ -40,7 +40,6 @@
 #' \dontrun{
 #' 
 #' calc_longterm_stats(station_number = "08NM116", 
-#'                     water_year = TRUE, 
 #'                     water_year_start = 8, 
 #'                     percentiles = c(1:10))
 #'
@@ -59,8 +58,7 @@ calc_longterm_stats <- function(data = NULL,
                                 percentiles = c(10,90),
                                 roll_days = 1,
                                 roll_align = "right",
-                                water_year = FALSE,
-                                water_year_start = 10,
+                                water_year_start = 1,
                                 start_year = 0,
                                 end_year = 9999,
                                 exclude_years = NULL,
@@ -78,7 +76,7 @@ calc_longterm_stats <- function(data = NULL,
   
   rolling_days_checks(roll_days, roll_align)
   percentiles_checks(percentiles)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months = months)
   transpose_checks(transpose)
@@ -109,19 +107,17 @@ calc_longterm_stats <- function(data = NULL,
   ## PREPARE FLOW DATA
   ## -----------------
   
-  # Fill missing dates, add date variables, and add AnalysisYear
+  # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
-                             water_year_start = water_year_start,
-                             year = TRUE)
+                             water_year_start = water_year_start)
   
   # Add rolling means to end of dataframe
   flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
   colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
  
   # Filter for the selected years
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
-  flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, !(WaterYear %in% exclude_years))
   flow_data <- dplyr::filter(flow_data, Month %in% months)
   
   

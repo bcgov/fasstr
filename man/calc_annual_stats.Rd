@@ -6,8 +6,8 @@
 \usage{
 calc_annual_stats(data = NULL, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number = NULL, roll_days = 1,
-  roll_align = "right", percentiles = c(10, 90), water_year = FALSE,
-  water_year_start = 10, start_year = 0, end_year = 9999,
+  roll_align = "right", percentiles = c(10, 90),
+  water_year_start = 1, start_year = 0, end_year = 9999,
   exclude_years = NULL, months = 1:12, transpose = FALSE,
   ignore_missing = FALSE)
 }
@@ -36,11 +36,7 @@ Leave blank if using \code{data} argument.}
 
 \item{percentiles}{Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.}
 
-\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the calendar year in which they end. Default \code{FALSE}.}
-
-\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
-Default \code{10}.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
@@ -80,7 +76,6 @@ Calculates annual mean, median, maximum, minimum, and percentiles of daily flow 
 calc_annual_stats(data = flow_data)
 
 calc_annual_stats(station_number = "08NM116",
-                  water_year = TRUE, 
                   water_year_start = 8, 
                   percentiles = c(1:10))
 

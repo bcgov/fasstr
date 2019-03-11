@@ -49,8 +49,7 @@ compute_frequency_quantile <- function(data = NULL,
                                        use_log = FALSE,
                                        fit_distr = c("PIII", "weibull"),
                                        fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
-                                       water_year = FALSE,
-                                       water_year_start = 10,
+                                       water_year_start = 1,
                                        start_year = 0,
                                        end_year = 9999,
                                        exclude_years = NULL,
@@ -113,13 +112,12 @@ compute_frequency_quantile <- function(data = NULL,
                              fit_distr = fit_distr,
                              fit_distr_method = fit_distr_method,
                              fit_quantiles = fit_quantiles,
-                             water_year = water_year,
                              water_year_start = water_year_start,
                              start_year = start_year,
                              end_year = end_year,
                              exclude_years = exclude_years,
                              months = months,
-                             ignore_missing = ignore_missing)$fitted_quantiles[1,4]
+                             ignore_missing = ignore_missing)$Freq_Fitted_Quantiles[1,4]
   
   
 }

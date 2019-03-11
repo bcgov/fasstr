@@ -39,7 +39,6 @@
 #' 
 #' 
 #' calc_daily_cumulative_stats(station_number = "08NM116",
-#'                             water_year = TRUE,
 #'                             water_year_start = 8, 
 #'                             percentiles = c(1:10))
 #'
@@ -56,8 +55,7 @@ calc_daily_cumulative_stats <- function(data = NULL,
                                         percentiles = c(5,25,75,95),
                                         use_yield = FALSE, 
                                         basin_area = NA,
-                                        water_year = FALSE,
-                                        water_year_start = 10,
+                                        water_year_start = 1,
                                         start_year = 0,
                                         end_year = 9999,
                                         exclude_years = NULL, 
@@ -67,7 +65,7 @@ calc_daily_cumulative_stats <- function(data = NULL,
   ## ---------------
   
   percentiles_checks(percentiles)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   transpose_checks(transpose)
   use_yield_checks(use_yield)
@@ -103,40 +101,38 @@ calc_daily_cumulative_stats <- function(data = NULL,
   ## PREPARE FLOW DATA
   ## -----------------
   
-  # Fill missing dates, add date variables, and add AnalysisYear
+  # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
                              water_year_start = water_year_start,
-                             year = TRUE,
-                             doy = TRUE, 
                              date = TRUE)
   
   # Add cumulative flows
   if (use_yield){
-    flow_data <- suppressWarnings(add_cumulative_yield(data = flow_data, water_year = water_year, 
-                                                       water_year_start = water_year_start, basin_area = basin_area))
+    flow_data <- suppressWarnings(add_cumulative_yield(data = flow_data,
+                                                       water_year_start = water_year_start, 
+                                                       basin_area = basin_area))
     flow_data$Cumul_Flow <- flow_data$Cumul_Yield_mm
   } else {
-    flow_data <- add_cumulative_volume(data = flow_data, water_year = water_year, water_year_start = water_year_start)
+    flow_data <- add_cumulative_volume(data = flow_data, water_year_start = water_year_start)
     flow_data$Cumul_Flow <- flow_data$Cumul_Volume_m3
   }
   
   # Filter for the selected and excluded years and leap year values (last day)
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
-  flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
-  flow_data <- dplyr::filter(flow_data, AnalysisDoY < 366)
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, !(WaterYear %in% exclude_years))
+  flow_data <- dplyr::filter(flow_data, DayofYear < 366)
   
   
   #if (all(is.na(flow_data$Cumul_Flow))) 
   #  stop("No basin_area values provided or extracted from HYDAT. Use basin_area argument to supply one.", call. = FALSE)
   
   # Warning if some of the years contained partial data
-  comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
-                                 complete_yr = ifelse(sum(!is.na(Cumul_Flow)) == length(AnalysisYear), TRUE, FALSE))
+  comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
+                                 complete_yr = ifelse(sum(!is.na(Cumul_Flow)) == length(WaterYear), TRUE, FALSE))
   if (!all(comp_years$complete_yr)) 
     warning("One or more years contained partial data and were excluded. Only years with complete data were used for calculations.", call. = FALSE)
 
-  flow_data <- merge(flow_data, comp_years, by = c("STATION_NUMBER", "AnalysisYear"))
+  flow_data <- merge(flow_data, comp_years, by = c("STATION_NUMBER", "WaterYear"))
   flow_data <- dplyr::filter(flow_data, complete_yr == "TRUE")
   flow_data <- dplyr::select(flow_data, -complete_yr)
 
@@ -144,7 +140,7 @@ calc_daily_cumulative_stats <- function(data = NULL,
   ## --------------------
   
   # Calculate basic stats
-  daily_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, AnalysisDoY),
+  daily_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, DayofYear),
                                   Mean = mean(Cumul_Flow, na.rm = FALSE),
                                   Median = stats::median(Cumul_Flow, na.rm = FALSE),
                                   Minimum = min(Cumul_Flow, na.rm = FALSE),
@@ -153,12 +149,12 @@ calc_daily_cumulative_stats <- function(data = NULL,
   # Compute daily percentiles (if 10 or more years of data)
   if (!all(is.na(percentiles))){
     for (ptile in percentiles) {
-      daily_stats_ptile <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, AnalysisDoY),
+      daily_stats_ptile <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, DayofYear),
                                             Percentile = stats::quantile(Cumul_Flow, ptile / 100, na.rm = TRUE))
       names(daily_stats_ptile)[names(daily_stats_ptile) == "Percentile"] <- paste0("P", ptile)
 
       # Merge with daily_stats
-      daily_stats <- merge(daily_stats, daily_stats_ptile, by = c("STATION_NUMBER", "AnalysisDate", "AnalysisDoY"))
+      daily_stats <- merge(daily_stats, daily_stats_ptile, by = c("STATION_NUMBER", "AnalysisDate", "DayofYear"))
 
       # Remove percentile if mean is NA (workaround for na.rm=FALSE in quantile)
       daily_stats[, ncol(daily_stats)] <- ifelse(is.na(daily_stats$Mean), NA, daily_stats[, ncol(daily_stats)])
@@ -166,7 +162,7 @@ calc_daily_cumulative_stats <- function(data = NULL,
   }
 
   # Final formatting
-  daily_stats <- dplyr::rename(daily_stats, DayofYear = AnalysisDoY, Date = AnalysisDate)
+  daily_stats <- dplyr::rename(daily_stats, DayofYear = DayofYear, Date = AnalysisDate)
   daily_stats$Date <- format(as.Date(daily_stats$Date), format = "%b-%d")
   col_order <- daily_stats$Date
 

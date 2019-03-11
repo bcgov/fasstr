@@ -55,7 +55,6 @@
 #' \dontrun{
 #' 
 #' compute_annual_trends(station_number = "08NM116", 
-#'                       water_year = TRUE, 
 #'                       water_year_start = 8,
 #'                       zyp_method = "yuepilon")
 #'
@@ -71,8 +70,7 @@ compute_annual_trends <- function(data = NULL,
                                   station_number = NULL,
                                   zyp_method = NA,
                                   basin_area = NA, 
-                                  water_year = FALSE,
-                                  water_year_start = 10,
+                                  water_year_start = 1,
                                   start_year = 0,
                                   end_year = 9999,
                                   exclude_years = NULL,
@@ -119,7 +117,6 @@ compute_annual_trends <- function(data = NULL,
   
   trends_data <- calc_all_annual_stats(data = flow_data,
                                        basin_area = basin_area, 
-                                       water_year = water_year,
                                        water_year_start = water_year_start,
                                        start_year = start_year,
                                        end_year = end_year,

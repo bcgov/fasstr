@@ -6,11 +6,11 @@
 \usage{
 compute_annual_trends(data = NULL, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number = NULL, zyp_method = NA,
-  basin_area = NA, water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, exclude_years = NULL,
-  annual_percentiles = c(10, 90), monthly_percentiles = c(10, 20),
-  stats_days = 1, stats_align = "right", lowflow_days = c(1, 3, 7,
-  30), lowflow_align = "right", timing_percent = c(25, 33, 50, 75),
+  basin_area = NA, water_year_start = 1, start_year = 0,
+  end_year = 9999, exclude_years = NULL, annual_percentiles = c(10,
+  90), monthly_percentiles = c(10, 20), stats_days = 1,
+  stats_align = "right", lowflow_days = c(1, 3, 7, 30),
+  lowflow_align = "right", timing_percent = c(25, 33, 50, 75),
   normal_percentiles = c(25, 75), ignore_missing = FALSE,
   include_plots = TRUE, zyp_alpha = NA)
 }
@@ -44,11 +44,7 @@ Required.}
 (3) List each basin area for each group/station in groups (can override HYDAT value) as such \code{c("08NM116" = 795, 
 "08NM242" = 10)}. Group not listed will result in NA basin area.}
 
-\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the calendar year in which they end. Default \code{FALSE}.}
-
-\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
-Default \code{10}.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
@@ -113,7 +109,6 @@ Calculates prewhitened nonlinear trends on annual streamflow data. Uses the
 \dontrun{
 
 compute_annual_trends(station_number = "08NM116", 
-                      water_year = TRUE, 
                       water_year_start = 8,
                       zyp_method = "yuepilon")
 

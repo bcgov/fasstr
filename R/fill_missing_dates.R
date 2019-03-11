@@ -25,7 +25,8 @@
 #' 
 #' fill_missing_dates(data = flow_data)
 #' 
-#' fill_missing_dates(station_number = "08NM116", water_year = TRUE, water_year_start = 8)
+#' fill_missing_dates(station_number = "08NM116", 
+#'                    water_year_start = 8)
 #'
 #' }
 #' @export
@@ -36,14 +37,13 @@ fill_missing_dates <- function(data = NULL,
                                values = Value,
                                groups = STATION_NUMBER,
                                station_number = NULL,
-                               water_year = FALSE,
-                               water_year_start  =10){
+                               water_year_start = 1){
   
   
   ## ARGUMENT CHECKS
   ## ---------------
   
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -76,7 +76,7 @@ fill_missing_dates <- function(data = NULL,
     flow_data_stn <- flow_data_stn[order(flow_data_stn$Date), ]
     
     # Fill if water year is TRUE and month is not January
-    if (water_year & water_year_start > 1) {
+    if (water_year_start > 1) {
       
       # Determine the min months and years to set the start_date
       # If the month in the data is less than the water_year_start, the water year will begin in the previous calendar year

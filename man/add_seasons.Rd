@@ -5,7 +5,7 @@
 \title{Add a column of seasons}
 \usage{
 add_seasons(data = NULL, dates = Date, station_number = NULL,
-  water_year = FALSE, water_year_start = 10, seasons_length = NA)
+  water_year_start = 1, seasons_length = NA)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -18,11 +18,7 @@ Date' (default). Leave blank if using \code{station_number} argument.}
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
 Leave blank if using \code{data} argument.}
 
-\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the calendar year in which they end. Default \code{FALSE}.}
-
-\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
-Default \code{10}.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
 
 \item{seasons_length}{Numeric value indicating the desired length of seasons in months, divisible into 12. Required.}
 }
@@ -41,7 +37,6 @@ Adds a column of seasons identifiers to a data frame with a column of dates call
 \dontrun{
 
 add_seasons(station_number = "08NM116", 
-            water_year = TRUE, 
             water_year_start = 12,
             seasons_length = 3)
 

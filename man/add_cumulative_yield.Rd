@@ -6,7 +6,7 @@
 \usage{
 add_cumulative_yield(data = NULL, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number = NULL, basin_area = NA,
-  water_year = FALSE, water_year_start = 10)
+  water_year_start = 1)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -35,11 +35,7 @@ Leave blank if using \code{data} argument.}
 (3) List each basin area for each group/station in groups (can override HYDAT value) as such \code{c("08NM116" = 795, 
 "08NM242" = 10)}. Group not listed will result in NA basin area.}
 
-\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the calendar year in which they end. Default \code{FALSE}.}
-
-\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
-Default \code{10}.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
 }
 \value{
 A tibble data frame of the source data with an additional column:
@@ -56,7 +52,7 @@ Add a column of rolling daily cumulative runoff yield flows on an annual basis t
 
 add_cumulative_yield(data = flow_data, area = 105.6)
 
-add_cumulative_yield(station_number = "08NM116", water_year = TRUE, water_year_start = 8)
+add_cumulative_yield(station_number = "08NM116", water_year_start = 8)
 
 }
 }

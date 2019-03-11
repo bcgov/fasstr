@@ -35,7 +35,6 @@
 #' \dontrun{
 #' 
 #' plot_annual_stats(station_number = "08NM116", 
-#'                   water_year = TRUE, 
 #'                   water_year_start = 8)
 #'
 #' plot_annual_stats(station_number = "08NM116", 
@@ -53,8 +52,7 @@ plot_annual_stats <- function(data = NULL,
                               percentiles = NA,
                               roll_days = 1,
                               roll_align = "right",
-                              water_year = FALSE,
-                              water_year_start = 10,
+                              water_year_start = 1,
                               start_year = 0,
                               end_year = 9999,
                               exclude_years = NULL,
@@ -91,7 +89,6 @@ plot_annual_stats <- function(data = NULL,
                                     percentiles = percentiles,
                                     roll_days = roll_days,
                                     roll_align = roll_align,
-                                    water_year = water_year,
                                     water_year_start = water_year_start,
                                     start_year = start_year,
                                     end_year = end_year,

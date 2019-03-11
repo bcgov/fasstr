@@ -169,61 +169,32 @@ format_all_cols <- function(data,
 ## -----------------------------------------------------------------------------
 
 analysis_prep <- function(data,
-                          water_year, 
                           water_year_start,
-                          year = TRUE,
-                          doy = FALSE,
                           date = FALSE){
   
   # Fill in missing dates to ensure all years are covered
-  data <- fill_missing_dates(data = data, water_year = water_year, water_year_start = water_year_start)
-  data <- add_date_variables(data = data, water_year = water_year, water_year_start = water_year_start)
+  data <- fill_missing_dates(data = data, water_year_start = water_year_start)
+  data <- add_date_variables(data = data, water_year_start = water_year_start)
   
   # Set selected year-type column for analysis
-  if (water_year) {
-    
-    if (year) {
-      data$AnalysisYear <- data$WaterYear
-    }
-    
-    if (doy) {
-      data$AnalysisDoY <- data$WaterDayofYear
-    }
-    
+ 
     if (date) {
-      if (water_year_start == 1)  {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1989-12-31")
-      } else if (water_year_start == 2)  {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-01-31")
-      } else if (water_year_start == 3)  {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-02-28")
-      } else if (water_year_start == 4)  {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-03-31")
-      } else if (water_year_start == 5)  {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-04-30")
-      } else if (water_year_start == 6)  {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-05-31")
-      } else if (water_year_start == 7)  {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-06-30")
-      } else if (water_year_start == 8)  {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-07-31")
-      } else if (water_year_start == 9)  {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-08-31")
-      } else if (water_year_start == 10) {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-09-30")
-      } else if (water_year_start == 11) {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-10-31")
-      } else if (water_year_start == 12) {data$AnalysisDate <- as.Date(data$WaterDayofYear, origin = "1899-11-30")
+      if (water_year_start == 1)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1989-12-31")
+      } else if (water_year_start == 2)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-01-31")
+      } else if (water_year_start == 3)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-02-28")
+      } else if (water_year_start == 4)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-03-31")
+      } else if (water_year_start == 5)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-04-30")
+      } else if (water_year_start == 6)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-05-31")
+      } else if (water_year_start == 7)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-06-30")
+      } else if (water_year_start == 8)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-07-31")
+      } else if (water_year_start == 9)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-08-31")
+      } else if (water_year_start == 10) {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-09-30")
+      } else if (water_year_start == 11) {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-10-31")
+      } else if (water_year_start == 12) {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-11-30")
       }
     }
     
-    
-  } else {
-    
-    if (year) {
-      data$AnalysisYear <- data$Year
-    }
-    
-    if (doy) {
-      data$AnalysisDoY <- data$DayofYear
-    }
-    
-    if (date) {
-      data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-12-31")
-    }
-    
-  }
-  
-  data
+   data
 }
 
 
@@ -244,9 +215,9 @@ filter_complete_yrs <- function(complete_years, flow_data) {
 
 ## add water year months (reorders the months to the start of the water year)
 
-add_water_months <- function(data, water_year, water_year_start){
+add_water_months <- function(data, water_year_start){
   
-  if (!water_year) {
+  if (water_year_start > 1) {
     data <- dplyr::mutate(data,
                           AnalysisMonth = Month)
   } else {
@@ -286,10 +257,9 @@ rolling_days_checks <- function(roll_days, roll_align , multiple = FALSE) {
 #   if (!roll_align %in% c("right", "left", "center"))  stop("roll_align argument must be 'right', 'left', or 'center'.", call. = FALSE)
 # }
 
-water_year_checks <- function(water_year, water_year_start) {
-  if (!is.logical(water_year))         stop("water_year argument must be logical (TRUE/FALSE).", call. = FALSE)
+water_year_checks <- function(water_year_start) {
   if (!is.numeric(water_year_start))   stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec).", call. = FALSE)
-  if (length(water_year_start)>1)      stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec).", call. = FALSE)
+  if (length(water_year_start) > 1)      stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec).", call. = FALSE)
   if (!water_year_start %in% c(1:12))  stop("water_year_start argument must be an integer between 1 and 12 (Jan-Dec).", call. = FALSE)
 }
 

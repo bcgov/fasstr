@@ -6,12 +6,38 @@ install.packages("C:/Users/jgoetz/R/fasstr_devel",repos = NULL, type = "source",
 devtools::install_github("bcgov/fasstr", ref = "devel",  force = TRUE)
 devtools::install_github("bcgov/fasstr",  build_vignettes = TRUE, force = TRUE)
 remotes::install_github("bcgov/fasstr", , force = TRUE)
-#devtools::check()
+4444#devtools::check()
+
+data <- tidyhydat::hy_daily_flows(station_number = "08HB048")
+data2 <- analysis_prep(data,  1)
 
 
 
+t <- compute_frequency_quantile(station_number = "08HB048", water_year_start = 1, roll_days = 7, return_period = 10)
+
+
+flow_data <- tidyhydat::hy_daily_flows("08HB048")
+water_year_start = 5
+roll_days = 1
+roll_align = "right"
+exclude_years = NA
+months = 1:12
+start_year = 1980
+end_year =9999
+ignore_missing=F
+include_longterm=T
+percentiles = c(10,90)
+
+
+
+plot_missing_dates(station_number = "08NM116", start_year = 1990)
 library(fasstr)
 
+
+t1 <- Sys.time()
+plot_flow_duration(station_number = "08HB048", start_year = 1973)
+t2 <- Sys.time()
+t2-t1
 
 all <- compute_full_analysis(station_number = "08HB048", sections = 3)
 
@@ -808,7 +834,7 @@ trending <- compute_annual_trends(data = flow_data, zyp_method = "yuepilon")
 flow_data <- fill_missing_dates(station_number = "08HB048") 
 flow_data <- add_basin_area(station_number = "08HB048")
 flow_data <- add_seasons(station_number = "08HB048")
-flow_data <- add_date_variables(station_number = "08HB048", water_year = T)
+flow_data <- add_date_variables(station_number = "08HB048", water_year = 2)
 flow_data <- add_rolling_means(station_number = "08HB048")
 flow_data <- add_daily_volume(station_number = "08HB048")
 flow_data <- add_cumulative_volume(station_number = "08HB048")
@@ -832,19 +858,19 @@ results <- calc_monthly_stats(station_number = "08HB048")
 results <- screen_flow_data(station_number = "08HB048", months = 7:9)
 
 plot_flow_data(station_number = "08HB048")
-plot_annual_cumulative_stats(station_number = "08HB048")
-plot_annual_flow_timing(station_number = "08HB048")
+plot_annual_cumulative_stats(station_number = "08HB048", water_year_start = 2)
+plot_annual_flow_timing(station_number = "08HB048", water_year_start = 1)
 plot_annual_outside_normal(station_number = "08HB048")
-plot_annual_stats(station_number = "08HB048", percentiles = 1:20, log_discharge = T, start_year = 2014)
+plot_annual_stats(station_number = "08HB048", percentiles = 1:20)
 plot_annual_lowflows(station_number = "08HB048")
-plot_daily_cumulative_stats(station_number = "08HB048", use_yield = T, start_year = 1980, log_discharge = T)
-plot_daily_stats(station_number = "08HB048")
+plot_daily_cumulative_stats(station_number = "08HB048",water_year_start = 9)
+plot_daily_stats(station_number = "08HB048", start_year = 1980,water_year_start = 9, end_year = 2016)
 plot_flow_duration(station_number = "08HB048", custom_months = 1:3, custom_months_label = "WINTER", ignore_missing = F, log_discharge = T)
 plot_flow_data(station_number = "08HB048", log_discharge = T, start_year = 2014)
-plot_longterm_stats(station_number = "08HB048", ignore_missing = T, log_discharge = F)
+plot_longterm_stats(station_number = "08HB048", ignore_missing = T, water_year_start = 5)
 plot_data_screening(station_number = "08HB048")
-plot_missing_dates(station_number = "08HB048")
-plot_monthly_cumulative_stats(station_number = "08HB048", use_yield = T, log_discharge = T)
+plot_missing_dates(station_number = "08HB048",,water_year_start = 9)
+plot_monthly_cumulative_stats(station_number = "08HB048", use_yield = T, log_discharge = F,water_year_start = 9)
 plot_monthly_stats(station_number = "08HB048", log_discharge = F)
 plot_annual_cumulative_stats(station_number = "08HB048", use_yield = T)
 plot_annual_means(station_number = "08NM116")

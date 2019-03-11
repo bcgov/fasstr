@@ -47,7 +47,6 @@
 #' \dontrun{
 #' 
 #' screen_flow_data(station_number = "08NM116", 
-#'                  water_year = TRUE,
 #'                  water_year_start = 8)
 #'
 #' }
@@ -62,8 +61,7 @@ screen_flow_data <- function(data = NULL,
                              station_number = NULL,
                              roll_days = 1,
                              roll_align = "right",
-                             water_year = FALSE,
-                             water_year_start = 10,
+                             water_year_start = 1,
                              start_year = 0,
                              months = 1:12,
                              end_year = 9999,
@@ -74,7 +72,7 @@ screen_flow_data <- function(data = NULL,
   ## ---------------
   
   rolling_days_checks(roll_days, roll_align)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years = NULL)
   months_checks(months = months)
   transpose_checks(transpose)
@@ -102,18 +100,16 @@ screen_flow_data <- function(data = NULL,
   ## PREPARE FLOW DATA
   ## -----------------
   
-  # Fill missing dates, add date variables, and add AnalysisYear
+  # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
-                             water_year_start = water_year_start,
-                             year = TRUE)
+                             water_year_start = water_year_start)
   
   # Add rolling means to end of dataframe
   flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
   colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
   
   # Filter for the selected year (remove excluded years after)
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
   flow_data <- dplyr::filter(flow_data, Month %in% months)
   
   
@@ -122,8 +118,8 @@ screen_flow_data <- function(data = NULL,
   ## --------------------
   
   # Calculate basic stats
-  Q_summary <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
-                                n_days = length(AnalysisYear),
+  Q_summary <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
+                                n_days = length(WaterYear),
                                 n_Q = sum(!is.na(RollingValue)),
                                 n_missing_Q = sum(is.na(RollingValue)),
                                 Minimum = ifelse(n_Q == 0, NA, min(RollingValue, na.rm = TRUE)),
@@ -138,86 +134,78 @@ screen_flow_data <- function(data = NULL,
   Q_summary$Minimum[is.infinite(Q_summary$Minimum)] <- NA
   
   # Calculate for each month for each year
-  Q_summary_month <-   dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
+  Q_summary_month <-   dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear, MonthName),
                                         n_missing_Q = sum(is.na(RollingValue)))
   Q_summary_month <- dplyr::rename(Q_summary_month, Month = MonthName)
   Q_summary_month <- dplyr::mutate(Q_summary_month, Month = paste0(Month, "_missing_Q"))
   
-  
-  if (water_year) {
-    if (water_year_start == 1) {
-      Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Jan_missing_Q", "Feb_missing_Q", "Mar_missing_Q",
-                                                                        "Apr_missing_Q", "May_missing_Q", "Jun_missing_Q",
-                                                                        "Jul_missing_Q", "Aug_missing_Q", "Sep_missing_Q",
-                                                                        "Oct_missing_Q", "Nov_missing_Q", "Dec_missing_Q"))
-    } else if (water_year_start == 2) {
-      Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Feb_missing_Q", "Mar_missing_Q", "Apr_missing_Q", 
-                                                                        "May_missing_Q", "Jun_missing_Q", "Jul_missing_Q",
-                                                                        "Aug_missing_Q", "Sep_missing_Q", "Oct_missing_Q",
-                                                                        "Nov_missing_Q", "Dec_missing_Q", "Jan_missing_Q"))
-    } else if (water_year_start == 3) {
-      Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Mar_missing_Q", "Apr_missing_Q", "May_missing_Q",
-                                                                        "Jun_missing_Q", "Jul_missing_Q", "Aug_missing_Q",
-                                                                        "Sep_missing_Q", "Oct_missing_Q", "Nov_missing_Q",
-                                                                        "Dec_missing_Q", "Jan_missing_Q", "Feb_missing_Q"))
-    } else if (water_year_start == 4) {
-      Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Apr_missing_Q", "May_missing_Q", "Jun_missing_Q",
-                                                                        "Jul_missing_Q", "Aug_missing_Q", "Sep_missing_Q",
-                                                                        "Oct_missing_Q", "Nov_missing_Q", "Dec_missing_Q",
-                                                                        "Jan_missing_Q", "Feb_missing_Q", "Mar_missing_Q"))
-    } else if (water_year_start == 5) {
-      Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("May_missing_Q", "Jun_missing_Q", "Jul_missing_Q",
-                                                                        "Aug_missing_Q", "Sep_missing_Q", "Oct_missing_Q",
-                                                                        "Nov_missing_Q", "Dec_missing_Q", "Jan_missing_Q", 
-                                                                        "Feb_missing_Q", "Mar_missing_Q", "Apr_missing_Q"))
-    } else if (water_year_start == 6) {
-      Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Jun_missing_Q", "Jul_missing_Q", "Aug_missing_Q",
-                                                                        "Sep_missing_Q", "Oct_missing_Q", "Nov_missing_Q",
-                                                                        "Dec_missing_Q", "Jan_missing_Q", "Feb_missing_Q", 
-                                                                        "Mar_missing_Q", "Apr_missing_Q", "May_missing_Q"))
-    } else if (water_year_start == 7) {
-      Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Jul_missing_Q", "Aug_missing_Q", "Sep_missing_Q",
-                                                                        "Oct_missing_Q", "Nov_missing_Q", "Dec_missing_Q",
-                                                                        "Jan_missing_Q", "Feb_missing_Q", "Mar_missing_Q",
-                                                                        "Apr_missing_Q", "May_missing_Q", "Jun_missing_Q"))
-    } else if (water_year_start == 8) {
-      Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Aug_missing_Q", "Sep_missing_Q", "Oct_missing_Q",
-                                                                        "Nov_missing_Q", "Dec_missing_Q", "Jan_missing_Q",
-                                                                        "Feb_missing_Q", "Mar_missing_Q", "Apr_missing_Q",
-                                                                        "May_missing_Q", "Jun_missing_Q", "Jul_missing_Q"))
-    } else if (water_year_start == 9) {
-      Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Sep_missing_Q", "Oct_missing_Q", "Nov_missing_Q",
-                                                                        "Dec_missing_Q", "Jan_missing_Q", "Feb_missing_Q",
-                                                                        "Mar_missing_Q", "Apr_missing_Q", "May_missing_Q",
-                                                                        "Jun_missing_Q", "Jul_missing_Q", "Aug_missing_Q"))
-    } else if (water_year_start == 10) {
-      Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Oct_missing_Q", "Nov_missing_Q", "Dec_missing_Q",
-                                                                        "Jan_missing_Q", "Feb_missing_Q", "Mar_missing_Q", 
-                                                                        "Apr_missing_Q", "May_missing_Q", "Jun_missing_Q",
-                                                                        "Jul_missing_Q", "Aug_missing_Q", "Sep_missing_Q"))
-    } else if (water_year_start == 11) {
-      Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Nov_missing_Q", "Dec_missing_Q", "Jan_missing_Q",
-                                                                        "Feb_missing_Q", "Mar_missing_Q", "Apr_missing_Q", 
-                                                                        "May_missing_Q", "Jun_missing_Q", "Jul_missing_Q",
-                                                                        "Aug_missing_Q", "Sep_missing_Q", "Oct_missing_Q"))
-    } else if (water_year_start == 12) {
-      Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Dec_missing_Q", "Jan_missing_Q", "Feb_missing_Q",
-                                                                        "Mar_missing_Q", "Apr_missing_Q", "May_missing_Q",
-                                                                        "Jun_missing_Q", "Jul_missing_Q", "Aug_missing_Q",
-                                                                        "Sep_missing_Q", "Oct_missing_Q", "Nov_missing_Q"))
-    }
-  } else {           
-    Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Jan_missing_Q", "Feb_missing_Q", "Mar_missing_Q", 
+  if (water_year_start == 1) {
+    Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Jan_missing_Q", "Feb_missing_Q", "Mar_missing_Q",
                                                                       "Apr_missing_Q", "May_missing_Q", "Jun_missing_Q",
                                                                       "Jul_missing_Q", "Aug_missing_Q", "Sep_missing_Q",
                                                                       "Oct_missing_Q", "Nov_missing_Q", "Dec_missing_Q"))
+  } else if (water_year_start == 2) {
+    Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Feb_missing_Q", "Mar_missing_Q", "Apr_missing_Q", 
+                                                                      "May_missing_Q", "Jun_missing_Q", "Jul_missing_Q",
+                                                                      "Aug_missing_Q", "Sep_missing_Q", "Oct_missing_Q",
+                                                                      "Nov_missing_Q", "Dec_missing_Q", "Jan_missing_Q"))
+  } else if (water_year_start == 3) {
+    Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Mar_missing_Q", "Apr_missing_Q", "May_missing_Q",
+                                                                      "Jun_missing_Q", "Jul_missing_Q", "Aug_missing_Q",
+                                                                      "Sep_missing_Q", "Oct_missing_Q", "Nov_missing_Q",
+                                                                      "Dec_missing_Q", "Jan_missing_Q", "Feb_missing_Q"))
+  } else if (water_year_start == 4) {
+    Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Apr_missing_Q", "May_missing_Q", "Jun_missing_Q",
+                                                                      "Jul_missing_Q", "Aug_missing_Q", "Sep_missing_Q",
+                                                                      "Oct_missing_Q", "Nov_missing_Q", "Dec_missing_Q",
+                                                                      "Jan_missing_Q", "Feb_missing_Q", "Mar_missing_Q"))
+  } else if (water_year_start == 5) {
+    Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("May_missing_Q", "Jun_missing_Q", "Jul_missing_Q",
+                                                                      "Aug_missing_Q", "Sep_missing_Q", "Oct_missing_Q",
+                                                                      "Nov_missing_Q", "Dec_missing_Q", "Jan_missing_Q", 
+                                                                      "Feb_missing_Q", "Mar_missing_Q", "Apr_missing_Q"))
+  } else if (water_year_start == 6) {
+    Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Jun_missing_Q", "Jul_missing_Q", "Aug_missing_Q",
+                                                                      "Sep_missing_Q", "Oct_missing_Q", "Nov_missing_Q",
+                                                                      "Dec_missing_Q", "Jan_missing_Q", "Feb_missing_Q", 
+                                                                      "Mar_missing_Q", "Apr_missing_Q", "May_missing_Q"))
+  } else if (water_year_start == 7) {
+    Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Jul_missing_Q", "Aug_missing_Q", "Sep_missing_Q",
+                                                                      "Oct_missing_Q", "Nov_missing_Q", "Dec_missing_Q",
+                                                                      "Jan_missing_Q", "Feb_missing_Q", "Mar_missing_Q",
+                                                                      "Apr_missing_Q", "May_missing_Q", "Jun_missing_Q"))
+  } else if (water_year_start == 8) {
+    Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Aug_missing_Q", "Sep_missing_Q", "Oct_missing_Q",
+                                                                      "Nov_missing_Q", "Dec_missing_Q", "Jan_missing_Q",
+                                                                      "Feb_missing_Q", "Mar_missing_Q", "Apr_missing_Q",
+                                                                      "May_missing_Q", "Jun_missing_Q", "Jul_missing_Q"))
+  } else if (water_year_start == 9) {
+    Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Sep_missing_Q", "Oct_missing_Q", "Nov_missing_Q",
+                                                                      "Dec_missing_Q", "Jan_missing_Q", "Feb_missing_Q",
+                                                                      "Mar_missing_Q", "Apr_missing_Q", "May_missing_Q",
+                                                                      "Jun_missing_Q", "Jul_missing_Q", "Aug_missing_Q"))
+  } else if (water_year_start == 10) {
+    Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Oct_missing_Q", "Nov_missing_Q", "Dec_missing_Q",
+                                                                      "Jan_missing_Q", "Feb_missing_Q", "Mar_missing_Q", 
+                                                                      "Apr_missing_Q", "May_missing_Q", "Jun_missing_Q",
+                                                                      "Jul_missing_Q", "Aug_missing_Q", "Sep_missing_Q"))
+  } else if (water_year_start == 11) {
+    Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Nov_missing_Q", "Dec_missing_Q", "Jan_missing_Q",
+                                                                      "Feb_missing_Q", "Mar_missing_Q", "Apr_missing_Q", 
+                                                                      "May_missing_Q", "Jun_missing_Q", "Jul_missing_Q",
+                                                                      "Aug_missing_Q", "Sep_missing_Q", "Oct_missing_Q"))
+  } else if (water_year_start == 12) {
+    Q_summary_month$Month <- factor(Q_summary_month$Month, levels = c("Dec_missing_Q", "Jan_missing_Q", "Feb_missing_Q",
+                                                                      "Mar_missing_Q", "Apr_missing_Q", "May_missing_Q",
+                                                                      "Jun_missing_Q", "Jul_missing_Q", "Aug_missing_Q",
+                                                                      "Sep_missing_Q", "Oct_missing_Q", "Nov_missing_Q"))
   }
   
   
   Q_summary_month <- tidyr::spread(Q_summary_month, Month, n_missing_Q)
   
-  Q_summary <- merge(Q_summary, Q_summary_month, by = c("STATION_NUMBER", "AnalysisYear"), all = TRUE)
-  Q_summary <- dplyr::rename(Q_summary, Year = AnalysisYear)
+  Q_summary <- merge(Q_summary, Q_summary_month, by = c("STATION_NUMBER", "WaterYear"), all = TRUE)
+  Q_summary <- dplyr::rename(Q_summary, Year = WaterYear)
   row_order <- names(Q_summary[, -1])
   
   
@@ -242,7 +230,7 @@ screen_flow_data <- function(data = NULL,
     Q_summary <- dplyr::select(Q_summary, -STATION_NUMBER)
   }
   
-
+  
   dplyr::as_tibble(Q_summary)
   
 }

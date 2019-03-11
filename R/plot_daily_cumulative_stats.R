@@ -39,8 +39,7 @@
 #' \dontrun{
 #' 
 #' plot_daily_cumulative_stats(station_number = "08NM116", 
-#'                             water_year = TRUE,
-#'                            water_year_start = 8)
+#'                             water_year_start = 8)
 #'
 #' }
 #' @export
@@ -54,8 +53,7 @@ plot_daily_cumulative_stats <- function(data = NULL,
                                         station_number = NULL,
                                         use_yield = FALSE, 
                                         basin_area = NA,
-                                        water_year = FALSE,
-                                        water_year_start = 10,
+                                        water_year_start = 1,
                                         start_year = 0,
                                         end_year = 9999,
                                         exclude_years = NULL, 
@@ -84,23 +82,19 @@ plot_daily_cumulative_stats <- function(data = NULL,
                                groups = as.character(substitute(groups)),
                                rm_other_cols = TRUE)
   
-  
-  if (water_year) {
-    # Create origin date to apply to flow_data and Q_daily later on
-    if (water_year_start==1)         {origin_date <- as.Date("1899-12-31")
-    } else if (water_year_start==2)  {origin_date <- as.Date("1899-01-31")
-    } else if (water_year_start==3)  {origin_date <- as.Date("1899-02-28")
-    } else if (water_year_start==4)  {origin_date <- as.Date("1899-03-31")
-    } else if (water_year_start==5)  {origin_date <- as.Date("1899-04-30")
-    } else if (water_year_start==6)  {origin_date <- as.Date("1899-05-31")
-    } else if (water_year_start==7)  {origin_date <- as.Date("1899-06-30")
-    } else if (water_year_start==8)  {origin_date <- as.Date("1899-07-31")
-    } else if (water_year_start==9)  {origin_date <- as.Date("1899-08-31")
-    } else if (water_year_start==10) {origin_date <- as.Date("1899-09-30")
-    } else if (water_year_start==11) {origin_date <- as.Date("1899-10-31")
-    } else if (water_year_start==12) {origin_date <- as.Date("1899-11-30")}
-  }  else {
-    origin_date <- as.Date("1899-12-31")
+  # Create origin date to apply to flow_data and Q_daily later on
+  if (water_year_start == 1)         {origin_date <- as.Date("1899-12-31")
+  } else if (water_year_start == 2)  {origin_date <- as.Date("1899-01-31")
+  } else if (water_year_start == 3)  {origin_date <- as.Date("1899-02-28")
+  } else if (water_year_start == 4)  {origin_date <- as.Date("1899-03-31")
+  } else if (water_year_start == 5)  {origin_date <- as.Date("1899-04-30")
+  } else if (water_year_start == 6)  {origin_date <- as.Date("1899-05-31")
+  } else if (water_year_start == 7)  {origin_date <- as.Date("1899-06-30")
+  } else if (water_year_start == 8)  {origin_date <- as.Date("1899-07-31")
+  } else if (water_year_start == 9)  {origin_date <- as.Date("1899-08-31")
+  } else if (water_year_start == 10) {origin_date <- as.Date("1899-09-30")
+  } else if (water_year_start == 11) {origin_date <- as.Date("1899-10-31")
+  } else if (water_year_start == 12) {origin_date <- as.Date("1899-11-30")
   }
   
   ## CALC STATS
@@ -110,7 +104,6 @@ plot_daily_cumulative_stats <- function(data = NULL,
                                              percentiles = c(5,25,75,95),
                                              use_yield = use_yield, 
                                              basin_area = ifelse(use_yield, basin_area, 0),
-                                             water_year = water_year,
                                              water_year_start = water_year_start,
                                              start_year = start_year,
                                              end_year = end_year,
@@ -127,31 +120,25 @@ plot_daily_cumulative_stats <- function(data = NULL,
   
   if(!is.null(include_year)){
     
-    year_data <- fill_missing_dates(data = flow_data, water_year = water_year, water_year_start = water_year_start)
-    year_data <- add_date_variables(data = year_data, water_year = water_year, water_year_start = water_year_start)
+    year_data <- fill_missing_dates(data = flow_data, water_year_start = water_year_start)
+    year_data <- add_date_variables(data = year_data, water_year_start = water_year_start)
     
     # Add cumulative flows
     if (use_yield){
-      year_data <- add_cumulative_yield(data = year_data, water_year = water_year, water_year_start = water_year_start, basin_area = basin_area)
+      year_data <- add_cumulative_yield(data = year_data, water_year_start = water_year_start, basin_area = basin_area)
       year_data$Cumul_Flow <- year_data$Cumul_Yield_mm
     } else {
-      year_data <- add_cumulative_volume(data = year_data, water_year = water_year, water_year_start = water_year_start)
+      year_data <- add_cumulative_volume(data = year_data, water_year_start = water_year_start)
       year_data$Cumul_Flow <- year_data$Cumul_Volume_m3
     }
     
-    if (water_year) {
-      year_data$AnalysisYear <- year_data$WaterYear
-      year_data$AnalysisDoY <- year_data$WaterDayofYear
-    }  else {
-      year_data$AnalysisYear <- year_data$Year
-      year_data$AnalysisDoY <- year_data$DayofYear
-    }
-    year_data <- dplyr::mutate(year_data, AnalysisDate = as.Date(AnalysisDoY, origin = origin_date))
-    year_data <- dplyr::filter(year_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
-    year_data <- dplyr::filter(year_data, !(AnalysisYear %in% exclude_years))
-    year_data <- dplyr::filter(year_data, AnalysisDoY < 366)
     
-    year_data <- dplyr::filter(year_data, AnalysisYear == include_year)
+    year_data <- dplyr::mutate(year_data, AnalysisDate = as.Date(DayofYear, origin = origin_date))
+    year_data <- dplyr::filter(year_data, WaterYear >= start_year & WaterYear <= end_year)
+    year_data <- dplyr::filter(year_data, !(WaterYear %in% exclude_years))
+    year_data <- dplyr::filter(year_data, DayofYear < 366)
+    
+    year_data <- dplyr::filter(year_data, WaterYear == include_year)
     
     year_data <- dplyr::select(year_data, STATION_NUMBER, AnalysisDate, Cumul_Flow)
     

@@ -5,8 +5,8 @@
 \title{Write a streamflow dataset as a .xlsx, .xls, or .csv file}
 \usage{
 write_flow_data(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, water_year = FALSE,
-  water_year_start = 10, start_year = 0, end_year = 9999,
+  groups = STATION_NUMBER, station_number = NULL,
+  water_year_start = 1, start_year = 0, end_year = 9999,
   start_date = "0000-01-01", end_date = "3000-12-31", file = "",
   fill_missing = FALSE, digits = 10)
 }
@@ -28,11 +28,7 @@ Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave bla
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
 Leave blank if using \code{data} argument.}
 
-\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the calendar year in which they end. Default \code{FALSE}.}
-
-\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
-Default \code{10}.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year of data to write. Leave blank to use the first year of the source data.}
 

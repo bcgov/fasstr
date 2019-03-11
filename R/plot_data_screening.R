@@ -48,8 +48,7 @@ plot_data_screening <- function(data = NULL,
                                 station_number = NULL,
                                 roll_days = 1,
                                 roll_align = "right",
-                                water_year = FALSE,
-                                water_year_start = 10,
+                                water_year_start = 1,
                                 months = 1:12,
                                 start_year = 0,
                                 end_year = 9999,
@@ -78,14 +77,13 @@ plot_data_screening <- function(data = NULL,
   ## CALC STATS
   ## ----------
   
-  flow_summary <- fasstr::screen_flow_data(data = flow_data,
-                                           roll_days = roll_days,
-                                           roll_align = roll_align,
-                                           water_year = water_year,
-                                           water_year_start = water_year_start,
-                                           start_year = start_year,
-                                           end_year = end_year,
-                                           months = months)
+  flow_summary <- screen_flow_data(data = flow_data,
+                                   roll_days = roll_days,
+                                   roll_align = roll_align,
+                                   water_year_start = water_year_start,
+                                   start_year = start_year,
+                                   end_year = end_year,
+                                   months = months)
   
   flow_summary <- dplyr::select(flow_summary, STATION_NUMBER, Year, Minimum, Maximum, Mean, StandardDeviation)
   flow_summary <- tidyr::gather(flow_summary, Statistic, Value, 3:6)

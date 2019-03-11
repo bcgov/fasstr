@@ -48,7 +48,7 @@ With the exception of the compute_frequency_quantile() function which only produ
 - **compute_annual_frequencies()**
 - **compute_frequency_quantile()**
 
-To determine frequencies of annual daily minimum or daily maximum flows, or of any duration days, from a daily streamflow data set, the `compute_annual_frequencies()` and `compute_frequency_quantile()` functions will take daily data, either from HYDAT using the `station_number` argument or your own data frame of data using the `data` argument to complete an analysis. As with most fasstr functions, options for rolling days, missing values, and date filtering can be completed using the function arguments (roll_days, water_years, etc).
+To determine frequencies of annual daily minimum or daily maximum flows, or of any duration days, from a daily streamflow data set, the `compute_annual_frequencies()` and `compute_frequency_quantile()` functions will take daily data, either from HYDAT using the `station_number` argument or your own data frame of data using the `data` argument to complete an analysis. As with most fasstr functions, options for rolling days, missing values, and date filtering can be completed using the function arguments (roll_days, water_year_start, etc).
 
 The `compute_annual_frequencies()` function will produce all five outputs from the analysis, as listed above, including the plotting data, plot, and computed quantiles. If just the quantile is desired, and assuming your data fits the distributions without looking at the other information, the `compute_frequency_quantile()` function can be used. By supplying the desired duration (roll_days argument) and the desired return period (return_period argument) a single quantile value will be returned from the data.
 

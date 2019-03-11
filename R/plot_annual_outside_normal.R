@@ -33,7 +33,6 @@
 #' \dontrun{
 #' 
 #' plot_annual_outside_normal(station_number = "08NM116",
-#'                            water_year = TRUE, 
 #'                            water_year_start = 8)
 #'
 #' }
@@ -49,8 +48,7 @@ plot_annual_outside_normal <- function(data = NULL,
                                        normal_percentiles = c(25, 75),
                                        roll_days = 1,
                                        roll_align = "right",
-                                       water_year = FALSE,
-                                       water_year_start = 10,
+                                       water_year_start = 1,
                                        start_year = 0,
                                        end_year = 9999,
                                        exclude_years = NULL, 
@@ -83,11 +81,10 @@ plot_annual_outside_normal <- function(data = NULL,
   ## CALC STATS
   ## ----------
   
-  normal_data <- fasstr::calc_annual_outside_normal(data = flow_data,
+  normal_data <- calc_annual_outside_normal(data = flow_data,
                                                     normal_percentiles = normal_percentiles,
                                                     roll_days = roll_days,
                                                     roll_align = roll_align,
-                                                    water_year = water_year,
                                                     water_year_start = water_year_start,
                                                     start_year = start_year,
                                                     end_year = end_year,
