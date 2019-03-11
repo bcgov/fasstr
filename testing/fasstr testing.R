@@ -617,7 +617,7 @@ plot_filetype = "png"
 # start_year = 1981 #NULL
 # end_year = 2000 #NULL
 
-
+t <- compute_full_analysis(station_number = "08HB048", start_year = 1980, write_to_dir = T, foldername = "Carn_test")
 
 
 
@@ -867,19 +867,19 @@ plot_annual_cumulative_stats(station_number = "08LE019", water_year_start = 2)
 plot_annual_flow_timing(station_number = "08LE019", water_year_start = 1)
 plot_annual_outside_normal(station_number = "08LE019")
 plot_annual_stats(station_number = "08LE019", percentiles = 1:20)
-plot_annual_lowflows(station_number = "08HB048")
-plot_daily_cumulative_stats(station_number = "08HB048",water_year_start = 9)
-plot_daily_stats(station_number = "08HB048", start_year = 1980,water_year_start = 9, end_year = 2016)
-plot_flow_duration(station_number = "08HB048", custom_months = 1:3, custom_months_label = "WINTER", ignore_missing = F, log_discharge = T)
-plot_flow_data(station_number = "08HB048", log_discharge = T, start_year = 2014)
-plot_longterm_stats(station_number = "08HB048", ignore_missing = T, water_year_start = 5)
-plot_data_screening(station_number = "08HB048")
-plot_missing_dates(station_number = "08HB048",,water_year_start = 9)
-plot_monthly_cumulative_stats(station_number = "08HB048", use_yield = T, log_discharge = F,water_year_start = 9)
-plot_monthly_stats(station_number = "08HB048", log_discharge = F)
-plot_annual_cumulative_stats(station_number = "08HB048", use_yield = T)
-plot_annual_means(station_number = "08NM116")
-trending <- compute_annual_trends(station_number = "08HB048", zyp_method = "yuepilon", ignore_missing = T)
+plot_annual_lowflows(station_number = "08LE019")
+plot_daily_cumulative_stats(station_number = "08LE019",water_year_start = 9)
+plot_daily_stats(station_number = "08LE019")
+plot_flow_duration(station_number = "08LE019", custom_months = 1:3, custom_months_label = "WINTER", ignore_missing = F, log_discharge = T)
+plot_flow_data(station_number = "08LE019")
+plot_longterm_stats(station_number = "08LE019", ignore_missing = T, water_year_start = 5)
+plot_data_screening(station_number = "08LE019")
+plot_missing_dates(station_number = "08LE019",,water_year_start = 9)
+plot_monthly_cumulative_stats(station_number = "08LE019", use_yield = T, log_discharge = F,water_year_start = 9)
+plot_monthly_stats(station_number = "08LE019", log_discharge = F)
+plot_annual_cumulative_stats(station_number = "08LE019", use_yield = T)
+plot_annual_means(station_number = "08LE019")
+trending <- compute_annual_trends(station_number = "08LE019", zyp_method = "yuepilon", ignore_missing = T)
 
 
 write_flow_data(station_number = c("08HB048","08NM116"))
