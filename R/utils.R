@@ -201,9 +201,9 @@ analysis_prep <- function(data,
 filter_complete_yrs <- function(complete_years, flow_data) {
   
   if (complete_years){
-    comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
-                                   complete_yr = ifelse(sum(!is.na(RollingValue)) == length(AnalysisYear), TRUE, FALSE))
-    flow_data <- merge(flow_data, comp_years, by = c("STATION_NUMBER", "AnalysisYear"))
+    comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
+                                   complete_yr = ifelse(sum(!is.na(RollingValue)) == length(WaterYear), TRUE, FALSE))
+    flow_data <- merge(flow_data, comp_years, by = c("STATION_NUMBER", "WaterYear"))
     flow_data <- dplyr::filter(flow_data, complete_yr == "TRUE")
     flow_data <- dplyr::select(flow_data, -complete_yr)
   }
