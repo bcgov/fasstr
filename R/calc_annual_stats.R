@@ -138,11 +138,11 @@ calc_annual_stats <- function(data = NULL,
   ## --------------------
   
   # Calculate basic stats
-  annual_stats <-   dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
+  annual_stats <-   suppressWarnings(dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
                                      Mean = mean(RollingValue, na.rm = ignore_missing),
                                      Median = stats::median(RollingValue, na.rm = ignore_missing),
                                      Maximum = max (RollingValue, na.rm = ignore_missing),
-                                     Minimum = min (RollingValue, na.rm = ignore_missing))
+                                     Minimum = min (RollingValue, na.rm = ignore_missing)))
   annual_stats <- dplyr::ungroup(annual_stats)
   
   #Remove Nans and Infs

@@ -11,22 +11,27 @@ remotes::install_github("bcgov/fasstr", , force = TRUE)
 data <- tidyhydat::hy_daily_flows(station_number = "08HB048")
 data2 <- analysis_prep(data,  1)
 
+library(fasstr)
 
+t <- calc_monthly_cumulative_stats(station_number = "08HB048", start_year = 1980)
 
 t <- compute_frequency_quantile(station_number = "08HB048", water_year_start = 1, roll_days = 7, return_period = 10)
 
 
-flow_data <- tidyhydat::hy_daily_flows("08HB048")
-water_year_start = 5
-roll_days = 1
+flow_data <- tidyhydat::hy_daily_flows("08LE019")
+percentiles = c(5,25,75,95)
+use_yield = FALSE
+basin_area = NA
+water_year_start = 1
+roll_days = c(1, 3, 7, 30)
 roll_align = "right"
-exclude_years = NA
+exclude_years = NULL
 months = 1:12
-start_year = 1980
+start_year = 0
 end_year =9999
 ignore_missing=F
 include_longterm=T
-percentiles = c(10,90)
+transpose = FALSE
 
 
 
@@ -831,37 +836,37 @@ trending <- compute_annual_trends(data = flow_data, zyp_method = "yuepilon")
 ### ----------
 
 # Single stations
-flow_data <- fill_missing_dates(station_number = "08HB048") 
-flow_data <- add_basin_area(station_number = "08HB048")
-flow_data <- add_seasons(station_number = "08HB048")
-flow_data <- add_date_variables(station_number = "08HB048", water_year = 2)
-flow_data <- add_rolling_means(station_number = "08HB048")
-flow_data <- add_daily_volume(station_number = "08HB048")
-flow_data <- add_cumulative_volume(station_number = "08HB048")
-flow_data <- add_daily_yield(station_number = "08HB048")
-flow_data <- add_cumulative_yield(station_number = "08HB048", basin_area = 10.2)
+flow_data <- fill_missing_dates(station_number = "08LE019") 
+flow_data <- add_basin_area(station_number = "08LE019")
+flow_data <- add_seasons(station_number = "08LE019", seasons_length = 6)
+flow_data <- add_date_variables(station_number = "08LE019", water_year = 2)
+flow_data <- add_rolling_means(station_number = "08LE019")
+flow_data <- add_daily_volume(station_number = "08LE019")
+flow_data <- add_cumulative_volume(station_number = "08LE019")
+flow_data <- add_daily_yield(station_number = "08LE019")
+flow_data <- add_cumulative_yield(station_number = "08LE019", basin_area = 10.2)
 
-results <- calc_longterm_stats(station_number = "08HB048", ignore_missing = T)
-results <- calc_annual_stats(station_number = "08HB048")
-results <- calc_all_annual_stats(station_number = "08HB048")
-results <- calc_annual_cumulative_stats(station_number = "08HB048", use_yield = T, include_seasons = T)
-results <- calc_annual_flow_timing(station_number = "08HB048", water_year = T)
-results <- calc_annual_lowflows(station_number = "08HA066")
-results <- calc_annual_outside_normal(station_number = "08HB048")
-results <- calc_daily_stats(station_number = "08HB048", months = 6:7, ignore_missing = T)
-results <- calc_daily_cumulative_stats(station_number = "08NM116", start_year = 1990)
-results <- calc_flow_percentile(station_number = "08HB048", flow_value = 10000)
-results <- calc_lt_mad(station_number = "08HB048")
-results <- calc_lt_percentile(station_number = "08HB048", percentiles = 50, complete_years = T)
-results <- calc_monthly_cumulative_stats(station_number = "08HB048")
-results <- calc_monthly_stats(station_number = "08HB048")
-results <- screen_flow_data(station_number = "08HB048", months = 7:9)
+results <- calc_longterm_stats(station_number = "08LE019")
+results <- calc_annual_stats(station_number = "08LE019", percentiles = 1:20)
+results <- calc_all_annual_stats(station_number = "08LE019")
+results <- calc_annual_cumulative_stats(station_number = "08LE019", use_yield = T, include_seasons = T)
+results <- calc_annual_flow_timing(station_number = "08LE019", water_year = 1)
+results <- calc_annual_lowflows(station_number = "08LE019")
+results <- calc_annual_outside_normal(station_number = "08LE019")
+results <- calc_daily_stats(station_number = "08LE019")
+results <- calc_daily_cumulative_stats(station_number = "08LE019")
+results <- calc_flow_percentile(station_number = "08LE019", flow_value = 10000)
+results <- calc_longterm_mad(station_number = "08LE019")
+results <- calc_longterm_percentile(station_number = "08LE019", percentiles = 50, complete_years = T)
+results <- calc_monthly_cumulative_stats(station_number = "08LE019")
+results <- calc_monthly_stats(station_number = "08LE019")
+results <- screen_flow_data(station_number = "08LE019")
 
-plot_flow_data(station_number = "08HB048")
-plot_annual_cumulative_stats(station_number = "08HB048", water_year_start = 2)
-plot_annual_flow_timing(station_number = "08HB048", water_year_start = 1)
-plot_annual_outside_normal(station_number = "08HB048")
-plot_annual_stats(station_number = "08HB048", percentiles = 1:20)
+plot_flow_data(station_number = "08LE019")
+plot_annual_cumulative_stats(station_number = "08LE019", water_year_start = 2)
+plot_annual_flow_timing(station_number = "08LE019", water_year_start = 1)
+plot_annual_outside_normal(station_number = "08LE019")
+plot_annual_stats(station_number = "08LE019", percentiles = 1:20)
 plot_annual_lowflows(station_number = "08HB048")
 plot_daily_cumulative_stats(station_number = "08HB048",water_year_start = 9)
 plot_daily_stats(station_number = "08HB048", start_year = 1980,water_year_start = 9, end_year = 2016)

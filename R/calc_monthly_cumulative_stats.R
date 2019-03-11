@@ -130,14 +130,17 @@ calc_monthly_cumulative_stats <- function(data = NULL,
                                  complete_yr = ifelse(sum(!is.na(Value)) == length(WaterYear), TRUE, FALSE))
   if (!all(comp_years$complete_yr)) 
     warning("One or more years contained partial data and were excluded. Only years with complete data were used for calculations.", call. = FALSE)
-
+  
   flow_data <- merge(flow_data, comp_years, by = c("STATION_NUMBER", "WaterYear"))
-  flow_data <- dplyr::filter(flow_data, complete_yr == "TRUE")
+  if (all(!flow_data$complete_yr)) {
+  } else {
+    flow_data <- dplyr::filter(flow_data, complete_yr == "TRUE")
+  }
   flow_data <- dplyr::select(flow_data, -complete_yr)
-
-    ## CALCULATE STATISTICS
+  
+  ## CALCULATE STATISTICS
   ## --------------------
-
+  
   # Calculate monthly totals for all years
   monthly_data <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear, MonthName),
                                    Monthly_Total = max(Cumul_Total, na.rm = FALSE))

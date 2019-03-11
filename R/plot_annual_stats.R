@@ -116,7 +116,7 @@ plot_annual_stats <- function(data = NULL,
            ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
            ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
            ggplot2::geom_point(na.rm = TRUE) +
-           {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(.$Value, na.rm = T) * 1.05))}+
+           {if(!log_discharge) ggplot2::expand_limits(y = c(0, suppressWarnings(max(.$Value, na.rm = T)) * 1.05))}+
            {if(log_discharge) ggplot2::expand_limits(y = c(min(.$Value, na.rm = T) * .95, max(.$Value, na.rm = T) * 1.05))} +
            {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0), breaks = scales::pretty_breaks(n = 7))} +
            {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 7, base = 10))} +

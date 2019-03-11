@@ -128,11 +128,16 @@ calc_daily_stats <- function(data = NULL,
   ## --------------------
 
   # Calculate basic stats
-  daily_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, DayofYear),
+  daily_stats <- suppressWarnings(dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, DayofYear),
                               Mean = mean(RollingValue, na.rm = ignore_missing),
                               Median = stats::median(RollingValue, na.rm = ignore_missing),
                               Minimum = min(RollingValue, na.rm = ignore_missing),
-                              Maximum = max(RollingValue, na.rm = ignore_missing))
+                              Maximum = max(RollingValue, na.rm = ignore_missing)))
+  
+  #Remove Nans and Infs
+  daily_stats$Mean[is.nan(daily_stats$Mean)] <- NA
+  daily_stats$Maximum[is.infinite(daily_stats$Maximum)] <- NA
+  daily_stats$Minimum[is.infinite(daily_stats$Minimum)] <- NA
 
   # Compute daily percentiles (if 10 or more years of data)
   if (!all(is.na(percentiles))){

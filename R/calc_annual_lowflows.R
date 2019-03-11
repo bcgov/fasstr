@@ -137,7 +137,7 @@ calc_annual_lowflows <- function(data = NULL,
   lowflow_stats <-   dplyr::rename(lowflow_stats, Year = WaterYear)
   
   # Filter for start and end years and make excluded years data NA
-  lowflow_stats <- dplyr::filter(lowflow_stats, Year >= start_year & Year <= end_year)
+  lowflow_stats <- subset(lowflow_stats, Year >= start_year & Year <= end_year)
   lowflow_stats[lowflow_stats$Year %in% exclude_years, -(1:2)] <- NA
   
   
