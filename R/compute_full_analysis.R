@@ -147,8 +147,7 @@ compute_full_analysis <- function(data = NULL,
   years_list <- seq(from = start_year, to = end_year, by = 1)[!(seq(from = start_year, to = end_year, by = 1) %in% exclude_years)]
   
   flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
-  flow_data <- dplyr::select(flow_data, -WaterYear)
-  
+
   
   ### Folders Setup
   ##########################
