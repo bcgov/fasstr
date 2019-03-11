@@ -30,7 +30,7 @@ Useful features of functions include:
 Installation
 ------------
 
-To install the `fasstr` package, you need to install the `devtools` package then the `fasstr` package
+To install the `fasstr` package, you need to install the `remotes` package then the `fasstr` package
 
 ``` r
 install.packages("remotes")
@@ -99,7 +99,7 @@ If certain n-day rolling mean statistics are desired to be analyzed (e.g. 3- or 
 
 To customize your analyses for specific time periods, you can designate the start and end years of your analysis using the `start_year` and `end_year` arguments and remove any unwanted years (for partial datasets for example) by listing them in the `excluded_years` argument (e.g. `excluded_years = c(1990, 1992:1994)`). Alternatively, some functions have an argument called `complete_years` that summarizes data from just those years which have a complete flow record. Some functions will also allow you to select the months of a year to analyze, using the `months` argument, as opposed to all months (if you want just summer low-flows, for example). Leaving these arguments blank will result in the summary/analysis of all years and months of the provided dataset.
 
-To group analyses by water, or hydrologic, years instead of calendar years, if desired, you can use `water_year = TRUE` within most functions (default is `water_year = FALSE`). A water year can be defined as a 12-month period that comprises a complete hydrologic cycle (wet seasons can typically cross calendar year), typically starting with the month with minimum flows (the start of a new water recharge cycle). As water years commonly start in October, the default water year is October for `fasstr`. If another start month is desired, you can choose is using the `water_year_start` argument (numeric month) to designate the water year time period. The water year label is designated by the year it ends in (e.g. water year 2000 goes from Oct 1, 1999 to Sep 30, 2000). Start, end and excluded years will be based on the specified water year.
+To group analyses by water, or hydrologic, years instead of calendar years, if desired, you can set `water_year_start` within most functions to another month than 1 (for January). A water year can be defined as a 12-month period that comprises a complete hydrologic cycle (wet seasons can typically cross calendar year), typically starting with the month with minimum flows (the start of a new water recharge cycle). As water years commonly start in October, the default water year is October for `fasstr`. If another start month is desired, you can choose is using the `water_year_start` argument (numeric month) to designate the water year time period. The water year label is designated by the year it ends in (e.g. water year 2000 goes from Oct 1, 1999 to Sep 30, 2000). Start, end and excluded years will be based on the specified water year.
 
 For your own analyses, you can add date variables to your dataset using the `add_date_variables()` or `add_seasons()` functions.
 
@@ -128,7 +128,7 @@ calc_longterm_stats(station_number = "08NM116",
                     custom_months_label = "Summer")
 #> # A tibble: 14 x 8
 #>    STATION_NUMBER Month      Mean Median Maximum Minimum   P10   P90
-#>  * <chr>          <fct>     <dbl>  <dbl>   <dbl>   <dbl> <dbl> <dbl>
+#>    <chr>          <fct>     <dbl>  <dbl>   <dbl>   <dbl> <dbl> <dbl>
 #>  1 08NM116        Jan        1.22  1        9.5    0.160 0.540  1.85
 #>  2 08NM116        Feb        1.16  0.970    4.41   0.140 0.474  1.99
 #>  3 08NM116        Mar        1.85  1.40     9.86   0.380 0.705  3.80
