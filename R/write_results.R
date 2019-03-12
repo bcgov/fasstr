@@ -66,7 +66,7 @@ write_results <- function(data = NULL,
     utils::write.csv(data, file = file, row.names = FALSE, na = "")
     message(paste0("Successfully created ", file, "."))
   } else {
-    invisible(writexl::write_xlsx(data, path = file))
+    invisible(openxlsx::write.xlsx(data, file = file))
     message(paste0("Successfully created ", file, "."))
     
   }

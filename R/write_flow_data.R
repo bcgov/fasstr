@@ -162,7 +162,7 @@ write_flow_data <- function(data = NULL,
     utils::write.csv(flow_data, file = file, row.names = FALSE, na = "")
     message(paste0("Successfully created ", file, "."))
   } else {
-    invisible(writexl::write_xlsx(flow_data, path = file))
+    invisible(openxlsx::write.xlsx(flow_data, file = file))
     message(paste0("Successfully created ", file, "."))
   }
   

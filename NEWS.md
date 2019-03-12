@@ -1,4 +1,4 @@
-fasstr 0.3
+fasstr 0.3.0
 =========================
 
 Updated: 
@@ -7,6 +7,7 @@ Updated:
 
   * Removed logical "water_year" argument and now "water_year_start" controls the start of year alone (default now 1 for January)
   * Internal coding (MonthName levels coding cleaned up) 
+  * Replaced the package writexls with openxls for more functionality
   
 #### Bugs Fixed:
 

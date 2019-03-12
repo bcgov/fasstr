@@ -8,6 +8,9 @@ devtools::install_github("bcgov/fasstr",  build_vignettes = TRUE, force = TRUE)
 remotes::install_github("bcgov/fasstr", , force = TRUE)
 4444#devtools::check()
 
+
+test <- compute_full_analysis(station_number = "08NM116", write_to_dir = T, sections = 1:2, foldername = "MissTest", start_year = 1989)
+
 data <- tidyhydat::hy_daily_flows(station_number = "08HB048")
 data2 <- analysis_prep(data,  1)
 
@@ -17,7 +20,7 @@ t <- calc_monthly_cumulative_stats(station_number = "08HB048", start_year = 1980
 
 t <- compute_frequency_quantile(station_number = "08HB048", water_year_start = 1, roll_days = 7, return_period = 10)
 
-
+write_flow_data(station_number = "08HB048")
 flow_data <- tidyhydat::hy_daily_flows("08LE019")
 percentiles = c(5,25,75,95)
 use_yield = FALSE
