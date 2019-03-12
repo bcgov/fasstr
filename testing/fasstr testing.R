@@ -9,7 +9,7 @@ remotes::install_github("bcgov/fasstr", , force = TRUE)
 4444#devtools::check()
 
 
-test <- compute_full_analysis(station_number = "08NM116", write_to_dir = T, sections = 1:2, foldername = "MissTest", start_year = 1989)
+test <- compute_full_analysis(station_number = "08NM116", write_to_dir = T, sections = 1:3, foldername = "MissTest", start_year = 1989)
 
 data <- tidyhydat::hy_daily_flows(station_number = "08HB048")
 data2 <- analysis_prep(data,  1)

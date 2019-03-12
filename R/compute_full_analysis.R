@@ -160,7 +160,11 @@ compute_full_analysis <- function(data = NULL,
     # Create the excel document
     output_excel <- openxlsx::createWorkbook()
     
-    openxlsx::addWorksheet(wb = output_excel, sheetName = "Analysis Information")
+    openxlsx::addWorksheet(wb = output_excel, 
+                           sheetName = "Analysis Information",
+                           tabColour = "#003e1f") # 73fbd3 44e5e7 59d2fe 4a8fe7 5c7aff
+    
+    
     
     add_table <- function(wb, sheet, data, title, col, row) {
       openxlsx::writeData(wb = wb,
@@ -290,7 +294,9 @@ compute_full_analysis <- function(data = NULL,
       #                       height = 5))
       
       # Write to the Excel Workbook
-      openxlsx::addWorksheet(wb = output_excel, sheetName = "Data Timeseries")
+      openxlsx::addWorksheet(wb = output_excel, 
+                             sheetName = "Data Timeseries",
+                             tabColour = "#73ba9b")
       
       # Add data table and title
       add_table(wb = output_excel,
@@ -312,7 +318,9 @@ compute_full_analysis <- function(data = NULL,
         
    
       # Write to the Excel Workbook
-      openxlsx::addWorksheet(wb = output_excel, sheetName = "Data Screening")
+      openxlsx::addWorksheet(wb = output_excel, 
+                             sheetName = "Data Screening",
+                             tabColour = "#73ba9b")
       
       # Add data table and title
       add_table(wb = output_excel,
@@ -398,7 +406,9 @@ compute_full_analysis <- function(data = NULL,
       #                       height = 7))
       
       # Write to the Excel Workbook
-      openxlsx::addWorksheet(wb = output_excel, sheetName = "Long-term Stats")
+      openxlsx::addWorksheet(wb = output_excel, 
+                             sheetName = "Long-term Stats",
+                             tabColour = "#73fbd3")
       
       # Add data table and title
       add_table(wb = output_excel,
@@ -561,7 +571,9 @@ compute_full_analysis <- function(data = NULL,
       #                       height = 5.5))
       
       # Write to the Excel Workbook
-      openxlsx::addWorksheet(wb = output_excel, sheetName = "Annual Stats")
+      openxlsx::addWorksheet(wb = output_excel, 
+                             sheetName = "Annual Stats",
+                             tabColour = "#44e5e7")
       
       # Add data table and title
       add_table(wb = output_excel,
@@ -578,16 +590,94 @@ compute_full_analysis <- function(data = NULL,
                title = paste0("Annual Summary Statistics from ", start_year, "-", end_year), 
                col = ncol(ann_stats) + 2, 
                row = 2, 
-               height = 4,
+               height = 3,
                width = 8.5)
       add_plot(wb = output_excel, 
                sheet = "Annual Stats", 
                plot = ann_means_plot[[1]], 
                title = paste0("Annual Means from ", start_year, "-", end_year), 
                col = ncol(ann_stats) + 2, 
-               row = 23, 
-               height = 4,
+               row = 18, 
+               height = 3,
                width = 8.5)
+      
+      
+      # Write to the Excel Workbook
+      openxlsx::addWorksheet(wb = output_excel, 
+                             sheetName = "Annual Cumulative Stats",
+                             tabColour = "#44e5e7")
+      
+      # Add data table and title
+      
+      ann_cumul <- dplyr::left_join(ann_vol, ann_yield, by = c("STATION_NUMBER", "Year"))
+      
+      
+      add_table(wb = output_excel,
+                sheet = "Annual Cumulative Stats", 
+                data = ann_cumul, 
+                title = paste0("Annual Cumulative Summary Statistics from ", start_year, "-", end_year),
+                col = 1,
+                row = 1)
+      
+      # Add plots and titles
+      add_plot(wb = output_excel, 
+               sheet = "Annual Cumulative Stats", 
+               plot = ann_vol_plot[[1]], 
+               title = paste0("Annual Total Volume from ", start_year, "-", end_year), 
+               col = ncol(ann_cumul) + 2, 
+               row = 2, 
+               height = 2,
+               width = 6)
+      add_plot(wb = output_excel, 
+               sheet = "Annual Cumulative Stats", 
+               plot = ann_vol_plot[[2]], 
+               title = paste0("Seasonal (Two Seasons) Total Volume from ", start_year, "-", end_year), 
+               col = ncol(ann_cumul) + 2, 
+               row = 13, 
+               height = 2.5,
+               width = 6)
+      add_plot(wb = output_excel, 
+               sheet = "Annual Cumulative Stats", 
+               plot = ann_vol_plot[[3]], 
+               title = paste0("Seasonal (Four Seasons) Total Volume from ", start_year, "-", end_year), 
+               col = ncol(ann_cumul) + 2, 
+               row = 27, 
+               height = 4,
+               width = 6)
+      
+      add_plot(wb = output_excel, 
+               sheet = "Annual Cumulative Stats", 
+               plot = ann_yield_plot[[1]], 
+               title = paste0("Annual Total Yield from ", start_year, "-", end_year), 
+               col = ncol(ann_cumul) + 2 + 10, 
+               row = 2, 
+               height = 2,
+               width = 6)
+      add_plot(wb = output_excel, 
+               sheet = "Annual Cumulative Stats", 
+               plot = ann_yield_plot[[2]], 
+               title = paste0("Seasonal (Two Seasons) Total Yield from ", start_year, "-", end_year), 
+               col = ncol(ann_cumul) + 2 + 10, 
+               row = 13, 
+               height = 2.5,
+               width = 6)
+      add_plot(wb = output_excel, 
+               sheet = "Annual Cumulative Stats", 
+               plot = ann_yield_plot[[3]], 
+               title = paste0("Seasonal (Four Seasons) Total Yield from ", start_year, "-", end_year), 
+               col = ncol(ann_cumul) + 2 + 10, 
+               row = 27, 
+               height = 4,
+               width = 6)
+      
+      
+      # Write to the Excel Workbook
+      openxlsx::addWorksheet(wb = output_excel, 
+                             sheetName = "Annual Stats Other",
+                             tabColour = "#44e5e7")
+      
+      
+      
     }
     
   }
@@ -647,30 +737,35 @@ compute_full_analysis <- function(data = NULL,
     
     if (write_to_dir) {
       # Create the folder
-      month_dir <- "4 - Monthly/"
-      dir.create(path = paste0(main_dir, month_dir), showWarnings = FALSE)
+      # month_dir <- "4 - Monthly/"
+      # dir.create(path = paste0(main_dir, month_dir), showWarnings = FALSE)
+      # 
+      # write_results(data = mon_stats,
+      #               file = paste0(main_dir, month_dir, "Monthly_Summary_Statistics.", table_filetype))
+      # 
+      # write_results(data = mon_vol,
+      #               file = paste0(main_dir, month_dir, "Monthly_Cumulative_Volume.", table_filetype))
+      # 
+      # write_results(data =  mon_yield,
+      #               digits = 1,
+      #               file = paste0(main_dir, month_dir, "Monthly_Cumulative_Yield.", table_filetype))
+      # 
+      # invisible(write_plots(plots = mon_stats_plot,
+      #                       foldername = paste0(main_dir, month_dir),
+      #                       plot_filetype = plot_filetype,
+      #                       width = 11,
+      #                       height = 5))
+      # 
+      # invisible(write_plots(plots = c(mon_vol_plot, mon_yield_plot),
+      #                       foldername = paste0(main_dir, month_dir),
+      #                       plot_filetype = plot_filetype,
+      #                       width = 8.5,
+      #                       height = 4))
       
-      write_results(data = mon_stats,
-                    file = paste0(main_dir, month_dir, "Monthly_Summary_Statistics.", table_filetype))
-      
-      write_results(data = mon_vol,
-                    file = paste0(main_dir, month_dir, "Monthly_Cumulative_Volume.", table_filetype))
-      
-      write_results(data =  mon_yield,
-                    digits = 1,
-                    file = paste0(main_dir, month_dir, "Monthly_Cumulative_Yield.", table_filetype))
-      
-      invisible(write_plots(plots = mon_stats_plot,
-                            foldername = paste0(main_dir, month_dir),
-                            plot_filetype = plot_filetype,
-                            width = 11,
-                            height = 5))
-      
-      invisible(write_plots(plots = c(mon_vol_plot, mon_yield_plot),
-                            foldername = paste0(main_dir, month_dir),
-                            plot_filetype = plot_filetype,
-                            width = 8.5,
-                            height = 4))
+      # Write to the Excel Workbook
+      openxlsx::addWorksheet(wb = output_excel, 
+                             sheetName = "Monthly Stats",
+                             tabColour = "#59d2fe")
       
     }
   }
