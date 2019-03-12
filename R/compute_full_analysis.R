@@ -146,6 +146,7 @@ compute_full_analysis <- function(data = NULL,
   }
   years_list <- seq(from = start_year, to = end_year, by = 1)[!(seq(from = start_year, to = end_year, by = 1) %in% exclude_years)]
   
+  flow_data_plus <- dplyr::filter(flow_data, WaterYear >= start_year-1 & WaterYear <= end_year+1)
   flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
   
   
@@ -486,7 +487,9 @@ compute_full_analysis <- function(data = NULL,
     
     
     # Annual lowflows
-    ann_lowflow <- calc_annual_lowflows(data = flow_data,
+    ann_lowflow <- calc_annual_lowflows(data = flow_data_plus,
+                                        start_year = start_year,
+                                        end_year = end_year,
                                         exclude_years = exclude_years,
                                         water_year_start = water_year_start,
                                         ignore_missing = ignore_missing)
@@ -514,7 +517,9 @@ compute_full_analysis <- function(data = NULL,
     ann_norm_plot <- plot_annual_outside_normal(data = flow_data,
                                                 exclude_years = exclude_years,
                                                 water_year_start = water_year_start)
-    ann_lowflow_plot <- plot_annual_lowflows(data = flow_data,
+    ann_lowflow_plot <- plot_annual_lowflows(data = flow_data_plus,
+                                             start_year = start_year,
+                                             end_year = end_year,
                                              exclude_years = exclude_years,
                                              water_year_start = water_year_start,
                                              ignore_missing = ignore_missing)
@@ -838,7 +843,36 @@ compute_full_analysis <- function(data = NULL,
                col = ncol(mon_stats_out) + 2, 
                row = 2, 
                height = 5,
-               width = 6)
+               width = 9)
+      add_plot(wb = output_excel, 
+               sheet = "Monthly Stats",
+               plot = mon_stats_plot[[2]], 
+               title = paste0("Monthly Median Flows from ", start_year, "-", end_year), 
+               col = ncol(mon_stats_out) + 2, 
+               row = 28, 
+               height = 5,
+               width = 9)
+      add_plot(wb = output_excel, 
+               sheet = "Monthly Stats",
+               plot = mon_stats_plot[[3]], 
+               title = paste0("Monthly Maximum Flows from ", start_year, "-", end_year), 
+               col = ncol(mon_stats_out) + 2 + 14, 
+               row = 2, 
+               height = 5,
+               width = 9)
+      add_plot(wb = output_excel, 
+               sheet = "Monthly Stats",
+               plot = mon_stats_plot[[4]], 
+               title = paste0("Monthly Minimum Flows from ", start_year, "-", end_year), 
+               col = ncol(mon_stats_out) + 2 + 14, 
+               row = 28, 
+               height = 5,
+               width = 9)
+      
+      # Write to the Excel Workbook
+      openxlsx::addWorksheet(wb = output_excel, 
+                             sheetName = "Monthly Cumulative Stats",
+                             tabColour = "#59d2fe")
       
     }
   }
