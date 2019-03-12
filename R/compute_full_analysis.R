@@ -147,7 +147,7 @@ compute_full_analysis <- function(data = NULL,
   years_list <- seq(from = start_year, to = end_year, by = 1)[!(seq(from = start_year, to = end_year, by = 1) %in% exclude_years)]
   
   flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
-
+  
   
   ### Folders Setup
   ##########################
@@ -156,8 +156,56 @@ compute_full_analysis <- function(data = NULL,
   if (write_to_dir) {
     main_dir <- foldername
     dir.create(path = main_dir, showWarnings = FALSE)
-  }  
+    
+    # Create the excel document
+    output_excel <- openxlsx::createWorkbook()
+    
+    openxlsx::addWorksheet(wb = output_excel, sheetName = "Analysis Information")
+    
+    add_table <- function(wb, sheet, data, title, col, row) {
+      openxlsx::writeData(wb = wb,
+                          sheet = sheet, 
+                          x = title, 
+                          startCol = col, startRow = row)
+      openxlsx::writeData(wb = wb,
+                          sheet = sheet, 
+                          x = data, 
+                          startCol = col, startRow = row + 1,
+                          headerStyle = openxlsx::createStyle(fontSize = 11,
+                                                              textDecoration = "bold",
+                                                              border = "TopBottom",
+                                                              fgFill = "#add8e6",
+                                                              halign = "left"))
+      openxlsx::addStyle(wb = wb,
+                         sheet = sheet, 
+                         cols =  col, 
+                         rows =  row,
+                         style = openxlsx::createStyle(fontSize = 11,
+                                                       textDecoration = "bold")) 
+    }
+    
+    add_plot <- function(wb, sheet, plot, title, col, row, height, width) {
+      openxlsx::writeData(wb = wb,
+                          sheet = sheet, 
+                          x = title, 
+                          startCol = col, startRow = row)
+      print(plot)
+      openxlsx::insertPlot(wb = wb,
+                           sheet = sheet, 
+                           startCol = col, startRow = row + 1,
+                           height = height, 
+                           width = width)
+      openxlsx::addStyle(wb = wb,
+                         sheet = sheet, 
+                         cols =  col, 
+                         rows =  row,
+                         style = openxlsx::createStyle(fontSize = 11,
+                                                       textDecoration = "bold")) 
+    }
 
+    
+  }  
+  
   # Create list of all objects
   
   all_objects <- list()
@@ -206,42 +254,91 @@ compute_full_analysis <- function(data = NULL,
     # Create the folder
     if (write_to_dir) {
       
-      timeseries_dir <- "1 - Screening/"
-      dir.create(path = paste0(main_dir, timeseries_dir), showWarnings = FALSE)
-      
+      # timeseries_dir <- "1 - Screening/"
+      # dir.create(path = paste0(main_dir, timeseries_dir), showWarnings = FALSE)
+      #
       # Write the flow data
-      write_flow_data(data = flow_data,
-                      water_year_start = water_year_start,
-                      file = paste0(main_dir, timeseries_dir, "Daily_Flows.", table_filetype))
+      # write_flow_data(data = flow_data,
+      #                 water_year_start = water_year_start,
+      #                 file = paste0(main_dir, timeseries_dir, "Daily_Flows.", table_filetype))
+      # 
+      # write_results(data = flow_screening,
+      #               file = paste0(main_dir, timeseries_dir, "Flow_Screening.", table_filetype))
+      # 
+      # invisible(write_plots(plots = ts_full_plot,
+      #                       foldername = paste0(main_dir, timeseries_dir),
+      #                       plot_filetype = plot_filetype,
+      #                       width = 14,
+      #                       height = 5))
+      # 
+      # invisible(write_plots(plots = ts_annual_plot,
+      #                       foldername = paste0(main_dir, timeseries_dir),
+      #                       plot_filetype = plot_filetype,
+      #                       width = 14,
+      #                       height = 8.5))
+      # 
+      # invisible(write_plots(plots = ts_screen_plot,
+      #                       foldername = paste0(main_dir, timeseries_dir),
+      #                       plot_filetype = plot_filetype,
+      #                       width = 8.5,
+      #                       height = 5))
+      # 
+      # invisible(write_plots(plots = ts_missing_plot,
+      #                       foldername = paste0(main_dir, timeseries_dir),
+      #                       plot_filetype = plot_filetype,
+      #                       width = 8.5,
+      #                       height = 5))
       
-      write_results(data = flow_screening,
-                    file = paste0(main_dir, timeseries_dir, "Flow_Screening.", table_filetype))
+      # Write to the Excel Workbook
+      openxlsx::addWorksheet(wb = output_excel, sheetName = "Data Timeseries")
       
-      invisible(write_plots(plots = ts_full_plot,
-                            foldername = paste0(main_dir, timeseries_dir),
-                            plot_filetype = plot_filetype,
-                            width = 14,
-                            height = 5))
+      # Add data table and title
+      add_table(wb = output_excel,
+                sheet = "Data Timeseries",
+                data = flow_data, 
+                title = "Daily Data Timeseries",
+                col = 1,
+                row = 1)
+     
+      # Add plots and titles
+      add_plot(wb = output_excel, 
+               sheet = "Data Timeseries", 
+               plot = ts_full_plot[[1]], 
+               title = "Daily Data Timeseries", 
+               col = ncol(flow_data) + 2, 
+               row = 2, 
+               height = 5,
+               width = 20)
+        
+   
+      # Write to the Excel Workbook
+      openxlsx::addWorksheet(wb = output_excel, sheetName = "Data Screening")
       
-      invisible(write_plots(plots = ts_annual_plot,
-                            foldername = paste0(main_dir, timeseries_dir),
-                            plot_filetype = plot_filetype,
-                            width = 14,
-                            height = 8.5))
+      # Add data table and title
+      add_table(wb = output_excel,
+                sheet = "Data Screening", 
+                data = flow_screening, 
+                title = "Data Screening: Annual Summary Statistics and Data Availability",
+                col = 1,
+                row = 1)
       
-      invisible(write_plots(plots = ts_screen_plot,
-                            foldername = paste0(main_dir, timeseries_dir),
-                            plot_filetype = plot_filetype,
-                            width = 8.5,
-                            height = 5))
-      
-      invisible(write_plots(plots = ts_missing_plot,
-                            foldername = paste0(main_dir, timeseries_dir),
-                            plot_filetype = plot_filetype,
-                            width = 8.5,
-                            height = 5))
-      
-      
+      # Add plots and titles
+      add_plot(wb = output_excel, 
+               sheet = "Data Screening", 
+               plot = ts_screen_plot[[1]], 
+               title = "Annual Summary Statistics for Screening", 
+               col = ncol(flow_screening) + 2, 
+               row = 2, 
+               height = 5,
+               width = 8.5)
+      add_plot(wb = output_excel, 
+               sheet = "Data Screening", 
+               plot = ts_missing_plot[[1]], 
+               title = "Number of Missing Dates Per Month", 
+               col = ncol(flow_screening) + 2, 
+               row = 28, 
+               height = 6,
+               width = 8.5)
     }
   }  
   
@@ -281,24 +378,55 @@ compute_full_analysis <- function(data = NULL,
                                                  "Flow_Duration_Curves" = lt_flowduration_plot)))
     
     if (write_to_dir) {
-      # Create the folder
-      longterm_dir <- "2 - Long-term/"
-      dir.create(path = paste0(main_dir, longterm_dir), showWarnings = FALSE)
+      # # Create the folder
+      # longterm_dir <- "2 - Long-term/"
+      # dir.create(path = paste0(main_dir, longterm_dir), showWarnings = FALSE)
+      # 
+      # write_results(data = lt_stats,
+      #               file = paste0(main_dir, longterm_dir, "Longterm_Statistics_and_Percentiles.", table_filetype))
+      # 
+      # invisible(write_plots(plots = lt_stats_plot,
+      #                       foldername = paste0(main_dir, longterm_dir),
+      #                       plot_filetype = plot_filetype,
+      #                       width = 11,
+      #                       height = 5))
+      # 
+      # invisible(write_plots(plots = lt_flowduration_plot,
+      #                       foldername = paste0(main_dir, longterm_dir),
+      #                       plot_filetype = plot_filetype,
+      #                       width = 11,
+      #                       height = 7))
       
-      write_results(data = lt_stats,
-                    file = paste0(main_dir, longterm_dir, "Longterm_Statistics_and_Percentiles.", table_filetype))
+      # Write to the Excel Workbook
+      openxlsx::addWorksheet(wb = output_excel, sheetName = "Long-term Stats")
       
-      invisible(write_plots(plots = lt_stats_plot,
-                            foldername = paste0(main_dir, longterm_dir),
-                            plot_filetype = plot_filetype,
-                            width = 11,
-                            height = 5))
+      # Add data table and title
+      add_table(wb = output_excel,
+                sheet = "Long-term Stats", 
+                data = lt_stats, 
+                title = paste0("Long-term Summary Statistics from ", start_year, "-", end_year),
+                col = 1,
+                row = 1)
       
-      invisible(write_plots(plots = lt_flowduration_plot,
-                            foldername = paste0(main_dir, longterm_dir),
-                            plot_filetype = plot_filetype,
-                            width = 11,
-                            height = 7))
+      # Add plots and titles
+      add_plot(wb = output_excel, 
+               sheet = "Long-term Stats", 
+               plot = lt_stats_plot[[1]], 
+               title = paste0("Long-term Summary Statistics from ", start_year, "-", end_year), 
+               col = ncol(lt_stats) + 2, 
+               row = 2, 
+               height = 4,
+               width = 10)
+      add_plot(wb = output_excel, 
+               sheet = "Long-term Stats", 
+               plot = lt_flowduration_plot[[1]], 
+               title = paste0("Flow Duration Curves from ", start_year, "-", end_year), 
+               col = ncol(lt_stats) + 2, 
+               row = 23, 
+               height = 5,
+               width = 10)
+      
+      
     }
   }
   
@@ -400,37 +528,66 @@ compute_full_analysis <- function(data = NULL,
                                                "Annual_Means_plot" =  ann_means_plot)))
     
     if (write_to_dir) {
-      # Create the folder
-      annual_dir <- "3 - Annual/"
-      dir.create(path = paste0(main_dir, annual_dir), showWarnings = FALSE)
+      # # Create the folder
+      # annual_dir <- "3 - Annual/"
+      # dir.create(path = paste0(main_dir, annual_dir), showWarnings = FALSE)
+      # 
+      # write_results(data = ann_stats,
+      #               file = paste0(main_dir, annual_dir, "Annual_Summary_Statistics.", table_filetype))
+      # 
+      # write_results(data = ann_vol,
+      #               file = paste0(main_dir, annual_dir, "Annual_Cumulative_Volume.", table_filetype))
+      # 
+      # write_results(data = ann_yield,
+      #               digits = 1,
+      #               file = paste0(main_dir, annual_dir, "Annual_Cumulative_Yield.", table_filetype))
+      # 
+      # write_results(data = ann_timing,
+      #               file = paste0(main_dir, annual_dir, "Annual_Flow_Timing.xlsx"))
+      # 
+      # write_results(data = ann_norm,
+      #               file = paste0(main_dir, annual_dir, "Annual_Days_Outside_Normal.", table_filetype))
+      # 
+      # write_results(data = ann_lowflow,
+      #               file = paste0(main_dir, annual_dir, "Annual_Low_Flows.", table_filetype))
+      # 
+      # 
+      # invisible(write_plots(plots = c(ann_stats_plot, ann_vol_plot, ann_yield_plot, 
+      #                                 ann_timing_plot, ann_norm_plot, ann_lowflow_plot,
+      #                                 ann_means_plot),
+      #                       foldername = paste0(main_dir, annual_dir),
+      #                       plot_filetype = plot_filetype,
+      #                       width = 10,
+      #                       height = 5.5))
       
-      write_results(data = ann_stats,
-                    file = paste0(main_dir, annual_dir, "Annual_Summary_Statistics.", table_filetype))
+      # Write to the Excel Workbook
+      openxlsx::addWorksheet(wb = output_excel, sheetName = "Annual Stats")
       
-      write_results(data = ann_vol,
-                    file = paste0(main_dir, annual_dir, "Annual_Cumulative_Volume.", table_filetype))
+      # Add data table and title
+      add_table(wb = output_excel,
+                sheet = "Annual Stats", 
+                data = ann_stats, 
+                title = paste0("Annual Summary Statistics from ", start_year, "-", end_year),
+                col = 1,
+                row = 1)
       
-      write_results(data = ann_yield,
-                    digits = 1,
-                    file = paste0(main_dir, annual_dir, "Annual_Cumulative_Yield.", table_filetype))
-      
-      write_results(data = ann_timing,
-                    file = paste0(main_dir, annual_dir, "Annual_Flow_Timing.xlsx"))
-      
-      write_results(data = ann_norm,
-                    file = paste0(main_dir, annual_dir, "Annual_Days_Outside_Normal.", table_filetype))
-      
-      write_results(data = ann_lowflow,
-                    file = paste0(main_dir, annual_dir, "Annual_Low_Flows.", table_filetype))
-      
-      
-      invisible(write_plots(plots = c(ann_stats_plot, ann_vol_plot, ann_yield_plot, 
-                                      ann_timing_plot, ann_norm_plot, ann_lowflow_plot,
-                                      ann_means_plot),
-                            foldername = paste0(main_dir, annual_dir),
-                            plot_filetype = plot_filetype,
-                            width = 10,
-                            height = 5.5))
+      # Add plots and titles
+      add_plot(wb = output_excel, 
+               sheet = "Annual Stats", 
+               plot = ann_stats_plot[[1]], 
+               title = paste0("Annual Summary Statistics from ", start_year, "-", end_year), 
+               col = ncol(ann_stats) + 2, 
+               row = 2, 
+               height = 4,
+               width = 8.5)
+      add_plot(wb = output_excel, 
+               sheet = "Annual Stats", 
+               plot = ann_means_plot[[1]], 
+               title = paste0("Annual Means from ", start_year, "-", end_year), 
+               col = ncol(ann_stats) + 2, 
+               row = 23, 
+               height = 4,
+               width = 8.5)
     }
     
   }
@@ -776,7 +933,7 @@ compute_full_analysis <- function(data = NULL,
   # Write the metadata and table of contents
   ##########################
   
-    if (write_to_dir) {
+  if (write_to_dir) {
     
     
     ## Create a table of contents file
@@ -800,8 +957,8 @@ compute_full_analysis <- function(data = NULL,
     # Create a FileType columns listing if file is a plot or table
     tbl_contents$fileExt <- sub('.*\\.', '', tbl_contents$File)
     tbl_contents$Type <- ifelse(tbl_contents$fileExt %in% c("xlsx", "xls", "csv"), "Table", 
-                                    ifelse(tbl_contents$fileExt %in% c("png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", "svg"), "Plot",
-                                           "Folder with Plots"))
+                                ifelse(tbl_contents$fileExt %in% c("png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", "svg"), "Plot",
+                                       "Folder with Plots"))
     
     # Write the file into the main directory
     write_results(data = tbl_contents[,c(2,1,4)],
@@ -843,7 +1000,18 @@ compute_full_analysis <- function(data = NULL,
     
   }
   
-  
+  if (write_to_dir){
+    
+    # Create the file with all the sheets
+    
+    openxlsx::saveWorkbook(wb = output_excel, 
+                           file = paste0(foldername, "_fasstr_analysis.xlsx"),
+                           overwrite = T)
+    
+    
+    
+    
+  }
   
   return(all_objects)
   
