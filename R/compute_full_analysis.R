@@ -206,7 +206,7 @@ compute_full_analysis <- function(data = NULL,
                          style = openxlsx::createStyle(fontSize = 11,
                                                        textDecoration = "bold")) 
     }
-
+    
     
   }  
   
@@ -299,33 +299,35 @@ compute_full_analysis <- function(data = NULL,
                              tabColour = "#73ba9b")
       
       # Add data table and title
+      flow_data_out <- flow_data[,!colnames(flow_data) %in% "STATION_NUMBER"]
       add_table(wb = output_excel,
                 sheet = "Data Timeseries",
-                data = flow_data, 
+                data = flow_data_out, 
                 title = "Daily Data Timeseries",
                 col = 1,
                 row = 1)
-     
+      
       # Add plots and titles
       add_plot(wb = output_excel, 
                sheet = "Data Timeseries", 
                plot = ts_full_plot[[1]], 
                title = "Daily Data Timeseries", 
-               col = ncol(flow_data) + 2, 
+               col = ncol(flow_data_out) + 2, 
                row = 2, 
                height = 5,
                width = 20)
-        
-   
+      
+      
       # Write to the Excel Workbook
       openxlsx::addWorksheet(wb = output_excel, 
                              sheetName = "Data Screening",
                              tabColour = "#73ba9b")
       
       # Add data table and title
+      flow_screening_out <- flow_screening[,!colnames(flow_screening) %in% "STATION_NUMBER"]
       add_table(wb = output_excel,
                 sheet = "Data Screening", 
-                data = flow_screening, 
+                data = flow_screening_out, 
                 title = "Data Screening: Annual Summary Statistics and Data Availability",
                 col = 1,
                 row = 1)
@@ -335,7 +337,7 @@ compute_full_analysis <- function(data = NULL,
                sheet = "Data Screening", 
                plot = ts_screen_plot[[1]], 
                title = "Annual Summary Statistics for Screening", 
-               col = ncol(flow_screening) + 2, 
+               col = ncol(flow_screening_out) + 2, 
                row = 2, 
                height = 5,
                width = 8.5)
@@ -343,7 +345,7 @@ compute_full_analysis <- function(data = NULL,
                sheet = "Data Screening", 
                plot = ts_missing_plot[[1]], 
                title = "Number of Missing Dates Per Month", 
-               col = ncol(flow_screening) + 2, 
+               col = ncol(flow_screening_out) + 2, 
                row = 28, 
                height = 6,
                width = 8.5)
@@ -411,9 +413,10 @@ compute_full_analysis <- function(data = NULL,
                              tabColour = "#73fbd3")
       
       # Add data table and title
+      lt_stats_out <- lt_stats[,!colnames(lt_stats) %in% "STATION_NUMBER"]
       add_table(wb = output_excel,
                 sheet = "Long-term Stats", 
-                data = lt_stats, 
+                data = lt_stats_out, 
                 title = paste0("Long-term Summary Statistics from ", start_year, "-", end_year),
                 col = 1,
                 row = 1)
@@ -423,7 +426,7 @@ compute_full_analysis <- function(data = NULL,
                sheet = "Long-term Stats", 
                plot = lt_stats_plot[[1]], 
                title = paste0("Long-term Summary Statistics from ", start_year, "-", end_year), 
-               col = ncol(lt_stats) + 2, 
+               col = ncol(lt_stats_out) + 2, 
                row = 2, 
                height = 4,
                width = 10)
@@ -431,7 +434,7 @@ compute_full_analysis <- function(data = NULL,
                sheet = "Long-term Stats", 
                plot = lt_flowduration_plot[[1]], 
                title = paste0("Flow Duration Curves from ", start_year, "-", end_year), 
-               col = ncol(lt_stats) + 2, 
+               col = ncol(lt_stats_out) + 2, 
                row = 23, 
                height = 5,
                width = 10)
@@ -576,9 +579,11 @@ compute_full_analysis <- function(data = NULL,
                              tabColour = "#44e5e7")
       
       # Add data table and title
+      ann_stats_out <- ann_stats[,!colnames(ann_stats) %in% "STATION_NUMBER"]
+      
       add_table(wb = output_excel,
                 sheet = "Annual Stats", 
-                data = ann_stats, 
+                data = ann_stats_out, 
                 title = paste0("Annual Summary Statistics from ", start_year, "-", end_year),
                 col = 1,
                 row = 1)
@@ -588,7 +593,7 @@ compute_full_analysis <- function(data = NULL,
                sheet = "Annual Stats", 
                plot = ann_stats_plot[[1]], 
                title = paste0("Annual Summary Statistics from ", start_year, "-", end_year), 
-               col = ncol(ann_stats) + 2, 
+               col = ncol(ann_stats_out) + 2, 
                row = 2, 
                height = 3,
                width = 8.5)
@@ -596,7 +601,7 @@ compute_full_analysis <- function(data = NULL,
                sheet = "Annual Stats", 
                plot = ann_means_plot[[1]], 
                title = paste0("Annual Means from ", start_year, "-", end_year), 
-               col = ncol(ann_stats) + 2, 
+               col = ncol(ann_stats_out) + 2, 
                row = 18, 
                height = 3,
                width = 8.5)
@@ -610,11 +615,11 @@ compute_full_analysis <- function(data = NULL,
       # Add data table and title
       
       ann_cumul <- dplyr::left_join(ann_vol, ann_yield, by = c("STATION_NUMBER", "Year"))
-      
-      
+      ann_cumul_out <- ann_cumul[,!colnames(ann_cumul) %in% "STATION_NUMBER"]
+
       add_table(wb = output_excel,
                 sheet = "Annual Cumulative Stats", 
-                data = ann_cumul, 
+                data = ann_cumul_out, 
                 title = paste0("Annual Cumulative Summary Statistics from ", start_year, "-", end_year),
                 col = 1,
                 row = 1)
@@ -624,7 +629,7 @@ compute_full_analysis <- function(data = NULL,
                sheet = "Annual Cumulative Stats", 
                plot = ann_vol_plot[[1]], 
                title = paste0("Annual Total Volume from ", start_year, "-", end_year), 
-               col = ncol(ann_cumul) + 2, 
+               col = ncol(ann_cumul_out) + 2, 
                row = 2, 
                height = 2,
                width = 6)
@@ -632,7 +637,7 @@ compute_full_analysis <- function(data = NULL,
                sheet = "Annual Cumulative Stats", 
                plot = ann_vol_plot[[2]], 
                title = paste0("Seasonal (Two Seasons) Total Volume from ", start_year, "-", end_year), 
-               col = ncol(ann_cumul) + 2, 
+               col = ncol(ann_cumul_out) + 2, 
                row = 13, 
                height = 2.5,
                width = 6)
@@ -640,7 +645,7 @@ compute_full_analysis <- function(data = NULL,
                sheet = "Annual Cumulative Stats", 
                plot = ann_vol_plot[[3]], 
                title = paste0("Seasonal (Four Seasons) Total Volume from ", start_year, "-", end_year), 
-               col = ncol(ann_cumul) + 2, 
+               col = ncol(ann_cumul_out) + 2, 
                row = 27, 
                height = 4,
                width = 6)
@@ -649,7 +654,7 @@ compute_full_analysis <- function(data = NULL,
                sheet = "Annual Cumulative Stats", 
                plot = ann_yield_plot[[1]], 
                title = paste0("Annual Total Yield from ", start_year, "-", end_year), 
-               col = ncol(ann_cumul) + 2 + 10, 
+               col = ncol(ann_cumul_out) + 2 + 10, 
                row = 2, 
                height = 2,
                width = 6)
@@ -657,7 +662,7 @@ compute_full_analysis <- function(data = NULL,
                sheet = "Annual Cumulative Stats", 
                plot = ann_yield_plot[[2]], 
                title = paste0("Seasonal (Two Seasons) Total Yield from ", start_year, "-", end_year), 
-               col = ncol(ann_cumul) + 2 + 10, 
+               col = ncol(ann_cumul_out) + 2 + 10, 
                row = 13, 
                height = 2.5,
                width = 6)
@@ -665,7 +670,7 @@ compute_full_analysis <- function(data = NULL,
                sheet = "Annual Cumulative Stats", 
                plot = ann_yield_plot[[3]], 
                title = paste0("Seasonal (Four Seasons) Total Yield from ", start_year, "-", end_year), 
-               col = ncol(ann_cumul) + 2 + 10, 
+               col = ncol(ann_cumul_out) + 2 + 10, 
                row = 27, 
                height = 4,
                width = 6)
@@ -676,7 +681,51 @@ compute_full_analysis <- function(data = NULL,
                              sheetName = "Annual Stats Other",
                              tabColour = "#44e5e7")
       
+      # Add data table and title
+      ann_other <- dplyr::left_join(ann_lowflow, ann_timing, by = c("STATION_NUMBER", "Year"))
+      ann_other <- dplyr::left_join(ann_other, ann_norm, by = c("STATION_NUMBER", "Year"))
+      ann_other_out <- ann_other[,!colnames(ann_other) %in% "STATION_NUMBER"]
+      add_table(wb = output_excel,
+                sheet = "Annual Stats Other", 
+                data = ann_other_out, 
+                title = paste0("Other Annual Statistics (lowflows, etc) from ", start_year, "-", end_year),
+                col = 1,
+                row = 1)
       
+      # Add plots and titles
+      add_plot(wb = output_excel, 
+               sheet = "Annual Stats Other",
+               plot = ann_lowflow_plot[[1]], 
+               title = paste0("Annual Low-flows from ", start_year, "-", end_year), 
+               col = ncol(ann_other_out) + 2, 
+               row = 2, 
+               height = 5,
+               width = 6)
+      add_plot(wb = output_excel, 
+               sheet = "Annual Stats Other",
+               plot = ann_lowflow_plot[[2]], 
+               title = paste0("Day of Annual Low-flows from ", start_year, "-", end_year), 
+               col = ncol(ann_other_out) + 2, 
+               row = 28, 
+               height = 5,
+               width = 6)
+      add_plot(wb = output_excel,
+               sheet = "Annual Stats Other",
+               plot = ann_timing_plot[[1]],
+               title = paste0("Annual Flow Timing from ", start_year, "-", end_year),
+               col = ncol(ann_other_out) + 2 + 10,
+               row = 2, 
+               height = 4,
+               width = 6)
+      add_plot(wb = output_excel,
+               sheet = "Annual Stats Other",
+               plot = ann_norm_plot[[1]],
+               title = paste0("Annual Days Per Year Above, Below, and Outside Normal from ", start_year, "-", end_year),
+               col = ncol(ann_other_out) + 2 + 10,
+               row = 23, 
+               height = 4,
+               width = 6)
+
       
     }
     
@@ -694,6 +743,11 @@ compute_full_analysis <- function(data = NULL,
                                     exclude_years = exclude_years,
                                     water_year_start = water_year_start,
                                     ignore_missing = ignore_missing)
+    mon_stats_spread <- calc_monthly_stats(data = flow_data,
+                                    exclude_years = exclude_years,
+                                    water_year_start = water_year_start,
+                                    ignore_missing = ignore_missing,
+                                    spread = TRUE)
     
     
     mon_vol <- calc_monthly_cumulative_stats(data = flow_data,
@@ -766,6 +820,25 @@ compute_full_analysis <- function(data = NULL,
       openxlsx::addWorksheet(wb = output_excel, 
                              sheetName = "Monthly Stats",
                              tabColour = "#59d2fe")
+      
+      # Add data table and title
+      mon_stats_out <- mon_stats_spread[,!colnames(mon_stats_spread) %in% "STATION_NUMBER"]
+      add_table(wb = output_excel,
+                sheet = "Monthly Stats",
+                data = mon_stats_out, 
+                title = paste0("Monthly Sumamry Statistics from ", start_year, "-", end_year),
+                col = 1,
+                row = 1)
+      
+      # Add plots and titles
+      add_plot(wb = output_excel, 
+               sheet = "Monthly Stats",
+               plot = mon_stats_plot[[1]], 
+               title = paste0("Monthly Mean Flows from ", start_year, "-", end_year), 
+               col = ncol(mon_stats_out) + 2, 
+               row = 2, 
+               height = 5,
+               width = 6)
       
     }
   }
