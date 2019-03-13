@@ -1,15 +1,92 @@
 
 
 devtools::document()
-#install.packages("/Users/jongoetz/Documents/R/fasstr", repos = NULL, type = "source",)
+install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
 install.packages("C:/Users/jgoetz/R/fasstr_devel",repos = NULL, type = "source", build_vignettes = TRUE)
 devtools::install_github("bcgov/fasstr", ref = "devel",  force = TRUE)
 devtools::install_github("bcgov/fasstr",  build_vignettes = TRUE, force = TRUE)
-remotes::install_github("bcgov/fasstr", , force = TRUE)
+remotes::install_github("bcgov/fasstr",force = TRUE)
 4444#devtools::check()
 
 
-test <- compute_full_analysis(station_number = "08NM116", write_to_dir = T, sections = 1:4, foldername = "MissTest", start_year = 1989)
+
+flow_data <- add_date_variables(station_number = "08HB048")
+
+
+
+
+
+
+# Create the daily stats plots
+daily_plots_ <- dplyr::group_by(flow_data, WaterYear)
+daily_plots_ <- tidyr::nest(daily_plots_)
+daily_plots_ <- dplyr::mutate(daily_plots_,
+                             plot = purrr::map(WaterYear, 
+                                                ~plot_daily_stats(data = flow_data, include_year = .)[[1]]))
+plots <- daily_plots_$plot
+names(plots) <- paste0(daily_plots_$WaterYear, "_Daily_Statistics")
+
+if (nrow(daily_plots_) == 1) {
+  names(plots) <- "Daily_Statistics"
+} else {
+}
+
+daily_plots_$plot[[3]]
+
+
+                                                  ggplot2::ggplot(data = ., ggplot2::aes(x = AnalysisDate)) +
+                                                  ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maximum"), na.rm = TRUE) +
+                                                  ggplot2::geom_ribbon(ggplot2::aes(ymin = P5, ymax = P95, fill = "5-95 Percentiles"), na.rm = TRUE) +
+                                                  ggplot2::geom_ribbon(ggplot2::aes(ymin = P25, ymax = P75, fill = "25-75 Percentiles"), na.rm = TRUE) +
+                                                  ggplot2::geom_line(ggplot2::aes(y = Median, colour = "Median"), size = .5, na.rm = TRUE) +
+                                                  ggplot2::geom_line(ggplot2::aes(y = Mean, colour = "Mean"), size = .5, na.rm = TRUE) +
+                                                  ggplot2::scale_fill_manual(values = c("Minimum-Maximum" = "lightblue2", "5-95 Percentiles" = "lightblue3",
+                                                                                        "25-75 Percentiles" = "lightblue4")) +
+                                                  ggplot2::scale_color_manual(values = c("Mean" = "paleturquoise", "Median" = "dodgerblue4"), labels = c("Mean", "Median")) +
+                                                  {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8))}+
+                                                  {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
+                                                  {if(log_discharge) ggplot2::annotation_logticks(base= 10, "left", colour = "grey25", size = 0.3,
+                                                                                                  short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
+                                                                                                  long = ggplot2::unit(.2, "cm"))} +
+                                                  ggplot2::scale_x_date(date_labels = "%b", date_breaks = "1 month",
+                                                                        limits = as.Date(c(NA, as.character(max(daily_stats$AnalysisDate)))), expand = c(0,0)) +
+                                                  ggplot2::xlab("Day of Year")+
+                                                  ggplot2::ylab(y_axis_title)+
+                                                  ggplot2::theme_bw()+
+                                                  ggplot2::labs(color = 'Daily Statistics', fill = "Daily Ranges") +  
+                                                  {if (include_title & .y != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nDaily Statistics'), fill = "Daily Ranges") } +    
+                                                  ggplot2::theme(axis.text = ggplot2::element_text(size = 10, colour = "grey25"),
+                                                                 axis.title = ggplot2::element_text(size = 12, colour = "grey25"),
+                                                                 axis.ticks = ggplot2::element_line(size = .1, colour = "grey25"),
+                                                                 axis.ticks.length = ggplot2::unit(0.05, "cm"),
+                                                                 axis.title.y = ggplot2::element_text(margin = ggplot2::margin(0,0,0,0)),
+                                                                 panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                                                                 panel.grid.minor = ggplot2::element_blank(),
+                                                                 panel.grid.major = ggplot2::element_line(size = .1),
+                                                                 legend.text = ggplot2::element_text(size = 9, colour = "grey25"),
+                                                                 legend.box = "vertical",
+                                                                 legend.justification = "top",
+                                                                 legend.key.size = ggplot2::unit(0.4, "cm"),
+                                                                 legend.spacing = ggplot2::unit(0, "cm")) +
+                                                  ggplot2::guides(colour = ggplot2::guide_legend(order = 1), fill = ggplot2::guide_legend(order = 2)) +
+                                                  {if (is.numeric(include_year)) ggplot2::geom_line(ggplot2::aes(y = RollingValue, colour = "yr.colour"), size = 0.5, na.rm = TRUE) } +
+                                                  {if (is.numeric(include_year)) ggplot2::scale_color_manual(values = c("Mean" = "paleturquoise", "Median" = "dodgerblue4", "yr.colour" = "red"),
+                                                                                                             labels = c("Mean", "Median", paste0(include_year, " Flows"))) }
+                             ))
+
+
+
+
+
+
+
+
+
+
+
+fasstr::write_flow_data(station_number = "08HB048")
+
+test <- compute_full_analysis(station_number = "08NM116", write_to_dir = T,, foldername = "MissTest", start_year = 1989)
 
 data <- tidyhydat::hy_daily_flows(station_number = "08HB048")
 data2 <- analysis_prep(data,  1)
