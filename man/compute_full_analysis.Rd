@@ -9,7 +9,7 @@ compute_full_analysis(data = NULL, dates = Date, values = Value,
   basin_area = NA, water_year_start = 1, start_year = 0,
   end_year = 3000, exclude_years = NULL, ignore_missing = FALSE,
   zyp_method = "yuepilon", zyp_alpha = NA, write_to_dir = FALSE,
-  foldername = NULL, table_filetype = "xlsx", plot_filetype = "png")
+  foldername = NULL, plot_filetype = "pdf")
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -66,14 +66,12 @@ Only required if section 7 is included. Default \code{"yuepilon"}.}
 
 \item{zyp_alpha}{Numeric value of the significance level (ex. 0.05) of when to plot a trend line. Leave blank for no line.}
 
-\item{write_to_dir}{Logical value indicating if all results are to also be written into  a directory. Default \code{FALSE}.}
+\item{write_to_dir}{Logical value indicating if all results are to also be written into a directory. Default \code{FALSE}.}
 
 \item{foldername}{Name of folder to create on disk (if it does not exist) to create all folders and save tables and plots.}
 
-\item{table_filetype}{Table type to write. One of "csv", "xls", or "xlsx". Default \code{"xlsx"}.}
-
 \item{plot_filetype}{Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
-Deafult \code{"png"}.}
+If type is not "pdf" then individual plots will be created instead of a combined PDF. Default \code{"pdf"}.}
 }
 \value{
 A list of lists of tibble data frames and ggplot2 objects from various fasstr functions

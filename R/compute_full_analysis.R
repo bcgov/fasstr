@@ -32,11 +32,10 @@
 #'  }
 #' @param zyp_method Character string identifying the prewhitened trend method to use from 'zyp', either "zhang' or "yuepilon". 
 #'    Only required if section 7 is included. Default \code{"yuepilon"}.
-#' @param write_to_dir Logical value indicating if all results are to also be written into  a directory. Default \code{FALSE}.
+#' @param write_to_dir Logical value indicating if all results are to also be written into a directory. Default \code{FALSE}.
 #' @param foldername Name of folder to create on disk (if it does not exist) to create all folders and save tables and plots. 
-#' @param table_filetype Table type to write. One of "csv", "xls", or "xlsx". Default \code{"xlsx"}.
 #' @param plot_filetype Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
-#'    Deafult \code{"png"}.
+#'    If type is not "pdf" then individual plots will be created instead of a combined PDF. Default \code{"pdf"}.
 #' 
 #' @return A list of lists of tibble data frames and ggplot2 objects from various fasstr functions
 #'    organized by the sections as listed above.
@@ -67,8 +66,7 @@ compute_full_analysis <- function(data = NULL,
                                   zyp_alpha = NA,
                                   write_to_dir = FALSE,
                                   foldername = NULL,
-                                  table_filetype = "xlsx",
-                                  plot_filetype = "png"){
+                                  plot_filetype = "pdf"){
   
   
   
@@ -815,7 +813,7 @@ compute_full_analysis <- function(data = NULL,
                plot = mon_yield_plot[[1]], 
                title = paste0("Cumulative Monthly Yield from ", start_year, "-", end_year), 
                col = ncol(mon_cumul_out) + 2, 
-               row = 23, 
+               row = 24, 
                height = 4,
                width = 9)
     }
@@ -1209,7 +1207,6 @@ compute_full_analysis <- function(data = NULL,
                      zyp_alpha = ifelse(!is.na(zyp_alpha), zyp_alpha, ""),
                      sections = sections,
                      foldername = foldername,
-                     table_filetype = table_filetype,
                      plot_filetype = plot_filetype,
                      analysis_date = as.character(Sys.time()))
     metadata <- data.frame("Argument" = names(metadata),
