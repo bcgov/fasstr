@@ -1170,7 +1170,7 @@ compute_full_analysis <- function(data = NULL,
                   sheet = freq_sheet,
                   data = freq_quantiles_out,
                   title = paste0("Fitted Quantiles"),
-                  col = ncol(freq_ann_data_out) + 2 + ncol(freq_plot_data_out) + 1 + 10,
+                  col = ncol(freq_ann_data_out) + 2 + ncol(freq_plot_data_out) + 1 + 11,
                   row = 1)
         
         
