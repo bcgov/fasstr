@@ -118,7 +118,7 @@ plot_annual_flow_timing <- function(data,
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
         ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
         ggplot2::geom_point(na.rm = TRUE) +
-        {if(length(percent_total) > 1) ggplot2::facet_wrap(~Statistic, scales = "free_y", ncol = 1, strip.position = "right")} +
+        {if(length(percent_total) > 1) ggplot2::facet_wrap(~Statistic, scales = "free_y", ncol = 1, strip.position = "top")} +
         ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
         {if(length(unique(timing_stats$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(timing_stats$Year))}+
         ggplot2::ylab("Day of Year") +
@@ -135,7 +135,9 @@ plot_annual_flow_timing <- function(data,
                        panel.grid = ggplot2::element_line(size = .2),
                        axis.title = ggplot2::element_text(size = 12),
                        axis.text = ggplot2::element_text(size = 10),
-                       plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
+                       plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
+                       strip.background = ggplot2::element_blank(),
+                       strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
                               ))
   
   # Create a list of named plots extracted from the tibble

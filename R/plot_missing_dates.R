@@ -113,7 +113,7 @@ plot_missing_dates <- function(data,
                              plot = purrr::map2(data, STATION_NUMBER, 
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value)) +
         ggplot2::geom_bar(colour = "cornflowerblue", fill = "cornflowerblue", na.rm = TRUE, stat = "identity") +
-        ggplot2::facet_wrap(~Month, ncol = 3, scales = "fixed") +
+        ggplot2::facet_wrap(~Month, ncol = 3, scales = "fixed", strip.position = "top") +
         ggplot2::ylab("Missing Days") +
         ggplot2::xlab("Year") +
         ggplot2::theme_bw() +
@@ -123,7 +123,9 @@ plot_missing_dates <- function(data,
                        panel.grid = ggplot2::element_line(size = .2),
                        axis.title = ggplot2::element_text(size = 12),
                        axis.text = ggplot2::element_text(size = 10),
-                       plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
+                       plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
+                       strip.background = ggplot2::element_blank(),
+                       strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
                              ))
   
   # Create a list of named plots extracted from the tibble

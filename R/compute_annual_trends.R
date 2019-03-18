@@ -222,9 +222,9 @@ compute_annual_trends <- function(data,
         int <- trends_results_stat$intercept - trends_results_stat$trend * trends_results_stat$min_year
         # Plot each metric
         trends_plot <- ggplot2::ggplot(trends_data_stat, ggplot2::aes(x = Year, y = Value)) +
-          ggplot2::geom_point(na.rm = TRUE) +
-          ggplot2::geom_line(alpha = 0.3, na.rm = TRUE) +
-          ggplot2::ggtitle(paste0(stat,"   (Sig. = ", round(trends_results_stat$sig, 3), ")")) +
+          ggplot2::geom_point(shape = 1, size = 2, colour = "darkblue", stroke = 2, na.rm = TRUE) +
+          # ggplot2::geom_line(alpha = 0.3, na.rm = TRUE) +
+          ggplot2::ggtitle(paste0(stat," (sig. = ", round(trends_results_stat$sig, 3), ")")) +
           #{if(length(unique(trends_results$STATION_NUMBER)) > 1) ggplot2::ggtitle(paste0(stn, ": ", stat,"   (Sig. = ", round(trends_results_stat$sig, 3), ")"))} +
           ggplot2::xlab("Year") +
           ggplot2::ylab(trends_data_stat$Units) +
@@ -238,7 +238,7 @@ compute_annual_trends <- function(data,
         # If sig. trend, plot trend
         if(!is.na(zyp_alpha) & trends_results_stat$sig < zyp_alpha & !is.na(trends_results_stat$sig)) {
           trends_plot <- trends_plot +
-            ggplot2::geom_abline(slope = trends_results_stat$trend, intercept = int, colour = "red")
+            ggplot2::geom_abline(slope = trends_results_stat$trend, intercept = int, colour = "red", linetype = "longdash")
         }
         
         if (length(unique(trends_results$STATION_NUMBER)) == 1) {

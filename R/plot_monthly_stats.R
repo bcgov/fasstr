@@ -139,7 +139,7 @@ plot_monthly_stats <- function(data,
           ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, colour = Month)) +
             ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
             ggplot2::geom_point(na.rm = TRUE) +
-            ggplot2::facet_wrap(~Month, scales = "fixed") +
+            ggplot2::facet_wrap(~Month, scales = "fixed", strip.position = "top") +
             #ggplot2::ggtitle(paste0("Monthly ", stat, " Flows")) +
             ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6))+
             {if(length(unique(monthly_data$Year)) < 6) ggplot2::scale_x_continuous(breaks = unique(monthly_data$Year))}+
@@ -157,7 +157,9 @@ plot_monthly_stats <- function(data,
                            panel.grid = ggplot2::element_line(size = .2),
                            axis.title = ggplot2::element_text(size = 12),
                            axis.text = ggplot2::element_text(size = 10),
-                           plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25")) +
+                           plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
+                           strip.background = ggplot2::element_blank(),
+                           strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10)) +
             ggplot2::scale_colour_manual(values = c("Jan" = "dodgerblue3", "Feb" = "skyblue1", "Mar" = "turquoise",
                                                     "Apr" = "forestgreen", "May" = "limegreen", "Jun" = "gold",
                                                     "Jul" = "orange", "Aug" = "red", "Sep" = "darkred",

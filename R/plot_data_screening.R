@@ -98,7 +98,7 @@ plot_data_screening <- function(data,
                                    end_year = end_year,
                                    months = months)
   
-  flow_summary <- dplyr::select(flow_summary, STATION_NUMBER, Year, Minimum, Maximum, Mean, StandardDeviation)
+  flow_summary <- dplyr::select(flow_summary, STATION_NUMBER, Year, Minimum, Maximum, Mean, "Standard Deviation" = StandardDeviation)
   flow_summary <- tidyr::gather(flow_summary, Statistic, Value, 3:6)
   
   
@@ -118,7 +118,7 @@ plot_data_screening <- function(data,
          ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value)) +
            ggplot2::geom_line(colour = "dodgerblue4", na.rm = TRUE) +
            ggplot2::geom_point(colour = "firebrick3", na.rm = TRUE) +
-           ggplot2::facet_wrap(~Statistic, ncol = 2, scales = "free_y") +
+           ggplot2::facet_wrap(~Statistic, ncol = 2, scales = "free_y", strip.position = "top") +
            ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
            {if(length(unique(flow_summary$Year)) < 5) ggplot2::scale_x_continuous(breaks = unique(flow_summary$Year))}+
            ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
@@ -131,7 +131,9 @@ plot_data_screening <- function(data,
                           panel.grid = ggplot2::element_line(size = .2),
                           axis.title = ggplot2::element_text(size = 12),
                           axis.text = ggplot2::element_text(size = 10),
-                          plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
+                          plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
+                          strip.background = ggplot2::element_blank(),
+                          strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
                                 ))
   
   # Create a list of named plots extracted from the tibble
