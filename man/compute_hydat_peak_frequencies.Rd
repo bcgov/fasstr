@@ -4,14 +4,13 @@
 \alias{compute_hydat_peak_frequencies}
 \title{Perform a flow frequency analysis on annual statistics}
 \usage{
-compute_hydat_peak_frequencies(station_number = NULL, use_max = FALSE,
+compute_hydat_peak_frequencies(station_number, use_max = FALSE,
   use_log = FALSE, prob_plot_position = c("weibull", "median",
   "hazen"), prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5, 0.2,
   0.1, 0.02, 0.01, 0.001, 0.0001), fit_distr = c("PIII", "weibull"),
   fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
   fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1,
-  0.05, 0.01), start_year = 0, end_year = 9999, exclude_years = NULL,
-  plot_curve = TRUE)
+  0.05, 0.01), start_year, end_year, exclude_years, plot_curve = TRUE)
 }
 \arguments{
 \item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of

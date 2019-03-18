@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,8 @@
 #' @description Plots monthly mean, median, maximum, minimum, and percentiles for each month of all years of daily flow values 
 #'    from a streamflow dataset. Plots the statistics from all daily discharge values from all years, unless specified. Data
 #'    calculated using the calc_monthly_stats() function.
-#'
+#' @param percentiles Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{NA}.
+#' 
 #' @inheritParams calc_monthly_stats
 #' @inheritParams plot_annual_stats
 #' 
@@ -43,18 +44,18 @@
 
 
 
-plot_monthly_stats <- function(data = NULL,
+plot_monthly_stats <- function(data,
                                dates = Date,
                                values = Value,
                                groups = STATION_NUMBER,
-                               station_number = NULL,
-                               percentiles = NA,
+                               station_number,
+                               percentiles,
                                roll_days = 1,
                                roll_align = "right",
                                water_year_start = 1,
-                               start_year = 0,
-                               end_year = 9999,
-                               exclude_years = NULL,
+                               start_year,
+                               end_year,
+                               exclude_years,
                                months = 1:12,
                                ignore_missing = FALSE,
                                log_discharge = FALSE,
@@ -64,6 +65,25 @@ plot_monthly_stats <- function(data = NULL,
   ## ARGUMENT CHECKS 
   ## others will be check in calc_ function
   ## ---------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  if (missing(percentiles)) {
+    percentiles = NA
+  }
   
   log_discharge_checks(log_discharge) 
   include_title_checks(include_title)

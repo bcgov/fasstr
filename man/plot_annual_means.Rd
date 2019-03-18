@@ -4,11 +4,11 @@
 \alias{plot_annual_means}
 \title{Plot annual means compared to the long-term mean}
 \usage{
-plot_annual_means(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, roll_days = 1,
-  roll_align = "right", water_year_start = 1, start_year = 0,
-  end_year = 9999, exclude_years = NULL, months = 1:12,
-  ignore_missing = FALSE, include_title = FALSE)
+plot_annual_means(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, roll_days = 1,
+  roll_align = "right", water_year_start = 1, start_year, end_year,
+  exclude_years, months = 1:12, ignore_missing = FALSE,
+  include_title = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

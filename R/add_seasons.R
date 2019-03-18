@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,18 +35,25 @@
 #' @export
 
 
-add_seasons <- function(data = NULL,
-                            dates = Date,
-                            station_number = NULL,
-                            water_year_start = 1,
-                            seasons_length = NA){
+add_seasons <- function(data,
+                        dates = Date,
+                        station_number,
+                        water_year_start = 1,
+                        seasons_length){
   
   
   ## ARGUMENT CHECKS
   ## ---------------
   
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  
   water_year_checks(water_year_start)
-  if (is.na(seasons_length))         stop("seasons_length argument (number of months per season) is required.", call. = FALSE)
+  if (missing(seasons_length))       stop("seasons_length argument (number of months per season) is required.", call. = FALSE)
   if (!is.numeric(seasons_length))   stop("seasons_length argument must be a number divisible into 12.", call. = FALSE)
   if (length(seasons_length)>1)      stop("seasons_length argument must be a number divisible into 12.", call. = FALSE)
   if (!12%%seasons_length==0)        stop("seasons_length argument must be a number divisible into 12.", call. = FALSE)

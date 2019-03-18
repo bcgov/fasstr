@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,37 +25,56 @@
 #' \dontrun{
 #' 
 #' calc_longterm_percentile(station_number = "08NM116", 
-#'                    start_year = 1980, 
-#'                    end_year = 2010, 
-#'                    percentile = 90)
+#'                          start_year = 1980, 
+#'                          end_year = 2010, 
+#'                          percentile = 90)
 #' 
 #' calc_longterm_percentile(station_number = "08NM116",
-#'                    percentile = 20)
+#'                          percentile = 20)
 #' 
 #' }
 #' @export
 
 
 
-calc_longterm_percentile <- function(data = NULL,
-                               dates = Date,
-                               values = Value,
-                               groups = STATION_NUMBER,
-                               station_number = NULL,
-                               percentiles = NA,
-                               roll_days = 1,
-                               roll_align = "right",
-                               water_year_start = 1,
-                               start_year = 0,
-                               end_year = 9999,
-                               exclude_years = NULL, 
-                               complete_years = FALSE,
-                               months = 1:12,
-                               transpose = FALSE){
+calc_longterm_percentile <- function(data,
+                                     dates = Date,
+                                     values = Value,
+                                     groups = STATION_NUMBER,
+                                     station_number,
+                                     percentiles,
+                                     roll_days = 1,
+                                     roll_align = "right",
+                                     water_year_start = 1,
+                                     start_year,
+                                     end_year,
+                                     exclude_years, 
+                                     complete_years = FALSE,
+                                     months = 1:12,
+                                     transpose = FALSE){
   
   
   ## ARGUMENT CHECKS
   ## ---------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  if (missing(percentiles)) {
+    percentiles = NA
+  }
   
   rolling_days_checks(roll_days, roll_align)
   water_year_checks(water_year_start)
@@ -97,7 +116,7 @@ calc_longterm_percentile <- function(data = NULL,
   # Add rolling means to end of dataframe
   flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
   colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
-
+  
   
   # Filter for the selected year
   flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
@@ -120,7 +139,7 @@ calc_longterm_percentile <- function(data = NULL,
   # Calculate the long-term percentile
   for(ptile in percentiles){
     ptile_statss <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER),
-                                 Percentile = stats::quantile(RollingValue, ptile / 100, na.rm = TRUE))
+                                     Percentile = stats::quantile(RollingValue, ptile / 100, na.rm = TRUE))
     names(ptile_statss)[names(ptile_statss) == "Percentile"] <- paste0("P", ptile)
     
     # Merge with ptile_statss
@@ -149,13 +168,13 @@ calc_longterm_percentile <- function(data = NULL,
     ptile_stats <- dplyr::select(ptile_stats, -STATION_NUMBER)
   }
   
-
-    
+  
+  
   # If just one value is in the table, return is as a value, otherwise return it as a tibble
   if(nrow(ptile_stats) == 1 & ncol(ptile_stats) == 1){
     dplyr::pull(dplyr::as_tibble(ptile_stats)[1,1])
   } else {
     dplyr::as_tibble(ptile_stats)
   }
-
+  
 }

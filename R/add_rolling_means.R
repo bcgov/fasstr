@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,17 +38,23 @@
 #' @export
 
 
-add_rolling_means <- function(data = NULL,
+add_rolling_means <- function(data,
                               dates = Date,
                               values = Value,
                               groups = STATION_NUMBER,
-                              station_number = NULL,
+                              station_number,
                               roll_days = c(3,7,30),
                               roll_align = "right"){
   
   
   ## ARGUMENT CHECKS
   ## ---------------
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
   
   rolling_days_checks(roll_days, roll_align, multiple = TRUE)
 

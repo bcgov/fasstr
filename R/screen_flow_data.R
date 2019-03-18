@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -54,23 +54,36 @@
 
 
 
-screen_flow_data <- function(data = NULL,
+screen_flow_data <- function(data,
                              dates = Date,
                              values = Value,
                              groups = STATION_NUMBER,
-                             station_number = NULL,
+                             station_number,
                              roll_days = 1,
                              roll_align = "right",
                              water_year_start = 1,
-                             start_year = 0,
+                             start_year,
+                             end_year,
                              months = 1:12,
-                             end_year = 9999,
                              transpose = FALSE){             
   
   
   ## ARGUMENT CHECKS
   ## ---------------
   
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+
   rolling_days_checks(roll_days, roll_align)
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years = NULL)

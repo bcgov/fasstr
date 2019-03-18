@@ -4,12 +4,11 @@
 \alias{plot_annual_stats}
 \title{Plot annual summary statistics}
 \usage{
-plot_annual_stats(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, percentiles = NA,
-  roll_days = 1, roll_align = "right", water_year_start = 1,
-  start_year = 0, end_year = 9999, exclude_years = NULL,
-  months = 1:12, ignore_missing = FALSE, log_discharge = FALSE,
-  include_title = FALSE)
+plot_annual_stats(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, percentiles, roll_days = 1,
+  roll_align = "right", water_year_start = 1, start_year, end_year,
+  exclude_years, months = 1:12, ignore_missing = FALSE,
+  log_discharge = FALSE, include_title = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -29,7 +28,7 @@ Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave bla
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
 Leave blank if using \code{data} argument.}
 
-\item{percentiles}{Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.}
+\item{percentiles}{Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{NA}.}
 
 \item{roll_days}{Numeric value of the number of days to apply a rolling mean. Default \code{1}.}
 

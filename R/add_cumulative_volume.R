@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,25 +24,32 @@
 #' @examples
 #' \dontrun{
 #' 
-#'add_cumulative_volume(data = flow_data)
+#' add_cumulative_volume(data = flow_data)
 #' 
-#'add_cumulative_volume(station_number = "08NM116", water_year_start = 8)
+#' add_cumulative_volume(station_number = "08NM116", 
+#'                       water_year_start = 8)
 #'
 #' }
 #' @export
 
 
-add_cumulative_volume <- function(data = NULL,
+add_cumulative_volume <- function(data,
                                   dates = Date,
                                   values = Value,
                                   groups = STATION_NUMBER,
-                                  station_number = NULL,
+                                  station_number,
                                   water_year_start = 1){
   
   
   
   ## ARGUMENT CHECKS
   ## ---------------
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
   
   water_year_checks(water_year_start)
   

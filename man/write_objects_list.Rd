@@ -4,9 +4,8 @@
 \alias{write_objects_list}
 \title{Write all data frames and plots from a list of objects into a directory}
 \usage{
-write_objects_list(list = NULL, foldername = "",
-  table_filetype = NULL, plot_filetype = NULL, width = NA,
-  height = NA, units = "in", dpi = 300)
+write_objects_list(list, foldername, table_filetype, plot_filetype, width,
+  height, units = "in", dpi = 300)
 }
 \arguments{
 \item{list}{List of data frames and plots to write to disk.}

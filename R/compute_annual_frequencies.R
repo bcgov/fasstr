@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -42,11 +42,11 @@
 #' @export
 
 
-compute_annual_frequencies <- function(data = NULL,
+compute_annual_frequencies <- function(data,
                                        dates = Date,
                                        values = Value,
-                                       station_number = NULL,
-                                       roll_days = c(1, 3, 7, 30),
+                                       station_number,
+                                       roll_days = c(1,3,7,30),
                                        roll_align = "right",
                                        use_max = FALSE,
                                        use_log = FALSE,
@@ -57,9 +57,9 @@ compute_annual_frequencies <- function(data = NULL,
                                        fit_quantiles = c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),
                                        plot_curve = TRUE,
                                        water_year_start = 1,
-                                       start_year = 0,
-                                       end_year = 9999,
-                                       exclude_years = NULL,
+                                       start_year,
+                                       end_year,
+                                       exclude_years,
                                        months = 1:12,
                                        ignore_missing = FALSE){
   
@@ -69,6 +69,22 @@ compute_annual_frequencies <- function(data = NULL,
   
   ## ARGUMENT CHECKS
   ## ---------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
   
   rolling_days_checks(roll_days, roll_align, multiple = TRUE)
   water_year_checks(water_year_start)

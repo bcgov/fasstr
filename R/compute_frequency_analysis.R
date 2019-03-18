@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@
 #' @export
 
 
-compute_frequency_analysis <- function(data = NULL,
+compute_frequency_analysis <- function(data,
                                        events = Year,
                                        values = Value,
                                        measures = Measure,
@@ -79,8 +79,7 @@ compute_frequency_analysis <- function(data = NULL,
                                        fit_distr = c("PIII", "weibull"),
                                        fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
                                        fit_quantiles = c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),
-                                       plot_curve = TRUE
-                                       ){
+                                       plot_curve = TRUE){
   
   # replicate the frequency analysis of the HEC-SSP program
   # refer to Chapter 7 of the user manual
@@ -114,7 +113,7 @@ compute_frequency_analysis <- function(data = NULL,
   
   
   # Check if data is provided
-  if (is.null(data))    
+  if (missing(data))    
     stop("A data frame of annual data must be provided using the 'data' argument.", call. = FALSE)
   
   if (!is.data.frame(data))  

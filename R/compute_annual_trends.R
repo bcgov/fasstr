@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -63,17 +63,17 @@
 
 
 
-compute_annual_trends <- function(data = NULL,
+compute_annual_trends <- function(data,
                                   dates = Date,
                                   values = Value,
                                   groups = STATION_NUMBER,
-                                  station_number = NULL,
-                                  zyp_method = NA,
-                                  basin_area = NA, 
+                                  station_number,
+                                  zyp_method,
+                                  basin_area, 
                                   water_year_start = 1,
-                                  start_year = 0,
-                                  end_year = 9999,
-                                  exclude_years = NULL,
+                                  start_year,
+                                  end_year,
+                                  exclude_years,
                                   annual_percentiles = c(10,90),
                                   monthly_percentiles = c(10,20),
                                   stats_days = 1,
@@ -84,12 +84,37 @@ compute_annual_trends <- function(data = NULL,
                                   normal_percentiles = c(25,75),
                                   ignore_missing = FALSE,
                                   include_plots = TRUE,
-                                  zyp_alpha = NA){       
+                                  zyp_alpha){       
   
   
   
   ## ARGUMENT CHECKS
   ## ---------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  if (missing(basin_area)) {
+    basin_area = NA
+  }
+  if (missing(zyp_method)) {
+    zyp_method = NA
+  }
+  if (missing(zyp_alpha)) {
+    zyp_alpha = NA
+  }
   
   zyp_method_checks(zyp_method)
   zyp_alpha_checks(zyp_alpha)

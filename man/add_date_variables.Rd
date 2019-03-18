@@ -4,7 +4,7 @@
 \alias{add_date_variables}
 \title{Add year, month, and day of year variables}
 \usage{
-add_date_variables(data = NULL, dates = Date, station_number = NULL,
+add_date_variables(data, dates = Date, station_number,
   water_year_start = 1)
 }
 \arguments{

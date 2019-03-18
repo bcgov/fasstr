@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,17 +38,23 @@
 #' @export
 
 
-add_date_variables <- function(data = NULL,
+add_date_variables <- function(data,
                                dates = Date,
-                               station_number = NULL,
+                               station_number,
                                water_year_start = 1){  
   
   
   ## ARGUMENT CHECKS
   ## ---------------
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  
   water_year_checks(water_year_start)
-  
-  
+
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
   

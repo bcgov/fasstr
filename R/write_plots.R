@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,17 +35,33 @@
 #' }
 #' @export
 
-write_plots <- function(plots = NULL,
-                        foldername = "",
-                        plot_filetype = NULL, 
-                        width = NA,
-                        height = NA,
+write_plots <- function(plots,
+                        foldername,
+                        plot_filetype,
+                        width,
+                        height,
                         units = "in",
                         dpi = 300,
                         combined_pdf = FALSE){
   
   # ARGUMENT CHECKS
   # ---------------
+  
+  if (missing(plots)) {
+    plots = NULL
+  }
+  if (missing(foldername)) {
+    foldername = ""
+  }
+  if (missing(plot_filetype)) {
+    plot_filetype = NULL
+  }
+  if (missing(width)) {
+    width = NA
+  }
+  if (missing(height)) {
+    height = NA
+  }
   
   # Check list of plots
   if (is.null(plots)) stop("Must provide a list of plots.", call. = FALSE)

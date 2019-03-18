@@ -4,11 +4,10 @@
 \alias{calc_annual_outside_normal}
 \title{Calculate annual days above and below normal}
 \usage{
-calc_annual_outside_normal(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL,
-  normal_percentiles = c(25, 75), roll_days = 1,
-  roll_align = "right", water_year_start = 1, start_year = 0,
-  end_year = 9999, exclude_years = NULL, months = 1:12,
+calc_annual_outside_normal(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, normal_percentiles = c(25,
+  75), roll_days = 1, roll_align = "right", water_year_start = 1,
+  start_year, end_year, exclude_years, months = 1:12,
   transpose = FALSE)
 }
 \arguments{

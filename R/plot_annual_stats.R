@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@
 #' @inheritParams calc_annual_stats
 #' @param log_discharge Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.
 #' @param include_title Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.
+#' @param percentiles Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{NA}.
+#' 
 #'
 #' @return A list of ggplot2 objects for with the following plots (percentile plots optional) for each station provided:
 #'   \item{Annual_Stats}{a plot that contains annual statistics}
@@ -44,18 +46,18 @@
 #' @export
 
 
-plot_annual_stats <- function(data = NULL,
+plot_annual_stats <- function(data,
                               dates = Date,
                               values = Value,
                               groups = STATION_NUMBER,
-                              station_number = NULL,
-                              percentiles = NA,
+                              station_number,
+                              percentiles,
                               roll_days = 1,
                               roll_align = "right",
                               water_year_start = 1,
-                              start_year = 0,
-                              end_year = 9999,
-                              exclude_years = NULL,
+                              start_year,
+                              end_year,
+                              exclude_years,
                               months = 1:12,
                               ignore_missing = FALSE,
                               log_discharge = FALSE,
@@ -63,6 +65,16 @@ plot_annual_stats <- function(data = NULL,
   
   ## ARGUMENT CHECKS
   ## ---------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(percentiles)) {
+    percentiles = NA
+  }
   
   log_discharge_checks(log_discharge) 
   include_title_checks(include_title)

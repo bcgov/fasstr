@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@
 #'  \item{7: Low-flow Frequencies}
 #'  }
 #' @param zyp_method Character string identifying the prewhitened trend method to use from 'zyp', either "zhang' or "yuepilon". 
-#'    Only required if section 7 is included. Default \code{"yuepilon"}.
+#'    Only required if section 6 is included. Default \code{"yuepilon"}.
 #' @param write_to_dir Logical value indicating if all results are to also be written into a directory. Default \code{FALSE}.
 #' @param foldername Name of folder to create on disk (if it does not exist) to create all folders and save tables and plots. 
 #' @param plot_filetype Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
@@ -50,35 +50,58 @@
 
 
 
-compute_full_analysis <- function(data = NULL,
+compute_full_analysis <- function(data,
                                   dates = Date,
                                   values = Value,
                                   groups = STATION_NUMBER,
-                                  station_number = NULL,
+                                  station_number,
                                   sections = 1:7,
-                                  basin_area = NA,
+                                  basin_area,
                                   water_year_start = 1,
-                                  start_year = 0,
-                                  end_year = 3000,
-                                  exclude_years = NULL,
+                                  start_year,
+                                  end_year,
+                                  exclude_years,
                                   ignore_missing = FALSE,
                                   zyp_method = 'yuepilon',
-                                  zyp_alpha = NA,
+                                  zyp_alpha,
                                   write_to_dir = FALSE,
-                                  foldername = NULL,
-                                  plot_filetype = "pdf"){
+                                  foldername,
+                                  plot_filetype = 'pdf'){
   
   message("* this may take a few moments...")
   
   ## ARGUMENT CHECKS
   ## ---------------
   
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  if (missing(basin_area)) {
+    basin_area = NA
+  }
+  if (missing(zyp_alpha)) {
+    zyp_alpha = NA
+  }
+
+  
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   ignore_missing_checks(ignore_missing)
   
   if (write_to_dir) {
-    if (is.null(foldername))
+    if (missing(foldername))
       stop("A folder name is required with the foldername argument to write all results tables and plots.", call. = FALSE)
     if (!substr(foldername, nchar(foldername), nchar(foldername)) == "/") {
       foldername <- paste0(foldername, "/")
@@ -1255,8 +1278,7 @@ compute_full_analysis <- function(data = NULL,
   
   ## Success message
   if (write_to_dir) {
-    message(paste0("* DONE. For analysis files go to: '", 
-                   normalizePath(main_dir), "'"))
+    message(paste0("* DONE. For analysis files go to: '", normalizePath(main_dir), "'"))
   } else {
     message("* DONE")
   }

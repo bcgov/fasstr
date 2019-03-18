@@ -4,9 +4,8 @@
 \alias{add_cumulative_volume}
 \title{Add daily cumulative volumetric flows on an annual basis}
 \usage{
-add_cumulative_volume(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL,
-  water_year_start = 1)
+add_cumulative_volume(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, water_year_start = 1)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -42,7 +41,8 @@ Add a column of rolling daily cumulative volumetric flows on an annual basis to 
 
 add_cumulative_volume(data = flow_data)
 
-add_cumulative_volume(station_number = "08NM116", water_year_start = 8)
+add_cumulative_volume(station_number = "08NM116", 
+                      water_year_start = 8)
 
 }
 }

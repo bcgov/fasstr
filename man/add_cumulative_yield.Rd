@@ -4,8 +4,8 @@
 \alias{add_cumulative_yield}
 \title{Add daily cumulative runoff yield flows on an annual basis}
 \usage{
-add_cumulative_yield(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, basin_area = NA,
+add_cumulative_yield(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, basin_area,
   water_year_start = 1)
 }
 \arguments{
@@ -50,9 +50,11 @@ Add a column of rolling daily cumulative runoff yield flows on an annual basis t
 \examples{
 \dontrun{
 
-add_cumulative_yield(data = flow_data, area = 105.6)
+add_cumulative_yield(data = flow_data, 
+                     basin_area = 105.6)
 
-add_cumulative_yield(station_number = "08NM116", water_year_start = 8)
+add_cumulative_yield(station_number = "08NM116", 
+                     water_year_start = 8)
 
 }
 }

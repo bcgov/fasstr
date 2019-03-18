@@ -1,4 +1,4 @@
-# Copyright 2017 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,14 +33,25 @@
 
 
 
-write_results <- function(data = NULL,
-                          file = "",
-                          digits = 10){  
+write_results <- function(data,
+                          file,
+                          digits){  
   
   
   
   ## CHECKS ON DATA
   ## --------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(file)) {
+    file = ""
+  }
+  if (missing(digits)) {
+    digits = 10
+  }
+  
   
   if(is.null(data))         stop("data must be provided.", call. = FALSE)
   if(!is.data.frame(data))  stop("data must be a data frame.", call. = FALSE)
@@ -62,15 +73,15 @@ write_results <- function(data = NULL,
   ## WRITE FLOW DATA
   ## ---------------
   
+  message(paste0("* writing '", file, "'"))
+  
   if(filetype == "csv") {
     utils::write.csv(data, file = file, row.names = FALSE, na = "")
-    message(paste0("Successfully created ", file, "."))
+    message(paste0("* DONE. For file go to: '", normalizePath(file), "'"))
   } else {
     invisible(openxlsx::write.xlsx(data, file = file))
-    message(paste0("Successfully created ", file, "."))
-    
+    message(paste0("* DONE. For file go to: '", normalizePath(file), "'"))
   }
-
   
 }
 

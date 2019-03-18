@@ -4,11 +4,10 @@
 \alias{plot_flow_data}
 \title{Plot daily mean streamflow}
 \usage{
-plot_flow_data(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, roll_days = 1,
-  roll_align = "right", water_year_start = 1, start_year = 0,
-  end_year = 9999, exclude_years = NULL, start_date = "0000-01-01",
-  end_date = "3000-12-31", log_discharge = FALSE,
+plot_flow_data(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, roll_days = 1,
+  roll_align = "right", water_year_start = 1, start_year, end_year,
+  exclude_years, start_date, end_date, log_discharge = FALSE,
   plot_by_year = FALSE, one_plot = FALSE, include_title = FALSE)
 }
 \arguments{

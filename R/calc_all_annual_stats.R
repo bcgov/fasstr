@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -63,16 +63,16 @@
 #' @export
 
 
-calc_all_annual_stats <- function(data = NULL,
+calc_all_annual_stats <- function(data,
                                   dates = Date,
                                   values = Value,
                                   groups = STATION_NUMBER,
-                                  station_number = NULL,
-                                  basin_area = NA, 
+                                  station_number,
+                                  basin_area, 
                                   water_year_start = 1,
-                                  start_year = 0,
-                                  end_year = 9999,
-                                  exclude_years = NULL,
+                                  start_year,
+                                  end_year,
+                                  exclude_years,
                                   annual_percentiles = c(10,90),
                                   monthly_percentiles = c(10,20),
                                   stats_days = 1,
@@ -88,6 +88,25 @@ calc_all_annual_stats <- function(data = NULL,
   
   ## ARGUMENT CHECKS
   ## ---------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  if (missing(basin_area)) {
+    basin_area = NA
+  }
   
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)

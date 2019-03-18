@@ -4,10 +4,10 @@
 \alias{plot_data_screening}
 \title{Plot annual summary statistics for data screening}
 \usage{
-plot_data_screening(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, roll_days = 1,
+plot_data_screening(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, roll_days = 1,
   roll_align = "right", water_year_start = 1, months = 1:12,
-  start_year = 0, end_year = 9999, include_title = FALSE)
+  start_year, end_year, include_title = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

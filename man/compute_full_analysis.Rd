@@ -4,12 +4,11 @@
 \alias{compute_full_analysis}
 \title{Computes a suite of tables and plots from various fasstr functions}
 \usage{
-compute_full_analysis(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, sections = 1:7,
-  basin_area = NA, water_year_start = 1, start_year = 0,
-  end_year = 3000, exclude_years = NULL, ignore_missing = FALSE,
-  zyp_method = "yuepilon", zyp_alpha = NA, write_to_dir = FALSE,
-  foldername = NULL, plot_filetype = "pdf")
+compute_full_analysis(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, sections = 1:7, basin_area,
+  water_year_start = 1, start_year, end_year, exclude_years,
+  ignore_missing = FALSE, zyp_method = "yuepilon", zyp_alpha,
+  write_to_dir = FALSE, foldername, plot_filetype = "pdf")
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -62,7 +61,7 @@ Leave blank if using \code{data} argument.}
 with no missing dates will be returned. Default \code{FALSE}.}
 
 \item{zyp_method}{Character string identifying the prewhitened trend method to use from 'zyp', either "zhang' or "yuepilon". 
-Only required if section 7 is included. Default \code{"yuepilon"}.}
+Only required if section 6 is included. Default \code{"yuepilon"}.}
 
 \item{zyp_alpha}{Numeric value of the significance level (ex. 0.05) of when to plot a trend line. Leave blank for no line.}
 

@@ -4,9 +4,8 @@
 \alias{fill_missing_dates}
 \title{Fill dates of missing flow values with NA}
 \usage{
-fill_missing_dates(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL,
-  water_year_start = 1)
+fill_missing_dates(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, water_year_start = 1)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

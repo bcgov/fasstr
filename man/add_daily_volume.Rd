@@ -4,7 +4,7 @@
 \alias{add_daily_volume}
 \title{Add daily volumetric flows}
 \usage{
-add_daily_volume(data = NULL, values = Value, station_number = NULL)
+add_daily_volume(data, values = Value, station_number)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

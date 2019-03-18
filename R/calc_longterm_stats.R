@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -50,29 +50,51 @@
 #' @export
 
 
-calc_longterm_stats <- function(data = NULL,
+calc_longterm_stats <- function(data,
                                 dates = Date,
                                 values = Value,
                                 groups = STATION_NUMBER,
-                                station_number = NULL,
+                                station_number,
                                 percentiles = c(10,90),
                                 roll_days = 1,
                                 roll_align = "right",
                                 water_year_start = 1,
-                                start_year = 0,
-                                end_year = 9999,
-                                exclude_years = NULL,
+                                start_year,
+                                end_year,
+                                exclude_years,
                                 months = 1:12,
                                 complete_years = FALSE,
                                 include_longterm = TRUE,
-                                custom_months = NULL,
-                                custom_months_label = "Custom-Months",
+                                custom_months,
+                                custom_months_label,
                                 transpose = FALSE,
                                 ignore_missing = FALSE){
   
   
   ## ARGUMENT CHECKS
   ## ---------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  if (missing(custom_months)) {
+    custom_months = NULL
+  }
+  if (missing(custom_months_label)) {
+    custom_months_label = "Custom-Months"
+  }
   
   rolling_days_checks(roll_days, roll_align)
   percentiles_checks(percentiles)

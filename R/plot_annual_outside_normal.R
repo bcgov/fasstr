@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -40,18 +40,18 @@
 
 
 
-plot_annual_outside_normal <- function(data = NULL,
+plot_annual_outside_normal <- function(data,
                                        dates = Date,
                                        values = Value,
                                        groups = STATION_NUMBER,
-                                       station_number = NULL,
-                                       normal_percentiles = c(25, 75),
+                                       station_number,
+                                       normal_percentiles = c(25,75),
                                        roll_days = 1,
                                        roll_align = "right",
                                        water_year_start = 1,
-                                       start_year = 0,
-                                       end_year = 9999,
-                                       exclude_years = NULL, 
+                                       start_year,
+                                       end_year,
+                                       exclude_years, 
                                        months = 1:12,
                                        include_title = FALSE){
   
@@ -59,6 +59,13 @@ plot_annual_outside_normal <- function(data = NULL,
   
   ## ARGUMENT CHECKS
   ## ---------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
   
   include_title_checks(include_title)
   

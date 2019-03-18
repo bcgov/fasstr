@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,17 +38,17 @@
 
 
 
-plot_annual_lowflows <- function(data = NULL,
+plot_annual_lowflows <- function(data,
                                  dates = Date,
                                  values = Value,
                                  groups = STATION_NUMBER,
-                                 station_number = NULL,
+                                 station_number,
                                  roll_days = c(1, 3, 7, 30),
                                  roll_align = "right",
                                  water_year_start = 1,
-                                 start_year = 0,
-                                 end_year = 9999,
-                                 exclude_years = NULL,
+                                 start_year,
+                                 end_year,
+                                 exclude_years,
                                  months = 1:12,
                                  ignore_missing = FALSE,
                                  log_discharge = FALSE,
@@ -59,6 +59,13 @@ plot_annual_lowflows <- function(data = NULL,
   ## ARGUMENT CHECKS 
   ## others will be check in calc_ function
   ## ---------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
   
   log_discharge_checks(log_discharge) 
   include_title_checks(include_title)

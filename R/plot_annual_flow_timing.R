@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -48,22 +48,29 @@
 #' @export
 
 
-plot_annual_flow_timing <- function(data = NULL,
+plot_annual_flow_timing <- function(data,
                                     dates = Date,
                                     values = Value,
                                     groups = STATION_NUMBER,
-                                    station_number = NULL,
+                                    station_number,
                                     percent_total = c(25,33.3,50,75),
                                     water_year_start = 1,
-                                    start_year = 0,
-                                    end_year = 9999,
-                                    exclude_years = NULL,
+                                    start_year,
+                                    end_year,
+                                    exclude_years,
                                     include_title = FALSE){ 
   
   ## ARGUMENT CHECKS 
   ## others will be check in calc_ function
   ## ---------------
   
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+
   include_title_checks(include_title)
   
   ## FLOW DATA CHECKS AND FORMATTING

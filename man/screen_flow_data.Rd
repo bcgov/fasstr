@@ -4,10 +4,10 @@
 \alias{screen_flow_data}
 \title{Calculate annual summary and missing data statistics}
 \usage{
-screen_flow_data(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, roll_days = 1,
-  roll_align = "right", water_year_start = 1, start_year = 0,
-  months = 1:12, end_year = 9999, transpose = FALSE)
+screen_flow_data(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, roll_days = 1,
+  roll_align = "right", water_year_start = 1, start_year, end_year,
+  months = 1:12, transpose = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -36,10 +36,10 @@ Leave blank if using \code{data} argument.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
+\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
+
 \item{months}{Numeric vector of months to include in analysis (e.g.. \code{6:8} for Jun-Aug). Leave blank to summarize 
 all months (default \code{1:12}).}
-
-\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
 
 \item{transpose}{Logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.}
 }

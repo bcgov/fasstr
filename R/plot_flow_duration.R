@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -39,20 +39,20 @@
 
 
 
-plot_flow_duration <- function(data = NULL,
+plot_flow_duration <- function(data,
                                dates = Date,
                                values = Value,
                                groups = STATION_NUMBER,
-                               station_number = NULL,
+                               station_number,
                                roll_days = 1,
                                roll_align = "right",
                                water_year_start = 1,
-                               start_year = 0,
-                               end_year = 9999,
-                               exclude_years = NULL,
+                               start_year,
+                               end_year,
+                               exclude_years,
                                complete_years = FALSE,
-                               custom_months = NULL,
-                               custom_months_label = "Custom-Months",
+                               custom_months,
+                               custom_months_label,
                                ignore_missing = FALSE,
                                months = 1:12,
                                include_longterm = TRUE,
@@ -63,6 +63,28 @@ plot_flow_duration <- function(data = NULL,
   
   ## ARGUMENT CHECKS
   ## ---------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  if (missing(custom_months)) {
+    custom_months = NULL
+  }
+  if (missing(custom_months_label)) {
+    custom_months_label = "Custom-Months"
+  }
   
   log_discharge_checks(log_discharge)
   custom_months_checks(custom_months, custom_months_label)

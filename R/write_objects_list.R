@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,17 +34,36 @@
 #' }
 #' @export
 
-write_objects_list <- function(list = NULL,
-                               foldername = "",
-                               table_filetype = NULL, 
-                               plot_filetype = NULL, 
-                               width = NA,
-                               height = NA,
+write_objects_list <- function(list,
+                               foldername,
+                               table_filetype,
+                               plot_filetype,
+                               width,
+                               height,
                                units = "in",
                                dpi = 300){
   
   # ARGUMENT CHECKS
   # ---------------
+  
+  if (missing(list)) {
+    list = NULL
+  }
+  if (missing(table_filetype)) {
+    table_filetype = NULL
+  }
+  if (missing(plot_filetype)) {
+    plot_filetype = NULL
+  }
+  if (missing(width)) {
+    width = NA
+  }
+  if (missing(height)) {
+    height = NA
+  }
+  
+  if (missing(foldername))
+    stop("A folder name is required with the foldername argument to write all results tables and plots.", call. = FALSE)
   
   # Check list of plots
   if (is.null(list)) stop("Must provide a list.", call. = FALSE)
@@ -85,6 +104,8 @@ write_objects_list <- function(list = NULL,
   
   # Create a folder of plots
   
+  message(paste0("* writing tables and plots in '", foldername, "' folder"))
+  
   # Check if folder exists, create if not
   dir.create(foldername, showWarnings = FALSE)
   
@@ -95,25 +116,26 @@ write_objects_list <- function(list = NULL,
   
   for (i in names(list)) {
     if (inherits( list[[i]], what = "gg")) {
-      ggplot2::ggsave(filename = paste0(foldername, i, ".", plot_filetype), 
-                      plot = list[[i]],
-                      width = width,
-                      height = height,
-                      units = units,
-                      dpi = dpi)
+      suppressMessages(
+        ggplot2::ggsave(filename = paste0(foldername, i, ".", plot_filetype), 
+                        plot = list[[i]],
+                        width = width,
+                        height = height,
+                        units = units,
+                        dpi = dpi)
+      )
     } else if (inherits(list[[i]], what = "data.frame")) {
-      write_results(data = list[[i]], 
-                    file = paste0(foldername, i, ".", table_filetype))
+      suppressMessages(
+        write_results(data = list[[i]], 
+                      file = paste0(foldername, i, ".", table_filetype))
+      )
     } else {
-      warning(paste0("Object in list, ", as.character(substitute(list)), "$", i, ", is not a ggplot or data frame object and was not saved."), call. = FALSE)
+      warning(paste0("Object in list, ", as.character(substitute(list)), "$", i, ", is not a ggplot2 or data frame object and was not saved."), call. = FALSE)
     }
   }
   
-  message(paste0("Successfully created folder ", foldername, " with all plots and tables."))
-  
-  
-  
-  
+  # message(paste0("Successfully created folder ", foldername, " with all plots and tables."))
+  message(paste0("* DONE. For files go to: '", normalizePath(foldername), "'"))
   
   
 }

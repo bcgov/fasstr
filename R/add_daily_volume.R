@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,14 +30,21 @@
 #' @export
 
 
-add_daily_volume <- function(data = NULL,
+add_daily_volume <- function(data,
                              values = Value,  
-                             station_number = NULL){
+                             station_number){
   
   
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
   
   # Check if data is provided and import it
   flow_data <- flowdata_import(data = data, station_number = station_number)

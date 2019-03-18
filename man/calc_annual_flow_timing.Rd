@@ -4,10 +4,9 @@
 \alias{calc_annual_flow_timing}
 \title{Calculate annual flow timing}
 \usage{
-calc_annual_flow_timing(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL,
-  percent_total = c(25, 33.3, 50, 75), water_year_start = 1,
-  start_year = 0, end_year = 9999, exclude_years = NULL,
+calc_annual_flow_timing(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, percent_total = c(25, 33.3,
+  50, 75), water_year_start = 1, start_year, end_year, exclude_years,
   transpose = FALSE)
 }
 \arguments{

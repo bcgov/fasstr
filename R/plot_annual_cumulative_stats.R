@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -44,17 +44,17 @@
 
 
 
-plot_annual_cumulative_stats <- function(data = NULL,
+plot_annual_cumulative_stats <- function(data,
                                          dates = Date,
                                          values = Value,
                                          groups = STATION_NUMBER,
-                                         station_number = NULL,
+                                         station_number,
                                          use_yield = FALSE, 
-                                         basin_area = NA,
+                                         basin_area,
                                          water_year_start = 1,
-                                         start_year = 0,
-                                         end_year = 9999,
-                                         exclude_years = NULL, 
+                                         start_year,
+                                         end_year,
+                                         exclude_years, 
                                          include_seasons = FALSE,
                                          log_discharge = FALSE,
                                          include_title = FALSE){
@@ -64,6 +64,25 @@ plot_annual_cumulative_stats <- function(data = NULL,
   ## ARGUMENT CHECKS 
   ## others will be check in calc_ function
   ## ---------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  if (missing(basin_area)) {
+    basin_area = NA
+  }
   
   log_discharge_checks(log_discharge) 
   include_title_checks(include_title)    

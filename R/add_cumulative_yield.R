@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,26 +26,37 @@
 #' @examples
 #' \dontrun{
 #' 
-#'add_cumulative_yield(data = flow_data, area = 105.6)
+#' add_cumulative_yield(data = flow_data, 
+#'                      basin_area = 105.6)
 #' 
-#'add_cumulative_yield(station_number = "08NM116", water_year_start = 8)
+#' add_cumulative_yield(station_number = "08NM116", 
+#'                      water_year_start = 8)
 #'
 #' }
 #' @export
 
 
-add_cumulative_yield <- function(data = NULL,
+add_cumulative_yield <- function(data,
                                  dates = Date,
                                  values = Value,
                                  groups = STATION_NUMBER,
-                                 station_number = NULL,
-                                 basin_area = NA,
+                                 station_number,
+                                 basin_area,
                                  water_year_start = 1){
   
   
   
   ## ARGUMENT CHECKS
   ## ---------------
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(basin_area)) {
+    basin_area = NA
+  }
   
   water_year_checks(water_year_start)
   

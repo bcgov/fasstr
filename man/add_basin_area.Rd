@@ -4,8 +4,7 @@
 \alias{add_basin_area}
 \title{Add a basin area column to daily flows}
 \usage{
-add_basin_area(data = NULL, groups = STATION_NUMBER,
-  station_number = NULL, basin_area = NA)
+add_basin_area(data, groups = STATION_NUMBER, station_number, basin_area)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -39,23 +39,49 @@
 
 
 
-write_flow_data <- function(data = NULL,
+write_flow_data <- function(data,
                             dates = Date,
                             values = Value,
                             groups = STATION_NUMBER,
-                            station_number = NULL,
+                            station_number,
                             water_year_start = 1,
-                            start_year = 0,
-                            end_year = 9999,
-                            start_date = "0000-01-01",
-                            end_date = "3000-12-31",
-                            file = "",
+                            start_year,
+                            end_year,
+                            start_date,
+                            end_date,
+                            file,
                             fill_missing = FALSE,
-                            digits = 10){  
+                            digits){  
   
   
   ## ARGUMENT CHECKS
   ## ---------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(start_date)) {
+    start_date = "0000-01-01"
+  }
+  if (missing(end_date)) {
+    end_date = "3000-12-31"
+  }
+  if (missing(digits)) {
+    digits = 10
+  }
+  if (missing(file)) {
+    file = ""
+  }
+
   
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years = NULL)
@@ -157,13 +183,15 @@ write_flow_data <- function(data = NULL,
   if (length(digits) != 1) stop("Only one number can be provided to digits.", call. = FALSE)
   if (!is.numeric(digits)) stop("digits must be a numeric value.", call. = FALSE)
   
+  message(paste0("* writing '", file, "'"))
+  
   # Write the data
   if(filetype == "csv") {
     utils::write.csv(flow_data, file = file, row.names = FALSE, na = "")
-    message(paste0("Successfully created ", file, "."))
+    message(paste0("* DONE. For file go to: '", normalizePath(file), "'"))
   } else {
     invisible(openxlsx::write.xlsx(flow_data, file = file))
-    message(paste0("Successfully created ", file, "."))
+    message(paste0("* DONE. For file go to: '", normalizePath(file), "'"))
   }
   
 }

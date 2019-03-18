@@ -4,7 +4,7 @@
 \alias{write_results}
 \title{Write a data frame as a .xlsx, .xls, or .csv file}
 \usage{
-write_results(data = NULL, file = "", digits = 10)
+write_results(data, file, digits)
 }
 \arguments{
 \item{data}{Data frame to be written to a directory.}

@@ -4,10 +4,9 @@
 \alias{plot_annual_cumulative_stats}
 \title{Plot annual and seasonal total flows}
 \usage{
-plot_annual_cumulative_stats(data = NULL, dates = Date,
-  values = Value, groups = STATION_NUMBER, station_number = NULL,
-  use_yield = FALSE, basin_area = NA, water_year_start = 1,
-  start_year = 0, end_year = 9999, exclude_years = NULL,
+plot_annual_cumulative_stats(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, use_yield = FALSE,
+  basin_area, water_year_start = 1, start_year, end_year, exclude_years,
   include_seasons = FALSE, log_discharge = FALSE,
   include_title = FALSE)
 }

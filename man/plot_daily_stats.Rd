@@ -4,12 +4,12 @@
 \alias{plot_daily_stats}
 \title{Plot daily summary statistics}
 \usage{
-plot_daily_stats(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, roll_days = 1,
-  roll_align = "right", water_year_start = 1, start_year = 0,
-  end_year = 9999, exclude_years = NULL, complete_years = FALSE,
-  months = 1:12, ignore_missing = FALSE, log_discharge = TRUE,
-  include_title = FALSE, include_year = NULL)
+plot_daily_stats(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, roll_days = 1,
+  roll_align = "right", water_year_start = 1, start_year, end_year,
+  exclude_years, complete_years = FALSE, months = 1:12,
+  ignore_missing = FALSE, log_discharge = TRUE,
+  include_title = FALSE, include_year)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

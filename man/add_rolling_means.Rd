@@ -4,9 +4,9 @@
 \alias{add_rolling_means}
 \title{Add rolling n-day averages}
 \usage{
-add_rolling_means(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, roll_days = c(3, 7,
-  30), roll_align = "right")
+add_rolling_means(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, roll_days = c(3, 7, 30),
+  roll_align = "right")
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

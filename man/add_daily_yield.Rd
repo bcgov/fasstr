@@ -4,8 +4,8 @@
 \alias{add_daily_yield}
 \title{Add daily volumetric runoff yields}
 \usage{
-add_daily_yield(data = NULL, values = Value, groups = STATION_NUMBER,
-  station_number = NULL, basin_area = NA)
+add_daily_yield(data, values = Value, groups = STATION_NUMBER,
+  station_number, basin_area)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

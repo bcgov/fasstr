@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -37,18 +37,18 @@
 
 
 
-calc_flow_percentile <- function(data = NULL,
+calc_flow_percentile <- function(data,
                                  dates = Date,
                                  values = Value,
                                  groups = STATION_NUMBER,
-                                 station_number = NULL,
+                                 station_number,
                                  roll_days = 1,
                                  roll_align = "right",
-                                 flow_value = NA,
+                                 flow_value,
                                  water_year_start = 1,
-                                 start_year = 0,
-                                 end_year = 9999,
-                                 exclude_years = NULL,
+                                 start_year,
+                                 end_year,
+                                 exclude_years,
                                  complete_years = FALSE,
                                  months = 1:12){
   
@@ -56,11 +56,28 @@ calc_flow_percentile <- function(data = NULL,
   ## ARGUMENT CHECKS
   ## ---------------
   
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+
   rolling_days_checks(roll_days, roll_align)
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   complete_yrs_checks(complete_years)
   
+  if (missing(flow_value))        stop("A numeric flow_value is required.", call. = FALSE)
   if (!is.numeric(flow_value))    stop("A numeric flow_value is required.", call. = FALSE)
   if (length(flow_value) > 1)     stop("Only one numeric flow_value is required.", call. = FALSE)
   
