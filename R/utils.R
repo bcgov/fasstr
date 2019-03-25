@@ -31,6 +31,7 @@ flowdata_import <- function(data = NULL, station_number = NULL){
       stop("A HYDAT database has not been downloaded yet using the tidyhydat::download_hydat() function. 
        Download HYDAT before using station_number argument.", call. = FALSE)
     if (!is.character(station_number))  stop("station_number must be a character vector containing HYDAT station number(s).", call. = FALSE)
+    station_number <- toupper(station_number) # make lower-case typos into uppercase
     if (!all(station_number %in% dplyr::pull(suppressMessages(tidyhydat::hy_stations()[1])))) 
       stop("One or more station numbers listed do not have historical daily flows in HYDAT.", call. = FALSE)
     data <- as.data.frame(suppressMessages(tidyhydat::hy_daily_flows(station_number =  station_number)))

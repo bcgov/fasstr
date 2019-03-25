@@ -12,6 +12,7 @@ Updated:
   * Internal coding (MonthName levels coding cleaned up) 
   * Replaced the package writexls with openxls for more functionality
   * Plotting: changed facet wrap labels, changed trending symbols
+  * WSC station numbers with lower-case letters now accepted (08nm116 and 08NM116 both work)
   
 #### Bugs Fixed:
 
