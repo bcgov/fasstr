@@ -5,9 +5,13 @@ Updated:
 
 #### Updates:
 
+  * In compute_full_analysis, a single Excel document is created with all tables and most plots rather than folders upon folders
   * Removed logical "water_year" argument and now "water_year_start" controls the start of year alone (default now 1 for January)
+  * add_date_variables() outputs changed slightly to match new water_year_start argument
+  * Replaced NULL and NA default values for function agruments to nothing, cleaning up documentation.
   * Internal coding (MonthName levels coding cleaned up) 
   * Replaced the package writexls with openxls for more functionality
+  * Plotting: changed facet wrap labels, changed trending symbols
   
 #### Bugs Fixed:
 
@@ -15,7 +19,7 @@ Updated:
   
 #### New:
 
-  * 
+  * testthat functions for testing package (internal usage)
 
 fasstr 0.2.8
 =========================
@@ -24,7 +28,7 @@ Updated: 11 December 2018
 
 #### Updates:
 
-  # README updates
+  * README updates
   * Renamed calc_lt_mad() and calc_lt_percentile() to calc_longterm_mad() and calc_longterm_percentile(), respectively.
   * Changed the plot_missing_dates points and lines to bar plots.
   * changed add_seasons() function from adding two 4 and 2 seasons columns to adding own custom seasons of desired lengths. All subsequent function and documentation updated were also completed.
