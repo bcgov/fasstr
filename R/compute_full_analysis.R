@@ -94,7 +94,7 @@ compute_full_analysis <- function(data,
   if (missing(zyp_alpha)) {
     zyp_alpha = NA
   }
-
+  
   
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
@@ -122,7 +122,7 @@ compute_full_analysis <- function(data,
   # Do this for now, until looping of include_year plots is sorted out
   if (length(station_number) > 1) stop("Only one station_number can be listed.", call. = FALSE)
   
-
+  
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
   
@@ -153,7 +153,7 @@ compute_full_analysis <- function(data,
   # Set up basin_area
   flow_data <- add_basin_area(flow_data, basin_area = basin_area)
   basin_area_stn <- unique(flow_data$Basin_Area_sqkm)[1]
-
+  
   # Get the start and end years of the data to make a list of all included years
   flow_data <- analysis_prep(data = flow_data,
                              water_year_start = water_year_start)
@@ -247,10 +247,10 @@ compute_full_analysis <- function(data,
                                                     water_year_start = water_year_start))
     
     # Write flow data by year plots
-    ts_annual_plot <- suppressWarnings(plot_flow_data(data = flow_data,
-                                                      exclude_years = exclude_years,
-                                                      water_year_start = water_year_start,
-                                                      plot_by_year = TRUE))
+    # ts_annual_plot <- suppressWarnings(plot_flow_data(data = flow_data,
+    #                                                   exclude_years = exclude_years,
+    #                                                   water_year_start = water_year_start,
+    #                                                   plot_by_year = TRUE))
     
     # Write screening plots
     ts_screen_plot <- plot_data_screening(data = flow_data,
@@ -266,7 +266,7 @@ compute_full_analysis <- function(data,
     all_objects <- append(all_objects,
                           list("Screening" = list("Daily_Flows" = flow_data,
                                                   "Daily_Flows_Plot" = ts_full_plot,
-                                                  "Daily_Flows_by_Year_Plot" = ts_annual_plot,
+                                                  # "Daily_Flows_by_Year_Plot" = ts_annual_plot,
                                                   "Flow_Screening" = flow_screening,
                                                   "Flow_Screening_Plot" = ts_screen_plot,
                                                   "Missing_Dates_Plot" = ts_missing_plot)))
@@ -835,7 +835,7 @@ compute_full_analysis <- function(data,
                                              water_year_start = water_year_start,
                                              use_yield = TRUE,
                                              basin_area = basin_area_stn)
-  
+    
     # Write the daily stats plots
     day_stats_plot <- plot_daily_stats(data = flow_data,
                                        exclude_years = exclude_years,
@@ -1111,7 +1111,7 @@ compute_full_analysis <- function(data,
       
     }
   }
-
+  
   ### Low Flow Frequency
   ##########################
   
@@ -1203,38 +1203,157 @@ compute_full_analysis <- function(data,
   
   if (write_to_dir) {
     
+    
+    fn_data <- paste0(ifelse(!is.null(data), 
+                             paste0("data = ", as.character(substitute(data)), 
+                                    ", dates = ", as.character(substitute(Date)),
+                                    ", values = ", as.character(substitute(Value)),
+                                    ", groups = ", as.character(substitute(STATION_NUMBER))),
+                             paste0("station_number = '", station_number, "'")))
+    fn_area <- paste0(ifelse(!is.na(basin_area),
+                             paste0(", basin_area = ", basin_area),
+                             ""))
+    fn_wys <- paste0(", water_year_start = ", water_year_start)
+    fn_startend <- paste0(", start_year = ", start_year, ", end_year = ", end_year)
+    fn_exclude <- paste0(ifelse(!is.null(exclude_years),
+                                paste0(", exclude_years = ", ifelse(length(exclude_years) == 1, 
+                                                                    paste(exclude_years),
+                                                                    paste0("c(",paste(exclude_years, collapse = ","),")"))),
+                                ""))
+    fn_missing <- paste0(", ignore_missing = ", ignore_missing)
+    fn_zyp <- paste0(", zyp_method = '", zyp_method, "'",
+                     ", zyp_alpha = ", ifelse(!is.na(zyp_alpha), zyp_alpha, "NA"))
+    
+    
     analysis_function <- paste0("compute_full_analysis(",
-                                ifelse(!is.null(data), 
-                                       paste0("data = ", as.character(substitute(data)), 
-                                              ", dates = ", as.character(substitute(Date)),
-                                              ", values = ", as.character(substitute(Value)),
-                                              ", groups = ", as.character(substitute(STATION_NUMBER))),
-                                       paste0("station_number = '", station_number, "'")),
-                                ifelse(!is.na(basin_area),
-                                       paste0(", basin_area = ", basin_area),
-                                       ""),
-                                paste0(", water_year_start = ", water_year_start),
-                                paste0(", start_year = ", start_year),
-                                paste0(", end_year = ", end_year),
-                                ifelse(!is.null(exclude_years),
-                                       paste0(", exclude_years = ", ifelse(length(exclude_years) == 1, 
-                                                                           paste(exclude_years),
-                                                                           paste0("c(",paste(exclude_years, collapse = ","),")"))),
-                                       ""),
-                                paste0(", ignore_missing = ", ignore_missing),
-                                ifelse(6 %in% sections,
-                                       paste0(", zyp_method = '", zyp_method, "'",
-                                              ", zyp_alpha = ", ifelse(!is.na(zyp_alpha), zyp_alpha, "NA")),
-                                       ""),
+                                fn_data,
+                                fn_area,
+                                fn_wys,
+                                fn_startend,
+                                fn_exclude,
+                                fn_missing,
+                                ifelse(6 %in% sections, fn_zyp, ""),
                                 ifelse(write_to_dir, 
                                        paste0(", write_to_dir = TRUE",
                                               ", foldername = '", sub("/$","",foldername), "'",
                                               ", plot_filetype = '", plot_filetype, "'")),
-                                paste0(", sections = ", ifelse(length(sections) == 1, 
-                                                               paste(sections),
-                                                               paste0("c(",paste(sections, collapse = ","),")"))),
+                                paste0(", sections = ", 
+                                       ifelse(length(sections) == 1, 
+                                              paste(sections),
+                                              paste0("c(",paste(sections, collapse = ","),")"))),
                                 ")")
+    data_function <- paste0("add_date_variables(",
+                            fn_data,
+                            fn_wys,
+                            ") %>% add_rolling_means() %>% add_basin_area()")
+    screening_function <- paste0("screen_flow_data(",
+                                 fn_data,
+                                 fn_wys,
+                                 fn_startend,
+                                 ")")
+    screeningplot_function <- paste0("plot_data_screening(",
+                                     fn_data,
+                                     fn_wys,
+                                     fn_startend,
+                                     ")")
+    missingingplot_function <- paste0("plot_missing_dates(",
+                                      fn_data,
+                                      fn_wys,
+                                      fn_startend,
+                                      ")")
+    longterm_function <- paste0("calc_longterm_stats(",
+                                fn_data,
+                                fn_wys,
+                                fn_startend,
+                                fn_exclude,
+                                fn_missing,
+                                ")")
+    longtermplot_function <- paste0("plot_longterm_stats(",
+                                    fn_data,
+                                    fn_wys,
+                                    fn_startend,
+                                    fn_exclude,
+                                    fn_missing,
+                                    ", percentiles = 1:99)")
+    durationplot_function <- paste0("plot_flow_duration(",
+                                    fn_data,
+                                    fn_wys,
+                                    fn_startend,
+                                    fn_exclude,
+                                    fn_missing,
+                                    ")")
+    annual_stats_function <- paste0("calc_annual_stats(",
+                                    fn_data,
+                                    fn_wys,
+                                    fn_startend,
+                                    fn_exclude,
+                                    fn_missing,
+                                    ")")
+    annual_plot_function <- paste0("plot_annual_stats(",
+                                   fn_data,
+                                   fn_wys,
+                                   fn_startend,
+                                   fn_exclude,
+                                   fn_missing,
+                                   ")")
+    annual_mean_plot_function <- paste0("plot_annual_means(",
+                                        fn_data,
+                                        fn_wys,
+                                        fn_startend,
+                                        fn_exclude,
+                                        fn_missing,
+                                        ")")
+    annual_vol_function <- paste0("calc_annual_cumulative_stats(",
+                                  fn_data,
+                                  fn_wys,
+                                  fn_startend,
+                                  fn_exclude,
+                                  ", include_seasons = TRUE)")
+    annual_yield_function <- paste0("calc_annual_cumulative_stats(",
+                                    fn_data,
+                                    fn_wys,
+                                    fn_startend,
+                                    fn_exclude,
+                                    ", use_yield = TRUE",
+                                    fn_area,
+                                    ", include_seasons = TRUE)")
+    annual_vol_plot_function <- paste0("plot_annual_cumulative_stats(",
+                                       fn_data,
+                                       fn_wys,
+                                       fn_startend,
+                                       fn_exclude,
+                                       ", include_seasons = TRUE)")
+    annual_yield_plot_function <- paste0("plot_annual_cumulative_stats(",
+                                         fn_data,
+                                         fn_wys,
+                                         fn_startend,
+                                         fn_exclude,
+                                         ", use_yield = TRUE",
+                                         fn_area,
+                                         ", include_seasons = TRUE)")
+
+    fasstr_functions <- list(complete_analysis = analysis_function,
+                             flow_data = data_function,
+                             screening = screening_function,
+                             screening_plot = screeningplot_function,
+                             missing_plot = missingingplot_function,
+                             longterm_stats = longterm_function,
+                             longterm_plot = longtermplot_function,
+                             flow_duration_plot = durationplot_function,
+                             annual_stats = annual_stats_function,
+                             annual_plot = annual_plot_function,
+                             annual_mean_plot = annual_mean_plot_function,
+                             annual_vol_stats = annual_vol_function,
+                             annual_yield_stats = annual_yield_function,
+                             annual_vol_plot = annual_vol_plot_function,
+                             annual_yield_plot = annual_yield_plot_function)
     
+    fasstr_functions <- data.frame("Object" = names(fasstr_functions),
+                                   "Function" = as.character(unname(fasstr_functions)))
+    
+    
+    flow_screening = screen_flow_data(data = flow_data,
+                                      water_year_start = water_year_start)
     ## Create a meta data file of the analysis arguments
     
     # Make a list of all options used in function, plus dates and covnert to a dataframe
@@ -1266,7 +1385,14 @@ compute_full_analysis <- function(data,
               title = paste0("Analysis OverView"),
               col = 1,
               row = 1)
-
+    
+    add_table(wb = output_excel,
+              sheet = overview_sheet,
+              data = fasstr_functions,
+              title = paste0("Functions"),
+              col = 6,
+              row = 1)
+    
     # Create the file with all the sheet
     
     message("** writing analysis results in 'fasstr_analysis.xslx'")

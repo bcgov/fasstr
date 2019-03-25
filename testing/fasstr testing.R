@@ -79,14 +79,24 @@ daily_plots_$plot[[3]]
 
 
 
+data <- tidyhydat::hy_daily_flows("08HB048", start_date = "1973-01-01")
 
-
-
+test <- compute_full_analysis(data = data,
+                      water_year_start = 1, 
+                      start_year = 1989, 
+                      end_year = 2015, 
+                      ignore_missing = FALSE, 
+                      write_to_dir = TRUE, 
+                      foldername = 'MissTest/',
+                      plot_filetype = 'pdf', 
+                      sections = 1:7,
+                      exclude_years = c(1991, 1995:1997))
 
 
 fasstr::write_flow_data(station_number = "08HB048")
 
-test <- compute_full_analysis(station_number = "08NM116", write_to_dir = T,, foldername = "MissTest", start_year = 1989)
+test <- compute_full_analysis(station_number = "08NM116", write_to_dir = T, foldername = "MissTest", start_year = 1989,
+                              sections = 1)
 
 data <- tidyhydat::hy_daily_flows(station_number = "08HB048")
 data2 <- analysis_prep(data,  1)
