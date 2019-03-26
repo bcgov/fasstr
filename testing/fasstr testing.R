@@ -2,7 +2,7 @@
 
 devtools::document()
 install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
-install.packages("C:/Users/jgoetz/R/fasstr_devel",repos = NULL, type = "source", build_vignettes = TRUE)
+install.packages("C:/Users/jgoetz/R/fasstr_devel",repos = NULL, type = "source", build_vignettes = FALSE)
 devtools::install_github("bcgov/fasstr", ref = "devel",  force = TRUE)
 devtools::install_github("bcgov/fasstr",  build_vignettes = TRUE, force = TRUE)
 remotes::install_github("bcgov/fasstr",force = TRUE)
@@ -12,8 +12,22 @@ remotes::install_github("bcgov/fasstr",force = TRUE)
 
 flow_data <- add_date_variables(station_number = "08HB048")
 
+data <- add_basin_area(station_number = c("08HB048","08NM116"), basin_area = c("08nm116" = 800))
 
 
+testt <- add_cumulative_yield(station_number = "08NM116") %>% 
+  add_date_variables() %>% 
+  group_by(WaterYear) %>% 
+  summarize(Sum = max(Cumul_Yield_mm))
+
+dataa <- fill_missing_dates(station_number = "08NM116") %>% 
+  add_date_variables() %>% 
+  add_basin_area() %>% 
+  mutate(Value = Value * 86400 / 1000 / Basin_Area_sqkm) %>% 
+  group_by(WaterYear) %>% 
+  summarise(Sum = sum(Value, na.rm = FALSE))
+
+any(testt$Test == 0 | testt$Test == 1)
 
 
 
