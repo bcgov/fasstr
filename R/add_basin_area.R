@@ -21,8 +21,8 @@
 #'    
 #'    (2) A single numeric value to apply to all observations.
 #'    
-#'    (3) List each basin area for each group/station in groups (can override HYDAT value) as such \code{c("08NM116" = 795, 
-#'    "08NM242" = 10)}. Group not listed will result in NA basin area.
+#'    (3) List each basin area for each group/station in groups (can override HYDAT value if listed) as such \code{c("08NM116" = 795, 
+#'    "08NM242" = 10)}. If group is not listed the HYDAT area will be applied if it exists, otherwise it will be NA.
 #'    
 #' @return A tibble data frame of the original source data with an additional column:
 #'   \item{Basin_Area_sqkm}{area of upstream drainage basin area, in square kilometres}
@@ -80,7 +80,7 @@ add_basin_area <- function(data,
     basin_stations <- data.frame(STATION_NUMBER = unique(flow_data$STATION_NUMBER), stringsAsFactors = FALSE)
     
     # Extract the basin areas and merge with the stations
-    basin_HYDAT <- suppressMessages(tidyhydat::hy_stations(station_number = basin_stations$STATION_NUMBER))
+    basin_HYDAT <- suppressMessages(tidyhydat::hy_stations(station_number = toupper(basin_stations$STATION_NUMBER)))
     basin_HYDAT <- dplyr::select(basin_HYDAT, STATION_NUMBER, Basin_Area_sqkm = DRAINAGE_AREA_GROSS)
     basin_area_table <- dplyr::right_join(basin_HYDAT, basin_stations, by = "STATION_NUMBER")
   }
@@ -102,12 +102,28 @@ add_basin_area <- function(data,
     } else {
       
       # Warning if number of station.groups dont match the number of supplied basin areas
-      if(length(basin_area) != length(unique(flow_data$STATION_NUMBER)) | !all(names(basin_area) %in% unique(flow_data$STATION_NUMBER))) 
+      if(length(basin_area) != length(unique(flow_data$STATION_NUMBER)) | !all(toupper(names(basin_area)) %in% unique(flow_data$STATION_NUMBER))) 
         warning("The supplied groups/stations and basin_area values do not match the groups/stations of STATION_NUMBERS in the flow data. Only those that match will be applied.", call. = FALSE)
       #if(!all(names(basin_area) %in% unique(flow_data$STATION_NUMBER))) warning("All STATION_NUMBERS listed in basin_area do not match those in the flow data. Only those that match will be applied.")
       
+      # Create a dataframe with a column of stations
+      basin_stations <- data.frame(STATION_NUMBER = toupper(unique(flow_data$STATION_NUMBER)), stringsAsFactors = FALSE)
+      
+      # Extract the basin areas and merge with the stations
+      basin_HYDAT <- suppressMessages(tidyhydat::hy_stations(station_number = toupper(basin_stations$STATION_NUMBER)))
+      basin_HYDAT <- dplyr::select(basin_HYDAT, STATION_NUMBER, Basin_Area_sqkm = DRAINAGE_AREA_GROSS)
+      basin_area_table <- dplyr::right_join(basin_HYDAT, basin_stations, by = "STATION_NUMBER")
+      
       # Make a dataframe and apply basin areas to all groups/stations
-      basin_area_table <- data.frame(STATION_NUMBER = names(basin_area), Basin_Area_sqkm = basin_area, stringsAsFactors = FALSE)
+      basin_area_table2 <- data.frame(STATION_NUMBER = toupper(names(basin_area)), Basin_Area_sqkm2 = basin_area, stringsAsFactors = FALSE)
+      basin_area_table <- suppressMessages(dplyr::left_join(basin_area_table, basin_area_table2))
+      
+      basin_area_table <- dplyr::mutate(basin_area_table,
+                                         Basin_Area_sqkm = ifelse(STATION_NUMBER %in% toupper(names(basin_area)), Basin_Area_sqkm2, Basin_Area_sqkm))
+      basin_area_table <- dplyr::select(basin_area_table, -Basin_Area_sqkm2)
+                                        
+      
+      
     }
   }
   
