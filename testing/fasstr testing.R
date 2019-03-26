@@ -79,17 +79,19 @@ daily_plots_$plot[[3]]
 
 
 
-data <- tidyhydat::hy_daily_flows("08HB048", start_date = "1973-01-01")
+flow_data <- tidyhydat::hy_daily_flows("08HB048", start_date = "1973-01-01") %>% 
+  dplyr::rename(Flow = Value)
 
-test <- compute_full_analysis(data = data,
+test <- compute_full_analysis(data = flow_data, values = Flow,
+ # station_number = "08HB048",
                       water_year_start = 1, 
                       start_year = 1989, 
                       end_year = 2015, 
                       ignore_missing = FALSE, 
                       write_to_dir = TRUE, 
-                      foldername = 'MissTest/',
+                      foldername = 'Carntest2/',
                       plot_filetype = 'pdf', 
-                      sections = 1:7,
+                      sections = 4,
                       exclude_years = c(1991, 1995:1997))
 
 

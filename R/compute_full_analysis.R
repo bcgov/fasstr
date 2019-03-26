@@ -1206,9 +1206,12 @@ compute_full_analysis <- function(data,
     
     fn_data <- paste0(ifelse(!is.null(data), 
                              paste0("data = ", as.character(substitute(data)), 
-                                    ", dates = ", as.character(substitute(Date)),
-                                    ", values = ", as.character(substitute(Value)),
-                                    ", groups = ", as.character(substitute(STATION_NUMBER))),
+                                    ifelse(as.character(substitute(dates)) != "Date", 
+                                                  paste0(", dates = '", as.character(substitute(dates)), "'"), ""),
+                                    ifelse(as.character(substitute(values)) != "Value",
+                                                  paste0(", values = '", as.character(substitute(values)), "'"), ""),
+                                    ifelse(as.character(substitute(groups)) != "STATION_NUMBER",
+                                                  paste0(", groups = '", as.character(substitute(groups)), "'"), "")),
                              paste0("station_number = '", station_number, "'")))
     fn_area <- paste0(ifelse(!is.na(basin_area),
                              paste0(", basin_area = ", basin_area),
@@ -1331,7 +1334,21 @@ compute_full_analysis <- function(data,
                                          ", use_yield = TRUE",
                                          fn_area,
                                          ", include_seasons = TRUE)")
-
+    annual_lows_function <- paste0("calc_annual_lowflows(",
+                                   fn_data,
+                                   fn_wys,
+                                   fn_startend,
+                                   fn_exclude,
+                                   fn_missing,
+                                   ")")
+    annual_lows_plot_function <- paste0("plot_annual_lowflows(",
+                                        fn_data,
+                                        fn_wys,
+                                        fn_startend,
+                                        fn_exclude,
+                                        fn_missing,
+                                        ")")
+    
     fasstr_functions <- list(complete_analysis = analysis_function,
                              flow_data = data_function,
                              screening = screening_function,
@@ -1346,7 +1363,9 @@ compute_full_analysis <- function(data,
                              annual_vol_stats = annual_vol_function,
                              annual_yield_stats = annual_yield_function,
                              annual_vol_plot = annual_vol_plot_function,
-                             annual_yield_plot = annual_yield_plot_function)
+                             annual_yield_plot = annual_yield_plot_function,
+                             annual_lows = annual_lows_function,
+                             annual_lows_plot = annual_lows_plot_function)
     
     fasstr_functions <- data.frame("Object" = names(fasstr_functions),
                                    "Function" = as.character(unname(fasstr_functions)))
