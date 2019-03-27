@@ -56,11 +56,6 @@ test_that("add_rolling_means restart if missing data",{
                 all(is.na(data[(which.min(!is.na(data$Q3Day))):(which.min(!is.na(data$Q3Day))+n_days-2),6])))
 })
 
-test_that("add_rolling_means restart for each group",{
-  skip_on_cran()
-  skip_on_travis()
-})
-
 # Function modifiers
 
 test_that("add_rolling_means alight right is correct",{
