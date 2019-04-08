@@ -127,34 +127,36 @@ compute_full_analysis <- function(data,
   ## -------------------------------
   
   # Check if data is provided and import it
-  flow_data <- flowdata_import(data = data, 
-                               station_number = station_number)
+  flow_data_unfiltered <- flowdata_import(data = data, 
+                                          station_number = station_number)
   
   # Save the original columns (to check for STATION_NUMBER col at end) and ungroup if necessary
-  orig_cols <- names(flow_data)
-  flow_data <- dplyr::ungroup(flow_data)
+  orig_cols <- names(flow_data_unfiltered)
+  flow_data_unfiltered <- dplyr::ungroup(flow_data_unfiltered)
   
   # Check and rename columns
-  flow_data <- format_all_cols(data = flow_data,
-                               dates = as.character(substitute(dates)),
-                               values = as.character(substitute(values)),
-                               groups = as.character(substitute(groups)),
-                               rm_other_cols = TRUE)
+  flow_data_unfiltered <- format_all_cols(data = flow_data_unfiltered,
+                                          dates = as.character(substitute(dates)),
+                                          values = as.character(substitute(values)),
+                                          groups = as.character(substitute(groups)),
+                                          rm_other_cols = TRUE)
   
-  if (all(flow_data$STATION_NUMBER == "XXXXXXX")) {
-    flow_data <- dplyr::select(flow_data, -STATION_NUMBER)
+  if (all(flow_data_unfiltered$STATION_NUMBER == "XXXXXXX")) {
+    flow_data_unfiltered <- dplyr::select(flow_data_unfiltered, -STATION_NUMBER)
   }
   
   # Data setup
-  flow_data <- fill_missing_dates(data = flow_data, water_year_start = water_year_start)
-  flow_data <- add_date_variables(data = flow_data, water_year_start = water_year_start)
-  flow_data <- add_rolling_means(data = flow_data)
+  flow_data_unfiltered <- fill_missing_dates(data = flow_data_unfiltered, water_year_start = water_year_start)
+  flow_data_unfiltered <- add_date_variables(data = flow_data_unfiltered, water_year_start = water_year_start)
+  flow_data_unfiltered <- add_rolling_means(data = flow_data_unfiltered)
   
   # Set up basin_area
-  flow_data <- add_basin_area(flow_data, basin_area = basin_area)
-  basin_area_stn <- unique(flow_data$Basin_Area_sqkm)[1]
+  flow_data_unfiltered <- add_basin_area(flow_data_unfiltered, basin_area = basin_area)
+  basin_area_stn <- unique(flow_data_unfiltered$Basin_Area_sqkm)[1]
   
   # Get the start and end years of the data to make a list of all included years
+  flow_data <- flow_data_unfiltered
+  
   flow_data <- analysis_prep(data = flow_data,
                              water_year_start = water_year_start)
   if (start_year < min(flow_data$WaterYear)) {
@@ -1217,14 +1219,17 @@ compute_full_analysis <- function(data,
     fn_area <- paste0(ifelse(!is.na(basin_area),
                              paste0(", basin_area = ", basin_area),
                              ""))
-    fn_wys <- paste0(", water_year_start = ", water_year_start)
-    fn_startend <- paste0(", start_year = ", start_year, ", end_year = ", end_year)
+    fn_wys <- ifelse(water_year_start != 1, paste0(", water_year_start = ", water_year_start), "")
+    fn_startend <- paste0(ifelse(start_year != min(flow_data_unfiltered$WaterYear),
+                                 paste0(", start_year = ", start_year), ""), 
+                          ifelse(end_year != max(flow_data_unfiltered$WaterYear),
+                                 paste0(", end_year = ", end_year), ""))
     fn_exclude <- paste0(ifelse(!is.null(exclude_years),
                                 paste0(", exclude_years = ", ifelse(length(exclude_years) == 1, 
                                                                     paste(exclude_years),
                                                                     paste0("c(",paste(exclude_years, collapse = ","),")"))),
                                 ""))
-    fn_missing <- paste0(", ignore_missing = ", ignore_missing)
+    fn_missing <- ifelse(ignore_missing, paste0(", ignore_missing = TRUE"), "")
     fn_zyp <- paste0(", zyp_method = '", zyp_method, "'",
                      ", zyp_alpha = ", ifelse(!is.na(zyp_alpha), zyp_alpha, "NA"))
     
@@ -1255,6 +1260,16 @@ compute_full_analysis <- function(data,
                                  fn_wys,
                                  fn_startend,
                                  ")")
+    openxlsx::writeComment(wb = output_excel,
+                           sheet = screening_sheet,
+                           col = 1,
+                           row = 1,
+                           comment = openxlsx::createComment(comment = screening_function,
+                                                             visible = FALSE,
+                                                             width = 8,
+                                                             height = 2))
+    
+    
     screeningplot_function <- paste0("plot_data_screening(",
                                      fn_data,
                                      fn_wys,
