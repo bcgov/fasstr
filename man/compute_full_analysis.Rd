@@ -8,7 +8,7 @@ compute_full_analysis(data, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number, sections = 1:7, basin_area,
   water_year_start = 1, start_year, end_year, exclude_years,
   ignore_missing = FALSE, zyp_method = "yuepilon", zyp_alpha,
-  write_to_dir = FALSE, foldername, plot_filetype = "pdf")
+  write_to_dir = FALSE, file_name, plot_filetype = "pdf")
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -67,7 +67,7 @@ Only required if section 6 is included. Default \code{"yuepilon"}.}
 
 \item{write_to_dir}{Logical value indicating if all results are to also be written into a directory. Default \code{FALSE}.}
 
-\item{foldername}{Name of folder to create on disk (if it does not exist) to create all folders and save tables and plots.}
+\item{file_name}{Name of Excel Workbook (and folder for plots if necessary) to create on drive to write all results.}
 
 \item{plot_filetype}{Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
 If type is not "pdf" then individual plots will be created instead of a combined PDF. Default \code{"pdf"}.}
@@ -80,7 +80,7 @@ A list of lists of tibble data frames and ggplot2 objects from various fasstr fu
 Calculates tables and plots of a suite of statistics from various fasstr functions. The statistics are grouped into
    7 sections (see below) which are stored in lists in the created object. Due to the number of tables and plots to be made, this 
    function may take several minutes to complete. Can also directly write all plots and tables directly into a directory
-   ('foldername' argument) using the 'write_to_dir' argument.
+   ('file_name' argument) using the 'write_to_dir' argument.
    If using \code{ignore_missing = FALSE} (default) and there is missing data, some tables and plots may be empty
    and produce warnings. Use \code{ignore_missing = TRUE} to ignore the missing values or filter your data to complete years.
 }
