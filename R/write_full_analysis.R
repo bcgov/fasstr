@@ -56,7 +56,7 @@ write_full_analysis <- function(data,
   
   ## ARGUMENT CHECKS
   ## ---------------
-  
+
   if (missing(data)) {
     data = NULL
   }
@@ -301,7 +301,11 @@ write_full_analysis <- function(data,
     data_function <- paste0("add_date_variables(",
                             fn_data,
                             fn_wys,
-                            ") %>% add_rolling_means() %>% add_basin_area()")
+                            ") %>% add_rolling_means() %>% add_basin_area(", 
+                            paste0(ifelse(!is.na(basin_area),
+                                          paste0("basin_area = ", basin_area),
+                                          "")),
+                            ")")
     data_plot_function <- paste0("plot_flow_data(",
                                  fn_data,
                                  fn_wys,

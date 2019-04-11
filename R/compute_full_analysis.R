@@ -60,8 +60,7 @@ compute_full_analysis <- function(data,
                                   zyp_method = 'yuepilon',
                                   zyp_alpha){
   
-  message("* this may take a few moments...")
-  
+
   ## ARGUMENT CHECKS
   ## ---------------
   
@@ -106,6 +105,7 @@ compute_full_analysis <- function(data,
   # Do this for now, until looping of include_year plots is sorted out
   if (length(station_number) > 1) stop("Only one station_number can be listed.", call. = FALSE)
   
+  message("* this may take a few moments...")
   
   ## FLOW DATA CHECKS AND FORMATTING
   ##########################
