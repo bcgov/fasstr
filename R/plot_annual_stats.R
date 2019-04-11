@@ -75,6 +75,9 @@ plot_annual_stats <- function(data,
   if (missing(percentiles)) {
     percentiles = NA
   }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
   
   log_discharge_checks(log_discharge) 
   include_title_checks(include_title)

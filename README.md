@@ -3,7 +3,8 @@
 fasstr <img src="tools/readme/fasstr.PNG" align="right" />
 ==========================================================
 
-<a id="devex-badge" rel="Delivery" href="https://github.com/BCDevExchange/assets/blob/master/README.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a> [![Travis build status](https://travis-ci.org/bcgov/fasstr.svg?branch=master)](https://travis-ci.org/bcgov/fasstr)
+<!-- <a id="devex-badge" rel="Delivery" href="https://github.com/BCDevExchange/assets/blob/master/README.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a> -->
+[![Travis build status](https://travis-ci.org/bcgov/fasstr.svg?branch=master)](https://travis-ci.org/bcgov/fasstr)
 
 </div>
 The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http://www.r-project.org) functions to clean/prepare, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
@@ -54,18 +55,13 @@ All functions in `fasstr` require a daily mean streamflow dataset from one or mo
 
 Using the `data` option, a data frame of daily data containing columns of dates (YYYY-MM-DD in date format), values (mean daily discharge in cubic metres per second in numeric format), and, optionally, grouping identifiers (character string of station names or numbers) is called. By default the functions will look for columns identified as 'Date', 'Value', and 'STATION\_NUMBER', respectively, to be compatible with the `tidyhydat` defaults, but columns of different names can be identified using the `dates`, `values`, `groups` column arguments (ex. `values = Yield_mm`). The following is an example of an appropriate dataframe (STATION\_NUMBER not required):
 
-``` r
-head(data)
-#> # A tibble: 6 x 3
-#>   STATION_NUMBER Date       Value
-#>   <chr>          <date>     <dbl>
-#> 1 08NM116        1949-04-01  1.13
-#> 2 08NM116        1949-04-02  1.53
-#> 3 08NM116        1949-04-03  2.07
-#> 4 08NM116        1949-04-04  2.07
-#> 5 08NM116        1949-04-05  2.21
-#> 6 08NM116        1949-04-06  2.21
-```
+    #>   STATION_NUMBER       Date Value
+    #> 1        08NM116 1949-04-01  1.13
+    #> 2        08NM116 1949-04-02  1.53
+    #> 3        08NM116 1949-04-03  2.07
+    #> 4        08NM116 1949-04-04  2.07
+    #> 5        08NM116 1949-04-05  2.21
+    #> 6        08NM116 1949-04-06  2.21
 
 Alternatively, you can directly extract a flow data set directly from a HYDAT database by listing station numbers in the `station_number` argument (ex. `station_number = "08NM116"` or `station_number = c("08NM116", "08NM242")`) while leavind the data arguments blank. A data frame of daily streamflow data for all stations listed will be extracted using `tidyhydat`. Use the following function to download a HYDAT database:
 
