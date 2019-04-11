@@ -78,6 +78,13 @@ plot_daily_stats <- function(data,
   if (missing(exclude_years)) {
     exclude_years = NULL
   }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+
   
   log_discharge_checks(log_discharge) 
   include_year_checks(include_year)

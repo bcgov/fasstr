@@ -52,17 +52,17 @@ When using the function all of the objects will be saved within a list with a fi
 The following is an example of how to run the function and then how extract individual objects from the list:
 
 ``` {r, eval=FALSE}
-mission_creek <- compute_full_analysis(station_number = "08NM116",
-                                       start_year = 1981,
-                                       end_year = 2000)
-
-screening_plot <- mission_creek$Screening$Flow_Screening_plot
-
-daily_stats <- mission_creek$Daily$Daily_Summary_Stats
-
-daily_stats_with_1985 <- mission_creek$Daily$Daily_Summary_Stats_with_Years$Daily_Stats_1985
-
-trends_results <- mission_creek$Trending$Annual_Trends_Results
+# mission_creek <- compute_full_analysis(station_number = "08NM116",
+#                                        start_year = 1981,
+#                                        end_year = 2000)
+# 
+# screening_plot <- mission_creek$Screening$Flow_Screening_plot
+# 
+# daily_stats <- mission_creek$Daily$Daily_Summary_Stats
+# 
+# daily_stats_with_1985 <- mission_creek$Daily$Daily_Summary_Stats_with_Years$Daily_Stats_1985
+# 
+# trends_results <- mission_creek$Trending$Annual_Trends_Results
 
 ```
 
@@ -74,24 +74,24 @@ This function also provides a option to directly save all results into a folder,
 The following is an example of how to save all files on your computer:
 
 ``` {r, eval=FALSE}
-mission_creek <- compute_full_analysis(station_number = "08NM116",
-                                       start_year = 1981,
-                                       end_year = 2000,
-                                       write_to_dir = TRUE,
-                                       foldername = "Mission Creek")
+# mission_creek <- compute_full_analysis(station_number = "08NM116",
+#                                        start_year = 1981,
+#                                        end_year = 2000,
+#                                        write_to_dir = TRUE,
+#                                        foldername = "Mission Creek")
 
 ```
 
 The following is an example of how to save all files on your computer, with custom file types:
 
 ``` {r, eval=FALSE}
-mission_creek <- compute_full_analysis(station_number = "08NM116",
-                                       start_year = 1981,
-                                       end_year = 2000,
-                                       write_to_dir = TRUE,
-                                       foldername = "Mission Creek",
-                                       plot_filetype = "pdf",
-                                       table_filetype = "csv")
+# mission_creek <- compute_full_analysis(station_number = "08NM116",
+#                                        start_year = 1981,
+#                                        end_year = 2000,
+#                                        write_to_dir = TRUE,
+#                                        foldername = "Mission Creek",
+#                                        plot_filetype = "pdf",
+#                                        table_filetype = "csv")
 
 ```
 
@@ -187,7 +187,7 @@ head(as.data.frame(fill_missing_dates(station_number = "08NM116") %>%
                     add_date_variables() %>%
                     add_rolling_means() %>%
                     add_basin_area() %>% 
-                    filter(Year >= 1990, Year <= 2001) 
+                    filter(WaterYear >= 1990, WaterYear <= 2001) 
 ))
 ```
 

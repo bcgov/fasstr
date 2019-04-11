@@ -76,6 +76,15 @@ plot_daily_cumulative_stats <- function(data,
   if (missing(basin_area)) {
     basin_area = NA
   }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
   
   log_discharge_checks(log_discharge) 
   include_year_checks(include_year)

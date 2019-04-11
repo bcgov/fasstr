@@ -61,6 +61,15 @@ plot_annual_means <- function(data,
   if (missing(station_number)) {
     station_number = NULL
   }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
   
   include_title_checks(include_title)
 

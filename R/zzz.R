@@ -77,7 +77,10 @@
           "Min_30_Day",
           "AnalysisMonth",
           "Seasons_temp",
-          "Season")
+          "Season",
+          "Basin_Area_sqkm2",
+          "Basin_Area_sqkm",
+          "CalendarYear")
       )
     invisible()
   }
