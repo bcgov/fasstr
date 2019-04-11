@@ -14,10 +14,11 @@ Updated:
   * Plotting: changed facet wrap labels, changed trending symbols
   * WSC station numbers with lower-case letters now accepted (08nm116 and 08NM116 both work)
   * basin_area argument as list now will default to HYDAT area if not listed, otherwise NA
+  * Return Period axis has returned to the frequency analysis plot
   
 #### Bugs Fixed:
 
-  * 
+  * No warning now in annual functions if NA values produced for years listed in "exclude_years" argument
   
 #### New:
 

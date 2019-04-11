@@ -159,7 +159,8 @@ calc_annual_flow_timing <- function(data,
   }
   
   # Give warning if any NA values
-  missing_complete_yr_warning(timing_stats[, 3:ncol(timing_stats)])
+  missing_test <- dplyr::filter(timing_stats, !(Year %in% exclude_years))
+  missing_complete_yr_warning(missing_test[, 3:ncol(missing_test)])
   
   
   # Recheck if station_number was in original flow_data and rename or remove as necessary

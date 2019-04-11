@@ -216,7 +216,8 @@ calc_annual_cumulative_stats <- function(data,
   }
   
   # Give warning if any NA values
-  missing_complete_yr_warning(annual_stats[, 3:ncol(annual_stats)])
+  missing_test <- dplyr::filter(annual_stats, !(Year %in% exclude_years))
+  missing_complete_yr_warning(missing_test[, 3:ncol(missing_test)])
   
   
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary

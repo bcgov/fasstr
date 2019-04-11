@@ -245,16 +245,18 @@ calc_all_annual_stats <- function(data,
   
   
   # Give warning if any NA values or no basin areas
-  if ( anyNA(dplyr::select(all_stats, -dplyr::contains("Yield"))) & 
-       all(is.na(dplyr::select(all_stats, dplyr::contains("Yield"))))) 
+  missing_test <- dplyr::filter(all_stats, !(Year %in% exclude_years))
+  
+  if ( anyNA(dplyr::select(missing_test, -dplyr::contains("Yield"))) & 
+       all(is.na(dplyr::select(missing_test, dplyr::contains("Yield"))))) 
     warning("No basin area values provided or extracted from HYDAT, and one or more calculations included missing values and NA's were produced. Provide a basin_area if desired and/or filter data for complete years or months, or use to ignore_missing = TRUE to ignore missing values.", call. = FALSE)
   
-  if ( !anyNA(dplyr::select(all_stats, -dplyr::contains("Yield"))) & 
-       all(is.na(dplyr::select(all_stats, dplyr::contains("Yield"))))) 
+  if ( !anyNA(dplyr::select(missing_test, -dplyr::contains("Yield"))) & 
+       all(is.na(dplyr::select(missing_test, dplyr::contains("Yield"))))) 
     warning("No basin area values provided or extracted from HYDAT and NA's were produced for all 'Yield' calculations. Use basin_area argument to provide one if desired.", call. = FALSE)
   
-  if ( anyNA(all_stats[,3:ncol(all_stats)]) & 
-       !all(is.na(dplyr::select(all_stats, dplyr::contains("Yield"))))) 
+  if ( anyNA(missing_test[,3:ncol(missing_test)]) & 
+       !all(is.na(dplyr::select(missing_test, dplyr::contains("Yield"))))) 
     warning("One or more calculations included missing values and NA's were produced. Filter data for complete years or months, or use to ignore_missing = TRUE to ignore missing values.", call. = FALSE)
   
   

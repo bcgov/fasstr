@@ -205,7 +205,8 @@ calc_monthly_stats <- function(data,
   monthly_stats <- with(monthly_stats, monthly_stats[order(STATION_NUMBER, Year),])
   
   # Give warning if any NA values
-  missing_values_warning(monthly_stats[, 4:ncol(monthly_stats)])
+  missing_test <- dplyr::filter(monthly_stats, !(Year %in% exclude_years))
+  missing_values_warning(missing_test[, 4:ncol(missing_test)])
   
 
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary

@@ -174,7 +174,8 @@ calc_annual_lowflows <- function(data,
   }
   
   # Give warning if any NA values
-  missing_values_warning(lowflow_stats[, 3:ncol(lowflow_stats)])
+  missing_test <- dplyr::filter(lowflow_stats, !(Year %in% exclude_years))
+  missing_values_warning(missing_test[, 3:ncol(missing_test)])
   
   
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
