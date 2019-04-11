@@ -211,13 +211,11 @@ compute_frequency_analysis <- function(data,
     ggplot2::geom_point()+
     ggplot2::xlab("Probability")+
     ggplot2::scale_x_continuous(trans = scales::probability_trans("norm", lower.tail = FALSE),
-                                breaks = prob_scale_points#,
-                                # sec.axis = ggplot2::sec_axis(trans = ~1/.,
-                                #                              name = 'Return Period',
-                                #                              breaks = c(1.01,1.1,2,5,10,20,100,1000),
-                                #                              labels = function(x){ifelse(x < 2, x, round(x,0))}
-                                #                             )
-                                )+
+                                breaks = prob_scale_points,
+                                sec.axis = ggplot2::dup_axis(name = 'Return Period',
+                                                             labels = function(x){ifelse(1/x < 2, round(1/x,2), round(1/x,0))}
+                                )
+    )+
     ggplot2::scale_color_brewer(palette = "Set1") +
     ggplot2::theme_bw() +
     ggplot2::labs(color = paste0('Events')) +    
