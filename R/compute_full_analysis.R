@@ -422,6 +422,7 @@ compute_full_analysis <- function(data,
     # Create the daily stats plots
     daily_plots_table <- dplyr::group_by(flow_data, WaterYear)
     daily_plots_table <- tidyr::nest(daily_plots_table)
+    daily_plots_table <- dplyr::filter(daily_plots_table, !(WaterYear %in% exclude_years))
     daily_plots_table <- dplyr::mutate(daily_plots_table,
                                        plot = purrr::map(WaterYear, 
                                                          ~suppressWarnings(
@@ -439,6 +440,7 @@ compute_full_analysis <- function(data,
     
     daily_vol_table <- dplyr::group_by(flow_data, WaterYear)
     daily_vol_table <- tidyr::nest(daily_vol_table)
+    daily_vol_table <- dplyr::filter(daily_vol_table, !(WaterYear %in% exclude_years))
     daily_vol_table <- dplyr::mutate(daily_vol_table,
                                      plot = purrr::map(WaterYear, 
                                                        ~suppressWarnings(
@@ -455,6 +457,7 @@ compute_full_analysis <- function(data,
     
     daily_yield_table <- dplyr::group_by(flow_data, WaterYear)
     daily_yield_table <- tidyr::nest(daily_yield_table)
+    daily_yield_table <- dplyr::filter(daily_yield_table, !(WaterYear %in% exclude_years))
     daily_yield_table <- dplyr::mutate(daily_yield_table,
                                        plot = purrr::map(WaterYear, 
                                                          ~suppressWarnings(
