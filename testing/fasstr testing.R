@@ -1,7 +1,7 @@
 
 
 devtools::document()
-install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
+#install.packages("/Users/jongoetz/Documents/R/fasstr devel", repos = NULL, type = "source")
 install.packages("C:/Users/jgoetz/R/fasstr_devel",repos = NULL, type = "source", build_vignettes = FALSE)
 devtools::install_github("bcgov/fasstr", ref = "devel",  force = TRUE)
 devtools::install_github("bcgov/fasstr",  build_vignettes = TRUE, force = TRUE)
@@ -96,23 +96,36 @@ daily_plots_$plot[[3]]
 flow_data <- tidyhydat::hy_daily_flows("08HB048", start_date = "1973-01-01") %>% 
   dplyr::rename(Flow = Value)
 
-test <- compute_full_analysis(data = flow_data, values = Flow,
- # station_number = "08HB048",
+test <- fasstr::compute_full_analysis(#data = flow_data, values = Flow,
+  station_number = "08HB048",
                       water_year_start = 1, 
-                      start_year = 1989, 
-                      end_year = 2015, 
+                      start_year = 1973, 
+                      #end_year = 2015, 
                       ignore_missing = FALSE, 
-                      write_to_dir = TRUE, 
-                      foldername = 'Carntest2/',
-                      plot_filetype = 'pdf', 
-                      sections = 4,
-                      exclude_years = c(1991, 1995:1997))
+                      #write_to_dir = FALSE, 
+                      #file_name =  'Carnation Creek',
+                      #plot_filetype = 'pdf', 
+                      analyses = 1:7,
+                      exclude_years = c(1991, 1995:1997)
+  )
 
+test <- fasstr::write_full_analysis(#data = flow_data, values = Flow,
+  station_number = "08HB048",
+  water_year_start = 1, 
+  start_year = 1973, 
+  #end_year = 2015, 
+  ignore_missing = FALSE, 
+  #write_to_dir = FALSE, 
+  file_name =  'Carnation Creek',
+  #plot_filetype = 'pdf', 
+  analyses = 1,
+  exclude_years = c(1991, 1995:1997)
+)
 
 fasstr::write_flow_data(station_number = "08HB048")
 
 test <- compute_full_analysis(station_number = "08NM116", write_to_dir = T, foldername = "MissTest", start_year = 1989,
-                              sections = 1)
+                              analyses = 1)
 
 data <- tidyhydat::hy_daily_flows(station_number = "08HB048")
 data2 <- analysis_prep(data,  1)
@@ -150,7 +163,7 @@ plot_flow_duration(station_number = "08HB048", start_year = 1973)
 t2 <- Sys.time()
 t2-t1
 
-all <- compute_full_analysis(station_number = "08HB048", sections = 3)
+all <- compute_full_analysis(station_number = "08HB048", analyses = 3)
 
 s <- plot_annual_cumulative_stats(station_number = "08HB048", include_seasons = TRUE)
 s <- calc_annual_cumulative_stats(station_number = "08HB048", include_seasons = TRUE, 
@@ -185,7 +198,7 @@ add_daily_volume(station_number = "08HB048") %>%
 
 library(fasstr)
 
-test <- compute_full_analysis(station_number = "08HB048", start_year = 1973, sections = 5)
+test <- compute_full_analysis(station_number = "08HB048", start_year = 1973, analyses = 5)
 
 low_flows <- calc_annual_lowflows(station_number = "08NM116", 
                                   start_year = 1980, 
@@ -354,7 +367,7 @@ t <- screen_flow_data(station_number = "08LE020")
 falkland_trend <- fasstr::compute_full_analysis(station_number = "08LE020", water_year = TRUE,
                                           start_year = 1967, end_year = 2015,
                                           write_to_dir = T)#, foldername = "08LE020",
-                                          #sections = 6, zyp_alpha = 0.05)
+                                          #analyses = 6, zyp_alpha = 0.05)
 
 
 
@@ -405,7 +418,7 @@ test <- compute_full_analysis(data = flow_data,
                                #exclude_years = c(1982:1985, 1987),
                               # table_filetype = "csv",
                                #plot_filetype = "png",,
-                             #  sections = c(1),
+                             #  analyses = c(1),
                                write_to_dir = TRUE,
                                foldername = "Bertrand",
                                ignore_missing = F,
@@ -414,7 +427,7 @@ end_time <- Sys.time()
 
 
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08HB048") %>% dplyr::select(-STATION_NUMBER)
-test <- compute_full_analysis(data = flow_data, ignore_missing = TRUE, foldername = "TEST FOLDER", write_to_dir = T, sections = 3, plot_filetype = "pdf")
+test <- compute_full_analysis(data = flow_data, ignore_missing = TRUE, foldername = "TEST FOLDER", write_to_dir = T, analyses = 3, plot_filetype = "pdf")
 
 test <- compute_full_analysis(station_number = "08HB048", foldername = "Carnation", write_to_dir = F, start_year = 1973)
 end_time <- Sys.time()
@@ -507,7 +520,7 @@ x <- list(data = NULL,
               groups = as.character(substitute(STATION_NUMBER)),
               station_number = NULL,
               foldername = NULL,
-              sections = 1:7,
+              analyses = 1:7,
               table_filetype = "xlsx",
               plot_filetype = "png",
               basin_area = NA,
@@ -535,7 +548,7 @@ x <- x[c(1,5,2:4,6:nrow(x)),]
 #                  groups = as.character(substitute(STATION_NUMBER)),
 #                  station_number = station_number,
 #                  foldername = foldername,
-#                  sections = sections,
+#                  analyses = analyses,
 #                  table_filetype = table_filetype,
 #                  plot_filetype = plot_filetype,
 #                  basin_area = basin_area,
@@ -743,7 +756,7 @@ write_full_analysis(data = flow_data,
                     #plot_filetype = "png",
                     foldername = "Bertrand"#,
                    # ignore_missing = TRUE,
-                    #sections = 7
+                    #analyses = 7
                    )
 end_time <- Sys.time()
 

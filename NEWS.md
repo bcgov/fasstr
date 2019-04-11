@@ -1,12 +1,12 @@
 fasstr 0.3.0
 =========================
 
-Updated: 
+Updated: 11 April 2019
 
 #### Updates:
 
-  * In compute_full_analysis, a single Excel document is created with all tables and most plots rather than folders upon folders
   * Removed logical "water_year" argument and now "water_year_start" controls the start of year alone (default now 1 for January)
+  * complete_full_analysis just creates R objects; a new write_full_analysis saves the results in a single Excel document, with some plots in a plots folder; renamed 'sections' to 'analyses'
   * add_date_variables() outputs changed slightly to match new water_year_start argument
   * Replaced NULL and NA default values for function agruments to nothing, cleaning up documentation.
   * Internal coding (MonthName levels coding cleaned up) 

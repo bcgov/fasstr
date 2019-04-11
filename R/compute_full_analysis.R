@@ -10,17 +10,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Computes a suite of tables and plots from various fasstr functions
+#' @title Compute a suite of tables and plots from various fasstr functions
 #'
-#' @description Calculates tables and plots of a suite of statistics from various fasstr functions. The statistics are grouped into
-#'    7 sections (see below) which are stored in lists in the created object. Due to the number of tables and plots to be made, this 
-#'    function may take several minutes to complete. Can also directly write all plots and tables directly into a directory
-#'    ('file_name' argument) using the 'write_to_dir' argument.
-#'    If using \code{ignore_missing = FALSE} (default) and there is missing data, some tables and plots may be empty
-#'    and produce warnings. Use \code{ignore_missing = TRUE} to ignore the missing values or filter your data to complete years.
+#' @description Calculates tables and plots from a suite of statistics from fasstr functions. The statistics are grouped into
+#'    7 analysis groups (see 'analyses' argument) which are stored in lists in the object. Due to the number of tables and plots to 
+#'    be made, this function may take several minutes to complete. If using \code{ignore_missing = FALSE} (default) and there is
+#'    missing data, some tables and plots may be empty and produce warnings. Use \code{ignore_missing = TRUE} to ignore the missing
+#'    values or filter your data to complete years.
 #'    
 #' @inheritParams compute_annual_trends
-#' @param sections Sections of analysis to run (default is all (\code{1:7})):
+#' @param analyses Numeric vector of analyses to run (default is all (\code{1:7})):
 #' \itemize{
 #'  \item{1: Screening}
 #'  \item{2: Long-term}
@@ -31,23 +30,19 @@
 #'  \item{7: Low-flow Frequencies}
 #'  }
 #' @param zyp_method Character string identifying the prewhitened trend method to use from 'zyp', either "zhang' or "yuepilon". 
-#'    Only required if section 6 is included. Default \code{"yuepilon"}.
-#' @param write_to_dir Logical value indicating if all results are to also be written into a directory. Default \code{FALSE}.
-#' @param file_name Name of Excel Workbook (and folder for plots if necessary) to create on drive to write all results. 
-#' @param plot_filetype Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
-#'    If type is not "pdf" then individual plots will be created instead of a combined PDF. Default \code{"pdf"}.
+#'    Only required if analysis group 6 is included. Default \code{"yuepilon"}.
 #' 
 #' @return A list of lists of tibble data frames and ggplot2 objects from various fasstr functions
-#'    organized by the sections as listed above.
+#'    organized by the analysis groups as listed above.
 #'
 #' @examples
 #' \dontrun{
 #' 
-#' compute_full_analysis(station_number = "08NM116")
-#'
+#' compute_full_analysis(station_number = "08NM116",
+#'                       start_year = 1980,
+#'                       end_year = 2010
 #' }
 #' @export
-
 
 
 compute_full_analysis <- function(data,
@@ -55,7 +50,7 @@ compute_full_analysis <- function(data,
                                   values = Value,
                                   groups = STATION_NUMBER,
                                   station_number,
-                                  sections = 1:7,
+                                  analyses = 1:7,
                                   basin_area,
                                   water_year_start = 1,
                                   start_year,
@@ -63,10 +58,7 @@ compute_full_analysis <- function(data,
                                   exclude_years,
                                   ignore_missing = FALSE,
                                   zyp_method = 'yuepilon',
-                                  zyp_alpha,
-                                  write_to_dir = FALSE,
-                                  file_name,
-                                  plot_filetype = 'pdf'){
+                                  zyp_alpha){
   
   message("* this may take a few moments...")
   
@@ -100,31 +92,23 @@ compute_full_analysis <- function(data,
   years_checks(start_year, end_year, exclude_years)
   ignore_missing_checks(ignore_missing)
   
-  if (write_to_dir) {
-    if (missing(file_name))
-      stop("A file name is required with the file_name argument to write all results.", call. = FALSE)
-    # if (!substr(file_name, nchar(file_name), nchar(file_name)) == "/") {
-    #   file_name <- paste0(file_name, "/")
-    # }
-  }
+ 
+  if (!is.numeric(analyses)) 
+    stop("analyses argument must be numbers between 1 and 7. See ?compute_full_analysis for analysis group numbers.", call. = FALSE)
+  if (!all(analyses %in% 1:7)) 
+    stop("analyses argument must be numbers between 1 and 7. See ?compute_full_analysis for analysis group numbers.", call. = FALSE)
   
-  if (!is.numeric(sections)) 
-    stop("sections argument must be numbers between 1 and 7. See ?write_full_analysis for analysis section numbers.", call. = FALSE)
-  if (!all(sections %in% 1:7)) 
-    stop("sections argument must be numbers between 1 and 7. See ?write_full_analysis for analysis section numbers.", call. = FALSE)
-  
-  if (6 %in% sections) {
+  if (6 %in% analyses) {
     zyp_alpha_checks(zyp_alpha)
     zyp_method_checks(zyp_method)
   }
-  
   
   # Do this for now, until looping of include_year plots is sorted out
   if (length(station_number) > 1) stop("Only one station_number can be listed.", call. = FALSE)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
-  ## -------------------------------
+  ##########################
   
   # Check if data is provided and import it
   flow_data_raw <- flowdata_import(data = data, 
@@ -170,154 +154,8 @@ compute_full_analysis <- function(data,
   flow_data_plus <- dplyr::filter(flow_data, WaterYear >= start_year - 1 & WaterYear <= end_year + 1)
   flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
   
-  ### Folders Setup
+  ### Results Setup
   ##########################
-  
-  # Create the main directory folder
-  if (write_to_dir) {
-    #main_dir <- file_name
-    # dir.create(path = main_dir, showWarnings = FALSE)
-    
-    # Create the excel document
-    output_excel <- openxlsx::createWorkbook()
-    
-    overview_sheet <- "Analysis Overview"
-    openxlsx::addWorksheet(wb = output_excel, 
-                           sheetName = overview_sheet,
-                           tabColour = "#003e1f") # 73fbd3 44e5e7 59d2fe 4a8fe7 5c7aff
-    
-    add_table <- function(wb, sheet, data, title, col, row, comment = NA) {
-      openxlsx::writeData(wb = wb,
-                          sheet = sheet, 
-                          x = title, 
-                          startCol = col, startRow = row)
-      openxlsx::writeData(wb = wb,
-                          sheet = sheet, 
-                          x = data, 
-                          startCol = col, startRow = row + 1,
-                          headerStyle = openxlsx::createStyle(fontSize = 11,
-                                                              textDecoration = "bold",
-                                                              border = "TopBottom",
-                                                              fgFill = "#add8e6",
-                                                              halign = "left"))
-      openxlsx::addStyle(wb = wb,
-                         sheet = sheet, 
-                         cols =  col, 
-                         rows =  row,
-                         style = openxlsx::createStyle(fontSize = 11,
-                                                       textDecoration = "bold")) 
-      if (!is.na(comment)) {
-        openxlsx::writeComment(wb = wb,
-                               sheet = sheet,
-                               col = col,
-                               row = row,
-                               comment = openxlsx::createComment(comment = comment,
-                                                                 visible = FALSE,
-                                                                 width = 5,
-                                                                 height = 4))
-      }
-    }
-    
-    add_plot <- function(wb, sheet, plot, title, col, row, height, width, comment = NA) {
-      openxlsx::writeData(wb = wb,
-                          sheet = sheet, 
-                          x = title, 
-                          startCol = col, startRow = row)
-      print(plot)
-      openxlsx::insertPlot(wb = wb,
-                           sheet = sheet, 
-                           startCol = col, startRow = row + 1,
-                           height = height, 
-                           width = width)
-      openxlsx::addStyle(wb = wb,
-                         sheet = sheet, 
-                         cols =  col, 
-                         rows =  row,
-                         style = openxlsx::createStyle(fontSize = 11,
-                                                       textDecoration = "bold")) 
-      if (!is.na(comment)) {
-        openxlsx::writeComment(wb = wb,
-                               sheet = sheet,
-                               col = col,
-                               row = row,
-                               comment = openxlsx::createComment(comment = comment,
-                                                                 visible = FALSE,
-                                                                 width = 5,
-                                                                 height = 4))
-      }
-    }
-    
-    
-    
-    fasstr_functions <- data.frame("Worksheet" = character(),
-                                    "Output" = character(),
-                                    "Function" = character())
-    
-    
-    fn_data <- paste0(ifelse(!is.null(data), 
-                             paste0("data = ", as.character(substitute(data)), 
-                                    ifelse(as.character(substitute(dates)) != "Date", 
-                                           paste0(", dates = '", as.character(substitute(dates)), "'"), ""),
-                                    ifelse(as.character(substitute(values)) != "Value",
-                                           paste0(", values = '", as.character(substitute(values)), "'"), ""),
-                                    ifelse(as.character(substitute(groups)) != "STATION_NUMBER",
-                                           paste0(", groups = '", as.character(substitute(groups)), "'"), "")),
-                             paste0("station_number = '", station_number, "'")))
-    fn_area <- paste0(ifelse(!is.na(basin_area),
-                             paste0(", basin_area = ", basin_area),
-                             ""))
-    fn_wys <- ifelse(water_year_start != 1, paste0(", water_year_start = ", water_year_start), "")
-    fn_startend <- paste0(ifelse(start_year != min(flow_data_unfiltered$WaterYear),
-                                 paste0(", start_year = ", start_year), ""), 
-                          ifelse(end_year != max(flow_data_unfiltered$WaterYear),
-                                 paste0(", end_year = ", end_year), ""))
-    fn_exclude <- paste0(ifelse(!is.null(exclude_years),
-                                paste0(", exclude_years = ", ifelse(length(exclude_years) == 1, 
-                                                                    paste(exclude_years),
-                                                                    paste0("c(",paste(exclude_years, collapse = ","),")"))),
-                                ""))
-    fn_missing <- ifelse(ignore_missing, paste0(", ignore_missing = TRUE"), "")
-    fn_zyp <- paste0(", zyp_method = '", zyp_method, "'",
-                     ", zyp_alpha = ", ifelse(!is.na(zyp_alpha), zyp_alpha, "NA"))
-    
-    analysis_function <- paste0("compute_full_analysis(",
-                                fn_data,
-                                fn_area,
-                                fn_wys,
-                                fn_startend,
-                                fn_exclude,
-                                fn_missing,
-                                ifelse(6 %in% sections, fn_zyp, ""),
-                                ifelse(write_to_dir, 
-                                       paste0(", write_to_dir = TRUE",
-                                              ", file_name = '", sub("/$","",file_name), "'",
-                                              ", plot_filetype = '", plot_filetype, "'")),
-                                paste0(", sections = ", 
-                                       ifelse(length(sections) == 1, 
-                                              paste(sections),
-                                              paste0("c(",paste(sections, collapse = ","),")"))),
-                                ")")
-    
-    fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                        "Worksheet" = file_name,
-                                        "Output" = "Full Analysis Function",
-                                        "Function" = analysis_function)
-    
-    rawdata_sheet <- "Data Input"
-    openxlsx::addWorksheet(wb = output_excel, 
-                           sheetName = rawdata_sheet,
-                           tabColour = "#003e1f")
-    add_table(wb = output_excel,
-              sheet = rawdata_sheet,
-              data = flow_data_raw, 
-              title = "Provided Data",
-              col = 1,
-              row = 1,
-              comment = NA)
-    
-
-    
-  }  
   
   # Create list of all objects
   
@@ -328,28 +166,29 @@ compute_full_analysis <- function(data,
   ## Screening
   ##########################
   
-  if (1 %in% sections) {
+  if (1 %in% analyses) {
     
+    # Time series plot
     ts_full_plot <- suppressWarnings(plot_flow_data(data = flow_data,
                                                     exclude_years = exclude_years,
                                                     water_year_start = water_year_start))
     
-    # Write the data screening
+    # Data screening
     flow_screening = screen_flow_data(data = flow_data,
                                       water_year_start = water_year_start)
     
     
-    # Write screening plots
+    # Screening plots
     ts_screen_plot <- plot_data_screening(data = flow_data,
                                           start_year = start_year, end_year = end_year,
                                           water_year_start = water_year_start)
     
-    # Write missing dates plots
+    # Missing dates plots
     ts_missing_plot <- plot_missing_dates(data = flow_data,
                                           start_year = start_year, end_year = end_year,
                                           water_year_start = water_year_start)
     
-    
+    # Add to objects list
     all_objects <- append(all_objects,
                           list("Screening" = list("Daily_Flows" = flow_data,
                                                   "Daily_Flows_Plot" = ts_full_plot,
@@ -357,135 +196,16 @@ compute_full_analysis <- function(data,
                                                   "Flow_Screening_Plot" = ts_screen_plot,
                                                   "Missing_Dates_Plot" = ts_missing_plot)))
     
-    # Create the folder
-    if (write_to_dir) {
-      
-      # Write to the Excel Workbook
-      timeseries_sheet <- "Data Timeseries"
-      openxlsx::addWorksheet(wb = output_excel, 
-                             sheetName = timeseries_sheet,
-                             tabColour = "#73ba9b")
-      
-      data_function <- paste0("add_date_variables(",
-                              fn_data,
-                              fn_wys,
-                              ") %>% add_rolling_means() %>% add_basin_area()")
-      data_plot_function <- paste0("plot_flow_data(",
-                                   fn_data,
-                                   fn_wys,
-                                   fn_exclude,
-                                   ")")
-      
-      
-      # Add data table and title
-      flow_data_out <- flow_data[,!colnames(flow_data) %in% "STATION_NUMBER"]
-      add_table(wb = output_excel,
-                sheet = timeseries_sheet,
-                data = flow_data_out, 
-                title = "Daily Data Timeseries",
-                col = 1,
-                row = 1,
-                comment = data_function)
-      
-      # Add plots and titles
-      # Write flow data plot
-      add_plot(wb = output_excel, 
-               sheet = timeseries_sheet,
-               plot = ts_full_plot[[1]], 
-               title = "Daily Data Timeseries", 
-               col = ncol(flow_data_out) + 2, 
-               row = 2, 
-               height = 5,
-               width = 20,
-               comment = data_plot_function)
-      
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = timeseries_sheet,
-                                          "Output" = "Daily Data Timeseries Table",
-                                          "Function" = data_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = timeseries_sheet,
-                                          "Output" = "Daily Data Timeseries Plot",
-                                          "Function" = data_plot_function)
-      
-      # Write to the Excel Workbook
-      screening_sheet <- "Data Screening"
-      openxlsx::addWorksheet(wb = output_excel, 
-                             sheetName = screening_sheet,
-                             tabColour = "#73ba9b")
-      
-      screening_function <- paste0("screen_flow_data(",
-                                   fn_data,
-                                   fn_wys,
-                                   fn_startend,
-                                   ")")
-      screeningplot_function <- paste0("plot_data_screening(",
-                                       fn_data,
-                                       fn_wys,
-                                       fn_startend,
-                                       ")")
-      missingingplot_function <- paste0("plot_missing_dates(",
-                                        fn_data,
-                                        fn_wys,
-                                        fn_startend,
-                                        ")")
-      
-      # Add data table and title
-      flow_screening_out <- flow_screening[,!colnames(flow_screening) %in% "STATION_NUMBER"]
-      add_table(wb = output_excel,
-                sheet = screening_sheet, 
-                data = flow_screening_out, 
-                title = "Data Screening: Annual Summary Statistics and Data Availability",
-                col = 1,
-                row = 1,
-                comment = screening_function)
-      
-      # Add plots and titles
-      add_plot(wb = output_excel, 
-               sheet = screening_sheet, 
-               plot = ts_screen_plot[[1]], 
-               title = "Annual Summary Statistics for Screening", 
-               col = ncol(flow_screening_out) + 2, 
-               row = 2, 
-               height = 5,
-               width = 8.5,
-               comment = screeningplot_function)
-      add_plot(wb = output_excel, 
-               sheet = screening_sheet, 
-               plot = ts_missing_plot[[1]], 
-               title = "Number of Missing Dates Per Month", 
-               col = ncol(flow_screening_out) + 2, 
-               row = 29, 
-               height = 6,
-               width = 8.5,
-               comment = missingingplot_function)
-      
-      
-      
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = screening_sheet,
-                                          "Output" = "Data Screening Table",
-                                          "Function" = screening_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = screening_sheet,
-                                          "Output" = "Annual Statistics for Screening Plot",
-                                          "Function" = screeningplot_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = screening_sheet,
-                                          "Output" = "MIssing Data Plot",
-                                          "Function" = missingingplot_function)
-    }
+
   }  
   
   
   ### Long-term Stats
   ##########################
   
-  if (2 %in% sections) {
-    
-    
-    
-    # Write the long-term stats with percentiles
+  if (2 %in% analyses) {
+
+    # Long-term stats with percentiles
     lt_stats <- calc_longterm_stats(data = flow_data,
                                     exclude_years = exclude_years,
                                     water_year_start = water_year_start,
@@ -494,107 +214,32 @@ compute_full_analysis <- function(data,
                                     ignore_missing = ignore_missing)
     
     
-    # Write the long-term stats plot
+    # Long-term stats plot
     lt_stats_plot <- plot_longterm_stats(data = flow_data,
                                          exclude_years = exclude_years,
                                          water_year_start = water_year_start,
                                          ignore_missing = ignore_missing)
     
     
-    # Write the flow duration plot
+    # Flow duration plot
     lt_flowduration_plot <- plot_flow_duration(data = flow_data,
                                                exclude_years = exclude_years,
                                                water_year_start = water_year_start,
                                                ignore_missing = ignore_missing)
     
+    # Add to objects list
     all_objects <- append(all_objects,    
                           list("Longterm" = list("Longterm_Summary_Stats_Percentiles" = lt_stats,
                                                  "Longterm_Summary_Stats_Plot" = lt_stats_plot,
                                                  "Flow_Duration_Curves" = lt_flowduration_plot)))
-    
-    if (write_to_dir) {
-      
-      # Write to the Excel Workbook
-      lt_sheet <- "Long-term Stats"
-      openxlsx::addWorksheet(wb = output_excel, 
-                             sheetName = lt_sheet,
-                             tabColour = "#73fbd3")
-      
-      longterm_function <- paste0("calc_longterm_stats(",
-                                  fn_data,
-                                  fn_wys,
-                                  fn_startend,
-                                  fn_exclude,
-                                  fn_missing,
-                                  ")")
-      longtermplot_function <- paste0("plot_longterm_stats(",
-                                      fn_data,
-                                      fn_wys,
-                                      fn_startend,
-                                      fn_exclude,
-                                      fn_missing,
-                                      ", percentiles = 1:99)")
-      durationplot_function <- paste0("plot_flow_duration(",
-                                      fn_data,
-                                      fn_wys,
-                                      fn_startend,
-                                      fn_exclude,
-                                      fn_missing,
-                                      ")")
-      
-      # Add data table and title
-      lt_stats_out <- lt_stats[,!colnames(lt_stats) %in% "STATION_NUMBER"]
-      add_table(wb = output_excel,
-                sheet = lt_sheet, 
-                data = lt_stats_out, 
-                title = paste0("Long-term Summary Statistics from ", start_year, "-", end_year),
-                col = 1,
-                row = 1,
-                comment = longterm_function)
-      
-      # Add plots and titles
-      add_plot(wb = output_excel, 
-               sheet = lt_sheet, 
-               plot = lt_stats_plot[[1]], 
-               title = paste0("Long-term Summary Statistics from ", start_year, "-", end_year), 
-               col = ncol(lt_stats_out) + 2, 
-               row = 2, 
-               height = 4,
-               width = 10,
-               comment = longtermplot_function)
-      add_plot(wb = output_excel, 
-               sheet = lt_sheet, 
-               plot = lt_flowduration_plot[[1]], 
-               title = paste0("Flow Duration Curves from ", start_year, "-", end_year), 
-               col = ncol(lt_stats_out) + 2, 
-               row = 24, 
-               height = 5,
-               width = 10,
-               comment = durationplot_function)
-      
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = lt_sheet,
-                                          "Output" = "Long-term Summary Statistics Table",
-                                          "Function" = longterm_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = lt_sheet,
-                                          "Output" = "Long-term Summary Statistics Plot",
-                                          "Function" = longtermplot_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = lt_sheet,
-                                          "Output" = "Flow Duration Curves",
-                                          "Function" = durationplot_function)
-      
-      
-    }
+
   }
   
   
   ### Annual Stats
   ##########################
   
-  if (3 %in% sections) {
-    
+  if (3 %in% analyses) {
     
     # Annual stats
     ann_stats <- calc_annual_stats(data = flow_data,
@@ -634,7 +279,7 @@ compute_full_analysis <- function(data,
                                         water_year_start = water_year_start,
                                         ignore_missing = ignore_missing)
     
-    # Write each of the annual stats plots
+    # Create each of the annual stats plots
     ann_stats_plot <- plot_annual_stats(data = flow_data,
                                         exclude_years = exclude_years,
                                         water_year_start = water_year_start,
@@ -666,6 +311,7 @@ compute_full_analysis <- function(data,
                                         water_year_start = water_year_start,
                                         ignore_missing = ignore_missing)
     
+    # Add to objects list
     all_objects <- append(all_objects,    
                           list("Annual" = list("Annual_Summary_Stats" = ann_stats,
                                                "Annual_Summary_Stats_Plot" = ann_stats_plot,
@@ -679,336 +325,16 @@ compute_full_analysis <- function(data,
                                                "Annual_Days_Outside_Normal_Plot" = ann_norm_plot,
                                                "Annual_Low_Flows" = ann_lowflow,
                                                "Annual_Low_Flows_Plot" = ann_lowflow_plot,
-                                               "Annual_Means_plot" =  ann_means_plot)))
-    
-    if (write_to_dir) {
-      
-      # Write to the Excel Workbook
-      ann_stat_sheet <- "Annual Stats"
-      openxlsx::addWorksheet(wb = output_excel, 
-                             sheetName = ann_stat_sheet,
-                             tabColour = "#44e5e7")
-      
-      annual_stats_function <- paste0("calc_annual_stats(",
-                                      fn_data,
-                                      fn_wys,
-                                      fn_startend,
-                                      fn_exclude,
-                                      fn_missing,
-                                      ")")
-      annual_plot_function <- paste0("plot_annual_stats(",
-                                     fn_data,
-                                     fn_wys,
-                                     fn_startend,
-                                     fn_exclude,
-                                     fn_missing,
-                                     ")")
-      annual_mean_plot_function <- paste0("plot_annual_means(",
-                                          fn_data,
-                                          fn_wys,
-                                          fn_startend,
-                                          fn_exclude,
-                                          fn_missing,
-                                          ")")
-      
-      # Add data table and title
-      ann_stats_out <- ann_stats[,!colnames(ann_stats) %in% "STATION_NUMBER"]
-      
-      add_table(wb = output_excel,
-                sheet = ann_stat_sheet, 
-                data = ann_stats_out, 
-                title = paste0("Annual Summary Statistics from ", start_year, "-", end_year),
-                col = 1,
-                row = 1,
-                comment = annual_stats_function)
-      
-      # Add plots and titles
-      add_plot(wb = output_excel, 
-               sheet = ann_stat_sheet, 
-               plot = ann_stats_plot[[1]], 
-               title = paste0("Annual Summary Statistics from ", start_year, "-", end_year), 
-               col = ncol(ann_stats_out) + 2, 
-               row = 2, 
-               height = 3,
-               width = 8.5,
-               comment = annual_plot_function)
-      add_plot(wb = output_excel, 
-               sheet = ann_stat_sheet, 
-               plot = ann_means_plot[[1]], 
-               title = paste0("Annual Means from ", start_year, "-", end_year), 
-               col = ncol(ann_stats_out) + 2, 
-               row = 19, 
-               height = 3,
-               width = 8.5,
-               comment = annual_mean_plot_function)
-      
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = ann_stat_sheet,
-                                          "Output" = "Annual Summary Statistics Table",
-                                          "Function" = annual_stats_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = ann_stat_sheet,
-                                          "Output" = "Annual Summary Statistics Plot",
-                                          "Function" = annual_plot_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = ann_stat_sheet,
-                                          "Output" = "Annual Mean Flows Plot",
-                                          "Function" = annual_mean_plot_function)
-      
-      # Write to the Excel Workbook
-      ann_cumul_sheet <- "Annual Cumulative Stats"
-      
-      openxlsx::addWorksheet(wb = output_excel, 
-                             sheetName = ann_cumul_sheet,
-                             tabColour = "#44e5e7")
-      
-      annual_vol_function <- paste0("calc_annual_cumulative_stats(",
-                                    fn_data,
-                                    fn_wys,
-                                    fn_startend,
-                                    fn_exclude,
-                                    ", include_seasons = TRUE)")
-      annual_yield_function <- paste0("calc_annual_cumulative_stats(",
-                                      fn_data,
-                                      fn_wys,
-                                      fn_startend,
-                                      fn_exclude,
-                                      ", use_yield = TRUE",
-                                      fn_area,
-                                      ", include_seasons = TRUE)")
-      annual_vol_plot_function <- paste0("plot_annual_cumulative_stats(",
-                                         fn_data,
-                                         fn_wys,
-                                         fn_startend,
-                                         fn_exclude,
-                                         ", include_seasons = TRUE)")
-      annual_yield_plot_function <- paste0("plot_annual_cumulative_stats(",
-                                           fn_data,
-                                           fn_wys,
-                                           fn_startend,
-                                           fn_exclude,
-                                           ", use_yield = TRUE",
-                                           fn_area,
-                                           ", include_seasons = TRUE)")
-      
-      # Add data table and title
-      ann_cumul <- dplyr::left_join(ann_vol, ann_yield, by = c("STATION_NUMBER", "Year"))
-      ann_cumul_out <- ann_cumul[,!colnames(ann_cumul) %in% "STATION_NUMBER"]
-      add_table(wb = output_excel,
-                sheet = ann_cumul_sheet, 
-                data = ann_cumul_out, 
-                title = paste0("Annual Cumulative Summary Statistics from ", start_year, "-", end_year),
-                col = 1,
-                row = 1,
-                comment = paste0(annual_vol_function, "              ", annual_yield_function))
-      
-      # Add plots and titles
-      add_plot(wb = output_excel, 
-               sheet = ann_cumul_sheet, 
-               plot = ann_vol_plot[[1]], 
-               title = paste0("Annual Total Volume from ", start_year, "-", end_year), 
-               col = ncol(ann_cumul_out) + 2, 
-               row = 2, 
-               height = 2,
-               width = 6,
-               comment = annual_vol_plot_function)
-      add_plot(wb = output_excel, 
-               sheet = ann_cumul_sheet, 
-               plot = ann_vol_plot[[2]], 
-               title = paste0("Seasonal (Two Seasons) Total Volume from ", start_year, "-", end_year), 
-               col = ncol(ann_cumul_out) + 2, 
-               row = 14, 
-               height = 3.5,
-               width = 6,
-               comment = annual_vol_plot_function)
-      add_plot(wb = output_excel, 
-               sheet = ann_cumul_sheet, 
-               plot = ann_vol_plot[[3]], 
-               title = paste0("Seasonal (Four Seasons) Total Volume from ", start_year, "-", end_year), 
-               col = ncol(ann_cumul_out) + 2, 
-               row = 33, 
-               height = 5,
-               width = 6,
-               comment = annual_vol_plot_function)
-      
-      add_plot(wb = output_excel, 
-               sheet = ann_cumul_sheet, 
-               plot = ann_yield_plot[[1]], 
-               title = paste0("Annual Total Yield from ", start_year, "-", end_year), 
-               col = ncol(ann_cumul_out) + 2 + 10, 
-               row = 2, 
-               height = 2,
-               width = 6,
-               comment = annual_yield_plot_function)
-      add_plot(wb = output_excel, 
-               sheet = ann_cumul_sheet, 
-               plot = ann_yield_plot[[2]], 
-               title = paste0("Seasonal (Two Seasons) Total Yield from ", start_year, "-", end_year), 
-               col = ncol(ann_cumul_out) + 2 + 10, 
-               row = 14, 
-               height = 3.5,
-               width = 6,
-               comment = annual_yield_plot_function)
-      add_plot(wb = output_excel, 
-               sheet = ann_cumul_sheet, 
-               plot = ann_yield_plot[[3]], 
-               title = paste0("Seasonal (Four Seasons) Total Yield from ", start_year, "-", end_year), 
-               col = ncol(ann_cumul_out) + 2 + 10, 
-               row = 33, 
-               height = 5,
-               width = 6,
-               comment = annual_yield_plot_function)
-      
-      
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = ann_cumul_sheet,
-                                          "Output" = "Annual Cumulative Volumes Table",
-                                          "Function" = annual_vol_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = ann_cumul_sheet,
-                                          "Output" = "Annual Cumulative Yields Table",
-                                          "Function" = annual_yield_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = ann_cumul_sheet,
-                                          "Output" = "Annual Cumulative Volumes Plots",
-                                          "Function" = annual_vol_plot_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = ann_cumul_sheet,
-                                          "Output" = "Annual Cumulative Yields Plots",
-                                          "Function" = annual_yield_plot_function)
-      
-      # Write to the Excel Workbook
-      ann_oth_sheet <- "Annual Stats Other"
-      openxlsx::addWorksheet(wb = output_excel, 
-                             sheetName = ann_oth_sheet,
-                             tabColour = "#44e5e7")
-      
-      annual_lows_function <- paste0("calc_annual_lowflows(",
-                                     fn_data,
-                                     fn_wys,
-                                     fn_startend,
-                                     fn_exclude,
-                                     fn_missing,
-                                     ")")
-      annual_lows_plot_function <- paste0("plot_annual_lowflows(",
-                                          fn_data,
-                                          fn_wys,
-                                          fn_startend,
-                                          fn_exclude,
-                                          fn_missing,
-                                          ")")
-      annual_timing_function <- paste0("calc_annual_flow_timing(",
-                                       fn_data,
-                                       fn_wys,
-                                       fn_startend,
-                                       fn_exclude,
-                                       ")")
-      annual_timing_plot_function <- paste0("plot_annual_flow_timing(",
-                                            fn_data,
-                                            fn_wys,
-                                            fn_startend,
-                                            fn_exclude,
-                                            ")")
-      annual_norm_function <- paste0("calc_annual_outside_normal(",
-                                     fn_data,
-                                     fn_wys,
-                                     fn_startend,
-                                     fn_exclude,
-                                     ")")
-      annual_norm_plot_function <- paste0("plot_annual_outside_normal(",
-                                          fn_data,
-                                          fn_wys,
-                                          fn_startend,
-                                          fn_exclude,
-                                          ")")
-      
-      # Add data table and title
-      ann_other <- dplyr::left_join(ann_lowflow, ann_timing, by = c("STATION_NUMBER", "Year"))
-      ann_other <- dplyr::left_join(ann_other, ann_norm, by = c("STATION_NUMBER", "Year"))
-      ann_other_out <- ann_other[,!colnames(ann_other) %in% "STATION_NUMBER"]
-      add_table(wb = output_excel,
-                sheet = ann_oth_sheet, 
-                data = ann_other_out, 
-                title = paste0("Other Annual Statistics (lowflows, etc) from ", start_year, "-", end_year),
-                col = 1,
-                row = 1,
-                comment = paste0(annual_lows_function, "              ", annual_timing_function,
-                                 "              ", annual_norm_function))
-      
-      # Add plots and titles
-      add_plot(wb = output_excel, 
-               sheet = ann_oth_sheet, 
-               plot = ann_lowflow_plot[[1]], 
-               title = paste0("Annual Low-flows from ", start_year, "-", end_year), 
-               col = ncol(ann_other_out) + 2, 
-               row = 2, 
-               height = 5.5,
-               width = 6,
-               comment = annual_lows_plot_function)
-      add_plot(wb = output_excel, 
-               sheet = ann_oth_sheet, 
-               plot = ann_lowflow_plot[[2]], 
-               title = paste0("Day of Annual Low-flows from ", start_year, "-", end_year), 
-               col = ncol(ann_other_out) + 2, 
-               row = 31, 
-               height = 5.5,
-               width = 6,
-               comment = annual_lows_plot_function)
-      add_plot(wb = output_excel,
-               sheet = ann_oth_sheet, 
-               plot = ann_timing_plot[[1]],
-               title = paste0("Annual Flow Timing from ", start_year, "-", end_year),
-               col = ncol(ann_other_out) + 2 + 10,
-               row = 2, 
-               height = 5.5,
-               width = 6,
-               comment = annual_timing_plot_function)
-      add_plot(wb = output_excel,
-               sheet = ann_oth_sheet, 
-               plot = ann_norm_plot[[1]],
-               title = paste0("Annual Days Per Year Above, Below, and Outside Normal from ", start_year, "-", end_year),
-               col = ncol(ann_other_out) + 2 + 10,
-               row = 31, 
-               height = 4.5,
-               width = 6,
-               comment = annual_norm_plot_function)
-      
-      
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = ann_oth_sheet,
-                                          "Output" = "Annual Low-Flows Table",
-                                          "Function" = annual_lows_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = ann_oth_sheet,
-                                          "Output" = "Annual Low-Flows Plot",
-                                          "Function" = annual_lows_plot_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = ann_oth_sheet,
-                                          "Output" = "Annual Timing-of-Flows Table",
-                                          "Function" = annual_timing_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = ann_oth_sheet,
-                                          "Output" = "Annual Timing-of-Flows Plot",
-                                          "Function" = annual_timing_plot_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = ann_oth_sheet,
-                                          "Output" = "Annual Days Outside Normal Table",
-                                          "Function" = annual_norm_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = ann_oth_sheet,
-                                          "Output" = "Annual Days Outside Normal Plot",
-                                          "Function" = annual_norm_plot_function)
-      
-    }
-    
+                                               "Annual_Means_Plot" =  ann_means_plot)))
+  
   }
   
   ### Monthly Stats
   ##########################
   
-  if (4 %in% sections) {
+  if (4 %in% analyses) {
     
-    # Write all the monthly stats
+    # Create all the monthly stats
     mon_stats <- calc_monthly_stats(data = flow_data,
                                     exclude_years = exclude_years,
                                     water_year_start = water_year_start,
@@ -1030,13 +356,13 @@ compute_full_analysis <- function(data,
                                                use_yield = TRUE, 
                                                basin_area = basin_area_stn)
     
-    # Write the monthly stats plots
+    # Monthly stats plots
     mon_stats_plot <- plot_monthly_stats(data = flow_data,
                                          exclude_years = exclude_years,
                                          water_year_start = water_year_start,
                                          ignore_missing = ignore_missing)
     
-    # Write the monthly cumulative plots
+    # Monthly cumulative plots
     mon_vol_plot <- plot_monthly_cumulative_stats(data = flow_data,
                                                   exclude_years = exclude_years,
                                                   water_year_start = water_year_start)
@@ -1046,6 +372,7 @@ compute_full_analysis <- function(data,
                                                     use_yield = TRUE,
                                                     basin_area = basin_area_stn)
     
+    # Add to objects list
     all_objects <- append(all_objects,    
                           list("Monthly" = list("Monthly_Summary_Stats" = mon_stats,
                                                 "Monthly_Summary_Stats_Plot" = mon_stats_plot,
@@ -1054,195 +381,14 @@ compute_full_analysis <- function(data,
                                                 "Monthly_Total_Cumul_Yield_mm" = mon_yield,
                                                 "Monthly_Total_Cumul_Yield_mm_Plot" = mon_yield_plot)))
     
-    if (write_to_dir) {
-      
-      # Write to the Excel Workbook
-      month_stat_sheet <- "Monthly Stats"
-      openxlsx::addWorksheet(wb = output_excel, 
-                             sheetName = month_stat_sheet,
-                             tabColour = "#59d2fe")
-      
-      month_stats_function <- paste0("calc_monthly_stats(",
-                                     fn_data,
-                                     fn_wys,
-                                     fn_startend,
-                                     fn_exclude,
-                                     fn_missing,
-                                     ")")
-      month_stats_plot_function <- paste0("plot_monthly_stats(",
-                                          fn_data,
-                                          fn_wys,
-                                          fn_startend,
-                                          fn_exclude,
-                                          fn_missing,
-                                          ")")
-      
-      
-      # Add data table and title
-      mon_stats_out <- mon_stats_spread[,!colnames(mon_stats_spread) %in% "STATION_NUMBER"]
-      add_table(wb = output_excel,
-                sheet = month_stat_sheet,
-                data = mon_stats_out, 
-                title = paste0("Monthly Summary Statistics from ", start_year, "-", end_year),
-                col = 1,
-                row = 1,
-                comment = month_stats_function)
-      
-      # Add plots and titles
-      add_plot(wb = output_excel, 
-               sheet = month_stat_sheet,
-               plot = mon_stats_plot[[1]], 
-               title = paste0("Monthly Mean Flows from ", start_year, "-", end_year), 
-               col = ncol(mon_stats_out) + 2, 
-               row = 2, 
-               height = 5,
-               width = 9,
-               comment = month_stats_plot_function)
-      add_plot(wb = output_excel, 
-               sheet = month_stat_sheet,
-               plot = mon_stats_plot[[2]], 
-               title = paste0("Monthly Median Flows from ", start_year, "-", end_year), 
-               col = ncol(mon_stats_out) + 2, 
-               row = 29, 
-               height = 5,
-               width = 9,
-               comment = month_stats_plot_function)
-      add_plot(wb = output_excel, 
-               sheet = month_stat_sheet,
-               plot = mon_stats_plot[[3]], 
-               title = paste0("Monthly Maximum Flows from ", start_year, "-", end_year), 
-               col = ncol(mon_stats_out) + 2 + 14, 
-               row = 2, 
-               height = 5,
-               width = 9,
-               comment = month_stats_plot_function)
-      add_plot(wb = output_excel, 
-               sheet = month_stat_sheet,
-               plot = mon_stats_plot[[4]], 
-               title = paste0("Monthly Minimum Flows from ", start_year, "-", end_year), 
-               col = ncol(mon_stats_out) + 2 + 14, 
-               row = 29, 
-               height = 5,
-               width = 9,
-               comment = month_stats_plot_function)
-      
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = month_stat_sheet,
-                                          "Output" = "Monthly Summary Statistics Table",
-                                          "Function" = month_stats_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = month_stat_sheet,
-                                          "Output" = "Monthly Summary Statistics Plot",
-                                          "Function" = month_stats_plot_function)
-      
-      # Write to the Excel Workbook
-      month_cumul_sheet <- "Monthly Cumulative Stats"
-      openxlsx::addWorksheet(wb = output_excel, 
-                             sheetName = month_cumul_sheet,
-                             tabColour = "#59d2fe")
-      
-      month_vol_function <- paste0("calc_monthly_cumulative_stats(",
-                                   fn_data,
-                                   fn_wys,
-                                   fn_startend,
-                                   fn_exclude,
-                                   ")")
-      month_vol_plot_function <- paste0("plot_monthly_cumulative_stats(",
-                                        fn_data,
-                                        fn_wys,
-                                        fn_startend,
-                                        fn_exclude,
-                                        ")")
-      month_yield_function <- paste0("calc_monthly_cumulative_stats(",
-                                     fn_data,
-                                     fn_wys,
-                                     fn_startend,
-                                     fn_exclude,
-                                     ", use_yield = TRUE",
-                                     fn_area,
-                                     ")")
-      month_yield_plot_function <- paste0("plot_monthly_cumulative_stats(",
-                                          fn_data,
-                                          fn_wys,
-                                          fn_startend,
-                                          fn_exclude,
-                                          ", use_yield = TRUE",
-                                          fn_area,
-                                          ")")
-      
-      # Add data table and title
-      mon_vol_out <- mon_vol[,!colnames(mon_vol) %in% "STATION_NUMBER"]
-      mon_vol_out <- mon_vol_out[,!colnames(mon_vol_out) %in% "STATION_NUMBER"]
-      mon_vol_out <- tidyr::gather(mon_vol_out, Statistic, Value, -1)
-      mon_vol_out <- dplyr::mutate(mon_vol_out, 
-                                   Statistic = paste0(Statistic, "_Volume_m3"),
-                                   Statistic = factor(Statistic, levels = unique(Statistic)))
-      mon_vol_out <- tidyr::spread(mon_vol_out, Month, Value)
-      
-      mon_yield_out <- mon_yield[,!colnames(mon_yield) %in% "STATION_NUMBER"]
-      mon_yield_out <- mon_yield_out[,!colnames(mon_yield_out) %in% "STATION_NUMBER"]
-      mon_yield_out <- tidyr::gather(mon_yield_out, Statistic, Value, -1)
-      mon_yield_out <- dplyr::mutate(mon_yield_out, 
-                                     Statistic = paste0(Statistic, "_Yield_mm"),
-                                     Statistic = factor(Statistic, levels = unique(Statistic)))
-      mon_yield_out <- tidyr::spread(mon_yield_out, Month, Value)
-      
-      mon_cumul_out <- suppressWarnings(dplyr::bind_rows(mon_vol_out, mon_yield_out))
-      
-      add_table(wb = output_excel,
-                sheet = month_cumul_sheet,
-                data = mon_cumul_out, 
-                title = paste0("Monthly Cumulative Summary Statistics from ", start_year, "-", end_year),
-                col = 1,
-                row = 1,
-                comment = paste0(month_vol_function, "              ", month_yield_function))
-      
-      # Add plots and titles
-      add_plot(wb = output_excel, 
-               sheet = month_cumul_sheet,
-               plot = mon_vol_plot[[1]], 
-               title = paste0("Cumulative Monthly Volumetric Flows from ", start_year, "-", end_year), 
-               col = ncol(mon_cumul_out) + 2, 
-               row = 2, 
-               height = 4,
-               width = 9,
-               comment = month_vol_plot_function)
-      add_plot(wb = output_excel, 
-               sheet = month_cumul_sheet,
-               plot = mon_yield_plot[[1]], 
-               title = paste0("Cumulative Monthly Yield from ", start_year, "-", end_year), 
-               col = ncol(mon_cumul_out) + 2, 
-               row = 24, 
-               height = 4,
-               width = 9,
-               comment = month_yield_plot_function)
-      
-      
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = month_cumul_sheet,
-                                          "Output" = "Monthly Cumulative Volumes Table",
-                                          "Function" = month_vol_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = month_cumul_sheet,
-                                          "Output" = "Monthly Cumulative Volumes Plot",
-                                          "Function" = month_vol_plot_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = month_cumul_sheet,
-                                          "Output" = "Monthly Cumulative Yields Table",
-                                          "Function" = month_yield_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = month_cumul_sheet,
-                                          "Output" = "Monthly Cumulative Yields Plot",
-                                          "Function" = month_yield_plot_function)
-    }
   }
   
   ### Daily Stats
   ##########################
   
-  if (5 %in% sections) {
+  if (5 %in% analyses) {
     
-    # Write all daily stats
+    # Daily stats
     day_stats <- calc_daily_stats(data = flow_data,
                                   exclude_years = exclude_years,
                                   water_year_start = water_year_start,
@@ -1259,7 +405,7 @@ compute_full_analysis <- function(data,
                                              use_yield = TRUE,
                                              basin_area = basin_area_stn)
     
-    # Write the daily stats plots
+    # Daily stats plots
     day_stats_plot <- plot_daily_stats(data = flow_data,
                                        exclude_years = exclude_years,
                                        water_year_start = water_year_start,
@@ -1323,8 +469,9 @@ compute_full_analysis <- function(data,
                                                                basin_area = basin_area_stn,
                                                                include_year = .)[[1]]))))
     day_yield_year_plots <- daily_yield_table$plot
-    names(day_yield_year_plots) <- paste0(daily_yield_table$WaterYear, "_Daily_Cumulative_Volumetric_Stats")
+    names(day_yield_year_plots) <- paste0(daily_yield_table$WaterYear, "_Daily_Cumulative_Yield_Stats")
     
+    # Add to objects list
     all_objects <- append(all_objects,    
                           list("Daily" = list("Daily_Summary_Stats" = day_stats,
                                               "Daily_Summary_Stats_Plot" = day_stats_plot,
@@ -1337,259 +484,14 @@ compute_full_analysis <- function(data,
                                               "Daily_Total_Cumul_Yield_mm_with_Years" = day_yield_year_plots
                           )))
     
-    if (write_to_dir) {
-      
-      # Save plots to fasstr plot folder
-      
-      plot_dir <- paste0(file_name, " Plots/")
-      if (!dir.exists(plot_dir)) {
-        message(paste0("** creating folder '", plot_dir ,"' for additional plots"))
-      }
-      dir.create(path = plot_dir, showWarnings = FALSE)
-      
-      if (plot_filetype == "pdf") {
-        message("** writing 'Daily_Statistics_with_Years.pdf'")
-      } else {
-        message(paste0("** writing .", plot_filetype, " plots in 'Daily_Statistics_with_Years' folder"))
-      }
-      
-      suppressWarnings(
-        suppressMessages(
-          write_plots(plots = day_stats_year_plots,
-                      foldername = paste0(plot_dir, "Daily_Statistics_with_Years"),
-                      plot_filetype = plot_filetype,
-                      width = 8.5,
-                      height = 4,
-                      combined_pdf = ifelse(plot_filetype == "pdf", TRUE, FALSE))
-        ))
-      
-      
-      if (plot_filetype == "pdf") {
-        message("** writing 'Daily_Cumulative_Volume_with_Years.pdf'")
-      } else {
-        message(paste0("** writing .", plot_filetype, " plots in 'Daily_Cumulative_Volume_with_Years' folder"))
-      }
-      
-      suppressWarnings(
-        suppressMessages(
-          write_plots(plots = day_vol_year_plots, 
-                      foldername = paste0(plot_dir, "Daily_Cumulative_Volume_with_Years"),
-                      plot_filetype = plot_filetype,
-                      width = 8.5,
-                      height = 4,
-                      combined_pdf = ifelse(plot_filetype == "pdf", TRUE, FALSE))
-        ))
-      
-      if (plot_filetype == "pdf") {
-        message("** writing 'Daily_Cumulative_Yield_with_Years.pdf'")
-      } else {
-        message(paste0("** writing .", plot_filetype, " plots in 'Daily_Cumulative_Yield_with_Years' folder"))
-      }
-      
-      suppressWarnings(
-        suppressMessages(
-          write_plots(plots = day_yield_year_plots, 
-                      foldername = paste0(plot_dir, "Daily_Cumulative_Yield_with_Years"),
-                      plot_filetype = plot_filetype,
-                      width = 8.5,
-                      height = 4,
-                      combined_pdf = ifelse(plot_filetype == "pdf", TRUE, FALSE))
-        ))
-      
-      # Write to the Excel Workbook
-      day_stats_sheet <- "Daily Stats"
-      openxlsx::addWorksheet(wb = output_excel, 
-                             sheetName = day_stats_sheet,
-                             tabColour = "#4a8fe7")
-      
-      daily_stats_function <- paste0("calc_daily_stats(",
-                                     fn_data,
-                                     fn_wys,
-                                     fn_startend,
-                                     fn_exclude,
-                                     fn_missing,
-                                     ")")
-      daily_stats_plot_function <- paste0("plot_daily_stats(",
-                                          fn_data,
-                                          fn_wys,
-                                          fn_startend,
-                                          fn_exclude,
-                                          fn_missing,
-                                          ")")
-      
-      
-      # Add data table and title
-      day_stats_out <- day_stats[,!colnames(day_stats) %in% "STATION_NUMBER"]
-      add_table(wb = output_excel,
-                sheet = day_stats_sheet,
-                data = day_stats_out, 
-                title = paste0("Daily Summary Statistics from ", start_year, "-", end_year),
-                col = 1,
-                row = 1,
-                comment = daily_stats_function)
-      
-      # Add plots and titles
-      add_plot(wb = output_excel, 
-               sheet = day_stats_sheet,
-               plot = day_stats_plot[[1]], 
-               title = paste0("Daily Summary Statistics from ", start_year, "-", end_year), 
-               col = ncol(day_stats_out) + 2, 
-               row = 2, 
-               height = 5,
-               width = 10,
-               comment = daily_stats_plot_function)
-      
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = day_stats_sheet,
-                                          "Output" = "Daily Summary Statistics Table",
-                                          "Function" = daily_stats_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = day_stats_sheet,
-                                          "Output" = "Daily Summary Statistics Plot",
-                                          "Function" = daily_stats_plot_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = day_stats_sheet,
-                                          "Output" = "Daily Summary Statistics Plot with Year",
-                                          "Function" =  paste0("plot_daily_stats(",
-                                                               fn_data,
-                                                               fn_wys,
-                                                               fn_startend,
-                                                               fn_exclude,
-                                                               fn_missing,
-                                                               ", include_year = ", start_year,
-                                                               ")"))
-      
-      # Write to the Excel Workbook
-      day_cumul_sheet <- "Daily Cumulative Stats"
-      openxlsx::addWorksheet(wb = output_excel, 
-                             sheetName = day_cumul_sheet,
-                             tabColour = "#4a8fe7")
-      
-      daily_vol_function <- paste0("calc_daily_cumulative_stats(",
-                                   fn_data,
-                                   fn_wys,
-                                   fn_startend,
-                                   fn_exclude,
-                                   ")")
-      daily_vol_plot_function <- paste0("plot_daily_cumulative_stats(",
-                                        fn_data,
-                                        fn_wys,
-                                        fn_startend,
-                                        fn_exclude,
-                                        ")")
-      daily_yield_function <- paste0("calc_daily_cumulative_stats(",
-                                     fn_data,
-                                     fn_wys,
-                                     fn_startend,
-                                     fn_exclude,
-                                     ", use_yield = TRUE",
-                                     fn_area,
-                                     ")")
-      daily_yield_plot_function <- paste0("plot_daily_cumulative_stats(",
-                                          fn_data,
-                                          fn_wys,
-                                          fn_startend,
-                                          fn_exclude,
-                                          ", use_yield = TRUE",
-                                          fn_area,
-                                          ")")
-      
-      # Add data table and title
-      day_vol_out <- day_vol[,!colnames(day_vol) %in% "STATION_NUMBER"]
-      day_vol_out <- day_vol_out[,!colnames(day_vol_out) %in% "STATION_NUMBER"]
-      day_vol_out <- tidyr::gather(day_vol_out, Statistic, Value, -(1:2))
-      day_vol_out <- dplyr::mutate(day_vol_out, Statistic = paste0(Statistic, "_Volume_m3"))
-      order <- unique(day_vol_out$Statistic)
-      day_vol_out <- tidyr::spread(day_vol_out, Statistic, Value)
-      day_vol_out <- dplyr::select(day_vol_out, Date, DayofYear, order)
-      day_vol_out <- dplyr::arrange(day_vol_out, DayofYear)
-      
-      day_yield_out <- day_yield[,!colnames(day_yield) %in% "STATION_NUMBER"]
-      day_yield_out <- day_yield_out[,!colnames(day_yield_out) %in% "STATION_NUMBER"]
-      day_yield_out <- tidyr::gather(day_yield_out, Statistic, Value, -(1:2))
-      day_yield_out <- dplyr::mutate(day_yield_out, Statistic = paste0(Statistic, "_Yield_mm"))
-      order <- unique(day_yield_out$Statistic)
-      day_yield_out <- tidyr::spread(day_yield_out, Statistic, Value)
-      day_yield_out <- dplyr::select(day_yield_out, Date, DayofYear, order)
-      day_yield_out <- dplyr::arrange(day_yield_out, DayofYear)
-      
-      day_cumul_out <- dplyr::left_join(day_vol_out, day_yield_out, by = c("Date", "DayofYear"))
-      
-      add_table(wb = output_excel,
-                sheet = day_cumul_sheet,
-                data = day_cumul_out, 
-                title = paste0("Daily Cumulative Summary Statistics from ", start_year, "-", end_year),
-                col = 1,
-                row = 1,
-                comment = paste0(daily_vol_function, "              ", daily_yield_function))
-      
-      # Add plots and titles
-      add_plot(wb = output_excel,
-               sheet = day_cumul_sheet,
-               plot = day_vol_plot[[1]],
-               title = paste0("Cumulative Daily Volumetric Flows from ", start_year, "-", end_year),
-               col = ncol(day_cumul_out) + 2,
-               row = 2,
-               height = 4,
-               width = 9,
-               comment = daily_vol_plot_function)
-      add_plot(wb = output_excel,
-               sheet = day_cumul_sheet,
-               plot = day_yield_plot[[1]],
-               title = paste0("Cumulative Daily Yield from ", start_year, "-", end_year),
-               col = ncol(day_cumul_out) + 2,
-               row = 24,
-               height = 4,
-               width = 9,
-               comment = daily_yield_plot_function)
-      
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = day_cumul_sheet,
-                                          "Output" = "Daily Cumulative Volumes Table",
-                                          "Function" = daily_vol_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = day_cumul_sheet,
-                                          "Output" = "Daily Cumulative Volumes Plot",
-                                          "Function" = daily_vol_plot_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = day_cumul_sheet,
-                                          "Output" = "Daily Cumulative Volumes Plot with Year",
-                                          "Function" = paste0("plot_daily_cumulative_stats(",
-                                                              fn_data,
-                                                              fn_wys,
-                                                              fn_startend,
-                                                              fn_exclude,
-                                                              ", include_year = ", start_year,
-                                                              ")"))
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = day_cumul_sheet,
-                                          "Output" = "Daily Cumulative Yields Table",
-                                          "Function" = daily_yield_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = day_cumul_sheet,
-                                          "Output" = "Daily Cumulative Yields Plot",
-                                          "Function" = daily_yield_plot_function)
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = day_cumul_sheet,
-                                          "Output" = "Daily Cumulative Yields Plot with Year",
-                                          "Function" = paste0("plot_daily_cumulative_stats(",
-                                                              fn_data,
-                                                              fn_wys,
-                                                              fn_startend,
-                                                              fn_exclude,
-                                                              ", use_yield = TRUE",
-                                                              fn_area,
-                                                              ", include_year = ", start_year,
-                                                              ")"))
-    }
   }
   
   # ### Annual Trending
   ##########################
   
-  if (6 %in% sections) {
+  if (6 %in% analyses) {
     
-    # Write the trends results
+    # Trends results
     ann_trends <- compute_annual_trends(data = flow_data_plus,
                                         start_year = start_year, end_year = end_year,
                                         exclude_years = exclude_years,
@@ -1600,77 +502,20 @@ compute_full_analysis <- function(data,
                                         zyp_alpha = zyp_alpha)
     ann_data <- ann_trends$Annual_Trends_Data
     ann_results <- ann_trends$Annual_Trends_Results
-    ann_trends_plots <-  ann_trends[c(3:length(names(ann_trends)))]
+    ann_trends_plots <- ann_trends[c(3:length(names(ann_trends)))]
     
+    # Add to objects list
     all_objects <- append(all_objects,    
                           list("Trending" = list("Annual_Trends_Data" = ann_data,
                                                  "Annual_Trends_Results" = ann_results,
                                                  "Annual_Trends_Plots" = ann_trends_plots)))
     
-    if (write_to_dir) {
-      
-      # Save plots to fasstr plot folder
-      plot_dir <- paste0(file_name, " Plots/")
-      if (!dir.exists(plot_dir)) {
-        message(paste0("** creating folder '", plot_dir ,"' for additional plots"))
-      }
-      dir.create(path = plot_dir, showWarnings = FALSE)
-      
-      if (plot_filetype == "pdf") {
-        message("** writing 'Annual_Trends_Results_Plots.pdf'")
-      } else {
-        message(paste0("** writing .", plot_filetype, " plots in 'Annual_Trends_Results_Plots' folder"))
-      }
-      
-      suppressMessages(
-        write_plots(plots = ann_trends_plots,
-                    foldername = paste0(plot_dir , "Annual_Trends_Results_Plots"),
-                    plot_filetype = plot_filetype,
-                    width = 8.5,
-                    height = 3,
-                    combined_pdf = ifelse(plot_filetype == "pdf", TRUE, FALSE))
-      )
-      
-      # Write to the Excel Workbook
-      trends_sheet <- "Annual Trends"
-      openxlsx::addWorksheet(wb = output_excel, 
-                             sheetName = trends_sheet,
-                             tabColour = "#5c7aff")
-      
-      trends_function <- paste0("compute_annual_trends(",
-                                fn_data,
-                                fn_wys,
-                                fn_startend,
-                                fn_exclude,
-                                fn_area,
-                                ", zyp_method = '", zyp_method, "'",
-                                ", zyp_alpha = ", zyp_alpha,
-                                fn_missing,
-                                ")")
-      
-      # Add data table and title
-      trends_out <- dplyr::left_join(ann_results, ann_data, by = c("STATION_NUMBER", "Statistic"))
-      trends_out <- trends_out[,!colnames(trends_out) %in% "STATION_NUMBER"]
-      add_table(wb = output_excel,
-                sheet = trends_sheet,
-                data = trends_out,
-                title = paste0("Annual Trending Statistics from ", start_year, "-", end_year),
-                col = 1,
-                row = 1,
-                comment = trends_function)
-      
-      fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                          "Worksheet" = trends_sheet,
-                                          "Output" = "Annual Trends Tables and Plots",
-                                          "Function" = trends_function)
-      
-    }
   }
   
   ### Low Flow Frequency
   ##########################
   
-  if (7 %in% sections) {
+  if (7 %in% analyses) {
     
     data_check <- calc_annual_lowflows(data = flow_data,
                                        start_year = start_year, end_year = end_year, exclude_years = exclude_years,
@@ -1693,162 +538,19 @@ compute_full_analysis <- function(data,
       
       # freq_ann_data <- tidyr::spread(freq_results$Freq_Analysis_Data, Measure, value)
       freq_ann_data <- freq_results$Freq_Analysis_Data
-      
       freq_plot_data <- freq_results$Freq_Plot_Data
-      
       freq_plots <- list("Frequency_Plot" = freq_results$Freq_Plot)
-      
       #freq_fitting <- freq_results$fit
-      
       freq_quantiles <- freq_results$Freq_Fitted_Quantiles
-      
-      
+
+      # Add to objects list
       all_objects <- append(all_objects,    
                             list("Lowflow_Frequencies" = freq_results))
       
-      if (write_to_dir) {
-        
-        # Write to the Excel Workbook
-        freq_sheet <- "Low-flow Frequencies"
-        openxlsx::addWorksheet(wb = output_excel, 
-                               sheetName = freq_sheet,
-                               tabColour = "#5c7aff")
-        
-        frequency_function <- paste0("compute_annual_frequencies(",
-                                     fn_data,
-                                     fn_wys,
-                                     fn_startend,
-                                     fn_exclude,
-                                     ", roll_days = c(1,3,7,30,60)",
-                                     ", prob_plot_position = 'weibull'",
-                                     ", fit_distr = 'PIII'",
-                                     ", fit_distr_method = 'MOM'",
-                                     fn_missing,
-                                     ")")
-        
-        # Add data table and title
-        freq_ann_data_out <- tidyr::spread(freq_ann_data, Measure, Value)
-        freq_ann_data_out <- freq_ann_data_out[,!colnames(freq_ann_data_out) %in% "STATION_NUMBER"]
-        add_table(wb = output_excel,
-                  sheet = freq_sheet,
-                  data = freq_ann_data_out,
-                  title = paste0("Annual Low-flow Values from ", start_year, "-", end_year),
-                  col = 1,
-                  row = 1,
-                  comment = paste0(frequency_function, "[[1]]"))
-        
-        freq_plot_data_out <- freq_plot_data[,!colnames(freq_plot_data) %in% "STATION_NUMBER"]
-        add_table(wb = output_excel,
-                  sheet = freq_sheet,
-                  data = freq_plot_data,
-                  title = paste0("Plotting Data"),
-                  col = ncol(freq_ann_data_out) + 2,
-                  row = 1,
-                  comment = paste0(frequency_function, "[[2]]"))
-        
-        add_plot(wb = output_excel,
-                 sheet = freq_sheet,
-                 plot = freq_plots[[1]],
-                 title = paste0("Frequency Plot ", start_year, "-", end_year),
-                 col = ncol(freq_ann_data_out) + 2 + ncol(freq_plot_data_out) + 1,
-                 row = 1,
-                 height = 5,
-                 width = 7,
-                 comment = paste0(frequency_function, "[[3]]"))
-        
-        freq_quantiles_out <- freq_quantiles[,!colnames(freq_quantiles) %in% "STATION_NUMBER"]
-        add_table(wb = output_excel,
-                  sheet = freq_sheet,
-                  data = freq_quantiles_out,
-                  title = paste0("Fitted Quantiles"),
-                  col = ncol(freq_ann_data_out) + 2 + ncol(freq_plot_data_out) + 1 + 11,
-                  row = 1,
-                  comment = paste0(frequency_function, "[[5]]"))
-        
-        fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                            "Worksheet" = freq_sheet,
-                                            "Output" = "Low-Flow Frequency Analysis Tables and Plots",
-                                            "Function" = frequency_function)
-      }
     }
   }
-  
-  # Write the metadata and table of contents
-  ##########################
-  
-  if (write_to_dir) {
-    
-    ## Create a meta data file of the analysis arguments
-    
-    # Make a list of all options used in function, plus dates and covnert to a dataframe
-    metadata <- list(data = ifelse(!is.null(data), as.character(substitute(data)), ""),
-                     dates = as.character(substitute(Date)),
-                     values = as.character(substitute(Value)),
-                     groups = as.character(substitute(STATION_NUMBER)),
-                     station_number = ifelse(!is.null(station_number), station_number, ""),
-                     basin_area = basin_area_stn,
-                     water_year_start = water_year_start,
-                     start_year = start_year,
-                     end_year = end_year,
-                     exclude_years = paste0(ifelse(!is.null(exclude_years),
-                                                   paste0(ifelse(length(exclude_years) == 1, 
-                                                                 paste(exclude_years),
-                                                                 paste(exclude_years, collapse = ", "))),
-                                                   "")),
-                     ignore_missing = ignore_missing,
-                     zyp_method = zyp_method,
-                     zyp_alpha = ifelse(!is.na(zyp_alpha), zyp_alpha, ""),
-                     sections = sections,
-                     file_name = paste0(file_name, ".xlsx"),
-                     plot_filetype = plot_filetype,
-                     analysis_function = analysis_function,
-                     analysis_date = as.character(Sys.time()))
-    metadata <- data.frame("Argument" = names(metadata),
-                           "Option" = as.character(unname(metadata)))
-    metadata <- metadata[c(1,5,2:4,6:nrow(metadata)),]
-    
-    add_table(wb = output_excel,
-              sheet = overview_sheet,
-              data = metadata,
-              title = paste0("Analysis Overview"),
-              col = 1,
-              row = 1)
-    
-    
-    
-    fasstr_sheet <- "fasstr Functions"
-    openxlsx::addWorksheet(wb = output_excel, 
-                           sheetName = fasstr_sheet,
-                           tabColour = "#003e1f") # 73fbd3 44e5e7 59d2fe 4a8fe7 5c7aff
-    add_table(wb = output_excel,
-              sheet = fasstr_sheet,
-              data = fasstr_functions,
-              title = paste0("fasstr Functions"),
-              col = 1,
-              row = 1,
-              comment = "Copy and paste a function into R to reproduce or further customize  results")
-    openxlsx::setColWidths(wb = output_excel, sheet = fasstr_sheet, cols = 1:3, widths = "auto")
-    
-    # Create the file with all the sheet
-    
-    message(paste0("** writing analysis results in '", file_name, ".xlsx'"))
-    
-    openxlsx::saveWorkbook(wb = output_excel, 
-                           file = paste0(file_name, ".xlsx"),
-                           overwrite = TRUE)
-  }
-  
-  ## Success message
-  if (write_to_dir) {
-    if (5 %in% sections | 6 %in% sections) {
-      message(paste0("* DONE. For analysis results go to: '", normalizePath(paste0(file_name, ".xlsx")),
-                     "' and '", normalizePath(plot_dir), "' folder"))
-    } else {
-      message(paste0("* DONE. For analysis results go to: '", normalizePath(paste0(file_name, ".xlsx"))))
-    }
-  } else {
-    message("* DONE")
-  }
+
+  message("* DONE")
   
   return(all_objects)
   
