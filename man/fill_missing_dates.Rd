@@ -37,10 +37,11 @@ Adds rows of dates with missing flow values to a streamflow dataset with daily f
 \examples{
 \dontrun{
 
-fill_missing_dates(data = flow_data)
+# Fill missing dates with NA using calendar years
+fill_missing_dates(data = "08NM116")
 
-fill_missing_dates(station_number = "08NM116", 
+# Fill missing dates with NA using water years starting in August
+fill_missing_dates(data = "08NM116", 
                    water_year_start = 8)
-
 }
 }

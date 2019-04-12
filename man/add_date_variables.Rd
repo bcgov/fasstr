@@ -37,10 +37,11 @@ Add columns of Year (YYYY), Month (MM), MonthName (e.g. 'Jan'), and DayofYear (1
 \examples{
 \dontrun{
 
-add_date_variables(data = flow_data)
+# Using calendar years as water years
+add_date_variables(data = "08NM116")
 
+# Water years starting in August
 add_date_variables(data = "08NM116", 
                    water_year_start = 8)
-
 }
 }

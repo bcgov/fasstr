@@ -6,8 +6,8 @@
 \usage{
 write_flow_data(data, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number, water_year_start = 1,
-  start_year, end_year, start_date, end_date, file, fill_missing = FALSE,
-  digits)
+  start_year, end_year, start_date, end_date, file_name,
+  fill_missing = FALSE, digits)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -37,7 +37,7 @@ Leave blank if using \code{data} argument.}
 
 \item{end_date}{Date (YYYY-MM-DD) of last date of data to write. Leave blank if all dates required.}
 
-\item{file}{Character string naming the output file. If none provided, a default file name (with .xlsx) is provided (see 
+\item{file_name}{Character string naming the output file. If none provided, a default file name (with .xlsx) is provided (see 
 "Successfully created" message when using function for file name).}
 
 \item{fill_missing}{Logical value indicating whether to fill dates with missing flow data with NA. Default \code{FALSE}.}
@@ -53,9 +53,18 @@ Write a streamflow dataset to a directory. Can fill missing dates or filter data
 \examples{
 \dontrun{
 
-write_flow_data(station_number = "08NM116", 
-                file = "Mission_Creek_daily_flows.xlsx",
-                fill_missing = TRUE)
+# Write data from a data frame
+flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+write_flow_data(flow_data = flow_data, 
+                file_name = "Mission_Creek_daily_flows.xlsx")
 
+# Write data directly from HYDAT
+write_flow_data(station_number = "08NM116", 
+                file_name = "Mission_Creek_daily_flows.xlsx")
+
+# Write data directly from HYDAT and fill missing dates with NA
+write_flow_data(station_number = "08NM116", 
+                file_name = "Mission_Creek_daily_flows.xlsx",
+                fill_missing = TRUE)
 }
 }

@@ -81,9 +81,17 @@ Calculates and writes tables and plots from a suite of statistics from fasstr fu
 \examples{
 \dontrun{
 
+# Save a full analysis will all the analyses
 write_full_analysis(station_number = "08NM116",
                     file_name = "Mission Creek",
                     start_year = 1980,
                     end_year = 2010)
+
+# Save a full analysis with only Annual and Daily analyses
+write_full_analysis(station_number = "08NM116",
+                    file_name = "Mission Creek",
+                    start_year = 1980,
+                    end_year = 2010,
+                    analyses = c(3,5))
 }
 }

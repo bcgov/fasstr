@@ -38,9 +38,16 @@
 #' @examples
 #' \dontrun{
 #' 
+#' # Compute a full analysis will all the analyses
 #' compute_full_analysis(station_number = "08NM116",
-#'                       start_year = 1980,
-#'                       end_year = 2010
+#'                      start_year = 1980,
+#'                      end_year = 2010)
+#' 
+#' # Compute a full analysis with only Annual and Daily analyses
+#' compute_full_analysis(station_number = "08NM116",
+#'                      start_year = 1980,
+#'                      end_year = 2010,
+#'                      analyses = c(3,5))
 #' }
 #' @export
 

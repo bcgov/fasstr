@@ -133,7 +133,7 @@ write_objects_list <- function(list,
     } else if (inherits(list[[i]], what = "data.frame")) {
       suppressMessages(
         write_results(data = list[[i]], 
-                      file = paste0(folder_name, i, ".", table_filetype))
+                      file_name = paste0(folder_name, i, ".", table_filetype))
       )
     } else {
       warning(paste0("Object in list, ", as.character(substitute(list)), "$", i, ", is not a ggplot2 or data frame object and was not saved."), call. = FALSE)

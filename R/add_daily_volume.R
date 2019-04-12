@@ -22,10 +22,7 @@
 #' @examples
 #' \dontrun{
 #' 
-#' add_daily_volume(data = flow_data)
-#' 
 #' add_daily_volume(station_number = "08NM116")
-#'
 #' }
 #' @export
 

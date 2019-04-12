@@ -48,9 +48,15 @@ Adds selected n-day rolling means to a streamflow dataset. Based on selected n-d
 \examples{
 \dontrun{
 
-add_rolling_means(data = flow_data, roll_days = 7, roll_align = 'centre')
-
+# Add default 3, 7, and 30-day rolling means, with "right" alignment
 add_rolling_means(station_number = "08NM116")
 
+# Add custom 5 and 10-day rolling means
+add_rolling_means(station_number = "08NM116",
+                  roll_days = c(5,10))
+                  
+# Add default 3, 7, and 30-day rolling means, with "left" alignment
+add_rolling_means(station_number = "08NM116",
+                  roll_align = "left")                
 }
 }

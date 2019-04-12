@@ -24,10 +24,14 @@
 #' @examples
 #' \dontrun{
 #' 
-#' add_daily_yield(flow_data = flow_data, basin_area = 104.5)
-#' 
-#' add_daily_yield(station_number = "08NM116")
-#'
+#' # HYDAT basin area
+#' add_daily_yield(station_number = "08NM116", 
+#'                 water_year_start = 8)
+#'                      
+#' # Set the basin area
+#' add_daily_yield(station_number = "08NM116", 
+#'                 water_year_start = 8,
+#'                 basin_area = 800)
 #' }
 #' @export
 

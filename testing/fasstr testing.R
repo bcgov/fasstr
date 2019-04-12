@@ -109,7 +109,7 @@ test <- fasstr::compute_full_analysis(#data = flow_data, values = Flow,
                       exclude_years = c(1991, 1995:1997)
   )
 
-fasstr::write_full_analysis(
+write_full_analysis(
   station_number = "08HB048",
   water_year_start = 1, 
   start_year = 1985, 
@@ -117,8 +117,9 @@ fasstr::write_full_analysis(
   ignore_missing = FALSE, 
   #write_to_dir = FALSE, 
   file_name =  'Carnation Creek',
+  basin_area = 10,
   #plot_filetype = 'pdf', 
-  analyses = 5,
+  analyses = 1,
   exclude_years = c(1991, 1995:1997))
 
 fasstr::write_flow_data(station_number = "08HB048")

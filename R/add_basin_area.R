@@ -30,10 +30,20 @@
 #' @examples
 #' \dontrun{
 #' 
-#'add_basin_area(data = flow_data, area = 104.5)
+#' # HYDAT basin area
+#' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+#' add_basin_area(data = flow_data)
 #' 
-#'add_basin_area(station_number = "08NM116")
-#'
+#' # HYDAT basin area
+#' add_basin_area(station_number = "08NM116")
+#' 
+#' # Set the basin area
+#' add_basin_area(station_number = "08NM116",
+#'                basin_area = 800)
+#'                
+#' # Set multiple basin areas for multiple stations
+#' add_basin_area(station_number = c("08NM116", "08NM242"),
+#'                basin_area = c("08NM116" = 800, "08NM242" = 10))
 #' }
 #' @export
 

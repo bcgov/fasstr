@@ -24,11 +24,8 @@
 #' @examples
 #' \dontrun{
 #' 
-#' add_cumulative_volume(data = flow_data)
-#' 
 #' add_cumulative_volume(station_number = "08NM116", 
 #'                       water_year_start = 8)
-#'
 #' }
 #' @export
 

@@ -37,9 +37,19 @@ Add a column of basin areas to a streamflow dataset, in units of square kilometr
 \examples{
 \dontrun{
 
-add_basin_area(data = flow_data, area = 104.5)
+# HYDAT basin area
+flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+add_basin_area(data = flow_data)
 
+# HYDAT basin area
 add_basin_area(station_number = "08NM116")
 
+# Set the basin area
+add_basin_area(station_number = "08NM116",
+               basin_area = 800)
+               
+# Set multiple basin areas for multiple stations
+add_basin_area(station_number = c("08NM116", "08NM242"),
+               basin_area = c("08NM116" = 800, "08NM242" = 10))
 }
 }

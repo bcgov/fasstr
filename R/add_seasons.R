@@ -27,10 +27,14 @@
 #' @examples
 #' \dontrun{
 #' 
-#' add_seasons(station_number = "08NM116", 
-#'             water_year_start = 12,
-#'             seasons_length = 3)
-#'
+#' # Four seasons starting in January
+#' add_seasons(data = "08NM116",
+#'             seasons_length = 4)
+#' 
+#' # Two seasons starting in October
+#' add_seasons(data = "08NM116", 
+#'             water_year_start = 9,
+#'             seasons_length = 6)
 #' }
 #' @export
 

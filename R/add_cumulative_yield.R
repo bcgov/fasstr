@@ -26,12 +26,14 @@
 #' @examples
 #' \dontrun{
 #' 
-#' add_cumulative_yield(data = flow_data, 
-#'                      basin_area = 105.6)
-#' 
+#' # HYDAT basin area
 #' add_cumulative_yield(station_number = "08NM116", 
 #'                      water_year_start = 8)
-#'
+#'                      
+#' # Set the basin area
+#' add_cumulative_yield(station_number = "08NM116", 
+#'                      water_year_start = 8,
+#'                      basin_area = 800)
 #' }
 #' @export
 

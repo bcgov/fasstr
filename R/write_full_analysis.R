@@ -27,10 +27,18 @@
 #' @examples
 #' \dontrun{
 #' 
+#' # Save a full analysis will all the analyses
 #' write_full_analysis(station_number = "08NM116",
 #'                     file_name = "Mission Creek",
 #'                     start_year = 1980,
 #'                     end_year = 2010)
+#' 
+#' # Save a full analysis with only Annual and Daily analyses
+#' write_full_analysis(station_number = "08NM116",
+#'                     file_name = "Mission Creek",
+#'                     start_year = 1980,
+#'                     end_year = 2010,
+#'                     analyses = c(3,5))
 #' }
 #' @export
 
@@ -1082,7 +1090,7 @@ write_full_analysis <- function(data,
     suppressWarnings(
       suppressMessages(
         write_plots(plots = results$Daily$Daily_Summary_Stats_with_Years,
-                    foldername = paste0(plot_dir, "Daily_Statistics_with_Years"),
+                    folder_name = paste0(plot_dir, "Daily_Statistics_with_Years"),
                     plot_filetype = plot_filetype,
                     width = 8.5,
                     height = 4,
@@ -1185,7 +1193,7 @@ write_full_analysis <- function(data,
     suppressWarnings(
       suppressMessages(
         write_plots(plots = results$Daily$Daily_Total_Cumul_Volume_m3_with_Years,
-                    foldername = paste0(plot_dir, "Daily_Cumulative_Volume_with_Years"),
+                    folder_name = paste0(plot_dir, "Daily_Cumulative_Volume_with_Years"),
                     plot_filetype = plot_filetype,
                     width = 8.5,
                     height = 4,
@@ -1201,7 +1209,7 @@ write_full_analysis <- function(data,
     suppressWarnings(
       suppressMessages(
         write_plots(plots = results$Daily$Daily_Total_Cumul_Yield_mm_with_Years,
-                    foldername = paste0(plot_dir, "Daily_Cumulative_Yield_with_Years"),
+                    folder_name = paste0(plot_dir, "Daily_Cumulative_Yield_with_Years"),
                     plot_filetype = plot_filetype,
                     width = 8.5,
                     height = 4,
@@ -1320,7 +1328,7 @@ write_full_analysis <- function(data,
     
     suppressMessages(
       write_plots(plots = results$Trending$Annual_Trends_Plots,
-                  foldername = paste0(plot_dir , "Annual_Trends_Results_Plots"),
+                  folder_name = paste0(plot_dir , "Annual_Trends_Results_Plots"),
                   plot_filetype = plot_filetype,
                   width = 8.5,
                   height = 3,
