@@ -1000,7 +1000,7 @@ To support saving the fasstr tables and plots to a directory, there are several 
 
 ### Writing a flow dataset
 
-To directly save a streamflow dataset from HYDAT or your own custom dataset onto your computer, you can use the `write_flow_data()` function. By listing the `station_number` or `data` data frame, the dataset will save a file into the working directory, unless other wise specified using the `file` argument. If using the `station_number` argument and listing only one station without listing a name with `file`, the name will include the number and followed by "_daily_data.xlsx"; and if multiple stations are listed the name will be "HYDAT_daily_data.xlsx". When using the `data` argument without listing a name with `file` the default name will be `fasstr_daily_data.xlsx`.  To use another file type than "xlsx" (options are "xlsx", "xls", or "csv") provide a file name using the `file` argument with the desired extension. Other argument options for this function include:
+To directly save a streamflow dataset from HYDAT or your own custom dataset onto your computer, you can use the `write_flow_data()` function. By listing the `station_number` or `data` data frame, the dataset will save a file into the working directory, unless other wise specified using the `file_name` argument. If using the `station_number` argument and listing only one station without listing a name with `file_name`, the name will include the number and followed by "_daily_data.xlsx"; and if multiple stations are listed the name will be "HYDAT_daily_data.xlsx". When using the `data` argument without listing a name with `file_name` the default name will be `fasstr_daily_data.xlsx`.  To use another file type than "xlsx" (options are "xlsx", "xls", or "csv") provide a file name using the `file_name` argument with the desired extension. Other argument options for this function include:
 
 - selecting for the start and end years, or start and end dates
 - choosing to use water years when selecting specific years
@@ -1020,26 +1020,26 @@ write_flow_data(station_number = "08NM116",
                 start_year = 1960,
                 end_year = 1970
                 fill_missing = TRUE,
-                file = "mission_creek.csv")
+                file_name = "mission_creek.csv")
 ```
 
 
 #### Writing a data frame
 
-While you can use the base R `write_csv()` or writexl package functions to save your data, the package provides a function with options to choose for file type and the rounding of digits. To directly save a data frame onto your computer you can use the `write_results()` function. This function allows you to decide on file extensions of "xlsx", "xls", or "csv" by including it in the `file` argument when you name the file. This function also allows you to round all numeric columns by selecting the number of digits using the numeric `digits` argument.
+While you can use the base R `write_csv()` or writexl package functions to save your data, the package provides a function with options to choose for file type and the rounding of digits. To directly save a data frame onto your computer you can use the `write_results()` function. This function allows you to decide on file extensions of "xlsx", "xls", or "csv" by including it in the `file_name` argument when you name the file. This function also allows you to round all numeric columns by selecting the number of digits using the numeric `digits` argument.
 
 ```{r, eval=FALSE}
 annual_data <- calc_annual_stats(station_number = "08NM116")
 
 write_results(data = annual_data,
               digits = 3,
-              file = "mission_creek_annual_flows.xlsx")
+              file_name = "mission_creek_annual_flows.xlsx")
 ```
 
 
 #### Writing a list of plots
 
-As all plots produced with this package are contained within lists, a function is provided to assist in saving a list of plots into either a folder, where all plot files are named by the object names within the list, or combined PDF document, using the `write_plots()` function. The name of the folder or combined PDF document is provided using the `foldername` argument. If the folder does not exist, one will be created. Options to customize output size with `width`, `height`, `units` and `dpi` arguments, as similar to those in `ggplots2:ggsave()` can also be used.
+As all plots produced with this package are contained within lists, a function is provided to assist in saving a list of plots into either a folder, where all plot files are named by the object names within the list, or combined PDF document, using the `write_plots()` function. The name of the folder or combined PDF document is provided using the `folder_name` argument. If the folder does not exist, one will be created. Options to customize output size with `width`, `height`, `units` and `dpi` arguments, as similar to those in `ggplots2:ggsave()` can also be used.
 
 The following will save each annual plot as a "png" file in a folder called "Annual Plots" in the working directory:
 
@@ -1047,7 +1047,7 @@ The following will save each annual plot as a "png" file in a folder called "Ann
 annual_plots <- plot_annual_stats(station_number = c("08NM116","08NM242"))
 
 write_plots(plots = annual_data,
-            foldername = "Annual Plots",
+            folder_name = "Annual Plots",
             plot_filetype = "png")
 ```
 
@@ -1057,7 +1057,7 @@ The following will save all annual plots as combined "pdf" document called "Annu
 annual_plots <- plot_annual_stats(station_number = c("08NM116","08NM242"))
 
 write_plots(plots = annual_data,
-            foldername = "Annual Plots",
+            folder_name = "Annual Plots",
             combined_pdf =  TRUE)
 ```
 
@@ -1066,7 +1066,7 @@ If you would prefer to save the plots using other functions, like the `ggplot2::
 
 #### Writing a list of data frames and plots
 
-As some objects produced with this package, mainly with the `compute_*` functions, are a list of both data frame and ggplot2 objects, a function is provided to assist in saving all objects within the list into a designated directory folder, where all table and plot files are named by the object names within the list using the `write_objects_list()` function. The name of the folder is provided using the `foldername` argument. If the folder does not exist, one will be created. The file type for tables and plots are chosen using the `table_filetype` and `plot_filetype` arguments respectively. There are also options to customize plot output size with `width`, `height`, `units` and `dpi` arguments, as similar to those in `ggplots2:ggsave()` can also be used.
+As some objects produced with this package, mainly with the `compute_*` functions, are a list of both data frame and ggplot2 objects, a function is provided to assist in saving all objects within the list into a designated directory folder, where all table and plot files are named by the object names within the list using the `write_objects_list()` function. The name of the folder is provided using the `folder_name` argument. If the folder does not exist, one will be created. The file type for tables and plots are chosen using the `table_filetype` and `plot_filetype` arguments respectively. There are also options to customize plot output size with `width`, `height`, `units` and `dpi` arguments, as similar to those in `ggplots2:ggsave()` can also be used.
 
 The following will save all plots and tables in a folder called "Frequency Analysis" in the working directory:
 
@@ -1074,7 +1074,7 @@ The following will save all plots and tables in a folder called "Frequency Analy
 freq_analysis <- compute_annual_frequencies(station_number = "08NM116")
 
 write_objects_list(list = freq_analysis,
-                   foldername = "Frequency Analysis",
+                   folder_name = "Frequency Analysis",
                    plot_filetype = "png",
                    table_filetype = "xlsx")
 ```

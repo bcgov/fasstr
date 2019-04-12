@@ -16,7 +16,7 @@
 #'    class "data.frame" or "gg" will not be saved. Each table and plot will be named by the object name in the list.
 #'
 #' @param list List of data frames and plots to write to disk.
-#' @param foldername Name of folder to create on disk (if it does not exist) to write each plot from list. 
+#' @param folder_name Name of folder to create on disk (if it does not exist) to write each plot from list. 
 #'    If using \code{combined_pdf} argument, then it will be the name of the PDF document.
 #' @param table_filetype Table file type to write. One of "csv", "xls", or "xslx".
 #' @param plot_filetype Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
@@ -29,13 +29,19 @@
 #' @examples
 #' \dontrun{
 #' 
-#' write_objects_list()
+#' # Example list of tables and plots to save
+#' frequency <- compute_annual_frequencies(station_number = "08NM116")
 #' 
+#' # Write objects in a folder
+#' write_objects_list(list = frequency, 
+#'                    folder_name = "Frequency Analysis",
+#'                    table_filetype = "xlsx", 
+#'                    plot_filetype = "png")
 #' }
 #' @export
 
 write_objects_list <- function(list,
-                               foldername,
+                               folder_name,
                                table_filetype,
                                plot_filetype,
                                width,
@@ -62,8 +68,8 @@ write_objects_list <- function(list,
     height = NA
   }
   
-  if (missing(foldername))
-    stop("A folder name is required with the foldername argument to write all results tables and plots.", call. = FALSE)
+  if (missing(folder_name))
+    stop("A folder name is required with the folder_name argument to write all results tables and plots.", call. = FALSE)
   
   # Check list of plots
   if (is.null(list)) stop("Must provide a list.", call. = FALSE)
@@ -104,20 +110,20 @@ write_objects_list <- function(list,
   
   # Create a folder of plots
   
-  message(paste0("* writing tables and plots in '", foldername, "' folder"))
+  message(paste0("* writing tables and plots in '", folder_name, "' folder"))
   
   # Check if folder exists, create if not
-  dir.create(foldername, showWarnings = FALSE)
+  dir.create(folder_name, showWarnings = FALSE)
   
-  # Add the slash to foldername if it doesn't exist
-  if (!substr(foldername, nchar(foldername), nchar(foldername)) == "/") {
-    foldername <- paste0(foldername, "/")
+  # Add the slash to folder_name if it doesn't exist
+  if (!substr(folder_name, nchar(folder_name), nchar(folder_name)) == "/") {
+    folder_name <- paste0(folder_name, "/")
   }
   
   for (i in names(list)) {
     if (inherits( list[[i]], what = "gg")) {
       suppressMessages(
-        ggplot2::ggsave(filename = paste0(foldername, i, ".", plot_filetype), 
+        ggplot2::ggsave(filename = paste0(folder_name, i, ".", plot_filetype), 
                         plot = list[[i]],
                         width = width,
                         height = height,
@@ -127,15 +133,15 @@ write_objects_list <- function(list,
     } else if (inherits(list[[i]], what = "data.frame")) {
       suppressMessages(
         write_results(data = list[[i]], 
-                      file = paste0(foldername, i, ".", table_filetype))
+                      file = paste0(folder_name, i, ".", table_filetype))
       )
     } else {
       warning(paste0("Object in list, ", as.character(substitute(list)), "$", i, ", is not a ggplot2 or data frame object and was not saved."), call. = FALSE)
     }
   }
   
-  # message(paste0("Successfully created folder ", foldername, " with all plots and tables."))
-  message(paste0("* DONE. For files go to: '", normalizePath(foldername), "'"))
+  # message(paste0("Successfully created folder ", folder_name, " with all plots and tables."))
+  message(paste0("* DONE. For files go to: '", normalizePath(folder_name), "'"))
   
   
 }

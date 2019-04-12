@@ -21,7 +21,7 @@
 #' @param end_year Numeric value of the last year of data to write. Leave blank to use the last year of the source data.
 #' @param start_date Date (YYYY-MM-DD) of first date of data to write. Leave blank if all dates required.
 #' @param end_date  Date (YYYY-MM-DD) of last date of data to write. Leave blank if all dates required.
-#' @param file Character string naming the output file. If none provided, a default file name (with .xlsx) is provided (see 
+#' @param file_name Character string naming the output file. If none provided, a default file name (with .xlsx) is provided (see 
 #'    "Successfully created" message when using function for file name).
 #' @param fill_missing Logical value indicating whether to fill dates with missing flow data with NA. Default \code{FALSE}.
 #' @param digits Integer indicating the number of decimal places or significant digits used to round flow values. Use follows 
@@ -30,10 +30,19 @@
 #' @examples
 #' \dontrun{
 #' 
-#' write_flow_data(station_number = "08NM116", 
-#'                 file = "Mission_Creek_daily_flows.xlsx",
-#'                 fill_missing = TRUE)
+#' # Write data from a data frame
+#' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+#' write_flow_data(flow_data = flow_data, 
+#'                 file_name = "Mission_Creek_daily_flows.xlsx")
 #' 
+#' # Write data directly from HYDAT
+#' write_flow_data(station_number = "08NM116", 
+#'                 file_name = "Mission_Creek_daily_flows.xlsx")
+#' 
+#' # Write data directly from HYDAT and fill missing dates with NA
+#' write_flow_data(station_number = "08NM116", 
+#'                 file_name = "Mission_Creek_daily_flows.xlsx",
+#'                 fill_missing = TRUE)
 #' }
 #' @export
 
@@ -49,7 +58,7 @@ write_flow_data <- function(data,
                             end_year,
                             start_date,
                             end_date,
-                            file,
+                            file_name,
                             fill_missing = FALSE,
                             digits){  
   
@@ -78,8 +87,8 @@ write_flow_data <- function(data,
   if (missing(digits)) {
     digits = 10
   }
-  if (missing(file)) {
-    file = ""
+  if (missing(file_name)) {
+    file_name = ""
   }
 
   
@@ -152,46 +161,46 @@ write_flow_data <- function(data,
   ## WRITE FLOW DATA
   ## ---------------
   
-  # If no file name provided
-  if (file == "") {#stop("file name must be provided, ending with either .xlsx, .xls, or .csv.", call. = FALSE)
+  # If no file_name name provided
+  if (file_name == "") {#stop("file_name name must be provided, ending with either .xlsx, .xls, or .csv.", call. = FALSE)
     
     # If station_number used
     if (!is.null(station_number)) {
       if (length(station_number) == 1) {
-        file <- paste0(station_number, "_daily_data.xlsx")
+        file_name <- paste0(station_number, "_daily_data.xlsx")
       } else {
-        file <- paste0("HYDAT_daily_data.xlsx")
+        file_name <- paste0("HYDAT_daily_data.xlsx")
       }
       
       # If data used
     } else {
       
       if (length(stns) == 1 & stns != "XXXXXXX") {
-        file <- paste0(stns, "_daily_data.xlsx")
+        file_name <- paste0(stns, "_daily_data.xlsx")
       } else {
-        file <- paste0("fasstr_daily_data.xlsx")
+        file_name <- paste0("fasstr_daily_data.xlsx")
       }
       
     }
     
   }    
   
-  # Checks on file name and digits
-  filetype <- sub('.*\\.', '', file)
-  if (!filetype %in% c("xlsx", "xls", "csv")) stop("file name must end with .xlsx, .xls, or .csv.", call. = FALSE)
+  # Checks on file_name name and digits
+  filetype <- sub('.*\\.', '', file_name)
+  if (!filetype %in% c("xlsx", "xls", "csv")) stop("file_name name must end with .xlsx, .xls, or .csv.", call. = FALSE)
   
   if (length(digits) != 1) stop("Only one number can be provided to digits.", call. = FALSE)
   if (!is.numeric(digits)) stop("digits must be a numeric value.", call. = FALSE)
   
-  message(paste0("* writing '", file, "'"))
+  message(paste0("* writing '", file_name, "'"))
   
   # Write the data
   if(filetype == "csv") {
-    utils::write.csv(flow_data, file = file, row.names = FALSE, na = "")
-    message(paste0("* DONE. For file go to: '", normalizePath(file), "'"))
+    utils::write.csv(flow_data, file = file_name, row.names = FALSE, na = "")
+    message(paste0("* DONE. For file go to: '", normalizePath(file_name), "'"))
   } else {
-    invisible(openxlsx::write.xlsx(flow_data, file = file))
-    message(paste0("* DONE. For file go to: '", normalizePath(file), "'"))
+    invisible(openxlsx::write.xlsx(flow_data, file = file_name))
+    message(paste0("* DONE. For file go to: '", normalizePath(file_name), "'"))
   }
   
 }
