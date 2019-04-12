@@ -25,12 +25,14 @@
 #' @examples
 #' \dontrun{
 #' 
+#' # Calculate the long-term mean annual discharge (MAD) using only years with no missing data
 #' calc_longterm_mad(station_number = "08NM116", 
-#'                   exclude_years = (1990, 1992:1994))
+#'                   complete_years = TRUE)
 #' 
+#' # Calculate the long-term MAD and 5, 10 and 20-percent MADs using only years with no missing data
 #' calc_longterm_mad(station_number = "08NM116", 
-#'                   percent_MAD = 20)
-#' 
+#'                   complete_years = TRUE,
+#'                   percent_MAD = c(5,10,20))
 #' }
 #' @export
 

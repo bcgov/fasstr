@@ -56,9 +56,8 @@
 #' @examples
 #' \dontrun{
 #' 
-#' calc_all_annual_stats(station_number = "08NM116", 
-#'                       water_year_start = 8)
-#'
+#' # Calculate statistics with default arguments
+#' calc_all_annual_stats(station_number = "08NM116") 
 #' }
 #' @export
 

@@ -77,8 +77,20 @@ Calculates mean, median, maximum, minimum, standard deviation of annual flows an
 \examples{
 \dontrun{
 
-screen_flow_data(station_number = "08NM116", 
-                 water_year_start = 8)
+# Calculate statistics using data argument with defaults
+flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+screen_flow_data(data = flow_data)
 
+# Calculate statistics using station_number argument with defaults
+screen_flow_data(station_number = "08NM116")
+                  
+# Calculate statistics for water years starting in October
+screen_flow_data(station_number = "08NM116",
+                 water_year_start = 9)
+                  
+# Calculate statistics for 7-day flows for July-September months only
+screen_flow_data(station_number = "08NM116",
+                 roll_days = 7,
+                 months = 7:9)
 }
 }

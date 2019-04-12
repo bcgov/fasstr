@@ -57,13 +57,19 @@ Calculates the percentile, or percentile rank, of a discharge value compared to 
 \examples{
 \dontrun{
 
-
-calc_flow_percentile(station_number = "08NM116", 
-                     exclude_years = (1990, 1992:1994),
-                     flow_value = 10)
-
+# Calculate the percentile rank of a 10-cms flow value from a full record
 calc_flow_percentile(station_number = "08NM116", 
                      flow_value = 10)
 
+# Calculate the percentile rank of a 10-cms flow value from years with no missing data
+calc_flow_percentile(station_number = "08NM116", 
+                     complete_years = TRUE,
+                     flow_value = 10)
+                     
+# Calculate the percentile rank of a 10-cms flow value for June from years with no missing data
+calc_flow_percentile(station_number = "08NM116", 
+                     complete_years = TRUE,
+                     months = 6,
+                     flow_value = 10)
 }
 }

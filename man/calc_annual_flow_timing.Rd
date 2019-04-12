@@ -63,10 +63,12 @@ Calculates annual the timing (day of year) and date of occurrence of portions of
 \examples{
 \dontrun{
 
-calc_annual_flow_timing(station_number = "08NM116", 
-                        water_year_start = 8, 
-                        percent_total = 50)
+# Calculate statistics with default percent totals
+calc_annual_flow_timing(station_number = "08NM116") 
 
+# Calculate statistics with custom percent totals
+calc_annual_cumulative_stats(station_number = "08NM116",
+                             percent_total = 50)
 }
 }
 \references{

@@ -37,10 +37,17 @@
 #' @examples
 #' \dontrun{
 #' 
+#' # Calculate volume statistics
+#' calc_monthly_cumulative_stats(station_number = "08NM116") 
+#' 
+#' # Calculate yield statistics with default HYDAT basin area
 #' calc_monthly_cumulative_stats(station_number = "08NM116",
-#'                               water_year_start = 8, 
-#'                               percentiles = c(1:10))
-#'
+#'                               use_yield = TRUE) 
+#' 
+#' # Calculate yield statistics with custom basin area
+#' calc_monthly_cumulative_stats(station_number = "08NM116",
+#'                               use_yield = TRUE,
+#'                               basin_area = 800) 
 #' }
 #' @export
 

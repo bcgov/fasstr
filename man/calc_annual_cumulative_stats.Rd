@@ -76,9 +76,16 @@ Calculates annual and seasonal total flows, volumetric or runoff yield flows, fr
 \examples{
 \dontrun{
 
-calc_annual_cumulative_stats(station_number = "08NM116", 
-                             water_year_start = 8,
-                             include_seasons = TRUE)
+# Calculate volume statistics
+calc_annual_cumulative_stats(station_number = "08NM116") 
 
+# Calculate yield statistics with default HYDAT basin area
+calc_annual_cumulative_stats(station_number = "08NM116",
+                             use_yield = TRUE) 
+
+# Calculate yield statistics with custom basin area
+calc_annual_cumulative_stats(station_number = "08NM116",
+                             use_yield = TRUE,
+                             basin_area = 800) 
 }
 }

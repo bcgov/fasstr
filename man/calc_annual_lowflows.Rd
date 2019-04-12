@@ -79,9 +79,12 @@ Calculates annual n-day minimum values, and the day of year and date of occurren
 \examples{
 \dontrun{
 
-calc_annual_lowflows(station_number = "08NM116", 
-                     water_year_start = 8, 
-                     roll_days = c(3,7))
+# Calculate statistics with default rolling days and alignment
+calc_annual_lowflows(station_number = "08NM116") 
 
+# Calculate statistics with custom rolling days and alignment
+calc_annual_lowflows(station_number = "08NM116",
+                     roll_days = c(3,7),
+                     roll_align = "center")
 }
 }
