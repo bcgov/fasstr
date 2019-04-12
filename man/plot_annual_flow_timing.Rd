@@ -56,10 +56,12 @@ Plots annual the timing (day of year) of occurrence of portions of total annual 
 \examples{
 \dontrun{
 
-plot_annual_flow_timing(station_number = "08NM116", 
-                        water_year_start = 8, 
-                        percent_total = 50)
+# Plot statistics with default percent totals
+plot_annual_flow_timing(station_number = "08NM116") 
 
+# Plot statistics with custom percent totals
+plot_annual_flow_timing(station_number = "08NM116",
+                        percent_total = 50)
 }
 }
 \references{

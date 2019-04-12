@@ -1,7 +1,7 @@
 fasstr 0.3.0
 =========================
 
-Updated: 11 April 2019
+Updated: 12 April 2019
 
 #### Updates:
 
@@ -15,6 +15,7 @@ Updated: 11 April 2019
   * WSC station numbers with lower-case letters now accepted (08nm116 and 08NM116 both work)
   * basin_area argument as list now will default to HYDAT area if not listed, otherwise NA
   * Return Period axis has returned to the frequency analysis plot
+  * Updated all documentation examples (more useful)
   
 #### Bugs Fixed:
 

@@ -61,12 +61,12 @@ Plot annual means using the long-term annual mean as the point of reference to c
 \examples{
 \dontrun{
 
-plot_annual_means(station_number = "08NM116", 
-                  water_year_start = 8)
+# Plot statistics
+plot_annual_means(station_number = "08NM116")
 
+# Plot statistics for mean flows from July-September
 plot_annual_means(station_number = "08NM116", 
                   months = 7:9)
-
 }
 }
 \seealso{

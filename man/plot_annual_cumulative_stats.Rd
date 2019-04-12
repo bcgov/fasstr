@@ -73,10 +73,22 @@ Plots annual and seasonal total flows, volumetric or runoff yield flows, from a 
 \examples{
 \dontrun{
 
+# Plot volume statistics
+plot_annual_cumulative_stats(station_number = "08NM116") 
 
-plot_annual_cumulative_stats(station_number = "08NM116", 
-                             water_year_start = 8)
+# Plot yield statistics with default HYDAT basin area
+plot_annual_cumulative_stats(station_number = "08NM116",
+                             use_yield = TRUE) 
 
+# Plot yield statistics with custom basin area
+plot_annual_cumulative_stats(station_number = "08NM116",
+                             use_yield = TRUE,
+                             basin_area = 800) 
+
+# Plot yield statistics with seasons
+plot_annual_cumulative_stats(station_number = "08NM116",
+                             use_yield = TRUE,
+                             include_seasons = TRUE) 
 }
 }
 \seealso{

@@ -65,10 +65,13 @@ Plot annual n-day minimum values, and the day of year of occurrence of daily flo
 \examples{
 \dontrun{
 
-plot_annual_lowflows(data = "08NM116", 
-                     water_year_start = 8, 
-                     roll_days = c(3,7))
+# Plot statistics with default rolling days and alignment
+plot_annual_lowflows(station_number = "08NM116") 
 
+# Plot statistics with custom rolling days and alignment
+plot_annual_lowflows(station_number = "08NM116",
+                     roll_days = c(3,7),
+                     roll_align = "center")
 }
 }
 \seealso{

@@ -52,6 +52,7 @@
 #' @examples
 #' \dontrun{
 #' 
+#' # Calculate some values to use for a frequency analysis (requires years, values for those years, and the name of the measure/metric)
 #' low_flows <- calc_annual_lowflows(station_number = "08NM116", 
 #'                                   start_year = 1980, 
 #'                                   end_year = 2000,
@@ -59,6 +60,7 @@
 #' low_flows <- dplyr::select(low_flows, Year, Value = Min_7_Day)
 #' low_flows <- dplyr::mutate(low_flows, Measure = "7-Day")
 #' 
+#' # Compute the frequency analysis using the default parameters
 #' compute_frequency_analysis(data = low_flows,
 #'                            events = Year,
 #'                            values = Value,
