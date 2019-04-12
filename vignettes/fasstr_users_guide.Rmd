@@ -731,9 +731,9 @@ To compute a volume frequency analysis on custom data, use the `compute_frequenc
 
 ### Full Analysis
 
-If desired, a suite of fasstr functions can be computed at the same time, producing lists of tables and plots organized in lists by time periods and analysis type. All the objects can also be written into a directory by making the "write_to_dir" argument set to true, and naming the folder to create and save them in using the "foldername" argument. The filetypes of plots and tables can be set using the plot_filetype and table_filetype arguments, respectively. See the [full analysis vignette](fasstr_full_analysis.html) for more information. 
+If desired, a suite of fasstr functions can be computed using the `compute_full_analysis()`, producing lists of tables and plots organized in lists by time periods and analysis type. All the objects can also be written into a directory by using the `write_full_analysis()`. The filetypes of plots and tables can be set using the plot_filetype and table_filetype arguments, respectively. See the [full analysis vignette](fasstr_full_analysis.html) for more information. 
 
-The plots and tables are grouped into the following lists (and folders if writing):
+The plots and tables are grouped into the following analyses:
 
 1. Screening
 2. Long-term
