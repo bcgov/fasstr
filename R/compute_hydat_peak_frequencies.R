@@ -30,6 +30,7 @@
 #'   \item{Freq_Fitting}{List of fitted objects from fitdistrplus.}
 #'   \item{Freq_Fitted_Quantiles}{Data frame with fitted quantiles.}
 #'   
+#' @seealso \code{\link{compute_frequency_analysis}}
 #'   
 #' @examples
 #' \dontrun{

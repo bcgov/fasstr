@@ -76,3 +76,6 @@ compute_frequency_quantile(station_number = "08NM116",
                             
 }
 }
+\seealso{
+\code{\link{compute_frequency_analysis}}
+}

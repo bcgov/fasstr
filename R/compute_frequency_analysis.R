@@ -52,7 +52,8 @@
 #' @examples
 #' \dontrun{
 #' 
-#' # Calculate some values to use for a frequency analysis (requires years, values for those years, and the name of the measure/metric)
+#' # Calculate some values to use for a frequency analysis 
+#' # (requires years, values for those years, and the name of the measure/metric)
 #' low_flows <- calc_annual_lowflows(station_number = "08NM116", 
 #'                                   start_year = 1980, 
 #'                                   end_year = 2000,

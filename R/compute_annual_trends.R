@@ -49,7 +49,9 @@
 #'        American Statistical Association Vol. 63, No. 324: 1379-1389.}
 #'        }
 #'      
-#' @seealso \code{\link[zyp]{zyp-package}}, \code{\link[zyp]{zyp.trend.dataframe}}, \code{\link{calc_all_annual_stats}}
+#' @seealso \code{\link[zyp]{zyp-package}}, 
+#'          \code{\link[zyp]{zyp.trend.dataframe}}, 
+#'          \code{\link{calc_all_annual_stats}}
 #'   
 #' @examples
 #' \dontrun{

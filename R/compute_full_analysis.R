@@ -34,6 +34,37 @@
 #' 
 #' @return A list of lists of tibble data frames and ggplot2 objects from various fasstr functions
 #'    organized by the analysis groups as listed above.
+#'    
+#' @seealso \code{\link{plot_flow_data}},
+#'          \code{\link{screen_flow_data}},
+#'          \code{\link{plot_data_screening}},
+#'          \code{\link{plot_missing_dates}},
+#'          \code{\link{calc_longterm_stats}},
+#'          \code{\link{plot_longterm_stats}},
+#'          \code{\link{plot_flow_duration}},
+#'          \code{\link{calc_annual_stats}},
+#'          \code{\link{plot_annual_stats}},
+#'          \code{\link{calc_annual_cumulative_stats}},
+#'          \code{\link{plot_annual_cumulative_stats}},
+#'          \code{\link{calc_annual_flow_timing}},
+#'          \code{\link{plot_annual_flow_timing}},
+#'          \code{\link{calc_annual_outside_normal}},
+#'          \code{\link{plot_annual_outside_normal}},
+#'          \code{\link{calc_annual_lowflows}},
+#'          \code{\link{plot_annual_lowflows}},
+#'          \code{\link{plot_annual_means}},
+#'          \code{\link{calc_monthly_stats}},
+#'          \code{\link{plot_monthly_stats}},
+#'          \code{\link{calc_monthly_cumulative_stats}},
+#'          \code{\link{plot_monthly_cumulative_stats}},
+#'          \code{\link{calc_daily_stats}},
+#'          \code{\link{plot_daily_stats}},
+#'          \code{\link{calc_daily_cumulative_stats}},
+#'          \code{\link{plot_daily_cumulative_stats}},
+#'          \code{\link{compute_annual_trends}},
+#'          \code{\link{compute_annual_frequencies}},
+#'          \code{\link{write_flow_data}},
+#'          \code{\link{write_plots}}
 #'
 #' @examples
 #' \dontrun{

@@ -69,3 +69,6 @@ compute_hydat_peak_frequencies(station_number = "08NM116",
                             
 }
 }
+\seealso{
+\code{\link{compute_frequency_analysis}}
+}

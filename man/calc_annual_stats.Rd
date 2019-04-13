@@ -79,7 +79,8 @@ calc_annual_stats(data = flow_data)
 # Calculate statistics using station_number argument with defaults
 calc_annual_stats(station_number = "08NM116")
 
-# Calculate statistics regardless if there is missing data for a given year
+# Calculate statistics regardless if there 
+# is missing data for a given year
 calc_annual_stats(station_number = "08NM116",
                   ignore_missing = TRUE)
                   
@@ -93,7 +94,8 @@ calc_annual_stats(station_number = "08NM116",
                   end_year = 2010,
                   exclude_years = c(1991,1993:1995))
                   
-# Calculate statistics for 7-day flows for July-September months only, with 25 and 75th percentiles
+# Calculate statistics for 7-day flows for July-September 
+# months only, with 25 and 75th percentiles
 calc_annual_stats(station_number = "08NM116",
                   roll_days = 7,
                   months = 7:9,

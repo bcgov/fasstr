@@ -95,3 +95,6 @@ compute_annual_frequencies(station_number = "08NM116",
                            end_year = 2010)
 }
 }
+\seealso{
+\code{\link{compute_frequency_analysis}}
+}

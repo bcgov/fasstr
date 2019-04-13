@@ -24,14 +24,15 @@
 #' @examples
 #' \dontrun{
 #' 
+#' # Calculate the 20th percentile
+#' calc_longterm_percentile(station_number = "08NM116",
+#'                          percentile = 20)
+#'                          
+#' # Calculate the 90th percentile value with custom years
 #' calc_longterm_percentile(station_number = "08NM116", 
 #'                          start_year = 1980, 
 #'                          end_year = 2010, 
 #'                          percentile = 90)
-#' 
-#' calc_longterm_percentile(station_number = "08NM116",
-#'                          percentile = 20)
-#' 
 #' }
 #' @export
 

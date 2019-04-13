@@ -27,6 +27,8 @@
 #' 
 #' @return A numeric value of the frequency analysis quantile, given the roll_days and return_period
 #'   
+#' @seealso \code{\link{compute_frequency_analysis}}
+#'   
 #' @examples
 #' \dontrun{
 #' 
