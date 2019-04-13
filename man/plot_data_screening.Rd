@@ -59,10 +59,21 @@ Plots the mean, median, maximum, minimum, standard deviation of annual flows. Pl
 \examples{
 \dontrun{
 
-plot_data_screening(station_number = "08NM116", 
-                    water_year = TRUE, 
-                    water_year_start = 8)
+# Plot statistics using data argument with defaults
+flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+plot_data_screening(data = flow_data)
 
+# Plot statistics using station_number argument with defaults
+plot_data_screening(station_number = "08NM116")
+                  
+# Plot statistics for water years starting in October
+plot_data_screening(station_number = "08NM116",
+                 water_year_start = 10)
+                  
+# Plot statistics for 7-day flows for July-September months only
+plot_data_screening(station_number = "08NM116",
+                 roll_days = 7,
+                 months = 7:9)
 }
 }
 \seealso{

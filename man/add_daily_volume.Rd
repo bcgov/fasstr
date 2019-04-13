@@ -27,6 +27,7 @@ Add a column of daily volumetric flows to a streamflow dataset, in units of cubi
 \examples{
 \dontrun{
 
+# Add a column of daily volumes
 add_daily_volume(station_number = "08NM116")
 }
 }

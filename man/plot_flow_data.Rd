@@ -64,8 +64,26 @@ Plot the daily mean flow values from a streamflow dataset. Plots the statistics 
 \examples{
 \dontrun{
 
-plot_flow_data(station_number = "08NM116", 
-               water_year_start = 8)
+# Plot data from a data frame
+flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+plot_flow_data(data = flow_data)
 
+# Plot data directly from HYDAT
+plot_flow_data(station_number = "08NM116")
+
+# Plot statistics with custom years
+plot_flow_data(station_number = "08NM116",
+               start_year = 1981,
+               end_year = 2010,
+               exclude_years = c(1991,1993:1995))
+                 
+# Plot data between specific dates
+plot_flow_data(station_number = "08NM116",
+               start_date = "1990-01-01",
+               end_date = "1990-06-01")
+
+# Plot data multiple groups on one plot
+plot_flow_data(station_number = c("08NM241", "08NM242"),
+               one_plot = TRUE) 
 }
 }

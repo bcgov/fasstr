@@ -22,6 +22,7 @@
 #' @examples
 #' \dontrun{
 #' 
+#' # Add a column of daily volumes
 #' add_daily_volume(station_number = "08NM116")
 #' }
 #' @export

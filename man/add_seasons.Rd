@@ -42,7 +42,7 @@ add_seasons(data = "08NM116",
 
 # Two seasons starting in October
 add_seasons(data = "08NM116", 
-            water_year_start = 9,
+            water_year_start = 10,
             seasons_length = 6)
 }
 }

@@ -36,9 +36,46 @@
 #' @examples
 #' \dontrun{
 #' 
+#' # Plot statistics using data argument with defaults
+#' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+#' plot_daily_stats(data = flow_data,
+#'                  start_year = 1980)
+#' 
+#' # Plot statistics using station_number argument with defaults
 #' plot_daily_stats(station_number = "08NM116",
-#'                  water_year_start = 8)
-#'
+#'                  start_year = 1980)
+#' 
+#' # Plot statistics regardless if there is missing data for a given day of year
+#' plot_daily_stats(station_number = "08NM116",
+#'                  ignore_missing = TRUE)
+#'                   
+#' # Plot statistics using only years with no missing data
+#' plot_daily_stats(station_number = "08NM116",
+#'                  complete_years = TRUE)
+#' 
+#' # Plot statistics for water years starting in October
+#' plot_daily_stats(station_number = "08NM116",
+#'                  start_year = 1980,
+#'                  end_year = 2010,
+#'                  water_year_start = 10)
+#'                  
+#' # Plot statistics with custom years
+#' plot_daily_stats(station_number = "08NM116",
+#'                  start_year = 1981,
+#'                  end_year = 2010,
+#'                  exclude_years = c(1991,1993:1995))
+#'                   
+#' # Plot statistics for 7-day flows for July-September months only
+#' plot_daily_stats(station_number = "08NM116",
+#'                  start_year = 1980,
+#'                  roll_days = 7,
+#'                  months = 7:9)
+#' 
+#' # Plot statistics without a log-scale Discharge axis
+#' plot_daily_stats(station_number = "08NM116",
+#'                  start_year = 1981,
+#'                  end_year = 2010,
+#'                  log_discharge = FALSE)
 #' }
 #' @export
 

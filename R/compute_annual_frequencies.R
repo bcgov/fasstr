@@ -37,7 +37,6 @@
 #' compute_annual_frequencies(station_number = "08NM116",
 #'                            start_year = 1980,
 #'                            end_year = 2010)
-#'                             
 #' }
 #' @export
 

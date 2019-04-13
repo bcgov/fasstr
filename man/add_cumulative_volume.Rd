@@ -39,6 +39,7 @@ Add a column of rolling daily cumulative volumetric flows on an annual basis to 
 \examples{
 \dontrun{
 
+# Add a column based on years starting in August
 add_cumulative_volume(station_number = "08NM116", 
                       water_year_start = 8)
 }

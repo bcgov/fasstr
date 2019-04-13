@@ -53,7 +53,7 @@
 #' # Calculate statistics for water years starting in October
 #' calc_monthly_stats(station_number = "08NM116",
 #'                    start_year = 1980,
-#'                    water_year_start = 9)
+#'                    water_year_start = 10)
 #'                   
 #' # Calculate statistics with custom years
 #' calc_monthly_stats(station_number = "08NM116",

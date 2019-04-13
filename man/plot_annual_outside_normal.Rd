@@ -66,9 +66,12 @@ Plots the number of days per year outside of the 'normal' range (typically betwe
 \examples{
 \dontrun{
 
-plot_annual_outside_normal(station_number = "08NM116",
-                           water_year_start = 8)
+# Plot statistics with default limits of normal (25 and 75th percentiles)
+plot_annual_outside_normal(station_number = "08NM116") 
 
+# Plot statistics with custom limits of normal
+plot_annual_outside_normal(station_number = "08NM116",
+                           normal_percentiles = c(10,90))
 }
 }
 \seealso{

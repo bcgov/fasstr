@@ -42,11 +42,11 @@ Add a column of daily runoff yields to a streamflow dataset, in units of millime
 \examples{
 \dontrun{
 
-# HYDAT basin area
+# Add a column of yields based on HYDAT basin area
 add_daily_yield(station_number = "08NM116", 
                 water_year_start = 8)
                      
-# Set the basin area
+# Add a column of yields based on a custom basin area
 add_daily_yield(station_number = "08NM116", 
                 water_year_start = 8,
                 basin_area = 800)

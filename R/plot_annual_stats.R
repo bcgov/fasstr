@@ -36,12 +36,44 @@
 #' @examples
 #' \dontrun{
 #' 
-#' plot_annual_stats(station_number = "08NM116", 
-#'                   water_year_start = 8)
-#'
-#' plot_annual_stats(station_number = "08NM116", 
-#'                   months = 7:9)
-#'
+#' # Plot statistics using data argument with defaults
+#' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+#' plot_annual_stats(data = flow_data)
+#' 
+#' # Plot statistics using station_number argument with defaults
+#' plot_annual_stats(station_number = "08NM116")
+#' 
+#' # Plot statistics regardless if there is missing data for a given year
+#' plot_annual_stats(station_number = "08NM116",
+#'                   ignore_missing = TRUE)
+#'                   
+#' # Plot statistics for water years starting in October
+#' plot_annual_stats(station_number = "08NM116",
+#'                   water_year_start = 10)
+#'                   
+#' # Plot statistics with custom years
+#' plot_annual_stats(station_number = "08NM116",
+#'                   start_year = 1981,
+#'                   end_year = 2010,
+#'                   exclude_years = c(1991,1993:1995))
+#'                   
+#' # Plot statistics for 7-day flows for July-September months only, with 25 and 75th percentiles
+#' plot_annual_stats(station_number = "08NM116",
+#'                   roll_days = 7,
+#'                   months = 7:9,
+#'                   percentiles = c(25,75))   
+#' 
+#' # Plot statistics with the a log-scale Discharge axis
+#' plot_annual_stats(station_number = "08NM116",
+#'                   start_year = 1981,
+#'                   end_year = 2010,
+#'                   log_discharge = TRUE)
+#' 
+#' # Plot statistics and include a title with the grouping
+#' plot_annual_stats(station_number = "08NM116",
+#'                   start_year = 1981,
+#'                   end_year = 2010,
+#'                   include_title = TRUE)
 #' }
 #' @export
 
