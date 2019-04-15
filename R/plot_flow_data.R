@@ -142,7 +142,8 @@ plot_flow_data <- function(data,
   
   # Add rolling means to end of dataframe
   flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
-  colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
+  flow_data <- dplyr::rename(flow_data, Value_orig = Value)
+  colnames(flow_data)[ncol(flow_data)] <- "Value"
   
   # Filter for the selected year (remove excluded years after)
   flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
@@ -152,10 +153,10 @@ plot_flow_data <- function(data,
   flow_data <- dplyr::filter(flow_data, Date <= end_date)
   
   # Remove selected excluded years
-  flow_data <- dplyr::mutate(flow_data, RollingValue = replace(RollingValue, WaterYear %in% exclude_years, NA))
+  flow_data <- dplyr::mutate(flow_data, Value = replace(Value, WaterYear %in% exclude_years, NA))
   
-  if (anyNA(flow_data$RollingValue)) 
-    warning(paste0("Did not plot ", sum(is.na(flow_data$RollingValue)),
+  if (anyNA(flow_data$Value)) 
+    warning(paste0("Did not plot ", sum(is.na(flow_data$Value)),
                    " missing or excluded values between ", min(flow_data$Date), " and ", max(flow_data$Date),"."), 
             call. = FALSE)
   
@@ -170,7 +171,7 @@ plot_flow_data <- function(data,
     flow_plots <- tidyr::nest(flow_plots)
     flow_plots <- dplyr::mutate(flow_plots,
                                 plot = purrr::map2(data, STATION_NUMBER, 
-          ~ggplot2::ggplot(data = ., ggplot2::aes(x = Date, y = RollingValue)) +
+          ~ggplot2::ggplot(data = ., ggplot2::aes(x = Date, y = Value)) +
             ggplot2::geom_line(colour = "dodgerblue4", na.rm = TRUE) +
             ggplot2::ylab(y_axis_title) +
             {if(plot_by_year) ggplot2::facet_wrap(~WaterYear, scales = "free_x")} +
@@ -178,8 +179,8 @@ plot_flow_data <- function(data,
             {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
             {if(plot_by_year) ggplot2::scale_x_date(date_labels = "%b", expand = c(0,0))} +
             {if(!plot_by_year) ggplot2::scale_x_date(breaks = scales::pretty_breaks(n = 12))} +
-            {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(.$RollingValue) * 1.05))} +
-            {if(log_discharge) ggplot2::expand_limits(y = c(min(.$RollingValue) * .95, max(.$RollingValue) * 1.05))} +
+            {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(.$Value) * 1.05))} +
+            {if(log_discharge) ggplot2::expand_limits(y = c(min(.$Value) * .95, max(.$Value) * 1.05))} +
             {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(.y) } +    
             ggplot2::theme_bw() +
             ggplot2::labs(color = 'Station') +    
@@ -208,7 +209,7 @@ plot_flow_data <- function(data,
   } else {
     plots <- list()
     
-    plot <- ggplot2::ggplot(data = flow_data, ggplot2::aes(x = Date, y = RollingValue, colour = STATION_NUMBER)) +
+    plot <- ggplot2::ggplot(data = flow_data, ggplot2::aes(x = Date, y = Value, colour = STATION_NUMBER)) +
       ggplot2::geom_line(na.rm = TRUE) +
       ggplot2::ylab(y_axis_title) +
       {if(plot_by_year) ggplot2::facet_wrap(~WaterYear, scales = "free_x")} +
@@ -219,8 +220,8 @@ plot_flow_data <- function(data,
                                                       long = ggplot2::unit(.2, "cm"))} +
       {if(plot_by_year) ggplot2::scale_x_date(date_labels = "%b", expand = c(0,0))} +
       {if(!plot_by_year) ggplot2::scale_x_date(breaks = scales::pretty_breaks(n = 12))} +
-      {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(flow_data$RollingValue) * 1.05))} +
-      {if(log_discharge) ggplot2::expand_limits(y = c(min(flow_data$RollingValue) * .95, max(flow_data$RollingValue) * 1.05))} +
+      {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(flow_data$Value) * 1.05))} +
+      {if(log_discharge) ggplot2::expand_limits(y = c(min(flow_data$Value) * .95, max(flow_data$Value) * 1.05))} +
       ggplot2::theme_bw() +
       ggplot2::labs(color = 'Station') +    
       ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
