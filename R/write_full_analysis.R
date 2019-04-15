@@ -180,7 +180,14 @@ write_full_analysis <- function(data,
   }
   
   # flow_data_plus <- dplyr::filter(flow_data, WaterYear >= start_year - 1 & WaterYear <= end_year + 1)
-  flow_data_filtered <- dplyr::filter(flow_data_filtered, WaterYear >= start_year & WaterYear <= end_year)
+  flow_data_filtered <- dplyr::filter(flow_data_filtered, 
+                                      WaterYear >= start_year & WaterYear <= end_year,
+                                      !(WaterYear %in% exclude_years))
+  
+  if (any(is.na(flow_data_filtered$Value)) & !ignore_missing) {
+    message("** warning: selected data contains dates with missing values; some NAs in tables and gaps in plots may be produced")
+  }
+  
   
   # Create list of all objects
   
@@ -1468,7 +1475,7 @@ write_full_analysis <- function(data,
                    dates = as.character(substitute(Date)),
                    values = as.character(substitute(Value)),
                    groups = as.character(substitute(STATION_NUMBER)),
-                   station_number = ifelse(!is.null(station_number), station_number, ""),
+                   station_number = ifelse(!is.null(station_number), toupper(station_number), ""),
                    basin_area = basin_area_stn,
                    water_year_start = water_year_start,
                    start_year = start_year,
@@ -1498,6 +1505,27 @@ write_full_analysis <- function(data,
             row = 1)
   
   
+  
+  
+  if (!is.null(station_number)) {
+    
+    hydat_info <- dplyr::left_join(tidyhydat::hy_stations(station_number),
+                                   tidyhydat::hy_stn_regulation(station_number),
+                                   by = "STATION_NUMBER")
+    hydat_info <- dplyr::select(hydat_info, STATION_NUMBER, STATION_NAME, PROV_TERR_STATE_LOC, HYD_STATUS,
+                                LATITUDE, LONGITUDE, DRAINAGE_AREA_GROSS, REGULATED, RHBN, REAL_TIME)
+    hydat_info <- dplyr::mutate(hydat_info, HYDAT_VERSION =  as.character(dplyr::pull(tidyhydat::hy_version()[,2])))
+    hydat_info <- tidyr::gather(hydat_info, Info, Value)
+    
+    add_table(wb = output_excel,
+              sheet = overview_sheet,
+              data = hydat_info,
+              title = paste0("HYDAT Station Information"),
+              col = 4,
+              row = 1)
+  }
+  
+  
   # Write the fasstr functions
   ##########################
   
@@ -1513,6 +1541,8 @@ write_full_analysis <- function(data,
             row = 1,
             comment = "Copy and paste a function into R to reproduce or further customize  results")
   openxlsx::setColWidths(wb = output_excel, sheet = fasstr_sheet, cols = 1:3, widths = "auto")
+  
+
   
   
   # Save the workbook
