@@ -80,7 +80,16 @@
           "Season",
           "Basin_Area_sqkm2",
           "Basin_Area_sqkm",
-          "CalendarYear")
+          "CalendarYear",
+          "STATION_NAME",
+          "PROV_TERR_STATE_LOC",
+          "HYD_STATUS",
+          "LATITUDE",
+          "LONGITUDE",
+          "REGULATED",
+          "RHBN",
+          "REAL_TIME",
+          "Info")
       )
     invisible()
   }
