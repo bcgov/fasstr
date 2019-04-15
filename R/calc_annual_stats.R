@@ -155,7 +155,7 @@ calc_annual_stats <- function(data,
   
   ## PREPARE FLOW DATA
   ## -----------------
-
+  
   # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
                              water_year_start = water_year_start)
@@ -173,11 +173,12 @@ calc_annual_stats <- function(data,
   ## --------------------
   
   # Calculate basic stats
-  annual_stats <-   suppressWarnings(dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
-                                     Mean = mean(RollingValue, na.rm = ignore_missing),
-                                     Median = stats::median(RollingValue, na.rm = ignore_missing),
-                                     Maximum = max (RollingValue, na.rm = ignore_missing),
-                                     Minimum = min (RollingValue, na.rm = ignore_missing)))
+  annual_stats <-   suppressWarnings(
+    dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
+                     Mean = mean(RollingValue, na.rm = ignore_missing),
+                     Median = stats::median(RollingValue, na.rm = ignore_missing),
+                     Maximum = max (RollingValue, na.rm = ignore_missing),
+                     Minimum = min (RollingValue, na.rm = ignore_missing)))
   annual_stats <- dplyr::ungroup(annual_stats)
   
   #Remove Nans and Infs
@@ -205,7 +206,7 @@ calc_annual_stats <- function(data,
   
   ## Final formatting
   ## ----------------
-
+  
   # Rename year column
   annual_stats <- dplyr::rename(annual_stats, Year = WaterYear)
   
@@ -225,11 +226,16 @@ calc_annual_stats <- function(data,
     # Order the columns
     annual_stats$Statistic <- factor(annual_stats$Statistic, levels = stat_levels)
     annual_stats <- dplyr::arrange(annual_stats, STATION_NUMBER, Statistic)
-  }
+  } 
   
   # Give warning if any NA values
-  missing_test <- dplyr::filter(annual_stats, !(Year %in% exclude_years))
-  missing_values_warning(missing_test[, 3:ncol(missing_test)])
+  if (!transpose) {
+    missing_test <- dplyr::filter(annual_stats, !(Year %in% exclude_years))
+    missing_values_warning(missing_test[, 3:ncol(missing_test)])
+  } else {
+    missing_test <- dplyr::select(annual_stats, -dplyr::one_of(as.character(exclude_years)))
+    missing_values_warning(missing_test[, 3:ncol(missing_test)])
+  }
   
   
   # Recheck if station_number/grouping was in original data and rename or remove as necessary
