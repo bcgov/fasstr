@@ -1,23 +1,31 @@
 context("Calc annual stats")
 
 test_that("creates a dataframe with the proper columns", {
+  skip_on_cran()
+  skip_on_travis()
   data <- calc_annual_stats(station_number = "08NM116")
   expect_true(is.data.frame(data) &
                 all(c("Year","Mean","Median","Maximum","Minimum","P10","P90") %in% colnames(data)))
 })
 
 test_that("outputs data for two stations", {
+  skip_on_cran()
+  skip_on_travis()
   data <- calc_annual_stats(station_number = c("08NM116","08HB048"))
   expect_true(length(unique(data$STATION_NUMBER)) == 2)
 })
 
 test_that("creates a dataframe with custom columns", {
+  skip_on_cran()
+  skip_on_travis()
   data <- calc_annual_stats(station_number = "08NM116",
                             percentiles = c(25,75))
   expect_true(all(c("P25","P75") %in% colnames(data)))
 })
 
 test_that("produces NA if there is missing data and warning is produced", {
+  skip_on_cran()
+  skip_on_travis()
   data <- calc_annual_stats(station_number = "08NM116",
                             ignore_missing = FALSE)
   expect_true(any(is.na(data)))
@@ -26,12 +34,16 @@ test_that("produces NA if there is missing data and warning is produced", {
 })
 
 test_that("ignore_missing calculates all data", {
+  skip_on_cran()
+  skip_on_travis()
   data <- calc_annual_stats(station_number = "08NM116",
                             ignore_missing = TRUE)
   expect_true(any(!is.na(data)))
 })
 
 test_that("data is filtered by years properly", {
+  skip_on_cran()
+  skip_on_travis()
   data <- calc_annual_stats(station_number = "08NM116",
                             start_year = 1981,
                             end_year = 2010,
@@ -44,6 +56,8 @@ test_that("data is filtered by years properly", {
 })
 
 test_that("data is summarized by water years properly", {
+  skip_on_cran()
+  skip_on_travis()
   flow_data <- add_date_variables(station_number = "08NM116",
                                   water_year_start = 10)
   
@@ -64,6 +78,8 @@ test_that("data is summarized by water years properly", {
 })
 
 test_that("rolling days are applied properly", {
+  skip_on_cran()
+  skip_on_travis()
   flow_data <- add_date_variables(station_number = "08NM116")
   flow_data <- add_rolling_means(flow_data,
                                  roll_days = 7)
@@ -85,6 +101,8 @@ test_that("rolling days are applied properly", {
 })
 
 test_that("data is filtered by months properly", {
+  skip_on_cran()
+  skip_on_travis()
   flow_data <- add_date_variables(station_number = "08NM116")
 
   
@@ -107,6 +125,8 @@ test_that("data is filtered by months properly", {
 })
 
 test_that("transpose properly transposed the results", {
+  skip_on_cran()
+  skip_on_travis()
   data <- calc_annual_stats(station_number = "08NM116",
                             transpose = TRUE)
   expect_true(all(c("Mean","Median","Maximum","Minimum","P10","P90") %in% data$Statistic))

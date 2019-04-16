@@ -218,7 +218,7 @@ calc_daily_stats <- function(data,
     stat_levels <- names(daily_stats[-(1:2)])
 
     # Transpose the columns for rows
-    daily_stats <- tidyr::gather(daily_stats, Statistic, Value, -STATION_NUMBER, -Date)
+    daily_stats <- tidyr::gather(daily_stats, Statistic, Value, -(1:2))
     daily_stats <- tidyr::spread(daily_stats, Date, Value)
 
     # Order the columns

@@ -48,7 +48,7 @@ test_that("add_cumulative_volume only fills years with complete data, otherwise 
     fill_missing_dates() %>% 
     add_date_variables() %>% 
     dplyr::group_by(WaterYear) %>% 
-    dplyr::summarize(Days = n(),
+    dplyr::summarize(Days = dplyr::n(),
                      Cumul = sum(is.na(Cumul_Volume_m3)),
                      Test = Cumul / Days)
   expect_true(any(data$Test == 0 | data$Test == 1)) # either 0 or 100 percent of days per year
