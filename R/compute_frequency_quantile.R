@@ -85,7 +85,7 @@ compute_frequency_quantile <- function(data,
   
   if (missing(roll_days)) stop("A numeric roll_days value is required.", call. = FALSE)
   rolling_days_checks(roll_days, roll_align, multiple = FALSE)
-
+  
   if (missing(return_period))      stop("A numeric return_period value is required.", call. = FALSE)
   if (length(return_period) > 1)   stop("Only one return_period can be provided.", call. = FALSE)
   if (is.na(return_period) | !is.numeric(return_period)) stop("A numeric return_period value is required.", call. = FALSE)
@@ -123,20 +123,22 @@ compute_frequency_quantile <- function(data,
   ## CALCULATE STAT
   ##---------------
   
-  compute_annual_frequencies(data = flow_data,
-                             roll_days = roll_days,
-                             roll_align = roll_align,
-                             use_max = use_max,
-                             use_log = use_log,
-                             fit_distr = fit_distr,
-                             fit_distr_method = fit_distr_method,
-                             fit_quantiles = fit_quantiles,
-                             water_year_start = water_year_start,
-                             start_year = start_year,
-                             end_year = end_year,
-                             exclude_years = exclude_years,
-                             months = months,
-                             ignore_missing = ignore_missing)$Freq_Fitted_Quantiles[1,4]
+  quant <- compute_annual_frequencies(data = flow_data,
+                                      roll_days = roll_days,
+                                      roll_align = roll_align,
+                                      use_max = use_max,
+                                      use_log = use_log,
+                                      fit_distr = fit_distr,
+                                      fit_distr_method = fit_distr_method,
+                                      fit_quantiles = fit_quantiles,
+                                      water_year_start = water_year_start,
+                                      start_year = start_year,
+                                      end_year = end_year,
+                                      exclude_years = exclude_years,
+                                      months = months,
+                                      ignore_missing = ignore_missing)$Freq_Fitted_Quantiles[1,4]
+  
+  as.numeric(quant)
   
   
 }
