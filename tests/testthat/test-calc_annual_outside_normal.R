@@ -43,3 +43,11 @@ test_that("it is calculated correctly", {
   expect_true(data[[1,3]] == low)
   expect_true(data[[1,4]] == high)
 })
+
+test_that("transpose properly transposed the results", {
+  skip_on_cran()
+  skip_on_travis()
+  data <- calc_annual_outside_normal(station_number = "08NM116", start_year = 1980,
+                                     transpose = TRUE)
+  expect_true(all(c("Days_Below_Normal","Days_Above_Normal","Days_Outside_Normal") %in% data$Statistic))
+})

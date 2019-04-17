@@ -41,3 +41,11 @@ test_that("it is calculated correctly", {
   expect_true(data[[1,10]] == min(data_test$DayofYear))
   expect_true(data[[1,11]] == min(data_test$Date))
 })
+
+test_that("transpose properly transposed the results", {
+  skip_on_cran()
+  skip_on_travis()
+  data <- calc_annual_lowflows(station_number = "08NM116", start_year = 1980,
+                               transpose = TRUE)
+  expect_true(all(c("Min_1_Day","Min_1_Day_DoY") %in% data$Statistic))
+})

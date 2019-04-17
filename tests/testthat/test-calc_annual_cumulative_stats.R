@@ -50,3 +50,11 @@ test_that("it is calculated correctly for yield (math and extracting basin_area)
   flow_data <- dplyr::mutate(flow_data, cumsum = cumsum(Value) * 86400 / 1000 / 795)
   expect_true(round(data[[1,3]],2) == round(max(flow_data$cumsum),2))
 })
+
+test_that("transpose properly transposed the results", {
+  skip_on_cran()
+  skip_on_travis()
+  data <- calc_annual_cumulative_stats(station_number = "08NM116", start_year = 1980,
+                                       transpose = TRUE)
+  expect_true(all(c("Total_Volume_m3") %in% data$Statistic))
+})

@@ -3,7 +3,7 @@ context("Calc daily stats")
 test_that("creates a dataframe with the proper columns", {
   skip_on_cran()
   skip_on_travis()
-  data <- calc_daily_stats(station_number = "08NM116")
+  data <- calc_daily_stats(station_number = "08NM116", start_year = 1980)
   expect_true(is.data.frame(data) &
                 all(c("Date","DayofYear","Mean","Median","Maximum","Minimum") %in% colnames(data)))
 })
@@ -11,14 +11,14 @@ test_that("creates a dataframe with the proper columns", {
 test_that("outputs data for two stations", {
   skip_on_cran()
   skip_on_travis()
-  data <- calc_daily_stats(station_number = c("08NM116","08HB048"))
+  data <- calc_daily_stats(station_number = c("08NM116","08HB048"), start_year = 1980)
   expect_true(length(unique(data$STATION_NUMBER)) == 2)
 })
 
 test_that("creates a dataframe with custom columns", {
   skip_on_cran()
   skip_on_travis()
-  data <- calc_daily_stats(station_number = "08NM116",
+  data <- calc_daily_stats(station_number = "08NM116", start_year = 1980,
                            percentiles = c(25,75))
   expect_true(all(c("P25","P75") %in% colnames(data)))
 })
@@ -26,8 +26,8 @@ test_that("creates a dataframe with custom columns", {
 test_that("produces NA if there is missing data and warning is produced", {
   skip_on_cran()
   skip_on_travis()
-  data <- calc_daily_stats(station_number = "08NM116",
-                           ignore_missing = FALSE)
+  data <- suppressWarnings(calc_daily_stats(station_number = "08NM116",
+                           ignore_missing = FALSE))
   expect_true(any(is.na(data)))
   expect_warning(calc_daily_stats(station_number = "08NM116",
                                   ignore_missing = FALSE))

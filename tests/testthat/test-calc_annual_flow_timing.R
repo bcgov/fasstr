@@ -40,3 +40,11 @@ test_that("it is calculated correctly", {
   expect_true(data[[1,3]] == data_test$DayofYear[1])
   expect_true(data[[1,4]] == data_test$Date[1])
 })
+
+test_that("transpose properly transposed the results", {
+  skip_on_cran()
+  skip_on_travis()
+  data <- calc_annual_flow_timing(station_number = "08NM116", start_year = 1980,
+                                  transpose = TRUE)
+  expect_true(all(c("DoY_25pct_TotalQ") %in% data$Statistic))
+})

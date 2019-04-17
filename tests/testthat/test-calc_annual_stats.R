@@ -3,7 +3,7 @@ context("Calc annual stats")
 test_that("creates a dataframe with the proper columns", {
   skip_on_cran()
   skip_on_travis()
-  data <- calc_annual_stats(station_number = "08NM116")
+  data <- calc_annual_stats(station_number = "08NM116", start_year = 1980)
   expect_true(is.data.frame(data) &
                 all(c("Year","Mean","Median","Maximum","Minimum","P10","P90") %in% colnames(data)))
 })
@@ -11,14 +11,14 @@ test_that("creates a dataframe with the proper columns", {
 test_that("outputs data for two stations", {
   skip_on_cran()
   skip_on_travis()
-  data <- calc_annual_stats(station_number = c("08NM116","08HB048"))
+  data <- calc_annual_stats(station_number = c("08NM116","08HB048"), start_year = 1980)
   expect_true(length(unique(data$STATION_NUMBER)) == 2)
 })
 
 test_that("creates a dataframe with custom columns", {
   skip_on_cran()
   skip_on_travis()
-  data <- calc_annual_stats(station_number = "08NM116",
+  data <- calc_annual_stats(station_number = "08NM116", start_year = 1980,
                             percentiles = c(25,75))
   expect_true(all(c("P25","P75") %in% colnames(data)))
 })
@@ -26,8 +26,8 @@ test_that("creates a dataframe with custom columns", {
 test_that("produces NA if there is missing data and warning is produced", {
   skip_on_cran()
   skip_on_travis()
-  data <- calc_annual_stats(station_number = "08NM116",
-                            ignore_missing = FALSE)
+  data <- suppressWarnings(calc_annual_stats(station_number = "08NM116",
+                            ignore_missing = FALSE))
   expect_true(any(is.na(data)))
   expect_warning(calc_annual_stats(station_number = "08NM116",
                                    ignore_missing = FALSE))
@@ -69,7 +69,7 @@ test_that("data is summarized by water years properly", {
                                 Minimum = min(Value))
   
   data <- calc_annual_stats(data = flow_data,
-                            start_year = 1981,
+                            start_year = 1981, end_year = 1990,
                             water_year_start = 10)
   data <- dplyr::filter(data, Year == 1981)
   data <- dplyr::select(data, Mean, Median, Maximum, Minimum)
@@ -127,7 +127,7 @@ test_that("data is filtered by months properly", {
 test_that("transpose properly transposed the results", {
   skip_on_cran()
   skip_on_travis()
-  data <- calc_annual_stats(station_number = "08NM116",
+  data <- calc_annual_stats(station_number = "08NM116", start_year = 1980,
                             transpose = TRUE)
   expect_true(all(c("Mean","Median","Maximum","Minimum","P10","P90") %in% data$Statistic))
 })
