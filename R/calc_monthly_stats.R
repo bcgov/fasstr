@@ -106,7 +106,7 @@ calc_monthly_stats <- function(data,
   if (missing(exclude_years)) {
     exclude_years = NULL
   }
-
+  
   rolling_days_checks(roll_days, roll_align, multiple = FALSE)
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
@@ -116,7 +116,7 @@ calc_monthly_stats <- function(data,
   spread_checks(spread)
   if(transpose & spread) stop("Both spread and transpose arguments cannot be TRUE.", call. = FALSE)
   
-
+  
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
   
@@ -146,7 +146,7 @@ calc_monthly_stats <- function(data,
   # Add rolling means to end of dataframe
   flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
   colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
-
+  
   # Filter for the selected year (remove excluded years after)
   flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
   flow_data <- dplyr::filter(flow_data, Month %in% months)
@@ -157,17 +157,17 @@ calc_monthly_stats <- function(data,
   
   # Calculate basic stats
   monthly_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear, MonthName),
-                                Mean = mean(RollingValue, na.rm = ignore_missing),  
-                                Median = stats::median(RollingValue, na.rm = ignore_missing), 
-                                Maximum = suppressWarnings(max(RollingValue, na.rm = ignore_missing)),    
-                                Minimum = suppressWarnings(min(RollingValue, na.rm = ignore_missing)))
+                                    Mean = mean(RollingValue, na.rm = ignore_missing),  
+                                    Median = stats::median(RollingValue, na.rm = ignore_missing), 
+                                    Maximum = suppressWarnings(max(RollingValue, na.rm = ignore_missing)),    
+                                    Minimum = suppressWarnings(min(RollingValue, na.rm = ignore_missing)))
   monthly_stats <- dplyr::ungroup(monthly_stats)
   
   # Calculate annual percentiles
   if(!all(is.na(percentiles))) {
     for (ptile in percentiles) {
       monthly_stats_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear, MonthName),
-                                          Percentile = stats::quantile(RollingValue, ptile / 100, na.rm = TRUE))
+                                              Percentile = stats::quantile(RollingValue, ptile / 100, na.rm = TRUE))
       monthly_stats_ptile <- dplyr::ungroup(monthly_stats_ptile)
       
       names(monthly_stats_ptile)[names(monthly_stats_ptile) == "Percentile"] <- paste0("P", ptile)
@@ -228,9 +228,14 @@ calc_monthly_stats <- function(data,
   
   # Give warning if any NA values
   missing_test <- dplyr::filter(monthly_stats, !(Year %in% exclude_years))
-  missing_values_warning(missing_test[, 4:ncol(missing_test)])
+  if (ignore_missing){
+    if (anyNA(missing_test[, 4:ncol(missing_test)])) 
+      warning("One or more calculations included missing values and NA's were produced. Some months in some years have no data to summarize.", call. = FALSE)
+  } else {
+    missing_values_warning(missing_test[, 4:ncol(missing_test)])
+  }
   
-
+  
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
   if(as.character(substitute(groups)) %in% orig_cols) {
     names(monthly_stats)[names(monthly_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
