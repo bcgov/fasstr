@@ -84,7 +84,7 @@
 #' calc_annual_stats(station_number = "08NM116",
 #'                   roll_days = 7,
 #'                   months = 7:9,
-#'                   percentiles = c(25,75))                                                              
+#'                   percentiles = c(25,75))
 #' }
 #' @export
 
