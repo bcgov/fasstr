@@ -37,53 +37,53 @@
 #' 
 #' # Plot statistics using data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
-#' plot_longterm_stats(data = flow_data,
-#'                     start_year = 1980)
+#' plot_longterm_daily_stats(data = flow_data,
+#'                           start_year = 1980)
 #' 
 #' # Plot statistics using station_number argument with defaults
-#' plot_longterm_stats(station_number = "08NM116",
-#'                     start_year = 1980)
+#' plot_longterm_daily_stats(station_number = "08NM116",
+#'                           start_year = 1980)
 #' 
 #' # Plot statistics regardless if there is missing data for a given year
-#' plot_longterm_stats(station_number = "08NM116",
-#'                     ignore_missing = TRUE)
+#' plot_longterm_daily_stats(station_number = "08NM116",
+#'                           ignore_missing = TRUE)
 #'                   
 #' # Plot statistics for water years starting in October
-#' plot_longterm_stats(station_number = "08NM116",
-#'                     start_year = 1980,
-#'                     end_year = 2010,
-#'                     water_year_start = 10)
+#' plot_longterm_daily_stats(station_number = "08NM116",
+#'                           start_year = 1980,
+#'                           end_year = 2010,
+#'                           water_year_start = 10)
 #'                   
 #' # Plot statistics with custom years
-#' plot_longterm_stats(station_number = "08NM116",
-#'                     start_year = 1981,
-#'                     end_year = 2010,
-#'                     exclude_years = c(1991,1993:1995))
+#' plot_longterm_daily_stats(station_number = "08NM116",
+#'                           start_year = 1981,
+#'                           end_year = 2010,
+#'                           exclude_years = c(1991,1993:1995))
 #' 
 #' # Plot statistics without a log-scale Discharge axis
-#' plot_longterm_stats(station_number = "08NM116",
-#'                     start_year = 1981,
-#'                     end_year = 2010,
-#'                     log_discharge = FALSE)
+#' plot_longterm_daily_stats(station_number = "08NM116",
+#'                           start_year = 1981,
+#'                           end_year = 2010,
+#'                           log_discharge = FALSE)
 #' }
 #' @export
 
 
-plot_longterm_stats <- function(data,
-                                dates = Date,
-                                values = Value,
-                                groups = STATION_NUMBER,
-                                station_number,
-                                roll_days = 1,
-                                roll_align = "right",
-                                water_year_start = 1,
-                                start_year,
-                                end_year,
-                                exclude_years,
-                                complete_years = FALSE,
-                                ignore_missing = FALSE,
-                                log_discharge = TRUE,
-                                include_title = FALSE){
+plot_longterm_daily_stats <- function(data,
+                                      dates = Date,
+                                      values = Value,
+                                      groups = STATION_NUMBER,
+                                      station_number,
+                                      roll_days = 1,
+                                      roll_align = "right",
+                                      water_year_start = 1,
+                                      start_year,
+                                      end_year,
+                                      exclude_years,
+                                      complete_years = FALSE,
+                                      ignore_missing = FALSE,
+                                      log_discharge = TRUE,
+                                      include_title = FALSE){
   
   ## ARGUMENT CHECKS
   ## ---------------
@@ -201,9 +201,9 @@ plot_longterm_stats <- function(data,
   # Create a list of named plots extracted from the tibble
   plots <- lt_plots$plot
   if (nrow(lt_plots) == 1) {
-    names(plots) <- "Long-term_Statistics"
+    names(plots) <- "Long-term_Daily_Statistics"
   } else {
-    names(plots) <- paste0(lt_plots$STATION_NUMBER, "_Long-term_Statistics")
+    names(plots) <- paste0(lt_plots$STATION_NUMBER, "_Long-term_Daily_Statistics")
   }
   
   plots
