@@ -10,14 +10,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Calculate the long-term and long-term monthly summary statistics
+#' @title Calculate the long-term summary statistics from annual monthly means
 #'
-#' @description Calculates the long-term and long-term monthly mean, median, maximum, minimum, and percentiles of daily flow values 
-#'    from a streamflow dataset. Calculates the statistics from all daily values from all years, unless specified.
+#' @description Calculates the long-term and long-term monthly mean, median, maximum, minimum, and percentiles of monthly mean  
+#'    flow values from a streamflow dataset. Calculates the statistics from all monthly mean values from all years, unless specified.
 #'
 #' @inheritParams calc_daily_stats
 #' @param percentiles Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.
-#' @param include_longterm Logical value indicating whether to include longterm calculation of all data. Default \code{TRUE}.
+#' @param include_annual Logical value indicating whether to include annual calculation of all months. Default \code{TRUE}.
 #' @param custom_months Numeric vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Adds results to the end of table.
 #'    If wanting months that overlap calendar years (ex. Oct-Mar), choose water_year_start that begins before the first 
 #'    month listed. Leave blank for no custom month summary.
@@ -25,15 +25,15 @@
 #'    "Summer" or "Jul-Sep". Default \code{"Custom-Months"}.
 #' 
 #' @return A tibble data frame with the following columns:
-#'   \item{Month}{month of the year, included 'Long-term' for all months, and 'Custom-Months' if selected}
-#'   \item{Mean}{mean of all daily data for a given month and long-term over all years}
-#'   \item{Median}{median of all daily data for a given month and long-term over all years}
-#'   \item{Maximum}{maximum of all daily data for a given month and long-term over all years}
-#'   \item{Minimum}{minimum of all daily data for a given month and long-term over all years}
-#'   \item{P'n'}{each  n-th percentile selected for a given month and long-term over all years}
+#'   \item{Month}{month of the year, included 'Annual' for all months, and 'Custom-Months' if selected}
+#'   \item{Mean}{mean of all annual monthly means for a given month over all years}
+#'   \item{Median}{median of all annual monthly means for a given month over all years}
+#'   \item{Maximum}{maximum of all annual monthly means for a given month over all years}
+#'   \item{Minimum}{minimum of all annual monthly means for a given month over all years}
+#'   \item{P'n'}{each  n-th percentile selected for annual monthly means for a given month over all years}
 #'   Default percentile columns:
-#'   \item{P10}{annual 10th percentile selected for a given month and long-term over all years}
-#'   \item{P90}{annual 90th percentile selected for a given month and long-term over all years}
+#'   \item{P10}{annual 10th percentile selected for annual monthly means for a given month over all years}
+#'   \item{P90}{annual 90th percentile selected for annual monthly means for a given month over all years}
 #'   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 #'   
 #' @examples
@@ -69,7 +69,7 @@
 #'                             months = 7:9,
 #'                             percentiles = c(25,75),
 #'                             ignore_missing = TRUE,
-#'                             include_longterm = FALSE) # removes the Long-term numbers 
+#'                             include_annual = FALSE) # removes the Long-term numbers 
 #'                     
 #' # Calculate statistics and add custom stats for July-September
 #' calc_longterm_monthly_stats(station_number = "08NM116",
@@ -94,7 +94,7 @@ calc_longterm_monthly_stats <- function(data,
                                         exclude_years,
                                         months = 1:12,
                                         complete_years = FALSE,
-                                        include_longterm = TRUE,
+                                        include_annual = TRUE,
                                         custom_months,
                                         custom_months_label,
                                         transpose = FALSE,
@@ -135,7 +135,7 @@ calc_longterm_monthly_stats <- function(data,
   ignore_missing_checks(ignore_missing)
   complete_yrs_checks(complete_years)
   custom_months_checks(custom_months, custom_months_label)
-  include_longterm_checks(include_longterm)
+  include_longterm_checks(include_annual)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -186,7 +186,6 @@ calc_longterm_monthly_stats <- function(data,
   monthly_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear, MonthName),
                                     Month_Mean = mean(RollingValue, na.rm = ignore_missing))
   monthly_stats <- dplyr::ungroup(monthly_stats)
-  
   Q_months <- dplyr::summarize(dplyr::group_by(monthly_stats, STATION_NUMBER, MonthName),
                                Mean = mean(Month_Mean, na.rm = ignore_missing),
                                Median = stats::median(Month_Mean, na.rm = ignore_missing),
@@ -194,16 +193,17 @@ calc_longterm_monthly_stats <- function(data,
                                Minimum = min(Month_Mean, na.rm = ignore_missing))
   Q_months <- dplyr::ungroup(Q_months)
   
-  if (include_longterm) {
-    longterm_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
+  if (include_annual) {
+    longterm_stats_data <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
                                        Annual_Mean = mean(RollingValue, na.rm = ignore_missing))
-    longterm_stats   <- dplyr::summarize(dplyr::group_by(longterm_stats, STATION_NUMBER),
+    longterm_stats_data <- dplyr::ungroup(longterm_stats_data)
+    longterm_stats   <- dplyr::summarize(dplyr::group_by(longterm_stats_data, STATION_NUMBER),
                                          Mean = mean(Annual_Mean, na.rm = ignore_missing),
                                          Median = stats::median(Annual_Mean, na.rm = ignore_missing),
                                          Maximum = max(Annual_Mean, na.rm = ignore_missing),
                                          Minimum = min(Annual_Mean, na.rm = ignore_missing))
     longterm_stats <- dplyr::ungroup(longterm_stats)
-    longterm_stats <- dplyr::mutate(longterm_stats, MonthName = as.factor("Long-term"))
+    longterm_stats <- dplyr::mutate(longterm_stats, MonthName = as.factor("Annual"))
     
     longterm_stats <- rbind(Q_months, longterm_stats)  #dplyr::bindrows gives unnecessary warnings
   } else {
@@ -222,11 +222,11 @@ calc_longterm_monthly_stats <- function(data,
       Q_months_ptile <- dplyr::ungroup(Q_months_ptile)
       
       
-      if (include_longterm) {
-        longterm_stats_ptile <- dplyr::summarise(dplyr::group_by(monthly_stats, STATION_NUMBER),
-                                                 Percentile = ifelse(!is.na(mean(Month_Mean, na.rm = FALSE)) | ignore_missing, 
-                                                                     stats::quantile(Month_Mean, ptile / 100, na.rm = TRUE), NA))
-        longterm_stats_ptile <- dplyr::mutate(longterm_stats_ptile, MonthName = "Long-term")
+      if (include_annual) {
+        longterm_stats_ptile <- dplyr::summarise(dplyr::group_by(longterm_stats_data, STATION_NUMBER),
+                                                 Percentile = ifelse(!is.na(mean(Annual_Mean, na.rm = FALSE)) | ignore_missing, 
+                                                                     stats::quantile(Annual_Mean, ptile / 100, na.rm = TRUE), NA))
+        longterm_stats_ptile <- dplyr::mutate(longterm_stats_ptile, MonthName = "Annual")
         
         names(longterm_stats_ptile)[names(longterm_stats_ptile) == "Percentile"] <- paste0("P", ptile)
         longterm_stats_ptile <- dplyr::ungroup(longterm_stats_ptile)
@@ -247,6 +247,7 @@ calc_longterm_monthly_stats <- function(data,
     monthly_stats_temp <- dplyr::filter(monthly_stats, Month %in% custom_months)
     monthly_stats_temp <- dplyr::summarize(dplyr::group_by(monthly_stats_temp, STATION_NUMBER, WaterYear),
                                        Annual_Mean = mean(RollingValue, na.rm = ignore_missing))
+    monthly_stats_temp <- dplyr::ungroup(monthly_stats_temp)
     Q_months_custom <-   dplyr::summarize(dplyr::group_by(monthly_stats_temp, STATION_NUMBER),
                                           Mean = mean(Annual_Mean, na.rm = ignore_missing),
                                           Median = stats::median(Annual_Mean, na.rm = ignore_missing),

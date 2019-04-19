@@ -2,13 +2,13 @@
 % Please edit documentation in R/calc_longterm_monthly_stats.R
 \name{calc_longterm_monthly_stats}
 \alias{calc_longterm_monthly_stats}
-\title{Calculate the long-term and long-term monthly summary statistics}
+\title{Calculate the long-term summary statistics from annual monthly means}
 \usage{
 calc_longterm_monthly_stats(data, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number, percentiles = c(10, 90),
   roll_days = 1, roll_align = "right", water_year_start = 1,
   start_year, end_year, exclude_years, months = 1:12,
-  complete_years = FALSE, include_longterm = TRUE, custom_months,
+  complete_years = FALSE, include_annual = TRUE, custom_months,
   custom_months_label, transpose = FALSE, ignore_missing = FALSE)
 }
 \arguments{
@@ -49,7 +49,7 @@ all months (default \code{1:12}).}
 
 \item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 
-\item{include_longterm}{Logical value indicating whether to include longterm calculation of all data. Default \code{TRUE}.}
+\item{include_annual}{Logical value indicating whether to include annual calculation of all months. Default \code{TRUE}.}
 
 \item{custom_months}{Numeric vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Adds results to the end of table.
 If wanting months that overlap calendar years (ex. Oct-Mar), choose water_year_start that begins before the first 
@@ -66,20 +66,20 @@ with no missing dates will be returned. Default \code{FALSE}.}
 }
 \value{
 A tibble data frame with the following columns:
-  \item{Month}{month of the year, included 'Long-term' for all months, and 'Custom-Months' if selected}
-  \item{Mean}{mean of all daily data for a given month and long-term over all years}
-  \item{Median}{median of all daily data for a given month and long-term over all years}
-  \item{Maximum}{maximum of all daily data for a given month and long-term over all years}
-  \item{Minimum}{minimum of all daily data for a given month and long-term over all years}
-  \item{P'n'}{each  n-th percentile selected for a given month and long-term over all years}
+  \item{Month}{month of the year, included 'Annual' for all months, and 'Custom-Months' if selected}
+  \item{Mean}{mean of all annual monthly means for a given month over all years}
+  \item{Median}{median of all annual monthly means for a given month over all years}
+  \item{Maximum}{maximum of all annual monthly means for a given month over all years}
+  \item{Minimum}{minimum of all annual monthly means for a given month over all years}
+  \item{P'n'}{each  n-th percentile selected for annual monthly means for a given month over all years}
   Default percentile columns:
-  \item{P10}{annual 10th percentile selected for a given month and long-term over all years}
-  \item{P90}{annual 90th percentile selected for a given month and long-term over all years}
+  \item{P10}{annual 10th percentile selected for annual monthly means for a given month over all years}
+  \item{P90}{annual 90th percentile selected for annual monthly means for a given month over all years}
   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 }
 \description{
-Calculates the long-term and long-term monthly mean, median, maximum, minimum, and percentiles of daily flow values 
-   from a streamflow dataset. Calculates the statistics from all daily values from all years, unless specified.
+Calculates the long-term and long-term monthly mean, median, maximum, minimum, and percentiles of monthly mean  
+   flow values from a streamflow dataset. Calculates the statistics from all monthly mean values from all years, unless specified.
 }
 \examples{
 \dontrun{
@@ -114,7 +114,7 @@ calc_longterm_monthly_stats(station_number = "08NM116",
                             months = 7:9,
                             percentiles = c(25,75),
                             ignore_missing = TRUE,
-                            include_longterm = FALSE) # removes the Long-term numbers 
+                            include_annual = FALSE) # removes the Long-term numbers 
                     
 # Calculate statistics and add custom stats for July-September
 calc_longterm_monthly_stats(station_number = "08NM116",
