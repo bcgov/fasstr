@@ -89,7 +89,9 @@
           "REGULATED",
           "RHBN",
           "REAL_TIME",
-          "Info")
+          "Info",
+          "Month_Mean",
+          "Annual_Mean")
       )
     invisible()
   }

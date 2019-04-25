@@ -92,8 +92,10 @@ Analyses                  |	Object                                    |	Type    
 1 - Screening	            |	Flow_Screening     	                  	  | Table             | screen_flow_data()
 1 - Screening	            |	Flow_Screening_Plot	                  	  | Plot              | plot_data_screening()
 1 - Screening	            |	Missing_Dates_Plot	                      | Plot              | plot_missing_dates()
-2 - Longterm	            |	Longterm_Summary_Stats_Percentiles      	| Table             | calc_longterm_stats()
-2 - Longterm	            |	Longterm_Summary_Stats_Plot               | Plot              | plot_longterm_stats()
+2 - Longterm	            |	Longterm_Monthly_Summary_Stats_Percentiles| Table             | calc_longterm_monthly_stats()
+2 - Longterm	            |	Longterm_Monthly_Summary_Stats_Plot       | Plot              | plot_longterm_monthly_stats()
+2 - Longterm	            |	Longterm_Daily_Summary_Stats_Percentiles  | Table             | calc_longterm_daily_stats()
+2 - Longterm	            |	Longterm_Daily_Summary_Stats_Plot         | Plot              | plot_longterm_daily_stats()
 2 - Longterm	            |	Flow_Duration_Curves                      | Plot              | plot_flow_duration()
 3 - Annual	              |	Annual_Summary_Stats                     	| Table             | calc_annual_stats()
 3 - Annual	              |	Annual_Summary_Stats_Plot                	| Plot              | plot_annual_stats()
@@ -181,19 +183,33 @@ plot_missing_dates(station_number = "08NM116",
 
 #### 2. Long-term
 
-**Long-term_Statistics_and_Percentiles**
-
+**Long-term_Monthly_Statistics_and_Percentiles**
 ```{r,  echo=FALSE, comment=NA}
-head(as.data.frame(calc_longterm_stats(station_number = "08NM116",
-                                       start_year = 1990, end_year = 2001,
-                                       percentiles = 1:99,
-                                       transpose = TRUE)))
+head(as.data.frame(calc_longterm_monthly_stats(station_number = "08NM116",
+                                             start_year = 1990, end_year = 2001,
+                                             percentiles = seq(5, 95, by = 5),
+                                             transpose = TRUE)))
 ```
 
-**Long-term_Statistics**
+**Long-term_Monthly_Statistics**
 
 ```{r,  echo=FALSE, fig.height = 2.5, fig.width = 7, comment=NA}
-plot_longterm_stats(station_number = "08NM116",
+plot_longterm_monthly_stats(station_number = "08NM116",
+                    start_year = 1990, end_year = 2001)[[1]]
+```
+
+**Long-term_Daily_Statistics_and_Percentiles**
+```{r,  echo=FALSE, comment=NA}
+head(as.data.frame(calc_longterm_daily_stats(station_number = "08NM116",
+                                             start_year = 1990, end_year = 2001,
+                                             percentiles = 1:99,
+                                             transpose = TRUE)))
+```
+
+**Long-term_Daily_Statistics**
+
+```{r,  echo=FALSE, fig.height = 2.5, fig.width = 7, comment=NA}
+plot_longterm_daily_stats(station_number = "08NM116",
                     start_year = 1990, end_year = 2001)[[1]]
 ```
 

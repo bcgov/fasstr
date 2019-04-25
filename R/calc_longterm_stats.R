@@ -100,6 +100,7 @@ calc_longterm_stats <- function(data,
                                 transpose = FALSE,
                                 ignore_missing = FALSE){
   
+  .Deprecated("calc_longterm_daily_stats")
   
   ## ARGUMENT CHECKS
   ## ---------------

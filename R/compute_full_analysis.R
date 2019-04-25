@@ -39,8 +39,10 @@
 #'          \code{\link{screen_flow_data}},
 #'          \code{\link{plot_data_screening}},
 #'          \code{\link{plot_missing_dates}},
-#'          \code{\link{calc_longterm_stats}},
-#'          \code{\link{plot_longterm_stats}},
+#'          \code{\link{calc_longterm_monthly_stats}},
+#'          \code{\link{plot_longterm_monthly_stats}},
+#'          \code{\link{calc_longterm_daily_stats}},
+#'          \code{\link{plot_longterm_daily_stats}},
 #'          \code{\link{plot_flow_duration}},
 #'          \code{\link{calc_annual_stats}},
 #'          \code{\link{plot_annual_stats}},
@@ -98,7 +100,7 @@ compute_full_analysis <- function(data,
                                   zyp_method = 'yuepilon',
                                   zyp_alpha){
   
-
+  
   ## ARGUMENT CHECKS
   ## ---------------
   
@@ -129,7 +131,7 @@ compute_full_analysis <- function(data,
   years_checks(start_year, end_year, exclude_years)
   ignore_missing_checks(ignore_missing)
   
- 
+  
   if (!is.numeric(analyses)) 
     stop("analyses argument must be numbers between 1 and 7. See ?compute_full_analysis for analysis group numbers.", call. = FALSE)
   if (!all(analyses %in% 1:7)) 
@@ -150,7 +152,7 @@ compute_full_analysis <- function(data,
   
   # Check if data is provided and import it
   flow_data_raw <- flowdata_import(data = data, 
-                                          station_number = station_number)
+                                   station_number = station_number)
   
   # Save the original columns (to check for STATION_NUMBER col at end) and ungroup if necessary
   orig_cols <- names(flow_data_raw)
@@ -234,7 +236,7 @@ compute_full_analysis <- function(data,
                                                   "Flow_Screening_Plot" = ts_screen_plot,
                                                   "Missing_Dates_Plot" = ts_missing_plot)))
     
-
+    
   }  
   
   
@@ -242,21 +244,36 @@ compute_full_analysis <- function(data,
   ##########################
   
   if (2 %in% analyses) {
-
+    
     # Long-term stats with percentiles
-    lt_stats <- calc_longterm_stats(data = flow_data,
-                                    exclude_years = exclude_years,
-                                    water_year_start = water_year_start,
-                                    percentiles = 1:99,
-                                    transpose = TRUE,
-                                    ignore_missing = ignore_missing)
+    lt_mon_stats <- calc_longterm_monthly_stats(data = flow_data,
+                                                exclude_years = exclude_years,
+                                                water_year_start = water_year_start,
+                                                percentiles = seq(5, 95, by = 5),
+                                                transpose = TRUE,
+                                                ignore_missing = ignore_missing)
     
     
     # Long-term stats plot
-    lt_stats_plot <- plot_longterm_stats(data = flow_data,
-                                         exclude_years = exclude_years,
-                                         water_year_start = water_year_start,
-                                         ignore_missing = ignore_missing)
+    lt_mon_stats_plot <- plot_longterm_monthly_stats(data = flow_data,
+                                                     exclude_years = exclude_years,
+                                                     water_year_start = water_year_start,
+                                                     ignore_missing = ignore_missing)
+    
+    # Long-term stats with percentiles
+    lt_stats <- calc_longterm_daily_stats(data = flow_data,
+                                          exclude_years = exclude_years,
+                                          water_year_start = water_year_start,
+                                          percentiles = 1:99,
+                                          transpose = TRUE,
+                                          ignore_missing = ignore_missing)
+    
+    
+    # Long-term stats plot
+    lt_stats_plot <- plot_longterm_daily_stats(data = flow_data,
+                                               exclude_years = exclude_years,
+                                               water_year_start = water_year_start,
+                                               ignore_missing = ignore_missing)
     
     
     # Flow duration plot
@@ -267,10 +284,12 @@ compute_full_analysis <- function(data,
     
     # Add to objects list
     all_objects <- append(all_objects,    
-                          list("Longterm" = list("Longterm_Summary_Stats_Percentiles" = lt_stats,
-                                                 "Longterm_Summary_Stats_Plot" = lt_stats_plot,
+                          list("Longterm" = list("Longterm_Monthly_Summary_Stats_Percentiles" = lt_mon_stats,
+                                                 "Longterm_Monthly_Summary_Stats_Plot" = lt_mon_stats_plot,
+                                                 "Longterm_Daily_Summary_Stats_Percentiles" = lt_stats,
+                                                 "Longterm_Daily_Summary_Stats_Plot" = lt_stats_plot,
                                                  "Flow_Duration_Curves" = lt_flowduration_plot)))
-
+    
   }
   
   
@@ -364,7 +383,7 @@ compute_full_analysis <- function(data,
                                                "Annual_Low_Flows" = ann_lowflow,
                                                "Annual_Low_Flows_Plot" = ann_lowflow_plot,
                                                "Annual_Means_Plot" =  ann_means_plot)))
-  
+    
   }
   
   ### Monthly Stats
@@ -583,14 +602,14 @@ compute_full_analysis <- function(data,
       freq_plots <- list("Frequency_Plot" = freq_results$Freq_Plot)
       #freq_fitting <- freq_results$fit
       freq_quantiles <- freq_results$Freq_Fitted_Quantiles
-
+      
       # Add to objects list
       all_objects <- append(all_objects,    
                             list("Lowflow_Frequencies" = freq_results))
       
     }
   }
-
+  
   message("* DONE")
   
   return(all_objects)

@@ -85,6 +85,8 @@ plot_longterm_stats <- function(data,
                                 log_discharge = TRUE,
                                 include_title = FALSE){
   
+  .Deprecated("plot_longterm_daily_stats")
+  
   ## ARGUMENT CHECKS
   ## ---------------
   

@@ -28,8 +28,10 @@
 #'          \code{\link{screen_flow_data}},
 #'          \code{\link{plot_data_screening}},
 #'          \code{\link{plot_missing_dates}},
-#'          \code{\link{calc_longterm_stats}},
-#'          \code{\link{plot_longterm_stats}},
+#'          \code{\link{calc_longterm_monthly_stats}},
+#'          \code{\link{plot_longterm_monthly_stats}},
+#'          \code{\link{calc_longterm_daily_stats}},
+#'          \code{\link{plot_longterm_daily_stats}},
 #'          \code{\link{plot_flow_duration}},
 #'          \code{\link{calc_annual_stats}},
 #'          \code{\link{plot_annual_stats}},
@@ -95,7 +97,7 @@ write_full_analysis <- function(data,
   
   ## ARGUMENT CHECKS
   ## ---------------
-
+  
   if (missing(data)) {
     data = NULL
   }
@@ -379,7 +381,7 @@ write_full_analysis <- function(data,
              width = 20,
              comment = data_plot_function)
     
-   
+    
     # Add worksheet
     screening_sheet <- "Data Screening"
     openxlsx::addWorksheet(wb = output_excel,
@@ -465,20 +467,38 @@ write_full_analysis <- function(data,
   if (2 %in% analyses) {
     
     # Add worksheet
-    lt_sheet <- "Long-term Stats"
+    lt_sheet <- "Long-term Daily Stats"
     openxlsx::addWorksheet(wb = output_excel,
                            sheetName = lt_sheet,
                            tabColour = "#73fbd3")
+    lt_mon_sheet <- "Long-term Monthly Stats"
+    openxlsx::addWorksheet(wb = output_excel,
+                           sheetName = lt_mon_sheet,
+                           tabColour = "#73fbd3")
     
     # Create fasstr function strings for output
-    longterm_function <- paste0("calc_longterm_stats(",
+    longterm_mon_function <- paste0("calc_longterm_monthly_stats(",
+                                    fn_data,
+                                    fn_wys,
+                                    fn_startend,
+                                    fn_exclude,
+                                    fn_missing,
+                                    ")")
+    longtermplot_mon_function <- paste0("plot_longterm_monthly_stats(",
+                                        fn_data,
+                                        fn_wys,
+                                        fn_startend,
+                                        fn_exclude,
+                                        fn_missing,
+                                        ")")
+    longterm_function <- paste0("calc_longterm_daily_stats(",
                                 fn_data,
                                 fn_wys,
                                 fn_startend,
                                 fn_exclude,
                                 fn_missing,
                                 ")")
-    longtermplot_function <- paste0("plot_longterm_stats(",
+    longtermplot_function <- paste0("plot_longterm_daily_stats(",
                                     fn_data,
                                     fn_wys,
                                     fn_startend,
@@ -494,12 +514,12 @@ write_full_analysis <- function(data,
                                     ")")
     
     # Add data tables
-    lt_stats_out <- results$Longterm$Longterm_Summary_Stats_Percentiles
+    lt_stats_out <- results$Longterm$Longterm_Daily_Summary_Stats_Percentiles
     lt_stats_out <- lt_stats_out[,!colnames(lt_stats_out) %in% "STATION_NUMBER"]
     add_table(wb = output_excel,
               sheet = lt_sheet,
               data = lt_stats_out,
-              title = paste0("Long-term Summary Statistics from ", start_year, "-", end_year),
+              title = paste0("Long-term Daily Summary Statistics from ", start_year, "-", end_year),
               col = 1,
               row = 1,
               comment = longterm_function)
@@ -507,8 +527,8 @@ write_full_analysis <- function(data,
     # Add plots
     add_plot(wb = output_excel,
              sheet = lt_sheet,
-             plot = results$Longterm$Longterm_Summary_Stats_Plot[[1]],
-             title = paste0("Long-term Summary Statistics from ", start_year, "-", end_year),
+             plot = results$Longterm$Longterm_Daily_Summary_Stats_Plot[[1]],
+             title = paste0("Long-term Daily Summary Statistics from ", start_year, "-", end_year),
              col = ncol(lt_stats_out) + 2,
              row = 2,
              height = 4,
@@ -524,20 +544,53 @@ write_full_analysis <- function(data,
              width = 10,
              comment = durationplot_function)
     
+    
+    
+    # Add data tables
+    lt_mon_stats_out <- results$Longterm$Longterm_Monthly_Summary_Stats_Percentiles
+    lt_mon_stats_out <- lt_mon_stats_out[,!colnames(lt_mon_stats_out) %in% "STATION_NUMBER"]
+    add_table(wb = output_excel,
+              sheet = lt_mon_sheet,
+              data = lt_mon_stats_out,
+              title = paste0("Long-term Monthly Summary Statistics from ", start_year, "-", end_year),
+              col = 1,
+              row = 1,
+              comment = longterm_function)
+    
+    # Add plots
+    add_plot(wb = output_excel,
+             sheet = lt_mon_sheet,
+             plot = results$Longterm$Longterm_Monthly_Summary_Stats_Plot[[1]],
+             title = paste0("Long-term Monthly Summary Statistics from ", start_year, "-", end_year),
+             col = ncol(lt_mon_stats_out) + 2,
+             row = 2,
+             height = 4,
+             width = 10,
+             comment = longtermplot_function)
+    
+    
     # Add fasstr functions to table
     fasstr_functions <- dplyr::add_row(fasstr_functions,
+                                       "Worksheet" = lt_mon_sheet,
+                                       "Output" = "Long-term Monthly Summary Statistics Table",
+                                       "Function" = longterm_mon_function)
+    fasstr_functions <- dplyr::add_row(fasstr_functions,
+                                       "Worksheet" = lt_mon_sheet,
+                                       "Output" = "Long-term Monthly Summary Statistics Plot",
+                                       "Function" = longtermplot_mon_function)
+    fasstr_functions <- dplyr::add_row(fasstr_functions,
                                        "Worksheet" = lt_sheet,
-                                       "Output" = "Long-term Summary Statistics Table",
+                                       "Output" = "Long-term Daily Summary Statistics Table",
                                        "Function" = longterm_function)
     fasstr_functions <- dplyr::add_row(fasstr_functions,
                                        "Worksheet" = lt_sheet,
-                                       "Output" = "Long-term Summary Statistics Plot",
+                                       "Output" = "Long-term Daily Summary Statistics Plot",
                                        "Function" = longtermplot_function)
     fasstr_functions <- dplyr::add_row(fasstr_functions,
                                        "Worksheet" = lt_sheet,
                                        "Output" = "Flow Duration Curves",
                                        "Function" = durationplot_function)
-
+    
   }
   
   
@@ -951,7 +1004,7 @@ write_full_analysis <- function(data,
              width = 9,
              comment = month_stats_plot_function)
     
-
+    
     # Add worksheet
     month_cumul_sheet <- "Monthly Cumulative Stats"
     openxlsx::addWorksheet(wb = output_excel,
@@ -1253,7 +1306,7 @@ write_full_analysis <- function(data,
                     height = 4,
                     combined_pdf = ifelse(plot_filetype == "pdf", TRUE, FALSE))
       ))
-
+    
     # Add fasstr functions to table
     fasstr_functions <- dplyr::add_row(fasstr_functions,
                                        "Worksheet" = day_stats_sheet,
@@ -1457,7 +1510,7 @@ write_full_analysis <- function(data,
                height = 5,
                width = 7,
                comment = paste0(frequency_function, "[[3]]"))
-
+      
       # Add fasstr functions to table
       fasstr_functions <- dplyr::add_row(fasstr_functions,
                                          "Worksheet" = freq_sheet,
@@ -1542,7 +1595,7 @@ write_full_analysis <- function(data,
             comment = "Copy and paste a function into R to reproduce or further customize  results")
   openxlsx::setColWidths(wb = output_excel, sheet = fasstr_sheet, cols = 1:3, widths = "auto")
   
-
+  
   
   
   # Save the workbook
@@ -1553,7 +1606,7 @@ write_full_analysis <- function(data,
   openxlsx::saveWorkbook(wb = output_excel, 
                          file = paste0(file_name, ".xlsx"),
                          overwrite = TRUE)
-
+  
   if (5 %in% analyses | 6 %in% analyses) {
     message(paste0("* DONE. For analysis results go to: '", normalizePath(paste0(file_name, ".xlsx")),
                    "' and '", normalizePath(plot_dir), "' folder"))

@@ -126,16 +126,16 @@ plot_longterm_daily_stats <- function(data,
   ## CALC STATS
   ## ----------
   
-  longterm_stats <- calc_longterm_stats(data = flow_data,
-                                        percentiles = c(5,25,75,95),
-                                        roll_days = roll_days,
-                                        roll_align = roll_align,
-                                        water_year_start = water_year_start,
-                                        start_year = start_year,
-                                        end_year = end_year,
-                                        exclude_years = exclude_years,
-                                        complete_years = complete_years,
-                                        ignore_missing = ignore_missing)
+  longterm_stats <- calc_longterm_daily_stats(data = flow_data,
+                                              percentiles = c(5,25,75,95),
+                                              roll_days = roll_days,
+                                              roll_align = roll_align,
+                                              water_year_start = water_year_start,
+                                              start_year = start_year,
+                                              end_year = end_year,
+                                              exclude_years = exclude_years,
+                                              complete_years = complete_years,
+                                              ignore_missing = ignore_missing)
   
   
   ## PLOT STATS

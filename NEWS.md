@@ -5,6 +5,7 @@ Updated: 12 April 2019
 
 #### Updates:
 
+  * Renamed calc_longterm_stats and plot_longterm stats to calc_longterm_daily_stats and plot_longterm_daily_stats
   * Removed logical "water_year" argument and now "water_year_start" controls the start of year alone (default now 1 for January)
   * complete_full_analysis just creates R objects; a new write_full_analysis saves the results in a single Excel document, with some plots in a plots folder; renamed 'sections' to 'analyses'
   * add_date_variables() outputs changed slightly to match new water_year_start argument
@@ -17,14 +18,16 @@ Updated: 12 April 2019
   * Return Period axis has returned to the frequency analysis plot
   * Updated all documentation examples (more useful)
   
+#### New:
+
+  * New calc_longterm_monthly_stats and plot_longterm_monthly_stats that summarizes annual monthly mean flows data
+  * testthat functions for testing package (internal usage)
+
+  
 #### Bugs Fixed:
 
   * No warning now in annual functions if NA values produced for years listed in "exclude_years" argument
   
-#### New:
-
-  * testthat functions for testing package (internal usage)
-
 fasstr 0.2.8
 =========================
 

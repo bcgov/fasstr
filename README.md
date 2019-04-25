@@ -114,14 +114,14 @@ Examples
 
 ### Summary statistics example: long-term statistics
 
-To determine the summary statistics of an entire dataset and by month (mean, median, maximum, minimum, and some percentiles) you can use the `calc_longterm_stats()` function. If the 'Mission Creek near East Kelowna' hydrometric station is of interest you can list the station number in the `station_number` argument to obtain the data (if `tidyhydat` and HYDAT are installed).
+To determine the summary statistics of daily data by month (mean, median, maximum, minimum, and some percentiles) you can use the `calc_longterm_daily_stats()` function. If the 'Mission Creek near East Kelowna' hydrometric station is of interest you can list the station number in the `station_number` argument to obtain the data (if `tidyhydat` and HYDAT are installed).
 
 ``` r
-calc_longterm_stats(station_number = "08NM116", 
-                    start_year = 1981, 
-                    end_year = 2010,
-                    custom_months = 7:9, 
-                    custom_months_label = "Summer")
+calc_longterm_daily_stats(station_number = "08NM116", 
+                          start_year = 1981, 
+                          end_year = 2010,
+                          custom_months = 7:9, 
+                          custom_months_label = "Summer")
 #> # A tibble: 14 x 8
 #>    STATION_NUMBER Month      Mean Median Maximum Minimum   P10   P90
 #>    <chr>          <fct>     <dbl>  <dbl>   <dbl>   <dbl> <dbl> <dbl>

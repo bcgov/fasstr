@@ -2,12 +2,12 @@
 title: "fasstr R Package Users Guide"
 output: rmarkdown::html_vignette #pdf_document rmarkdown::html_vignette word_document
 vignette: >
-  %\VignetteIndexEntry{fasstr R Package Users Guide}
+%\VignetteIndexEntry{fasstr R Package Users Guide}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
----
+  ---
   
-```{r options, include=FALSE}
+  ```{r options, include=FALSE}
 knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")),
 warning = FALSE, 
 message = FALSE)
@@ -90,16 +90,16 @@ head(data)
 The following is an example fasstr calculation if your daily data data frame has the default columns names (no need to list them):
 
 ```{r, echo=TRUE, eval=FALSE}
-calc_longterm_stats(data = flow_data)
+calc_longterm_daily_stats(data = flow_data)
 ```
 
 The following is an example if your daily data data frame has the columns names of "Stations", "Dates", and "Flows":
 
 ```{r, echo=TRUE, eval=FALSE}
-calc_longterm_stats(data = flow_data,
-                    dates = Dates,
-                    values = Flows,
-                    groups = Stations)
+calc_longterm_daily_stats(data = flow_data,
+                          dates = Dates,
+                          values = Flows,
+                          groups = Stations)
 ```
 
 The `data` argument is listed first in the list of arguments for each function, so the data frame can be passed onto other functions using the pipe operator, `%>%`, in a tidy workflow.
@@ -109,8 +109,8 @@ The `data` argument is listed first in the list of arguments for each function, 
 Alternatively, you can directly extract flow data directly from a HYDAT database by listing station numbers in the `station_number` argument while leaving the data arguments blank. Data frames from HYDAT also include 'Parameter' and 'Symbol' columns. The following is an example of listing stations:
 
 ```{r, echo=TRUE, eval=FALSE}
-calc_longterm_stats(station_number = "08NM116")
-calc_longterm_stats(station_number = c("08NM116", "08NM242"))
+calc_longterm_daily_stats(station_number = "08NM116")
+calc_longterm_daily_stats(station_number = c("08NM116", "08NM242"))
 ```
 
 This package allows for multiple stations (or other groupings) to be analyzed in many of the functions; provided they are identified using the `groups` column argument (defaults to STATION_NUMBER). If named grouping column doesn't exist or is improperly named then all values listed in the `values` column will be summarized.
@@ -386,7 +386,8 @@ The majority of the `fasstr` functions produce statistics over a certain time pe
 
 These functions calculate the means, medians, maximums, minimums, and percentiles (choice of using the 'percentiles' argument) of a flow data set:
 
-- `calc_longterm_stats()` - calculate the long-term and long-term monthly summary statistics
+- `calc_longterm_daily_stats()` - calculate the long-term and long-term monthly summary statistics based on daily mean flows
+- `calc_longterm_monthly_stats()` - calculate the long-term and long-term monthly summary statistics based on monthly mean flows
 - `calc_annual_stats()` - calculate annual summary statistics
 - `calc_monthly_stats()` - calculate monthly summary statistics
 - `calc_daily_stats()` - calculate daily summary statistics
@@ -400,18 +401,30 @@ These basic statistics can also be viewed using their corresponding plotting fun
 
 #### Basic long-term statistics
 
-The long-term `calc_` and `plot_` functions calculate the long-term and long-term monthly mean, median, maximum, minimum, and percentiles of daily flows. For example, for a given month, all flow values for a given month over the entire record are summarized together. For the 'Long-term' category, it summarizes all flow values over the entire record.  You can also specify a certain period of months to summarize together (ex. Jul-Sep flows) using the 'custom_months' argument (listing the months) and labelling it using the 'custom_months_label' argument (ex. "Summer Flows").
+The long-term `calc_` and `plot_` functions calculate the long-term and long-term monthly mean, median, maximum, minimum, and percentiles of all daily mean flows. For example, for a given month, all daily flow values for a given month over the entire record are summarized together. For the 'Long-term' category, it summarizes all flow values over the entire record.  You can also specify a certain period of months to summarize together (ex. Jul-Sep flows) using the 'custom_months' argument (listing the months) and labelling it using the 'custom_months_label' argument (ex. "Summer Flows").
 
 ```{r, comment=NA}
-calc_longterm_stats(station_number = "08NM116", 
-                    start_year = 1974)
+calc_longterm_daily_stats(station_number = "08NM116", 
+                          start_year = 1974)
 ```
 
 The plotting long-term statistics function will plot the monthly mean, median, maximum, and minimum values along with the 5th, 25th, 75th, and 95th percentiles all on one plot. The percentiles are not customizable for this function. The long-term mean and median values are also plotted. 
 
 ```{r, fig.height = 2.5, fig.width = 7, comment=NA}
-plot_longterm_stats(station_number = "08NM116", 
-                    start_year = 1974) 
+plot_longterm_daily_stats(station_number = "08NM116", 
+                          start_year = 1974) 
+```
+
+Similarly, the `*_longterm_monthly_stats()` funcions will calculate the mean, median, maximum, and percentiles of monthly mean flows. Meaning the all daily flows for each month and each year are averaged, and the statistics are based on these annual monthly means.  The "Annual" data row summarizes the mean, median, maximum, and percentiles from all annual means.
+
+```{r, comment=NA}
+calc_longterm_monthly_stats(station_number = "08NM116", 
+                            start_year = 1974)
+```
+
+```{r, fig.height = 2.5, fig.width = 7, comment=NA}
+plot_longterm_monthly_stats(station_number = "08NM116", 
+                            start_year = 1974) 
 ```
 
 #### Basic annual statistics
@@ -577,16 +590,16 @@ The functions summarize the data over the entire record:
 
 ```{r,  echo=TRUE, comment=NA}
 calc_longterm_mad(station_number = "08NM116", 
-            start_year = 1974,
-            percent_MAD = c(5,10,20))
+                  start_year = 1974,
+                  percent_MAD = c(5,10,20))
 ```
 
 `calc_longterm_percentile()` calculates the selected long-term percentiles of all the daily flow values.
 
 ```{r,  echo=TRUE, comment=NA}
 calc_longterm_percentile(station_number = "08NM116",
-                   start_year = 1974,
-                   percentiles = c(25,50,75))
+                         start_year = 1974,
+                         percentiles = c(25,50,75))
 ```
 
 `calc_flow_percentile()` calculates the percentile rank of a specified flow value, as `flow_value`. It compares all daily flow values determines where the specified flow values ranks amongst all flows.
@@ -822,8 +835,8 @@ calc_annual_stats(station_number = "08NM116",
 If your data has missing dates, but you would like to use only those years with complete data, some functions utilize the `complete_years` argument where the data will automatically be filtered for years with complete data and statistics will be calculated. The following code will only calculate the long-term statistics with years of complete data.
 
 ```{r, eval=FALSE}
-calc_longterm_stats(station_number = "08NM116", 
-                    complete_years = TRUE)
+calc_longterm_daily_stats(station_number = "08NM116", 
+                          complete_years = TRUE)
 ```
 
 Some functions, like below, require years with complete data, so years with missing dates will be ignored:
@@ -845,16 +858,16 @@ calc_annual_stats(station_number = "08NM116",
                   months = 6:8)
 ```
 
-A few functions, including the `calc_longterm_stats()`, `plot_longterm_stats()`, and `plot_flow_duration()` functions will allow you to add a customized time period to your data frame or plot. Using the `custom_months` argument you can list a vector of months (numeric 1:12). By default the data will be labelled as "Custom-Months" but can be customized by providing a character string to the `custom_months_label` argument.
+A few functions, including the `calc_longterm_daily_stats()`, `plot_longterm_daily_stats()`, and `plot_flow_duration()` functions will allow you to add a customized time period to your data frame or plot. Using the `custom_months` argument you can list a vector of months (numeric 1:12). By default the data will be labelled as "Custom-Months" but can be customized by providing a character string to the `custom_months_label` argument.
 
 Example of custom months and labelling:
 
 ```{r, eval=FALSE}
-calc_longterm_stats(station_number = "08NM116", 
-                    start_year = 1980, 
-                    end_year = 2010,
-                    custom_months = 6:8,
-                    custom_months_label = "Summer")
+calc_longterm_daily_stats(station_number = "08NM116", 
+                          start_year = 1980, 
+                          end_year = 2010,
+                          custom_months = 6:8,
+                          custom_months_label = "Summer")
 ```
 
 ### Rolling averages
@@ -882,7 +895,7 @@ plot_annual_lowflows(station_number = "08NM116",
 
 ### Percentiles and other statistics
 
-Each fasstr function comes with their default statistics to be calculated. While some cannot be changed (some plotting functions), most have the ability to customize what is calculated. Look up the default settings for each function in their documentation (`?calc_longterm_stats` for example).
+Each fasstr function comes with their default statistics to be calculated. While some cannot be changed (some plotting functions), most have the ability to customize what is calculated. Look up the default settings for each function in their documentation (`?calc_longterm_daily_stats` for example).
 
 By default, the basic summary statistics functions will calculate the mean, median, maximum, and minimum values for each time period; these will automatically be calculated can cannot be removed by an argument option (can remove afterwards if necessary). These functions also calculate default percentiles, which can be customized by changing the desired percentiles by providing a numeric vector of numbers (between 0 and 100) to the `percentiles` argument.
 
@@ -928,18 +941,18 @@ plot_annual_outside_normal(station_number = "08NM116",
 An option when working with the functions that produce data frames is to transpose the rows and columns of the data. Most functions by default provide data results such there are columns of statistics for each station and time period. See the example here:
 
 ```{r, comment=NA}
-calc_longterm_stats(station_number = "08NM116", 
-                    start_year = 1980, 
-                    end_year = 2010)
+calc_longterm_daily_stats(station_number = "08NM116", 
+                          start_year = 1980, 
+                          end_year = 2010)
 ```
 
 In some circumstance, however, it may be more convenient to wrangle the data such that there are columns for stations (or groupings) and a single column with all statistics, and then the values are placed in columns for each respective time period. See the following example when setting `transpose = TRUE`.
 
 ```{r, comment=NA}
-calc_longterm_stats(station_number = "08NM116", 
-                    start_year = 1980, 
-                    end_year = 2010,
-                    transpose = TRUE)
+calc_longterm_daily_stats(station_number = "08NM116", 
+                          start_year = 1980, 
+                          end_year = 2010,
+                          transpose = TRUE)
 ```
 
 #### Plot options
@@ -981,9 +994,9 @@ Example of including a title when plotting (`include_title = TRUE`) where the st
 
 ```{r, fig.height = 4, fig.width = 7, comment=NA}
 plot_monthly_stats(station_number = "08NM116", 
-                  start_year = 1980,
-                  end_year = 2010,
-                  include_title = TRUE)[[1]]
+                   start_year = 1980,
+                   end_year = 2010,
+                   include_title = TRUE)[[1]]
 ```
 
 ***
