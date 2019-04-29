@@ -53,7 +53,7 @@ with no missing dates will be returned. Default \code{FALSE}.}
 }
 \value{
 A list of ggplot2 objects with the following for each station provided:
-  \item{Long-term_Stats}{a plot that contains long-term flow statistics}
+  \item{Long-term_Daily_Statistics}{a plot that contains long-term flow statistics}
   Default plots on each object:  
   \item{Long-term Mean}{mean of all daily flows over all years}
   \item{Long-term Median}{median of all daily flows over all years}
