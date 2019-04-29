@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_longterm_daily_stats.R
 \name{calc_longterm_daily_stats}
 \alias{calc_longterm_daily_stats}
-\title{Calculate the long-term and long-term monthly summary statistics}
+\title{Calculate long-term summary statistics from daily mean flows}
 \usage{
 calc_longterm_daily_stats(data, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number, percentiles = c(10, 90),

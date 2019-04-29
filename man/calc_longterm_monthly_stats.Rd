@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_longterm_monthly_stats.R
 \name{calc_longterm_monthly_stats}
 \alias{calc_longterm_monthly_stats}
-\title{Calculate the long-term summary statistics from annual monthly means}
+\title{Calculate long-term summary statistics from annual monthly mean flows}
 \usage{
 calc_longterm_monthly_stats(data, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number, percentiles = c(10, 90),

@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Plot the long-term and long-term monthly summary statistics
+#' @title Plot long-term summary statistics from daily mean flows
 #'
 #' @description Plots the long-term and long-term monthly mean, median, maximum, minimum, and 5, 25, 75, and 95 percentiles of daily 
 #'    flow values from a single streamflow dataset. Plots statistics from all daily discharge values from all years, unless specified. 
