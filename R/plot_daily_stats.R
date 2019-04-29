@@ -26,10 +26,10 @@
 #'   Default plots on each object:  
 #'   \item{Mean}{daily mean}
 #'   \item{Median}{daily median}
-#'   \item{25-75 Percentiles Range}{a ribbon showing the range of data between the daily 25th and 75th percentiles}
-#'   \item{5-95 Percentiles Range}{a ribbon showing the range of data between the daily 5th and 95th percentiles}
-#'   \item{Max-Min Range}{a ribbon showing the range of data between the daily minimum and maximums}
-#'   \item{'Year' Flows}{(on annual plots) the daily flows for the designated year}
+#'   \item{25-75 Percentiles}{a ribbon showing the range of data between the daily 25th and 75th percentiles}
+#'   \item{5-95 Percentiles}{a ribbon showing the range of data between the daily 5th and 95th percentiles}
+#'   \item{Minimum-Maximum}{a ribbon showing the range of data between the daily minimum and maximums}
+#'   \item{'Year'}{(on annual plots) the daily flows for the designated year}
 #'   
 #' @seealso \code{\link{calc_daily_stats}}
 #'   
