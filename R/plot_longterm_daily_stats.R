@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Plot the long-term and long-term monthly summary statistics
+#' @title Plot long-term summary statistics from daily mean flows
 #'
 #' @description Plots the long-term and long-term monthly mean, median, maximum, minimum, and 5, 25, 75, and 95 percentiles of daily 
 #'    flow values from a single streamflow dataset. Plots statistics from all daily discharge values from all years, unless specified. 
@@ -20,7 +20,7 @@
 #' @inheritParams plot_annual_stats
 #'
 #' @return A list of ggplot2 objects with the following for each station provided:
-#'   \item{Long-term_Stats}{a plot that contains long-term flow statistics}
+#'   \item{Long-term_Daily_Statistics}{a plot that contains long-term flow statistics}
 #'   Default plots on each object:  
 #'   \item{Long-term Mean}{mean of all daily flows over all years}
 #'   \item{Long-term Median}{median of all daily flows over all years}

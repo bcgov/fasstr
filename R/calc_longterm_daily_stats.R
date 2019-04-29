@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Calculate the long-term and long-term monthly summary statistics
+#' @title Calculate long-term summary statistics from daily mean flows
 #'
 #' @description Calculates the long-term and long-term monthly mean, median, maximum, minimum, and percentiles of daily flow values 
 #'    from a streamflow dataset. Calculates the statistics from all daily values from all years, unless specified.

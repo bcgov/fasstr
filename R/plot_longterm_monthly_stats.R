@@ -10,22 +10,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Plot the long-term and long-term monthly summary statistics
+#' @title Plot long-term summary statistics from annual monthly mean flows
 #'
-#' @description Plots the long-term and long-term monthly mean, median, maximum, minimum, and 5, 25, 75, and 95 percentiles of daily 
-#'    flow values from a single streamflow dataset. Plots statistics from all daily discharge values from all years, unless specified. 
-#'    Data calculated using calc_longterm_monthly_stats() function.
+#' @description Plots the long-term and long-term monthly mean, median, maximum, minimum, and 5, 25, 75, and 95 percentiles of  
+#'    annual monthly mean flow values from a single streamflow dataset. Plots statistics from discharge values from all 
+#'    years, unless specified. Data calculated using calc_longterm_monthly_stats() function.
 #'
 #' @inheritParams calc_longterm_monthly_stats
 #' @inheritParams plot_annual_stats
 #'
 #' @return A list of ggplot2 objects with the following for each station provided:
-#'   \item{Long-term_Stats}{a plot that contains long-term flow statistics}
+#'   \item{Long-term_Monthly_Statistics}{a plot that contains long-term flow statistics}
 #'   Default plots on each object:  
-#'   \item{Long-term Mean}{mean of all daily flows over all years}
-#'   \item{Long-term Median}{median of all daily flows over all years}
-#'   \item{Monthly Mean}{mean of all daily flows for each month over all years}
-#'   \item{Monthly Median}{median of all daily flows for each month over all years}
+#'   \item{Monthly Mean}{mean of all annual monthly means for a given month over all years}
+#'   \item{Monthly Median}{median of all annual monthly means for a given month over all years}
 #'   \item{25-75 Percentiles Range}{a ribbon showing the range of data between the monthly 25th and 75th percentiles}
 #'   \item{5-95 Percentiles Range}{a ribbon showing the range of data between the monthly 5th and 95th percentiles}
 #'   \item{Max-Min Range}{a ribbon showing the range of data between the monthly minimum and maximums}

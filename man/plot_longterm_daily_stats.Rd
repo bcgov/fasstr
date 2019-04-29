@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_longterm_daily_stats.R
 \name{plot_longterm_daily_stats}
 \alias{plot_longterm_daily_stats}
-\title{Plot the long-term and long-term monthly summary statistics}
+\title{Plot long-term summary statistics from daily mean flows}
 \usage{
 plot_longterm_daily_stats(data, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number, roll_days = 1,
