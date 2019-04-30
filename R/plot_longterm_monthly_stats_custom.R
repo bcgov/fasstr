@@ -1,0 +1,301 @@
+# Copyright 2019 Province of British Columbia
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+# http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and limitations under the License.
+
+#' @title Plot long-term summary statistics from annual monthly mean flows
+#'
+#' @description Plots the long-term and long-term monthly mean, median, maximum, minimum, and 5, 25, 75, and 95 percentiles of  
+#'    annual monthly mean flow values from a single streamflow dataset. Plots statistics from discharge values from all 
+#'    years, unless specified. Data calculated using calc_longterm_monthly_stats() function.
+#'
+#' @inheritParams calc_longterm_monthly_stats
+#' @inheritParams plot_annual_stats
+#'
+#' @return A list of ggplot2 objects with the following for each station provided:
+#'   \item{Long-term_Monthly_Statistics}{a plot that contains long-term flow statistics}
+#'   Default plots on each object:  
+#'   \item{Monthly Mean}{mean of all annual monthly means for a given month over all years}
+#'   \item{Monthly Median}{median of all annual monthly means for a given month over all years}
+#'   \item{25-75 Percentiles Range}{a ribbon showing the range of data between the monthly 25th and 75th percentiles}
+#'   \item{5-95 Percentiles Range}{a ribbon showing the range of data between the monthly 5th and 95th percentiles}
+#'   \item{Max-Min Range}{a ribbon showing the range of data between the monthly minimum and maximums}
+#'   
+#' @seealso \code{\link{calc_longterm_monthly_stats}}
+#'   
+#' @examples
+#' \dontrun{
+#' 
+#' # Plot statistics using data argument with defaults
+#' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+#' plot_longterm_monthly_stats_custom(data = flow_data,
+#'                             start_year = 1980)
+#' 
+#' # Plot statistics using station_number argument with defaults
+#' plot_longterm_monthly_stats_custom(station_number = "08NM116",
+#'                             start_year = 1980)
+#' 
+#' # Plot statistics regardless if there is missing data for a given year
+#' plot_longterm_monthly_stats_custom(station_number = "08NM116",
+#'                             ignore_missing = TRUE)
+#'                   
+#' # Plot statistics for water years starting in October
+#' plot_longterm_monthly_stats_custom(station_number = "08NM116",
+#'                             start_year = 1980,
+#'                             end_year = 2010,
+#'                             water_year_start = 10)
+#'                   
+#' # Plot statistics with custom years
+#' plot_longterm_monthly_stats_custom(station_number = "08NM116",
+#'                             start_year = 1981,
+#'                             end_year = 2010,
+#'                             exclude_years = c(1991,1993:1995))
+#' 
+#' # Plot statistics without a log-scale Discharge axis
+#' plot_longterm_monthly_stats_custom(station_number = "08NM116",
+#'                             start_year = 1981,
+#'                             end_year = 2010,
+#'                             log_discharge = FALSE)
+#' }
+#' @export
+
+
+plot_longterm_monthly_stats_custom <- function(data,
+                                               dates = Date,
+                                               values = Value,
+                                               groups = STATION_NUMBER,
+                                               station_number,
+                                               roll_days = 1,
+                                               roll_align = "right",
+                                               water_year_start = 1,
+                                               start_year,
+                                               end_year,
+                                               exclude_years,
+                                               complete_years = FALSE,
+                                               ignore_missing = FALSE,
+                                               include_extremes = TRUE,
+                                               inner_percentiles = c(25,75),
+                                               outer_percentiles = c(5,95),
+                                               add_year,
+                                               log_discharge = TRUE,
+                                               include_title = FALSE){
+  
+  ## ARGUMENT CHECKS
+  ## ---------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  if (missing(add_year)) {
+    add_year = NULL
+  }
+  
+  log_discharge_checks(log_discharge)
+  include_title_checks(include_title)  
+  ptile_ribbons_checks(inner_percentiles, outer_percentiles)
+  
+  
+  ## FLOW DATA CHECKS AND FORMATTING
+  ## -------------------------------
+  
+  # Check if data is provided and import it
+  flow_data <- flowdata_import(data = data, station_number = station_number)
+  
+  # Check and rename columns
+  flow_data <- format_all_cols(data = flow_data,
+                               dates = as.character(substitute(dates)),
+                               values = as.character(substitute(values)),
+                               groups = as.character(substitute(groups)),
+                               rm_other_cols = TRUE)
+  
+  
+  
+  ## CALC STATS
+  ## ----------
+  
+  longterm_stats <- calc_longterm_monthly_stats(data = flow_data,
+                                                percentiles = c(inner_percentiles, outer_percentiles),
+                                                roll_days = roll_days,
+                                                roll_align = roll_align,
+                                                water_year_start = water_year_start,
+                                                start_year = start_year,
+                                                end_year = end_year,
+                                                exclude_years = exclude_years,
+                                                complete_years = complete_years,
+                                                ignore_missing = ignore_missing)
+  
+  
+  
+  ## PLOT STATS
+  ## ----------
+  
+  # Make longterm mean and median their own columns
+  longterm_stats_months <- dplyr::filter(longterm_stats, Month != "Annual")
+  longterm_stats_longterm <- dplyr::filter(longterm_stats, Month == "Annual")
+  longterm_stats_longterm <- dplyr::select(longterm_stats_longterm, STATION_NUMBER, "LT_Mean" = Mean, "LT_Med" = Median)
+  longterm_stats <- dplyr::left_join(longterm_stats_months, longterm_stats_longterm, by = "STATION_NUMBER")
+  
+  ## ADD YEAR IF SELECTED
+  ## --------------------
+  
+  if(!is.null(add_year)){
+    
+    # data for testing if year is in flow_data
+    flow_data_year <- add_date_variables(data = flow_data,
+                                         water_year_start = water_year_start)
+    
+    # if year is in data and not excluded, calculate those values
+    if (add_year %in% min(flow_data_year$WaterYear):max(flow_data_year$WaterYear) & !(add_year %in% exclude_years)) {
+      year_data <- calc_longterm_monthly_stats(data = flow_data,
+                                               roll_days = roll_days,
+                                               roll_align = roll_align,
+                                               water_year_start = water_year_start,
+                                               start_year = add_year,
+                                               end_year = add_year,
+                                               exclude_years = exclude_years,
+                                               complete_years = complete_years,
+                                               ignore_missing = ignore_missing)
+      
+      year_data <- dplyr::select(year_data, STATION_NUMBER, Month, Year_mean = Mean)
+      
+      # Warning if all daily values are NA from the add_year
+      for (stn in unique(year_data$STATION_NUMBER)) {
+        year_test <- dplyr::filter(year_data, STATION_NUMBER == stn)
+        
+        if(all(is.na(year_test$Year_mean))) {
+          warning("Monthly data does not exist for the year listed in add_year and was not plotted.", call. = FALSE)
+          add_year <- NULL
+        }
+      }
+      
+      
+      if(!all(is.na(year_data$Year_mean))) {
+        longterm_stats <- dplyr::left_join(longterm_stats, year_data, by = c("STATION_NUMBER", "Month"))
+      }
+    } else {
+      warning("Monthly data does not exist for the year listed in add_year and was not plotted.", call. = FALSE)
+      add_year <- NULL
+    }
+  } 
+  
+  
+  if (all(sapply(longterm_stats[3:ncol(longterm_stats)], function(x)all(is.na(x))))) {
+    longterm_stats[is.na(longterm_stats)] <- 1
+  }
+  
+  # Create manual colour and fill options
+  
+  fill_manual_list <- c()
+  if (include_extremes) {
+    fill_manual_list <- c(fill_manual_list, "lightblue2")
+    names(fill_manual_list) <- c(names(fill_manual_list), "Minimum-Maximum")
+  }
+  
+  if (is.numeric(outer_percentiles)) {
+    fill_manual_list <- c(fill_manual_list, "lightblue3")
+    outer_name <- paste0(min(outer_percentiles),"-",max(outer_percentiles), " Percentiles")
+    names(fill_manual_list) <- c(names(fill_manual_list)[1:(length(fill_manual_list)-1)], outer_name)
+  }
+  
+  if (is.numeric(inner_percentiles)) {
+    fill_manual_list <- c(fill_manual_list, "lightblue4")
+    inner_name <- paste0(min(inner_percentiles),"-",max(inner_percentiles), " Percentiles")
+    names(fill_manual_list) <- c(names(fill_manual_list)[1:(length(fill_manual_list)-1)], inner_name)
+  }
+  
+  colour_manual_list <- c("Mean" = "paleturquoise", "Median" = "dodgerblue4")
+  colour_manual_labels <- c("Mean", "Median")
+  if (is.numeric(add_year)) {
+    colour_manual_list <- c(colour_manual_list, "yr.colour" = "red")
+    colour_manual_labels <- c(colour_manual_labels, paste0(add_year))
+  }
+  
+  # Create axis label based on input columns
+  y_axis_title <- ifelse(as.character(substitute(Value)) == "Volume_m3", "Volume (m3)",
+                         ifelse(as.character(substitute(Value)) == "Yield_mm", "Runoff Yield (mm)", 
+                                "Discharge (cms)"))
+  # Plot
+  lt_plots <- dplyr::group_by(longterm_stats, STATION_NUMBER)
+  lt_plots <- tidyr::nest(lt_plots)
+  lt_plots <- dplyr::mutate(
+    lt_plots,
+    plot = purrr::map2(
+      data, STATION_NUMBER, 
+      ~ggplot2::ggplot(data = ., ggplot2::aes(x = Month, group = 1)) +
+      {if(include_extremes) ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maximum"), na.rm = TRUE)} +
+      {if(is.numeric(outer_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(outer_percentiles)), 
+                                                                                  ymax = paste0("P",max(outer_percentiles)), 
+                                                                                  fill = paste0("'",outer_name,"'")), na.rm = TRUE)} +
+                                                                                  {if(is.numeric(inner_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(inner_percentiles)), 
+                                                                                                                                                              ymax = paste0("P",max(inner_percentiles)), 
+                                                                                                                                                              fill = paste0("'",inner_name,"'")), na.rm = TRUE)} +
+        ggplot2::geom_line(ggplot2::aes(y = Mean, color = "Mean"), size = .9, na.rm = TRUE) +
+        ggplot2::geom_line(ggplot2::aes(y = Median, color = "Median"), size = .9, na.rm = TRUE) +
+        #ggplot2::geom_point(ggplot2::aes(y = Mean, color = "Monthly Mean"), size = 2, na.rm = TRUE) +
+        #ggplot2::geom_point(ggplot2::aes(y = Median, color = "Monthly Median"), size = 2, na.rm = TRUE) +
+        # ggplot2::scale_color_manual(values = c("Monthly Mean" = "skyblue2", "Monthly Median" = "dodgerblue4")) +#,"Long-term Mean" = "forestgreen", "Long-term Median" = "darkorchid4")
+        # ggplot2::scale_fill_manual(values = c("25-75 Percentiles" = "lightblue4", "5-95 Percentiles" = "lightblue3",
+        #                                       "Minimum-Maximum" = "lightblue2")) +
+        {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8))}+
+        {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
+        {if(log_discharge) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(0.07, "cm"),
+                                                        mid = ggplot2::unit(0.15, "cm"), long = ggplot2::unit(0.2, "cm"))} +
+        ggplot2::scale_x_discrete(expand = c(0.01,0.01)) +
+        ggplot2::ylab(y_axis_title) +
+        ggplot2::xlab(NULL) +
+        ggplot2::theme_bw()+
+        ggplot2::labs(colour = 'Monthly Statistics') +  
+        {if (include_title & unique(.y) != "XXXXXXX") ggplot2::labs(colour = paste0(.y,'\n \nMonthly Statistics')) } +    
+        # ggplot2::guides(fill = ggplot2::guide_legend(title = NULL)) +
+        ggplot2::theme(legend.position = "right",
+                       legend.justification = "top",
+                       legend.text = ggplot2::element_text(size = 9),
+                       panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                       panel.grid = ggplot2::element_line(size = .2),
+                       axis.title = ggplot2::element_text(size = 12),
+                       axis.text = ggplot2::element_text(size = 10),
+                       legend.spacing = ggplot2::unit(-0.4, "cm"),
+                       legend.background = ggplot2::element_blank()) +
+        #ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(linetype = c(2,2,1,1), shape = c(NA,NA,16,16), order = 1)),
+        ggplot2::scale_fill_manual(values = fill_manual_list) +
+        ggplot2::scale_color_manual(values = colour_manual_list, labels = colour_manual_labels) +
+        {if (is.numeric(add_year)) ggplot2::geom_line(ggplot2::aes(y = Year_mean, colour = "yr.colour"), size = 0.9, na.rm = TRUE) } +
+        
+        #  ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(linetype = c(1,1), shape = c(16,16), order = 1), title = NULL),
+        #                 fill = ggplot2::guide_legend(order = 2))
+        ggplot2::guides(colour = ggplot2::guide_legend(order = 1), fill = ggplot2::guide_legend(order = 2, title = NULL))
+      
+      
+    ))
+  
+  
+  # Create a list of named plots extracted from the tibble
+  plots <- lt_plots$plot
+  if (nrow(lt_plots) == 1) {
+    names(plots) <- "Long-term_Monthly_Statistics"
+  } else {
+    names(plots) <- paste0(lt_plots$STATION_NUMBER, "_Long-term_Monthly_Statistics")
+  }
+  
+  plots
+  
+} 
