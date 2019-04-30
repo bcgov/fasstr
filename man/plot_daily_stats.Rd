@@ -9,7 +9,7 @@ plot_daily_stats(data, dates = Date, values = Value,
   roll_align = "right", water_year_start = 1, start_year, end_year,
   exclude_years, complete_years = FALSE, months = 1:12,
   ignore_missing = FALSE, log_discharge = TRUE,
-  include_title = FALSE, include_year)
+  include_title = FALSE, add_year)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -55,7 +55,7 @@ with no missing dates will be returned. Default \code{FALSE}.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 
-\item{include_year}{A numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
+\item{add_year}{A numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
 }
 \value{
 A list of ggplot2 objects with the following for each station provided:

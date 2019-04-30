@@ -7,7 +7,7 @@
 plot_daily_cumulative_stats(data, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number, use_yield = FALSE,
   basin_area, water_year_start = 1, start_year, end_year, exclude_years,
-  log_discharge = FALSE, include_title = FALSE, include_year)
+  log_discharge = FALSE, include_title = FALSE, add_year)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -50,7 +50,7 @@ Leave blank if using \code{data} argument.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 
-\item{include_year}{A numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
+\item{add_year}{A numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
 }
 \value{
 A list of ggplot2 objects with the following for each station provided:
@@ -69,7 +69,7 @@ A list of ggplot2 objects with the following for each station provided:
 Plot the daily cumulative mean, median, maximum, minimum, and 5, 25, 75, 95th percentiles for each day of the year 
    from a streamflow dataset. Plots the statistics from all daily cumulative values from all years, unless specified. 
    Data calculated using calc_daily_cumulative_stats() function. Can plot individual years for comparision using the 
-   include_year argument. Defaults to volumetric cumulative flows, can use \code{use_yield} and \code{basin_area} to convert to 
+   add_year argument. Defaults to volumetric cumulative flows, can use \code{use_yield} and \code{basin_area} to convert to 
    runoff yield.
 }
 \examples{

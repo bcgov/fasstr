@@ -19,7 +19,7 @@
 #'
 #' @inheritParams calc_daily_stats
 #' @inheritParams plot_annual_stats
-#' @param include_year A numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.
+#' @param add_year A numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.
 #'
 #' @return A list of ggplot2 objects with the following for each station provided:
 #'   \item{Daily_Stats}{a plot that contains daily flow statistics}
@@ -96,7 +96,7 @@ plot_daily_stats <- function(data,
                              ignore_missing = FALSE,
                              log_discharge = TRUE,
                              include_title = FALSE,
-                             include_year){
+                             add_year){
   
   
   
@@ -109,8 +109,8 @@ plot_daily_stats <- function(data,
   if (missing(station_number)) {
     station_number = NULL
   }
-  if (missing(include_year)) {
-    include_year = NULL
+  if (missing(add_year)) {
+    add_year = NULL
   }
   if (missing(exclude_years)) {
     exclude_years = NULL
@@ -124,7 +124,7 @@ plot_daily_stats <- function(data,
 
   
   log_discharge_checks(log_discharge) 
-  include_year_checks(include_year)
+  add_year_checks(add_year)
   include_title_checks(include_title)
 
   
@@ -185,7 +185,7 @@ plot_daily_stats <- function(data,
   ## ADD YEAR IF SELECTED
   ## --------------------
   
-  if(!is.null(include_year)){
+  if(!is.null(add_year)){
     
     year_data <- fill_missing_dates(data = flow_data, water_year_start = water_year_start)
     year_data <- add_date_variables(data = year_data, water_year_start = water_year_start)
@@ -199,19 +199,19 @@ plot_daily_stats <- function(data,
     
     year_data <- dplyr::filter(year_data, Month %in% months)
     
-    year_data <- dplyr::filter(year_data, WaterYear == include_year)
+    year_data <- dplyr::filter(year_data, WaterYear == add_year)
     
     year_data <- dplyr::select(year_data, STATION_NUMBER, AnalysisDate, RollingValue)
     
-    # Add the daily data from include_year to the daily stats
+    # Add the daily data from add_year to the daily stats
     daily_stats <- dplyr::left_join(daily_stats, year_data, by = c("STATION_NUMBER", "AnalysisDate"))
     
-    # Warning if all daily values are NA from the include_year
+    # Warning if all daily values are NA from the add_year
     for (stn in unique(daily_stats$STATION_NUMBER)) {
       year_test <- dplyr::filter(daily_stats, STATION_NUMBER == stn)
       
       if(all(is.na(daily_stats$RollingValue)))
-        warning("Daily data does not exist for the year listed in include_year and was not plotted.", call. = FALSE)
+        warning("Daily data does not exist for the year listed in add_year and was not plotted.", call. = FALSE)
     }
     
   } 
@@ -264,9 +264,9 @@ plot_daily_stats <- function(data,
                            legend.key.size = ggplot2::unit(0.4, "cm"),
                            legend.spacing = ggplot2::unit(0, "cm")) +
             ggplot2::guides(colour = ggplot2::guide_legend(order = 1), fill = ggplot2::guide_legend(order = 2)) +
-            {if (is.numeric(include_year)) ggplot2::geom_line(ggplot2::aes(y = RollingValue, colour = "yr.colour"), size = 0.5, na.rm = TRUE) } +
-            {if (is.numeric(include_year)) ggplot2::scale_color_manual(values = c("Mean" = "paleturquoise", "Median" = "dodgerblue4", "yr.colour" = "red"),
-                                                                       labels = c("Mean", "Median", paste0(include_year, " Flows"))) }
+            {if (is.numeric(add_year)) ggplot2::geom_line(ggplot2::aes(y = RollingValue, colour = "yr.colour"), size = 0.5, na.rm = TRUE) } +
+            {if (is.numeric(add_year)) ggplot2::scale_color_manual(values = c("Mean" = "paleturquoise", "Median" = "dodgerblue4", "yr.colour" = "red"),
+                                                                       labels = c("Mean", "Median", paste0(add_year, " Flows"))) }
         ))
   
   

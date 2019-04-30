@@ -131,10 +131,10 @@ plot_daily_stats_custom <- function(data,
     end_year = 9999
   }
   
-  
   log_discharge_checks(log_discharge) 
-  include_year_checks(add_year)
+  add_year_checks(add_year)
   include_title_checks(include_title)
+  ptile_ribbons_checks(inner_percentiles, outer_percentiles)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
