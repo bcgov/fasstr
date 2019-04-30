@@ -142,7 +142,7 @@ compute_full_analysis <- function(data,
     zyp_method_checks(zyp_method)
   }
   
-  # Do this for now, until looping of include_year plots is sorted out
+  # Do this for now, until looping of add_year plots is sorted out
   if (length(station_number) > 1) stop("Only one station_number can be listed.", call. = FALSE)
   
   message("* this may take a few moments...")
@@ -491,7 +491,7 @@ compute_full_analysis <- function(data,
                                                                water_year_start = water_year_start,
                                                                exclude_years = exclude_years,
                                                                ignore_missing = ignore_missing,
-                                                               include_year = .)[[1]]))))
+                                                               add_year = .)[[1]]))))
     day_stats_year_plots <- daily_plots_table$plot
     names(day_stats_year_plots) <- paste0(daily_plots_table$WaterYear, "_Daily_Statistics")
     
@@ -508,7 +508,7 @@ compute_full_analysis <- function(data,
                                                              end_year = end_year,
                                                              water_year_start = water_year_start,
                                                              exclude_years = exclude_years,
-                                                             include_year = .)[[1]]))))
+                                                             add_year = .)[[1]]))))
     day_vol_year_plots <- daily_vol_table$plot
     names(day_vol_year_plots) <- paste0(daily_vol_table$WaterYear, "_Daily_Cumulative_Volumetric_Stats")
     
@@ -527,7 +527,7 @@ compute_full_analysis <- function(data,
                                                                exclude_years = exclude_years,
                                                                use_yield = TRUE, 
                                                                basin_area = basin_area_stn,
-                                                               include_year = .)[[1]]))))
+                                                               add_year = .)[[1]]))))
     day_yield_year_plots <- daily_yield_table$plot
     names(day_yield_year_plots) <- paste0(daily_yield_table$WaterYear, "_Daily_Cumulative_Yield_Stats")
     

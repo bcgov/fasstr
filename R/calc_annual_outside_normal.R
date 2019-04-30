@@ -120,14 +120,19 @@ calc_annual_outside_normal <- function(data,
   flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
   flow_data <- dplyr::mutate(flow_data, Value = replace(Value, WaterYear %in% exclude_years, NA))
   
+  # Stop if all data is NA
+  no_values_error(flow_data$RollingValue)
+  
   # Determine years with complete data and filter for only those years
   comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
                                  complete_yr = ifelse(sum(!is.na(RollingValue)) == length(WaterYear), TRUE, FALSE))
   flow_data <- merge(flow_data, comp_years, by = c("STATION_NUMBER", "WaterYear"))
   flow_data <- dplyr::mutate(flow_data, Value = replace(Value, complete_yr == "FALSE", NA))
+  
+  # Stop if all data is NA
+  no_values_error(flow_data$RollingValue)
 
   
-  ## CALCULATE STATISTICS
   ## --------------------
   
   #Compute the normal limits for each day of the year and add each to the flow_data

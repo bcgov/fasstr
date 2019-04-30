@@ -127,6 +127,8 @@ calc_annual_lowflows <- function(data,
   # Filter data for one year prior and one year after the selected data for proper rolling means
   flow_data <- dplyr::filter(flow_data, CalendarYear >= start_year - 1 & CalendarYear <= end_year + 1)
   
+  # Stop if all data is NA
+  no_values_error(flow_data$Value)
   
   ## CALCULATE STATISTICS
   ## --------------------
@@ -158,7 +160,7 @@ calc_annual_lowflows <- function(data,
   # Filter for start and end years and make excluded years data NA
   lowflow_stats <- subset(lowflow_stats, Year >= start_year & Year <= end_year)
   lowflow_stats[lowflow_stats$Year %in% exclude_years, -(1:2)] <- NA
-  
+
   
   # If transpose if selected, switch columns and rows
   if (transpose) {

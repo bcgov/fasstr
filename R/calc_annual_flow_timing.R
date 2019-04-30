@@ -124,6 +124,8 @@ calc_annual_flow_timing <- function(data,
   # Filter for the selected year (remove excluded years after)
   flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
   
+  # Stop if all data is NA
+  no_values_error(flow_data$Cumul_Volume_m3)
   
   ## CALCULATE STATISTICS
   ## --------------------

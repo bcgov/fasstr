@@ -163,11 +163,15 @@ calc_daily_stats <- function(data,
   flow_data <- dplyr::filter(flow_data, !(WaterYear %in% exclude_years))
   flow_data <- dplyr::filter(flow_data, DayofYear < 366)
   
-  
+  # Stop if all data is NA
+  no_values_error(flow_data$RollingValue)
   
   # Remove incomplete years if selected
   flow_data <- filter_complete_yrs(complete_years = complete_years, 
                                    flow_data)
+  
+  # Stop if all data is NA
+  no_values_error(flow_data$RollingValue)
   
 
   ## CALCULATE STATISTICS

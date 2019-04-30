@@ -156,7 +156,8 @@ calc_annual_cumulative_stats <- function(data,
   # Filter data FOR SELECTED YEARS FOR REMAINDER OF CALCS
   flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
   
-  
+  # Stop if all data is NA
+  no_values_error(flow_data$daily_total)
   
   ## CALCULATE STATISTICS
   ## --------------------

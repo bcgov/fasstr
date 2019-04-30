@@ -123,12 +123,18 @@ calc_flow_percentile <- function(data,
   flow_data <- dplyr::filter(flow_data, !(WaterYear %in% exclude_years))
   flow_data <- dplyr::filter(flow_data, Month %in% months)
   
+  # Stop if all data is NA
+  no_values_error(flow_data$RollingValue)
+  
   # Remove incomplete years if selected
   flow_data <- filter_complete_yrs(complete_years = complete_years, 
                                    flow_data)
   
   if (flow_value > max(flow_data$Value, na.rm = TRUE)) warning("flow_value was greater than the maximum daily flow value.", call. = FALSE)
   if (flow_value < min(flow_data$Value, na.rm = TRUE)) warning("flow_value was less than the minimum daily flow value.", call. = FALSE)
+  
+  # Stop if all data is NA
+  no_values_error(flow_data$RollingValue)
   
   # Give warning if any NA values
   missing_values_warning_noNA(flow_data$Value)

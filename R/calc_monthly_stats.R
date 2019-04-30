@@ -151,6 +151,8 @@ calc_monthly_stats <- function(data,
   flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
   flow_data <- dplyr::filter(flow_data, Month %in% months)
   
+  # Stop if all data is NA
+  no_values_error(flow_data$RollingValue)
   
   ## CALCULATE STATISTICS
   ## --------------------

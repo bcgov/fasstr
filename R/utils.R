@@ -36,7 +36,7 @@ flowdata_import <- function(data = NULL, station_number = NULL){
       stop("One or more station numbers listed do not have historical daily flows in HYDAT.", call. = FALSE)
     data <- as.data.frame(suppressMessages(tidyhydat::hy_daily_flows(station_number =  station_number)))
     
-  # If data is provided, make sure it's a data frame
+    # If data is provided, make sure it's a data frame
   } else {
     if (!is.data.frame(data))  stop("data argument is not a data frame.", call. = FALSE)
     data <- as.data.frame(data)
@@ -178,24 +178,24 @@ analysis_prep <- function(data,
   data <- add_date_variables(data = data, water_year_start = water_year_start)
   
   # Set selected year-type column for analysis
- 
-    if (date) {
-      if (water_year_start == 1)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1989-12-31")
-      } else if (water_year_start == 2)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-01-31")
-      } else if (water_year_start == 3)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-02-28")
-      } else if (water_year_start == 4)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-03-31")
-      } else if (water_year_start == 5)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-04-30")
-      } else if (water_year_start == 6)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-05-31")
-      } else if (water_year_start == 7)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-06-30")
-      } else if (water_year_start == 8)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-07-31")
-      } else if (water_year_start == 9)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-08-31")
-      } else if (water_year_start == 10) {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-09-30")
-      } else if (water_year_start == 11) {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-10-31")
-      } else if (water_year_start == 12) {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-11-30")
-      }
+  
+  if (date) {
+    if (water_year_start == 1)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1989-12-31")
+    } else if (water_year_start == 2)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-01-31")
+    } else if (water_year_start == 3)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-02-28")
+    } else if (water_year_start == 4)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-03-31")
+    } else if (water_year_start == 5)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-04-30")
+    } else if (water_year_start == 6)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-05-31")
+    } else if (water_year_start == 7)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-06-30")
+    } else if (water_year_start == 8)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-07-31")
+    } else if (water_year_start == 9)  {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-08-31")
+    } else if (water_year_start == 10) {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-09-30")
+    } else if (water_year_start == 11) {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-10-31")
+    } else if (water_year_start == 12) {data$AnalysisDate <- as.Date(data$DayofYear, origin = "1899-11-30")
     }
-    
-   data
+  }
+  
+  data
 }
 
 
@@ -381,10 +381,10 @@ timing_pct_checks <- function(timing_percent) {
 }
 
 
-include_year_checks <- function(include_year) {
-  if(!is.null(include_year)){
-    if(length(include_year) != 1)  stop("Only one include_year numeric value can be provided.", call. = FALSE)
-    if(!is.numeric(include_year))  stop("include_year argument must be numeric.", call. = FALSE)
+add_year_checks <- function(add_year) {
+  if(!is.null(add_year)){
+    if(length(add_year) != 1)  stop("Only one add_year numeric value can be provided.", call. = FALSE)
+    if(!is.numeric(add_year))  stop("add_year argument must be numeric.", call. = FALSE)
   }
 }
 
@@ -422,6 +422,23 @@ include_longterm_checks <- function(include_longterm){
   if (!is.logical(include_longterm))  stop("include_longterm argument must be logical (TRUE/FALSE).", call. = FALSE)
 }
 
+ptile_ribbons_checks <- function(inner_percentiles, outer_percentiles){
+  if(!is.null(inner_percentiles)) {
+    if (!is.numeric(inner_percentiles) )                stop("inner_percentiles must be two numeric values.", call. = FALSE)
+    if (length(inner_percentiles) != 2 )                stop("inner_percentiles must be two numeric values (ex. c(25,75)).", call. = FALSE)
+    if (!all(is.na(inner_percentiles)) & (!all(inner_percentiles > 0 & inner_percentiles < 100)) )  
+      stop("inner_percentiles must be >0 and <100)", call. = FALSE)
+  }
+  if(!is.null(outer_percentiles)) {
+    if (!is.numeric(outer_percentiles) )                stop("outer_percentiles must be two numeric values.", call. = FALSE)
+    if (length(outer_percentiles) != 2 )                stop("outer_percentiles must be two numeric values (ex. c(25,75)).", call. = FALSE)
+    if (!all(is.na(outer_percentiles)) & (!all(outer_percentiles > 0 & outer_percentiles < 100)) )  
+      stop("outer_percentiles must be >0 and <100)", call. = FALSE)
+  }
+}
 
+no_values_error <- function(values) {
+  if (all(is.na(values))) stop("All daily values are NA, select or filter data for years with data.", call. = FALSE)
+}
 
 
