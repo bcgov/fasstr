@@ -133,7 +133,7 @@ calc_annual_lowflows <- function(data,
   
   # Loop through each rolling_day and compute annual min values and their dates
   lowflow_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear))
-  for (day in roll_days) {
+  for (day in unique(roll_days)) {
     # Add specified rolling mean
     flow_data_temp <- fasstr::add_rolling_means(data = flow_data, roll_days = day, roll_align = roll_align)
     names(flow_data_temp)[names(flow_data_temp) == paste0("Q", day, "Day")] <- "RollingValue"

@@ -207,7 +207,7 @@ calc_longterm_daily_stats <- function(data,
   
   # Calculate the monthly and longterm percentiles
   if(!all(is.na(percentiles))) {
-    for (ptile in percentiles) {
+    for (ptile in unique(percentiles)) {
       
       Q_months_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, MonthName),
                                          Percentile = ifelse(!is.na(mean(RollingValue, na.rm = FALSE)) | ignore_missing, 
@@ -248,7 +248,7 @@ calc_longterm_daily_stats <- function(data,
     
     # Calculate percentiles
     if (!all(is.na(percentiles))){
-      for (ptile in percentiles) {
+      for (ptile in unique(percentiles)) {
         Q_ptile_custom <- dplyr::summarize(dplyr::group_by(flow_data_temp, STATION_NUMBER),
                                            Percentile = ifelse(!is.na(mean(RollingValue, na.rm = FALSE)) | ignore_missing, 
                                                                stats::quantile(RollingValue, ptile / 100, na.rm = TRUE), NA))

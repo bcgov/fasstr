@@ -165,7 +165,7 @@ calc_monthly_stats <- function(data,
   
   # Calculate annual percentiles
   if(!all(is.na(percentiles))) {
-    for (ptile in percentiles) {
+    for (ptile in unique(percentiles)) {
       monthly_stats_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear, MonthName),
                                               Percentile = stats::quantile(RollingValue, ptile / 100, na.rm = TRUE))
       monthly_stats_ptile <- dplyr::ungroup(monthly_stats_ptile)

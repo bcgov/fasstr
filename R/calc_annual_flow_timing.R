@@ -131,7 +131,7 @@ calc_annual_flow_timing <- function(data,
   # Loop through percents
   timing_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear))
   
-  for (percent in percent_total) {
+  for (percent in unique(percent_total)) {
     timing_pcnt <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
                                     TOTALQ_DAY  =  DayofYear[ match(TRUE, Cumul_Volume_m3 > percent / 100 * 
                                                                         ((mean(Value, na.rm = TRUE)) * length(Value) * 60 * 60 * 24))],

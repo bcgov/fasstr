@@ -137,7 +137,7 @@ calc_longterm_mad <- function(data,
   
   # Calculate the monthly and longterm percentiles
   if(!all(is.na(percent_MAD))) {
-    for (pcnt in percent_MAD) {
+    for (pcnt in unique(percent_MAD)) {
       ltmad_stats <- dplyr::mutate(ltmad_stats, Percent = LTMAD * pcnt / 100)
       names(ltmad_stats)[names(ltmad_stats) == "Percent"] <- paste0(pcnt, "%MAD")
       

@@ -179,7 +179,7 @@ calc_monthly_cumulative_stats <- function(data,
 
   # Compute daily percentiles
   if (!all(is.na(percentiles))){
-    for (ptile in percentiles) {
+    for (ptile in unique(percentiles)) {
       monthly_ptile <- dplyr::summarise(dplyr::group_by(monthly_data, STATION_NUMBER, MonthName),
                                         Percentile = ifelse(!is.na(mean(Monthly_Total, na.rm = TRUE)),
                                                             stats::quantile(Monthly_Total, ptile / 100, na.rm = TRUE), NA))

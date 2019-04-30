@@ -102,7 +102,7 @@ add_rolling_means <- function(data,
     flow_data_stn <- fill_missing_dates(data = flow_data_stn)
     
     # Add rolling means
-    for (x in roll_days) {
+    for (x in unique(roll_days)) {
       flow_data_stn[, paste0("Q", x, "Day")] <- RcppRoll::roll_mean(flow_data_stn$Value, n = x, fill = NA, align = roll_align)
     }
     

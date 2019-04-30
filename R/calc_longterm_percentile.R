@@ -138,7 +138,7 @@ calc_longterm_percentile <- function(data,
   
   ptile_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER))
   # Calculate the long-term percentile
-  for(ptile in percentiles){
+  for(ptile in unique(percentiles)) {
     ptile_statss <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER),
                                      Percentile = stats::quantile(RollingValue, ptile / 100, na.rm = TRUE))
     names(ptile_statss)[names(ptile_statss) == "Percentile"] <- paste0("P", ptile)

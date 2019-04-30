@@ -213,7 +213,7 @@ calc_longterm_monthly_stats <- function(data,
   
   # Calculate the monthly and longterm percentiles
   if(!all(is.na(percentiles))) {
-    for (ptile in percentiles) {
+    for (ptile in unique(percentiles)) {
       
       Q_months_ptile <- dplyr::summarise(dplyr::group_by(monthly_stats, STATION_NUMBER, MonthName),
                                          Percentile = ifelse(!is.na(mean(Month_Mean, na.rm = FALSE)) | ignore_missing, 
@@ -257,7 +257,7 @@ calc_longterm_monthly_stats <- function(data,
 
     # Calculate percentiles
     if (!all(is.na(percentiles))){
-      for (ptile in percentiles) {
+      for (ptile in unique(percentiles)) {
         Q_ptile_custom <- dplyr::summarize(dplyr::group_by(monthly_stats_temp, STATION_NUMBER),
                                            Percentile = ifelse(!is.na(mean(Annual_Mean, na.rm = FALSE)) | ignore_missing,
                                                                stats::quantile(Annual_Mean, ptile / 100, na.rm = TRUE), NA))

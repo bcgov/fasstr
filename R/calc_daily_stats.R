@@ -187,7 +187,7 @@ calc_daily_stats <- function(data,
 
   # Compute daily percentiles (if 10 or more years of data)
   if (!all(is.na(percentiles))){
-    for (ptile in percentiles) {
+    for (ptile in unique(percentiles)) {
       daily_stats_ptile <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, DayofYear),
                                         Percentile = stats::quantile(RollingValue, ptile / 100, na.rm = TRUE))
       names(daily_stats_ptile)[names(daily_stats_ptile) == "Percentile"] <- paste0("P", ptile)
