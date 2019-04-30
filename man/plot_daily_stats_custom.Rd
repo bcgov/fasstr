@@ -10,7 +10,7 @@ plot_daily_stats_custom(data, dates = Date, values = Value,
   exclude_years, complete_years = FALSE, months = 1:12,
   ignore_missing = FALSE, include_extremes = TRUE,
   inner_percentiles = c(25, 75), outer_percentiles = c(5, 95),
-  log_discharge = TRUE, include_title = FALSE, add_year)
+  add_year, log_discharge = TRUE, include_title = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -61,11 +61,11 @@ inner percentiles ribbon for plotting. Default \code{c(25,75)}, set to \code{NUL
 \item{outer_percentiles}{Numeric vector of two values of two percentiles indicating the lower and upper limits of the 
 outer percentiles ribbon for plotting. Default \code{c(5,95)}, set to \code{NULL} for no outer ribbon.}
 
+\item{add_year}{Numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
+
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
-
-\item{add_year}{Numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
 }
 \value{
 A list of ggplot2 objects with the following for each station provided:
