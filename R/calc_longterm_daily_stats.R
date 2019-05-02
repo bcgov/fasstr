@@ -190,16 +190,16 @@ calc_longterm_daily_stats <- function(data,
   Q_months <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, MonthName),
                                Mean = mean(RollingValue, na.rm = ignore_missing),
                                Median = stats::median(RollingValue, na.rm = ignore_missing),
-                               Maximum = max(RollingValue, na.rm = ignore_missing),
-                               Minimum = min(RollingValue, na.rm = ignore_missing))
+                               Maximum = ifelse(!is.na(Mean), max(RollingValue, na.rm = ignore_missing), NA),
+                               Minimum = ifelse(!is.na(Mean), min(RollingValue, na.rm = ignore_missing), NA))
   Q_months <- dplyr::ungroup(Q_months)
   
   if (include_longterm) {
     longterm_stats   <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER),
                                          Mean = mean(RollingValue, na.rm = ignore_missing),
                                          Median = stats::median(RollingValue, na.rm = ignore_missing),
-                                         Maximum = max(RollingValue, na.rm = ignore_missing),
-                                         Minimum = min(RollingValue, na.rm = ignore_missing))
+                                         Maximum = ifelse(!is.na(Mean), max(RollingValue, na.rm = ignore_missing), NA),
+                                         Minimum = ifelse(!is.na(Mean), min(RollingValue, na.rm = ignore_missing), NA))
     longterm_stats <- dplyr::ungroup(longterm_stats)
     longterm_stats <- dplyr::mutate(longterm_stats, MonthName = as.factor("Long-term"))
     

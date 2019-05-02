@@ -193,8 +193,8 @@ calc_longterm_monthly_stats <- function(data,
   Q_months <- dplyr::summarize(dplyr::group_by(monthly_stats, STATION_NUMBER, MonthName),
                                Mean = mean(Month_Mean, na.rm = ignore_missing),
                                Median = stats::median(Month_Mean, na.rm = ignore_missing),
-                               Maximum = max(Month_Mean, na.rm = ignore_missing),
-                               Minimum = min(Month_Mean, na.rm = ignore_missing))
+                               Maximum = ifelse(!is.na(Mean), max(Month_Mean, na.rm = ignore_missing), NA),
+                               Minimum = ifelse(!is.na(Mean), min(Month_Mean, na.rm = ignore_missing), NA))
   Q_months <- dplyr::ungroup(Q_months)
   
   if (include_annual) {
@@ -204,8 +204,8 @@ calc_longterm_monthly_stats <- function(data,
     longterm_stats   <- dplyr::summarize(dplyr::group_by(longterm_stats_data, STATION_NUMBER),
                                          Mean = mean(Annual_Mean, na.rm = ignore_missing),
                                          Median = stats::median(Annual_Mean, na.rm = ignore_missing),
-                                         Maximum = max(Annual_Mean, na.rm = ignore_missing),
-                                         Minimum = min(Annual_Mean, na.rm = ignore_missing))
+                                         Maximum = ifelse(!is.na(Mean), max(Annual_Mean, na.rm = ignore_missing), NA),
+                                         Minimum = ifelse(!is.na(Mean), min(Annual_Mean, na.rm = ignore_missing), NA))
     longterm_stats <- dplyr::ungroup(longterm_stats)
     longterm_stats <- dplyr::mutate(longterm_stats, MonthName = as.factor("Annual"))
     
