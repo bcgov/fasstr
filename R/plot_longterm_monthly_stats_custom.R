@@ -160,21 +160,21 @@ plot_longterm_monthly_stats_custom <- function(data,
   if(!is.null(add_year)){
     
     # data for testing if year is in flow_data
-    flow_data_year <- add_date_variables(data = flow_data,
-                                         water_year_start = water_year_start)
+    flow_data_year <- add_date_variables(data = flow_data, water_year_start = water_year_start)
+    flow_data_year <- dplyr::filter(flow_data_year, WaterYear %in% start_year:end_year)
     
     # if year is in data and not excluded, calculate those values
     if (add_year %in% min(flow_data_year$WaterYear):max(flow_data_year$WaterYear) & !(add_year %in% exclude_years)) {
-      year_data <- calc_longterm_monthly_stats(data = flow_data,
-                                               roll_days = roll_days,
-                                               roll_align = roll_align,
-                                               water_year_start = water_year_start,
-                                               start_year = add_year,
-                                               end_year = add_year,
-                                               exclude_years = exclude_years,
-                                               complete_years = complete_years,
-                                               ignore_missing = ignore_missing)
-      
+      year_data <- calc_monthly_stats(data = flow_data,
+                                      roll_days = roll_days,
+                                      roll_align = roll_align,
+                                      water_year_start = water_year_start,
+                                      start_year = start_year,
+                                      end_year = end_year,
+                                      exclude_years = exclude_years,
+                                      ignore_missing = ignore_missing)
+      year_data <- dplyr::filter(year_data, Year == add_year)
+      year_data <- dplyr::mutate(year_data, Month = factor(Month, levels = c(month.abb, "Annual")))
       year_data <- dplyr::select(year_data, STATION_NUMBER, Month, Year_mean = Mean)
       
       # Warning if all daily values are NA from the add_year
@@ -250,8 +250,8 @@ plot_longterm_monthly_stats_custom <- function(data,
                                                                                                                                                               fill = paste0("'",inner_name,"'")), na.rm = TRUE)} +
         ggplot2::geom_line(ggplot2::aes(y = Mean, color = "Mean"), size = .9, na.rm = TRUE) +
         ggplot2::geom_line(ggplot2::aes(y = Median, color = "Median"), size = .9, na.rm = TRUE) +
-        #ggplot2::geom_point(ggplot2::aes(y = Mean, color = "Monthly Mean"), size = 2, na.rm = TRUE) +
-        #ggplot2::geom_point(ggplot2::aes(y = Median, color = "Monthly Median"), size = 2, na.rm = TRUE) +
+        ggplot2::geom_point(ggplot2::aes(y = Mean), size = 2, na.rm = TRUE, colour  = "paleturquoise") +
+        ggplot2::geom_point(ggplot2::aes(y = Median), size = 2, na.rm = TRUE, colour = "dodgerblue4") +
         # ggplot2::scale_color_manual(values = c("Monthly Mean" = "skyblue2", "Monthly Median" = "dodgerblue4")) +#,"Long-term Mean" = "forestgreen", "Long-term Median" = "darkorchid4")
         # ggplot2::scale_fill_manual(values = c("25-75 Percentiles" = "lightblue4", "5-95 Percentiles" = "lightblue3",
         #                                       "Minimum-Maximum" = "lightblue2")) +
@@ -265,7 +265,6 @@ plot_longterm_monthly_stats_custom <- function(data,
         ggplot2::theme_bw()+
         ggplot2::labs(colour = 'Monthly Statistics') +  
         {if (include_title & unique(.y) != "XXXXXXX") ggplot2::labs(colour = paste0(.y,'\n \nMonthly Statistics')) } +    
-        # ggplot2::guides(fill = ggplot2::guide_legend(title = NULL)) +
         ggplot2::theme(legend.position = "right",
                        legend.justification = "top",
                        legend.text = ggplot2::element_text(size = 9),
@@ -278,8 +277,8 @@ plot_longterm_monthly_stats_custom <- function(data,
         #ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(linetype = c(2,2,1,1), shape = c(NA,NA,16,16), order = 1)),
         ggplot2::scale_fill_manual(values = fill_manual_list) +
         ggplot2::scale_color_manual(values = colour_manual_list, labels = colour_manual_labels) +
-        {if (is.numeric(add_year)) ggplot2::geom_line(ggplot2::aes(y = Year_mean, colour = "yr.colour"), size = 0.9, na.rm = TRUE) } +
-        
+        {if (is.numeric(add_year)) ggplot2::geom_line(ggplot2::aes(x= Month, y = Year_mean, colour = "yr.colour"), size = 0.9, na.rm = TRUE) } +
+        {if (is.numeric(add_year)) ggplot2::geom_point(ggplot2::aes(y = Year_mean), size = 2, na.rm = TRUE, colour = "red") } +
         #  ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(linetype = c(1,1), shape = c(16,16), order = 1), title = NULL),
         #                 fill = ggplot2::guide_legend(order = 2))
         ggplot2::guides(colour = ggplot2::guide_legend(order = 1), fill = ggplot2::guide_legend(order = 2, title = NULL))
