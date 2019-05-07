@@ -18,6 +18,13 @@
 #'
 #' @inheritParams calc_longterm_monthly_stats
 #' @inheritParams plot_annual_stats
+#' @param add_year Numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.
+#' @param include_extremes Logical value to indicate plotting a ribbon with the range of daily minimum and maximum flows. 
+#'    Default \code{TRUE}.
+#' @param inner_percentiles Numeric vector of two values of two percentiles indicating the lower and upper limits of the 
+#'    inner percentiles ribbon for plotting. Default \code{c(25,75)}, set to \code{NULL} for no inner ribbon.
+#' @param outer_percentiles Numeric vector of two values of two percentiles indicating the lower and upper limits of the 
+#'    outer percentiles ribbon for plotting. Default \code{c(5,95)}, set to \code{NULL} for no outer ribbon.
 #'
 #' @return A list of ggplot2 objects with the following for each station provided:
 #'   \item{Long-term_Monthly_Statistics}{a plot that contains long-term flow statistics}
@@ -226,13 +233,14 @@ plot_longterm_monthly_stats_custom <- function(data,
   colour_manual_labels <- c("Mean", "Median")
   if (is.numeric(add_year)) {
     colour_manual_list <- c(colour_manual_list, "yr.colour" = "red")
-    colour_manual_labels <- c(colour_manual_labels, paste0(add_year))
+    colour_manual_labels <- c(colour_manual_labels, paste0(add_year, " Mean"))
   }
   
   # Create axis label based on input columns
   y_axis_title <- ifelse(as.character(substitute(Value)) == "Volume_m3", "Volume (m3)",
                          ifelse(as.character(substitute(Value)) == "Yield_mm", "Runoff Yield (mm)", 
                                 "Discharge (cms)"))
+  
   # Plot
   lt_plots <- dplyr::group_by(longterm_stats, STATION_NUMBER)
   lt_plots <- tidyr::nest(lt_plots)
@@ -241,20 +249,17 @@ plot_longterm_monthly_stats_custom <- function(data,
     plot = purrr::map2(
       data, STATION_NUMBER, 
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Month, group = 1)) +
-      {if(include_extremes) ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maximum"), na.rm = TRUE)} +
-      {if(is.numeric(outer_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(outer_percentiles)), 
-                                                                                  ymax = paste0("P",max(outer_percentiles)), 
-                                                                                  fill = paste0("'",outer_name,"'")), na.rm = TRUE)} +
-                                                                                  {if(is.numeric(inner_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(inner_percentiles)), 
-                                                                                                                                                              ymax = paste0("P",max(inner_percentiles)), 
-                                                                                                                                                              fill = paste0("'",inner_name,"'")), na.rm = TRUE)} +
+        {if(include_extremes) ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maximum"), na.rm = TRUE)} +
+        {if(is.numeric(outer_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(outer_percentiles)), 
+                                                                                    ymax = paste0("P",max(outer_percentiles)), 
+                                                                                    fill = paste0("'",outer_name,"'")), na.rm = TRUE)} +
+        {if(is.numeric(inner_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(inner_percentiles)), 
+                                                                                    ymax = paste0("P",max(inner_percentiles)), 
+                                                                                    fill = paste0("'",inner_name,"'")), na.rm = TRUE)} +
         ggplot2::geom_line(ggplot2::aes(y = Mean, color = "Mean"), size = .9, na.rm = TRUE) +
         ggplot2::geom_line(ggplot2::aes(y = Median, color = "Median"), size = .9, na.rm = TRUE) +
         ggplot2::geom_point(ggplot2::aes(y = Mean), size = 2, na.rm = TRUE, colour  = "paleturquoise") +
         ggplot2::geom_point(ggplot2::aes(y = Median), size = 2, na.rm = TRUE, colour = "dodgerblue4") +
-        # ggplot2::scale_color_manual(values = c("Monthly Mean" = "skyblue2", "Monthly Median" = "dodgerblue4")) +#,"Long-term Mean" = "forestgreen", "Long-term Median" = "darkorchid4")
-        # ggplot2::scale_fill_manual(values = c("25-75 Percentiles" = "lightblue4", "5-95 Percentiles" = "lightblue3",
-        #                                       "Minimum-Maximum" = "lightblue2")) +
         {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8))}+
         {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
         {if(log_discharge) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(0.07, "cm"),
@@ -274,16 +279,11 @@ plot_longterm_monthly_stats_custom <- function(data,
                        axis.text = ggplot2::element_text(size = 10),
                        legend.spacing = ggplot2::unit(-0.4, "cm"),
                        legend.background = ggplot2::element_blank()) +
-        #ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(linetype = c(2,2,1,1), shape = c(NA,NA,16,16), order = 1)),
         ggplot2::scale_fill_manual(values = fill_manual_list) +
         ggplot2::scale_color_manual(values = colour_manual_list, labels = colour_manual_labels) +
         {if (is.numeric(add_year)) ggplot2::geom_line(ggplot2::aes(x= Month, y = Year_mean, colour = "yr.colour"), size = 0.9, na.rm = TRUE) } +
         {if (is.numeric(add_year)) ggplot2::geom_point(ggplot2::aes(y = Year_mean), size = 2, na.rm = TRUE, colour = "red") } +
-        #  ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(linetype = c(1,1), shape = c(16,16), order = 1), title = NULL),
-        #                 fill = ggplot2::guide_legend(order = 2))
         ggplot2::guides(colour = ggplot2::guide_legend(order = 1), fill = ggplot2::guide_legend(order = 2, title = NULL))
-      
-      
     ))
   
   
