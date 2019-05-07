@@ -148,10 +148,11 @@ plot_annual_stats <- function(data,
                                     exclude_years = exclude_years, 
                                     months = months,
                                     ignore_missing = ignore_missing)
-  
-  
-  annual_stats <- tidyr::gather(annual_stats, Statistic, Value, -Year, -STATION_NUMBER)
 
+  annual_stats_plot <- tidyr::gather(annual_stats, Statistic, Value, -Year, -STATION_NUMBER)
+  annual_stats_plot <- dplyr::mutate(annual_stats_plot, 
+                                     Statistic = factor(Statistic, levels = colnames(annual_stats[-(1:2)])))
+  
   ## PLOT STATS
   ## ----------
   
@@ -161,7 +162,7 @@ plot_annual_stats <- function(data,
                                 "Discharge (cms)"))
   
   # Create plots for each STATION_NUMBER in a tibble (see: http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/)
-  tidy_plots <- dplyr::group_by(annual_stats, STATION_NUMBER)
+  tidy_plots <- dplyr::group_by(annual_stats_plot, STATION_NUMBER)
   tidy_plots <- tidyr::nest(tidy_plots)
   tidy_plots <- dplyr::mutate(tidy_plots,
     plot = purrr::map2(data, STATION_NUMBER, 
@@ -176,7 +177,7 @@ plot_annual_stats <- function(data,
            {if(log_discharge) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"), 
                                                            mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))} +
            ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
-           {if(length(unique(annual_stats$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(annual_stats$Year))}+
+           {if(length(unique(annual_stats_plot$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(annual_stats_plot$Year))}+
            ggplot2::expand_limits(y = 0) +
            ggplot2::ylab(y_axis_title)+
            ggplot2::xlab("Year") +
