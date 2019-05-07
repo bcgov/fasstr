@@ -474,12 +474,12 @@ The plotting daily statistics function will plot the monthly mean, median, maxim
 plot_daily_stats(station_number = "08NM116", start_year = 1974) 
 ```
 
-You can also plot an individual year's flow data for comparison use the 'include_year' argument.
+You can also plot an individual year's flow data for comparison use the 'add_year' argument.
 
 ```{r, fig.height = 2.5, fig.width = 7, comment=NA}
 plot_daily_stats(station_number = "08NM116", 
                  start_year = 1974,
-                 include_year = 2000) 
+                 add_year = 2000) 
 ```
 
 

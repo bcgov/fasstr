@@ -118,13 +118,13 @@ Analyses                  |	Object                                    |	Type    
 4 - Monthly	              |	Monthly_Total_Cumul_Yield_mm_Plot  	      | Plot              | plot_monthly_cumulative_stats(use_yield=TRUE)
 5 - Daily	                |	Daily_Summary_Stats                    	  | Table             | calc_daily_stats()
 5 - Daily	                |	Daily_Summary_Stats_Plot                  | Plot              | plot_daily_stats()
-5 - Daily	                |	Daily_Summary_Stats_with_Years            | Multiple Plots    | plot_daily_stats(include_year)
+5 - Daily	                |	Daily_Summary_Stats_with_Years            | Multiple Plots    | plot_daily_stats(add_year)
 5 - Daily	                |	Daily_Total_Cumul_Volume_m3          	    | Table             | calc_daily_cumulative_stats()
 5 - Daily	                |	Daily_Total_Cumul_Volume_m3_Plot    	    | Plot              | plot_daily_cumulative_stats()
-5 - Daily	                |	Daily_Total_Cumul_Volume_m3_with_Years    | Multiple Plots    | plot_daily_cumulative_stats(include_year)
+5 - Daily	                |	Daily_Total_Cumul_Volume_m3_with_Years    | Multiple Plots    | plot_daily_cumulative_stats(add_year)
 5 - Daily	                |	Daily_Total_Cumul_Yield_mm                | Table             | calc_daily_cumulative_stats(use_yield=TRUE)
 5 - Daily 	              |	Daily_Total_Cumul_Yield_mm_Plot        	  | Plot              | plot_daily_cumulative_stats(use_yield=TRUE)
-5 - Daily	                |	Daily_Total_Cumul_Yield_mm_with_Years  	  | Multiple Plots    | plot_daily_cumulative_stats(use_yield=TRUE, include_year)
+5 - Daily	                |	Daily_Total_Cumul_Yield_mm_with_Years  	  | Multiple Plots    | plot_daily_cumulative_stats(use_yield=TRUE, add_year)
 6 - Trending              |	Annual_Trends_Data     	                  | Table             | compute_annual_trends()
 6 - Trending              |	Annual_Trends_Results                 	  | Table             | compute_annual_trends()
 6 - Trending              |	Annual_Trends_Results_Plots           	  | Multiple Plots    | compute_annual_trends(include_plots=TRUE)
@@ -439,7 +439,7 @@ plot_daily_stats(station_number = "08NM116",
 **Daily_Statistics_with_Years** (a folder with a plot for each year)
 
 ```{r,  echo=FALSE, fig.height = 3, fig.width = 7, comment=NA}
-plot_daily_stats(station_number = "08NM116", include_year = 1990,
+plot_daily_stats(station_number = "08NM116", add_year = 1990,
                  start_year = 1990, end_year = 2001)[[1]]
 ```
 
@@ -460,7 +460,7 @@ plot_daily_cumulative_stats(station_number = "08NM116",
 **Daily_Cumulative_Volume_with_Years** (a folder with a plot for each year)
 
 ```{r,  echo=FALSE, fig.height = 3, fig.width = 7, comment=NA}
-plot_daily_cumulative_stats(station_number = "08NM116", include_year = 1990,
+plot_daily_cumulative_stats(station_number = "08NM116", add_year = 1990,
                             start_year = 1990, end_year = 2001)[[1]]
 ```
 
@@ -481,7 +481,7 @@ plot_daily_cumulative_stats(station_number = "08NM116", use_yield = TRUE,
 **Daily_Cumulative_Yield_with_Years** (a folder with a plot for each year)
 
 ```{r,  echo=FALSE, fig.height = 3, fig.width = 7, comment=NA}
-plot_daily_cumulative_stats(station_number = "08NM116", include_year = 1990, use_yield = TRUE,
+plot_daily_cumulative_stats(station_number = "08NM116", add_year = 1990, use_yield = TRUE,
                             start_year = 1990, end_year = 2001)[[1]]
 ```
 
