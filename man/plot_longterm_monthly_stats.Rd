@@ -5,10 +5,10 @@
 \title{Plot long-term summary statistics from annual monthly mean flows}
 \usage{
 plot_longterm_monthly_stats(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, roll_days = 1,
+  groups = STATION_NUMBER, station_number, percentiles, roll_days = 1,
   roll_align = "right", water_year_start = 1, start_year, end_year,
   exclude_years, complete_years = FALSE, ignore_missing = FALSE,
-  log_discharge = TRUE, include_title = FALSE)
+  log_discharge = FALSE, include_title = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -27,6 +27,8 @@ Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave bla
 \item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
 Leave blank if using \code{data} argument.}
+
+\item{percentiles}{Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{NA}.}
 
 \item{roll_days}{Numeric value of the number of days to apply a rolling mean. Default \code{1}.}
 

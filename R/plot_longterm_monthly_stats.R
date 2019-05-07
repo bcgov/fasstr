@@ -18,6 +18,7 @@
 #'
 #' @inheritParams calc_longterm_monthly_stats
 #' @inheritParams plot_annual_stats
+#' @param percentiles Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{NA}.
 #'
 #' @return A list of ggplot2 objects with the following for each station provided:
 #'   \item{Long-term_Monthly_Statistics}{a plot that contains long-term flow statistics}
@@ -72,6 +73,7 @@ plot_longterm_monthly_stats <- function(data,
                                         values = Value,
                                         groups = STATION_NUMBER,
                                         station_number,
+                                        percentiles,
                                         roll_days = 1,
                                         roll_align = "right",
                                         water_year_start = 1,
@@ -80,7 +82,7 @@ plot_longterm_monthly_stats <- function(data,
                                         exclude_years,
                                         complete_years = FALSE,
                                         ignore_missing = FALSE,
-                                        log_discharge = TRUE,
+                                        log_discharge = FALSE,
                                         include_title = FALSE){
   
   ## ARGUMENT CHECKS
@@ -101,6 +103,9 @@ plot_longterm_monthly_stats <- function(data,
   if (missing(exclude_years)) {
     exclude_years = NULL
   }
+  if (missing(percentiles)) {
+    percentiles = NA
+  }
   
   log_discharge_checks(log_discharge)
   include_title_checks(include_title)  
@@ -120,12 +125,11 @@ plot_longterm_monthly_stats <- function(data,
                                rm_other_cols = TRUE)
   
   
-  
   ## CALC STATS
   ## ----------
   
   longterm_stats <- calc_longterm_monthly_stats(data = flow_data,
-                                                percentiles = c(5,25,75,95),
+                                                percentiles = percentiles,
                                                 roll_days = roll_days,
                                                 roll_align = roll_align,
                                                 water_year_start = water_year_start,
@@ -135,73 +139,61 @@ plot_longterm_monthly_stats <- function(data,
                                                 complete_years = complete_years,
                                                 ignore_missing = ignore_missing)
   
+  longterm_stats <- dplyr::filter(longterm_stats, Month != "Annual")
+  longterm_stats_plot <- tidyr::gather(longterm_stats, Statistic, Value, -Month, -STATION_NUMBER)
+  longterm_stats_plot <- dplyr::mutate(longterm_stats_plot, 
+                                       Statistic = factor(Statistic, levels = colnames(longterm_stats[-(1:2)])))
+  
   
   ## PLOT STATS
   ## ----------
-  
-  # Make longterm mean and median their own columns
-  longterm_stats_months <- dplyr::filter(longterm_stats, Month != "Annual")
-  longterm_stats_longterm <- dplyr::filter(longterm_stats, Month == "Annual")
-  longterm_stats_longterm <- dplyr::select(longterm_stats_longterm, STATION_NUMBER, "LT_Mean" = Mean, "LT_Med" = Median)
-  longterm_stats <- dplyr::left_join(longterm_stats_months, longterm_stats_longterm, by = "STATION_NUMBER")
-  
-  if (all(sapply(longterm_stats[3:ncol(longterm_stats)], function(x)all(is.na(x))))) {
-    longterm_stats[is.na(longterm_stats)] <- 1
-  }
-  
+
   # Create axis label based on input columns
   y_axis_title <- ifelse(as.character(substitute(Value)) == "Volume_m3", "Volume (m3)",
                          ifelse(as.character(substitute(Value)) == "Yield_mm", "Runoff Yield (mm)", 
                                 "Discharge (cms)"))
+  
   # Plot
-  lt_plots <- dplyr::group_by(longterm_stats, STATION_NUMBER)
-  lt_plots <- tidyr::nest(lt_plots)
-  lt_plots <- dplyr::mutate(lt_plots,
-                            plot = purrr::map2(data, STATION_NUMBER, 
-                                               ~ggplot2::ggplot(data = ., ggplot2::aes(x = Month, group = 1)) +
-                                                 ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maximum"), na.rm = TRUE) +
-                                                 ggplot2::geom_ribbon(ggplot2::aes(ymin = P5, ymax = P95, fill = "5-95 Percentiles"), na.rm = TRUE) +
-                                                 ggplot2::geom_ribbon(ggplot2::aes(ymin = P25, ymax = P75, fill = "25-75 Percentiles"), na.rm = TRUE) +
-                                                 #ggplot2::geom_line(ggplot2::aes(y = LT_Mean, colour = "Long-term Mean"), size = 0.7, linetype = 2, na.rm = TRUE) +
-                                                 # ggplot2::geom_line(ggplot2::aes(y = LT_Med, colour = "Long-term Median"), size = 0.7, linetype = 2, na.rm = TRUE) +
-                                                 ggplot2::geom_line(ggplot2::aes(y = Mean, color = "Monthly Mean"), size = 0.7, na.rm = TRUE) +
-                                                 ggplot2::geom_line(ggplot2::aes(y = Median, color = "Monthly Median"), size = 0.7, na.rm = TRUE) +
-                                                 ggplot2::geom_point(ggplot2::aes(y = Mean, color = "Monthly Mean"), size = 2, na.rm = TRUE) +
-                                                 ggplot2::geom_point(ggplot2::aes(y = Median, color = "Monthly Median"), size = 2, na.rm = TRUE) +
-                                                 ggplot2::scale_color_manual(values = c("Monthly Mean" = "skyblue2", "Monthly Median" = "dodgerblue4")) +#,"Long-term Mean" = "forestgreen", "Long-term Median" = "darkorchid4")
-                                                 ggplot2::scale_fill_manual(values = c("25-75 Percentiles" = "lightblue4", "5-95 Percentiles" = "lightblue3",
-                                                                                       "Minimum-Maximum" = "lightblue2")) +
-                                                                                       {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8))}+
-                                                                                       {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
-                                                                                       {if(log_discharge) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(0.07, "cm"),
-                                                                                                                                       mid = ggplot2::unit(0.15, "cm"), long = ggplot2::unit(0.2, "cm"))} +
-                                                 ggplot2::scale_x_discrete(expand = c(0.01,0.01)) +
-                                                 ggplot2::ylab(y_axis_title) +
-                                                 ggplot2::xlab(NULL) +
-                                                 ggplot2::theme_bw()+
-                                                 ggplot2::labs(color = 'Monthly Statistics', fill = "Monthly Ranges") + 
-                                                 {if (include_title & unique(.y) != "XXXXXXX") ggplot2::labs(color = 'Monthly Statistics', fill = paste0(.y,'\n \nMonthly Ranges')) } +    
-                                                 # ggplot2::guides(fill = ggplot2::guide_legend(title = NULL)) +
-                                                 ggplot2::theme(legend.position = "right",
-                                                                legend.spacing = ggplot2::unit(0, "cm"),
-                                                                legend.justification = "top",
-                                                                legend.text = ggplot2::element_text(size = 9),
-                                                                panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                                                                panel.grid = ggplot2::element_line(size = .2),
-                                                                axis.title = ggplot2::element_text(size = 12),
-                                                                axis.text = ggplot2::element_text(size = 10)) +
-                                                 #ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(linetype = c(2,2,1,1), shape = c(NA,NA,16,16), order = 1)),
-                                                 ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(linetype = c(1,1), shape = c(16,16), order = 1)),
-                                                                 fill = ggplot2::guide_legend(order = 2))
-                            ))
+  tidy_plots <- dplyr::group_by(longterm_stats_plot, STATION_NUMBER)
+  tidy_plots <- tidyr::nest(tidy_plots)
+  tidy_plots <- dplyr::mutate(
+    tidy_plots,
+    plot = purrr::map2(data, STATION_NUMBER, 
+                       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Month, y = Value, color = Statistic, group = Statistic)) +
+                         ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
+                         ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
+                         ggplot2::geom_point(na.rm = TRUE) +
+                         {if(!log_discharge) ggplot2::expand_limits(y = c(0, suppressWarnings(max(.$Value, na.rm = T)) * 1.05))}+
+                         {if(log_discharge) ggplot2::expand_limits(y = c(min(.$Value, na.rm = T) * .95, max(.$Value, na.rm = T) * 1.05))} +
+                         {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0), breaks = scales::pretty_breaks(n = 7))} +
+                         {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 7, base = 10))} +
+                         {if(log_discharge) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"), 
+                                                                         mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))} +
+                         ggplot2::scale_x_discrete(expand = c(0.01,0.01))+
+                         ggplot2::expand_limits(y = 0) +
+                         ggplot2::ylab(y_axis_title)+
+                         ggplot2::xlab("Year") +
+                         # ggplot2::scale_color_brewer(palette = "Set1") +
+                         ggplot2::theme_bw() +
+                         ggplot2::labs(color = 'Monthly Statistics') +    
+                         {if (include_title & .y != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nMonthly Statistics')) }+    
+                         ggplot2::theme(legend.position = "right", 
+                                        legend.spacing = ggplot2::unit(0, "cm"),
+                                        legend.justification = "top",
+                                        legend.text = ggplot2::element_text(size = 9),
+                                        panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                                        panel.grid = ggplot2::element_line(size = .2),
+                                        axis.title = ggplot2::element_text(size = 12),
+                                        axis.text = ggplot2::element_text(size = 10))
+    ))
   
-  
+
   # Create a list of named plots extracted from the tibble
-  plots <- lt_plots$plot
-  if (nrow(lt_plots) == 1) {
+  plots <- tidy_plots$plot
+  if (nrow(tidy_plots) == 1) {
     names(plots) <- "Long-term_Monthly_Statistics"
   } else {
-    names(plots) <- paste0(lt_plots$STATION_NUMBER, "_Long-term_Monthly_Statistics")
+    names(plots) <- paste0(tidy_plots$STATION_NUMBER, "_Long-term_Monthly_Statistics")
   }
   
   plots
