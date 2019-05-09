@@ -5,10 +5,12 @@
 \title{Plot long-term summary statistics from annual monthly mean flows}
 \usage{
 plot_longterm_monthly_stats(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, percentiles, roll_days = 1,
+  groups = STATION_NUMBER, station_number, roll_days = 1,
   roll_align = "right", water_year_start = 1, start_year, end_year,
   exclude_years, complete_years = FALSE, ignore_missing = FALSE,
-  log_discharge = FALSE, include_title = FALSE)
+  include_extremes = TRUE, inner_percentiles = c(25, 75),
+  outer_percentiles = c(5, 95), add_year, log_discharge = TRUE,
+  include_title = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -27,8 +29,6 @@ Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave bla
 \item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
 Leave blank if using \code{data} argument.}
-
-\item{percentiles}{Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{NA}.}
 
 \item{roll_days}{Numeric value of the number of days to apply a rolling mean. Default \code{1}.}
 
@@ -49,6 +49,17 @@ Leave blank if using \code{data} argument.}
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
 with no missing dates will be returned. Default \code{FALSE}.}
 
+\item{include_extremes}{Logical value to indicate plotting a ribbon with the range of daily minimum and maximum flows. 
+Default \code{TRUE}.}
+
+\item{inner_percentiles}{Numeric vector of two values of two percentiles indicating the lower and upper limits of the 
+inner percentiles ribbon for plotting. Default \code{c(25,75)}, set to \code{NULL} for no inner ribbon.}
+
+\item{outer_percentiles}{Numeric vector of two values of two percentiles indicating the lower and upper limits of the 
+outer percentiles ribbon for plotting. Default \code{c(5,95)}, set to \code{NULL} for no outer ribbon.}
+
+\item{add_year}{Numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
+
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
@@ -64,9 +75,11 @@ A list of ggplot2 objects with the following for each station provided:
   \item{Max-Min Range}{a ribbon showing the range of data between the monthly minimum and maximums}
 }
 \description{
-Plots the long-term and long-term monthly mean, median, maximum, minimum, and 5, 25, 75, and 95 percentiles of  
+Plots the long-term monthly mean, median, maximum, minimum, and 5, 25, 75, and 95 percentiles of  
    annual monthly mean flow values from a single streamflow dataset. Plots statistics from discharge values from all 
-   years, unless specified. Data calculated using calc_longterm_monthly_stats() function.
+   years, unless specified. The Maximum-Minimum band can be removed using the 'include_extremes' argument and the percentile bands 
+   can be customized using the'inner_percentiles' and 'outer_percentiles' arguments. Data calculated using the
+   calc_longterm_monthly_stats() function.
 }
 \examples{
 \dontrun{
@@ -89,7 +102,12 @@ plot_longterm_monthly_stats(station_number = "08NM116",
                             start_year = 1980,
                             end_year = 2010,
                             water_year_start = 10)
-                  
+            
+# Plot statistics and add a specific year's daily flows                
+plot_longterm_monthly_stats(station_number = "08NM116",
+                            start_year = 1980,
+                            add_year = 1985) 
+                              
 # Plot statistics with custom years
 plot_longterm_monthly_stats(station_number = "08NM116",
                             start_year = 1981,
