@@ -207,7 +207,9 @@ plot_daily_cumulative_stats <- function(data,
              ggplot2::geom_line(ggplot2::aes(y = Mean, colour = "Mean"), size = .7) +
              ggplot2::scale_fill_manual(values = c("Min-5th Percentile" = "orange" , "5th-25th Percentile" = "yellow",
                                                    "25th-75th Percentile" = "skyblue1", "75th-95th Percentile" = "dodgerblue2",
-                                                   "95th Percentile-Max" = "royalblue4")) +
+                                                   "95th Percentile-Max" = "royalblue4"),
+                                        breaks = c("95th Percentile-Max", "75th-95th Percentile", "25th-75th Percentile",
+                                                   "5th-25th Percentile", "Min-5th Percentile")) +
              ggplot2::scale_color_manual(values = c("Median" = "purple3", "Mean" = "springgreen4")) +
              {if (!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 7))} +
              {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10) )} +
@@ -220,8 +222,8 @@ plot_daily_cumulative_stats <- function(data,
              {if (!use_yield) ggplot2::ylab("Cumulative Discharge (cubic metres)")} +
              {if (use_yield) ggplot2::ylab("Cumulative Runoff Yield (mm)")} +
              ggplot2::theme_bw() +
-             ggplot2::labs(color = 'Daily Statistics', fill = "Daily Ranges") +
-             {if (include_title & .y != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nDaily Statistics'), fill = "Daily Ranges") } +
+             ggplot2::labs(color = 'Daily Statistics') +  
+             {if (include_title & .y != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nDaily Statistics')) } +   
              ggplot2::theme(axis.text = ggplot2::element_text(size = 10, colour = "grey25"),
                             axis.title = ggplot2::element_text(size = 12, colour = "grey25"),
                             axis.title.y = ggplot2::element_text(margin = ggplot2::margin(0,0,0,0)),
@@ -235,8 +237,9 @@ plot_daily_cumulative_stats <- function(data,
                             legend.box = "vertical",
                             legend.justification = "top",
                             legend.key.size = ggplot2::unit(0.4, "cm"),
-                            legend.spacing = ggplot2::unit(0, "cm")) +
-             ggplot2::guides(colour = ggplot2::guide_legend(order = 1), fill = ggplot2::guide_legend(order = 2)) +
+                            legend.spacing = ggplot2::unit(-0.4, "cm"),
+                            legend.background = ggplot2::element_blank()) +
+             ggplot2::guides(colour = ggplot2::guide_legend(order = 1), fill = ggplot2::guide_legend(order = 2, title = NULL)) +
              {if (is.numeric(add_year)) ggplot2::geom_line(ggplot2::aes(y = Cumul_Flow, colour = "yr.colour"), size = 0.7) } +
              {if (is.numeric(add_year)) ggplot2::scale_color_manual(values = c("Mean" = "paleturquoise", "Median" = "dodgerblue4", "yr.colour" = "red"),
                                                                         labels = c("Mean", "Median", paste0(add_year, " Flows"))) }

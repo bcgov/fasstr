@@ -50,7 +50,7 @@ Leave blank if using \code{data} argument.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 
-\item{add_year}{A numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
+\item{add_year}{Numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
 }
 \value{
 A list of ggplot2 objects with the following for each station provided:
