@@ -17,9 +17,7 @@ knitr::opts_chunk$set(
 ```
 
 # fasstr <img src="tools/readme/fasstr.PNG" align="right" />
-
-<!-- <a id="devex-badge" rel="Delivery" href="https://github.com/BCDevExchange/assets/blob/master/README.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a> -->
-[![Travis build status](https://travis-ci.org/bcgov/fasstr.svg?branch=master)](https://travis-ci.org/bcgov/fasstr)
+<a id="devex-badge" rel="Delivery" href="https://github.com/BCDevExchange/assets/blob/master/README.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a> [![Travis build status](https://travis-ci.org/bcgov/fasstr.svg?branch=master)](https://travis-ci.org/bcgov/fasstr)
 
 </div>
 
@@ -79,7 +77,7 @@ data <- data[,c(1,2,4)]
 head(data.frame(data))
 ```
 
-Alternatively, you can directly extract a flow data set directly from a HYDAT database by listing station numbers in the `station_number` argument (ex. `station_number = "08NM116"` or `station_number = c("08NM116", "08NM242")`) while leavind the data arguments blank. A data frame of daily streamflow data for all stations listed will be extracted using `tidyhydat`.  Use the following function to download a HYDAT database:
+Alternatively, you can directly extract a flow data set directly from a HYDAT database by listing station numbers in the `station_number` argument (ex. `station_number = "08NM116"` or `station_number = c("08NM116", "08NM242")`) while leaving the data arguments blank. A data frame of daily streamflow data for all stations listed will be extracted using `tidyhydat`.  Use the following function to download a HYDAT database:
 
 ```{r tidyhydat, eval = FALSE}
 tidyhydat::download_hydat()
@@ -143,20 +141,20 @@ calc_longterm_daily_stats(station_number = "08NM116",
                           custom_months_label = "Summer")
 ```
 
-### Plotting example 1: daily summary statistics
+### Plotting example: daily summary statistics
 
-To visualize the daily streamflow patterns on an annual basis, the `plot_daily_stats()` function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the `start_year` and `end_year` arguments. We can also compare indivual years against the statistics using `include_year` argument like below.
+To visualize the daily streamflow patterns on an annual basis, the `plot_daily_stats()` function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the `start_year` and `end_year` arguments. We can also compare indivual years against the statistics using `add_year` argument like below.
 
 ```{r plot1, fig.height = 4, fig.width = 10}
 plot_daily_stats(station_number = "08NM116",
                  start_year = 1981,
                  end_year = 2010,
                  log_discharge = TRUE,
-                 include_year = 1991,
+                 add_year = 1991,
                  ignore_missing = TRUE)
 ```
 
-### Plotting example 2: flow duration curves
+### Plotting example: flow duration curves
 
 Flow duration curves can be produced using the `plot_flow_duration()` function.
 
@@ -205,7 +203,7 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 ## License
 
-    Copyright 2018 Province of British Columbia
+    Copyright 2019 Province of British Columbia
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
