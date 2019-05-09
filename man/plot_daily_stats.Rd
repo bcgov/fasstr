@@ -8,8 +8,9 @@ plot_daily_stats(data, dates = Date, values = Value,
   groups = STATION_NUMBER, station_number, roll_days = 1,
   roll_align = "right", water_year_start = 1, start_year, end_year,
   exclude_years, complete_years = FALSE, months = 1:12,
-  ignore_missing = FALSE, log_discharge = TRUE,
-  include_title = FALSE, add_year)
+  ignore_missing = FALSE, include_extremes = TRUE,
+  inner_percentiles = c(25, 75), outer_percentiles = c(5, 95),
+  add_year, log_discharge = TRUE, include_title = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -51,11 +52,20 @@ all months (default \code{1:12}).}
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
 with no missing dates will be returned. Default \code{FALSE}.}
 
+\item{include_extremes}{Logical value to indicate plotting a ribbon with the range of daily minimum and maximum flows. 
+Default \code{TRUE}.}
+
+\item{inner_percentiles}{Numeric vector of two values of two percentiles indicating the lower and upper limits of the 
+inner percentiles ribbon for plotting. Default \code{c(25,75)}, set to \code{NULL} for no inner ribbon.}
+
+\item{outer_percentiles}{Numeric vector of two values of two percentiles indicating the lower and upper limits of the 
+outer percentiles ribbon for plotting. Default \code{c(5,95)}, set to \code{NULL} for no outer ribbon.}
+
+\item{add_year}{Numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
+
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
-
-\item{add_year}{A numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
 }
 \value{
 A list of ggplot2 objects with the following for each station provided:
@@ -71,8 +81,9 @@ A list of ggplot2 objects with the following for each station provided:
 \description{
 Plot the daily mean, median, maximum, minimum, and percentiles for each day of the year of daily flow values 
    from a streamflow dataset. Plots the statistics from all daily discharge values from all years, unless specified. Can determine
-   statistics of rolling mean days (e.g. 7-day flows) using the roll_days argument. Data calculated using calc_daily_stats()
-   function.
+   statistics of rolling mean days (e.g. 7-day flows) using the roll_days argument. The Maximum-Minimum band can be removed using 
+   the 'include_extremes' argument and the percentile bands can be customized using the'inner_percentiles' and 'outer_percentiles' 
+   arguments.Data calculated using calc_daily_stats() function.
 }
 \examples{
 \dontrun{
@@ -105,6 +116,11 @@ plot_daily_stats(station_number = "08NM116",
                  start_year = 1981,
                  end_year = 2010,
                  exclude_years = c(1991,1993:1995))
+ 
+# Plot statistics and add a specific year's daily flows                
+plot_daily_stats(station_number = "08NM116",
+                 start_year = 1980,
+                 add_year = 1985)                
                   
 # Plot statistics for 7-day flows for July-September months only
 plot_daily_stats(station_number = "08NM116",
