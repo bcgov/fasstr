@@ -387,14 +387,15 @@ The majority of the `fasstr` functions produce statistics over a certain time pe
 These functions calculate the means, medians, maximums, minimums, and percentiles (choice of using the 'percentiles' argument) of a flow data set:
 
 - `calc_longterm_daily_stats()` - calculate the long-term and long-term monthly summary statistics based on daily mean flows
-- `calc_longterm_monthly_stats()` - calculate the long-term and long-term monthly summary statistics based on monthly mean flows
+- `calc_longterm_monthly_stats()` - calculate the long-term annual and monthly summary statistics based on monthly mean flows
 - `calc_annual_stats()` - calculate annual summary statistics
 - `calc_monthly_stats()` - calculate monthly summary statistics
 - `calc_daily_stats()` - calculate daily summary statistics
 
 These basic statistics can also be viewed using their corresponding plotting functions:
 
-- `plot_longterm_stats()` - plot the long-term and long-term monthly summary statistics
+- `plot_longterm_daily_stats()` - plot the long-term monthly summary statistics based on daily mean flows
+- `plot_longterm_monthly_stats()` - plot the long-term monthly summary statistics based on annual monthly mean flows
 - `plot_annual_stats()` - plot annual summary statistics
 - `plot_monthly_stats()` - plot monthly summary statistics
 - `plot_daily_stats()` - plot daily summary statistics

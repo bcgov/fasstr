@@ -132,8 +132,9 @@ write_plots <- function(plots,
       suppressWarnings(graphics::plot(plots[[i]]))
     }
     grDevices::dev.off()
-    grDevices::dev.off()
-    
+    if (!is.null(grDevices::dev.list())) {
+      grDevices::dev.off()    
+    }
     message(paste0("Successfully created PDF file ", folder_name, ".pdf with all plots."))
     
     
