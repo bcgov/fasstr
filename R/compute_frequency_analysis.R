@@ -239,10 +239,10 @@ compute_frequency_analysis <- function(data,
   if(use_max){ freqplot <- freqplot + ggplot2::theme(legend.justification = c(1,0), legend.position = c(.98, 0.02))}
   if(!use_log){ freqplot <- freqplot + ggplot2::scale_y_log10(breaks = scales::pretty_breaks(n = 10))}
   if(use_log){ freqplot <- freqplot + ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 10))}
-  if(use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab("ln(Discharge (cms))")}  # adjust the Y axis label
-  if(use_log & !use_max){freqplot <- freqplot + ggplot2::ylab("ln(Discharge (cms))")}
-  if(!use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab("Discharge (cms)")}
-  if(!use_log & !use_max){freqplot <- freqplot + ggplot2::ylab("Discharge (cms)")}
+  if(use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab(expression(lnDischarge~(m^3/s)))}  # adjust the Y axis label
+  if(use_log & !use_max){freqplot <- freqplot + ggplot2::ylab(expression(lnDischarge~(m^3/s)))}
+  if(!use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab(expression(Discharge~(m^3/s)))}
+  if(!use_log & !use_max){freqplot <- freqplot + ggplot2::ylab(expression(Discharge~(m^3/s)))}
   
   #--------------------------------------------------------------
   # fit the distribution to each measure

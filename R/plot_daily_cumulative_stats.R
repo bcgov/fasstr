@@ -219,8 +219,8 @@ plot_daily_cumulative_stats <- function(data,
              ggplot2::scale_x_date(date_labels = "%b", date_breaks = "1 month",
                                    limits = as.Date(c(NA, as.character(max(daily_stats$AnalysisDate)))), expand=c(0, 0)) +
              ggplot2::xlab("Day of Year")+
-             {if (!use_yield) ggplot2::ylab("Cumulative Discharge (cubic metres)")} +
-             {if (use_yield) ggplot2::ylab("Cumulative Runoff Yield (mm)")} +
+             {if (!use_yield) ggplot2::ylab(expression(Cumuative~Volume~(m^3)))} +
+             {if (use_yield) ggplot2::ylab("Cumulative Yield (mm)")} +
              ggplot2::theme_bw() +
              ggplot2::labs(color = 'Daily Statistics') +  
              {if (include_title & .y != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nDaily Statistics')) } +   

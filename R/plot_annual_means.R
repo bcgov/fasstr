@@ -127,7 +127,7 @@ plot_annual_means <- function(data,
                                    breaks = scales::pretty_breaks(n = 10)) +
        ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
        {if(length(unique(annual_stats$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(annual_stats$Year))}+
-       ggplot2::ylab("Annual Discharge (cms)") +
+       ggplot2::ylab(expression(Mean~Annual~Discharge~(m^3/s))) +
        {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
        ggplot2::theme_bw() +
        ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),

@@ -244,9 +244,9 @@ plot_longterm_monthly_stats <- function(data,
   }
   
   # Create axis label based on input columns
-  y_axis_title <- ifelse(as.character(substitute(Value)) == "Volume_m3", "Volume (m3)",
-                         ifelse(as.character(substitute(Value)) == "Yield_mm", "Runoff Yield (mm)", 
-                                "Discharge (cms)"))
+  y_axis_title <- ifelse(as.character(substitute(Value)) == "Volume_m3", expression(Volume~(m^3)),
+                         ifelse(as.character(substitute(Value)) == "Yield_mm", "Yield (mm)", 
+                                expression(Discharge~(m^3/s))))
   
   # Plot
   lt_plots <- dplyr::group_by(longterm_stats, STATION_NUMBER)

@@ -197,8 +197,8 @@ plot_monthly_cumulative_stats <- function(data,
                                                           long = ggplot2::unit(.2, "cm"))} +
          ggplot2::xlab("Month")+
          ggplot2::scale_x_discrete(expand = c(0.01,0.01)) +
-         {if(!use_yield) ggplot2::ylab("Cumulative Discharge (cubic metres)")} +
-         {if(use_yield) ggplot2::ylab("Cumulative Runoff Yield (mm)")} +
+         {if(!use_yield) ggplot2::ylab(expression(Cumulative~Volume~(m^3)))} +
+         {if(use_yield) ggplot2::ylab("Cumulative Yield (mm)")} +
          ggplot2::theme_bw() +
          ggplot2::labs(color = 'Monthly Statistics') +  
          {if (include_title & .y != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nMonthly Statistics')) } +   
