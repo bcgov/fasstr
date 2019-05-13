@@ -147,7 +147,7 @@ write_full_analysis <- function(data,
   
   # Check if data is provided and import it
   flow_data_source <- flowdata_import(data = data, 
-                                   station_number = station_number)
+                                      station_number = station_number)
   flow_data_raw <- flow_data_source
   
   # Save the original columns (to check for STATION_NUMBER col at end) and ungroup if necessary
@@ -299,14 +299,15 @@ write_full_analysis <- function(data,
                               fn_missing,
                               ifelse(6 %in% analyses, fn_zyp, ""),
                               paste0(", analyses = ", 
-                                     ifelse(length(analyses) == 1, 
-                                            paste(analyses),
-                                            paste0("c(",paste(analyses, collapse = ","),")"))),
+                                     ifelse(all(1:7 %in% analyses), paste("1:7"),
+                                            ifelse(length(analyses) == 1, 
+                                                   paste(analyses),
+                                                   paste0("c(",paste(analyses, collapse = ","),")")))),
                               ")")
   
   # Add fasstr functions to table
   fasstr_functions <- dplyr::add_row(fasstr_functions, 
-                                     "Worksheet" = file_name,
+                                     "Worksheet" = paste0(file_name,".xlsx"),
                                      "Output" = "Full Analysis Function",
                                      "Function" = analysis_function)
   
@@ -1526,6 +1527,16 @@ write_full_analysis <- function(data,
   
   ## Create a meta data file of the analysis arguments
   
+  openxlsx::writeData(wb = output_excel, sheet = overview_sheet, 
+                      x = "fasstr Full Analysis Results", 
+                      startCol = 1, startRow = 1)
+  openxlsx::addStyle(wb = output_excel, sheet = overview_sheet,  cols =  1, rows =  1,
+                     style = openxlsx::createStyle(fontSize = 12,
+                                                   textDecoration = "bold")) 
+  openxlsx::writeData(wb = output_excel, sheet = overview_sheet, 
+                      x = paste0("Analysis Date: ",as.character(Sys.time())), 
+                      startCol = 1, startRow = 2)
+  
   metadata <- list(data = ifelse(!is.null(data), as.character(substitute(data)), ""),
                    dates = as.character(substitute(Date)),
                    values = as.character(substitute(Value)),
@@ -1546,8 +1557,7 @@ write_full_analysis <- function(data,
                    analyses = analyses,
                    file_name = paste0(file_name, ".xlsx"),
                    plot_filetype = plot_filetype,
-                   analysis_function = analysis_function,
-                   analysis_date = as.character(Sys.time()))
+                   analysis_function = analysis_function)
   metadata <- data.frame("Argument" = names(metadata),
                          "Option" = as.character(unname(metadata)))
   metadata <- metadata[c(1,5,2:4,6:nrow(metadata)),]
@@ -1557,8 +1567,19 @@ write_full_analysis <- function(data,
             data = metadata,
             title = paste0("Analysis Overview"),
             col = 1,
-            row = 1)
+            row = 4)
   
+  
+  if (5 %in% analyses | 6 %in% analyses) {
+    openxlsx::writeData(wb = output_excel, sheet = overview_sheet, 
+                        x = "Click for additional plots:", 
+                        startCol = 1, startRow = 24)
+    link <- normalizePath(plot_dir)
+    class(link) <- "hyperlink"
+    openxlsx::writeData(wb = output_excel, sheet = overview_sheet, 
+                        x = link,
+                        startCol = 1, startRow = 25)
+  }
   
   
   
@@ -1570,16 +1591,21 @@ write_full_analysis <- function(data,
     hydat_info <- dplyr::select(hydat_info, STATION_NUMBER, STATION_NAME, PROV_TERR_STATE_LOC, HYD_STATUS,
                                 LATITUDE, LONGITUDE, DRAINAGE_AREA_GROSS, REGULATED, RHBN, REAL_TIME)
     hydat_info <- dplyr::mutate(hydat_info, HYDAT_VERSION =  as.character(dplyr::pull(tidyhydat::hy_version()[,2])))
-    hydat_info <- tidyr::gather(hydat_info, Info, Value)
+    hydat_info <- tidyr::gather(hydat_info, "Station Attribute", Info)
     
     add_table(wb = output_excel,
               sheet = overview_sheet,
               data = hydat_info,
               title = paste0("HYDAT Station Information"),
-              col = 4,
-              row = 1)
+              col = 5,
+              row = 4)
+    
+    openxlsx::setColWidths(wb = output_excel, sheet = overview_sheet, cols = c(5,6), widths = "auto")
+    
   }
   
+  openxlsx::setColWidths(wb = output_excel, sheet = overview_sheet, cols = 1, widths = 31)
+  openxlsx::setColWidths(wb = output_excel, sheet = overview_sheet, cols = 2, widths = 17)
   
   # Write the fasstr functions
   ##########################
