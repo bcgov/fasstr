@@ -1000,6 +1000,27 @@ plot_monthly_stats(station_number = "08NM116",
                    include_title = TRUE)[[1]]
 ```
 
+Customizing a plot by using additional ggplot2 functions:
+```{r, fig.height = 3, fig.width = 7, comment=NA}
+library(ggplot2)
+
+# Create the plot list and extract the plot using [[1]]
+plot <- plot_daily_stats(station_number = "08NM116", start_year = 1980)[[1]]
+
+# Customize the plot with various ggplot2 functions
+plot + 
+  geom_hline(yintercept = 1.5, colour = "red", linetype = 2, size = 1) +
+  geom_vline(xintercept = as.Date("1900-03-01"), colour = "darkgray", linetype = 1, size = 0.5) +
+  geom_vline(xintercept = as.Date("1900-08-05"), colour = "darkgray", linetype = 1, size = 0.5) +
+  ggtitle("Mission Creek Annual Hydrograph") +
+  ylab("Flow (cms)")
+
+```
+
+
+
+
+
 ***
 
 
