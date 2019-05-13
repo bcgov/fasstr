@@ -334,6 +334,9 @@ write_full_analysis <- function(data,
             col = 1,
             row = 1,
             comment = NA)
+  openxlsx::setColWidths(wb = output_excel, sheet = rawdata_sheet, 
+                         cols = 1:ncol(flow_data_source), widths = 11)
+  
   
   
   ## Screening
@@ -371,6 +374,8 @@ write_full_analysis <- function(data,
               col = 1,
               row = 1,
               comment = data_function)
+    openxlsx::setColWidths(wb = output_excel, sheet = timeseries_sheet, 
+                           cols = 1:ncol(flow_data_out), widths = 12)
     
     # Add plots
     add_plot(wb = output_excel,
