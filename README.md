@@ -45,12 +45,11 @@ Useful features of functions include:
 ## Installation
 
 To install the `fasstr` package, you need to install the `remotes`
-package then the `fasstr` package (the build\_opts argument allows for
-the installation of the vignettes):
+package then the `fasstr` package:
 
 ``` r
 install.packages("remotes")
-remotes::install_github("bcgov/fasstr", build_opts = c("--no-resave-data", "--no-manual"))
+remotes::install_github("bcgov/fasstr")
 ```
 
 Then to call the `fasstr` functions you can either load the package
@@ -78,9 +77,17 @@ database using the `tidyhydat::download_hydat()` function.
 To help users traverse their way (example code, analyses, reference
 tables, etc) through fasstr there are five vignettes: Users Guide,
 Trending Analysis Guide, Frequency Analysis Guide, Full Analysis Guide,
-and Under the Hood. The vignettes can be viewed using a few different
-ways. One is to view available vignettes in an HTML browser with links
-to each vignette:
+and Under the Hood. To install the vignettes, you must (re)install
+fasstr with the following code after a HYDAT file has been installed
+using `tidyhydat::download_hydat()`:
+
+``` r
+install.packages("remotes")
+remotes::install_github("bcgov/fasstr", build_opts = c("--no-resave-data", "--no-manual"))
+```
+
+The vignettes can be viewed using a few different ways. One is to view
+available vignettes in an HTML browser with links to each vignette:
 
 ``` r
 browseVignettes("fasstr")
