@@ -77,7 +77,21 @@
           "Min_30_Day",
           "AnalysisMonth",
           "Seasons_temp",
-          "Season")
+          "Season",
+          "Basin_Area_sqkm2",
+          "Basin_Area_sqkm",
+          "CalendarYear",
+          "STATION_NAME",
+          "PROV_TERR_STATE_LOC",
+          "HYD_STATUS",
+          "LATITUDE",
+          "LONGITUDE",
+          "REGULATED",
+          "RHBN",
+          "REAL_TIME",
+          "Info",
+          "Month_Mean",
+          "Annual_Mean")
       )
     invisible()
   }

@@ -4,11 +4,10 @@
 \alias{calc_daily_cumulative_stats}
 \title{Calculate cumulative daily flow statistics}
 \usage{
-calc_daily_cumulative_stats(data = NULL, dates = Date,
-  values = Value, groups = STATION_NUMBER, station_number = NULL,
-  percentiles = c(5, 25, 75, 95), use_yield = FALSE, basin_area = NA,
-  water_year = FALSE, water_year_start = 10, start_year = 0,
-  end_year = 9999, exclude_years = NULL, transpose = FALSE)
+calc_daily_cumulative_stats(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, percentiles = c(5, 25, 75,
+  95), use_yield = FALSE, basin_area, water_year_start = 1, start_year,
+  end_year, exclude_years, transpose = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -38,14 +37,10 @@ Leave blank if using \code{data} argument.}
 
 (2) A single numeric value to apply to all observations.
 
-(3) List each basin area for each group/station in groups (can override HYDAT value) as such \code{c("08NM116" = 795, 
-"08NM242" = 10)}. Group not listed will result in NA basin area.}
+(3) List each basin area for each group/station in groups (can override HYDAT value if listed) as such \code{c("08NM116" = 795, 
+"08NM242" = 10)}. If group is not listed the HYDAT area will be applied if it exists, otherwise it will be NA.}
 
-\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the calendar year in which they end. Default \code{FALSE}.}
-
-\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
-Default \code{10}.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
@@ -79,11 +74,16 @@ Calculate cumulative daily flow statistics for each day of the year of daily flo
 \examples{
 \dontrun{
 
+# Calculate volume statistics
+calc_daily_cumulative_stats(station_number = "08NM116") 
 
+# Calculate yield statistics with default HYDAT basin area
 calc_daily_cumulative_stats(station_number = "08NM116",
-                            water_year = TRUE,
-                            water_year_start = 8, 
-                            percentiles = c(1:10))
+                            use_yield = TRUE) 
 
+# Calculate yield statistics with custom basin area
+calc_daily_cumulative_stats(station_number = "08NM116",
+                            use_yield = TRUE,
+                            basin_area = 800) 
 }
 }

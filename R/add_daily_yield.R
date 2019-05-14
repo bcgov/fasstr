@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,24 +24,38 @@
 #' @examples
 #' \dontrun{
 #' 
-#' add_daily_yield(flow_data = flow_data, basin_area = 104.5)
-#' 
-#' add_daily_yield(station_number = "08NM116")
-#'
+#' # Add a column of yields based on HYDAT basin area
+#' add_daily_yield(station_number = "08NM116", 
+#'                 water_year_start = 8)
+#'                      
+#' # Add a column of yields based on a custom basin area
+#' add_daily_yield(station_number = "08NM116", 
+#'                 water_year_start = 8,
+#'                 basin_area = 800)
 #' }
 #' @export
 
 
-add_daily_yield <- function(data = NULL,
+add_daily_yield <- function(data,
                             values = Value,
                             groups = STATION_NUMBER,  
-                            station_number = NULL,
-                            basin_area = NA){
+                            station_number,
+                            basin_area){
   
   
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(basin_area)) {
+    basin_area = NA
+  }
   
   # Check if data is provided and import it
   flow_data <- flowdata_import(data = data, station_number = station_number)

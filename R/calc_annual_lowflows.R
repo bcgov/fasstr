@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -42,28 +42,29 @@
 #' @examples
 #' \dontrun{
 #' 
-#' calc_annual_lowflows(station_number = "08NM116", 
-#'                      water_year = TRUE, 
-#'                      water_year_start = 8, 
-#'                      roll_days = c(3,7))
-#'
+#' # Calculate statistics with default rolling days and alignment
+#' calc_annual_lowflows(station_number = "08NM116") 
+#' 
+#' # Calculate statistics with custom rolling days and alignment
+#' calc_annual_lowflows(station_number = "08NM116",
+#'                      roll_days = c(3,7),
+#'                      roll_align = "center")
 #' }
 #' @export
 
 
 
-calc_annual_lowflows <- function(data = NULL,
+calc_annual_lowflows <- function(data,
                                  dates = Date,
                                  values = Value,
                                  groups = STATION_NUMBER,
-                                 station_number = NULL,
-                                 roll_days = c(1, 3, 7, 30),
+                                 station_number,
+                                 roll_days = c(1,3,7,30),
                                  roll_align = "right",
-                                 water_year = FALSE,
-                                 water_year_start = 10,
-                                 start_year = 0,
-                                 end_year = 9999,
-                                 exclude_years = NULL, 
+                                 water_year_start = 1,
+                                 start_year,
+                                 end_year,
+                                 exclude_years, 
                                  months = 1:12,
                                  transpose = FALSE,
                                  ignore_missing = FALSE){
@@ -72,8 +73,24 @@ calc_annual_lowflows <- function(data = NULL,
   ## ARGUMENT CHECKS
   ## ---------------
   
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  
   rolling_days_checks(roll_days, roll_align, multiple = TRUE)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)
   transpose_checks(transpose)
@@ -103,23 +120,22 @@ calc_annual_lowflows <- function(data = NULL,
   ## -----------------
   
   # Fill in the missing dates and the add the date variables again
-  # Fill missing dates, add date variables, and add AnalysisYear and DOY
+  # Fill missing dates, add date variables, and add WaterYear and DOY
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
-                             water_year_start = water_year_start,
-                             year = TRUE,
-                             doy = TRUE)
+                             water_year_start = water_year_start)
   
   # Filter data for one year prior and one year after the selected data for proper rolling means
-  flow_data <- dplyr::filter(flow_data, Year >= start_year - 1 & Year <= end_year + 1)
+  flow_data <- dplyr::filter(flow_data, CalendarYear >= start_year - 1 & CalendarYear <= end_year + 1)
   
+  # Stop if all data is NA
+  no_values_error(flow_data$Value)
   
   ## CALCULATE STATISTICS
   ## --------------------
   
   # Loop through each rolling_day and compute annual min values and their dates
-  lowflow_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear))
-  for (day in roll_days) {
+  lowflow_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear))
+  for (day in unique(roll_days)) {
     # Add specified rolling mean
     flow_data_temp <- fasstr::add_rolling_means(data = flow_data, roll_days = day, roll_align = roll_align)
     names(flow_data_temp)[names(flow_data_temp) == paste0("Q", day, "Day")] <- "RollingValue"
@@ -128,23 +144,23 @@ calc_annual_lowflows <- function(data = NULL,
     flow_data_temp <- dplyr::filter(flow_data_temp, Month %in% months)
     
     # Calculate the mins and dates
-    lowflow_stats_temp <- dplyr::summarize(dplyr::group_by(flow_data_temp, STATION_NUMBER, AnalysisYear),
+    lowflow_stats_temp <- dplyr::summarize(dplyr::group_by(flow_data_temp, STATION_NUMBER, WaterYear),
                                            MIN_VALUE = min(RollingValue, na.rm = ignore_missing),	     
-                                           MIN_DAY = ifelse(is.na(MIN_VALUE), NA, AnalysisDoY[which(RollingValue == MIN_VALUE)]),
+                                           MIN_DAY = ifelse(is.na(MIN_VALUE), NA, DayofYear[which(RollingValue == MIN_VALUE)]),
                                            MIN_DATE= ifelse(is.na(MIN_VALUE), NA, Date[which(RollingValue == MIN_VALUE)]))
     class(lowflow_stats_temp$MIN_DATE) <- "Date" # fixes ifelse and date issue
     names(lowflow_stats_temp)[names(lowflow_stats_temp) == "MIN_VALUE"] <- paste0("Min_", day, "_Day")
     names(lowflow_stats_temp)[names(lowflow_stats_temp) == "MIN_DAY"] <- paste0("Min_", day, "_Day_DoY")
     names(lowflow_stats_temp)[names(lowflow_stats_temp) == "MIN_DATE"] <- paste0("Min_", day, "_Day_Date")
     
-    lowflow_stats <- merge(lowflow_stats, lowflow_stats_temp, by = c("STATION_NUMBER", "AnalysisYear"), all = TRUE)
+    lowflow_stats <- merge(lowflow_stats, lowflow_stats_temp, by = c("STATION_NUMBER", "WaterYear"), all = TRUE)
   }
-  lowflow_stats <-   dplyr::rename(lowflow_stats, Year = AnalysisYear)
+  lowflow_stats <-   dplyr::rename(lowflow_stats, Year = WaterYear)
   
   # Filter for start and end years and make excluded years data NA
-  lowflow_stats <- dplyr::filter(lowflow_stats, Year >= start_year & Year <= end_year)
+  lowflow_stats <- subset(lowflow_stats, Year >= start_year & Year <= end_year)
   lowflow_stats[lowflow_stats$Year %in% exclude_years, -(1:2)] <- NA
-  
+
   
   # If transpose if selected, switch columns and rows
   if (transpose) {
@@ -163,7 +179,13 @@ calc_annual_lowflows <- function(data = NULL,
   }
   
   # Give warning if any NA values
-  missing_values_warning(lowflow_stats[, 3:ncol(lowflow_stats)])
+  if (!transpose) {
+    missing_test <- dplyr::filter(lowflow_stats, !(Year %in% exclude_years))
+    missing_values_warning(missing_test[, 3:ncol(missing_test)])
+  } else {
+    missing_test <- dplyr::select(lowflow_stats, -dplyr::one_of(as.character(exclude_years)))
+    missing_values_warning(missing_test[, 3:ncol(missing_test)])
+  }
   
   
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary

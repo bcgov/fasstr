@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -40,30 +40,58 @@
 #' @examples
 #' \dontrun{
 #' 
+#' # Calculate statistics using data argument with defaults
+#' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+#' calc_daily_stats(data = flow_data,
+#'                  start_year = 1980)
 #' 
-#' calc_daily_stats(station_number = "08NM116", 
-#'                  water_year = TRUE, 
-#'                  water_year_start = 8, 
-#'                  percentiles = c(1:10))
-#'
+#' # Calculate statistics using station_number argument with defaults
+#' calc_daily_stats(station_number = "08NM116",
+#'                  start_year = 1980)
+#' 
+#' # Calculate statistics regardless if there is missing data for a given day of year
+#' calc_daily_stats(station_number = "08NM116",
+#'                  ignore_missing = TRUE)
+#'                   
+#' # Calculate statistics using only years with no missing data
+#' calc_daily_stats(station_number = "08NM116",
+#'                  complete_years = TRUE)
+#' 
+#' # Calculate statistics for water years starting in October
+#' calc_daily_stats(station_number = "08NM116",
+#'                  start_year = 1980,
+#'                  end_year = 2010,
+#'                  water_year_start = 10)
+#'                  
+#' # Calculate statistics with custom years
+#' calc_daily_stats(station_number = "08NM116",
+#'                  start_year = 1981,
+#'                  end_year = 2010,
+#'                  exclude_years = c(1991,1993:1995))
+#'                   
+#' # Calculate statistics for 7-day flows for July-September months only, with 25 and 75th percentiles
+#' calc_daily_stats(station_number = "08NM116",
+#'                  start_year = 1980,
+#'                  roll_days = 7,
+#'                  months = 7:9,
+#'                  percentiles = c(25,75))       
 #' }
 #' @export
 
 
 
-calc_daily_stats <- function(data = NULL,
+calc_daily_stats <- function(data,
                              dates = Date,
                              values = Value,
                              groups = STATION_NUMBER,
-                             station_number = NULL,
+                             station_number,
                              percentiles = c(5,25,75,95),
                              roll_days = 1,
                              roll_align = "right",
-                             water_year = FALSE,
-                             water_year_start = 10,
-                             start_year = 0,
-                             end_year = 9999,
-                             exclude_years = NULL, 
+                             water_year_start = 1,
+                             start_year,
+                             end_year,
+                             exclude_years, 
                              complete_years = FALSE,
                              months = 1:12,
                              transpose = FALSE,
@@ -73,9 +101,25 @@ calc_daily_stats <- function(data = NULL,
   ## ARGUMENT CHECKS
   ## ---------------
   
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+
   rolling_days_checks(roll_days, roll_align)
   percentiles_checks(percentiles)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)
   transpose_checks(transpose)
@@ -105,12 +149,9 @@ calc_daily_stats <- function(data = NULL,
   ## PREPARE FLOW DATA
   ## -----------------
   
-  # Fill missing dates, add date variables, and add AnalysisYear
+  # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
                              water_year_start = water_year_start,
-                             year = TRUE,
-                             doy = TRUE, 
                              date = TRUE)
   
   # Add rolling means to end of dataframe
@@ -118,36 +159,45 @@ calc_daily_stats <- function(data = NULL,
   colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
   
   # Filter for the selected and excluded years and leap year values (last day)
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
-  flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
-  flow_data <- dplyr::filter(flow_data, AnalysisDoY < 366)
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, !(WaterYear %in% exclude_years))
+  flow_data <- dplyr::filter(flow_data, DayofYear < 366)
   
-  
+  # Stop if all data is NA
+  no_values_error(flow_data$RollingValue)
   
   # Remove incomplete years if selected
   flow_data <- filter_complete_yrs(complete_years = complete_years, 
                                    flow_data)
+  
+  # Stop if all data is NA
+  no_values_error(flow_data$RollingValue)
   
 
   ## CALCULATE STATISTICS
   ## --------------------
 
   # Calculate basic stats
-  daily_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, AnalysisDoY),
+  daily_stats <- suppressWarnings(dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, DayofYear),
                               Mean = mean(RollingValue, na.rm = ignore_missing),
                               Median = stats::median(RollingValue, na.rm = ignore_missing),
                               Minimum = min(RollingValue, na.rm = ignore_missing),
-                              Maximum = max(RollingValue, na.rm = ignore_missing))
+                              Maximum = max(RollingValue, na.rm = ignore_missing)))
+  
+  #Remove Nans and Infs
+  daily_stats$Mean[is.nan(daily_stats$Mean)] <- NA
+  daily_stats$Maximum[is.infinite(daily_stats$Maximum)] <- NA
+  daily_stats$Minimum[is.infinite(daily_stats$Minimum)] <- NA
 
   # Compute daily percentiles (if 10 or more years of data)
   if (!all(is.na(percentiles))){
-    for (ptile in percentiles) {
-      daily_stats_ptile <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, AnalysisDoY),
+    for (ptile in unique(percentiles)) {
+      daily_stats_ptile <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisDate, DayofYear),
                                         Percentile = stats::quantile(RollingValue, ptile / 100, na.rm = TRUE))
       names(daily_stats_ptile)[names(daily_stats_ptile) == "Percentile"] <- paste0("P", ptile)
 
       # Merge with daily_stats
-      daily_stats <- merge(daily_stats, daily_stats_ptile, by = c("STATION_NUMBER", "AnalysisDate", "AnalysisDoY"))
+      daily_stats <- merge(daily_stats, daily_stats_ptile, by = c("STATION_NUMBER", "AnalysisDate", "DayofYear"))
 
       # Remove percentile if mean is NA (workaround for na.rm=FALSE in quantile)
       daily_stats[, ncol(daily_stats)] <- ifelse(is.na(daily_stats$Mean), NA, daily_stats[, ncol(daily_stats)])
@@ -161,7 +211,7 @@ calc_daily_stats <- function(data = NULL,
   
 
   # Final formatting
-  daily_stats <- dplyr::rename(daily_stats, DayofYear = AnalysisDoY, Date = AnalysisDate)
+  daily_stats <- dplyr::rename(daily_stats, DayofYear = DayofYear, Date = AnalysisDate)
   daily_stats$Date <- format(as.Date(daily_stats$Date), format = "%b-%d")
   col_order <- daily_stats$Date
 
@@ -172,7 +222,7 @@ calc_daily_stats <- function(data = NULL,
     stat_levels <- names(daily_stats[-(1:2)])
 
     # Transpose the columns for rows
-    daily_stats <- tidyr::gather(daily_stats, Statistic, Value, -STATION_NUMBER, -Date)
+    daily_stats <- tidyr::gather(daily_stats, Statistic, Value, -(1:2))
     daily_stats <- tidyr::spread(daily_stats, Date, Value)
 
     # Order the columns

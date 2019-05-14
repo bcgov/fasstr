@@ -4,12 +4,12 @@
 \alias{write_results}
 \title{Write a data frame as a .xlsx, .xls, or .csv file}
 \usage{
-write_results(data = NULL, file = "", digits = 10)
+write_results(data, file_name, digits)
 }
 \arguments{
 \item{data}{Data frame to be written to a directory.}
 
-\item{file}{Character string naming the output file. Required.}
+\item{file_name}{Character string naming the output file. Required.}
 
 \item{digits}{Integer indicating the number of decimal places or significant digits used to round flow values. Use follows 
 that of base::round() digits argument.}
@@ -21,10 +21,13 @@ Write a data frame to a directory with all numbers rounded to specified digits. 
 \examples{
 \dontrun{
 
-write_results(data = calc_longterm_stats(data = c("08HA002", "08HA011"),
-                                         start_year = 1971, end_year = 2000), 
-              file = "Cowichan River Long-term Flows (1971-2000).xlsx", 
-              digits = 1)
+# Example data to write
+data_results <- calc_longterm_stats(station_number = c("08HA002", "08HA011"),
+                                    start_year = 1971, end_year = 2000)
 
+# Write the data and round numbers to 1 decimal place
+write_results(data = data_results, 
+              file_name = "Cowichan River Long-term Flows (1971-2000).xlsx", 
+              digits = 1)
 }
 }

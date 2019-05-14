@@ -2,15 +2,12 @@
 % Please edit documentation in R/compute_full_analysis.R
 \name{compute_full_analysis}
 \alias{compute_full_analysis}
-\title{Computes a suite of tables and plots from various fasstr functions}
+\title{Compute a suite of tables and plots from various fasstr functions}
 \usage{
-compute_full_analysis(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, sections = 1:7,
-  basin_area = NA, water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 3000, exclude_years = NULL,
-  ignore_missing = FALSE, zyp_method = "yuepilon", zyp_alpha = NA,
-  write_to_dir = FALSE, foldername = NULL, table_filetype = "xlsx",
-  plot_filetype = "png")
+compute_full_analysis(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, analyses = 1:7, basin_area,
+  water_year_start = 1, start_year, end_year, exclude_years,
+  ignore_missing = FALSE, zyp_method = "yuepilon", zyp_alpha)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -30,7 +27,7 @@ Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave bla
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
 Leave blank if using \code{data} argument.}
 
-\item{sections}{Sections of analysis to run (default is all (\code{1:7})):
+\item{analyses}{Numeric vector of analyses to run (default is all (\code{1:7})):
 \itemize{
  \item{1: Screening}
  \item{2: Long-term}
@@ -47,14 +44,10 @@ Leave blank if using \code{data} argument.}
 
 (2) A single numeric value to apply to all observations.
 
-(3) List each basin area for each group/station in groups (can override HYDAT value) as such \code{c("08NM116" = 795, 
-"08NM242" = 10)}. Group not listed will result in NA basin area.}
+(3) List each basin area for each group/station in groups (can override HYDAT value if listed) as such \code{c("08NM116" = 795, 
+"08NM242" = 10)}. If group is not listed the HYDAT area will be applied if it exists, otherwise it will be NA.}
 
-\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the calendar year in which they end. Default \code{FALSE}.}
-
-\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
-Default \code{10}.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
@@ -67,35 +60,67 @@ Default \code{10}.}
 with no missing dates will be returned. Default \code{FALSE}.}
 
 \item{zyp_method}{Character string identifying the prewhitened trend method to use from 'zyp', either "zhang' or "yuepilon". 
-Only required if section 7 is included. Default \code{"yuepilon"}.}
+Only required if analysis group 6 is included. Default \code{"yuepilon"}.}
 
 \item{zyp_alpha}{Numeric value of the significance level (ex. 0.05) of when to plot a trend line. Leave blank for no line.}
-
-\item{write_to_dir}{Logical value indicating if all results are to also be written into  a directory. Default \code{FALSE}.}
-
-\item{foldername}{Name of folder to create on disk (if it does not exist) to create all folders and save tables and plots.}
-
-\item{table_filetype}{Table type to write. One of "csv", "xls", or "xlsx". Default \code{"xlsx"}.}
-
-\item{plot_filetype}{Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
-Deafult \code{"png"}.}
 }
 \value{
 A list of lists of tibble data frames and ggplot2 objects from various fasstr functions
-   organized by the sections as listed above.
+   organized by the analysis groups as listed above.
 }
 \description{
-Calculates tables and plots of a suite of statistics from various fasstr functions. The statistics are grouped into
-   7 sections (see below) which are stored in lists in the created object. Due to the number of tables and plots to be made, this 
-   function may take several minutes to complete. Can also directly write all plots and tables directly into a directory
-   ('foldername' argument) using the 'write_to_dir' argument.
-   If using \code{ignore_missing = FALSE} (default) and there is missing data, some tables and plots may be empty
-   and produce warnings. Use \code{ignore_missing = TRUE} to ignore the missing values or filter your data to complete years.
+Calculates tables and plots from a suite of statistics from fasstr functions. The statistics are grouped into
+   7 analysis groups (see 'analyses' argument) which are stored in lists in the object. Due to the number of tables and plots to 
+   be made, this function may take several minutes to complete. If using \code{ignore_missing = FALSE} (default) and there is
+   missing data, some tables and plots may be empty and produce warnings. Use \code{ignore_missing = TRUE} to ignore the missing
+   values or filter your data to complete years.
 }
 \examples{
 \dontrun{
 
-compute_full_analysis(station_number = "08NM116")
+# Compute a full analysis will all the analyses
+compute_full_analysis(station_number = "08NM116",
+                     start_year = 1980,
+                     end_year = 2010)
 
+# Compute a full analysis with only Annual and Daily analyses
+compute_full_analysis(station_number = "08NM116",
+                     start_year = 1980,
+                     end_year = 2010,
+                     analyses = c(3,5))
 }
+}
+\seealso{
+\code{\link{plot_flow_data}},
+         \code{\link{screen_flow_data}},
+         \code{\link{plot_data_screening}},
+         \code{\link{plot_missing_dates}},
+         \code{\link{calc_longterm_monthly_stats}},
+         \code{\link{plot_longterm_monthly_stats}},
+         \code{\link{calc_longterm_daily_stats}},
+         \code{\link{plot_longterm_daily_stats}},
+         \code{\link{plot_flow_duration}},
+         \code{\link{calc_annual_stats}},
+         \code{\link{plot_annual_stats}},
+         \code{\link{calc_annual_cumulative_stats}},
+         \code{\link{plot_annual_cumulative_stats}},
+         \code{\link{calc_annual_flow_timing}},
+         \code{\link{plot_annual_flow_timing}},
+         \code{\link{calc_annual_outside_normal}},
+         \code{\link{plot_annual_outside_normal}},
+         \code{\link{calc_annual_lowflows}},
+         \code{\link{plot_annual_lowflows}},
+         \code{\link{plot_annual_means}},
+         \code{\link{calc_monthly_stats}},
+         \code{\link{plot_monthly_stats}},
+         \code{\link{calc_monthly_cumulative_stats}},
+         \code{\link{plot_monthly_cumulative_stats}},
+         \code{\link{calc_daily_stats}},
+         \code{\link{plot_daily_stats}},
+         \code{\link{calc_daily_cumulative_stats}},
+         \code{\link{plot_daily_cumulative_stats}},
+         \code{\link{compute_annual_trends}},
+         \code{\link{compute_annual_frequencies}},
+         \code{\link{write_flow_data}},
+         \code{\link{write_plots}}
 }

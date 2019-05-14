@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -45,34 +45,50 @@
 #' @examples
 #' \dontrun{
 #' 
-#' calc_annual_flow_timing(station_number = "08NM116", 
-#'                         water_year = TRUE, 
-#'                         water_year_start = 8, 
-#'                         percent_total = 50)
-#'
+#' # Calculate statistics with default percent totals
+#' calc_annual_flow_timing(station_number = "08NM116") 
+#' 
+#' # Calculate statistics with custom percent totals
+#' calc_annual_cumulative_stats(station_number = "08NM116",
+#'                              percent_total = 50)
 #' }
 #' @export
 
 
-calc_annual_flow_timing <- function(data = NULL,
+calc_annual_flow_timing <- function(data,
                                     dates = Date,
                                     values = Value,
                                     groups = STATION_NUMBER,
-                                    station_number = NULL,
+                                    station_number,
                                     percent_total = c(25, 33.3, 50, 75),
-                                    water_year = FALSE,
-                                    water_year_start = 10,
-                                    start_year = 0,
-                                    end_year = 9999,
-                                    exclude_years = NULL, 
+                                    water_year_start = 1,
+                                    start_year,
+                                    end_year,
+                                    exclude_years,
                                     transpose = FALSE){
   
   
   ## ARGUMENT CHECKS
   ## ---------------
   
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  
   percent_total_checks(percent_total)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   transpose_checks(transpose)
   
@@ -100,36 +116,35 @@ calc_annual_flow_timing <- function(data = NULL,
   ## -----------------
   
   # Fill in the missing dates and the add the date variables again
-  # Fill missing dates, add date variables, and add AnalysisYear and DOY
+  # Fill missing dates, add date variables, and add WaterYear and DOY
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
-                             water_year_start = water_year_start,
-                             year = TRUE,
-                             doy = TRUE)
-  flow_data <- add_cumulative_volume(flow_data, water_year = water_year, water_year_start = water_year_start)
+                             water_year_start = water_year_start)
+  flow_data <- add_cumulative_volume(flow_data, water_year_start = water_year_start)
   
   # Filter for the selected year (remove excluded years after)
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
   
+  # Stop if all data is NA
+  no_values_error(flow_data$Cumul_Volume_m3)
   
   ## CALCULATE STATISTICS
   ## --------------------
   
   # Loop through percents
-  timing_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear))
+  timing_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear))
   
-  for (percent in percent_total) {
-    timing_pcnt <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear),
-                                    TOTALQ_DAY  =  AnalysisDoY[ match(TRUE, Cumul_Volume_m3 > percent / 100 * 
+  for (percent in unique(percent_total)) {
+    timing_pcnt <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
+                                    TOTALQ_DAY  =  DayofYear[ match(TRUE, Cumul_Volume_m3 > percent / 100 * 
                                                                         ((mean(Value, na.rm = TRUE)) * length(Value) * 60 * 60 * 24))],
                                     TOTALQ_DATE =  Date[ match(TRUE, Cumul_Volume_m3 > percent / 100 *
                                                                  ((mean(Value, na.rm = TRUE)) * length(Value) * 60 * 60 * 24))])
     names(timing_pcnt)[names(timing_pcnt) == "TOTALQ_DAY"] <- paste0("DoY_", percent, "pct_TotalQ")
     names(timing_pcnt)[names(timing_pcnt) == "TOTALQ_DATE"] <- paste0("Date_", percent, "pct_TotalQ")
-    timing_stats <- merge(timing_stats, timing_pcnt, by = c("STATION_NUMBER", "AnalysisYear"), all = TRUE)
+    timing_stats <- merge(timing_stats, timing_pcnt, by = c("STATION_NUMBER", "WaterYear"), all = TRUE)
     
   }
-  timing_stats <-   dplyr::rename(timing_stats, Year = AnalysisYear)
+  timing_stats <-   dplyr::rename(timing_stats, Year = WaterYear)
   
   
   # Make excluded years data NA
@@ -148,7 +163,13 @@ calc_annual_flow_timing <- function(data = NULL,
   }
   
   # Give warning if any NA values
-  missing_complete_yr_warning(timing_stats[, 3:ncol(timing_stats)])
+  if (!transpose) {
+    missing_test <- dplyr::filter(timing_stats, !(Year %in% exclude_years))
+    missing_values_warning(missing_test[, 3:ncol(missing_test)])
+  } else {
+    missing_test <- dplyr::select(timing_stats, -dplyr::one_of(as.character(exclude_years)))
+    missing_values_warning(missing_test[, 3:ncol(missing_test)])
+  }
   
   
   # Recheck if station_number was in original flow_data and rename or remove as necessary

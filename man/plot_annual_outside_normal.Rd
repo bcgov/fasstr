@@ -4,12 +4,11 @@
 \alias{plot_annual_outside_normal}
 \title{Plot annual days above and below normal}
 \usage{
-plot_annual_outside_normal(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL,
-  normal_percentiles = c(25, 75), roll_days = 1,
-  roll_align = "right", water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, exclude_years = NULL,
-  months = 1:12, include_title = FALSE)
+plot_annual_outside_normal(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, normal_percentiles = c(25,
+  75), roll_days = 1, roll_align = "right", water_year_start = 1,
+  start_year, end_year, exclude_years, months = 1:12,
+  include_title = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -37,11 +36,7 @@ normal range. Default \code{c(25,75)}.}
 \item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
 ('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
-\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the calendar year in which they end. Default \code{FALSE}.}
-
-\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
-Default \code{10}.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
@@ -71,10 +66,12 @@ Plots the number of days per year outside of the 'normal' range (typically betwe
 \examples{
 \dontrun{
 
-plot_annual_outside_normal(station_number = "08NM116",
-                           water_year = TRUE, 
-                           water_year_start = 8)
+# Plot statistics with default limits of normal (25 and 75th percentiles)
+plot_annual_outside_normal(station_number = "08NM116") 
 
+# Plot statistics with custom limits of normal
+plot_annual_outside_normal(station_number = "08NM116",
+                           normal_percentiles = c(10,90))
 }
 }
 \seealso{

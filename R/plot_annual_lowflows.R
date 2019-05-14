@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,28 +29,29 @@
 #' @examples
 #' \dontrun{
 #' 
-#' plot_annual_lowflows(data = "08NM116", 
-#'                      water_year = TRUE, 
-#'                      water_year_start = 8, 
-#'                      roll_days = c(3,7))
-#'
+#' # Plot statistics with default rolling days and alignment
+#' plot_annual_lowflows(station_number = "08NM116") 
+#' 
+#' # Plot statistics with custom rolling days and alignment
+#' plot_annual_lowflows(station_number = "08NM116",
+#'                      roll_days = c(3,7),
+#'                      roll_align = "center")
 #' }
 #' @export
 
 
 
-plot_annual_lowflows <- function(data = NULL,
+plot_annual_lowflows <- function(data,
                                  dates = Date,
                                  values = Value,
                                  groups = STATION_NUMBER,
-                                 station_number = NULL,
+                                 station_number,
                                  roll_days = c(1, 3, 7, 30),
                                  roll_align = "right",
-                                 water_year = FALSE,
-                                 water_year_start = 10,
-                                 start_year = 0,
-                                 end_year = 9999,
-                                 exclude_years = NULL,
+                                 water_year_start = 1,
+                                 start_year,
+                                 end_year,
+                                 exclude_years,
                                  months = 1:12,
                                  ignore_missing = FALSE,
                                  log_discharge = FALSE,
@@ -61,6 +62,22 @@ plot_annual_lowflows <- function(data = NULL,
   ## ARGUMENT CHECKS 
   ## others will be check in calc_ function
   ## ---------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
   
   log_discharge_checks(log_discharge) 
   include_title_checks(include_title)
@@ -86,7 +103,6 @@ plot_annual_lowflows <- function(data = NULL,
   lowflow_stats <- calc_annual_lowflows(data = flow_data,
                                         roll_days = roll_days,
                                         roll_align = roll_align,
-                                        water_year = water_year,
                                         water_year_start = water_year_start,
                                         start_year = start_year,
                                         end_year = end_year,
@@ -129,9 +145,9 @@ plot_annual_lowflows <- function(data = NULL,
   ## ----------
   
   # Create axis label based on input columns
-  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (m3)",
-                         ifelse(as.character(substitute(values)) == "Yield_mm", "Runoff Yield (mm)", 
-                                "Discharge (cms)"))
+  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", expression(Volume~(m^3)),
+                         ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)", 
+                                expression(Discharge~(m^3/s))))
   
   # Create plots for each STATION_NUMBER in a tibble (see: http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/)
   doy_plots <- dplyr::group_by(lowflow_doy, STATION_NUMBER)
@@ -141,7 +157,7 @@ plot_annual_lowflows <- function(data = NULL,
         ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
           ggplot2::geom_line(alpha = 0.5, na.rm = TRUE)+
           ggplot2::geom_point(na.rm = TRUE)+
-          ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "right")+
+          ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "top")+
           ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
           {if(length(unique(lowflow_doy$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(lowflow_doy$Year))}+
           ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
@@ -155,7 +171,9 @@ plot_annual_lowflows <- function(data = NULL,
                          panel.grid = ggplot2::element_line(size = .2),
                          axis.title = ggplot2::element_text(size = 12),
                          axis.text = ggplot2::element_text(size = 10),
-                         plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
+                         plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
+                         strip.background = ggplot2::element_blank(),
+                         strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
                               ))
   
   flow_plots <- dplyr::group_by(lowflow_values, STATION_NUMBER)
@@ -165,7 +183,7 @@ plot_annual_lowflows <- function(data = NULL,
            ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
              ggplot2::geom_line(alpha = 0.5, na.rm = TRUE)+
              ggplot2::geom_point(na.rm = TRUE)+
-             ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "right")+
+             ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "top")+
              ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
              {if(length(unique(lowflow_values$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(lowflow_values$Year))}+
              ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
@@ -179,7 +197,9 @@ plot_annual_lowflows <- function(data = NULL,
                             panel.grid = ggplot2::element_line(size = .2),
                             axis.title = ggplot2::element_text(size = 12),
                             axis.text = ggplot2::element_text(size = 10),
-                            plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
+                            plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
+                            strip.background = ggplot2::element_blank(),
+                            strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
                              ))
            
   

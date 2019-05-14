@@ -4,8 +4,7 @@
 \alias{add_basin_area}
 \title{Add a basin area column to daily flows}
 \usage{
-add_basin_area(data = NULL, groups = STATION_NUMBER,
-  station_number = NULL, basin_area = NA)
+add_basin_area(data, groups = STATION_NUMBER, station_number, basin_area)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -25,8 +24,8 @@ Leave blank if using \code{data} argument.}
 
 (2) A single numeric value to apply to all observations.
 
-(3) List each basin area for each group/station in groups (can override HYDAT value) as such \code{c("08NM116" = 795, 
-"08NM242" = 10)}. Group not listed will result in NA basin area.}
+(3) List each basin area for each group/station in groups (can override HYDAT value if listed) as such \code{c("08NM116" = 795, 
+"08NM242" = 10)}. If group is not listed the HYDAT area will be applied if it exists, otherwise it will be NA.}
 }
 \value{
 A tibble data frame of the original source data with an additional column:
@@ -38,9 +37,19 @@ Add a column of basin areas to a streamflow dataset, in units of square kilometr
 \examples{
 \dontrun{
 
-add_basin_area(data = flow_data, area = 104.5)
+# HYDAT basin area
+flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+add_basin_area(data = flow_data)
 
+# HYDAT basin area
 add_basin_area(station_number = "08NM116")
 
+# Set the basin area
+add_basin_area(station_number = "08NM116",
+               basin_area = 800)
+               
+# Set multiple basin areas for multiple stations
+add_basin_area(station_number = c("08NM116", "08NM242"),
+               basin_area = c("08NM116" = 800, "08NM242" = 10))
 }
 }

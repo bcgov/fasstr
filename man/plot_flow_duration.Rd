@@ -4,13 +4,12 @@
 \alias{plot_flow_duration}
 \title{Plot flow duration curves}
 \usage{
-plot_flow_duration(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, roll_days = 1,
-  roll_align = "right", water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, exclude_years = NULL,
-  complete_years = FALSE, custom_months = NULL,
-  custom_months_label = "Custom-Months", ignore_missing = FALSE,
-  months = 1:12, include_longterm = TRUE, log_discharge = TRUE,
+plot_flow_duration(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, roll_days = 1,
+  roll_align = "right", water_year_start = 1, start_year, end_year,
+  exclude_years, complete_years = FALSE, custom_months,
+  custom_months_label, ignore_missing = FALSE, months = 1:12,
+  include_longterm = TRUE, log_discharge = TRUE,
   include_title = FALSE)
 }
 \arguments{
@@ -36,11 +35,7 @@ Leave blank if using \code{data} argument.}
 \item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
 ('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
-\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the calendar year in which they end. Default \code{FALSE}.}
-
-\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
-Default \code{10}.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
@@ -51,7 +46,7 @@ Default \code{10}.}
 \item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 
 \item{custom_months}{Numeric vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Adds results to the end of table.
-If wanting months that overlap calendar years (ex. Oct-Mar), choose water_year and a water_year_month that begins before the first 
+If wanting months that overlap calendar years (ex. Oct-Mar), choose water_year_start that begins before the first 
 month listed. Leave blank for no custom month summary.}
 
 \item{custom_months_label}{Character string to label custom months. For example, if choosing months 7:9  you may choose 
@@ -81,10 +76,42 @@ Plots flow duration curves, percent time a flow value is equalled or exceeded, f
 \examples{
 \dontrun{
 
-plot_flow_duration(station_number = "08NM116", 
-                   water_year = TRUE, 
-                   water_year_start = 8)
+# Plot statistics using data argument with defaults
+flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+plot_flow_duration(data = flow_data,
+                    start_year = 1980)
 
+# Plot statistics using station_number argument with defaults
+plot_flow_duration(station_number = "08NM116",
+                   start_year = 1980)
+
+# Plot statistics regardless if there is missing data for a given year
+plot_flow_duration(station_number = "08NM116",
+                   ignore_missing = TRUE)
+                  
+# Plot statistics for water years starting in October
+plot_flow_duration(station_number = "08NM116",
+                   start_year = 1980,
+                   end_year = 2010,
+                   water_year_start = 10)
+                  
+# Plot statistics with custom years
+plot_flow_duration(station_number = "08NM116",
+                   start_year = 1981,
+                   end_year = 2010,
+                   exclude_years = c(1991,1993:1995))
+
+# Plot statistics and add custom stats for July-September
+plot_flow_duration(station_number = "08NM116",
+                   start_year = 1980,
+                   custom_months = 7:9,
+                   custom_months_label = "Summer")  
+
+# Plot statistics for just July-September
+plot_flow_duration(station_number = "08NM116",
+                   start_year = 1980,
+                   months = 7:9,
+                   include_longterm = FALSE)
 }
 }
 \seealso{

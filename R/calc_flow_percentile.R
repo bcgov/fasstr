@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,33 +24,37 @@
 #' @examples
 #' \dontrun{
 #' 
-#' 
-#' calc_flow_percentile(station_number = "08NM116", 
-#'                      water_year = TRUE, 
-#'                      exclude_years = (1990, 1992:1994),
-#'                      flow_value = 10)
-#' 
+#' # Calculate the percentile rank of a 10-cms flow value from a full record
 #' calc_flow_percentile(station_number = "08NM116", 
 #'                      flow_value = 10)
 #' 
+#' # Calculate the percentile rank of a 10-cms flow value from years with no missing data
+#' calc_flow_percentile(station_number = "08NM116", 
+#'                      complete_years = TRUE,
+#'                      flow_value = 10)
+#'                      
+#' # Calculate the percentile rank of a 10-cms flow value for June from years with no missing data
+#' calc_flow_percentile(station_number = "08NM116", 
+#'                      complete_years = TRUE,
+#'                      months = 6,
+#'                      flow_value = 10)
 #' }
 #' @export
 
 
 
-calc_flow_percentile <- function(data = NULL,
+calc_flow_percentile <- function(data,
                                  dates = Date,
                                  values = Value,
                                  groups = STATION_NUMBER,
-                                 station_number = NULL,
+                                 station_number,
                                  roll_days = 1,
                                  roll_align = "right",
-                                 flow_value = NA,
-                                 water_year = FALSE,
-                                 water_year_start = 10,
-                                 start_year = 0,
-                                 end_year = 9999,
-                                 exclude_years = NULL,
+                                 flow_value,
+                                 water_year_start = 1,
+                                 start_year,
+                                 end_year,
+                                 exclude_years,
                                  complete_years = FALSE,
                                  months = 1:12){
   
@@ -58,11 +62,28 @@ calc_flow_percentile <- function(data = NULL,
   ## ARGUMENT CHECKS
   ## ---------------
   
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+
   rolling_days_checks(roll_days, roll_align)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   complete_yrs_checks(complete_years)
   
+  if (missing(flow_value))        stop("A numeric flow_value is required.", call. = FALSE)
   if (!is.numeric(flow_value))    stop("A numeric flow_value is required.", call. = FALSE)
   if (length(flow_value) > 1)     stop("Only one numeric flow_value is required.", call. = FALSE)
   
@@ -89,20 +110,21 @@ calc_flow_percentile <- function(data = NULL,
   ## PREPARE FLOW DATA
   ## -----------------
   
-  # Fill missing dates, add date variables, and add AnalysisYear
+  # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
-                             water_year_start = water_year_start,
-                             year = TRUE)
+                             water_year_start = water_year_start)
   
   # Add rolling means to end of dataframe
   flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
   colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
   
   # Filter for the selected year
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
-  flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, !(WaterYear %in% exclude_years))
   flow_data <- dplyr::filter(flow_data, Month %in% months)
+  
+  # Stop if all data is NA
+  no_values_error(flow_data$RollingValue)
   
   # Remove incomplete years if selected
   flow_data <- filter_complete_yrs(complete_years = complete_years, 
@@ -110,6 +132,9 @@ calc_flow_percentile <- function(data = NULL,
   
   if (flow_value > max(flow_data$Value, na.rm = TRUE)) warning("flow_value was greater than the maximum daily flow value.", call. = FALSE)
   if (flow_value < min(flow_data$Value, na.rm = TRUE)) warning("flow_value was less than the minimum daily flow value.", call. = FALSE)
+  
+  # Stop if all data is NA
+  no_values_error(flow_data$RollingValue)
   
   # Give warning if any NA values
   missing_values_warning_noNA(flow_data$Value)

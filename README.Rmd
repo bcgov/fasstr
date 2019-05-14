@@ -17,13 +17,11 @@ knitr::opts_chunk$set(
 ```
 
 # fasstr <img src="tools/readme/fasstr.PNG" align="right" />
-
-<a id="devex-badge" rel="Delivery" href="https://github.com/BCDevExchange/assets/blob/master/README.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a>
-[![Travis build status](https://travis-ci.org/bcgov/fasstr.svg?branch=master)](https://travis-ci.org/bcgov/fasstr)
+<a id="devex-badge" rel="Delivery" href="https://github.com/BCDevExchange/assets/blob/master/README.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a> [![Travis build status](https://travis-ci.org/bcgov/fasstr.svg?branch=master)](https://travis-ci.org/bcgov/fasstr)
 
 </div>
 
-The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http://www.r-project.org) functions to clean/prepare, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
+The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http://www.r-project.org) functions to clean, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
 
 
 
@@ -40,29 +38,48 @@ Useful features of functions include:
 
 - the integration of the `tidyhydat` package to pull streamflow data from a Water Survey of Canada [HYDAT](https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html) database for analyses;
 - arguments for filtering of years and months in analyses and plotting (internally tidys your data);
-- choosing water years for analyses instead of calendar years (and choice of start month);
+- choosing the start month of your water year;
 - selecting for rolling day averages (e.g. 7-day rolling average);
-- plotting options;
-- choosing how missing dates are handled.
+- plotting options;and,
+- choosing how missing dates are handled, amongst others.
 
 ## Installation
 
-To install the `fasstr` package, you need to install the `devtools` package then the `fasstr` package
+To install the `fasstr` package, you need to install the `remotes` package then the `fasstr` package (the build_opts argument allows for the installation of the vignettes):
+
 ```{r, eval = FALSE}
 install.packages("remotes")
-remotes::install_github("bcgov/fasstr")
+remotes::install_github("bcgov/fasstr", build_opts = c("--no-resave-data", "--no-manual"))
 ```
   
-Then to call the `fasstr` functions you can either load the package using the `library()` function or access a specific function using a double-colon (e.g. `fasstr::calc_daily_stats()`). Several other packages will be installed in addition including  [tidyhydat](https://cran.r-project.org/web/packages/tidyhydat/index.html) for data gathering, [zyp](https://cran.r-project.org/web/packages/zyp/index.html) for trending, [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html) for creating plots, and [dplyr](https://cran.r-project.org/web/packages/dplyr/index.html) and [tidyr](https://cran.r-project.org/web/packages/tidyr/index.html) for various data wrangling and summarizing functions, amongst others. Many of the other packages are required for the frequency analysis functions.
+Then to call the `fasstr` functions you can either load the package using the `library(fasstr)` function or access a specific function using a double-colon (e.g. `fasstr::calc_daily_stats()`). Several other packages will be installed in addition including  [tidyhydat](https://cran.r-project.org/web/packages/tidyhydat/index.html) for data gathering, [zyp](https://cran.r-project.org/web/packages/zyp/index.html) for trending, [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html) for creating plots, and [dplyr](https://cran.r-project.org/web/packages/dplyr/index.html) and [tidyr](https://cran.r-project.org/web/packages/tidyr/index.html) for various data wrangling and summarizing functions, amongst others. Many of the other packages are required for the frequency analysis functions.
 
-```{r, eval = TRUE, echo = TRUE}
+```{r, eval = TRUE, echo = FALSE}
 library(fasstr)
 ```
 
 To utilize the `tidyhydat` features, you will need to download a HYDAT database using the `tidyhydat::download_hydat()` function.
-  
+
 
 ## Using fasstr
+
+### Vignettes
+
+To help users traverse their way (example code, analyses, reference tables, etc) through fasstr there are five vignettes: Users Guide, Trending Analysis Guide, Frequency Analysis Guide, Full Analysis Guide, and Under the Hood. The vignettes can be viewed using a few different ways. One is to view available vignettes in an HTML browser with links to each vignette:
+
+```{r, eval = FALSE}
+browseVignettes("fasstr")
+```
+
+or each vignette can be displayed individually within a viewer:
+
+```{r, eval = FALSE}
+vignette("fasstr_users_guide")
+vignette("fasstr_trending_analysis")
+vignette("fasstr_frequency_analysis")
+vignette("fasstr_full_analysis")
+vignette("fasstr_under_the_hood")
+```
 
 
 ### Data Input
@@ -75,11 +92,11 @@ data <- tidyhydat::hy_daily_flows("08NM116")
 data <- data[,c(1,2,4)]
 ```
 
-```{r flow_data}
-head(data)
+```{r flow_data, echo=FALSE}
+head(data.frame(data))
 ```
 
-Alternatively, you can directly extract a flow data set directly from a HYDAT database by listing station numbers in the `station_number` argument (ex. `station_number = "08NM116"` or `station_number = c("08NM116", "08NM242")`) while leavind the data arguments blank. A data frame of daily streamflow data for all stations listed will be extracted using `tidyhydat`.  Use the following function to download a HYDAT database:
+Alternatively, you can directly extract a flow data set directly from a HYDAT database by listing station numbers in the `station_number` argument (ex. `station_number = "08NM116"` or `station_number = c("08NM116", "08NM242")`) while leaving the data arguments blank. A data frame of daily streamflow data for all stations listed will be extracted using `tidyhydat`.  Use the following function to download a HYDAT database:
 
 ```{r tidyhydat, eval = FALSE}
 tidyhydat::download_hydat()
@@ -115,7 +132,7 @@ If certain n-day rolling mean statistics are desired to be analyzed (e.g. 3- or 
 
 To customize your analyses for specific time periods, you can designate the start and end years of your analysis using the `start_year` and `end_year` arguments and remove any unwanted years (for partial datasets for example) by listing them in the `excluded_years` argument (e.g. `excluded_years = c(1990, 1992:1994)`). Alternatively, some functions have an argument called `complete_years` that summarizes data from just those years which have a complete flow record. Some functions will also allow you to select the months of a year to analyze, using the `months` argument, as opposed to all months (if you want just summer low-flows, for example). Leaving these arguments blank will result in the summary/analysis of all years and months of the provided dataset.
 
-To group analyses by water, or hydrologic, years instead of calendar years, if desired, you can use `water_year = TRUE` within most functions (default is `water_year = FALSE`). A water year can be defined as a 12-month period that comprises a complete hydrologic cycle (wet seasons can typically cross calendar year), typically starting with the month with minimum flows (the start of a new water recharge cycle). As water years commonly start in October, the default water year is October for `fasstr`.  If another start month is desired, you can choose is using the `water_year_start` argument (numeric month) to designate the water year time period. The water year label is designated by the year it ends in (e.g. water year 2000 goes from Oct 1, 1999 to Sep 30, 2000). Start, end and excluded years will be based on the specified water year.
+To group analyses by water, or hydrologic, years instead of calendar years, if desired, you can set `water_year_start` within most functions to another month than 1 (for January). A water year can be defined as a 12-month period that comprises a complete hydrologic cycle (wet seasons can typically cross calendar year), typically starting with the month with minimum flows (the start of a new water recharge cycle). As water years commonly start in October, the default water year is October for `fasstr`.  If another start month is desired, you can choose is using the `water_year_start` argument (numeric month) to designate the water year time period. The water year label is designated by the year it ends in (e.g. water year 2000 goes from Oct 1, 1999 to Sep 30, 2000). Start, end and excluded years will be based on the specified water year.
 
 For your own analyses, you can add date variables to your dataset using the `add_date_variables()` or `add_seasons()` functions.
 
@@ -133,30 +150,30 @@ Some functions have an argument called `complete_years` which can be used, when 
 
 ### Summary statistics example: long-term statistics
 
-To determine the summary statistics of an entire dataset and by month (mean, median, maximum, minimum, and some percentiles) you can use the `calc_longterm_stats()` function. If the 'Mission Creek near East Kelowna' hydrometric station is of interest you can list the station number in the `station_number` argument to obtain the data (if `tidyhydat` and HYDAT are installed). 
+To determine the summary statistics of daily data by month (mean, median, maximum, minimum, and some percentiles) you can use the `calc_longterm_daily_stats()` function. If the 'Mission Creek near East Kelowna' hydrometric station is of interest you can list the station number in the `station_number` argument to obtain the data (if `tidyhydat` and HYDAT are installed). 
 
 ```{r example1}
-calc_longterm_stats(station_number = "08NM116", 
-                    start_year = 1981, 
-                    end_year = 2010,
-                    custom_months = 7:9, 
-                    custom_months_label = "Summer")
+calc_longterm_daily_stats(station_number = "08NM116", 
+                          start_year = 1981, 
+                          end_year = 2010,
+                          custom_months = 7:9, 
+                          custom_months_label = "Summer")
 ```
 
-### Plotting example 1: daily summary statistics
+### Plotting example: daily summary statistics
 
-To visualize the daily streamflow patterns on an annual basis, the `plot_daily_stats()` function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the `start_year` and `end_year` arguments. We can also compare indivual years against the statistics using `include_year` argument like below.
+To visualize the daily streamflow patterns on an annual basis, the `plot_daily_stats()` function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the `start_year` and `end_year` arguments. We can also compare indivual years against the statistics using `add_year` argument like below.
 
 ```{r plot1, fig.height = 4, fig.width = 10}
 plot_daily_stats(station_number = "08NM116",
                  start_year = 1981,
                  end_year = 2010,
                  log_discharge = TRUE,
-                 include_year = 1991,
+                 add_year = 1991,
                  ignore_missing = TRUE)
 ```
 
-### Plotting example 2: flow duration curves
+### Plotting example: flow duration curves
 
 Flow duration curves can be produced using the `plot_flow_duration()` function.
 
@@ -205,7 +222,7 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 ## License
 
-    Copyright 2018 Province of British Columbia
+    Copyright 2019 Province of British Columbia
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

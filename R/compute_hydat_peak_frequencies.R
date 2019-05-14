@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@
 #'   \item{Freq_Fitting}{List of fitted objects from fitdistrplus.}
 #'   \item{Freq_Fitted_Quantiles}{Data frame with fitted quantiles.}
 #'   
+#' @seealso \code{\link{compute_frequency_analysis}}
 #'   
 #' @examples
 #' \dontrun{
@@ -42,7 +43,7 @@
 #' @export
 
 
-compute_hydat_peak_frequencies <- function(station_number = NULL,
+compute_hydat_peak_frequencies <- function(station_number,
                                            use_max = FALSE,
                                            use_log = FALSE,
                                            prob_plot_position = c("weibull", "median", "hazen"),
@@ -50,9 +51,9 @@ compute_hydat_peak_frequencies <- function(station_number = NULL,
                                            fit_distr = c("PIII", "weibull"),
                                            fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
                                            fit_quantiles = c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),
-                                           start_year = 0,
-                                           end_year = 9999,
-                                           exclude_years = NULL,
+                                           start_year,
+                                           end_year,
+                                           exclude_years,
                                            plot_curve = TRUE){
   
   # replicate the frequency analysis of the HEC-SSP program
@@ -62,6 +63,19 @@ compute_hydat_peak_frequencies <- function(station_number = NULL,
   
   ## ARGUMENT CHECKS
   ## ---------------
+  
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
   
   years_checks(start_year, end_year, exclude_years)
   

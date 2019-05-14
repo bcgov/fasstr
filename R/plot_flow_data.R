@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,29 +29,45 @@
 #' @examples
 #' \dontrun{
 #' 
-#' plot_flow_data(station_number = "08NM116", 
-#'                water_year = TRUE, 
-#'                water_year_start = 8)
-#'
+#' # Plot data from a data frame
+#' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+#' plot_flow_data(data = flow_data)
+#' 
+#' # Plot data directly from HYDAT
+#' plot_flow_data(station_number = "08NM116")
+#' 
+#' # Plot statistics with custom years
+#' plot_flow_data(station_number = "08NM116",
+#'                start_year = 1981,
+#'                end_year = 2010,
+#'                exclude_years = c(1991,1993:1995))
+#'                  
+#' # Plot data between specific dates
+#' plot_flow_data(station_number = "08NM116",
+#'                start_date = "1990-01-01",
+#'                end_date = "1990-06-01")
+#' 
+#' # Plot data multiple groups on one plot
+#' plot_flow_data(station_number = c("08NM241", "08NM242"),
+#'                one_plot = TRUE) 
 #' }
 #' @export
 
 
 
-plot_flow_data <- function(data = NULL,
+plot_flow_data <- function(data,
                            dates = Date,
                            values = Value,
                            groups = STATION_NUMBER,
-                           station_number = NULL,
+                           station_number,
                            roll_days = 1,
                            roll_align = "right",
-                           water_year = FALSE,
-                           water_year_start = 10,
-                           start_year = 0,
-                           end_year = 9999,
-                           exclude_years = NULL,
-                           start_date = "0000-01-01",
-                           end_date = "3000-12-31",
+                           water_year_start = 1,
+                           start_year,
+                           end_year,
+                           exclude_years,
+                           start_date,
+                           end_date,
                            log_discharge = FALSE,
                            plot_by_year = FALSE,
                            one_plot = FALSE,
@@ -61,8 +77,30 @@ plot_flow_data <- function(data = NULL,
   ## ARGUMENT CHECKS
   ## ---------------
   
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  if (missing(start_date)) {
+    start_date = "0000-01-01"
+  }
+  if (missing(end_date)) {
+    end_date = "3000-12-31"
+  }
+  
   rolling_days_checks(roll_days, roll_align)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years = NULL)
   log_discharge_checks(log_discharge)
   include_title_checks(include_title)
@@ -98,35 +136,34 @@ plot_flow_data <- function(data = NULL,
   ## PREPARE FLOW DATA
   ## -----------------
   
-  # Fill missing dates, add date variables, and add AnalysisYear
+  # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
-                             water_year_start = water_year_start,
-                             year = TRUE)
+                             water_year_start = water_year_start)
   
   # Add rolling means to end of dataframe
   flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
-  colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
+  flow_data <- dplyr::rename(flow_data, Value_orig = Value)
+  colnames(flow_data)[ncol(flow_data)] <- "Value"
   
   # Filter for the selected year (remove excluded years after)
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
 
   # Filter for specific dates, if selected
   flow_data <- dplyr::filter(flow_data, Date >= start_date)
   flow_data <- dplyr::filter(flow_data, Date <= end_date)
   
   # Remove selected excluded years
-  flow_data <- dplyr::mutate(flow_data, RollingValue = replace(RollingValue, AnalysisYear %in% exclude_years, NA))
+  flow_data <- dplyr::mutate(flow_data, Value = replace(Value, WaterYear %in% exclude_years, NA))
   
-  if (anyNA(flow_data$RollingValue)) 
-    warning(paste0("Did not plot ", sum(is.na(flow_data$RollingValue)),
+  if (anyNA(flow_data$Value)) 
+    warning(paste0("Did not plot ", sum(is.na(flow_data$Value)),
                    " missing or excluded values between ", min(flow_data$Date), " and ", max(flow_data$Date),"."), 
             call. = FALSE)
   
   # Create axis label based on input columns
-  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (m3)",
-                         ifelse(as.character(substitute(values)) == "Yield_mm", "Runoff Yield (mm)", 
-                                "Discharge (cms)"))
+  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", expression(Volume~(m^3)),
+                         ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)", 
+                                expression(Discharge~(m^3/s))))
   
   # Plot each individual station on their own
   if (!one_plot) {
@@ -134,16 +171,16 @@ plot_flow_data <- function(data = NULL,
     flow_plots <- tidyr::nest(flow_plots)
     flow_plots <- dplyr::mutate(flow_plots,
                                 plot = purrr::map2(data, STATION_NUMBER, 
-          ~ggplot2::ggplot(data = ., ggplot2::aes(x = Date, y = RollingValue)) +
+          ~ggplot2::ggplot(data = ., ggplot2::aes(x = Date, y = Value)) +
             ggplot2::geom_line(colour = "dodgerblue4", na.rm = TRUE) +
             ggplot2::ylab(y_axis_title) +
-            {if(plot_by_year) ggplot2::facet_wrap(~AnalysisYear, scales = "free_x")} +
+            {if(plot_by_year) ggplot2::facet_wrap(~WaterYear, scales = "free_x")} +
             {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 8), expand = c(0, 0))} +
             {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
             {if(plot_by_year) ggplot2::scale_x_date(date_labels = "%b", expand = c(0,0))} +
             {if(!plot_by_year) ggplot2::scale_x_date(breaks = scales::pretty_breaks(n = 12))} +
-            {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(.$RollingValue) * 1.05))} +
-            {if(log_discharge) ggplot2::expand_limits(y = c(min(.$RollingValue) * .95, max(.$RollingValue) * 1.05))} +
+            {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(.$Value) * 1.05))} +
+            {if(log_discharge) ggplot2::expand_limits(y = c(min(.$Value) * .95, max(.$Value) * 1.05))} +
             {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(.y) } +    
             ggplot2::theme_bw() +
             ggplot2::labs(color = 'Station') +    
@@ -172,10 +209,10 @@ plot_flow_data <- function(data = NULL,
   } else {
     plots <- list()
     
-    plot <- ggplot2::ggplot(data = flow_data, ggplot2::aes(x = Date, y = RollingValue, colour = STATION_NUMBER)) +
+    plot <- ggplot2::ggplot(data = flow_data, ggplot2::aes(x = Date, y = Value, colour = STATION_NUMBER)) +
       ggplot2::geom_line(na.rm = TRUE) +
       ggplot2::ylab(y_axis_title) +
-      {if(plot_by_year) ggplot2::facet_wrap(~AnalysisYear, scales = "free_x")} +
+      {if(plot_by_year) ggplot2::facet_wrap(~WaterYear, scales = "free_x")} +
       {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 8), expand = c(0, 0))} +
       {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
       {if(log_discharge) ggplot2::annotation_logticks(base= 10, "left", colour = "grey25", size = 0.3,
@@ -183,8 +220,8 @@ plot_flow_data <- function(data = NULL,
                                                       long = ggplot2::unit(.2, "cm"))} +
       {if(plot_by_year) ggplot2::scale_x_date(date_labels = "%b", expand = c(0,0))} +
       {if(!plot_by_year) ggplot2::scale_x_date(breaks = scales::pretty_breaks(n = 12))} +
-      {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(flow_data$RollingValue) * 1.05))} +
-      {if(log_discharge) ggplot2::expand_limits(y = c(min(flow_data$RollingValue) * .95, max(flow_data$RollingValue) * 1.05))} +
+      {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(flow_data$Value) * 1.05))} +
+      {if(log_discharge) ggplot2::expand_limits(y = c(min(flow_data$Value) * .95, max(flow_data$Value) * 1.05))} +
       ggplot2::theme_bw() +
       ggplot2::labs(color = 'Station') +    
       ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),

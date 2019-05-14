@@ -6,30 +6,28 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
-```{r options, include=FALSE}
-knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")),
-warning = FALSE, 
-message = FALSE)
-```
-
-```{r, include=FALSE}
-library(fasstr)
+  
+  ```{r options, include=FALSE}
+  knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")),
+  warning = FALSE, 
+  message = FALSE)
+  ```
+  
+  ```{r, include=FALSE}
+  library(fasstr)
 library(dplyr)
 ```
 
 The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http://www.r-project.org) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
 
-This vignette documents the usage of the `compute_full_analysis()` function in fasstr. This vignette is a high-level adjunct to the details found in the function documentation (see `?compute_full_analysis()`). You’ll learn what arguments to provide to the function to customize your analysis, what analyses are computed, and what outputs are produced.
+This vignette documents the usage of the `compute_full_analysis()` and `write_full_analysis()` functions in fasstr. This vignette is a high-level adjunct to the details found in the function documentation (see `?compute_full_analysis` and `?write_full_analysis`). You’ll learn what arguments to provide to the function to customize your analyses, what analyses are computed, and what outputs are produced.
 
 
 ## Use
 
-The `compute_full_analysis()` function produces a suite of analysis tables and plots from the various fasstr functions. The analyses are grouped into seven groups, or sections, (see below) which are stored in lists in the created object. To directly save all results on your computer and explore the files individually, you can write all plots and tables into directory using the logical `write_to_dir` argument. Due to the number of analyses computed, running this function may take several minutes.
+The full analysis functions produce a suite of analysis tables and plots from the various fasstr functions. There are seven groups of analyses (see below) which are stored in lists in the created object for the `compute_` function and written into an Excel workbook for the `write_` function. All of the data selection (data or station_number arguments), data filtering, water year selection, missing dates options, basin area, and zyp trending arguments are used in this function to customize your data and analysis.
 
-All of the data selection (data or station_number arguments), data filtering, water year selection, missing dates options, basin area, and zyp trending arguments are used in this function to customize your data and analysis.
-
-This function will by default create a list of all the tibbles and plots. When the logical `write_to_dir` argument is set to TRUE then it will also write all the tibbles and plots within a provided directory. All of the outputs can be categorized into seven different time-frame and analysis-type sections to help with organizing the outputs. The outputs will be grouped into the following categories:
+All of the outputs can be categorized into seven different time-frame and analysis-types to help with organizing the outputs. The outputs will be grouped into the following categories:
 
 1) Screening
 2) Long-term
@@ -39,15 +37,15 @@ This function will by default create a list of all the tibbles and plots. When t
 6) Annual Trends
 7) Low-flow Frequencies
 
-While by default the function will create all outputs from all categories, there is the option to select which categories are analyzed using the `sections` argument. By default the sections argument is `1:7`, with numbers 1 through 7 representing each of the categories as listed above. So `sections = 1` would output only the screening outputs; while `sections = c(1,3,5:7)` would output all but the long-term and monthly sections.
+While by default the function will create all outputs from all categories, there is the option to select which groups are analyzed using the `analyses` argument. By default the `analyses` argument is `1:7`, with numbers 1 through 7 representing each of the categories as listed above. So `analyses = 1` would output only the screening outputs; while `analyses = c(1,3,5:7)` would output all but the long-term and monthly analyses.
 
 To see all the outputs created and which categories and fasstr function are used to calculate them, see the table and examples below.
 
 ## Outputs
 
-### Object List
+### compute_full_analysis() Object List
 
-When using the function all of the objects will be saved within a list with a first level of lists with each of the categories as listed above (ex. `$Screening` or `$Annual`). Within each of those lists are the outputted objects, or another list of objects (ex. `$Screening$Flow_Screening` or `$Annual$Annual_Flow_Timing`). Using subsetting techniques to extract an individual tibble or plot.
+When using this function all of the objects will be saved within a list with a first level of lists with each of the categories as listed above (ex. `$Screening` or `$Annual`). Within each of those lists are the outputted objects, or another list of objects (ex. `$Screening$Flow_Screening` or `$Annual$Annual_Flow_Timing`). Use subsetting techniques to extract an individual tibble or plot.
 
 The following is an example of how to run the function and then how extract individual objects from the list:
 
@@ -56,46 +54,30 @@ mission_creek <- compute_full_analysis(station_number = "08NM116",
                                        start_year = 1981,
                                        end_year = 2000)
 
-screening_plot <- mission_creek$Screening$Flow_Screening_plot
+screening_plot <- mission_creek$Screening$Flow_Screening_Plot
 
 daily_stats <- mission_creek$Daily$Daily_Summary_Stats
 
-daily_stats_with_1985 <- mission_creek$Daily$Daily_Summary_Stats_with_Years$Daily_Stats_1985
+daily_stats_with_1985 <- mission_creek$Daily$Daily_Summary_Stats_with_Years$`1985_Daily_Statistics`
 
 trends_results <- mission_creek$Trending$Annual_Trends_Results
 
 ```
 
 
-### Excel and Image Files (Writing)
+### write_full_analysis() Excel and Image Files
 
-This function also provides a option to directly save all results into a folder, thereby allowing the user to explore the outputs in Excel (or csv) and image file formats.  To do so, set `write_to_dir = TRUE` within the function. You will also be required to provide the name of a folder to create using the `foldername` argument. It will by default save it in the working directory, but a file pathway to another directory can also be provided. By default it will save all tibbles in "xlsx" format and all plots in "png" format, but can be altered using the `table_filetype` and `plot_filetype` arguments, respectively, if necessary.
+The writing function provides a option to directly save all results onto your computer, thereby allowing the user to explore the outputs in Excel and image file formats. You will be required to provide the name of a the Excel file to create using the `file_name` argument. If the analyses in groups 5 and/or 6 are selected than a folder with the same name will be created to store plots that are not compatible in the Excel file. By default it will save those plots in "pdf" format, but can be altered using the `plot_filetype` arguments, if necessary. Within the Excel workbook each of the tables and plots are saved within specific worksheets. The first worksheet in all ouputs contain an overview of the analysis to know which arguments and options were used. The second worksheet contains the data provided to the function (the data frame or the data from HYDAT). The last worksheet (after all the analysis sheets) contain a table of fasstr functions that can replicate each individual analysis output for further customization (these functions are also contained within the comments of the cells with table and plot titles).
 
-The following is an example of how to save all files on your computer:
-
-``` {r, eval=FALSE}
-mission_creek <- compute_full_analysis(station_number = "08NM116",
-                                       start_year = 1981,
-                                       end_year = 2000,
-                                       write_to_dir = TRUE,
-                                       foldername = "Mission Creek")
-
-```
-
-The following is an example of how to save all files on your computer, with custom file types:
+The following is an example of how to save all analyses to your computer:
 
 ``` {r, eval=FALSE}
-mission_creek <- compute_full_analysis(station_number = "08NM116",
-                                       start_year = 1981,
-                                       end_year = 2000,
-                                       write_to_dir = TRUE,
-                                       foldername = "Mission Creek",
-                                       plot_filetype = "pdf",
-                                       table_filetype = "csv")
+write_full_analysis(station_number = "08NM116",
+                    start_year = 1981,
+                    end_year = 2000,
+                    file_name = "Mission Creek")
 
 ```
-
-When writing into a directory there are two additional files created in the main directory folder. The first, called the "Table of Contents" provides an Excel file with listings of all files created, and which folder and type of file it is. The other file, called "Analysis Metadata", provides information regarding the analysis data inputs, options, and methods.
 
 
 
@@ -103,66 +85,59 @@ When writing into a directory there are two additional files created in the main
 
 The following is a table that lists of all objects and files (if `write_to_dir = TRUE)` created using the `compute_full_analysis()` function, with their respective section list / folder, type of object, and the function use to produce the object:
 
-List / Directory          |	Object / File                             |	Type              | Function
+Analyses                  |	Object                                    |	Type              | Function
 --------------------------|-------------------------------------------|-------------------|------------------------------
-1 - Screening	            | Daily_Flows    		                        | Plot              | plot_flow_data()
-1 - Screening             |	Annual_Daily_Flows    		                | Plot              | plot_flow_data(plot_by_year=TRUE)
-1 - Screening	            | Daily_Flows     	                  	    | Table             | write_flow_data()
-1 - Screening	            |	Data_Screening    	                  	  | Plot              | plot_data_screening()
+1 - Screening	            | Daily_Flows     	                  	    | Table             | add_date_variables() %>% add_rolling_means() %>% add_basin_area()
+1 - Screening	            | Daily_Flows_Plot	                        | Plot              | plot_flow_data()
 1 - Screening	            |	Flow_Screening     	                  	  | Table             | screen_flow_data()
-1 - Screening	            |	Missing_Dates    		                      | Plot              | plot_missing_dates()
-2 - Long-term	            |	Flow_Duration    		                      | Plot              | plot_flow_duration()
-2 - Long-term	            |	Long-term_Stats    		                    | Plot              | plot_longterm_stats()
-2 - Long-term	            |	Longterm_Statistics_and_Percentiles     	| Table             | calc_longterm_stats()
-3 - Annual	              |	Annual_Cumulative_Volume     	          | Table             | calc_annual_cumulative_stats(include_seasons=TRUE)
-3 - Annual	              |	Annual_Cumulative_Yield     	            | Table             | calc_annual_cumulative_stats(use_yield=TRUE, include_seasons=TRUE)
-3 - Annual	              |	Annual_Days_Outside_Normal            	  | Plot              | plot_annual_outside_normal()
-3 - Annual	              |	Annual_Days_Outside_Normal     	          | Table             | calc_annual_outside_normal
-3 - Annual	              |	Annual_Flow_Timing    	                  | Plot              | plot_annual_flow_timing()
+1 - Screening	            |	Flow_Screening_Plot	                  	  | Plot              | plot_data_screening()
+1 - Screening	            |	Missing_Dates_Plot	                      | Plot              | plot_missing_dates()
+2 - Longterm	            |	Longterm_Monthly_Summary_Stats_Percentiles| Table             | calc_longterm_monthly_stats()
+2 - Longterm	            |	Longterm_Monthly_Summary_Stats_Plot       | Plot              | plot_longterm_monthly_stats()
+2 - Longterm	            |	Longterm_Daily_Summary_Stats_Percentiles  | Table             | calc_longterm_daily_stats()
+2 - Longterm	            |	Longterm_Daily_Summary_Stats_Plot         | Plot              | plot_longterm_daily_stats()
+2 - Longterm	            |	Flow_Duration_Curves                      | Plot              | plot_flow_duration()
+3 - Annual	              |	Annual_Summary_Stats                     	| Table             | calc_annual_stats()
+3 - Annual	              |	Annual_Summary_Stats_Plot                	| Plot              | plot_annual_stats()
+3 - Annual	              |	Annual_Cumul_Volume_Stats_m3 	            | Table             | calc_annual_cumulative_stats(include_seasons=TRUE)
+3 - Annual	              |	Annual_Cumul_Volume_Stats_m3_Plot     	  | Multiple Plots    | plot_annual_cumulative_stats(include_seasons=TRUE)
+3 - Annual	              |	Annual_Cumul_Yield_Stats_mm     	        | Table             | calc_annual_cumulative_stats(use_yield=TRUE, include_seasons=TRUE)
+3 - Annual	              |	Annual_Cumul_Yield_Stats_mm_Plot          | Multiple Plots    | plot_annual_cumulative_stats(use_yield=TRUE)
 3 - Annual	              |	Annual_Flow_Timing     	                  | Table             | calc_annual_flow_timing()
-3 - Annual	              |	Annual_Low_Flows                        	| Plot              | plot_annual_lowflows()
+3 - Annual	              |	Annual_Flow_Timing_Plot	                  | Plot              | plot_annual_flow_timing()
+3 - Annual	              |	Annual_Days_Outside_Normal     	          | Table             | calc_annual_outside_normal
+3 - Annual	              |	Annual_Days_Outside_Normal_Plot        	  | Multiple Plots    | plot_annual_outside_normal()
 3 - Annual	              |	Annual_Low_Flows     	                    | Table             | calc_annual_lowflows()
-3 - Annual	              |	Annual_Low_Flows_Dates                   	| Plot              | plot_annual_lowflows()
+3 - Annual	              |	Annual_Low_Flows_Plot                   	| Multiple Plots    | plot_annual_lowflows()
 3 - Annual	              |	Annual_Means    	                        | Plot              | plot_annual_means()
-3 - Annual	              |	Annual_Stats                            	| Plot              | plot_annual_stats()
-3 - Annual	              |	Annual_Summary_Statistics               	| Table             | calc_annual_stats()
-3 - Annual	              |	Annual_Total_Volume                   	  | Plot              | plot_annual_cumulative_stats()
-3 - Annual	              |	Annual_Yield    	                        | Plot              | plot_annual_cumulative_stats(use_yield=TRUE)
-3 - Annual	              |	Four_Seasons_Total_Volume    	            | Plot              | plot_annual_cumulative_stats(include_seasons=TRUE)
-3 - Annual	              |	Four_Seasons_Yield                      	| Plot              | plot_annual_cumulative_stats(use_yield=TRUE, include_seasons=TRUE)
-3 - Annual	              |	Two_Seasons_Total_Volume                	| Plot              | plot_annual_cumulative_stats(include_seasons=TRUE)
-3 - Annual	              |	Two_Seasons_Yield    	                    | Plot              | plot_annual_cumulative_stats(use_yield=TRUE, include_seasons=TRUE)
-4 - Monthly	              |	Maximum_Monthly_Stats    	                | Plot              | plot_monthly_stats()
-4 - Monthly	              |	Mean_Monthly_Stats    	                  | Plot              | plot_monthly_stats()
-4 - Monthly	              |	Median_Monthly_Stats    	                | Plot              | plot_monthly_stats()
-4 - Monthly	              |	Minimum_Monthly_Stats                 	  | Plot              | plot_monthly_stats()
-4 - Monthly	              |	Monthly_Cumulative_Volume     	          | Table             | calc_monthly_cumulative_stats()
-4 - Monthly	              |	Monthly_Cumulative_Volumetric_Stats    	  | Plot              | plot_monthly_cumulative_stats()
-4 - Monthly	              |	Monthly_Cumulative_Yield     	            | Table             | calc_monthly_cumulative_stats(use_yield=TRUE)
-4 - Monthly	              |	Monthly_Cumulative_Yield_Stats    	      | Plot              | plot_monthly_cumulative_stats(use_yield=TRUE)
-4 - Monthly	              |	Monthly_Summary_Statistics          	    | Table             | calc_monthly_stats()
-5 - Daily	                |	Daily_Cumulative_Volume            	    | Table             | calc_daily_cumulative_stats()
-5 - Daily	                |	Daily_Cumulative_Volume_with_Years	      | List / Folder with Plots | plot_daily_cumulative_stats(include_year)
-5 - Daily	                |	Daily_Cumulative_Volumetric_Stats    	    | Plot              | plot_daily_cumulative_stats()
-5 - Daily	                |	Daily_Cumulative_Yield     	              | Table             | calc_daily_cumulative_stats(use_yield=TRUE)
-5 - Daily 	              |	Daily_Cumulative_Yield_Stats          	  | Plot              | plot_daily_cumulative_stats(use_yield=TRUE)
-5 - Daily	                |	Daily_Cumulative_Yield_with_Years     	  | List / Folder with Plots | plot_daily_cumulative_stats(use_yield=TRUE, include_year)
-5 - Daily	                |	Daily_Statistics_with_Years	              | List / Folder with Plots | plot_daily_stats(include_year)
-5 - Daily	                |	Daily_Stats    	                          | Plot              | plot_daily_stats()
-5 - Daily	                |	Daily_Summary_Statistics              	  | Table             | calc_daily_stats()
+4 - Monthly	              |	Monthly_Summary_Stats               	    | Table             | calc_monthly_stats()
+4 - Monthly	              |	Monthly_Summary_Stats_Plot                | Multiple Plots    | plot_monthly_stats()
+4 - Monthly	              |	Monthly_Total_Cumul_Volume_m3  	          | Table             | calc_monthly_cumulative_stats()
+4 - Monthly	              |	Monthly_Total_Cumul_Volume_m3_Plot    	  | Plot              | plot_monthly_cumulative_stats()
+4 - Monthly	              |	Monthly_Total_Cumul_Yield_mm	            | Table             | calc_monthly_cumulative_stats(use_yield=TRUE)
+4 - Monthly	              |	Monthly_Total_Cumul_Yield_mm_Plot  	      | Plot              | plot_monthly_cumulative_stats(use_yield=TRUE)
+5 - Daily	                |	Daily_Summary_Stats                    	  | Table             | calc_daily_stats()
+5 - Daily	                |	Daily_Summary_Stats_Plot                  | Plot              | plot_daily_stats()
+5 - Daily	                |	Daily_Summary_Stats_with_Years            | Multiple Plots    | plot_daily_stats(add_year)
+5 - Daily	                |	Daily_Total_Cumul_Volume_m3          	    | Table             | calc_daily_cumulative_stats()
+5 - Daily	                |	Daily_Total_Cumul_Volume_m3_Plot    	    | Plot              | plot_daily_cumulative_stats()
+5 - Daily	                |	Daily_Total_Cumul_Volume_m3_with_Years    | Multiple Plots    | plot_daily_cumulative_stats(add_year)
+5 - Daily	                |	Daily_Total_Cumul_Yield_mm                | Table             | calc_daily_cumulative_stats(use_yield=TRUE)
+5 - Daily 	              |	Daily_Total_Cumul_Yield_mm_Plot        	  | Plot              | plot_daily_cumulative_stats(use_yield=TRUE)
+5 - Daily	                |	Daily_Total_Cumul_Yield_mm_with_Years  	  | Multiple Plots    | plot_daily_cumulative_stats(use_yield=TRUE, add_year)
 6 - Trending              |	Annual_Trends_Data     	                  | Table             | compute_annual_trends()
 6 - Trending              |	Annual_Trends_Results                 	  | Table             | compute_annual_trends()
-6 - Trending              |	Annual_Trends_Results_Plots           	  | List / Folder with Plots | compute_annual_trends(include_plots=TRUE)
-7 - Low-flow Frequencies  |	Annual_Lowflows                       	  | Table             | compute_annual_frequencies()
-7 - Low-flow Frequencies  |	Fitted_Quantiles     	                    | Table             | compute_annual_frequencies()
-7 - Low-flow Frequencies  |	Frequency_Plot                        	  | Plot              | compute_annual_frequencies()
-7 - Low-flow Frequencies  |	Plotting_Data                         	  | Table             | compute_annual_frequencies()
+6 - Trending              |	Annual_Trends_Results_Plots           	  | Multiple Plots    | compute_annual_trends(include_plots=TRUE)
+7 - Lowflow Frequencies   |	Freq_Analysis_Data (lowflows)          	  | Table             | compute_annual_frequencies()
+7 - Lowflow Frequencies   |	Freq_Plot_Data                         	  | Table             | compute_annual_frequencies()
+7 - Lowflow Frequencies   |	Freq_Plot                              	  | Plot              | compute_annual_frequencies()
+7 - Lowflow Frequencies   |	Freq_Fitted_Quantiles                     | Table             | compute_annual_frequencies()
 
 
 
 ### Objects Examples
 
-The following are examples of the outputs from the `compute_full_analysis()` functions. Each plot is presented and only the first six rows from each table. The title of the object also corresponds to the name of the file created, followed by the Excel or image file extension.
+The following are examples of the outputs from the full analysis functions. Each plot is presented and only the first six rows from each table. 
 
 #### 1. Screening
 
@@ -173,21 +148,14 @@ plot_flow_data(station_number = "08NM116",
                start_year = 1990, end_year = 2001)[[1]]
 ```
 
-**Annual_Daily_Flows**
-
-```{r,  echo=FALSE, fig.height = 5, fig.width = 7, comment=NA}
-plot_flow_data(station_number = "08NM116", plot_by_year = TRUE,
-               start_year = 1990, end_year = 2001)[[1]]
-```
-
 **Daily Flows**
 
 ```{r,  echo=FALSE, comment=NA}
 head(as.data.frame(fill_missing_dates(station_number = "08NM116") %>% 
-                    add_date_variables() %>%
-                    add_rolling_means() %>%
-                    add_basin_area() %>% 
-                    filter(Year >= 1990, Year <= 2001) 
+                     add_date_variables() %>%
+                     add_rolling_means() %>%
+                     add_basin_area() %>% 
+                     filter(WaterYear >= 1990, WaterYear <= 2001) 
 ))
 ```
 
@@ -195,47 +163,61 @@ head(as.data.frame(fill_missing_dates(station_number = "08NM116") %>%
 
 ```{r,  echo=FALSE, comment=NA}
 head(as.data.frame(screen_flow_data(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)))
+                                    start_year = 1990, end_year = 2001)))
 ```
 
 **Data_screening**
 
 ```{r,  echo=FALSE, fig.height = 3, fig.width = 7, comment=NA}
 plot_data_screening(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)[[1]]
+                    start_year = 1990, end_year = 2001)[[1]]
 ```
 
 **Missing_Dates**
 
 ```{r,  echo=FALSE, fig.height = 5, fig.width = 7, comment=NA}
 plot_missing_dates(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)[[1]]
+                   start_year = 1990, end_year = 2001)[[1]]
 ```
 
 
 #### 2. Long-term
 
-**Long-term_Statistics_and_Percentiles**
-
+**Long-term_Monthly_Statistics_and_Percentiles**
 ```{r,  echo=FALSE, comment=NA}
-head(as.data.frame(calc_longterm_stats(station_number = "08NM116",
-               start_year = 1990, end_year = 2001,
-               percentiles = 1:99,
-               transpose = TRUE)))
+head(as.data.frame(calc_longterm_monthly_stats(station_number = "08NM116",
+                                             start_year = 1990, end_year = 2001,
+                                             percentiles = seq(5, 95, by = 5),
+                                             transpose = TRUE)))
 ```
 
-**Long-term_Statistics**
+**Long-term_Monthly_Statistics**
 
 ```{r,  echo=FALSE, fig.height = 2.5, fig.width = 7, comment=NA}
-plot_longterm_stats(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)[[1]]
+plot_longterm_monthly_stats(station_number = "08NM116",
+                    start_year = 1990, end_year = 2001)[[1]]
+```
+
+**Long-term_Daily_Statistics_and_Percentiles**
+```{r,  echo=FALSE, comment=NA}
+head(as.data.frame(calc_longterm_daily_stats(station_number = "08NM116",
+                                             start_year = 1990, end_year = 2001,
+                                             percentiles = 1:99,
+                                             transpose = TRUE)))
+```
+
+**Long-term_Daily_Statistics**
+
+```{r,  echo=FALSE, fig.height = 2.5, fig.width = 7, comment=NA}
+plot_longterm_daily_stats(station_number = "08NM116",
+                    start_year = 1990, end_year = 2001)[[1]]
 ```
 
 **Flow_Duration**
 
 ```{r,  echo=FALSE, fig.height = 3, fig.width = 7, comment=NA}
 plot_flow_duration(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)[[1]]
+                   start_year = 1990, end_year = 2001)[[1]]
 ```
 
 
@@ -246,129 +228,129 @@ plot_flow_duration(station_number = "08NM116",
 
 ```{r,  echo=FALSE, comment=NA}
 head(as.data.frame(calc_annual_cumulative_stats(station_number = "08NM116",
-               start_year = 1990, end_year = 2001,
-               include_seasons = TRUE)))
+                                                start_year = 1990, end_year = 2001,
+                                                include_seasons = TRUE)))
 ```
 
 **Annual_Cumulative_Yield**
 
 ```{r,  echo=FALSE, comment=NA}
 head(as.data.frame(calc_annual_cumulative_stats(station_number = "08NM116",
-               start_year = 1990, end_year = 2001,
-               include_seasons = TRUE,
-               use_yield = TRUE)))
+                                                start_year = 1990, end_year = 2001,
+                                                include_seasons = TRUE,
+                                                use_yield = TRUE)))
 ```
 
 **Annual_Days_Outside_Normal**
 
 ```{r,  echo=FALSE, comment=NA}
 head(as.data.frame(calc_annual_outside_normal(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)))
+                                              start_year = 1990, end_year = 2001)))
 ```
 
 **Annual_Days_Outside_Normal**
 
 ```{r,  echo=FALSE, fig.height = 4.5, fig.width = 7, comment=NA}
 plot_annual_outside_normal(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)[[1]]
+                           start_year = 1990, end_year = 2001)[[1]]
 ```
 
 **Annual_Flow_Timing**
 
 ```{r,  echo=FALSE, comment=NA}
 head(as.data.frame(calc_annual_flow_timing(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)))
+                                           start_year = 1990, end_year = 2001)))
 ```
 
 **Annual_Flow_Timing**
 
 ```{r,  echo=FALSE, fig.height = 4.5, fig.width = 7, comment=NA}
 plot_annual_flow_timing(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)[[1]]
+                        start_year = 1990, end_year = 2001)[[1]]
 ```
 
 **Annual_Low_Flows**
 
 ```{r,  echo=FALSE, comment=NA}
 head(as.data.frame(calc_annual_lowflows(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)))
+                                        start_year = 1990, end_year = 2001)))
 ```
 
 **Annual_Low_Flows**
 
 ```{r,  echo=FALSE, fig.height = 4.5, fig.width = 7, comment=NA}
 plot_annual_lowflows(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)[[1]]
+                     start_year = 1990, end_year = 2001)[[1]]
 ```
 
 **Annual_Low_Flows_Dates**
 
 ```{r,  echo=FALSE, fig.height = 4.5, fig.width = 7, comment=NA}
 plot_annual_lowflows(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)[[2]]
+                     start_year = 1990, end_year = 2001)[[2]]
 ```
 
 **Annual_Means**
 
 ```{r,  echo=FALSE, fig.height = 3, fig.width = 7, comment=NA}
 plot_annual_means(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)[[1]]
+                  start_year = 1990, end_year = 2001)[[1]]
 ```
 
 **Annual_Statistics**
 
 ```{r,  echo=FALSE, fig.height = 3, fig.width = 7, comment=NA}
 plot_annual_stats(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)[[1]]
+                  start_year = 1990, end_year = 2001)[[1]]
 ```
 
 **Annual_Summary_Statistics**
 
 ```{r,  echo=FALSE, comment=NA}
 head(as.data.frame(calc_annual_stats(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)))
+                                     start_year = 1990, end_year = 2001)))
 ```
 
 **Annual_Total_Volume**
 
 ```{r,  echo=FALSE, fig.height = 2, fig.width = 7, comment=NA}
 plot_annual_cumulative_stats(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)[[1]]
+                             start_year = 1990, end_year = 2001)[[1]]
 ```
 
 **Annual_Yield**
 
 ```{r,  echo=FALSE, fig.height = 2, fig.width = 7, comment=NA}
 plot_annual_cumulative_stats(station_number = "08NM116",
-               start_year = 1990, end_year = 2001,use_yield = TRUE)[[1]]
+                             start_year = 1990, end_year = 2001,use_yield = TRUE)[[1]]
 ```
 
 **Four_Seasons_Total_Volume**
 
 ```{r,  echo=FALSE, fig.height = 4, fig.width = 7, comment=NA}
 plot_annual_cumulative_stats(station_number = "08NM116", include_seasons = TRUE,
-               start_year = 1990, end_year = 2001)[[3]]
+                             start_year = 1990, end_year = 2001)[[3]]
 ```
 
 **Four_Seasons_Yield**
 
 ```{r,  echo=FALSE, fig.height = 4, fig.width = 7, comment=NA}
 plot_annual_cumulative_stats(station_number = "08NM116", include_seasons = TRUE,
-               start_year = 1990, end_year = 2001,use_yield = TRUE)[[3]]
+                             start_year = 1990, end_year = 2001,use_yield = TRUE)[[3]]
 ```
 
 **Two_Seasons_Total_Volume**
 
 ```{r,  echo=FALSE, fig.height = 2.5, fig.width = 7, comment=NA}
 plot_annual_cumulative_stats(station_number = "08NM116", include_seasons = TRUE,
-               start_year = 1990, end_year = 2001)[[2]]
+                             start_year = 1990, end_year = 2001)[[2]]
 ```
 
 **Two_Seasons_Yield**
 
 ```{r,  echo=FALSE, fig.height = 2.5, fig.width = 7, comment=NA}
 plot_annual_cumulative_stats(station_number = "08NM116", include_seasons = TRUE,
-               start_year = 1990, end_year = 2001,use_yield = TRUE)[[2]]
+                             start_year = 1990, end_year = 2001,use_yield = TRUE)[[2]]
 ```
 
 
@@ -379,63 +361,63 @@ plot_annual_cumulative_stats(station_number = "08NM116", include_seasons = TRUE,
 
 ```{r,  echo=FALSE, comment=NA}
 head(as.data.frame(calc_monthly_stats(station_number = "08NM116",
-                        start_year = 1990, end_year = 2001)))
+                                      start_year = 1990, end_year = 2001)))
 ```
 
 **Maximum_Monthly_Statistics**
 
 ```{r,  echo=FALSE, fig.height = 4.5, fig.width = 7, comment=NA}
 plot_monthly_stats(station_number = "08NM116", 
-               start_year = 1990, end_year = 2001)[[3]]
+                   start_year = 1990, end_year = 2001)[[3]]
 ```
 
 **Mean_Monthly_Statistics**
 
 ```{r,  echo=FALSE, fig.height = 4.5, fig.width = 7, comment=NA}
 plot_monthly_stats(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)[[1]]
+                   start_year = 1990, end_year = 2001)[[1]]
 ```
 
 **Median_Monthly_Statistics**
 
 ```{r,  echo=FALSE, fig.height = 4.5, fig.width = 7, comment=NA}
 plot_monthly_stats(station_number = "08NM116", 
-               start_year = 1990, end_year = 2001)[[2]]
+                   start_year = 1990, end_year = 2001)[[2]]
 ```
 
 **Minimum_Monthly_Statistics**
 
 ```{r,  echo=FALSE, fig.height = 4.5, fig.width = 7, comment=NA}
 plot_monthly_stats(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)[[4]]
+                   start_year = 1990, end_year = 2001)[[4]]
 ```
 
 **Monthly_Cumulative_Volumetric_Stats**
 
 ```{r,  echo=FALSE, comment=NA}
 head(as.data.frame(calc_monthly_cumulative_stats(station_number = "08NM116",
-                                   start_year = 1990, end_year = 2001)))
+                                                 start_year = 1990, end_year = 2001)))
 ```
 
 **Monthly_Cumulative_Volume**
 
 ```{r,  echo=FALSE, fig.height = 3, fig.width = 7, comment=NA}
 plot_monthly_cumulative_stats(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)[[1]]
+                              start_year = 1990, end_year = 2001)[[1]]
 ```
 
 **Monthly_Cumulative_Yield_Stats**
 
 ```{r,  echo=FALSE, comment=NA}
 head(as.data.frame(calc_monthly_cumulative_stats(station_number = "08NM116", use_yield = TRUE,
-                                   start_year = 1990, end_year = 2001)))
+                                                 start_year = 1990, end_year = 2001)))
 ```
 
 **Monthly_Cumulative_Yield**
 
 ```{r,  echo=FALSE, fig.height = 3, fig.width = 7, comment=NA}
 plot_monthly_cumulative_stats(station_number = "08NM116", use_yield = TRUE,
-               start_year = 1990, end_year = 2001)[[1]]
+                              start_year = 1990, end_year = 2001)[[1]]
 ```
 
 #### 5. Daily
@@ -444,63 +426,63 @@ plot_monthly_cumulative_stats(station_number = "08NM116", use_yield = TRUE,
 
 ```{r,  echo=FALSE, comment=NA}
 head(as.data.frame(calc_daily_stats(station_number = "08NM116",
-                                   start_year = 1990, end_year = 2001)))
+                                    start_year = 1990, end_year = 2001)))
 ```
 
 **Daily_Statistics**
 
 ```{r,  echo=FALSE, fig.height = 3, fig.width = 7, comment=NA}
 plot_daily_stats(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)[[1]]
+                 start_year = 1990, end_year = 2001)[[1]]
 ```
 
 **Daily_Statistics_with_Years** (a folder with a plot for each year)
 
 ```{r,  echo=FALSE, fig.height = 3, fig.width = 7, comment=NA}
-plot_daily_stats(station_number = "08NM116", include_year = 1990,
-               start_year = 1990, end_year = 2001)[[1]]
+plot_daily_stats(station_number = "08NM116", add_year = 1990,
+                 start_year = 1990, end_year = 2001)[[1]]
 ```
 
 **Daily_Cumulative_Volume**
 
 ```{r,  echo=FALSE, comment=NA}
 head(as.data.frame(calc_daily_cumulative_stats(station_number = "08NM116",
-                                   start_year = 1990, end_year = 2001)))
+                                               start_year = 1990, end_year = 2001)))
 ```
 
 **Daily_Cumulative_Volumetric_Stats**
 
 ```{r,  echo=FALSE, fig.height = 3, fig.width = 7, comment=NA}
 plot_daily_cumulative_stats(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)[[1]]
+                            start_year = 1990, end_year = 2001)[[1]]
 ```
 
 **Daily_Cumulative_Volume_with_Years** (a folder with a plot for each year)
 
 ```{r,  echo=FALSE, fig.height = 3, fig.width = 7, comment=NA}
-plot_daily_cumulative_stats(station_number = "08NM116", include_year = 1990,
-               start_year = 1990, end_year = 2001)[[1]]
+plot_daily_cumulative_stats(station_number = "08NM116", add_year = 1990,
+                            start_year = 1990, end_year = 2001)[[1]]
 ```
 
 **Daily_Cumulative_Yield**
 
 ```{r,  echo=FALSE, comment=NA}
 head(as.data.frame(calc_daily_cumulative_stats(station_number = "08NM116", use_yield = TRUE,
-                                   start_year = 1990, end_year = 2001)))
+                                               start_year = 1990, end_year = 2001)))
 ```
 
 **Daily_Cumulative_Yield_Stats**
 
 ```{r,  echo=FALSE, fig.height = 3, fig.width = 7, comment=NA}
 plot_daily_cumulative_stats(station_number = "08NM116", use_yield = TRUE,
-               start_year = 1990, end_year = 2001)[[1]]
+                            start_year = 1990, end_year = 2001)[[1]]
 ```
 
 **Daily_Cumulative_Yield_with_Years** (a folder with a plot for each year)
 
 ```{r,  echo=FALSE, fig.height = 3, fig.width = 7, comment=NA}
-plot_daily_cumulative_stats(station_number = "08NM116", include_year = 1990, use_yield = TRUE,
-               start_year = 1990, end_year = 2001)[[1]]
+plot_daily_cumulative_stats(station_number = "08NM116", add_year = 1990, use_yield = TRUE,
+                            start_year = 1990, end_year = 2001)[[1]]
 ```
 
 
@@ -511,7 +493,7 @@ plot_daily_cumulative_stats(station_number = "08NM116", include_year = 1990, use
 
 ```{r,  echo=FALSE, comment=NA}
 trends <- compute_annual_trends(station_number = "08NM116", zyp_method = "yuepilon", zyp_alpha = 0.05,
-               start_year = 1990, end_year = 2001)
+                                start_year = 1990, end_year = 2001)
 head(as.data.frame(trends[[1]]))
 ```
 
@@ -535,7 +517,7 @@ trends[[51]]
 
 ```{r,  echo=FALSE, comment=NA}
 freq <- compute_annual_frequencies(station_number = "08NM116",
-               start_year = 1990, end_year = 2001)
+                                   start_year = 1990, end_year = 2001)
 head(as.data.frame(freq[[1]]))
 ```
 

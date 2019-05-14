@@ -4,12 +4,13 @@
 \alias{plot_daily_stats}
 \title{Plot daily summary statistics}
 \usage{
-plot_daily_stats(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, roll_days = 1,
-  roll_align = "right", water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, exclude_years = NULL,
-  complete_years = FALSE, months = 1:12, ignore_missing = FALSE,
-  log_discharge = TRUE, include_title = FALSE, include_year = NULL)
+plot_daily_stats(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, roll_days = 1,
+  roll_align = "right", water_year_start = 1, start_year, end_year,
+  exclude_years, complete_years = FALSE, months = 1:12,
+  ignore_missing = FALSE, include_extremes = TRUE,
+  inner_percentiles = c(25, 75), outer_percentiles = c(5, 95),
+  add_year, log_discharge = TRUE, include_title = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -34,11 +35,7 @@ Leave blank if using \code{data} argument.}
 \item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
 ('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
-\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the calendar year in which they end. Default \code{FALSE}.}
-
-\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
-Default \code{10}.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
@@ -55,11 +52,20 @@ all months (default \code{1:12}).}
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
 with no missing dates will be returned. Default \code{FALSE}.}
 
+\item{include_extremes}{Logical value to indicate plotting a ribbon with the range of daily minimum and maximum flows. 
+Default \code{TRUE}.}
+
+\item{inner_percentiles}{Numeric vector of two values of two percentiles indicating the lower and upper limits of the 
+inner percentiles ribbon for plotting. Default \code{c(25,75)}, set to \code{NULL} for no inner ribbon.}
+
+\item{outer_percentiles}{Numeric vector of two values of two percentiles indicating the lower and upper limits of the 
+outer percentiles ribbon for plotting. Default \code{c(5,95)}, set to \code{NULL} for no outer ribbon.}
+
+\item{add_year}{Numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
+
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
-
-\item{include_year}{A numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
 }
 \value{
 A list of ggplot2 objects with the following for each station provided:
@@ -67,24 +73,66 @@ A list of ggplot2 objects with the following for each station provided:
   Default plots on each object:  
   \item{Mean}{daily mean}
   \item{Median}{daily median}
-  \item{25-75 Percentiles Range}{a ribbon showing the range of data between the daily 25th and 75th percentiles}
-  \item{5-95 Percentiles Range}{a ribbon showing the range of data between the daily 5th and 95th percentiles}
-  \item{Max-Min Range}{a ribbon showing the range of data between the daily minimum and maximums}
-  \item{'Year' Flows}{(on annual plots) the daily flows for the designated year}
+  \item{25-75 Percentiles}{a ribbon showing the range of data between the daily 25th and 75th percentiles}
+  \item{5-95 Percentiles}{a ribbon showing the range of data between the daily 5th and 95th percentiles}
+  \item{Minimum-Maximum}{a ribbon showing the range of data between the daily minimum and maximums}
+  \item{'Year'}{(on annual plots) the daily flows for the designated year}
 }
 \description{
 Plot the daily mean, median, maximum, minimum, and percentiles for each day of the year of daily flow values 
    from a streamflow dataset. Plots the statistics from all daily discharge values from all years, unless specified. Can determine
-   statistics of rolling mean days (e.g. 7-day flows) using the roll_days argument. Data calculated using calc_daily_stats()
-   function.
+   statistics of rolling mean days (e.g. 7-day flows) using the roll_days argument. The Maximum-Minimum band can be removed using 
+   the 'include_extremes' argument and the percentile bands can be customized using the'inner_percentiles' and 'outer_percentiles' 
+   arguments.Data calculated using calc_daily_stats() function.
 }
 \examples{
 \dontrun{
 
-plot_daily_stats(station_number = "08NM116",
-                 water_year = TRUE, 
-                 water_year_start = 8)
+# Plot statistics using data argument with defaults
+flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+plot_daily_stats(data = flow_data,
+                 start_year = 1980)
 
+# Plot statistics using station_number argument with defaults
+plot_daily_stats(station_number = "08NM116",
+                 start_year = 1980)
+
+# Plot statistics regardless if there is missing data for a given day of year
+plot_daily_stats(station_number = "08NM116",
+                 ignore_missing = TRUE)
+                  
+# Plot statistics using only years with no missing data
+plot_daily_stats(station_number = "08NM116",
+                 complete_years = TRUE)
+
+# Plot statistics for water years starting in October
+plot_daily_stats(station_number = "08NM116",
+                 start_year = 1980,
+                 end_year = 2010,
+                 water_year_start = 10)
+                 
+# Plot statistics with custom years
+plot_daily_stats(station_number = "08NM116",
+                 start_year = 1981,
+                 end_year = 2010,
+                 exclude_years = c(1991,1993:1995))
+ 
+# Plot statistics and add a specific year's daily flows                
+plot_daily_stats(station_number = "08NM116",
+                 start_year = 1980,
+                 add_year = 1985)                
+                  
+# Plot statistics for 7-day flows for July-September months only
+plot_daily_stats(station_number = "08NM116",
+                 start_year = 1980,
+                 roll_days = 7,
+                 months = 7:9)
+
+# Plot statistics without a log-scale Discharge axis
+plot_daily_stats(station_number = "08NM116",
+                 start_year = 1981,
+                 end_year = 2010,
+                 log_discharge = FALSE)
 }
 }
 \seealso{

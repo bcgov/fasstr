@@ -1,4 +1,4 @@
-# Copyright 2017 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,39 +16,53 @@
 #'    file types. Writing as .xlsx or .xls uses the 'writexl' package.
 #'
 #' @param data Data frame to be written to a directory.
-#' @param file Character string naming the output file. Required.
+#' @param file_name Character string naming the output file. Required.
 #' @param digits Integer indicating the number of decimal places or significant digits used to round flow values. Use follows 
 #'    that of base::round() digits argument.
 #'
 #' @examples
 #' \dontrun{
 #' 
-#' write_results(data = calc_longterm_stats(data = c("08HA002", "08HA011"),
-#'                                          start_year = 1971, end_year = 2000), 
-#'               file = "Cowichan River Long-term Flows (1971-2000).xlsx", 
-#'               digits = 1)
+#' # Example data to write
+#' data_results <- calc_longterm_stats(station_number = c("08HA002", "08HA011"),
+#'                                     start_year = 1971, end_year = 2000)
 #' 
+#' # Write the data and round numbers to 1 decimal place
+#' write_results(data = data_results, 
+#'               file_name = "Cowichan River Long-term Flows (1971-2000).xlsx", 
+#'               digits = 1)
 #' }
 #' @export
 
 
 
-write_results <- function(data = NULL,
-                          file = "",
-                          digits = 10){  
+write_results <- function(data,
+                          file_name,
+                          digits){  
   
   
   
   ## CHECKS ON DATA
   ## --------------
   
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(file_name)) {
+    file_name = ""
+  }
+  if (missing(digits)) {
+    digits = 10
+  }
+  
+  
   if(is.null(data))         stop("data must be provided.", call. = FALSE)
   if(!is.data.frame(data))  stop("data must be a data frame.", call. = FALSE)
   
-  if(file == "") stop("file name must be provided, ending with either .xlsx, .xls, or .csv.", call. = FALSE)
+  if(file_name == "") stop("file_name name must be provided, ending with either .xlsx, .xls, or .csv.", call. = FALSE)
   
-  filetype <- sub('.*\\.', '', file)
-  if(!filetype %in% c("xlsx", "xls", "csv")) stop("file name must end with .xlsx, .xls, or .csv.", call. = FALSE)
+  filetype <- sub('.*\\.', '', file_name)
+  if(!filetype %in% c("xlsx", "xls", "csv")) stop("file_name name must end with .xlsx, .xls, or .csv.", call. = FALSE)
   
   if(length(digits) != 1) stop("Only one number can be provided to digits.", call. = FALSE)
   if(!is.numeric(digits)) stop("digits must be a numeric value.", call. = FALSE)  
@@ -62,15 +76,15 @@ write_results <- function(data = NULL,
   ## WRITE FLOW DATA
   ## ---------------
   
+  message(paste0("* writing '", file_name, "'"))
+  
   if(filetype == "csv") {
-    utils::write.csv(data, file = file, row.names = FALSE, na = "")
-    message(paste0("Successfully created ", file, "."))
+    utils::write.csv(data, file = file_name, row.names = FALSE, na = "")
+    message(paste0("* DONE. For file go to: '", normalizePath(file_name), "'"))
   } else {
-    invisible(writexl::write_xlsx(data, path = file))
-    message(paste0("Successfully created ", file, "."))
-    
+    invisible(openxlsx::write.xlsx(data, file = file_name))
+    message(paste0("* DONE. For file go to: '", normalizePath(file_name), "'"))
   }
-
   
 }
 

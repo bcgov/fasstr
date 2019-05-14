@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 #' @param percentiles Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.
 #' @param include_longterm Logical value indicating whether to include longterm calculation of all data. Default \code{TRUE}.
 #' @param custom_months Numeric vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Adds results to the end of table.
-#'    If wanting months that overlap calendar years (ex. Oct-Mar), choose water_year and a water_year_month that begins before the first 
+#'    If wanting months that overlap calendar years (ex. Oct-Mar), choose water_year_start that begins before the first 
 #'    month listed. Leave blank for no custom month summary.
 #' @param custom_months_label Character string to label custom months. For example, if choosing months 7:9  you may choose 
 #'    "Summer" or "Jul-Sep". Default \code{"Custom-Months"}.
@@ -39,46 +39,97 @@
 #' @examples
 #' \dontrun{
 #' 
-#' calc_longterm_stats(station_number = "08NM116", 
-#'                     water_year = TRUE, 
-#'                     water_year_start = 8, 
-#'                     percentiles = c(1:10))
-#'
-#' calc_longterm_stats(station_number = c("08NM116","08NM242"), 
-#'                     custom_months = c(5:9))
-#'
+#' # Calculate statistics using data argument with defaults
+#' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+#' calc_longterm_stats(data = flow_data,
+#'                     start_year = 1980)
+#' 
+#' # Calculate statistics using station_number argument with defaults
+#' calc_longterm_stats(station_number = "08NM116",
+#'                     start_year = 1980)
+#' 
+#' # Calculate statistics regardless if there is missing data for a given year
+#' calc_longterm_stats(station_number = "08NM116",
+#'                     ignore_missing = TRUE)
+#'                   
+#' # Calculate statistics for water years starting in October
+#' calc_longterm_stats(station_number = "08NM116",
+#'                     start_year = 1980,
+#'                     water_year_start = 10)
+#'                   
+#' # Calculate statistics with custom years
+#' calc_longterm_stats(station_number = "08NM116",
+#'                     start_year = 1981,
+#'                     end_year = 2010,
+#'                     exclude_years = c(1991,1993:1995))
+#'                   
+#' # Calculate statistics for 7-day flows for July-September months only, with 25 and 75th percentiles
+#' calc_longterm_stats(station_number = "08NM116",
+#'                     roll_days = 7,
+#'                     months = 7:9,
+#'                     percentiles = c(25,75),
+#'                     ignore_missing = TRUE,
+#'                     include_longterm = FALSE) # removes the Long-term numbers 
+#'                     
+#' # Calculate statistics and add custom stats for July-September
+#' calc_longterm_stats(station_number = "08NM116",
+#'                     start_year = 1980,
+#'                     custom_months = 7:9,
+#'                     custom_months_label = "Summer")                  
 #' }
 #' @export
 
 
-calc_longterm_stats <- function(data = NULL,
+calc_longterm_stats <- function(data,
                                 dates = Date,
                                 values = Value,
                                 groups = STATION_NUMBER,
-                                station_number = NULL,
+                                station_number,
                                 percentiles = c(10,90),
                                 roll_days = 1,
                                 roll_align = "right",
-                                water_year = FALSE,
-                                water_year_start = 10,
-                                start_year = 0,
-                                end_year = 9999,
-                                exclude_years = NULL,
+                                water_year_start = 1,
+                                start_year,
+                                end_year,
+                                exclude_years,
                                 months = 1:12,
                                 complete_years = FALSE,
                                 include_longterm = TRUE,
-                                custom_months = NULL,
-                                custom_months_label = "Custom-Months",
+                                custom_months,
+                                custom_months_label,
                                 transpose = FALSE,
                                 ignore_missing = FALSE){
   
+  .Deprecated("calc_longterm_daily_stats")
   
   ## ARGUMENT CHECKS
   ## ---------------
   
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  if (missing(custom_months)) {
+    custom_months = NULL
+  }
+  if (missing(custom_months_label)) {
+    custom_months_label = "Custom-Months"
+  }
+  
   rolling_days_checks(roll_days, roll_align)
   percentiles_checks(percentiles)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months = months)
   transpose_checks(transpose)
@@ -109,27 +160,28 @@ calc_longterm_stats <- function(data = NULL,
   ## PREPARE FLOW DATA
   ## -----------------
   
-  # Fill missing dates, add date variables, and add AnalysisYear
+  # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
-                             water_year_start = water_year_start,
-                             year = TRUE)
+                             water_year_start = water_year_start)
   
   # Add rolling means to end of dataframe
   flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
   colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
  
   # Filter for the selected years
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
-  flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, !(WaterYear %in% exclude_years))
   flow_data <- dplyr::filter(flow_data, Month %in% months)
   
+  # Stop if all data is NA
+  no_values_error(flow_data$RollingValue)
   
   # Remove incomplete years if selected
   flow_data <- filter_complete_yrs(complete_years = complete_years, 
                                    flow_data)
   
-
+  # Stop if all data is NA
+  no_values_error(flow_data$RollingValue)
   
   ## CALCULATE STATISTICS
   ## --------------------
@@ -159,7 +211,7 @@ calc_longterm_stats <- function(data = NULL,
   
   # Calculate the monthly and longterm percentiles
   if(!all(is.na(percentiles))) {
-    for (ptile in percentiles) {
+    for (ptile in unique(percentiles)) {
       
       Q_months_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, MonthName),
                                          Percentile = ifelse(!is.na(mean(RollingValue, na.rm = FALSE)) | ignore_missing, 
@@ -200,7 +252,7 @@ calc_longterm_stats <- function(data = NULL,
     
     # Calculate percentiles
     if (!all(is.na(percentiles))){
-      for (ptile in percentiles) {
+      for (ptile in unique(percentiles)) {
         Q_ptile_custom <- dplyr::summarize(dplyr::group_by(flow_data_temp, STATION_NUMBER),
                                            Percentile = ifelse(!is.na(mean(RollingValue, na.rm = FALSE)) | ignore_missing, 
                                                                stats::quantile(RollingValue, ptile / 100, na.rm = TRUE), NA))

@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,30 +31,61 @@
 #' @examples
 #' \dontrun{
 #' 
-#' plot_flow_duration(station_number = "08NM116", 
-#'                    water_year = TRUE, 
-#'                    water_year_start = 8)
-#'
+#' # Plot statistics using data argument with defaults
+#' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+#' plot_flow_duration(data = flow_data,
+#'                     start_year = 1980)
+#' 
+#' # Plot statistics using station_number argument with defaults
+#' plot_flow_duration(station_number = "08NM116",
+#'                    start_year = 1980)
+#' 
+#' # Plot statistics regardless if there is missing data for a given year
+#' plot_flow_duration(station_number = "08NM116",
+#'                    ignore_missing = TRUE)
+#'                   
+#' # Plot statistics for water years starting in October
+#' plot_flow_duration(station_number = "08NM116",
+#'                    start_year = 1980,
+#'                    end_year = 2010,
+#'                    water_year_start = 10)
+#'                   
+#' # Plot statistics with custom years
+#' plot_flow_duration(station_number = "08NM116",
+#'                    start_year = 1981,
+#'                    end_year = 2010,
+#'                    exclude_years = c(1991,1993:1995))
+#' 
+#' # Plot statistics and add custom stats for July-September
+#' plot_flow_duration(station_number = "08NM116",
+#'                    start_year = 1980,
+#'                    custom_months = 7:9,
+#'                    custom_months_label = "Summer")  
+#' 
+#' # Plot statistics for just July-September
+#' plot_flow_duration(station_number = "08NM116",
+#'                    start_year = 1980,
+#'                    months = 7:9,
+#'                    include_longterm = FALSE)
 #' }
 #' @export
 
 
 
-plot_flow_duration <- function(data = NULL,
+plot_flow_duration <- function(data,
                                dates = Date,
                                values = Value,
                                groups = STATION_NUMBER,
-                               station_number = NULL,
+                               station_number,
                                roll_days = 1,
                                roll_align = "right",
-                               water_year = FALSE,
-                               water_year_start = 10,
-                               start_year = 0,
-                               end_year = 9999,
-                               exclude_years = NULL,
+                               water_year_start = 1,
+                               start_year,
+                               end_year,
+                               exclude_years,
                                complete_years = FALSE,
-                               custom_months = NULL,
-                               custom_months_label = "Custom-Months",
+                               custom_months,
+                               custom_months_label,
                                ignore_missing = FALSE,
                                months = 1:12,
                                include_longterm = TRUE,
@@ -65,6 +96,28 @@ plot_flow_duration <- function(data = NULL,
   
   ## ARGUMENT CHECKS
   ## ---------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  if (missing(custom_months)) {
+    custom_months = NULL
+  }
+  if (missing(custom_months_label)) {
+    custom_months_label = "Custom-Months"
+  }
   
   log_discharge_checks(log_discharge)
   custom_months_checks(custom_months, custom_months_label)
@@ -89,18 +142,17 @@ plot_flow_duration <- function(data = NULL,
   ## CALC STATS
   ## ----------
   
-  percentiles_data <- calc_longterm_stats(data = flow_data,
-                                          percentiles = c(.01,.1,.2:9.8,10:90,90.2:99.8,99.9,99.99),
-                                          roll_days = roll_days,
-                                          roll_align = roll_align,
-                                          water_year = water_year,
-                                          water_year_start = water_year_start,
-                                          start_year = start_year,
-                                          end_year = end_year,
-                                          exclude_years = exclude_years,
-                                          complete_years = complete_years,
-                                          custom_months = custom_months,
-                                          ignore_missing = ignore_missing)
+  percentiles_data <- calc_longterm_daily_stats(data = flow_data,
+                                                percentiles = c(.01,.1,.2:9.8,10:90,90.2:99.8,99.9,99.99),
+                                                roll_days = roll_days,
+                                                roll_align = roll_align,
+                                                water_year_start = water_year_start,
+                                                start_year = start_year,
+                                                end_year = end_year,
+                                                exclude_years = exclude_years,
+                                                complete_years = complete_years,
+                                                custom_months = custom_months,
+                                                ignore_missing = ignore_missing)
   
 
   
@@ -139,9 +191,9 @@ plot_flow_duration <- function(data = NULL,
   ## ----------
   
   # Create axis label based on input columns
-  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Daily Volume (m3)",
-                         ifelse(as.character(substitute(values)) == "Yield_mm", "Daily Yield (mm)", 
-                                "Daily Discharge (cms)"))
+  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", expression(Volume~(m^3)),
+                         ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)", 
+                                expression(Discharge~(m^3/s))))
   
   flow_plots <- dplyr::group_by(percentiles_data, STATION_NUMBER)
   flow_plots <- tidyr::nest(flow_plots)

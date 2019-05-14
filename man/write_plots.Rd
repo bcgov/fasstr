@@ -4,14 +4,13 @@
 \alias{write_plots}
 \title{Write plots from a list into a directory or PDF document}
 \usage{
-write_plots(plots = NULL, foldername = "", plot_filetype = NULL,
-  width = NA, height = NA, units = "in", dpi = 300,
-  combined_pdf = FALSE)
+write_plots(plots, folder_name, plot_filetype, width, height,
+  units = "in", dpi = 300, combined_pdf = FALSE)
 }
 \arguments{
 \item{plots}{List of plots to write to disk.}
 
-\item{foldername}{Name of folder to create on disk (if it does not exist) to write each plot from list. 
+\item{folder_name}{Name of folder to create on disk (if it does not exist) to write each plot from list. 
 If using \code{combined_pdf} argument, then it will be the name of the PDF document.}
 
 \item{plot_filetype}{Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
@@ -35,7 +34,17 @@ Write a list of plots (ggplots; as used by fasstr ) into a directory or PDF docu
 \examples{
 \dontrun{
 
-write_plots()
+# Example plots to save
+plots <- plot_annual_lowflows(station_number = "08NM116")
 
+# Write the plots as "png" files
+write_plots(plots = plots, 
+            folder_name = "Low Flow Plots",
+            plot_filetype = "png")
+
+# Write the plots as a combined "pdf" document
+write_plots(plots = plots, 
+            folder_name = "Low Flow Plots",
+            combined_pdf = TRUE)
 }
 }

@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,27 +27,37 @@
 #' @examples
 #' \dontrun{
 #' 
-#' plot_missing_dates(station_number = "08NM116", 
-#'                    water_year = TRUE,
-#'                    water_year_start = 8)
-#'
+#' # Plot statistics using data argument with defaults
+#' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+#' plot_missing_dates(data = flow_data)
+#' 
+#' # Plot statistics using station_number argument with defaults
+#' plot_missing_dates(station_number = "08NM116")
+#'                   
+#' # Plot statistics for water years starting in October
+#' plot_missing_dates(station_number = "08NM116",
+#'                    water_year_start = 9)
+#'                   
+#' # Plot statistics for 7-day flows for July-September months only
+#' plot_missing_dates(station_number = "08NM116",
+#'                    roll_days = 7,
+#'                    months = 7:9)
 #' }
 #' @export
 
 
 
 
-plot_missing_dates <- function(data = NULL,
+plot_missing_dates <- function(data,
                                dates = Date,
                                values = Value,
                                groups = STATION_NUMBER,
-                               station_number = NULL,
+                               station_number,
                                roll_days = 1,
                                roll_align = "right",
-                               water_year = FALSE,
-                               water_year_start = 10,
-                               start_year = 0,
-                               end_year = 9999,
+                               water_year_start = 1,
+                               start_year,
+                               end_year,
                                months = 1:12,
                                include_title = FALSE){           
   
@@ -55,6 +65,19 @@ plot_missing_dates <- function(data = NULL,
   ## ARGUMENT CHECKS
   ## ---------------
   
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+
   include_title_checks(include_title)  
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -77,7 +100,6 @@ plot_missing_dates <- function(data = NULL,
   flow_summary <- screen_flow_data(data = flow_data,
                                    roll_days = roll_days,
                                    roll_align = roll_align,
-                                   water_year = water_year,
                                    water_year_start = water_year_start,
                                    start_year = start_year,
                                    end_year = end_year,
@@ -91,49 +113,9 @@ plot_missing_dates <- function(data = NULL,
   
   
   # Set the levels for plot ordering
-  if (water_year) {
-    if (water_year_start == 1) {
-      missing_plotdata$Month <- factor(missing_plotdata$Month, levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
-                                                                          "Aug", "Sep", "Oct", "Nov", "Dec"))
-    } else if (water_year_start == 2) {
-      missing_plotdata$Month <- factor(missing_plotdata$Month, levels = c("Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
-                                                                          "Sep", "Oct", "Nov", "Dec", "Jan"))
-    } else if (water_year_start == 3) {
-      missing_plotdata$Month <- factor(missing_plotdata$Month, levels = c("Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep",
-                                                                          "Oct", "Nov", "Dec", "Jan", "Feb"))
-    } else if (water_year_start == 4) {
-      missing_plotdata$Month <- factor(missing_plotdata$Month, levels = c("Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct",
-                                                                          "Nov", "Dec", "Jan", "Feb", "Mar"))
-    } else if (water_year_start == 5) {
-      missing_plotdata$Month <- factor(missing_plotdata$Month, levels = c("May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
-                                                                          "Dec", "Jan", "Feb", "Mar", "Apr"))
-    } else if (water_year_start == 6) {
-      missing_plotdata$Month <- factor(missing_plotdata$Month, levels = c("Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-                                                                          "Jan", "Feb", "Mar", "Apr", "May"))
-    } else if (water_year_start == 7) {
-      missing_plotdata$Month <- factor(missing_plotdata$Month, levels = c("Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan",
-                                                                          "Feb", "Mar", "Apr", "May", "Jun"))
-    } else if (water_year_start == 8) {
-      missing_plotdata$Month <- factor(missing_plotdata$Month, levels = c("Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb",
-                                                                          "Mar", "Apr", "May","Jun", "Jul"))
-    } else if (water_year_start == 9) {
-      missing_plotdata$Month <- factor(missing_plotdata$Month, levels = c("Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar",
-                                                                          "Apr", "May", "Jun", "Jul", "Aug"))
-    } else if (water_year_start == 10) {
-      missing_plotdata$Month <- factor(missing_plotdata$Month, levels = c("Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr",
-                                                                          "May", "Jun", "Jul", "Aug", "Sep"))
-    } else if (water_year_start == 11) {
-      missing_plotdata$Month <- factor(missing_plotdata$Month, levels = c("Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May",
-                                                                          "Jun", "Jul", "Aug", "Sep", "Oct"))
-    } else if (water_year_start == 12) {
-      missing_plotdata$Month <- factor(missing_plotdata$Month, levels = c("Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                                                                          "Jul", "Aug", "Sep", "Oct", "Nov"))
-    }
-  } else {
-    missing_plotdata$Month <- factor(missing_plotdata$Month, levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
-                                                                        "Aug", "Sep", "Oct", "Nov", "Dec"))
-  }
+  missing_plotdata$Month <- factor(missing_plotdata$Month, levels = month.abb[c(water_year_start:12, 1:water_year_start-1)])
   
+
   ## PLOT STATS
   ## ----------
   
@@ -143,7 +125,7 @@ plot_missing_dates <- function(data = NULL,
                              plot = purrr::map2(data, STATION_NUMBER, 
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value)) +
         ggplot2::geom_bar(colour = "cornflowerblue", fill = "cornflowerblue", na.rm = TRUE, stat = "identity") +
-        ggplot2::facet_wrap(~Month, ncol = 3, scales = "fixed") +
+        ggplot2::facet_wrap(~Month, ncol = 3, scales = "fixed", strip.position = "top") +
         ggplot2::ylab("Missing Days") +
         ggplot2::xlab("Year") +
         ggplot2::theme_bw() +
@@ -153,7 +135,9 @@ plot_missing_dates <- function(data = NULL,
                        panel.grid = ggplot2::element_line(size = .2),
                        axis.title = ggplot2::element_text(size = 12),
                        axis.text = ggplot2::element_text(size = 10),
-                       plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
+                       plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
+                       strip.background = ggplot2::element_blank(),
+                       strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
                              ))
   
   # Create a list of named plots extracted from the tibble

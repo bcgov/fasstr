@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,6 +27,8 @@
 #' 
 #' @return A numeric value of the frequency analysis quantile, given the roll_days and return_period
 #'   
+#' @seealso \code{\link{compute_frequency_analysis}}
+#'   
 #' @examples
 #' \dontrun{
 #' 
@@ -38,10 +40,10 @@
 #' @export
 
 
-compute_frequency_quantile <- function(data = NULL,
+compute_frequency_quantile <- function(data,
                                        dates = Date,
                                        values = Value,
-                                       station_number = NULL,
+                                       station_number,
                                        roll_days = NA,
                                        roll_align = "right",
                                        return_period = NA,
@@ -49,11 +51,10 @@ compute_frequency_quantile <- function(data = NULL,
                                        use_log = FALSE,
                                        fit_distr = c("PIII", "weibull"),
                                        fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
-                                       water_year = FALSE,
-                                       water_year_start = 10,
-                                       start_year = 0,
-                                       end_year = 9999,
-                                       exclude_years = NULL,
+                                       water_year_start = 1,
+                                       start_year,
+                                       end_year,
+                                       exclude_years,
                                        months = 1:12,
                                        ignore_missing = FALSE){
   
@@ -66,11 +67,28 @@ compute_frequency_quantile <- function(data = NULL,
   ## ARGUMENT CHECKS
   ## ---------------
   
-  if(is.na(roll_days)) stop("A numeric roll_days value is required.", call. = FALSE)
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  
+  if (missing(roll_days)) stop("A numeric roll_days value is required.", call. = FALSE)
   rolling_days_checks(roll_days, roll_align, multiple = FALSE)
   
-  if(length(return_period) > 1)   stop("Only one return_period can be provided.", call. = FALSE)
-  if(is.na(return_period) | !is.numeric(return_period)) stop("A numeric return_period value is required.", call. = FALSE)
+  if (missing(return_period))      stop("A numeric return_period value is required.", call. = FALSE)
+  if (length(return_period) > 1)   stop("Only one return_period can be provided.", call. = FALSE)
+  if (is.na(return_period) | !is.numeric(return_period)) stop("A numeric return_period value is required.", call. = FALSE)
   
   
   
@@ -105,21 +123,22 @@ compute_frequency_quantile <- function(data = NULL,
   ## CALCULATE STAT
   ##---------------
   
-  compute_annual_frequencies(data = flow_data,
-                             roll_days = roll_days,
-                             roll_align = roll_align,
-                             use_max = use_max,
-                             use_log = use_log,
-                             fit_distr = fit_distr,
-                             fit_distr_method = fit_distr_method,
-                             fit_quantiles = fit_quantiles,
-                             water_year = water_year,
-                             water_year_start = water_year_start,
-                             start_year = start_year,
-                             end_year = end_year,
-                             exclude_years = exclude_years,
-                             months = months,
-                             ignore_missing = ignore_missing)$fitted_quantiles[1,4]
+  quant <- compute_annual_frequencies(data = flow_data,
+                                      roll_days = roll_days,
+                                      roll_align = roll_align,
+                                      use_max = use_max,
+                                      use_log = use_log,
+                                      fit_distr = fit_distr,
+                                      fit_distr_method = fit_distr_method,
+                                      fit_quantiles = fit_quantiles,
+                                      water_year_start = water_year_start,
+                                      start_year = start_year,
+                                      end_year = end_year,
+                                      exclude_years = exclude_years,
+                                      months = months,
+                                      ignore_missing = ignore_missing)$Freq_Fitted_Quantiles[1,4]
+  
+  as.numeric(quant)
   
   
 }

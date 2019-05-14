@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,23 +30,23 @@
 #'   \item{Freq_Fitting}{List of fitted objects from fitdistrplus.}
 #'   \item{Freq_Fitted_Quantiles}{Data frame with fitted quantiles.}
 #'   
-#'   
+#' @seealso \code{\link{compute_frequency_analysis}}
+#' 
 #' @examples
 #' \dontrun{
 #' 
 #' compute_annual_frequencies(station_number = "08NM116",
 #'                            start_year = 1980,
 #'                            end_year = 2010)
-#'                             
 #' }
 #' @export
 
 
-compute_annual_frequencies <- function(data = NULL,
+compute_annual_frequencies <- function(data,
                                        dates = Date,
                                        values = Value,
-                                       station_number = NULL,
-                                       roll_days = c(1, 3, 7, 30),
+                                       station_number,
+                                       roll_days = c(1,3,7,30),
                                        roll_align = "right",
                                        use_max = FALSE,
                                        use_log = FALSE,
@@ -56,11 +56,10 @@ compute_annual_frequencies <- function(data = NULL,
                                        fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
                                        fit_quantiles = c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),
                                        plot_curve = TRUE,
-                                       water_year = FALSE,
-                                       water_year_start = 10,
-                                       start_year = 0,
-                                       end_year = 9999,
-                                       exclude_years = NULL,
+                                       water_year_start = 1,
+                                       start_year,
+                                       end_year,
+                                       exclude_years,
                                        months = 1:12,
                                        ignore_missing = FALSE){
   
@@ -71,8 +70,24 @@ compute_annual_frequencies <- function(data = NULL,
   ## ARGUMENT CHECKS
   ## ---------------
   
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  
   rolling_days_checks(roll_days, roll_align, multiple = TRUE)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)
   ignore_missing_checks(ignore_missing)
@@ -124,12 +139,9 @@ compute_annual_frequencies <- function(data = NULL,
   ## PREPARE FLOW DATA
   ## -----------------
   
-  # Fill missing dates, add date variables, and add AnalysisYear
+  # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
-                             water_year_start = water_year_start,
-                             year = TRUE)
-  
+                             water_year_start = water_year_start)
 
   
   # Loop through each roll_days and add customized names of rolling means to flow_data
@@ -145,21 +157,21 @@ compute_annual_frequencies <- function(data = NULL,
   
 
     # Filter for the selected year
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
-  flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, !(WaterYear %in% exclude_years))
   flow_data <- dplyr::filter(flow_data, Month %in% months)
 
   # Calculate the min or max of the rolling means for each year
-  flow_data <- dplyr::select(flow_data, -Date, -Value, -Year, -Month, -MonthName, -DayofYear, -dplyr::contains("Water"))
+  flow_data <- dplyr::select(flow_data, -Date, -Value, -CalendarYear, -Month, -MonthName, -DayofYear)
   
-  flow_data <- tidyr::gather(flow_data, Measure, Value, -AnalysisYear)
+  flow_data <- tidyr::gather(flow_data, Measure, Value, -WaterYear)
   flow_data$Measure <- factor(flow_data$Measure, levels = unique(flow_data$Measure))
   
-  Q_stat <- dplyr::summarise(dplyr::group_by(flow_data, AnalysisYear, Measure),
+  Q_stat <- dplyr::summarise(dplyr::group_by(flow_data, WaterYear, Measure),
                              Value = ifelse(use_max,
                                             max(Value, na.rm = ignore_missing),
                                             min(Value, na.rm = ignore_missing)))
-  Q_stat <- dplyr::rename(Q_stat, Year = AnalysisYear)
+  Q_stat <- dplyr::rename(Q_stat, Year = WaterYear)
   
   # remove any Inf Values
   Q_stat$Value[is.infinite(Q_stat$Value)] <- NA

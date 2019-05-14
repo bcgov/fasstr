@@ -4,14 +4,13 @@
 \alias{write_objects_list}
 \title{Write all data frames and plots from a list of objects into a directory}
 \usage{
-write_objects_list(list = NULL, foldername = "",
-  table_filetype = NULL, plot_filetype = NULL, width = NA,
-  height = NA, units = "in", dpi = 300)
+write_objects_list(list, folder_name, table_filetype, plot_filetype, width,
+  height, units = "in", dpi = 300)
 }
 \arguments{
 \item{list}{List of data frames and plots to write to disk.}
 
-\item{foldername}{Name of folder to create on disk (if it does not exist) to write each plot from list. 
+\item{folder_name}{Name of folder to create on disk (if it does not exist) to write each plot from list. 
 If using \code{combined_pdf} argument, then it will be the name of the PDF document.}
 
 \item{table_filetype}{Table file type to write. One of "csv", "xls", or "xslx".}
@@ -34,7 +33,13 @@ Write a list of tables (data.frames) and plots (ggplots; as used by fasstr ) int
 \examples{
 \dontrun{
 
-write_objects_list()
+# Example list of tables and plots to save
+frequency <- compute_annual_frequencies(station_number = "08NM116")
 
+# Write objects in a folder
+write_objects_list(list = frequency, 
+                   folder_name = "Frequency Analysis",
+                   table_filetype = "xlsx", 
+                   plot_filetype = "png")
 }
 }

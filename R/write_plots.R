@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 #'    When writing into a PDF document (\code{combined_pdf == TRUE}) the plot names will not appear; uses grDevices:pdf function.
 #'
 #' @param plots List of plots to write to disk.
-#' @param foldername Name of folder to create on disk (if it does not exist) to write each plot from list. 
+#' @param folder_name Name of folder to create on disk (if it does not exist) to write each plot from list. 
 #'    If using \code{combined_pdf} argument, then it will be the name of the PDF document.
 #' @param plot_filetype Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
 #'    Image type will be overwritten if using \code{combined_pdf} is used.
@@ -30,22 +30,48 @@
 #' @examples
 #' \dontrun{
 #' 
-#' write_plots()
+#' # Example plots to save
+#' plots <- plot_annual_lowflows(station_number = "08NM116")
 #' 
+#' # Write the plots as "png" files
+#' write_plots(plots = plots, 
+#'             folder_name = "Low Flow Plots",
+#'             plot_filetype = "png")
+#' 
+#' # Write the plots as a combined "pdf" document
+#' write_plots(plots = plots, 
+#'             folder_name = "Low Flow Plots",
+#'             combined_pdf = TRUE)
 #' }
 #' @export
 
-write_plots <- function(plots = NULL,
-                        foldername = "",
-                        plot_filetype = NULL, 
-                        width = NA,
-                        height = NA,
+write_plots <- function(plots,
+                        folder_name,
+                        plot_filetype,
+                        width,
+                        height,
                         units = "in",
                         dpi = 300,
                         combined_pdf = FALSE){
   
   # ARGUMENT CHECKS
   # ---------------
+  
+  if (missing(plots)) {
+    plots = NULL
+  }
+  if (missing(folder_name)) {
+    stop("Must provide a name of a folder name to creating using the folder_name argument.", call. = FALSE)
+  }
+  if (missing(plot_filetype)) {
+    plot_filetype = NULL
+  }
+  if (missing(width)) {
+    width = NA
+  }
+  if (missing(height)) {
+    height = NA
+  }
   
   # Check list of plots
   if (is.null(plots)) stop("Must provide a list of plots.", call. = FALSE)
@@ -57,6 +83,11 @@ write_plots <- function(plots = NULL,
     if (is.null(plot_filetype)) stop("Must provide an image plot_filetype to save.", call. = FALSE)
     if (!plot_filetype %in% c("png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", "svg")) 
       stop("Use of the file types required.", call. = FALSE)
+  } else {
+    if (!is.null(plot_filetype)) {
+      plot_filetype %in% c("png", "eps", "ps", "tex", "jpeg", "tiff", "bmp", "svg")
+      message("plot_filetype argument is not 'pdf', using combine_pdf = TRUE will change it to 'pdf'.")
+    }   
   }
   
   # Check dimensions
@@ -78,9 +109,9 @@ write_plots <- function(plots = NULL,
   # Create a single PDF document
   if(combined_pdf) { 
     
-    # Remove slash if foldername ends with it
-    if (substr(foldername, nchar(foldername), nchar(foldername)) == "/") {
-      foldername <- substr(foldername, 1, nchar(foldername)-1)
+    # Remove slash if folder_name ends with it
+    if (substr(folder_name, nchar(folder_name), nchar(folder_name)) == "/") {
+      folder_name <- substr(folder_name, 1, nchar(folder_name)-1)
     }
     
     # Check dimensions for PDF device
@@ -93,16 +124,18 @@ write_plots <- function(plots = NULL,
     }
     
     # Plot plots to PDF device
-    grDevices::pdf(file = paste0(foldername, ".pdf"), 
+    grDevices::pdf(file = paste0(folder_name, ".pdf"), 
                    width = width, 
                    height = height,
                    title = "R Graphics Output - fasstr")
     for (i in names(plots)) {
       suppressWarnings(graphics::plot(plots[[i]]))
     }
-    invisible(grDevices::dev.off())
-    
-    message(paste0("Successfully created PDF file ", foldername, ".pdf with all plots."))
+    grDevices::dev.off()
+    if (!is.null(grDevices::dev.list())) {
+      grDevices::dev.off()    
+    }
+    message(paste0("Successfully created PDF file ", folder_name, ".pdf with all plots."))
     
     
   } else {
@@ -110,16 +143,16 @@ write_plots <- function(plots = NULL,
     # Create a folder of plots
     
     # Check if folder exists, create if not
-    dir.create(foldername, showWarnings = FALSE)
+    dir.create(folder_name, showWarnings = FALSE)
     
-    # Add the slash to foldername if it doesn't exist
-    if (!substr(foldername, nchar(foldername), nchar(foldername)) == "/") {
-      foldername <- paste0(foldername, "/")
+    # Add the slash to folder_name if it doesn't exist
+    if (!substr(folder_name, nchar(folder_name), nchar(folder_name)) == "/") {
+      folder_name <- paste0(folder_name, "/")
     }
     
     # Filter through each plot
     for (i in names(plots)) {
-      suppressWarnings(ggplot2::ggsave(filename = paste0(foldername, i, ".", plot_filetype), 
+      suppressWarnings(ggplot2::ggsave(filename = paste0(folder_name, i, ".", plot_filetype), 
                                        plot = plots[[i]],
                                        width = width,
                                        height = height,
@@ -127,7 +160,7 @@ write_plots <- function(plots = NULL,
                                        dpi = dpi))
     }
     
-    message(paste0("Successfully created folder ", foldername, " with all plots."))
+    message(paste0("Successfully created folder ", folder_name, " with all plots."))
     
     
   }

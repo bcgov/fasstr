@@ -4,17 +4,16 @@
 \alias{compute_annual_frequencies}
 \title{Perform an annual low or high-flow frequency analysis}
 \usage{
-compute_annual_frequencies(data = NULL, dates = Date, values = Value,
-  station_number = NULL, roll_days = c(1, 3, 7, 30),
-  roll_align = "right", use_max = FALSE, use_log = FALSE,
-  prob_plot_position = c("weibull", "median", "hazen"),
-  prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5, 0.2, 0.1, 0.02,
-  0.01, 0.001, 1e-04), fit_distr = c("PIII", "weibull"),
-  fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
-  fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1,
-  0.05, 0.01), plot_curve = TRUE, water_year = FALSE,
-  water_year_start = 10, start_year = 0, end_year = 9999,
-  exclude_years = NULL, months = 1:12, ignore_missing = FALSE)
+compute_annual_frequencies(data, dates = Date, values = Value,
+  station_number, roll_days = c(1, 3, 7, 30), roll_align = "right",
+  use_max = FALSE, use_log = FALSE, prob_plot_position = c("weibull",
+  "median", "hazen"), prob_scale_points = c(0.9999, 0.999, 0.99, 0.9,
+  0.5, 0.2, 0.1, 0.02, 0.01, 0.001, 1e-04), fit_distr = c("PIII",
+  "weibull"), fit_distr_method = ifelse(fit_distr == "PIII", "MOM",
+  "MLE"), fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2,
+  0.1, 0.05, 0.01), plot_curve = TRUE, water_year_start = 1,
+  start_year, end_year, exclude_years, months = 1:12,
+  ignore_missing = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -59,11 +58,7 @@ Default \code{c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)}.}
 
 \item{plot_curve}{Logical value to indicate plotting the computed curve on the probability plot. Default \code{TRUE}.}
 
-\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the calendar year in which they end. Default \code{FALSE}.}
-
-\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
-Default \code{10}.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
@@ -98,6 +93,8 @@ Performs a flow volume frequency analysis on annual statistics from a streamflow
 compute_annual_frequencies(station_number = "08NM116",
                            start_year = 1980,
                            end_year = 2010)
-                            
 }
+}
+\seealso{
+\code{\link{compute_frequency_analysis}}
 }

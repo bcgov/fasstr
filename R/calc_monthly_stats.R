@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -37,31 +37,51 @@
 #' @examples
 #' \dontrun{
 #' 
-#' calc_monthly_stats(station_number = "08NM116", 
-#'                    water_year = TRUE,
-#'                    water_year_start = 8, 
-#'                    percentiles = c(1:10))
-#'
-#' calc_monthly_stats(station_number = "08NM116", 
-#'                    months = 7:9)
-#'
+#' # Calculate statistics using data argument with defaults
+#' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+#' calc_monthly_stats(data = flow_data,
+#'                    start_year = 1980)
+#' 
+#' # Calculate statistics using station_number argument with defaults
+#' calc_monthly_stats(station_number = "08NM116",
+#'                    start_year = 1980)
+#' 
+#' # Calculate statistics regardless if there is missing data for a given year
+#' calc_monthly_stats(station_number = "08NM116",
+#'                    ignore_missing = TRUE)
+#'                   
+#' # Calculate statistics for water years starting in October
+#' calc_monthly_stats(station_number = "08NM116",
+#'                    start_year = 1980,
+#'                    water_year_start = 10)
+#'                   
+#' # Calculate statistics with custom years
+#' calc_monthly_stats(station_number = "08NM116",
+#'                    start_year = 1981,
+#'                    end_year = 2010,
+#'                    exclude_years = c(1991,1993:1995))
+#'                   
+#' # Calculate statistics for 7-day flows, with 25 and 75th percentiles
+#' calc_monthly_stats(station_number = "08NM116",
+#'                    roll_days = 7,
+#'                    percentiles = c(25,75),
+#'                    ignore_missing = TRUE)
 #' }
 #' @export
 
 
-calc_monthly_stats <- function(data = NULL,
+calc_monthly_stats <- function(data,
                                dates = Date,
                                values = Value,
                                groups = STATION_NUMBER,
-                               station_number = NULL,
+                               station_number,
                                percentiles = c(10,90),
                                roll_days = 1,
                                roll_align = "right",
-                               water_year = FALSE,
-                               water_year_start = 10,
-                               start_year = 0,
-                               end_year = 9999,
-                               exclude_years = NULL,
+                               water_year_start = 1,
+                               start_year,
+                               end_year,
+                               exclude_years,
                                months = 1:12,
                                transpose = FALSE,
                                spread = FALSE,
@@ -71,8 +91,24 @@ calc_monthly_stats <- function(data = NULL,
   ## ARGUMENT CHECKS
   ## ---------------
   
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  
   rolling_days_checks(roll_days, roll_align, multiple = FALSE)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)
   ignore_missing_checks(ignore_missing)
@@ -80,7 +116,7 @@ calc_monthly_stats <- function(data = NULL,
   spread_checks(spread)
   if(transpose & spread) stop("Both spread and transpose arguments cannot be TRUE.", call. = FALSE)
   
-
+  
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
   
@@ -103,43 +139,43 @@ calc_monthly_stats <- function(data = NULL,
   ## PREPARE FLOW DATA
   ## -----------------
   
-  # Fill missing dates, add date variables, and add AnalysisYear
+  # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
-                             water_year_start = water_year_start,
-                             year = TRUE)
+                             water_year_start = water_year_start)
   
   # Add rolling means to end of dataframe
   flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
   colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
-
+  
   # Filter for the selected year (remove excluded years after)
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
   flow_data <- dplyr::filter(flow_data, Month %in% months)
   
+  # Stop if all data is NA
+  no_values_error(flow_data$RollingValue)
   
   ## CALCULATE STATISTICS
   ## --------------------
   
   # Calculate basic stats
-  monthly_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
-                                Mean = mean(RollingValue, na.rm = ignore_missing),  
-                                Median = stats::median(RollingValue, na.rm = ignore_missing), 
-                                Maximum = suppressWarnings(max(RollingValue, na.rm = ignore_missing)),    
-                                Minimum = suppressWarnings(min(RollingValue, na.rm = ignore_missing)))
+  monthly_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear, MonthName),
+                                    Mean = mean(RollingValue, na.rm = ignore_missing),  
+                                    Median = stats::median(RollingValue, na.rm = ignore_missing), 
+                                    Maximum = suppressWarnings(max(RollingValue, na.rm = ignore_missing)),    
+                                    Minimum = suppressWarnings(min(RollingValue, na.rm = ignore_missing)))
   monthly_stats <- dplyr::ungroup(monthly_stats)
   
   # Calculate annual percentiles
   if(!all(is.na(percentiles))) {
-    for (ptile in percentiles) {
-      monthly_stats_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, MonthName),
-                                          Percentile = stats::quantile(RollingValue, ptile / 100, na.rm = TRUE))
+    for (ptile in unique(percentiles)) {
+      monthly_stats_ptile <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear, MonthName),
+                                              Percentile = stats::quantile(RollingValue, ptile / 100, na.rm = TRUE))
       monthly_stats_ptile <- dplyr::ungroup(monthly_stats_ptile)
       
       names(monthly_stats_ptile)[names(monthly_stats_ptile) == "Percentile"] <- paste0("P", ptile)
       
       # Merge with monthly_stats
-      monthly_stats <- merge(monthly_stats, monthly_stats_ptile, by = c("STATION_NUMBER", "AnalysisYear", "MonthName"))
+      monthly_stats <- merge(monthly_stats, monthly_stats_ptile, by = c("STATION_NUMBER", "WaterYear", "MonthName"))
       
       # Remove percentile if mean is NA (workaround for na.rm=FALSE in quantile)
       monthly_stats[, ncol(monthly_stats)] <- ifelse(is.na(monthly_stats$Mean), NA, monthly_stats[, ncol(monthly_stats)])
@@ -152,52 +188,9 @@ calc_monthly_stats <- function(data = NULL,
   monthly_stats$Minimum[is.infinite(monthly_stats$Minimum)] <- NA
   
   # Rename year column
-  monthly_stats <-   dplyr::rename(monthly_stats, Year = AnalysisYear, Month = MonthName)
+  monthly_stats <- dplyr::rename(monthly_stats, Year = WaterYear, Month = MonthName)
+  monthly_stats$Month <- factor(monthly_stats$Month, levels = month.abb[c(water_year_start:12, 1:water_year_start-1)])
   
-  
-  # Set the levels of the months for proper ordering
-  if (water_year) {
-    if (water_year_start == 1) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
-    } else if (water_year_start == 2) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan"))
-    } else if (water_year_start == 3) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb"))
-    } else if (water_year_start == 4) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"))
-    } else if (water_year_start == 5) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"))
-    } else if (water_year_start == 6) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May"))
-    } else if (water_year_start == 7) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun"))
-    } else if (water_year_start == 8) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"))
-    } else if (water_year_start == 9) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"))
-    } else if (water_year_start == 10) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"))
-    } else if (water_year_start == 11) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"))
-    } else if (water_year_start == 12) {
-      monthly_stats$Month <- factor(monthly_stats$Month, 
-                                levels = c("Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"))
-    }
-  } else {           
-    monthly_stats$Month <- factor(monthly_stats$Month,
-                              levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
-  }
   
   # Reorder months and row.names
   monthly_stats <- with(monthly_stats, monthly_stats[order(Year, Month),])
@@ -236,9 +229,15 @@ calc_monthly_stats <- function(data = NULL,
   monthly_stats <- with(monthly_stats, monthly_stats[order(STATION_NUMBER, Year),])
   
   # Give warning if any NA values
-  missing_values_warning(monthly_stats[, 4:ncol(monthly_stats)])
+  missing_test <- dplyr::filter(monthly_stats, !(Year %in% exclude_years))
+  if (ignore_missing){
+    if (anyNA(missing_test[, 4:ncol(missing_test)])) 
+      warning("One or more calculations included missing values and NA's were produced. Some months in some years have no data to summarize.", call. = FALSE)
+  } else {
+    missing_values_warning(missing_test[, 4:ncol(missing_test)])
+  }
   
-
+  
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
   if(as.character(substitute(groups)) %in% orig_cols) {
     names(monthly_stats)[names(monthly_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))

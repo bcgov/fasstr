@@ -4,12 +4,11 @@
 \alias{calc_annual_stats}
 \title{Calculate annual summary statistics}
 \usage{
-calc_annual_stats(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, roll_days = 1,
-  roll_align = "right", percentiles = c(10, 90), water_year = FALSE,
-  water_year_start = 10, start_year = 0, end_year = 9999,
-  exclude_years = NULL, months = 1:12, transpose = FALSE,
-  ignore_missing = FALSE)
+calc_annual_stats(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, roll_days = 1,
+  roll_align = "right", percentiles = c(10, 90),
+  water_year_start = 1, start_year, end_year, exclude_years,
+  months = 1:12, transpose = FALSE, ignore_missing = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -36,11 +35,7 @@ Leave blank if using \code{data} argument.}
 
 \item{percentiles}{Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.}
 
-\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the calendar year in which they end. Default \code{FALSE}.}
-
-\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
-Default \code{10}.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
@@ -77,15 +72,33 @@ Calculates annual mean, median, maximum, minimum, and percentiles of daily flow 
 \examples{
 \dontrun{
 
+# Calculate statistics using data argument with defaults
+flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 calc_annual_stats(data = flow_data)
 
+# Calculate statistics using station_number argument with defaults
+calc_annual_stats(station_number = "08NM116")
+
+# Calculate statistics regardless if there 
+# is missing data for a given year
 calc_annual_stats(station_number = "08NM116",
-                  water_year = TRUE, 
-                  water_year_start = 8, 
-                  percentiles = c(1:10))
-
-calc_annual_stats(station_number = "08NM116", 
-                  months = 7:9)
-
+                  ignore_missing = TRUE)
+                  
+# Calculate statistics for water years starting in October
+calc_annual_stats(station_number = "08NM116",
+                  water_year_start = 10)
+                  
+# Calculate statistics with custom years
+calc_annual_stats(station_number = "08NM116",
+                  start_year = 1981,
+                  end_year = 2010,
+                  exclude_years = c(1991,1993:1995))
+                  
+# Calculate statistics for 7-day flows for July-September 
+# months only, with 25 and 75th percentiles
+calc_annual_stats(station_number = "08NM116",
+                  roll_days = 7,
+                  months = 7:9,
+                  percentiles = c(25,75))
 }
 }

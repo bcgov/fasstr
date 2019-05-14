@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,37 +20,42 @@
 #' @inheritParams calc_annual_stats
 #' 
 #' @return A tibble data frame of the source data with additional columns:
-#'   \item{Year}{calendar year}
+#'   \item{CalendarYear}{calendar year}
 #'   \item{Month}{numeric month (1 to 12)}
 #'   \item{MonthName}{month name (Jan-Dec)}
-#'   \item{DayofYear}{day of the year (1-365 or 366)}
-#'   \item{WaterYear}{(optional) water year, designated by the calendar year in which it ends}
-#'   \item{WaterDayofYear}{(optional) day of the water year (1-365 or 366), starting in the first month of the water year}
+#'   \item{WaterYear}{year starting from the selected month start, water_year_start}
+#'   \item{DayofYear}{day of the year from the selected month start (1-365 or 366)}
 #'
 #' @examples
 #' \dontrun{
 #' 
-#' add_date_variables(data = flow_data)
+#' # Using calendar years as water years
+#' add_date_variables(data = "08NM116")
 #' 
-#' add_date_variables(data = "08NM116", water_year = TRUE, water_year_start = 8)
-#'
+#' # Water years starting in August
+#' add_date_variables(data = "08NM116", 
+#'                    water_year_start = 8)
 #' }
 #' @export
 
 
-add_date_variables <- function(data = NULL,
+add_date_variables <- function(data,
                                dates = Date,
-                               station_number = NULL,
-                               water_year = FALSE,
-                               water_year_start = 10){  
+                               station_number,
+                               water_year_start = 1){  
   
   
   ## ARGUMENT CHECKS
   ## ---------------
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
   
-  water_year_checks(water_year, water_year_start)
-  
-  
+  water_year_checks(water_year_start)
+
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
   
@@ -65,16 +70,18 @@ add_date_variables <- function(data = NULL,
   ## ---------------------------
   
   # Calculate each date variable
-  flow_data$Year  <- lubridate::year(flow_data$Date)
+  flow_data$CalendarYear  <- lubridate::year(flow_data$Date)
   flow_data$Month  <- lubridate::month(flow_data$Date)
   flow_data$MonthName <- month.abb[flow_data$Month]
+  flow_data$MonthName <- factor(flow_data$MonthName, levels = month.abb[c(water_year_start:12, 1:water_year_start-1)])
+  flow_data$WaterYear <- flow_data$CalendarYear
   flow_data$DayofYear <- lubridate::yday(flow_data$Date)
   
   
   ## ADD WATER YEAR VARIABLES (if selected)
   ## --------------------------------------
   
-  if (water_year){
+  if (water_year_start > 1){
     # Create values used to calculate the water year day of year
     if (water_year_start == 2) {doy_temp <- c(31, 31)}
     if (water_year_start == 3) {doy_temp <- c(59, 60)}
@@ -88,69 +95,19 @@ add_date_variables <- function(data = NULL,
     if (water_year_start == 11) {doy_temp <- c(304, 305)}
     if (water_year_start == 12) {doy_temp <- c(334, 335)}
     
-    if (water_year_start==1) {
-      flow_data$WaterYear <- flow_data$Year
-      flow_data$WaterDayofYear <- flow_data$DayofYear
-    } else {
-      flow_data$WaterYear <- as.numeric(ifelse(flow_data$Month >= water_year_start,
-                                               flow_data$Year + 1,
-                                               flow_data$Year))
-      flow_data$WaterDayofYear <- ifelse(flow_data$Month < water_year_start,
-                                         flow_data$DayofYear + (365 - doy_temp[1]),
-                                         ifelse((as.Date(with(flow_data, paste(Year + 1, 01, 01, sep = "-")), "%Y-%m-%d")
-                                                 - as.Date(with(flow_data, paste(Year, 01, 01, sep = "-")), "%Y-%m-%d")) == 366,
-                                                flow_data$DayofYear-doy_temp[2],
-                                                flow_data$DayofYear-doy_temp[1]))
-    }
+    flow_data$WaterYear <- as.numeric(ifelse(flow_data$Month >= water_year_start,
+                                             flow_data$CalendarYear + 1,
+                                             flow_data$CalendarYear))
+    flow_data$DayofYear <- ifelse(flow_data$Month < water_year_start,
+                                  flow_data$DayofYear + (365 - doy_temp[1]),
+                                  ifelse((as.Date(with(flow_data, paste(CalendarYear + 1, 01, 01, sep = "-")), "%Y-%m-%d")
+                                          - as.Date(with(flow_data, paste(CalendarYear, 01, 01, sep = "-")), "%Y-%m-%d")) == 366,
+                                         flow_data$DayofYear-doy_temp[2],
+                                         flow_data$DayofYear-doy_temp[1]))
   }
   
-  ## SET THE MONTH LEVELS FOR ORDERING
-  ## ---------------------------------
   
-  if (!water_year) {
-    flow_data$MonthName <- factor(flow_data$MonthName, levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
-                                                                  "Aug", "Sep", "Oct", "Nov", "Dec"))
-  } else {
-    if (water_year_start == 1) {
-      flow_data$MonthName <- factor(flow_data$MonthName, levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
-                                                                    "Aug", "Sep", "Oct", "Nov", "Dec"))
-    } else if (water_year_start == 2) {
-      flow_data$MonthName <- factor(flow_data$MonthName, levels = c("Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
-                                                                    "Sep", "Oct", "Nov", "Dec", "Jan"))
-    } else if (water_year_start == 3) {
-      flow_data$MonthName <- factor(flow_data$MonthName, levels = c("Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep",
-                                                                    "Oct", "Nov", "Dec", "Jan", "Feb"))
-    } else if (water_year_start == 4) {
-      flow_data$MonthName <- factor(flow_data$MonthName, levels = c("Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct",
-                                                                    "Nov", "Dec", "Jan", "Feb", "Mar"))
-    } else if (water_year_start == 5) {
-      flow_data$MonthName <- factor(flow_data$MonthName, levels = c("May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
-                                                                    "Dec", "Jan", "Feb", "Mar", "Apr"))
-    } else if (water_year_start == 6) {
-      flow_data$MonthName <- factor(flow_data$MonthName, levels = c("Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-                                                                    "Jan", "Feb", "Mar", "Apr", "May"))
-    } else if (water_year_start == 7) {
-      flow_data$MonthName <- factor(flow_data$MonthName, levels = c("Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan",
-                                                                    "Feb", "Mar", "Apr", "May", "Jun"))
-    } else if (water_year_start == 8) {
-      flow_data$MonthName <- factor(flow_data$MonthName, levels = c("Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb",
-                                                                    "Mar", "Apr", "May","Jun", "Jul"))
-    } else if (water_year_start == 9) {
-      flow_data$MonthName <- factor(flow_data$MonthName, levels = c("Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar",
-                                                                    "Apr", "May", "Jun", "Jul", "Aug"))
-    } else if (water_year_start == 10) {
-      flow_data$MonthName <- factor(flow_data$MonthName, levels = c("Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr",
-                                                                    "May", "Jun", "Jul", "Aug", "Sep"))
-    } else if (water_year_start == 11) {
-      flow_data$MonthName <- factor(flow_data$MonthName, levels = c("Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May",
-                                                                    "Jun", "Jul", "Aug", "Sep", "Oct"))
-    } else if (water_year_start == 12) {
-      flow_data$MonthName <- factor(flow_data$MonthName, levels = c("Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                                                                    "Jul", "Aug", "Sep", "Oct", "Nov"))
-    }
-  }
-  
-  ## Reformat to original names and groups
+   ## Reformat to original names and groups
   ## -------------------------------------
   
   # Return the original names of the Date column

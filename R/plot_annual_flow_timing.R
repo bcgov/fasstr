@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -40,32 +40,48 @@
 #' @examples
 #' \dontrun{
 #' 
-#' plot_annual_flow_timing(station_number = "08NM116", 
-#'                         water_year = TRUE, 
-#'                         water_year_start = 8, 
+#' # Plot statistics with default percent totals
+#' plot_annual_flow_timing(station_number = "08NM116") 
+#' 
+#' # Plot statistics with custom percent totals
+#' plot_annual_flow_timing(station_number = "08NM116",
 #'                         percent_total = 50)
-#'
 #' }
 #' @export
 
 
-plot_annual_flow_timing <- function(data = NULL,
+plot_annual_flow_timing <- function(data,
                                     dates = Date,
                                     values = Value,
                                     groups = STATION_NUMBER,
-                                    station_number = NULL,
+                                    station_number,
                                     percent_total = c(25,33.3,50,75),
-                                    water_year = FALSE,
-                                    water_year_start = 10,
-                                    start_year = 0,
-                                    end_year = 9999,
-                                    exclude_years = NULL,
+                                    water_year_start = 1,
+                                    start_year,
+                                    end_year,
+                                    exclude_years,
                                     include_title = FALSE){ 
   
   ## ARGUMENT CHECKS 
   ## others will be check in calc_ function
   ## ---------------
   
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+
   include_title_checks(include_title)
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -90,7 +106,6 @@ plot_annual_flow_timing <- function(data = NULL,
                                           dates = Date,
                                           values = Value,
                                           percent_total = percent_total,
-                                          water_year = water_year,
                                           water_year_start = water_year_start,
                                           start_year = start_year,
                                           end_year = end_year,
@@ -114,7 +129,7 @@ plot_annual_flow_timing <- function(data = NULL,
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
         ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
         ggplot2::geom_point(na.rm = TRUE) +
-        {if(length(percent_total) > 1) ggplot2::facet_wrap(~Statistic, scales = "free_y", ncol = 1, strip.position = "right")} +
+        {if(length(percent_total) > 1) ggplot2::facet_wrap(~Statistic, scales = "free_y", ncol = 1, strip.position = "top")} +
         ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
         {if(length(unique(timing_stats$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(timing_stats$Year))}+
         ggplot2::ylab("Day of Year") +
@@ -131,7 +146,9 @@ plot_annual_flow_timing <- function(data = NULL,
                        panel.grid = ggplot2::element_line(size = .2),
                        axis.title = ggplot2::element_text(size = 12),
                        axis.text = ggplot2::element_text(size = 10),
-                       plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
+                       plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
+                       strip.background = ggplot2::element_blank(),
+                       strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
                               ))
   
   # Create a list of named plots extracted from the tibble

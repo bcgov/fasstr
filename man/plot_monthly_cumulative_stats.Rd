@@ -4,12 +4,10 @@
 \alias{plot_monthly_cumulative_stats}
 \title{Plot cumulative monthly flow statistics}
 \usage{
-plot_monthly_cumulative_stats(data = NULL, dates = Date,
-  values = Value, groups = STATION_NUMBER, station_number = NULL,
-  use_yield = FALSE, basin_area = NA, water_year = FALSE,
-  water_year_start = 10, start_year = 0, end_year = 9999,
-  exclude_years = NULL, log_discharge = FALSE, include_title = FALSE,
-  include_year = NULL)
+plot_monthly_cumulative_stats(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, use_yield = FALSE,
+  basin_area, water_year_start = 1, start_year, end_year, exclude_years,
+  log_discharge = FALSE, include_title = FALSE, add_year)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -37,14 +35,10 @@ Leave blank if using \code{data} argument.}
 
 (2) A single numeric value to apply to all observations.
 
-(3) List each basin area for each group/station in groups (can override HYDAT value) as such \code{c("08NM116" = 795, 
-"08NM242" = 10)}. Group not listed will result in NA basin area.}
+(3) List each basin area for each group/station in groups (can override HYDAT value if listed) as such \code{c("08NM116" = 795, 
+"08NM242" = 10)}. If group is not listed the HYDAT area will be applied if it exists, otherwise it will be NA.}
 
-\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the calendar year in which they end. Default \code{FALSE}.}
-
-\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
-Default \code{10}.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
@@ -56,7 +50,7 @@ Default \code{10}.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 
-\item{include_year}{A numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
+\item{add_year}{Numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
 }
 \value{
 A list of ggplot2 objects with the following for each station provided:
@@ -75,16 +69,23 @@ A list of ggplot2 objects with the following for each station provided:
 Plot the monthly cumulative mean, median, maximum, minimum, and 5, 25, 75, 95th percentiles for each month of the year 
    from a streamflow dataset. Plots the statistics from all monthly cumulative values from all years, unless specified. 
    Data calculated using calc_monthly_cumulative_stats() function. Can plot individual years for comparision using the 
-   include_year argument. Defaults to volumetric cumulative flows, can use \code{use_yield} and \code{basin_area} to convert to 
+   add_year argument. Defaults to volumetric cumulative flows, can use \code{use_yield} and \code{basin_area} to convert to 
    runoff yield.
 }
 \examples{
 \dontrun{
 
-plot_monthly_cumulative_stats(station_number = "08NM116", 
-                              water_year = TRUE, 
-                              water_year_start = 8)
+# Plot volume statistics
+plot_monthly_cumulative_stats(station_number = "08NM116") 
 
+# Plot yield statistics with default HYDAT basin area
+plot_monthly_cumulative_stats(station_number = "08NM116",
+                              use_yield = TRUE) 
+
+# Plot yield statistics with custom basin area
+plot_monthly_cumulative_stats(station_number = "08NM116",
+                              use_yield = TRUE,
+                              basin_area = 800) 
 }
 }
 \seealso{

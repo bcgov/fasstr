@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,28 +35,38 @@
 #' @examples
 #' \dontrun{
 #' 
+#' # Plot volume statistics
+#' plot_annual_cumulative_stats(station_number = "08NM116") 
 #' 
-#' plot_annual_cumulative_stats(station_number = "08NM116", 
-#'                              water_year = TRUE, 
-#'                              water_year_start = 8)
-#'
+#' # Plot yield statistics with default HYDAT basin area
+#' plot_annual_cumulative_stats(station_number = "08NM116",
+#'                              use_yield = TRUE) 
+#' 
+#' # Plot yield statistics with custom basin area
+#' plot_annual_cumulative_stats(station_number = "08NM116",
+#'                              use_yield = TRUE,
+#'                              basin_area = 800) 
+#' 
+#' # Plot yield statistics with seasons
+#' plot_annual_cumulative_stats(station_number = "08NM116",
+#'                              use_yield = TRUE,
+#'                              include_seasons = TRUE) 
 #' }
 #' @export
 
 
 
-plot_annual_cumulative_stats <- function(data = NULL,
+plot_annual_cumulative_stats <- function(data,
                                          dates = Date,
                                          values = Value,
                                          groups = STATION_NUMBER,
-                                         station_number = NULL,
+                                         station_number,
                                          use_yield = FALSE, 
-                                         basin_area = NA,
-                                         water_year = FALSE,
-                                         water_year_start = 10,
-                                         start_year = 0,
-                                         end_year = 9999,
-                                         exclude_years = NULL, 
+                                         basin_area,
+                                         water_year_start = 1,
+                                         start_year,
+                                         end_year,
+                                         exclude_years, 
                                          include_seasons = FALSE,
                                          log_discharge = FALSE,
                                          include_title = FALSE){
@@ -66,6 +76,25 @@ plot_annual_cumulative_stats <- function(data = NULL,
   ## ARGUMENT CHECKS 
   ## others will be check in calc_ function
   ## ---------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  if (missing(basin_area)) {
+    basin_area = NA
+  }
   
   log_discharge_checks(log_discharge) 
   include_title_checks(include_title)    
@@ -90,7 +119,6 @@ plot_annual_cumulative_stats <- function(data = NULL,
   cumulative_stats <- calc_annual_cumulative_stats(data = flow_data,
                                                    use_yield = use_yield, 
                                                    basin_area = ifelse(use_yield, basin_area, 0),
-                                                   water_year = water_year,
                                                    water_year_start = water_year_start,
                                                    start_year = start_year,
                                                    end_year = end_year,
@@ -131,7 +159,7 @@ plot_annual_cumulative_stats <- function(data = NULL,
         ggplot2::geom_point(na.rm = TRUE)+
         ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
         ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
-        ggplot2::ylab("Volume (m3)") +
+        ggplot2::ylab(expression(Volume~(m^3))) +
         {if (use_yield) ggplot2::ylab("Yield (mm)")} +
         ggplot2::xlab("Year")+
         ggplot2::scale_color_brewer(palette = "Set1") +
@@ -165,7 +193,7 @@ plot_annual_cumulative_stats <- function(data = NULL,
         ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, colour = Statistic)) +
           ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
           ggplot2::geom_point(na.rm = TRUE) +
-          ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "right") +
+          ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "top") +
           ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
           {if(length(unique(seasons2_data$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(seasons2_data$Year))}+
           ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
@@ -180,7 +208,9 @@ plot_annual_cumulative_stats <- function(data = NULL,
                          panel.grid = ggplot2::element_line(size = .2),
                          axis.title = ggplot2::element_text(size = 12),
                          axis.text = ggplot2::element_text(size = 10),
-                         plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
+                         plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
+                         strip.background = ggplot2::element_blank(),
+                         strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
                               ))
     
     # Plot 4-seasons
@@ -191,7 +221,7 @@ plot_annual_cumulative_stats <- function(data = NULL,
         ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, colour = Statistic)) +
           ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
           ggplot2::geom_point(na.rm = TRUE) +
-          ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "right") +
+          ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "top") +
           ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
           {if(length(unique(seasons4_data$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(seasons4_data$Year))}+
           ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
@@ -206,7 +236,9 @@ plot_annual_cumulative_stats <- function(data = NULL,
                          panel.grid = ggplot2::element_line(size = .2),
                          axis.title = ggplot2::element_text(size = 12),
                          axis.text = ggplot2::element_text(size = 10),
-                         plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
+                         plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
+                         strip.background = ggplot2::element_blank(),
+                         strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
                             ))
     
     # Create a list of named plots extracted from the tibble

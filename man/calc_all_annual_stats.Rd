@@ -4,13 +4,12 @@
 \alias{calc_all_annual_stats}
 \title{Calculate all fasstr annual statistics}
 \usage{
-calc_all_annual_stats(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, basin_area = NA,
-  water_year = FALSE, water_year_start = 10, start_year = 0,
-  end_year = 9999, exclude_years = NULL, annual_percentiles = c(10,
-  90), monthly_percentiles = c(10, 20), stats_days = 1,
-  stats_align = "right", lowflow_days = c(1, 3, 7, 30),
-  lowflow_align = "right", timing_percent = c(25, 33, 50, 75),
+calc_all_annual_stats(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, basin_area,
+  water_year_start = 1, start_year, end_year, exclude_years,
+  annual_percentiles = c(10, 90), monthly_percentiles = c(10, 20),
+  stats_days = 1, stats_align = "right", lowflow_days = c(1, 3, 7,
+  30), lowflow_align = "right", timing_percent = c(25, 33, 50, 75),
   normal_percentiles = c(25, 75), transpose = FALSE,
   ignore_missing = FALSE)
 }
@@ -38,14 +37,10 @@ Leave blank if using \code{data} argument.}
 
 (2) A single numeric value to apply to all observations.
 
-(3) List each basin area for each group/station in groups (can override HYDAT value) as such \code{c("08NM116" = 795, 
-"08NM242" = 10)}. Group not listed will result in NA basin area.}
+(3) List each basin area for each group/station in groups (can override HYDAT value if listed) as such \code{c("08NM116" = 795, 
+"08NM242" = 10)}. If group is not listed the HYDAT area will be applied if it exists, otherwise it will be NA.}
 
-\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the calendar year in which they end. Default \code{FALSE}.}
-
-\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
-Default \code{10}.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
@@ -106,13 +101,15 @@ Calculates all annual statistics of daily flow values from a streamflow dataset 
 \examples{
 \dontrun{
 
-calc_all_annual_stats(station_number = "08NM116", 
-                      water_year = TRUE, 
-                      water_year_start = 8)
-
+# Calculate statistics with default arguments
+calc_all_annual_stats(station_number = "08NM116") 
 }
 }
 \seealso{
-\code{\link{calc_annual_stats}}, \code{\link{calc_annual_lowflows}}, \code{\link{calc_annual_cumulative_stats}}, 
-   \code{\link{calc_annual_flow_timing}}, \code{\link{calc_monthly_stats}}, \code{\link{calc_annual_outside_normal}}
+\code{\link{calc_annual_stats}},
+         \code{\link{calc_annual_lowflows}}, 
+         \code{\link{calc_annual_cumulative_stats}}, 
+         \code{\link{calc_annual_flow_timing}}, 
+         \code{\link{calc_monthly_stats}}, 
+         \code{\link{calc_annual_outside_normal}}
 }

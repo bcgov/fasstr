@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -49,33 +49,47 @@
 #'        American Statistical Association Vol. 63, No. 324: 1379-1389.}
 #'        }
 #'      
-#' @seealso \code{\link[zyp]{zyp-package}}, \code{\link[zyp]{zyp.trend.dataframe}}, \code{\link{calc_all_annual_stats}}
+#' @seealso \code{\link[zyp]{zyp-package}}, 
+#'          \code{\link[zyp]{zyp.trend.dataframe}}, 
+#'          \code{\link{calc_all_annual_stats}}
 #'   
 #' @examples
 #' \dontrun{
 #' 
-#' compute_annual_trends(station_number = "08NM116", 
-#'                       water_year = TRUE, 
-#'                       water_year_start = 8,
+#' # Compute trends statistics using data argument with defaults
+#' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+#' compute_annual_trends(data = flow_data,
 #'                       zyp_method = "yuepilon")
-#'
+#' 
+#' # Compute trends statistics using station_number with defaults
+#' compute_annual_trends(station_number = "08NM116",
+#'                       zyp_method = "yuepilon")
+#'                       
+#' # Compute trends statistics and plot a trend line if the significance is less than 0.05
+#' compute_annual_trends(station_number = "08NM116",
+#'                       zyp_method = "yuepilon",
+#'                       zyp_alpha = 0.05)
+#'                       
+#' # Compute trends statistics and do not plot the results
+#' compute_annual_trends(station_number = "08NM116",
+#'                       zyp_method = "yuepilon",
+#'                       include_plots = FALSE)
 #' }
 #' @export
 
 
 
-compute_annual_trends <- function(data = NULL,
+compute_annual_trends <- function(data,
                                   dates = Date,
                                   values = Value,
                                   groups = STATION_NUMBER,
-                                  station_number = NULL,
-                                  zyp_method = NA,
-                                  basin_area = NA, 
-                                  water_year = FALSE,
-                                  water_year_start = 10,
-                                  start_year = 0,
-                                  end_year = 9999,
-                                  exclude_years = NULL,
+                                  station_number,
+                                  zyp_method,
+                                  basin_area, 
+                                  water_year_start = 1,
+                                  start_year,
+                                  end_year,
+                                  exclude_years,
                                   annual_percentiles = c(10,90),
                                   monthly_percentiles = c(10,20),
                                   stats_days = 1,
@@ -86,12 +100,37 @@ compute_annual_trends <- function(data = NULL,
                                   normal_percentiles = c(25,75),
                                   ignore_missing = FALSE,
                                   include_plots = TRUE,
-                                  zyp_alpha = NA){       
+                                  zyp_alpha){       
   
   
   
   ## ARGUMENT CHECKS
   ## ---------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  if (missing(basin_area)) {
+    basin_area = NA
+  }
+  if (missing(zyp_method)) {
+    zyp_method = NA
+  }
+  if (missing(zyp_alpha)) {
+    zyp_alpha = NA
+  }
   
   zyp_method_checks(zyp_method)
   zyp_alpha_checks(zyp_alpha)
@@ -119,7 +158,6 @@ compute_annual_trends <- function(data = NULL,
   
   trends_data <- calc_all_annual_stats(data = flow_data,
                                        basin_area = basin_area, 
-                                       water_year = water_year,
                                        water_year_start = water_year_start,
                                        start_year = start_year,
                                        end_year = end_year,
@@ -200,9 +238,9 @@ compute_annual_trends <- function(data = NULL,
         int <- trends_results_stat$intercept - trends_results_stat$trend * trends_results_stat$min_year
         # Plot each metric
         trends_plot <- ggplot2::ggplot(trends_data_stat, ggplot2::aes(x = Year, y = Value)) +
-          ggplot2::geom_point(na.rm = TRUE) +
-          ggplot2::geom_line(alpha = 0.3, na.rm = TRUE) +
-          ggplot2::ggtitle(paste0(stat,"   (Sig. = ", round(trends_results_stat$sig, 3), ")")) +
+          ggplot2::geom_point(shape = 1, size = 2, colour = "darkblue", stroke = 2, na.rm = TRUE) +
+          # ggplot2::geom_line(alpha = 0.3, na.rm = TRUE) +
+          ggplot2::ggtitle(paste0(stat," (sig. = ", round(trends_results_stat$sig, 3), ")")) +
           #{if(length(unique(trends_results$STATION_NUMBER)) > 1) ggplot2::ggtitle(paste0(stn, ": ", stat,"   (Sig. = ", round(trends_results_stat$sig, 3), ")"))} +
           ggplot2::xlab("Year") +
           ggplot2::ylab(trends_data_stat$Units) +
@@ -216,7 +254,7 @@ compute_annual_trends <- function(data = NULL,
         # If sig. trend, plot trend
         if(!is.na(zyp_alpha) & trends_results_stat$sig < zyp_alpha & !is.na(trends_results_stat$sig)) {
           trends_plot <- trends_plot +
-            ggplot2::geom_abline(slope = trends_results_stat$trend, intercept = int, colour = "red")
+            ggplot2::geom_abline(slope = trends_results_stat$trend, intercept = int, colour = "red", linetype = "longdash")
         }
         
         if (length(unique(trends_results$STATION_NUMBER)) == 1) {

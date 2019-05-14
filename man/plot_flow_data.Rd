@@ -4,13 +4,11 @@
 \alias{plot_flow_data}
 \title{Plot daily mean streamflow}
 \usage{
-plot_flow_data(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, roll_days = 1,
-  roll_align = "right", water_year = FALSE, water_year_start = 10,
-  start_year = 0, end_year = 9999, exclude_years = NULL,
-  start_date = "0000-01-01", end_date = "3000-12-31",
-  log_discharge = FALSE, plot_by_year = FALSE, one_plot = FALSE,
-  include_title = FALSE)
+plot_flow_data(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, roll_days = 1,
+  roll_align = "right", water_year_start = 1, start_year, end_year,
+  exclude_years, start_date, end_date, log_discharge = FALSE,
+  plot_by_year = FALSE, one_plot = FALSE, include_title = FALSE)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -35,11 +33,7 @@ Leave blank if using \code{data} argument.}
 \item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
 ('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
 
-\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the calendar year in which they end. Default \code{FALSE}.}
-
-\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
-Default \code{10}.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
@@ -70,9 +64,26 @@ Plot the daily mean flow values from a streamflow dataset. Plots the statistics 
 \examples{
 \dontrun{
 
-plot_flow_data(station_number = "08NM116", 
-               water_year = TRUE, 
-               water_year_start = 8)
+# Plot data from a data frame
+flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+plot_flow_data(data = flow_data)
 
+# Plot data directly from HYDAT
+plot_flow_data(station_number = "08NM116")
+
+# Plot statistics with custom years
+plot_flow_data(station_number = "08NM116",
+               start_year = 1981,
+               end_year = 2010,
+               exclude_years = c(1991,1993:1995))
+                 
+# Plot data between specific dates
+plot_flow_data(station_number = "08NM116",
+               start_date = "1990-01-01",
+               end_date = "1990-06-01")
+
+# Plot data multiple groups on one plot
+plot_flow_data(station_number = c("08NM241", "08NM242"),
+               one_plot = TRUE) 
 }
 }

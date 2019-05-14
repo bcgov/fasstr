@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,33 +32,56 @@
 #' @examples
 #' \dontrun{
 #' 
-#' plot_data_screening(station_number = "08NM116", 
-#'                     water_year = TRUE, 
-#'                     water_year_start = 8)
-#'
+#' # Plot statistics using data argument with defaults
+#' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
+#' plot_data_screening(data = flow_data)
+#' 
+#' # Plot statistics using station_number argument with defaults
+#' plot_data_screening(station_number = "08NM116")
+#'                   
+#' # Plot statistics for water years starting in October
+#' plot_data_screening(station_number = "08NM116",
+#'                  water_year_start = 10)
+#'                   
+#' # Plot statistics for 7-day flows for July-September months only
+#' plot_data_screening(station_number = "08NM116",
+#'                  roll_days = 7,
+#'                  months = 7:9)
 #' }
 #' @export
 
 
 
-plot_data_screening <- function(data = NULL,
+plot_data_screening <- function(data,
                                 dates = Date,
                                 values = Value,
                                 groups = STATION_NUMBER,
-                                station_number = NULL,
+                                station_number,
                                 roll_days = 1,
                                 roll_align = "right",
-                                water_year = FALSE,
-                                water_year_start = 10,
+                                water_year_start = 1,
                                 months = 1:12,
-                                start_year = 0,
-                                end_year = 9999,
+                                start_year,
+                                end_year,
                                 include_title = FALSE){ 
   
   
   ## ARGUMENT CHECKS
   ## ---------------
   
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+
   include_title_checks(include_title)
     
   ## FLOW DATA CHECKS AND FORMATTING
@@ -78,16 +101,15 @@ plot_data_screening <- function(data = NULL,
   ## CALC STATS
   ## ----------
   
-  flow_summary <- fasstr::screen_flow_data(data = flow_data,
-                                           roll_days = roll_days,
-                                           roll_align = roll_align,
-                                           water_year = water_year,
-                                           water_year_start = water_year_start,
-                                           start_year = start_year,
-                                           end_year = end_year,
-                                           months = months)
+  flow_summary <- screen_flow_data(data = flow_data,
+                                   roll_days = roll_days,
+                                   roll_align = roll_align,
+                                   water_year_start = water_year_start,
+                                   start_year = start_year,
+                                   end_year = end_year,
+                                   months = months)
   
-  flow_summary <- dplyr::select(flow_summary, STATION_NUMBER, Year, Minimum, Maximum, Mean, StandardDeviation)
+  flow_summary <- dplyr::select(flow_summary, STATION_NUMBER, Year, Minimum, Maximum, Mean, "Standard Deviation" = StandardDeviation)
   flow_summary <- tidyr::gather(flow_summary, Statistic, Value, 3:6)
   
   
@@ -95,9 +117,9 @@ plot_data_screening <- function(data = NULL,
   ## ----------
   
   # Create axis label based on input columns
-  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (m3)",
-                         ifelse(as.character(substitute(values)) == "Yield_mm", "Runoff Yield (mm)", 
-                                "Discharge (cms)"))
+  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", expression(Volume~(m^3)),
+                         ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)", 
+                                expression(Discharge~(m^3/s))))
   
   # Plot
   sum_plots <- dplyr::group_by(flow_summary, STATION_NUMBER)
@@ -107,7 +129,7 @@ plot_data_screening <- function(data = NULL,
          ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value)) +
            ggplot2::geom_line(colour = "dodgerblue4", na.rm = TRUE) +
            ggplot2::geom_point(colour = "firebrick3", na.rm = TRUE) +
-           ggplot2::facet_wrap(~Statistic, ncol = 2, scales = "free_y") +
+           ggplot2::facet_wrap(~Statistic, ncol = 2, scales = "free_y", strip.position = "top") +
            ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
            {if(length(unique(flow_summary$Year)) < 5) ggplot2::scale_x_continuous(breaks = unique(flow_summary$Year))}+
            ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
@@ -120,7 +142,9 @@ plot_data_screening <- function(data = NULL,
                           panel.grid = ggplot2::element_line(size = .2),
                           axis.title = ggplot2::element_text(size = 12),
                           axis.text = ggplot2::element_text(size = 10),
-                          plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
+                          plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
+                          strip.background = ggplot2::element_blank(),
+                          strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
                                 ))
   
   # Create a list of named plots extracted from the tibble

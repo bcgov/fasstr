@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,35 +27,49 @@
 #' @examples
 #' \dontrun{
 #' 
-#' plot_annual_means(station_number = "08NM116", 
-#'                   water_year = TRUE, 
-#'                   water_year_start = 8)
+#' # Plot statistics
+#' plot_annual_means(station_number = "08NM116")
 #'
+#' # Plot statistics for mean flows from July-September
 #' plot_annual_means(station_number = "08NM116", 
 #'                   months = 7:9)
-#'
 #' }
 #' @export
 
 
-plot_annual_means <- function(data = NULL,
+plot_annual_means <- function(data,
                               dates = Date,
                               values = Value,
                               groups = STATION_NUMBER,
-                              station_number = NULL,
+                              station_number,
                               roll_days = 1,
                               roll_align = "right",
-                              water_year = FALSE,
-                              water_year_start = 10,
-                              start_year = 0,
-                              end_year = 9999,
-                              exclude_years = NULL,
+                              water_year_start = 1,
+                              start_year,
+                              end_year,
+                              exclude_years,
                               months = 1:12,
                               ignore_missing = FALSE,
                               include_title = FALSE){ 
   
   ## ARGUMENT CHECKS
   ## ---------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
   
   include_title_checks(include_title)
 
@@ -80,7 +94,6 @@ plot_annual_means <- function(data = NULL,
   annual_stats <- calc_annual_stats(data = flow_data,
                                     roll_days = roll_days,
                                     roll_align = roll_align,
-                                    water_year = water_year,
                                     water_year_start = water_year_start,
                                     start_year = start_year,
                                     end_year = end_year,
@@ -114,7 +127,7 @@ plot_annual_means <- function(data = NULL,
                                    breaks = scales::pretty_breaks(n = 10)) +
        ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
        {if(length(unique(annual_stats$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(annual_stats$Year))}+
-       ggplot2::ylab("Annual Discharge (cms)") +
+       ggplot2::ylab(expression(Mean~Annual~Discharge~(m^3/s))) +
        {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
        ggplot2::theme_bw() +
        ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),

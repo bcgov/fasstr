@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -52,6 +52,8 @@
 #' @examples
 #' \dontrun{
 #' 
+#' # Calculate some values to use for a frequency analysis 
+#' # (requires years, values for those years, and the name of the measure/metric)
 #' low_flows <- calc_annual_lowflows(station_number = "08NM116", 
 #'                                   start_year = 1980, 
 #'                                   end_year = 2000,
@@ -59,6 +61,7 @@
 #' low_flows <- dplyr::select(low_flows, Year, Value = Min_7_Day)
 #' low_flows <- dplyr::mutate(low_flows, Measure = "7-Day")
 #' 
+#' # Compute the frequency analysis using the default parameters
 #' compute_frequency_analysis(data = low_flows,
 #'                            events = Year,
 #'                            values = Value,
@@ -68,7 +71,7 @@
 #' @export
 
 
-compute_frequency_analysis <- function(data = NULL,
+compute_frequency_analysis <- function(data,
                                        events = Year,
                                        values = Value,
                                        measures = Measure,
@@ -79,8 +82,7 @@ compute_frequency_analysis <- function(data = NULL,
                                        fit_distr = c("PIII", "weibull"),
                                        fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
                                        fit_quantiles = c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),
-                                       plot_curve = TRUE
-                                       ){
+                                       plot_curve = TRUE){
   
   # replicate the frequency analysis of the HEC-SSP program
   # refer to Chapter 7 of the user manual
@@ -114,7 +116,7 @@ compute_frequency_analysis <- function(data = NULL,
   
   
   # Check if data is provided
-  if (is.null(data))    
+  if (missing(data))    
     stop("A data frame of annual data must be provided using the 'data' argument.", call. = FALSE)
   
   if (!is.data.frame(data))  
@@ -212,13 +214,11 @@ compute_frequency_analysis <- function(data = NULL,
     ggplot2::geom_point()+
     ggplot2::xlab("Probability")+
     ggplot2::scale_x_continuous(trans = scales::probability_trans("norm", lower.tail = FALSE),
-                                breaks = prob_scale_points#,
-                                # sec.axis = ggplot2::sec_axis(trans = ~1/.,
-                                #                              name = 'Return Period',
-                                #                              breaks = c(1.01,1.1,2,5,10,20,100,1000),
-                                #                              labels = function(x){ifelse(x < 2, x, round(x,0))}
-                                #                             )
-                                )+
+                                breaks = prob_scale_points,
+                                sec.axis = ggplot2::dup_axis(name = 'Return Period',
+                                                             labels = function(x){ifelse(1/x < 2, round(1/x,2), round(1/x,0))}
+                                )
+    )+
     ggplot2::scale_color_brewer(palette = "Set1") +
     ggplot2::theme_bw() +
     ggplot2::labs(color = paste0('Events')) +    
@@ -239,10 +239,10 @@ compute_frequency_analysis <- function(data = NULL,
   if(use_max){ freqplot <- freqplot + ggplot2::theme(legend.justification = c(1,0), legend.position = c(.98, 0.02))}
   if(!use_log){ freqplot <- freqplot + ggplot2::scale_y_log10(breaks = scales::pretty_breaks(n = 10))}
   if(use_log){ freqplot <- freqplot + ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 10))}
-  if(use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab("ln(Discharge (cms))")}  # adjust the Y axis label
-  if(use_log & !use_max){freqplot <- freqplot + ggplot2::ylab("ln(Discharge (cms))")}
-  if(!use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab("Discharge (cms)")}
-  if(!use_log & !use_max){freqplot <- freqplot + ggplot2::ylab("Discharge (cms)")}
+  if(use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab(expression(lnDischarge~(m^3/s)))}  # adjust the Y axis label
+  if(use_log & !use_max){freqplot <- freqplot + ggplot2::ylab(expression(lnDischarge~(m^3/s)))}
+  if(!use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab(expression(Discharge~(m^3/s)))}
+  if(!use_log & !use_max){freqplot <- freqplot + ggplot2::ylab(expression(Discharge~(m^3/s)))}
   
   #--------------------------------------------------------------
   # fit the distribution to each measure

@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 #' @description Plot the daily cumulative mean, median, maximum, minimum, and 5, 25, 75, 95th percentiles for each day of the year 
 #'    from a streamflow dataset. Plots the statistics from all daily cumulative values from all years, unless specified. 
 #'    Data calculated using calc_daily_cumulative_stats() function. Can plot individual years for comparision using the 
-#'    include_year argument. Defaults to volumetric cumulative flows, can use \code{use_yield} and \code{basin_area} to convert to 
+#'    add_year argument. Defaults to volumetric cumulative flows, can use \code{use_yield} and \code{basin_area} to convert to 
 #'    runoff yield.
 #'
 #' @inheritParams calc_daily_cumulative_stats
@@ -38,36 +38,64 @@
 #' @examples
 #' \dontrun{
 #' 
-#' plot_daily_cumulative_stats(station_number = "08NM116", 
-#'                             water_year = TRUE,
-#'                            water_year_start = 8)
-#'
+#' # Plot volume statistics
+#' plot_daily_cumulative_stats(station_number = "08NM116") 
+#' 
+#' # Plot yield statistics with default HYDAT basin area
+#' plot_daily_cumulative_stats(station_number = "08NM116",
+#'                             use_yield = TRUE) 
+#' 
+#' # Plot yield statistics with custom basin area
+#' plot_daily_cumulative_stats(station_number = "08NM116",
+#'                             use_yield = TRUE,
+#'                             basin_area = 800) 
 #' }
 #' @export
 
 
 
-plot_daily_cumulative_stats <- function(data = NULL,
+plot_daily_cumulative_stats <- function(data,
                                         dates = Date,
                                         values = Value,
                                         groups = STATION_NUMBER,
-                                        station_number = NULL,
+                                        station_number,
                                         use_yield = FALSE, 
-                                        basin_area = NA,
-                                        water_year = FALSE,
-                                        water_year_start = 10,
-                                        start_year = 0,
-                                        end_year = 9999,
-                                        exclude_years = NULL, 
+                                        basin_area,
+                                        water_year_start = 1,
+                                        start_year,
+                                        end_year,
+                                        exclude_years, 
                                         log_discharge = FALSE,
                                         include_title = FALSE,
-                                        include_year = NULL){
+                                        add_year){
   
   ## ARGUMENT CHECKS
   ## ---------------
   
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(add_year)) {
+    add_year = NULL
+  }
+  if (missing(basin_area)) {
+    basin_area = NA
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  
   log_discharge_checks(log_discharge) 
-  include_year_checks(include_year)
+  add_year_checks(add_year)
   include_title_checks(include_title)  
   
   
@@ -84,23 +112,19 @@ plot_daily_cumulative_stats <- function(data = NULL,
                                groups = as.character(substitute(groups)),
                                rm_other_cols = TRUE)
   
-  
-  if (water_year) {
-    # Create origin date to apply to flow_data and Q_daily later on
-    if (water_year_start==1)         {origin_date <- as.Date("1899-12-31")
-    } else if (water_year_start==2)  {origin_date <- as.Date("1899-01-31")
-    } else if (water_year_start==3)  {origin_date <- as.Date("1899-02-28")
-    } else if (water_year_start==4)  {origin_date <- as.Date("1899-03-31")
-    } else if (water_year_start==5)  {origin_date <- as.Date("1899-04-30")
-    } else if (water_year_start==6)  {origin_date <- as.Date("1899-05-31")
-    } else if (water_year_start==7)  {origin_date <- as.Date("1899-06-30")
-    } else if (water_year_start==8)  {origin_date <- as.Date("1899-07-31")
-    } else if (water_year_start==9)  {origin_date <- as.Date("1899-08-31")
-    } else if (water_year_start==10) {origin_date <- as.Date("1899-09-30")
-    } else if (water_year_start==11) {origin_date <- as.Date("1899-10-31")
-    } else if (water_year_start==12) {origin_date <- as.Date("1899-11-30")}
-  }  else {
-    origin_date <- as.Date("1899-12-31")
+  # Create origin date to apply to flow_data and Q_daily later on
+  if (water_year_start == 1)         {origin_date <- as.Date("1899-12-31")
+  } else if (water_year_start == 2)  {origin_date <- as.Date("1899-01-31")
+  } else if (water_year_start == 3)  {origin_date <- as.Date("1899-02-28")
+  } else if (water_year_start == 4)  {origin_date <- as.Date("1899-03-31")
+  } else if (water_year_start == 5)  {origin_date <- as.Date("1899-04-30")
+  } else if (water_year_start == 6)  {origin_date <- as.Date("1899-05-31")
+  } else if (water_year_start == 7)  {origin_date <- as.Date("1899-06-30")
+  } else if (water_year_start == 8)  {origin_date <- as.Date("1899-07-31")
+  } else if (water_year_start == 9)  {origin_date <- as.Date("1899-08-31")
+  } else if (water_year_start == 10) {origin_date <- as.Date("1899-09-30")
+  } else if (water_year_start == 11) {origin_date <- as.Date("1899-10-31")
+  } else if (water_year_start == 12) {origin_date <- as.Date("1899-11-30")
   }
   
   ## CALC STATS
@@ -110,7 +134,6 @@ plot_daily_cumulative_stats <- function(data = NULL,
                                              percentiles = c(5,25,75,95),
                                              use_yield = use_yield, 
                                              basin_area = ifelse(use_yield, basin_area, 0),
-                                             water_year = water_year,
                                              water_year_start = water_year_start,
                                              start_year = start_year,
                                              end_year = end_year,
@@ -125,45 +148,39 @@ plot_daily_cumulative_stats <- function(data = NULL,
   ## ADD YEAR IF SELECTED
   ## --------------------
   
-  if(!is.null(include_year)){
+  if(!is.null(add_year)){
     
-    year_data <- fill_missing_dates(data = flow_data, water_year = water_year, water_year_start = water_year_start)
-    year_data <- add_date_variables(data = year_data, water_year = water_year, water_year_start = water_year_start)
+    year_data <- fill_missing_dates(data = flow_data, water_year_start = water_year_start)
+    year_data <- add_date_variables(data = year_data, water_year_start = water_year_start)
     
     # Add cumulative flows
     if (use_yield){
-      year_data <- add_cumulative_yield(data = year_data, water_year = water_year, water_year_start = water_year_start, basin_area = basin_area)
+      year_data <- add_cumulative_yield(data = year_data, water_year_start = water_year_start, basin_area = basin_area)
       year_data$Cumul_Flow <- year_data$Cumul_Yield_mm
     } else {
-      year_data <- add_cumulative_volume(data = year_data, water_year = water_year, water_year_start = water_year_start)
+      year_data <- add_cumulative_volume(data = year_data, water_year_start = water_year_start)
       year_data$Cumul_Flow <- year_data$Cumul_Volume_m3
     }
     
-    if (water_year) {
-      year_data$AnalysisYear <- year_data$WaterYear
-      year_data$AnalysisDoY <- year_data$WaterDayofYear
-    }  else {
-      year_data$AnalysisYear <- year_data$Year
-      year_data$AnalysisDoY <- year_data$DayofYear
-    }
-    year_data <- dplyr::mutate(year_data, AnalysisDate = as.Date(AnalysisDoY, origin = origin_date))
-    year_data <- dplyr::filter(year_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
-    year_data <- dplyr::filter(year_data, !(AnalysisYear %in% exclude_years))
-    year_data <- dplyr::filter(year_data, AnalysisDoY < 366)
     
-    year_data <- dplyr::filter(year_data, AnalysisYear == include_year)
+    year_data <- dplyr::mutate(year_data, AnalysisDate = as.Date(DayofYear, origin = origin_date))
+    year_data <- dplyr::filter(year_data, WaterYear >= start_year & WaterYear <= end_year)
+    year_data <- dplyr::filter(year_data, !(WaterYear %in% exclude_years))
+    year_data <- dplyr::filter(year_data, DayofYear < 366)
+    
+    year_data <- dplyr::filter(year_data, WaterYear == add_year)
     
     year_data <- dplyr::select(year_data, STATION_NUMBER, AnalysisDate, Cumul_Flow)
     
-    # Add the daily data from include_year to the daily stats
+    # Add the daily data from add_year to the daily stats
     daily_stats <- dplyr::left_join(daily_stats, year_data, by = c("STATION_NUMBER", "AnalysisDate"))
     
-    # Warning if all daily values are NA from the include_year
+    # Warning if all daily values are NA from the add_year
     for (stn in unique(daily_stats$STATION_NUMBER)) {
       year_test <- dplyr::filter(daily_stats, STATION_NUMBER == stn)
       
       if(all(is.na(daily_stats$Cumul_Flow)))
-        warning("Daily data does not exist for the year listed in include_year and was not plotted.", call. = FALSE)
+        warning("Daily data does not exist for the year listed in add_year and was not plotted.", call. = FALSE)
     }
     
   } 
@@ -190,7 +207,9 @@ plot_daily_cumulative_stats <- function(data = NULL,
              ggplot2::geom_line(ggplot2::aes(y = Mean, colour = "Mean"), size = .7) +
              ggplot2::scale_fill_manual(values = c("Min-5th Percentile" = "orange" , "5th-25th Percentile" = "yellow",
                                                    "25th-75th Percentile" = "skyblue1", "75th-95th Percentile" = "dodgerblue2",
-                                                   "95th Percentile-Max" = "royalblue4")) +
+                                                   "95th Percentile-Max" = "royalblue4"),
+                                        breaks = c("95th Percentile-Max", "75th-95th Percentile", "25th-75th Percentile",
+                                                   "5th-25th Percentile", "Min-5th Percentile")) +
              ggplot2::scale_color_manual(values = c("Median" = "purple3", "Mean" = "springgreen4")) +
              {if (!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 7))} +
              {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10) )} +
@@ -200,11 +219,11 @@ plot_daily_cumulative_stats <- function(data = NULL,
              ggplot2::scale_x_date(date_labels = "%b", date_breaks = "1 month",
                                    limits = as.Date(c(NA, as.character(max(daily_stats$AnalysisDate)))), expand=c(0, 0)) +
              ggplot2::xlab("Day of Year")+
-             {if (!use_yield) ggplot2::ylab("Cumulative Discharge (cubic metres)")} +
-             {if (use_yield) ggplot2::ylab("Cumulative Runoff Yield (mm)")} +
+             {if (!use_yield) ggplot2::ylab(expression(Cumuative~Volume~(m^3)))} +
+             {if (use_yield) ggplot2::ylab("Cumulative Yield (mm)")} +
              ggplot2::theme_bw() +
-             ggplot2::labs(color = 'Daily Statistics', fill = "Daily Ranges") +
-             {if (include_title & .y != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nDaily Statistics'), fill = "Daily Ranges") } +
+             ggplot2::labs(color = 'Daily Statistics') +  
+             {if (include_title & .y != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nDaily Statistics')) } +   
              ggplot2::theme(axis.text = ggplot2::element_text(size = 10, colour = "grey25"),
                             axis.title = ggplot2::element_text(size = 12, colour = "grey25"),
                             axis.title.y = ggplot2::element_text(margin = ggplot2::margin(0,0,0,0)),
@@ -218,11 +237,12 @@ plot_daily_cumulative_stats <- function(data = NULL,
                             legend.box = "vertical",
                             legend.justification = "top",
                             legend.key.size = ggplot2::unit(0.4, "cm"),
-                            legend.spacing = ggplot2::unit(0, "cm")) +
-             ggplot2::guides(colour = ggplot2::guide_legend(order = 1), fill = ggplot2::guide_legend(order = 2)) +
-             {if (is.numeric(include_year)) ggplot2::geom_line(ggplot2::aes(y = Cumul_Flow, colour = "yr.colour"), size = 0.7) } +
-             {if (is.numeric(include_year)) ggplot2::scale_color_manual(values = c("Mean" = "paleturquoise", "Median" = "dodgerblue4", "yr.colour" = "red"),
-                                                                        labels = c("Mean", "Median", paste0(include_year, " Flows"))) }
+                            legend.spacing = ggplot2::unit(-0.4, "cm"),
+                            legend.background = ggplot2::element_blank()) +
+             ggplot2::guides(colour = ggplot2::guide_legend(order = 1), fill = ggplot2::guide_legend(order = 2, title = NULL)) +
+             {if (is.numeric(add_year)) ggplot2::geom_line(ggplot2::aes(y = Cumul_Flow, colour = "yr.colour"), size = 0.7) } +
+             {if (is.numeric(add_year)) ggplot2::scale_color_manual(values = c("Mean" = "paleturquoise", "Median" = "dodgerblue4", "yr.colour" = "red"),
+                                                                        labels = c("Mean", "Median", paste0(add_year, " Flows"))) }
          ))))
 
 

@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,28 +38,33 @@
 #' @examples
 #' \dontrun{
 #' 
-#' calc_annual_cumulative_stats(station_number = "08NM116", 
-#'                              water_year = TRUE, 
-#'                              water_year_start = 8,
-#'                              include_seasons = TRUE)
-#'
+#' # Calculate volume statistics
+#' calc_annual_cumulative_stats(station_number = "08NM116") 
+#' 
+#' # Calculate yield statistics with default HYDAT basin area
+#' calc_annual_cumulative_stats(station_number = "08NM116",
+#'                              use_yield = TRUE) 
+#' 
+#' # Calculate yield statistics with custom basin area
+#' calc_annual_cumulative_stats(station_number = "08NM116",
+#'                              use_yield = TRUE,
+#'                              basin_area = 800) 
 #' }
 #' @export
 
 
 
-calc_annual_cumulative_stats <- function(data = NULL,
+calc_annual_cumulative_stats <- function(data,
                                          dates = Date,
                                          values = Value,
                                          groups = STATION_NUMBER,
-                                         station_number = NULL,
+                                         station_number,
                                          use_yield = FALSE, 
-                                         basin_area = NA,
-                                         water_year = FALSE,
-                                         water_year_start = 10,
-                                         start_year = 0,
-                                         end_year = 9999,
-                                         exclude_years = NULL, 
+                                         basin_area,
+                                         water_year_start = 1,
+                                         start_year,
+                                         end_year,
+                                         exclude_years, 
                                          months = 1:12,
                                          include_seasons = FALSE,
                                          transpose = FALSE){
@@ -68,9 +73,29 @@ calc_annual_cumulative_stats <- function(data = NULL,
   
   ## ARGUMENT CHECKS
   ## ---------------
+  
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  if (missing(basin_area)) {
+    basin_area = NA
+  }
+  
 
   use_yield_checks(use_yield)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   transpose_checks(transpose)
   include_seasons_checks(include_seasons)
@@ -107,15 +132,13 @@ calc_annual_cumulative_stats <- function(data = NULL,
   ## PREPARE FLOW DATA
   ## -----------------
   
-  # Fill missing dates, add date variables, and add AnalysisYear
+  # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
-                             water_year_start = water_year_start,
-                             year = TRUE)
-  flow_data <- add_seasons(data = flow_data, water_year = water_year, water_year_start = water_year_start,
+                             water_year_start = water_year_start)
+  flow_data <- add_seasons(data = flow_data, water_year_start = water_year_start,
                            seasons_length = 6)
   flow_data <- dplyr::rename(flow_data, Seasons2 = Season)
-  flow_data <- add_seasons(data = flow_data, water_year = water_year, water_year_start = water_year_start,
+  flow_data <- add_seasons(data = flow_data, water_year_start = water_year_start,
                            seasons_length = 3)
   flow_data <- dplyr::rename(flow_data, Seasons4 = Season)
 
@@ -131,9 +154,10 @@ calc_annual_cumulative_stats <- function(data = NULL,
   
   
   # Filter data FOR SELECTED YEARS FOR REMAINDER OF CALCS
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
   
-  
+  # Stop if all data is NA
+  no_values_error(flow_data$daily_total)
   
   ## CALCULATE STATISTICS
   ## --------------------
@@ -141,13 +165,13 @@ calc_annual_cumulative_stats <- function(data = NULL,
   # Calculate annual stats
   flow_data_months <- dplyr::filter(flow_data, Month %in% months)
   
-  annual_stats <-   dplyr::summarize(dplyr::group_by(flow_data_months, STATION_NUMBER, AnalysisYear),
+  annual_stats <-   dplyr::summarize(dplyr::group_by(flow_data_months, STATION_NUMBER, WaterYear),
                                      Cumulative_total = sum(daily_total, na.rm = FALSE))
   annual_stats <- dplyr::ungroup(annual_stats)
   names(annual_stats)[names(annual_stats) == "Cumulative_total"] <- ifelse(!use_yield,
                                                                            paste("Total_Volume_m3"),
                                                                            paste("Total_Yield_mm"))
-  annual_stats <- dplyr::rename(annual_stats, Year = AnalysisYear)
+  annual_stats <- dplyr::rename(annual_stats, Year = WaterYear)
   
   
   
@@ -156,23 +180,23 @@ calc_annual_cumulative_stats <- function(data = NULL,
   if(include_seasons) {
     
     # Calculate two-seasons stats
-    seasons2_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, Seasons2),
+    seasons2_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear, Seasons2),
                                        Cumulative_total  = sum(daily_total, na.rm = FALSE))
     seasons2_stats <- dplyr::ungroup(seasons2_stats)
     seasons2_stats <- dplyr::mutate(seasons2_stats, Seasons2 = paste0(Seasons2, "_", ifelse(!use_yield, paste("Volume_m3"), paste("Yield_mm"))))
     s2_order <- unique(seasons2_stats$Seasons2)
     seasons2_stats <- tidyr::spread(seasons2_stats, Seasons2, Cumulative_total)
-    seasons2_stats <- dplyr::select(seasons2_stats, STATION_NUMBER, Year = AnalysisYear, s2_order)
+    seasons2_stats <- dplyr::select(seasons2_stats, STATION_NUMBER, Year = WaterYear, s2_order)
     
     
     # Calculate four-seasons stats
-    seasons4_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, AnalysisYear, Seasons4),
+    seasons4_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear, Seasons4),
                                        Cumulative_total  = sum(daily_total, na.rm = FALSE))
     seasons4_stats <- dplyr::ungroup(seasons4_stats)
     seasons4_stats <- dplyr::mutate(seasons4_stats, Seasons4 = paste0(Seasons4, "_", ifelse(!use_yield, paste("Volume_m3"), paste("Yield_mm"))))
     s4_order <- unique(seasons4_stats$Seasons4)
     seasons4_stats <- tidyr::spread(seasons4_stats, Seasons4, Cumulative_total)
-    seasons4_stats <- dplyr::select(seasons4_stats, STATION_NUMBER, Year = AnalysisYear, s4_order)
+    seasons4_stats <- dplyr::select(seasons4_stats, STATION_NUMBER, Year = WaterYear, s4_order)
   
     
     # Merge with annual stats  
@@ -200,7 +224,13 @@ calc_annual_cumulative_stats <- function(data = NULL,
   }
   
   # Give warning if any NA values
-  missing_complete_yr_warning(annual_stats[, 3:ncol(annual_stats)])
+  if (!transpose) {
+    missing_test <- dplyr::filter(annual_stats, !(Year %in% exclude_years))
+    missing_values_warning(missing_test[, 3:ncol(missing_test)])
+  } else {
+    missing_test <- dplyr::select(annual_stats, -dplyr::one_of(as.character(exclude_years)))
+    missing_values_warning(missing_test[, 3:ncol(missing_test)])
+  }
   
   
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary

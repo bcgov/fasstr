@@ -4,11 +4,10 @@
 \alias{calc_flow_percentile}
 \title{Calculate the percentile rank of a flow value}
 \usage{
-calc_flow_percentile(data = NULL, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number = NULL, roll_days = 1,
-  roll_align = "right", flow_value = NA, water_year = FALSE,
-  water_year_start = 10, start_year = 0, end_year = 9999,
-  exclude_years = NULL, complete_years = FALSE, months = 1:12)
+calc_flow_percentile(data, dates = Date, values = Value,
+  groups = STATION_NUMBER, station_number, roll_days = 1,
+  roll_align = "right", flow_value, water_year_start = 1, start_year,
+  end_year, exclude_years, complete_years = FALSE, months = 1:12)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -35,11 +34,7 @@ Leave blank if using \code{data} argument.}
 
 \item{flow_value}{A numeric flow value of which to determine the percentile rank. Required.}
 
-\item{water_year}{Logical value indicating whether to use water years to group data instead of calendar years. Water years 
-are designated by the calendar year in which they end. Default \code{FALSE}.}
-
-\item{water_year_start}{Numeric value indicating the month of the start of the water year. Used if \code{water_year = TRUE}. 
-Default \code{10}.}
+\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
@@ -62,14 +57,19 @@ Calculates the percentile, or percentile rank, of a discharge value compared to 
 \examples{
 \dontrun{
 
-
-calc_flow_percentile(station_number = "08NM116", 
-                     water_year = TRUE, 
-                     exclude_years = (1990, 1992:1994),
-                     flow_value = 10)
-
+# Calculate the percentile rank of a 10-cms flow value from a full record
 calc_flow_percentile(station_number = "08NM116", 
                      flow_value = 10)
 
+# Calculate the percentile rank of a 10-cms flow value from years with no missing data
+calc_flow_percentile(station_number = "08NM116", 
+                     complete_years = TRUE,
+                     flow_value = 10)
+                     
+# Calculate the percentile rank of a 10-cms flow value for June from years with no missing data
+calc_flow_percentile(station_number = "08NM116", 
+                     complete_years = TRUE,
+                     months = 6,
+                     flow_value = 10)
 }
 }

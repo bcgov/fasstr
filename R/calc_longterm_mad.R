@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,40 +25,59 @@
 #' @examples
 #' \dontrun{
 #' 
+#' # Calculate the long-term mean annual discharge (MAD) using only years with no missing data
 #' calc_longterm_mad(station_number = "08NM116", 
-#'             water_year = TRUE, 
-#'             exclude_years = (1990, 1992:1994))
+#'                   complete_years = TRUE)
 #' 
+#' # Calculate the long-term MAD and 5, 10 and 20-percent MADs using only years with no missing data
 #' calc_longterm_mad(station_number = "08NM116", 
-#'             percent_MAD = 20)
-#' 
+#'                   complete_years = TRUE,
+#'                   percent_MAD = c(5,10,20))
 #' }
 #' @export
 
 
-calc_longterm_mad <- function(data = NULL,
-                        dates = Date,
-                        values = Value,
-                        groups = STATION_NUMBER,
-                        station_number = NULL,
-                        roll_days = 1,
-                        roll_align = "right",
-                        water_year = FALSE,
-                        water_year_start = 10,
-                        start_year = 0,
-                        end_year = 9999,
-                        exclude_years = NULL,
-                        complete_years = FALSE,
-                        months = 1:12,
-                        percent_MAD = NA,
-                        transpose = FALSE){
+calc_longterm_mad <- function(data,
+                              dates = Date,
+                              values = Value,
+                              groups = STATION_NUMBER,
+                              station_number,
+                              roll_days = 1,
+                              roll_align = "right",
+                              water_year_start = 1,
+                              start_year,
+                              end_year,
+                              exclude_years,
+                              complete_years = FALSE,
+                              months = 1:12,
+                              percent_MAD,
+                              transpose = FALSE){
   
   
   ## ARGUMENT CHECKS
   ## ---------------
   
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
+  if (missing(start_year)) {
+    start_year = 0
+  }
+  if (missing(end_year)) {
+    end_year = 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years = NULL
+  }
+  if (missing(percent_MAD)) {
+    percent_MAD = NA
+  }
+  
   rolling_days_checks(roll_days, roll_align)
-  water_year_checks(water_year, water_year_start)
+  water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   complete_yrs_checks(complete_years)
   transpose_checks(transpose)
@@ -89,24 +108,28 @@ calc_longterm_mad <- function(data = NULL,
   ## PREPARE FLOW DATA
   ## -----------------
   
-  # Fill missing dates, add date variables, and add AnalysisYear
+  # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
-                             water_year = water_year, 
-                             water_year_start = water_year_start,
-                             year = TRUE)
+                             water_year_start = water_year_start)
   
   # Add rolling means to end of dataframe
   flow_data <- add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
   colnames(flow_data)[ncol(flow_data)] <- "RollingValue"
   
   # Filter for the selected year
-  flow_data <- dplyr::filter(flow_data, AnalysisYear >= start_year & AnalysisYear <= end_year)
-  flow_data <- dplyr::filter(flow_data, !(AnalysisYear %in% exclude_years))
+  flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
+  flow_data <- dplyr::filter(flow_data, !(WaterYear %in% exclude_years))
   flow_data <- dplyr::filter(flow_data, Month %in% months)
+  
+  # Stop if all data is NA
+  no_values_error(flow_data$RollingValue)
   
   # Remove incomplete years if selected
   flow_data <- filter_complete_yrs(complete_years = complete_years, 
                                    flow_data)
+  
+  # Stop if all data is NA
+  no_values_error(flow_data$RollingValue)
   
   # Give warning if any NA values
   missing_values_warning_noNA(flow_data$RollingValue)
@@ -115,12 +138,12 @@ calc_longterm_mad <- function(data = NULL,
   ## --------------------
   
   ltmad_stats <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER),
-                              LTMAD = mean(RollingValue, na.rm = TRUE))
+                                  LTMAD = mean(RollingValue, na.rm = TRUE))
   
   
   # Calculate the monthly and longterm percentiles
   if(!all(is.na(percent_MAD))) {
-    for (pcnt in percent_MAD) {
+    for (pcnt in unique(percent_MAD)) {
       ltmad_stats <- dplyr::mutate(ltmad_stats, Percent = LTMAD * pcnt / 100)
       names(ltmad_stats)[names(ltmad_stats) == "Percent"] <- paste0(pcnt, "%MAD")
       

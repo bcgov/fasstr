@@ -1,4 +1,4 @@
-# Copyright 2018 Province of British Columbia
+# Copyright 2019 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,25 +30,37 @@
 #' @examples
 #' \dontrun{
 #' 
-#' add_rolling_means(data = flow_data, roll_days = 7, roll_align = 'centre')
-#' 
+#' # Add default 3, 7, and 30-day rolling means, with "right" alignment
 #' add_rolling_means(station_number = "08NM116")
 #'
+#' # Add custom 5 and 10-day rolling means
+#' add_rolling_means(station_number = "08NM116",
+#'                   roll_days = c(5,10))
+#'                   
+#' # Add default 3, 7, and 30-day rolling means, with "left" alignment
+#' add_rolling_means(station_number = "08NM116",
+#'                   roll_align = "left")                
 #' }
 #' @export
 
 
-add_rolling_means <- function(data = NULL,
+add_rolling_means <- function(data,
                               dates = Date,
                               values = Value,
                               groups = STATION_NUMBER,
-                              station_number = NULL,
+                              station_number,
                               roll_days = c(3,7,30),
                               roll_align = "right"){
   
   
   ## ARGUMENT CHECKS
   ## ---------------
+  if (missing(data)) {
+    data = NULL
+  }
+  if (missing(station_number)) {
+    station_number = NULL
+  }
   
   rolling_days_checks(roll_days, roll_align, multiple = TRUE)
 
@@ -90,7 +102,7 @@ add_rolling_means <- function(data = NULL,
     flow_data_stn <- fill_missing_dates(data = flow_data_stn)
     
     # Add rolling means
-    for (x in roll_days) {
+    for (x in unique(roll_days)) {
       flow_data_stn[, paste0("Q", x, "Day")] <- RcppRoll::roll_mean(flow_data_stn$Value, n = x, fill = NA, align = roll_align)
     }
     
