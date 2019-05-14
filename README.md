@@ -10,11 +10,11 @@ status](https://travis-ci.org/bcgov/fasstr.svg?branch=master)](https://travis-ci
 </div>
 
 The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of
-[R](http://www.r-project.org) functions to clean/prepare, summarize,
-analyze, trend, and visualize streamflow data. This package summarizes
-continuous daily mean streamflow data into various daily, monthly,
-annual, and long-term statistics, completes annual trends and frequency
-analyses, in both table and plot formats.
+[R](http://www.r-project.org) functions to clean, summarize, analyze,
+trend, and visualize streamflow data. This package summarizes continuous
+daily mean streamflow data into various daily, monthly, annual, and
+long-term statistics, completes annual trends and frequency analyses, in
+both table and plot formats.
 
 ## Features
 
@@ -37,26 +37,26 @@ Useful features of functions include:
     database for analyses;
   - arguments for filtering of years and months in analyses and plotting
     (internally tidys your data);
-  - choosing water years for analyses instead of calendar years (and
-    choice of start month);
+  - choosing the start month of your water year;
   - selecting for rolling day averages (e.g. 7-day rolling average);
-  - plotting options;
-  - choosing how missing dates are handled.
+  - plotting options;and,
+  - choosing how missing dates are handled, amongst others.
 
 ## Installation
 
 To install the `fasstr` package, you need to install the `remotes`
-package then the `fasstr` package
+package then the `fasstr` package (the build\_opts argument allows for
+the installation of the vignettes):
 
 ``` r
 install.packages("remotes")
-remotes::install_github("bcgov/fasstr")
+remotes::install_github("bcgov/fasstr", build_opts = c("--no-resave-data", "--no-manual"))
 ```
 
 Then to call the `fasstr` functions you can either load the package
-using the `library()` function or access a specific function using a
-double-colon (e.g. `fasstr::calc_daily_stats()`). Several other packages
-will be installed in addition including
+using the `library(fasstr)` function or access a specific function using
+a double-colon (e.g. `fasstr::calc_daily_stats()`). Several other
+packages will be installed in addition including
 [tidyhydat](https://cran.r-project.org/web/packages/tidyhydat/index.html)
 for data gathering,
 [zyp](https://cran.r-project.org/web/packages/zyp/index.html) for
@@ -68,14 +68,33 @@ for creating plots, and
 various data wrangling and summarizing functions, amongst others. Many
 of the other packages are required for the frequency analysis functions.
 
-``` r
-library(fasstr)
-```
-
 To utilize the `tidyhydat` features, you will need to download a HYDAT
 database using the `tidyhydat::download_hydat()` function.
 
 ## Using fasstr
+
+### Vignettes
+
+To help users traverse their way (example code, analyses, reference
+tables, etc) through fasstr there are five vignettes: Users Guide,
+Trending Analysis Guide, Frequency Analysis Guide, Full Analysis Guide,
+and Under the Hood. The vignettes can be viewed using a few different
+ways. One is to view available vignettes in an HTML browser with links
+to each vignette:
+
+``` r
+browseVignettes("fasstr")
+```
+
+or each vignette can be displayed individually within a viewer:
+
+``` r
+vignette("fasstr_users_guide")
+vignette("fasstr_trending_analysis")
+vignette("fasstr_frequency_analysis")
+vignette("fasstr_full_analysis")
+vignette("fasstr_under_the_hood")
+```
 
 ### Data Input
 
