@@ -2,10 +2,10 @@
 title: "Computing a Full Analysis with fasstr"
 output: rmarkdown::html_vignette
 vignette: >
-%\VignetteIndexEntry{Computing a Full Analysis with fasstr}
+  %\VignetteIndexEntry{Computing a Full Analysis with fasstr}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-  ---
+---
   
   ```{r options, include=FALSE}
   knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")),

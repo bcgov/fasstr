@@ -2,10 +2,10 @@
 title: "fasstr R Package Users Guide"
 output: rmarkdown::html_vignette #pdf_document rmarkdown::html_vignette word_document
 vignette: >
-%\VignetteIndexEntry{fasstr R Package Users Guide}
+  %\VignetteIndexEntry{fasstr R Package Users Guide}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-  ---
+---
   
   ```{r options, include=FALSE}
 knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")),
