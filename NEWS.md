@@ -1,27 +1,29 @@
 fasstr 0.3.0
 =========================
 
-Updated: 09 May 2019
+Updated: 14 May 2019
 
 #### Updates:
 
-  * Renamed calc_longterm_stats and plot_longterm stats to calc_longterm_daily_stats and plot_longterm_daily_stats
-  * Renames 'include_year' argument to 'add_year' for some functions
   * Removed logical "water_year" argument and now "water_year_start" controls the start of year alone (default now 1 for January)
+  * Renamed calc_longterm_stats and plot_longterm stats to calc_longterm_daily_stats and plot_longterm_daily_stats
+  * Renamed 'include_year' argument to 'add_year' for some functions
   * complete_full_analysis just creates R objects; a new write_full_analysis saves the results in a single Excel document, with some plots in a plots folder; renamed 'sections' to 'analyses'
   * add_date_variables() outputs changed slightly to match new water_year_start argument
   * Replaced NULL and NA default values for function agruments to nothing, cleaning up documentation.
-  * Internal coding (MonthName levels coding cleaned up) 
   * Replaced the package writexls with openxls for more functionality
   * Plotting: changed facet wrap labels, changed trending symbols
   * WSC station numbers with lower-case letters now accepted (08nm116 and 08NM116 both work)
   * basin_area argument as list now will default to HYDAT area if not listed, otherwise NA
   * Return Period axis has returned to the frequency analysis plot
-  * Updated all documentation examples (more useful)
-  
+  * Updated all documentation examples
+  * Internal coding (MonthName levels coding cleaned up) 
+
 #### New:
 
-  * New calc_longterm_monthly_stats and plot_longterm_monthly_stats that summarizes annual monthly mean flows data
+  * calc_longterm_monthly_stats and plot_longterm_monthly_stats that summarizes annual monthly mean flows data
+  * calc_longterm_daily_stats and plot_longterm_daily_stats that summarizes daily mean flows data (calc_longterm_stats equivalent)
+  * write_full_analysis writes the full analysis and doesn't create any objects in R
   * testthat functions for testing package (internal usage)
 
   

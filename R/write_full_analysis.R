@@ -1541,6 +1541,9 @@ write_full_analysis <- function(data,
   openxlsx::writeData(wb = output_excel, sheet = overview_sheet, 
                       x = paste0("Analysis Date: ",as.character(Sys.time())), 
                       startCol = 1, startRow = 2)
+  openxlsx::writeData(wb = output_excel, sheet = overview_sheet, 
+                      x = "fasstr 0.3.0", 
+                      startCol = 1, startRow = 3)
   
   metadata <- list(data = ifelse(!is.null(data), as.character(substitute(data)), ""),
                    dates = as.character(substitute(Date)),
@@ -1572,18 +1575,18 @@ write_full_analysis <- function(data,
             data = metadata,
             title = paste0("Analysis Overview"),
             col = 1,
-            row = 4)
+            row = 5)
   
   
   if (5 %in% analyses | 6 %in% analyses) {
     openxlsx::writeData(wb = output_excel, sheet = overview_sheet, 
                         x = "Click for additional plots:", 
-                        startCol = 1, startRow = 24)
+                        startCol = 1, startRow = 25)
     link <- normalizePath(plot_dir)
     class(link) <- "hyperlink"
     openxlsx::writeData(wb = output_excel, sheet = overview_sheet, 
                         x = link,
-                        startCol = 1, startRow = 25)
+                        startCol = 1, startRow = 26)
   }
   
   
@@ -1603,7 +1606,7 @@ write_full_analysis <- function(data,
               data = hydat_info,
               title = paste0("HYDAT Station Information"),
               col = 5,
-              row = 4)
+              row = 5)
     
     openxlsx::setColWidths(wb = output_excel, sheet = overview_sheet, cols = c(5,6), widths = "auto")
     
