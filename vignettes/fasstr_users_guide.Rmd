@@ -37,11 +37,11 @@ This guide contains the following sections to help understand the usage of the f
 
 ### Installing and loading fasstr
 
-To install the `fasstr` you will first need to install `devtools`, if not already done so, and then `fasstr` using the following code. It may take a few moments as there are several dependecy packages will also be installed, including [tidyhydat](https://cran.r-project.org/web/packages/tidyhydat/index.html) for downloading Water Survey of Canada hydrometric data, [zyp](https://cran.r-project.org/web/packages/zyp/index.html) for trending, [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html) for creating plots, and [dplyr](https://cran.r-project.org/web/packages/dplyr/index.html) and [tidyr](https://cran.r-project.org/web/packages/tidyr/index.html) for various data wrangling and summarizing functions, amongst others. 
+To install the `fasstr` you will first need to install `remotes`, if not already done so, and then `fasstr` using the following code. It may take a few moments as there are several dependecy packages will also be installed, including [tidyhydat](https://cran.r-project.org/web/packages/tidyhydat/index.html) for downloading Water Survey of Canada hydrometric data, [zyp](https://cran.r-project.org/web/packages/zyp/index.html) for trending, [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html) for creating plots, and [dplyr](https://cran.r-project.org/web/packages/dplyr/index.html) and [tidyr](https://cran.r-project.org/web/packages/tidyr/index.html) for various data wrangling and summarizing functions, amongst others. 
 
 ```{r, echo=TRUE, eval=FALSE}
-install.packages("devtools")
-devtools::install_github("bcgov/fasstr", build_vignettes = TRUE)
+install.packages("remotes")
+remotes::install_github("bcgov/fasstr")
 ```
 
 To call the `fasstr` functions you can either load the package using the `library()` function or access a specific function using a double-colon (e.g. `fasstr::calc_daily_stats()`). `fasstr` also exports the pipe, ` %>%`, so it can be used for tidy workflows. For this vignette, the `dplyr` package will also be installed.
