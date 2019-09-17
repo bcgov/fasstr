@@ -6,10 +6,10 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-  
-  ```{r options, include=FALSE}
+
+```{r options, include=FALSE}
 knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")),
-warning = FALSE, 
+# warning = FALSE, 
 message = FALSE)
 ```
 

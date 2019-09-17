@@ -6,15 +6,15 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-  
-  ```{r options, include=FALSE}
-  knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")),
-  warning = FALSE, 
-  message = FALSE)
-  ```
-  
-  ```{r, include=FALSE}
-  library(fasstr)
+
+```{r options, include=FALSE}
+knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")),
+warning = FALSE, 
+message = FALSE)
+```
+
+```{r, include=FALSE}
+library(fasstr)
 library(dplyr)
 ```
 
@@ -186,16 +186,16 @@ plot_missing_dates(station_number = "08NM116",
 **Long-term_Monthly_Statistics_and_Percentiles**
 ```{r,  echo=FALSE, comment=NA}
 head(as.data.frame(calc_longterm_monthly_stats(station_number = "08NM116",
-                                             start_year = 1990, end_year = 2001,
-                                             percentiles = seq(5, 95, by = 5),
-                                             transpose = TRUE)))
+                                               start_year = 1990, end_year = 2001,
+                                               percentiles = seq(5, 95, by = 5),
+                                               transpose = TRUE)))
 ```
 
 **Long-term_Monthly_Statistics**
 
 ```{r,  echo=FALSE, fig.height = 2.5, fig.width = 7, comment=NA}
 plot_longterm_monthly_stats(station_number = "08NM116",
-                    start_year = 1990, end_year = 2001)[[1]]
+                            start_year = 1990, end_year = 2001)[[1]]
 ```
 
 **Long-term_Daily_Statistics_and_Percentiles**
@@ -210,7 +210,7 @@ head(as.data.frame(calc_longterm_daily_stats(station_number = "08NM116",
 
 ```{r,  echo=FALSE, fig.height = 2.5, fig.width = 7, comment=NA}
 plot_longterm_daily_stats(station_number = "08NM116",
-                    start_year = 1990, end_year = 2001)[[1]]
+                          start_year = 1990, end_year = 2001)[[1]]
 ```
 
 **Flow_Duration**
