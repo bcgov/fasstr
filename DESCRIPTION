@@ -5,7 +5,7 @@ Authors@R: c(person("Jon", "Goetz", email = "jon.goetz@gov.bc.ca", role = c("aut
              person("Carl James", "Schwarz", email = "cschwarz.stat.sfu.ca@gmail.com", role = "aut"),
              person("Robin", "Pike", email = "robin.g.pike@gov.bc.ca", role = "ctb"),
              person("Province of British Columbia", role = "cph"))
-Description: 'fasstr' (Flow Analysis Summary Statistics Tool for R) provides useful functions to tidy, 
+Description: This package, fasstr (Flow Analysis Summary Statistics Tool for R), provides useful functions to tidy, 
     analyze, and visualize daily streamflow time series data. This package provides functions with quick
     solutions for: screening for missing dates and outliers; summarizing and plotting various daily, month, 
     and long-term statistics; trending annual patterns; and computing low and high-flow frequency analyses. 
@@ -18,21 +18,21 @@ URL: https://github.com/bcgov/fasstr
 BugReports: https://github.com/bcgov/fasstr/issues
 Encoding: UTF-8
 Imports:
-    dplyr,
-    e1071,
-    fitdistrplus,
-    ggplot2,
+    dplyr (>= 0.8.1),
+    e1071 (>= 1.7.0.1),
+    fitdistrplus (>= 1.0.14),
+    ggplot2 (>= 3.1.0),
     grDevices,
-    lubridate,
-    PearsonDS,
-    plyr,
-    purrr,
-    RcppRoll,
-    scales,
-    tidyhydat,
-    tidyr,
-    openxlsx,
-    zyp
+    lubridate (>= 1.7.4),
+    PearsonDS (>= 1.1),
+    plyr (>= 1.8.4),
+    purrr (>= 0.3.2),
+    RcppRoll (>= 0.3.0),
+    scales (>= 1.0.0),
+    tidyhydat (>= 0.4.0),
+    tidyr (>= 0.8.3),
+    openxlsx (>= 4.1.0),
+    zyp (>= 0.10.1.1)
 Suggests: 
     knitr,
     rmarkdown,

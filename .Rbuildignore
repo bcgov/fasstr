@@ -7,3 +7,6 @@
 ^README-.*\.png$
 ^testing$
 ^\.travis\.yml$
+^cran-comments.md$
+^release_process.md$
+^fasstr_cheatsheet.pdf$

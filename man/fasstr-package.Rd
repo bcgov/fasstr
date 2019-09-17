@@ -6,7 +6,7 @@
 \alias{fasstr-package}
 \title{fasstr: Tools for Streamflow Data Tidying, Analyses, and Visualization}
 \description{
-'fasstr' (Flow Analysis Summary Statistics Tool for R) provides useful functions to tidy, 
+This package, fasstr (Flow Analysis Summary Statistics Tool for R), provides useful functions to tidy, 
     analyze, and visualize daily streamflow time series data. This package provides functions with quick
     solutions for: screening for missing dates and outliers; summarizing and plotting various daily, month, 
     and long-term statistics; trending annual patterns; and computing low and high-flow frequency analyses. 
