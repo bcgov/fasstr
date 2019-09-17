@@ -148,7 +148,7 @@ calc_daily_cumulative_stats <- function(data,
   flow_data <- dplyr::filter(flow_data, DayofYear < 366)
   
   # Stop if all data is NA
-  no_values_error(flow_data$Cumul_Flow)
+ # no_values_error(flow_data$Cumul_Flow)
   
   #if (all(is.na(flow_data$Cumul_Flow))) 
   #  stop("No basin_area values provided or extracted from HYDAT. Use basin_area argument to supply one.", call. = FALSE)

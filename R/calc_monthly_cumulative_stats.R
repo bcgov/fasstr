@@ -148,7 +148,7 @@ calc_monthly_cumulative_stats <- function(data,
   flow_data <- dplyr::filter(flow_data, !(WaterYear %in% exclude_years))
   
   # Stop if all data is NA
-  no_values_error(flow_data$Cumul_Total)
+  #no_values_error(flow_data$Cumul_Total)
   
   # if (all(is.na(flow_data$Cumul_Total))) 
   #   stop("No basin_area values provided or extracted from HYDAT. Use basin_area argument to supply one.", call. = FALSE)
@@ -167,7 +167,7 @@ calc_monthly_cumulative_stats <- function(data,
   flow_data <- dplyr::select(flow_data, -complete_yr)
   
   # Stop if all data is NA
-  no_values_error(flow_data$Cumul_Total)
+ # no_values_error(flow_data$Cumul_Total)
   
   ## CALCULATE STATISTICS
   ## --------------------
