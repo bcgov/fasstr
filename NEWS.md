@@ -1,3 +1,14 @@
+fasstr 0.3.1
+=========================
+
+Updated: 17 Sept 2019
+
+#### Updates:
+
+  * added/modified files in prep for CRAN submission
+  * fixed vignette coding errors
+
+
 fasstr 0.3.0
 =========================
 
