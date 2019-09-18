@@ -73,37 +73,6 @@ database using the `tidyhydat::download_hydat()` function.
 
 ## Using fasstr
 
-### Vignettes
-
-To help users traverse their way (example code, analyses, reference
-tables, etc) through fasstr there are five vignettes: Users Guide,
-Trending Analysis Guide, Frequency Analysis Guide, Full Analysis Guide,
-and Under the Hood. To install the vignettes, you must (re)install
-fasstr with the following code after a HYDAT file has been installed
-using `tidyhydat::download_hydat()`:
-
-``` r
-install.packages("remotes")
-remotes::install_github("bcgov/fasstr", build_opts = c("--no-resave-data", "--no-manual"))
-```
-
-The vignettes can be viewed using a few different ways. One is to view
-available vignettes in an HTML browser with links to each vignette:
-
-``` r
-browseVignettes("fasstr")
-```
-
-or each vignette can be displayed individually within a viewer:
-
-``` r
-vignette("fasstr_users_guide")
-vignette("fasstr_trending_analysis")
-vignette("fasstr_frequency_analysis")
-vignette("fasstr_full_analysis")
-vignette("fasstr_under_the_hood")
-```
-
 ### Data Input
 
 All functions in `fasstr` require a daily mean streamflow dataset from
