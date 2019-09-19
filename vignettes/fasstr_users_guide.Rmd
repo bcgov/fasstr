@@ -14,7 +14,7 @@ message = FALSE)
 ```
 
 
-fasstr, the Flow Analysis Summary Statistics Tool for R, is a set of [R](http://www.r-project.org) functions to prepare, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.
+fasstr, the Flow Analysis Summary Statistics Tool for R, is a set of [R](https://www.r-project.org/) functions to prepare, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.
 
 This vignette documents the usage of the many functions and arguments provided in fasstr. This vignette is a high-level adjunct to the details found in the various function documentations (see `help(package = "fasstr")` for documentations). You’ll learn how to install the package and a HYDAT database, input data into fasstr functions, add relevant columns and rows to daily data, screen data for outliers and missing dates, calculate and visualize various summary statistics, trend annual flows, and complete volume frequency analyses.
 
@@ -37,7 +37,7 @@ This guide contains the following sections to help understand the usage of the f
 
 ### Installing and loading fasstr
 
-To install the `fasstr` you will first need to install `remotes`, if not already done so, and then `fasstr` using the following code. It may take a few moments as there are several dependecy packages will also be installed, including [tidyhydat](https://cran.r-project.org/web/packages/tidyhydat/index.html) for downloading Water Survey of Canada hydrometric data, [zyp](https://cran.r-project.org/web/packages/zyp/index.html) for trending, [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html) for creating plots, and [dplyr](https://cran.r-project.org/web/packages/dplyr/index.html) and [tidyr](https://cran.r-project.org/web/packages/tidyr/index.html) for various data wrangling and summarizing functions, amongst others. 
+To install the `fasstr` you will first need to install `remotes`, if not already done so, and then `fasstr` using the following code. It may take a few moments as there are several dependecy packages will also be installed, including [tidyhydat](https://CRAN.R-project.org/package=tidyhydayt) for downloading Water Survey of Canada hydrometric data, [zyp](https://CRAN.R-project.org/package=zyp) for trending, [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html) for creating plots, and [dplyr](https://CRAN.R-project.org/package=dplyr) and [tidyr](https://CRAN.R-project.org/package=tidyr) for various data wrangling and summarizing functions, amongst others. 
 
 ```{r, echo=TRUE, eval=FALSE}
 install.packages("remotes")
@@ -130,7 +130,7 @@ fasstr provides various functions to help in streamflow analyses. They can be ge
 
 ### Tibble Data Frames
 
-Functions that produce tables create them as tibble data frames, which are a more modern take on data frames. More information on tibbles can be found [here](https://cran.r-project.org/web/packages/tibble/vignettes/tibble.html). To facilitate the writing of the fasstr tibbles to a directory as .csv, .xls, or .xlsx files with some functionality of rounding digits, the `write_results()` function can be used (see section 9 for more information)..
+Functions that produce tables create them as tibble data frames, which are a more modern take on data frames. To facilitate the writing of the fasstr tibbles to a directory as .csv, .xls, or .xlsx files with some functionality of rounding digits, the `write_results()` function can be used (see section 9 for more information)..
 
 ### ggplot2 Plots
 
@@ -719,7 +719,7 @@ There are several functions that provide more in-depth analyses. These functions
 
 ### Annual Trending Analysis
 
-The `compute_annual_trends()` function calculates prewhitened non-parametric annual trends on streamflow data using the [zyp](https://cran.r-project.org/web/packages/zyp/index.html) package. The function calculates various annual metrics using the `calc_all_annual_stats()` function and then calculates and plots the trending data. The magnitude of trends is first computed using the Theil-Sen approach. Depending on the selected method, either `"zhang"` or `"yuepilon"`, the trends are adjusted for autocorrelation and then a Mann-Kendall test for trend is applied to the series. See the [zyp](https://cran.r-project.org/web/packages/zyp/index.html) package and the [trending vignette](fasstr_trending_analysis.html) for more information on the analysis.
+The `compute_annual_trends()` function calculates prewhitened non-parametric annual trends on streamflow data using the [zyp](https://CRAN.R-project.org/package=zyp) package. The function calculates various annual metrics using the `calc_all_annual_stats()` function and then calculates and plots the trending data. The magnitude of trends is first computed using the Theil-Sen approach. Depending on the selected method, either `"zhang"` or `"yuepilon"`, the trends are adjusted for autocorrelation and then a Mann-Kendall test for trend is applied to the series. See the [zyp](https://CRAN.R-project.org/package=zyp) package and the [trending vignette](fasstr_trending_analysis.html) for more information on the analysis.
 
 The `compute_annual_trends()` function outputs several objects in a list:
 

@@ -17,7 +17,7 @@ library(fasstr)
 ```
 
 
-The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http://www.r-project.org) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
+The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](https://www.r-project.org/) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
 
 This vignette documents the usage of the `compute_annual_trends()` function in fasstr. This vignette is a high-level adjunct to the details found in the function documentation (see `?compute_annual_trends()`). You’ll learn what arguments to provide to the function to customize your analysis, what analyses are computed, and what outputs are produced.
 

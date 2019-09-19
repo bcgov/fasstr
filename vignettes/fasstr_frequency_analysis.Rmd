@@ -16,7 +16,7 @@ library(fasstr)
 ```
 
 
-The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http://www.r-project.org) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
+The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](https://www.r-project.org/) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
 
 This vignette guide contains a guide on the various volume frequency analysis functions found in fasstr to plot frequency data and determine frequency quantile statistics. The methods for these analysis follow those used in the US Army Corps of Engineers HEC-SSP Statistical Software Package. See this [website](http://www.hec.usace.army.mil/software/hec-ssp/) for more information on the software and links to their User Manual for more in-depth information. In this vignette you’ll learn what functions to use for specific analyeses, arguments to provide to functions to customize your analyses, what analyses are computed, and what outputs are produced.
 
@@ -159,7 +159,7 @@ freq_analysis$Freq_Plot
 
 #### Curve Fitting Parameters
 
-The computed curve is calculated using the [fitdistrplus](https://cran.r-project.org/web/packages/fitdistrplus/index.html) package, and the results from the function are saved in the **Freq_Fitting** object in the list. The fitdist object contains information regarding the fitting process, including the shape, location, and scale parameters, amongst other statistics.  See the fitdistrplus documentation for more information what is provided. As per the documentation, there are several ways to view the fitdist object, three of these including using the generic print(), summary() and plot() functions. See the following examples for how to view some of the fitting information.
+The computed curve is calculated using the [fitdistrplus](https://CRAN.R-project.org/package=fitdistrplus) package, and the results from the function are saved in the **Freq_Fitting** object in the list. The fitdist object contains information regarding the fitting process, including the shape, location, and scale parameters, amongst other statistics.  See the fitdistrplus documentation for more information what is provided. As per the documentation, there are several ways to view the fitdist object, three of these including using the generic print(), summary() and plot() functions. See the following examples for how to view some of the fitting information.
 
 ```{r, echo=TRUE, comment=NA}
 print(freq_analysis$Freq_Fitting$`7-Day`)
