@@ -26,32 +26,32 @@
 #' \dontrun{
 #' 
 #' # Calculate the long-term mean annual discharge (MAD) using only years with no missing data
-#' calc_longterm_mad(station_number = "08NM116", 
-#'                   complete_years = TRUE)
+#' calc_longterm_mean(station_number = "08NM116", 
+#'                    complete_years = TRUE)
 #' 
 #' # Calculate the long-term MAD and 5, 10 and 20-percent MADs using only years with no missing data
-#' calc_longterm_mad(station_number = "08NM116", 
-#'                   complete_years = TRUE,
-#'                   percent_MAD = c(5,10,20))
+#' calc_longterm_mean(station_number = "08NM116", 
+#'                    complete_years = TRUE,
+#'                    percent_MAD = c(5,10,20))
 #' }
 #' @export
 
 
-calc_longterm_mad <- function(data,
-                              dates = Date,
-                              values = Value,
-                              groups = STATION_NUMBER,
-                              station_number,
-                              roll_days = 1,
-                              roll_align = "right",
-                              water_year_start = 1,
-                              start_year,
-                              end_year,
-                              exclude_years,
-                              complete_years = FALSE,
-                              months = 1:12,
-                              percent_MAD,
-                              transpose = FALSE){
+calc_longterm_mean <- function(data,
+                               dates = Date,
+                               values = Value,
+                               groups = STATION_NUMBER,
+                               station_number,
+                               roll_days = 1,
+                               roll_align = "right",
+                               water_year_start = 1,
+                               start_year,
+                               end_year,
+                               exclude_years,
+                               complete_years = FALSE,
+                               months = 1:12,
+                               percent_MAD,
+                               transpose = FALSE){
   
   
   ## ARGUMENT CHECKS

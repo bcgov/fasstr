@@ -2,12 +2,12 @@
 title: "fasstr R Package Users Guide"
 output: rmarkdown::html_vignette #pdf_document rmarkdown::html_vignette word_document
 vignette: >
-  %\VignetteIndexEntry{fasstr R Package Users Guide}
+%\VignetteIndexEntry{fasstr R Package Users Guide}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
----
-
-```{r options, include=FALSE}
+  ---
+  
+  ```{r options, include=FALSE}
 knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")),
 # warning = FALSE, 
 message = FALSE)
@@ -37,7 +37,7 @@ This guide contains the following sections to help understand the usage of the f
 
 ### Installing and loading fasstr
 
-To install the `fasstr` you will first need to install `remotes`, if not already done so, and then `fasstr` using the following code. It may take a few moments as there are several dependecy packages will also be installed, including [tidyhydat](https://CRAN.R-project.org/package=tidyhydayt) for downloading Water Survey of Canada hydrometric data, [zyp](https://CRAN.R-project.org/package=zyp) for trending, [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html) for creating plots, and [dplyr](https://CRAN.R-project.org/package=dplyr) and [tidyr](https://CRAN.R-project.org/package=tidyr) for various data wrangling and summarizing functions, amongst others. 
+To install the `fasstr` you will first need to install `remotes`, if not already done so, and then `fasstr` using the following code. It may take a few moments as there are several dependecy packages will also be installed, including [tidyhydat](https://CRAN.R-project.org/package=tidyhydat) for downloading Water Survey of Canada hydrometric data, [zyp](https://CRAN.R-project.org/package=zyp) for trending, [ggplot2](https://CRAN.R-project.org/package=ggplot2) for creating plots, and [dplyr](https://CRAN.R-project.org/package=dplyr) and [tidyr](https://CRAN.R-project.org/package=tidyr) for various data wrangling and summarizing functions, amongst others. 
 
 ```{r, echo=TRUE, eval=FALSE}
 install.packages("remotes")
@@ -583,16 +583,16 @@ plot_daily_cumulative_stats(station_number = "08NM116",
 
 The functions summarize the data over the entire record:
 
-- `calc_longterm_mad()` - calculate the long-term mean annual discharge
+- `calc_longterm_mean()` - calculate the long-term mean annual discharge
 - `calc_longterm_percentile()` - calculate the long-term percentiles
 - `calc_flow_percentile()` - calculate the percentile rank of a flow value
 
-`calc_longterm_mad()` calculates the mean of all the daily flows. It can also be known as the long-term mean annual discharge, MAD.
+`calc_longterm_mean()` calculates the mean of all the daily flows. It can also be known as the long-term mean annual discharge, MAD.
 
 ```{r,  echo=TRUE, comment=NA}
-calc_longterm_mad(station_number = "08NM116", 
-                  start_year = 1974,
-                  percent_MAD = c(5,10,20))
+calc_longterm_mean(station_number = "08NM116", 
+                   start_year = 1974,
+                   percent_MAD = c(5,10,20))
 ```
 
 `calc_longterm_percentile()` calculates the selected long-term percentiles of all the daily flow values.
