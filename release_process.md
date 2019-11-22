@@ -27,7 +27,7 @@ check_on_macos()
 ## Run this in the console
 ```
 R CMD build fasstr
-R CMD check fasstr_0.3.0.tar.gz --as-cran ## or whatever the package name is
+R CMD check fasstr_0.3.1.tar.gz --as-cran ## or whatever the package name is
 ```
 
 ## Documentation

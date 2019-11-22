@@ -1,12 +1,13 @@
 fasstr 0.3.1
 =========================
 
-Updated: 17 Sept 2019
+Updated: 21 Nov 2019
 
 #### Updates:
 
   * added/modified files in prep for CRAN submission
   * fixed vignette coding errors
+  * renamed function calc_longterm_mad to calc_longterm_mean
 
 
 fasstr 0.3.0
