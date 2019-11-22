@@ -4,10 +4,22 @@
 \alias{calc_flow_percentile}
 \title{Calculate the percentile rank of a flow value}
 \usage{
-calc_flow_percentile(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, roll_days = 1,
-  roll_align = "right", flow_value, water_year_start = 1, start_year,
-  end_year, exclude_years, complete_years = FALSE, months = 1:12)
+calc_flow_percentile(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  roll_days = 1,
+  roll_align = "right",
+  flow_value,
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  complete_years = FALSE,
+  months = 1:12
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

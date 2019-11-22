@@ -4,9 +4,15 @@
 \alias{add_cumulative_yield}
 \title{Add daily cumulative runoff yield flows on an annual basis}
 \usage{
-add_cumulative_yield(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, basin_area,
-  water_year_start = 1)
+add_cumulative_yield(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  basin_area,
+  water_year_start = 1
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

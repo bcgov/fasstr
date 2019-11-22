@@ -4,8 +4,7 @@
 \alias{add_date_variables}
 \title{Add year, month, and day of year variables}
 \usage{
-add_date_variables(data, dates = Date, station_number,
-  water_year_start = 1)
+add_date_variables(data, dates = Date, station_number, water_year_start = 1)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

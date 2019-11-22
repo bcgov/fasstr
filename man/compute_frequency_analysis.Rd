@@ -4,14 +4,21 @@
 \alias{compute_frequency_analysis}
 \title{Perform a custom annual frequency analysis}
 \usage{
-compute_frequency_analysis(data, events = Year, values = Value,
-  measures = Measure, use_max = FALSE, use_log = FALSE,
+compute_frequency_analysis(
+  data,
+  events = Year,
+  values = Value,
+  measures = Measure,
+  use_max = FALSE,
+  use_log = FALSE,
   prob_plot_position = c("weibull", "median", "hazen"),
-  prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5, 0.2, 0.1, 0.02,
-  0.01, 0.001, 1e-04), fit_distr = c("PIII", "weibull"),
+  prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5, 0.2, 0.1, 0.02, 0.01, 0.001,
+    1e-04),
+  fit_distr = c("PIII", "weibull"),
   fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
-  fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1,
-  0.05, 0.01), plot_curve = TRUE)
+  fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1, 0.05, 0.01),
+  plot_curve = TRUE
+)
 }
 \arguments{
 \item{data}{A data frame of flow data that contains columns of events, flow values, and measures (data type).}

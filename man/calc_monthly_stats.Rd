@@ -4,11 +4,24 @@
 \alias{calc_monthly_stats}
 \title{Calculate monthly summary statistics}
 \usage{
-calc_monthly_stats(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, percentiles = c(10, 90),
-  roll_days = 1, roll_align = "right", water_year_start = 1,
-  start_year, end_year, exclude_years, months = 1:12,
-  transpose = FALSE, spread = FALSE, ignore_missing = FALSE)
+calc_monthly_stats(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  percentiles = c(10, 90),
+  roll_days = 1,
+  roll_align = "right",
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  months = 1:12,
+  transpose = FALSE,
+  spread = FALSE,
+  ignore_missing = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

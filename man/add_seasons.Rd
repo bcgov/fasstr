@@ -4,8 +4,13 @@
 \alias{add_seasons}
 \title{Add a column of seasons}
 \usage{
-add_seasons(data, dates = Date, station_number, water_year_start = 1,
-  seasons_length)
+add_seasons(
+  data,
+  dates = Date,
+  station_number,
+  water_year_start = 1,
+  seasons_length
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

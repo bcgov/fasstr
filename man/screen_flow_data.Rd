@@ -4,10 +4,20 @@
 \alias{screen_flow_data}
 \title{Calculate annual summary and missing data statistics}
 \usage{
-screen_flow_data(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, roll_days = 1,
-  roll_align = "right", water_year_start = 1, start_year, end_year,
-  months = 1:12, transpose = FALSE)
+screen_flow_data(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  roll_days = 1,
+  roll_align = "right",
+  water_year_start = 1,
+  start_year,
+  end_year,
+  months = 1:12,
+  transpose = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

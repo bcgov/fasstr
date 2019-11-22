@@ -4,13 +4,27 @@
 \alias{plot_longterm_monthly_stats}
 \title{Plot long-term summary statistics from annual monthly mean flows}
 \usage{
-plot_longterm_monthly_stats(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, roll_days = 1,
-  roll_align = "right", water_year_start = 1, start_year, end_year,
-  exclude_years, complete_years = FALSE, ignore_missing = FALSE,
-  include_extremes = TRUE, inner_percentiles = c(25, 75),
-  outer_percentiles = c(5, 95), add_year, log_discharge = TRUE,
-  include_title = FALSE)
+plot_longterm_monthly_stats(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  roll_days = 1,
+  roll_align = "right",
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  complete_years = FALSE,
+  ignore_missing = FALSE,
+  include_extremes = TRUE,
+  inner_percentiles = c(25, 75),
+  outer_percentiles = c(5, 95),
+  add_year,
+  log_discharge = TRUE,
+  include_title = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

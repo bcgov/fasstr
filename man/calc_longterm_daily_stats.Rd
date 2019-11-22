@@ -4,12 +4,27 @@
 \alias{calc_longterm_daily_stats}
 \title{Calculate long-term summary statistics from daily mean flows}
 \usage{
-calc_longterm_daily_stats(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, percentiles = c(10, 90),
-  roll_days = 1, roll_align = "right", water_year_start = 1,
-  start_year, end_year, exclude_years, months = 1:12,
-  complete_years = FALSE, include_longterm = TRUE, custom_months,
-  custom_months_label, transpose = FALSE, ignore_missing = FALSE)
+calc_longterm_daily_stats(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  percentiles = c(10, 90),
+  roll_days = 1,
+  roll_align = "right",
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  months = 1:12,
+  complete_years = FALSE,
+  include_longterm = TRUE,
+  custom_months,
+  custom_months_label,
+  transpose = FALSE,
+  ignore_missing = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

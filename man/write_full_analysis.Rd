@@ -4,11 +4,24 @@
 \alias{write_full_analysis}
 \title{Write a suite of tables and plots from various fasstr functions into a directory}
 \usage{
-write_full_analysis(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, analyses = 1:7, basin_area,
-  water_year_start = 1, start_year, end_year, exclude_years,
-  ignore_missing = FALSE, zyp_method = "yuepilon", zyp_alpha,
-  file_name, plot_filetype = "pdf")
+write_full_analysis(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  analyses = 1:7,
+  basin_area,
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  ignore_missing = FALSE,
+  zyp_method = "yuepilon",
+  zyp_alpha,
+  file_name,
+  plot_filetype = "pdf"
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

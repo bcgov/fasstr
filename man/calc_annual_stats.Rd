@@ -4,11 +4,23 @@
 \alias{calc_annual_stats}
 \title{Calculate annual summary statistics}
 \usage{
-calc_annual_stats(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, roll_days = 1,
-  roll_align = "right", percentiles = c(10, 90),
-  water_year_start = 1, start_year, end_year, exclude_years,
-  months = 1:12, transpose = FALSE, ignore_missing = FALSE)
+calc_annual_stats(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  roll_days = 1,
+  roll_align = "right",
+  percentiles = c(10, 90),
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  months = 1:12,
+  transpose = FALSE,
+  ignore_missing = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

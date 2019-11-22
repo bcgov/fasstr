@@ -4,11 +4,24 @@
 \alias{plot_annual_stats}
 \title{Plot annual summary statistics}
 \usage{
-plot_annual_stats(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, percentiles, roll_days = 1,
-  roll_align = "right", water_year_start = 1, start_year, end_year,
-  exclude_years, months = 1:12, ignore_missing = FALSE,
-  log_discharge = FALSE, include_title = FALSE)
+plot_annual_stats(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  percentiles,
+  roll_days = 1,
+  roll_align = "right",
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  months = 1:12,
+  ignore_missing = FALSE,
+  log_discharge = FALSE,
+  include_title = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

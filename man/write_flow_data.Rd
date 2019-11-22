@@ -4,10 +4,21 @@
 \alias{write_flow_data}
 \title{Write a streamflow dataset as a .xlsx, .xls, or .csv file}
 \usage{
-write_flow_data(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, water_year_start = 1,
-  start_year, end_year, start_date, end_date, file_name,
-  fill_missing = FALSE, digits)
+write_flow_data(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  water_year_start = 1,
+  start_year,
+  end_year,
+  start_date,
+  end_date,
+  file_name,
+  fill_missing = FALSE,
+  digits
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

@@ -4,8 +4,16 @@
 \alias{write_plots}
 \title{Write plots from a list into a directory or PDF document}
 \usage{
-write_plots(plots, folder_name, plot_filetype, width, height,
-  units = "in", dpi = 300, combined_pdf = FALSE)
+write_plots(
+  plots,
+  folder_name,
+  plot_filetype,
+  width,
+  height,
+  units = "in",
+  dpi = 300,
+  combined_pdf = FALSE
+)
 }
 \arguments{
 \item{plots}{List of plots to write to disk.}

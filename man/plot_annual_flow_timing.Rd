@@ -4,10 +4,19 @@
 \alias{plot_annual_flow_timing}
 \title{Plot annual flow timing}
 \usage{
-plot_annual_flow_timing(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, percent_total = c(25, 33.3,
-  50, 75), water_year_start = 1, start_year, end_year, exclude_years,
-  include_title = FALSE)
+plot_annual_flow_timing(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  percent_total = c(25, 33.3, 50, 75),
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  include_title = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

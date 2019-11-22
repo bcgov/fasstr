@@ -4,11 +4,22 @@
 \alias{calc_annual_lowflows}
 \title{Calculate annual lowflows}
 \usage{
-calc_annual_lowflows(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, roll_days = c(1, 3, 7, 30),
-  roll_align = "right", water_year_start = 1, start_year, end_year,
-  exclude_years, months = 1:12, transpose = FALSE,
-  ignore_missing = FALSE)
+calc_annual_lowflows(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  roll_days = c(1, 3, 7, 30),
+  roll_align = "right",
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  months = 1:12,
+  transpose = FALSE,
+  ignore_missing = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).

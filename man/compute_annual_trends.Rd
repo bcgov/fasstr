@@ -4,14 +4,30 @@
 \alias{compute_annual_trends}
 \title{Calculate prewhitened nonlinear annual trends on streamflow data}
 \usage{
-compute_annual_trends(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, zyp_method, basin_area,
-  water_year_start = 1, start_year, end_year, exclude_years,
-  annual_percentiles = c(10, 90), monthly_percentiles = c(10, 20),
-  stats_days = 1, stats_align = "right", lowflow_days = c(1, 3, 7,
-  30), lowflow_align = "right", timing_percent = c(25, 33, 50, 75),
-  normal_percentiles = c(25, 75), ignore_missing = FALSE,
-  include_plots = TRUE, zyp_alpha)
+compute_annual_trends(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  zyp_method,
+  basin_area,
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  annual_percentiles = c(10, 90),
+  monthly_percentiles = c(10, 20),
+  stats_days = 1,
+  stats_align = "right",
+  lowflow_days = c(1, 3, 7, 30),
+  lowflow_align = "right",
+  timing_percent = c(25, 33, 50, 75),
+  normal_percentiles = c(25, 75),
+  ignore_missing = FALSE,
+  include_plots = TRUE,
+  zyp_alpha
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -93,7 +109,7 @@ A list of tibbles and optional plots from the trending analysis including:
 }
 \description{
 Calculates prewhitened nonlinear trends on annual streamflow data. Uses the
-   \href{https://cran.r-project.org/web/packages/zyp/index.html}{'zyp'} package to trend. Review 'zyp' to understand its methology.
+   \href{https://CRAN.R-project.org/package=zyp}{'zyp'} package to trend. Review 'zyp' to understand its methology.
    All annual statistics calculated using the calc_all_annual_stats() function which uses the following fasstr functions:
 \itemize{
  \item{calc_annual_stats()}

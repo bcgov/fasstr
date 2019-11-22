@@ -4,10 +4,22 @@
 \alias{calc_annual_cumulative_stats}
 \title{Calculate annual (and seasonal) cumulative flows}
 \usage{
-calc_annual_cumulative_stats(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, use_yield = FALSE,
-  basin_area, water_year_start = 1, start_year, end_year, exclude_years,
-  months = 1:12, include_seasons = FALSE, transpose = FALSE)
+calc_annual_cumulative_stats(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  use_yield = FALSE,
+  basin_area,
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  months = 1:12,
+  include_seasons = FALSE,
+  transpose = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
