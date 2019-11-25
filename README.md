@@ -356,7 +356,7 @@ freq_results$Freq_Plot
 
 ## Project Status
 
-This package is under development. This package is maintained by the
+This package is set for delivery. This package is maintained by the
 Water Protection and Sustainability Branch of the [British Columbia
 Ministry of Environment and Climate Change
 Strategy](https://www2.gov.bc.ca/gov/content/environment/air-land-water/water).
