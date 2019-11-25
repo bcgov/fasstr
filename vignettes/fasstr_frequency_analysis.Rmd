@@ -18,7 +18,7 @@ library(fasstr)
 
 The Flow Analysis Summary Statistics Tool for R ('fasstr') is a set of [R](https://www.r-project.org/) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
 
-This vignette guide contains a guide on the various volume frequency analysis functions found in 'fasstr' to plot frequency data and determine frequency quantile statistics. The methods for these analysis follow those used in the US Army Corps of Engineers HEC-SSP Statistical Software Package. See this [website](http://www.hec.usace.army.mil/software/hec-ssp/) for more information on the software and links to their User Manual for more in-depth information. In this vignette you’ll learn what functions to use for specific analyeses, arguments to provide to functions to customize your analyses, what analyses are computed, and what outputs are produced.
+This vignette is a guide on the various volume frequency analysis functions found in 'fasstr' to plot frequency data and determine frequency quantile statistics. The methods for these analysis follow those used in the US Army Corps of Engineers HEC-SSP Statistical Software Package. See their [website](http://www.hec.usace.army.mil/software/hec-ssp/) for more information on the software and links to their User Manual for more in-depth information. In this vignette you’ll learn what functions to use for specific analyeses, arguments to customize analyses, and what results and outputs are produced.
 
 
 ## Overview
@@ -26,9 +26,9 @@ This vignette guide contains a guide on the various volume frequency analysis fu
 Computing a frequency analysis with 'fasstr' allows for options and customization of both the inputs and outputs. These functions plot probabilities of flow data using chosen plotting options and calculates frequency quantiles (ex. 7Q10) based on fitting data to distributions using selected fitting methods. There are four functions within 'fasstr' that conduct frequency analyses, each either their own purpose:
 
 1) **compute_annual_frequencies()** - conduct an annual frequency analysis from daily streamflow data (analysis calculates minimums/maximums and subsequently ranks that data).
-2) **compute_frequency_quantile()** - conduct an annual frequency analysis from daily streamflow data and output a quantile based on a duration (rolling days) and return period (analysis calculates minimums/maximums and subsequently ranks that data).
-3) **compute_HYDAT_peak_frequencies()** - conduct an annual frequency analysis from instantaneous peak data (minimum or maximum) for stations from HYDAT.
-4) **compute_frequency_analysis()** - conduct a general frequency analysis with custom data (analysis ranks data provided).
+2) **compute_frequency_quantile()** - conduct an annual frequency analysis from daily streamflow data and output a specific quantile based on a duration (rolling days) and return period (analysis calculates minimums/maximums and subsequently ranks that data).
+3) **compute_HYDAT_peak_frequencies()** - conduct an annual frequency analysis from instantaneous peak data (minimum or maximum) for stations from a HYDAT database.
+4) **compute_frequency_analysis()** - conduct a general frequency analysis with custom data (analysis ranks data provided; used within each of the previous functions).
 
 
 With the exception of the compute_frequency_quantile() function which only produces a quantile value, the frequency functions produce five outputs contained within a list. See the sections below for more information on each output and options. The five outputs include the following:
@@ -50,10 +50,10 @@ With the exception of the compute_frequency_quantile() function which only produ
 
 To determine frequencies of annual daily minimum or daily maximum flows, or of any duration days, from a daily streamflow data set, the `compute_annual_frequencies()` and `compute_frequency_quantile()` functions will take daily data, either from HYDAT using the `station_number` argument or your own data frame of data using the `data` argument to complete an analysis. As with most 'fasstr' functions, options for rolling days, missing values, and date filtering can be completed using the function arguments (roll_days, water_year_start, etc).
 
-The `compute_annual_frequencies()` function will produce all five outputs from the analysis, as listed above, including the plotting data, plot, and computed quantiles. If just the quantile is desired, and assuming your data fits the distributions without looking at the other information, the `compute_frequency_quantile()` function can be used. By supplying the desired duration (roll_days argument) and the desired return period (return_period argument) a single quantile value will be returned from the data.
+The `compute_annual_frequencies()` function will produce all five outputs from the analysis, as listed above, including the plotting data, plot, and computed quantiles. If just the quantile is desired, and assuming your data fits the selected distributions, the `compute_frequency_quantile()` function can be used. By supplying the desired duration (roll_days argument) and the desired return period (return_period argument) a single numeric quantile value will be returned from the data.
 
 
-#### Annual Instantaneous Minimums/Maximums from HYDAT
+#### Annual Peak Minimums/Maximums from HYDAT
 
 - **compute_HYDAT_peak_frequencies()**
 
@@ -82,7 +82,7 @@ low_flows <- dplyr::mutate(low_flows, Measure = "7-Day")
 low_flows
 ```
 
-Which can then be applied to the `compute_frequency_analysis()` function. This example has the default column names in the data and this do not need to be listed, but are shown for demonstration.
+This data can then be applied to the `compute_frequency_analysis()` function. This example has the default column names in the data and this do not need to be listed, but are shown for demonstration.
 
 ```{r, echo=TRUE, eval=FALSE}
 compute_frequency_analysis(data = low_flows,
@@ -98,7 +98,7 @@ compute_frequency_analysis(data = low_flows,
 
 ### Analysis Data
 
-The **Freq_Analysis_Data** object provides the user insight into the data used in the frequency analyses. Based on the selected frequency function used, this tibble will contain the respective data; the provided values with the custom analysis, the computed extremes with the annual analysis, and the HYDAT extreme peaks from HYDAT in the peak analysis. See each functions' documentation for more information. This tibble object provides the analysis data as the annual and HYDAT peak data are calculated or extracted from HYDAT.
+The returned **Freq_Analysis_Data** object provides the raw data used in the frequency analyses. Based on the selected frequency function used, this tibble will contain the respective data; the provided values with the custom analysis, the computed extremes with the annual analysis, and the HYDAT extreme peaks from HYDAT in the peak analysis. See each functions' documentation for more information. This tibble object provides the analysis data as the annual and HYDAT peak data are calculated or extracted from HYDAT.
 
 To provide examples of the outputs, an annual analysis will be completed on a Mission Creek HYDAT station (the `plot_curve` argument is set to `FALSE` for the start of this example):
 
@@ -159,7 +159,7 @@ freq_analysis$Freq_Plot
 
 #### Curve Fitting Parameters
 
-The computed curve is calculated using the [fitdistrplus](https://CRAN.R-project.org/package=fitdistrplus) package, and the results from the function are saved in the **Freq_Fitting** object in the list. The fitdist object contains information regarding the fitting process, including the shape, location, and scale parameters, amongst other statistics.  See the fitdistrplus documentation for more information what is provided. As per the documentation, there are several ways to view the fitdist object, three of these including using the generic print(), summary() and plot() functions. See the following examples for how to view some of the fitting information.
+The computed curve is calculated using the ['fitdistrplus'](https://CRAN.R-project.org/package=fitdistrplus) package, and the results from the function are saved in the **Freq_Fitting** object in the list. The 'fitdist' object contains information regarding the fitting process, including the shape, location, and scale parameters, amongst other statistics.  See the 'fitdistrplus' documentation for more information what is provided. As per the documentation, there are several ways to view the fitdist object, three of these including using the generic print(), summary() and plot() functions. See the following examples for how to view some of the fitting information.
 
 ```{r, echo=TRUE, comment=NA}
 print(freq_analysis$Freq_Fitting$`7-Day`)
@@ -176,7 +176,7 @@ plot(freq_analysis$Freq_Fitting$`7-Day`)
 
 #### Fitted Quantiles
 
-Based on the fitting the events to the distribution, flow events with specific probabilities/return periods (quantiles) can be extracted from the computed curve.  The desired quantiles are selected by listing the probabilities in the `fit_quantiles` argument (defaults to `c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),`).  The results are outputted in the **Freq_Fitted_Quantiles** tibble in the list. In the example below of the quantiles, the 7Q5 value would be the 7-day flow value with a 5-year return period, so 0.403 cms in this example.
+Based on the fitting the events to the distribution, flow events with specific probabilities/return periods (quantiles) can be extracted from the computed curve.  The desired quantiles are selected by listing the probabilities in the `fit_quantiles` argument (defaults to `c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),`).  The results are outputted in the **Freq_Fitted_Quantiles** tibble in the list. In the example below of the quantiles, the 7Q5 value would be the 7-day flow value with a 5-year return period, so 0.409 cms in this example.
 
 ```{r, echo=TRUE, comment=NA}
 freq_analysis$Freq_Fitted_Quantiles

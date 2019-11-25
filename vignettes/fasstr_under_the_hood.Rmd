@@ -23,9 +23,9 @@ This vignette guide contains a look at the steps and internal functions used wit
 
 ## Introduction
 
-To assist anyone looking to see how the 'fasstr' code is organized, this vignette should help them understand some of the step and reasoning behind some of the coding.  'fasstr' utilizes tidy coding to utilize many efficient and useful packages and functions; the tidyverse packages tidy, dplyr, ggplot2 are used frequently, amongst others for specific functions. Because of this, 'fasstr' also exports the pipe "%>%" to assist in using 'fasstr' in a tidy code routine. 
+'fasstr' utilizes tidy coding to utilize many efficient and useful packages and functions; the tidyverse packages tidy, dplyr, ggplot2 are used frequently, amongst others for specific functions. Because of this, 'fasstr' also exports the pipe "%>%" to assist in using 'fasstr' in a tidy code routine. 
 
-This vignette is broken into the following sections that hopefully help describe the steps involved in the 'fasstr' functions:
+This vignette is broken into the following sections that describe some of the workflows involved in the 'fasstr' functions:
 
 1. Data Importing and Checking
 2. Cleaning Functions (add_ and fill_)
@@ -48,7 +48,7 @@ At this point in a 'fasstr' function, all the column names of the data are saved
 
 The next step is to ensure the column names of dates, values, and groups are consistent as "Date", "Value", and "STATION_NUMBER" (to match the HYDAT outputs), respectively, for the analysis. This is required as grouping and summarizing functions in the following steps use these specific column names, and provided data may not use the same names. The facilitate the column renaming and checking, there are several internal functions in the utils.R. For each of the three columns there is a function that checks if it exists, the proper formatting, and renames the columns to the appropriate name.  These functions are format_dates_col(), format_values_col(), and format_groups_col(). If no grouping is provided, a fake STATION_NUMBER of "XXXXXXX" is provided (and removed at the end of the 'fasstr' function). As all three columns are required for many 'fasstr' functions, there is a formal_all_cols() that uses all three functions, with an option to remove all other columns.
 
-At this point in a function there is now a data frame of data, usually called flow_data that has three columns of "Date", "Value", and "STATION_NUMBER", that is ready to be cleaned for analysis.
+At this point in a function there is now a data frame of data, usually called 'flow_data' that has three columns of "Date", "Value", and "STATION_NUMBER", that is ready to be cleaned for analysis.
 
 Note: some functions use different data sources than daily data. The compute_HYDAT_peaks_frequencies() does not permit the "data" argument and just extracts data from HYDAT (and sets it up appropriately) and the compute_frequency_analysis() function requires a unique dataset (see ?compute_frequency_analysis for more information on the function).
 
@@ -320,7 +320,7 @@ Below these formatting and data wrangling functions are many functions used to c
 
 ## 6. Package Dependencies
 
-The following list contains the packages required to complete many of the 'fasstr' functions and brief explanation of their use:
+The following list contains the packages required to complete many of the 'fasstr' functions:
 
 - **dplyr** - used for many tidy functions (grouping, summarizing, etc)
 - **e1071** - used in the frequency analyses for determining skewness for the fitting distributions

@@ -54,7 +54,7 @@ This function is provided to calculate trends on a multitude of annual metrics, 
 - `calc_annual_flow_timing()` - calculate annual flow timing
 - `calc_annual_lowflows()` - calculate annual lowflows
 - `calc_annual_outside_normal()` - calculate annual days above and below normal
-- `calc_monthly_stats()` - calculate monthly summary statistics
+- `calc_monthly_stats()` - calculate annual monthly summary statistics
 
 While each of the different metrics have default variables for their arguments, many of them can be customized.  The following table shows which arguments are used for which statistics and what the defaults are.  See the documentation for more information.
 
