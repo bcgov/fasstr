@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 
 </div>
 
-The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http://www.r-project.org) functions to clean, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
+The Flow Analysis Summary Statistics Tool for R ('fasstr') is a set of [R](http://www.r-project.org) functions to clean, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
 
 
 
@@ -36,7 +36,7 @@ This package provides functions with solutions for streamflow data:
 
 Useful features of functions include:
 
-- the integration of the `tidyhydat` package to pull streamflow data from a Water Survey of Canada [HYDAT](https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html) database for analyses;
+- the integration of the 'tidyhydat' package to pull streamflow data from a Water Survey of Canada [HYDAT](https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html) database for analyses;
 - arguments for filtering of years and months in analyses and plotting (internally tidys your data);
 - choosing the start month of your water year;
 - selecting for rolling day averages (e.g. 7-day rolling average);
@@ -45,20 +45,26 @@ Useful features of functions include:
 
 ## Installation
 
-To install the `fasstr` package, you need to install the `remotes` package then the `fasstr` package:
+You can install 'fasstr' using the following code. It may take a few moments as there are several dependecy packages will also be installed, including ['tidyhydat'](https://CRAN.R-project.org/package=tidyhydat) for downloading Water Survey of Canada hydrometric data, ['zyp'](https://CRAN.R-project.org/package=zyp) for trending, ['ggplot2'](https://CRAN.R-project.org/package=ggplot2) for creating plots, and ['dplyr'](https://CRAN.R-project.org/package=dplyr) and ['tidyr'](https://CRAN.R-project.org/package=tidyr) for various data wrangling and summarizing functions, amongst others. 
 
-```{r, eval = FALSE}
-install.packages("remotes")
+```{r, echo=TRUE, eval=FALSE}
+install.packages("fasstr")
+```
+
+To install the development version of the 'fasstr' package, you need to install the remotes package then the 'fasstr' package.
+
+```{r, echo=TRUE, eval=FALSE}
+if(!requireNamespace("remotes")) install.packages("remotes")
 remotes::install_github("bcgov/fasstr")
 ```
-  
-Then to call the `fasstr` functions you can either load the package using the `library(fasstr)` function or access a specific function using a double-colon (e.g. `fasstr::calc_daily_stats()`). Several other packages will be installed in addition including  [tidyhydat](https://cran.r-project.org/web/packages/tidyhydat/index.html) for data gathering, [zyp](https://cran.r-project.org/web/packages/zyp/index.html) for trending, [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html) for creating plots, and [dplyr](https://cran.r-project.org/web/packages/dplyr/index.html) and [tidyr](https://cran.r-project.org/web/packages/tidyr/index.html) for various data wrangling and summarizing functions, amongst others. Many of the other packages are required for the frequency analysis functions.
+
+To call the 'fasstr' functions you can either load the package using the `library(fasstr)` function or access a specific function using a double-colon (e.g. `fasstr::calc_daily_stats()`). 
 
 ```{r, eval = TRUE, echo = FALSE}
 library(fasstr)
 ```
 
-To utilize the `tidyhydat` features, you will need to download a HYDAT database using the `tidyhydat::download_hydat()` function.
+To utilize the 'tidyhydat' features (using the station_number argument), you will need to download a HYDAT database using the `tidyhydat::download_hydat()` function.
 
 
 ## Using fasstr
@@ -66,9 +72,9 @@ To utilize the `tidyhydat` features, you will need to download a HYDAT database 
 
 ### Data Input
 
-All functions in `fasstr` require a daily mean streamflow dataset from one or more hydrometric stations. Long-term and continuous datasets are preferred for most analyses, but seasonal and partial data can be used. Other daily time series data, like temperature, precipitation or water levels, may also be used, but with certain caution as some calculations/conversions are based on units of streamflow (cubic metres per second). Data is provided to each function using the either the `data` argument, as a data frame, or the `station_number` argument, as a list of Water Survey of Canada HYDAT station numbers.
+All functions in 'fasstr' require a daily mean streamflow dataset from one or more hydrometric stations. Long-term and continuous datasets are preferred for most analyses, but seasonal and partial data can be used. Other daily time series data, like temperature, precipitation or water levels, may also be used, but with certain caution as some calculations/conversions are based on units of streamflow (cubic metres per second). Data is provided to each function using the either the `data` argument, as a data frame, or the `station_number` argument, as a list of Water Survey of Canada HYDAT station numbers.
 
-Using the `data` option, a data frame of daily data containing columns of dates (YYYY-MM-DD in date format), values (mean daily discharge in cubic metres per second in numeric format), and, optionally, grouping identifiers (character string of station names or numbers) is called. By default the functions will look for columns identified as 'Date', 'Value', and 'STATION_NUMBER', respectively, to be compatible with the `tidyhydat` defaults, but columns of different names can be identified using the `dates`, `values`, `groups` column arguments (ex.  `values = Yield_mm`). The following is an example of an appropriate dataframe (STATION_NUMBER not required):
+Using the `data` option, a data frame of daily data containing columns of dates (YYYY-MM-DD in date format), values (mean daily discharge in cubic metres per second in numeric format), and, optionally, grouping identifiers (character string of station names or numbers) is called. By default the functions will look for columns identified as 'Date', 'Value', and 'STATION_NUMBER', respectively, to be compatible with the 'tidyhydat' defaults, but columns of different names can be identified using the `dates`, `values`, `groups` column arguments (ex.  `values = Yield_mm`). The following is an example of an appropriate dataframe (STATION_NUMBER not required):
 ```{r setup, include = FALSE}
 data <- tidyhydat::hy_daily_flows("08NM116")
 data <- data[,c(1,2,4)]
@@ -78,7 +84,7 @@ data <- data[,c(1,2,4)]
 head(data.frame(data))
 ```
 
-Alternatively, you can directly extract a flow data set directly from a HYDAT database by listing station numbers in the `station_number` argument (ex. `station_number = "08NM116"` or `station_number = c("08NM116", "08NM242")`) while leaving the data arguments blank. A data frame of daily streamflow data for all stations listed will be extracted using `tidyhydat`.  Use the following function to download a HYDAT database:
+Alternatively, you can directly extract a flow data set directly from a HYDAT database by listing station numbers in the `station_number` argument (ex. `station_number = "08NM116"` or `station_number = c("08NM116", "08NM242")`) while leaving the data arguments blank. A data frame of daily streamflow data for all stations listed will be extracted using 'tidyhydat'.  Use the following function to download a HYDAT database:
 
 ```{r tidyhydat, eval = FALSE}
 tidyhydat::download_hydat()
@@ -114,7 +120,7 @@ If certain n-day rolling mean statistics are desired to be analyzed (e.g. 3- or 
 
 To customize your analyses for specific time periods, you can designate the start and end years of your analysis using the `start_year` and `end_year` arguments and remove any unwanted years (for partial datasets for example) by listing them in the `excluded_years` argument (e.g. `excluded_years = c(1990, 1992:1994)`). Alternatively, some functions have an argument called `complete_years` that summarizes data from just those years which have a complete flow record. Some functions will also allow you to select the months of a year to analyze, using the `months` argument, as opposed to all months (if you want just summer low-flows, for example). Leaving these arguments blank will result in the summary/analysis of all years and months of the provided dataset.
 
-To group analyses by water, or hydrologic, years instead of calendar years, if desired, you can set `water_year_start` within most functions to another month than 1 (for January). A water year can be defined as a 12-month period that comprises a complete hydrologic cycle (wet seasons can typically cross calendar year), typically starting with the month with minimum flows (the start of a new water recharge cycle). As water years commonly start in October, the default water year is October for `fasstr`.  If another start month is desired, you can choose is using the `water_year_start` argument (numeric month) to designate the water year time period. The water year label is designated by the year it ends in (e.g. water year 2000 goes from Oct 1, 1999 to Sep 30, 2000). Start, end and excluded years will be based on the specified water year.
+To group analyses by water, or hydrologic, years instead of calendar years, if desired, you can set `water_year_start` within most functions to another month than 1 (for January). A water year can be defined as a 12-month period that comprises a complete hydrologic cycle (wet seasons can typically cross calendar year), typically starting with the month with minimum flows (the start of a new water recharge cycle). As water years commonly start in October, the default water year is October for 'fasstr'.  If another start month is desired, you can choose is using the `water_year_start` argument (numeric month) to designate the water year time period. The water year label is designated by the year it ends in (e.g. water year 2000 goes from Oct 1, 1999 to Sep 30, 2000). Start, end and excluded years will be based on the specified water year.
 
 For your own analyses, you can add date variables to your dataset using the `add_date_variables()` or `add_seasons()` functions.
 
@@ -132,7 +138,7 @@ Some functions have an argument called `complete_years` which can be used, when 
 
 ### Summary statistics example: long-term statistics
 
-To determine the summary statistics of daily data by month (mean, median, maximum, minimum, and some percentiles) you can use the `calc_longterm_daily_stats()` function. If the 'Mission Creek near East Kelowna' hydrometric station is of interest you can list the station number in the `station_number` argument to obtain the data (if `tidyhydat` and HYDAT are installed). 
+To determine the summary statistics of daily data by month (mean, median, maximum, minimum, and some percentiles) you can use the `calc_longterm_daily_stats()` function. If the 'Mission Creek near East Kelowna' hydrometric station is of interest you can list the station number in the `station_number` argument to obtain the data (if 'tidyhydat' and HYDAT are installed). 
 
 ```{r example1}
 calc_longterm_daily_stats(station_number = "08NM116", 
