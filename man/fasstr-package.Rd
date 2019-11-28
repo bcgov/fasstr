@@ -6,12 +6,12 @@
 \alias{fasstr-package}
 \title{fasstr: Tools for Analyzing, Summarizing, and Visualizing Streamflow Data}
 \description{
-The Flow Analysis Summary Statistics Tool for R (fasstr), provides various 
-    functions to clean and screen daily streamflow data; calculate and visualize various summary statistics
+The Flow Analysis Summary Statistics Tool for R, 'fasstr', provides various 
+    functions to clean and screen daily stream discharge data; calculate and visualize various summary statistics
     and metrics (means, percentiles, low-flows, high-flows, etc.); and compute annual trending and volume 
     frequency analyses. It features useful function arguments for filtering of and handling dates,
     customizing data and metrics, and the ability to pull daily data directly from the Water Survey of 
-    Canada HYDAT database.
+    Canada 'HYDAT' database.
 }
 \references{
 tidyhydat information:
