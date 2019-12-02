@@ -200,7 +200,7 @@ calc_monthly_cumulative_stats <- function(data,
   # Rename Month column and reorder to proper levels (set in add_date_vars)
   monthly_cumul <- dplyr::rename(monthly_cumul, Month = MonthName)
   monthly_cumul <- with(monthly_cumul, monthly_cumul[order(STATION_NUMBER, Month),])
-  row.names(monthly_cumul) <- c(1:nrow(monthly_cumul))
+  row.names(monthly_cumul) <- seq_len(nrow(monthly_cumul))
 
 
   # If transpose if selected, switch columns and rows

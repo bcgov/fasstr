@@ -218,10 +218,6 @@ calc_daily_cumulative_stats <- function(data,
   }
 
 
-  logical_cols <- sapply(daily_stats, is.logical)
-  daily_stats[logical_cols] <- lapply(daily_stats[logical_cols], as.numeric)
-
-
   dplyr::as_tibble(daily_stats)
   
 }

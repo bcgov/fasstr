@@ -188,7 +188,7 @@ compute_frequency_analysis <- function(data,
   plotdata <- plyr::ddply(Q_stat, "Measure", function(x, a, b, use_max){
     # sort the data
     x <- x[ order(x$Value),]
-    x$prob <- ((1:length(x$Value)) - a)/((length(x$Value) + 1 - a - b))
+    x$prob <- ((seq_len(length(x$Value))) - a)/((length(x$Value) + 1 - a - b))
     if(use_max)x$prob <- 1 - x$prob   # they like to use p(exceedance) if using a minimum
     #x$dist.prob <- stats::qnorm(1 - x$prob) temporarilty remove
     x$return <- 1/x$prob
@@ -348,7 +348,7 @@ compute_frequency_analysis <- function(data,
   
   # Other modifications for outputs
   
-  row.names(Q_stat) <- 1:nrow(Q_stat)
+  row.names(Q_stat) <- seq_len(nrow(Q_stat))
   
   
   plotdata <- dplyr::rename(plotdata, 
