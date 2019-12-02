@@ -201,9 +201,9 @@ compute_frequency_analysis <- function(data,
   # Setting dates and Values to actual Values. Some sort of environment() error in plotting due to function environment with dates and Values
   # Error in as.list.environment(x, all.names = TRUE) :
   #   object 'Value' not found
-  events = "Year"
-  values = "Value"
-  measures = "Measure"
+  events <- "Year"
+  values <- "Value"
+  measures <- "Measure"
   
   
   plotdata2$Measure <- factor(plotdata2$Measure, levels = unique(plotdata2$Measure))
@@ -234,7 +234,7 @@ compute_frequency_analysis <- function(data,
                    legend.title = ggplot2::element_text(size = 10))
   
   
-  legend.title.align = 1
+  legend.title.align <- 1
   if(!use_max){ freqplot <- freqplot + ggplot2::theme(legend.justification = c(1, 1), legend.position = c(.98, .98))}
   if(use_max){ freqplot <- freqplot + ggplot2::theme(legend.justification = c(1,0), legend.position = c(.98, 0.02))}
   if(!use_log){ freqplot <- freqplot + ggplot2::scale_y_log10(breaks = scales::pretty_breaks(n = 10))}
@@ -256,7 +256,7 @@ compute_frequency_analysis <- function(data,
   }
   
   fit <- plyr::dlply(Q_stat, "Measure", function(x, distr, fit_method){
-    start=NULL
+    start <- NULL
     # PIII is fit to log-of Values unless use_log has been set, in which case data has previous been logged
     if(distr == 'PIII' & !use_log){x$Value <- log10(x$Value)}
     # get starting Values

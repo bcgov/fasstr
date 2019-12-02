@@ -44,7 +44,7 @@ test_that("ignore_missing calculates all data", {
 test_that("data calculated properly", {
   skip_on_cran()
   skip_on_travis()
-  ignore_missing = TRUE
+  ignore_missing <- TRUE
   data <- calc_longterm_monthly_stats(station_number = "08NM116", start_year = 1980, 
                                       ignore_missing = ignore_missing)
   data <- dplyr::select(data, -STATION_NUMBER)
@@ -81,7 +81,7 @@ test_that("data calculated properly", {
 test_that("data calculated properly when ignore_missing", {
   skip_on_cran()
   skip_on_travis()
-  ignore_missing = FALSE
+  ignore_missing <- FALSE
   data <- suppressWarnings(calc_longterm_monthly_stats(station_number = "08HB048", 
                                                        ignore_missing = ignore_missing))
   data <- dplyr::select(data, -STATION_NUMBER)

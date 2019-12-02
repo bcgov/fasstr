@@ -180,7 +180,7 @@ plot_flow_duration <- function(data,
                     "Aug" = "red", "Sep" = "darkred", "Oct" = "orchid", "Nov" = "purple3",
                     "Dec" = "midnightblue", "Long-term" = "black")
   if (!is.null(custom_months)) { 
-    colour_list[[ custom_months_label ]] = "grey60"
+    colour_list[[ custom_months_label ]] <- "grey60"
   }
 
   if (all(is.na(percentiles_data$Value))) {

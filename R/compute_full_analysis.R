@@ -214,7 +214,7 @@ compute_full_analysis <- function(data,
                                                     water_year_start = water_year_start))
     
     # Data screening
-    flow_screening = screen_flow_data(data = flow_data,
+    flow_screening <- screen_flow_data(data = flow_data,
                                       water_year_start = water_year_start)
     
     
