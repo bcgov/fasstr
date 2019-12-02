@@ -53,19 +53,19 @@ write_objects_list <- function(list,
   # ---------------
   
   if (missing(list)) {
-    list = NULL
+    list <- NULL
   }
   if (missing(table_filetype)) {
-    table_filetype = NULL
+    table_filetype <- NULL
   }
   if (missing(plot_filetype)) {
-    plot_filetype = NULL
+    plot_filetype <- NULL
   }
   if (missing(width)) {
-    width = NA
+    width <- NA
   }
   if (missing(height)) {
-    height = NA
+    height <- NA
   }
   
   if (missing(folder_name))

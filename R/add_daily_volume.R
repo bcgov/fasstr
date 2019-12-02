@@ -38,10 +38,10 @@ add_daily_volume <- function(data,
   ## -------------------------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   
   # Check if data is provided and import it

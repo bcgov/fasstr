@@ -65,16 +65,16 @@ compute_hydat_peak_frequencies <- function(station_number,
   ## ---------------
   
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   
   years_checks(start_year, end_year, exclude_years)

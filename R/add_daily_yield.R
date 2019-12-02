@@ -48,13 +48,13 @@ add_daily_yield <- function(data,
   ## -------------------------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(basin_area)) {
-    basin_area = NA
+    basin_area <- NA
   }
   
   # Check if data is provided and import it

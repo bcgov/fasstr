@@ -56,10 +56,10 @@ add_rolling_means <- function(data,
   ## ARGUMENT CHECKS
   ## ---------------
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   
   rolling_days_checks(roll_days, roll_align, multiple = TRUE)

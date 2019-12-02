@@ -51,13 +51,13 @@ add_cumulative_yield <- function(data,
   ## ARGUMENT CHECKS
   ## ---------------
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(basin_area)) {
-    basin_area = NA
+    basin_area <- NA
   }
   
   water_year_checks(water_year_start)

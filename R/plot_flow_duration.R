@@ -98,25 +98,25 @@ plot_flow_duration <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   if (missing(custom_months)) {
-    custom_months = NULL
+    custom_months <- NULL
   }
   if (missing(custom_months_label)) {
-    custom_months_label = "Custom-Months"
+    custom_months_label <- "Custom-Months"
   }
   
   log_discharge_checks(log_discharge)

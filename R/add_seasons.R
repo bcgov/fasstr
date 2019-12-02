@@ -50,10 +50,10 @@ add_seasons <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   
   water_year_checks(water_year_start)

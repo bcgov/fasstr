@@ -105,22 +105,22 @@ plot_longterm_monthly_stats <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   if (missing(add_year)) {
-    add_year = NULL
+    add_year <- NULL
   }
   
   log_discharge_checks(log_discharge)

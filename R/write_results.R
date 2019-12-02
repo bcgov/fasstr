@@ -46,13 +46,13 @@ write_results <- function(data,
   ## --------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(file_name)) {
-    file_name = ""
+    file_name <- ""
   }
   if (missing(digits)) {
-    digits = 10
+    digits <- 10
   }
   
   
