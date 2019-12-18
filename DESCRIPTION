@@ -1,5 +1,5 @@
 Package: fasstr
-Title: Tools for Analyzing, Summarizing, and Visualizing Streamflow Data
+Title: Analyze, Summarize, and Visualize Daily Streamflow Data
 Version: 0.3.1
 Authors@R: c(person("Jon", "Goetz", email = "jon.goetz@gov.bc.ca", role = c("aut", "cre")), 
              person("Carl James", "Schwarz", email = "cschwarz.stat.sfu.ca@gmail.com", role = "aut"),
@@ -10,9 +10,9 @@ Description: The Flow Analysis Summary Statistics Tool for R, 'fasstr', provides
     and metrics (means, percentiles, low-flows, high-flows, etc.); and compute annual trending and volume 
     frequency analyses. It features useful function arguments for filtering of and handling dates,
     customizing data and metrics, and the ability to pull daily data directly from the Water Survey of 
-    Canada 'HYDAT' database.
+    Canada hydrometric database (<http://collaboration.cmc.ec.gc.ca/cmc/hydrometrics/www/>).
 Depends: R (>= 3.2.0)
-License: Apache License (== 2.0) | file LICENSE
+License: Apache License 2.0 | file LICENSE
 URL: https://github.com/bcgov/fasstr, https://www2.gov.bc.ca/gov/content/environment/air-land-water/water
 BugReports: https://github.com/bcgov/fasstr/issues
 Encoding: UTF-8
