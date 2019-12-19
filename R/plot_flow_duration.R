@@ -18,7 +18,7 @@
 #'    statistics from all daily discharge values from all years, unless specified. Data calculated using calc_longterm_stats() 
 #'    function then converted for plotting.
 #'
-#' @inheritParams calc_longterm_stats
+#' @inheritParams calc_longterm_daily_stats
 #' @inheritParams plot_annual_stats
 #' @param months Numeric vector of month curves to plot. NA if no months required. Default \code{1:12}.
 #' @param include_longterm Logical value indicating whether to include longterm curve of all data. Default \code{TRUE}.
@@ -26,7 +26,7 @@
 #' @return A list of ggplot2 objects with the following for each station provided:
 #'   \item{Flow_Duration}{a plot that contains flow duration curves for each month, long-term, and (option) customized months}
 #'   
-#' @seealso \code{\link{calc_longterm_stats}}
+#' @seealso \code{\link{calc_longterm_daily_stats}}
 #'   
 #' @examples
 #' \dontrun{

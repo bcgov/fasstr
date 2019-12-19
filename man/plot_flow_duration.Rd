@@ -129,5 +129,5 @@ plot_flow_duration(station_number = "08NM116",
 }
 }
 \seealso{
-\code{\link{calc_longterm_stats}}
+\code{\link{calc_longterm_daily_stats}}
 }

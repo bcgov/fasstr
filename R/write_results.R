@@ -24,8 +24,8 @@
 #' \dontrun{
 #' 
 #' # Example data to write
-#' data_results <- calc_longterm_stats(station_number = c("08HA002", "08HA011"),
-#'                                     start_year = 1971, end_year = 2000)
+#' data_results <- calc_longterm_daily_stats(station_number = c("08HA002", "08HA011"),
+#'                                           start_year = 1971, end_year = 2000)
 #' 
 #' # Write the data and round numbers to 1 decimal place
 #' write_results(data = data_results, 
