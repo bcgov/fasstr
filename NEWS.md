@@ -1,7 +1,7 @@
 fasstr 0.3.1
 =========================
 
-Updated: 02 Dec 2019
+Updated: 19 Dec 2019
 
 #### Updates:
 
@@ -9,6 +9,8 @@ Updated: 02 Dec 2019
   * fixed vignette coding errors
   * renamed function calc_longterm_mad to calc_longterm_mean
   * updated vignettes and README files
+  * removed calc_longterm_stats and plot_longterm_stats
+  * updated Examples in all documentation (removed \dontrun{} for most, left for writing functions and larger analyses)
 
 
 fasstr 0.3.0
