@@ -52,6 +52,8 @@
 #' @examples
 #' \dontrun{
 #' 
+#'  # Working example:
+#' 
 #' # Calculate some values to use for a frequency analysis 
 #' # (requires years, values for those years, and the name of the measure/metric)
 #' low_flows <- calc_annual_lowflows(station_number = "08NM116", 
@@ -62,10 +64,10 @@
 #' low_flows <- dplyr::mutate(low_flows, Measure = "7-Day")
 #' 
 #' # Compute the frequency analysis using the default parameters
-#' compute_frequency_analysis(data = low_flows,
-#'                            events = Year,
-#'                            values = Value,
-#'                            measure = Measure)
+#' results <- compute_frequency_analysis(data = low_flows,
+#'                                       events = Year,
+#'                                       values = Value,
+#'                                       measure = Measure)
 #'                             
 #' }
 #' @export

@@ -85,20 +85,18 @@ Plot the daily cumulative mean, median, maximum, minimum, and 5, 25, 75, 95th pe
    runoff yield.
 }
 \examples{
-\dontrun{
-
-# Plot volume statistics
+# Plot annual daily volume statistics
 plot_daily_cumulative_stats(station_number = "08NM116") 
 
-# Plot yield statistics with default HYDAT basin area
+# Plot annual daily yield statistics with default HYDAT basin area
 plot_daily_cumulative_stats(station_number = "08NM116",
                             use_yield = TRUE) 
 
-# Plot yield statistics with custom basin area
+# Plot annual daily yield statistics with custom basin area
 plot_daily_cumulative_stats(station_number = "08NM116",
                             use_yield = TRUE,
                             basin_area = 800) 
-}
+                            
 }
 \seealso{
 \code{\link{calc_daily_cumulative_stats}}

@@ -23,6 +23,8 @@
 #' @examples
 #' \dontrun{
 #' 
+#' # Working examples:
+#' 
 #' # Example data to write
 #' data_results <- calc_longterm_daily_stats(station_number = c("08HA002", "08HA011"),
 #'                                           start_year = 1971, end_year = 2000)
@@ -31,6 +33,7 @@
 #' write_results(data = data_results, 
 #'               file_name = "Cowichan River Long-term Flows (1971-2000).xlsx", 
 #'               digits = 1)
+#'               
 #' }
 #' @export
 

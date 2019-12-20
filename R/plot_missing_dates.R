@@ -25,24 +25,22 @@
 #' @seealso \code{\link{screen_flow_data}}
 #'   
 #' @examples
-#' \dontrun{
-#' 
-#' # Plot statistics using data argument with defaults
+#' # Plot missing dates using a data frame and data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' plot_missing_dates(data = flow_data)
 #' 
-#' # Plot statistics using station_number argument with defaults
+#' # Plot missing dates using station_number argument with defaults
 #' plot_missing_dates(station_number = "08NM116")
 #'                   
-#' # Plot statistics for water years starting in October
+#' # Plot missing dates for water years starting in October
 #' plot_missing_dates(station_number = "08NM116",
 #'                    water_year_start = 9)
 #'                   
-#' # Plot statistics for 7-day flows for July-September months only
+#' # Plot missing dates for 7-day flows for July-September months only
 #' plot_missing_dates(station_number = "08NM116",
 #'                    roll_days = 7,
 #'                    months = 7:9)
-#' }
+#'                    
 #' @export
 
 

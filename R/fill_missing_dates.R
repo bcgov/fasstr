@@ -21,15 +21,13 @@
 #' @return A tibble data frame of the source data with additional rows of filled values of missing dates.
 #'
 #' @examples
-#' \dontrun{
-#' 
 #' # Fill missing dates with NA using calendar years
-#' fill_missing_dates(data = "08NM116")
+#' fill_missing_dates(station_number = "08NM116")
 #' 
 #' # Fill missing dates with NA using water years starting in August
-#' fill_missing_dates(data = "08NM116", 
+#' fill_missing_dates(station_number = "08NM116", 
 #'                    water_year_start = 8)
-#' }
+#'                    
 #' @export
 
 

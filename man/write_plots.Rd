@@ -42,6 +42,8 @@ Write a list of plots (ggplots; as used by fasstr ) into a directory or PDF docu
 \examples{
 \dontrun{
 
+# Working examples:
+
 # Example plots to save
 plots <- plot_annual_lowflows(station_number = "08NM116")
 
@@ -54,5 +56,6 @@ write_plots(plots = plots,
 write_plots(plots = plots, 
             folder_name = "Low Flow Plots",
             combined_pdf = TRUE)
+            
 }
 }

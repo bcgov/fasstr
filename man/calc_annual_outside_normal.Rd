@@ -75,13 +75,11 @@ Calculates the number of days per year outside of the 'normal' range (typically 
    from all daily discharge values from all years, unless specified.
 }
 \examples{
-\dontrun{
-
 # Calculate statistics with default limits of normal (25 and 75th percentiles)
 calc_annual_outside_normal(station_number = "08NM116") 
 
 # Calculate statistics with custom limits of normal
 calc_annual_outside_normal(station_number = "08NM116",
                            normal_percentiles = c(10,90))
-}
+                           
 }

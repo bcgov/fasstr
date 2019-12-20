@@ -35,10 +35,19 @@
 #' @examples
 #' \dontrun{
 #' 
-#' compute_hydat_peak_frequencies(station_number = "08NM116",
-#'                                start_year = 1980,
-#'                                end_year = 2010)
-#'                             
+#' # Working examples (see arguments for further analysis options):
+#' 
+#' # Compute an annual peak frequency analysis using default arguments (instantaneous lows)
+#' results <- compute_hydat_peak_frequencies(station_number = "08NM116",
+#'                                           start_year = 1980,
+#'                                           end_year = 2010)
+#'                                
+#' # Compute an annual peak frequency analysis using default arguments (instantaneous highs)
+#' results <- compute_hydat_peak_frequencies(station_number = "08NM116",
+#'                                           start_year = 1980,
+#'                                           end_year = 2010,
+#'                                           use_max = TRUE)
+#'                                                             
 #' }
 #' @export
 

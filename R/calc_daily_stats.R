@@ -38,44 +38,43 @@
 #'   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 #'   
 #' @examples
-#' \dontrun{
-#' 
-#' # Calculate statistics using data argument with defaults
+#' # Calculate daily statistics using data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' calc_daily_stats(data = flow_data,
 #'                  start_year = 1980)
 #' 
-#' # Calculate statistics using station_number argument with defaults
+#' # Calculate daily statistics using station_number argument with defaults
 #' calc_daily_stats(station_number = "08NM116",
 #'                  start_year = 1980)
 #' 
-#' # Calculate statistics regardless if there is missing data for a given day of year
+#' # Calculate daily statistics regardless if there is missing data for a given day of year
 #' calc_daily_stats(station_number = "08NM116",
 #'                  ignore_missing = TRUE)
 #'                   
-#' # Calculate statistics using only years with no missing data
+#' # Calculate daily statistics using only years with no missing data
 #' calc_daily_stats(station_number = "08NM116",
 #'                  complete_years = TRUE)
 #' 
-#' # Calculate statistics for water years starting in October
+#' # Calculate daily statistics for water years starting in October between 1980 and 2010
 #' calc_daily_stats(station_number = "08NM116",
 #'                  start_year = 1980,
 #'                  end_year = 2010,
 #'                  water_year_start = 10)
 #'                  
-#' # Calculate statistics with custom years
+#' # Calculate daily statistics with custom years and removing certain years
 #' calc_daily_stats(station_number = "08NM116",
 #'                  start_year = 1981,
 #'                  end_year = 2010,
 #'                  exclude_years = c(1991,1993:1995))
 #'                   
-#' # Calculate statistics for 7-day flows for July-September months only, with 25 and 75th percentiles
+#' # Calculate daily statistics for 7-day flows for July-September months only, 
+#' # with 25 and 75th percentiles starting in 1980
 #' calc_daily_stats(station_number = "08NM116",
 #'                  start_year = 1980,
 #'                  roll_days = 7,
 #'                  months = 7:9,
 #'                  percentiles = c(25,75))       
-#' }
+#'                  
 #' @export
 
 

@@ -27,9 +27,7 @@
 #' @return A ggplot2 object of daily flows from flow_data or HYDAT flow data provided
 #'
 #' @examples
-#' \dontrun{
-#' 
-#' # Plot data from a data frame
+#' # Plot data from a data frame and data argument
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' plot_flow_data(data = flow_data)
 #' 
@@ -50,7 +48,7 @@
 #' # Plot data multiple groups on one plot
 #' plot_flow_data(station_number = c("08NM241", "08NM242"),
 #'                one_plot = TRUE) 
-#' }
+#'                
 #' @export
 
 

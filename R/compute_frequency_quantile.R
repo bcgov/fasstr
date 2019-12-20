@@ -32,6 +32,9 @@
 #' @examples
 #' \dontrun{
 #' 
+#' # Working example:
+#' 
+#' # Compute the annual 7-day flow value with a 1 in 10 year return interval
 #' compute_frequency_quantile(station_number = "08NM116",
 #'                            roll_days = 7,
 #'                            return_period = 10)

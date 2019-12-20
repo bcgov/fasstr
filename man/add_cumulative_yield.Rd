@@ -54,15 +54,13 @@ Add a column of rolling daily cumulative runoff yield flows on an annual basis t
    calculated in years with complete data.
 }
 \examples{
-\dontrun{
-
-# HYDAT basin area
+# Add a column based on water years starting in August
 add_cumulative_yield(station_number = "08NM116", 
                      water_year_start = 8)
                      
-# Set the basin area
+# Add a column based on water years starting in August with a custom basin area to calculate yield
 add_cumulative_yield(station_number = "08NM116", 
                      water_year_start = 8,
                      basin_area = 800)
-}
+                     
 }

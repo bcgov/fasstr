@@ -88,9 +88,7 @@ Calculates monthly mean, median, maximum, minimum, and percentiles for each mont
    from a streamflow dataset. Calculates the statistics from all daily discharge values from all years, unless specified.
 }
 \examples{
-\dontrun{
-
-# Calculate statistics using data argument with defaults
+# Calculate statistics using a data frame and data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 calc_monthly_stats(data = flow_data,
                    start_year = 1980)
@@ -119,5 +117,5 @@ calc_monthly_stats(station_number = "08NM116",
                    roll_days = 7,
                    percentiles = c(25,75),
                    ignore_missing = TRUE)
-}
+                   
 }

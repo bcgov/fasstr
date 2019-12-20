@@ -64,6 +64,8 @@ Write a streamflow dataset to a directory. Can fill missing dates or filter data
 \examples{
 \dontrun{
 
+# Working examples:
+
 # Write data from a data frame
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 write_flow_data(data = flow_data, 
@@ -77,5 +79,6 @@ write_flow_data(station_number = "08NM116",
 write_flow_data(station_number = "08NM116", 
                 file_name = "Mission_Creek_daily_flows.xlsx",
                 fill_missing = TRUE)
+
 }
 }

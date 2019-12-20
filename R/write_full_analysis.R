@@ -60,6 +60,8 @@
 #' @examples
 #' \dontrun{
 #' 
+#' # Working examples:
+#' 
 #' # Save a full analysis will all the analyses
 #' write_full_analysis(station_number = "08NM116",
 #'                     file_name = "Mission Creek",
@@ -72,6 +74,7 @@
 #'                     start_year = 1980,
 #'                     end_year = 2010,
 #'                     analyses = c(3,5))
+#'                     
 #' }
 #' @export
 

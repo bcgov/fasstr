@@ -13,7 +13,7 @@ compute_frequency_analysis(
   use_log = FALSE,
   prob_plot_position = c("weibull", "median", "hazen"),
   prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5, 0.2, 0.1, 0.02, 0.01, 0.001,
-    1e-04),
+    0.0001),
   fit_distr = c("PIII", "weibull"),
   fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
   fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1, 0.05, 0.01),
@@ -72,6 +72,8 @@ Performs a flow volume frequency analysis from a streamflow dataset. Defaults to
 \examples{
 \dontrun{
 
+ # Working example:
+
 # Calculate some values to use for a frequency analysis 
 # (requires years, values for those years, and the name of the measure/metric)
 low_flows <- calc_annual_lowflows(station_number = "08NM116", 
@@ -82,10 +84,10 @@ low_flows <- dplyr::select(low_flows, Year, Value = Min_7_Day)
 low_flows <- dplyr::mutate(low_flows, Measure = "7-Day")
 
 # Compute the frequency analysis using the default parameters
-compute_frequency_analysis(data = low_flows,
-                           events = Year,
-                           values = Value,
-                           measure = Measure)
+results <- compute_frequency_analysis(data = low_flows,
+                                      events = Year,
+                                      values = Value,
+                                      measure = Measure)
                             
 }
 }

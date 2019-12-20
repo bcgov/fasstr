@@ -29,15 +29,13 @@
 #'   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 #'
 #' @examples
-#' \dontrun{
-#' 
 #' # Calculate statistics with default limits of normal (25 and 75th percentiles)
 #' calc_annual_outside_normal(station_number = "08NM116") 
 #' 
 #' # Calculate statistics with custom limits of normal
 #' calc_annual_outside_normal(station_number = "08NM116",
 #'                            normal_percentiles = c(10,90))
-#' }
+#'                            
 #' @export
 
 

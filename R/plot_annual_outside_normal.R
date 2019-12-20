@@ -30,15 +30,13 @@
 #' @seealso \code{\link{calc_annual_outside_normal}}
 #' 
 #' @examples
-#' \dontrun{
-#' 
-#' # Plot statistics with default limits of normal (25 and 75th percentiles)
+#' # Plot annual statistics with default limits of normal (25 and 75th percentiles)
 #' plot_annual_outside_normal(station_number = "08NM116") 
 #' 
-#' # Plot statistics with custom limits of normal
+#' # Plot annual statistics with custom limits of normal
 #' plot_annual_outside_normal(station_number = "08NM116",
 #'                            normal_percentiles = c(10,90))
-#' }
+#'                            
 #' @export
 
 

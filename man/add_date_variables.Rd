@@ -34,13 +34,11 @@ Add columns of Year (YYYY), Month (MM), MonthName (e.g. 'Jan'), and DayofYear (1
    (WaterDayofYear 365)).
 }
 \examples{
-\dontrun{
+# Add date variables using calendar years
+add_date_variables(station_number = "08NM116")
 
-# Using calendar years as water years
-add_date_variables(data = "08NM116")
-
-# Water years starting in August
-add_date_variables(data = "08NM116", 
+# Add date variables using water years starting in August
+add_date_variables(station_number = "08NM116", 
                    water_year_start = 8)
-}
+                   
 }

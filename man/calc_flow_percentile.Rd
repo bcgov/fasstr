@@ -67,8 +67,6 @@ Calculates the percentile, or percentile rank, of a discharge value compared to 
    Looks up the value in the distribution (stats::ecdf() function) of all daily discharge values from all years, unless specified.
 }
 \examples{
-\dontrun{
-
 # Calculate the percentile rank of a 10-cms flow value from a full record
 calc_flow_percentile(station_number = "08NM116", 
                      flow_value = 10)
@@ -83,5 +81,5 @@ calc_flow_percentile(station_number = "08NM116",
                      complete_years = TRUE,
                      months = 6,
                      flow_value = 10)
-}
+                     
 }

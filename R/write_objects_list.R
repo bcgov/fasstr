@@ -29,6 +29,8 @@
 #' @examples
 #' \dontrun{
 #' 
+#' # Working examples:
+#' 
 #' # Example list of tables and plots to save
 #' frequency <- compute_annual_frequencies(station_number = "08NM116")
 #' 
@@ -37,6 +39,7 @@
 #'                    folder_name = "Frequency Analysis",
 #'                    table_filetype = "xlsx", 
 #'                    plot_filetype = "png")
+#'                    
 #' }
 #' @export
 

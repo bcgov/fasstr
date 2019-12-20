@@ -30,24 +30,22 @@
 #' @seealso \code{\link{screen_flow_data}}
 #'   
 #' @examples
-#' \dontrun{
-#' 
-#' # Plot statistics using data argument with defaults
+#' # Plot screening statistics using a data frame and data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' plot_data_screening(data = flow_data)
 #' 
-#' # Plot statistics using station_number argument with defaults
+#' # Plot screening statistics using station_number argument with defaults
 #' plot_data_screening(station_number = "08NM116")
 #'                   
-#' # Plot statistics for water years starting in October
+#' # Plot screening statistics for water years starting in October
 #' plot_data_screening(station_number = "08NM116",
 #'                  water_year_start = 10)
 #'                   
-#' # Plot statistics for 7-day flows for July-September months only
+#' # Plot screening statistics for 7-day flows for July-September months only
 #' plot_data_screening(station_number = "08NM116",
 #'                  roll_days = 7,
 #'                  months = 7:9)
-#' }
+#'                  
 #' @export
 
 

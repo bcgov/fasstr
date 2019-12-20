@@ -88,14 +88,13 @@ Calculates annual n-day minimum values, and the day of year and date of occurren
    streamflow dataset. Calculates the statistics from all daily discharge values from all years, unless specified.
 }
 \examples{
-\dontrun{
-
-# Calculate statistics with default rolling days and alignment
+# Calculate annual 1, 3, 7, and 30-day (default) low flows with 
+# default alignment ('right')
 calc_annual_lowflows(station_number = "08NM116") 
 
-# Calculate statistics with custom rolling days and alignment
+# Calculate custom 3 and 7-day annual low flows with 'center' alignment
 calc_annual_lowflows(station_number = "08NM116",
                      roll_days = c(3,7),
                      roll_align = "center")
-}
+                     
 }

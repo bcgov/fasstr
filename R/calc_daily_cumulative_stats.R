@@ -35,20 +35,20 @@
 #'   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 #'
 #' @examples
-#' \dontrun{
-#' 
-#' # Calculate volume statistics
+#' # Calculate annual daily cumulative volume statistics
 #' calc_daily_cumulative_stats(station_number = "08NM116") 
 #' 
-#' # Calculate yield statistics with default HYDAT basin area
+#' # Calculate annual daily cumulative yield statistics 
+#' # with default HYDAT basin area
 #' calc_daily_cumulative_stats(station_number = "08NM116",
 #'                             use_yield = TRUE) 
 #' 
-#' # Calculate yield statistics with custom basin area
+#' # Calculate annual daily cumulative yield statistics 
+#' # with custom basin area
 #' calc_daily_cumulative_stats(station_number = "08NM116",
 #'                             use_yield = TRUE,
 #'                             basin_area = 800) 
-#' }
+#'                             
 #' @export
 
 

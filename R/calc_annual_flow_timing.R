@@ -43,15 +43,13 @@
 #'   Transposing data creates a column of 'Statistics' (just DoY, not Date values) and subsequent columns for each year selected.
 #' 
 #' @examples
-#' \dontrun{
-#' 
-#' # Calculate statistics with default percent totals
+#' # Calculate annual flow timings with default percent of annual totals
 #' calc_annual_flow_timing(station_number = "08NM116") 
 #' 
-#' # Calculate statistics with custom percent totals
-#' calc_annual_cumulative_stats(station_number = "08NM116",
-#'                              percent_total = 50)
-#' }
+#' # Calculate annual flow timings with custom percent of annual totals
+#' calc_annual_flow_timing(station_number = "08NM116",
+#'                         percent_total = 50)
+#'                              
 #' @export
 
 

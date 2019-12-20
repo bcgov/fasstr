@@ -83,18 +83,18 @@ Calculate cumulative daily flow statistics for each day of the year of daily flo
    flows, can use \code{use_yield} and \code{basin_area} to convert to runoff yield.
 }
 \examples{
-\dontrun{
-
-# Calculate volume statistics
+# Calculate annual daily cumulative volume statistics
 calc_daily_cumulative_stats(station_number = "08NM116") 
 
-# Calculate yield statistics with default HYDAT basin area
+# Calculate annual daily cumulative yield statistics 
+# with default HYDAT basin area
 calc_daily_cumulative_stats(station_number = "08NM116",
                             use_yield = TRUE) 
 
-# Calculate yield statistics with custom basin area
+# Calculate annual daily cumulative yield statistics 
+# with custom basin area
 calc_daily_cumulative_stats(station_number = "08NM116",
                             use_yield = TRUE,
                             basin_area = 800) 
-}
+                            
 }

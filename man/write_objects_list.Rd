@@ -41,6 +41,8 @@ Write a list of tables (data.frames) and plots (ggplots; as used by fasstr ) int
 \examples{
 \dontrun{
 
+# Working examples:
+
 # Example list of tables and plots to save
 frequency <- compute_annual_frequencies(station_number = "08NM116")
 
@@ -49,5 +51,6 @@ write_objects_list(list = frequency,
                    folder_name = "Frequency Analysis",
                    table_filetype = "xlsx", 
                    plot_filetype = "png")
+                   
 }
 }

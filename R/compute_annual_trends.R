@@ -56,25 +56,28 @@
 #' @examples
 #' \dontrun{
 #' 
-#' # Compute trends statistics using data argument with defaults
+#' # Working examples:
+#' 
+#' # Compute trends statistics using a data frame and data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
-#' compute_annual_trends(data = flow_data,
-#'                       zyp_method = "yuepilon")
+#' trends <- compute_annual_trends(data = flow_data,
+#'                                 zyp_method = "yuepilon")
 #' 
 #' # Compute trends statistics using station_number with defaults
-#' compute_annual_trends(station_number = "08NM116",
-#'                       zyp_method = "yuepilon")
+#' trends <- compute_annual_trends(station_number = "08NM116",
+#'                                 zyp_method = "yuepilon")
 #'                       
 #' # Compute trends statistics and plot a trend line if the significance is less than 0.05
-#' compute_annual_trends(station_number = "08NM116",
-#'                       zyp_method = "yuepilon",
-#'                       zyp_alpha = 0.05)
+#' trends <- compute_annual_trends(station_number = "08NM116",
+#'                                 zyp_method = "yuepilon",
+#'                                 zyp_alpha = 0.05)
 #'                       
 #' # Compute trends statistics and do not plot the results
-#' compute_annual_trends(station_number = "08NM116",
-#'                       zyp_method = "yuepilon",
-#'                       include_plots = FALSE)
-#' }
+#' trends <- compute_annual_trends(station_number = "08NM116",
+#'                                 zyp_method = "yuepilon",
+#'                                 include_plots = FALSE)
+#' 
+#' }                
 #' @export
 
 

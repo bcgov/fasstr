@@ -25,15 +25,13 @@
 #' @seealso \code{\link{calc_annual_stats}}
 #'   
 #' @examples
-#' \dontrun{
-#' 
-#' # Plot statistics
+#' # Plot annual means
 #' plot_annual_means(station_number = "08NM116")
 #'
-#' # Plot statistics for mean flows from July-September
+#' # Plot mean flows from July-September
 #' plot_annual_means(station_number = "08NM116", 
 #'                   months = 7:9)
-#' }
+#'                   
 #' @export
 
 

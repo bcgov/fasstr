@@ -33,25 +33,23 @@
 #' @seealso \code{\link{calc_annual_cumulative_stats}}
 #'   
 #' @examples
-#' \dontrun{
-#' 
-#' # Plot volume statistics
+#' # Plot annual cumulative volume statistics
 #' plot_annual_cumulative_stats(station_number = "08NM116") 
 #' 
-#' # Plot yield statistics with default HYDAT basin area
+#' # Plot annual cumulative yield statistics with default HYDAT basin area
 #' plot_annual_cumulative_stats(station_number = "08NM116",
 #'                              use_yield = TRUE) 
 #' 
-#' # Plot yield statistics with custom basin area
+#' # Plot annual cumulative yield statistics with custom basin area
 #' plot_annual_cumulative_stats(station_number = "08NM116",
 #'                              use_yield = TRUE,
 #'                              basin_area = 800) 
 #' 
-#' # Plot yield statistics with seasons
+#' # Plot annual cumulative yield statistics and seasonal totals
 #' plot_annual_cumulative_stats(station_number = "08NM116",
 #'                              use_yield = TRUE,
-#'                              include_seasons = TRUE) 
-#' }
+#'                              include_seasons = TRUE)
+#'                              
 #' @export
 
 

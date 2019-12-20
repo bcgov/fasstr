@@ -75,16 +75,14 @@ Plot annual n-day minimum values, and the day of year of occurrence of daily flo
    calculated from calc_annual_lowflows() function.
 }
 \examples{
-\dontrun{
-
-# Plot statistics with default rolling days and alignment
+# Plot annual 1, 3, 7, and 30-day (default) low flow statistics with default alignment
 plot_annual_lowflows(station_number = "08NM116") 
 
-# Plot statistics with custom rolling days and alignment
+# Plot annual custom 3 and 7-day low flow statistics with "center" alignment
 plot_annual_lowflows(station_number = "08NM116",
                      roll_days = c(3,7),
                      roll_align = "center")
-}
+                     
 }
 \seealso{
 \code{\link{calc_annual_lowflows}}

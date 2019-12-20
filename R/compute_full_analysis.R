@@ -71,16 +71,19 @@
 #' @examples
 #' \dontrun{
 #' 
-#' # Compute a full analysis will all the analyses
-#' compute_full_analysis(station_number = "08NM116",
-#'                      start_year = 1980,
-#'                      end_year = 2010)
+#' # Working examples:
 #' 
-#' # Compute a full analysis with only Annual and Daily analyses
-#' compute_full_analysis(station_number = "08NM116",
-#'                      start_year = 1980,
-#'                      end_year = 2010,
-#'                      analyses = c(3,5))
+#' # Compute a full analysis will all the analyses
+#' results <- compute_full_analysis(station_number = "08NM116",
+#'                                  start_year = 1980,
+#'                                  end_year = 2010)
+#' 
+#' # Compute a full analysis with only Annual (3) and Daily (5) analyses
+#' results <- compute_full_analysis(station_number = "08NM116",
+#'                                  start_year = 1980,
+#'                                  end_year = 2010,
+#'                                  analyses = c(3,5))
+#'                      
 #' }
 #' @export
 
