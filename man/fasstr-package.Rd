@@ -8,8 +8,9 @@
 \description{
 The Flow Analysis Summary Statistics Tool for R, 'fasstr', provides various 
     functions to clean and screen daily stream discharge data; calculate and visualize various summary statistics
-    and metrics (means, percentiles, low-flows, high-flows, etc.); and compute annual trending and volume 
-    frequency analyses. It features useful function arguments for filtering of and handling dates,
+    and metrics (means, percentiles, low-flows, high-flows, etc.); and compute annual trending (using Sen's slope
+    method (Sen, 1968) and implementation of Xuebin Zhang's (Zhang, 1999) and Yue-Pilon's (Yue, 2002) prewhitening
+    approaches) and volume frequency analyses (). It features useful function arguments for filtering of and handling dates,
     customizing data and metrics, and the ability to pull daily data directly from the Water Survey of 
     Canada hydrometric database (<http://collaboration.cmc.ec.gc.ca/cmc/hydrometrics/www/>).
 }

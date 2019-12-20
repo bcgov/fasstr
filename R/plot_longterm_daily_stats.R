@@ -39,6 +39,8 @@
 #' @seealso \code{\link{calc_longterm_daily_stats}}
 #'   
 #' @examples
+#' \dontrun{
+#' 
 #' # Plot longterm daily statistics using data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' plot_longterm_daily_stats(data = flow_data,
@@ -50,6 +52,7 @@
 #'                           end_year = 2010,
 #'                           water_year_start = 10)
 #'                           
+#' }
 #' @export
 
 

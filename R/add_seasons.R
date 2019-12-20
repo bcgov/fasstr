@@ -25,6 +25,8 @@
 #'   \item{Season}{season identifier labelled by the start and end month of the season}
 #'
 #' @examples
+#' \dontrun{
+#' 
 #' # Add a column with four annual seasons starting in January
 #' add_seasons(station_number = "08NM116",
 #'             seasons_length = 4)
@@ -34,6 +36,7 @@
 #'             water_year_start = 10,
 #'             seasons_length = 6)
 #'             
+#' }
 #' @export
 
 

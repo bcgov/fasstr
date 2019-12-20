@@ -23,6 +23,8 @@
 #' @return A tibble data frame of numeric values of a long-term mean (and percent of long-term mean if selected) of selected years and months.
 #' 
 #' @examples
+#' \dontrun{
+#' 
 #' # Calculate the long-term mean annual discharge (MAD) using only years with no missing data
 #' calc_longterm_mean(station_number = "08NM116", 
 #'                    complete_years = TRUE)
@@ -32,6 +34,7 @@
 #'                    complete_years = TRUE,
 #'                    percent_MAD = c(5,10,20))
 #'                    
+#' }
 #' @export
 
 

@@ -25,6 +25,8 @@
 #' @seealso \code{\link{calc_annual_stats}}
 #'   
 #' @examples
+#' \dontrun{
+#' 
 #' # Plot annual means
 #' plot_annual_means(station_number = "08NM116")
 #'
@@ -32,6 +34,7 @@
 #' plot_annual_means(station_number = "08NM116", 
 #'                   months = 7:9)
 #'                   
+#' }
 #' @export
 
 

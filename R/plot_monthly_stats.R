@@ -30,6 +30,8 @@
 #' @seealso \code{\link{calc_monthly_stats}}
 #'   
 #' @examples
+#' \dontrun{
+#' 
 #' # Plot monthly statistics using a data frame and data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' results <- plot_monthly_stats(data = flow_data,
@@ -43,6 +45,7 @@
 #'                               water_year_start = 10,
 #'                               percentiles = 10)
 #'                    
+#' }
 #' @export
 
 

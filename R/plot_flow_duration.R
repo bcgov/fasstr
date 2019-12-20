@@ -29,6 +29,8 @@
 #' @seealso \code{\link{calc_longterm_daily_stats}}
 #'   
 #' @examples
+#' \dontrun{
+#' 
 #' # Plot flow durations using a data frame and data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' plot_flow_duration(data = flow_data,
@@ -44,6 +46,7 @@
 #'                    custom_months = 7:9,
 #'                    custom_months_label = "Summer")
 #'                    
+#' }
 #' @export
 
 

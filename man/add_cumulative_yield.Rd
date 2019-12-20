@@ -54,6 +54,8 @@ Add a column of rolling daily cumulative runoff yield flows on an annual basis t
    calculated in years with complete data.
 }
 \examples{
+\dontrun{
+
 # Add a column based on water years starting in August
 add_cumulative_yield(station_number = "08NM116", 
                      water_year_start = 8)
@@ -63,4 +65,5 @@ add_cumulative_yield(station_number = "08NM116",
                      water_year_start = 8,
                      basin_area = 800)
                      
+}
 }

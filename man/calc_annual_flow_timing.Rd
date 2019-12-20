@@ -70,6 +70,8 @@ Calculates annual the timing (day of year) and date of occurrence of portions of
    data, unless specified.
 }
 \examples{
+\dontrun{
+
 # Calculate annual flow timings with default percent of annual totals
 calc_annual_flow_timing(station_number = "08NM116") 
 
@@ -77,6 +79,7 @@ calc_annual_flow_timing(station_number = "08NM116")
 calc_annual_flow_timing(station_number = "08NM116",
                         percent_total = 50)
                              
+}
 }
 \references{
 \itemize{

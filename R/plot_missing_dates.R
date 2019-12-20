@@ -25,6 +25,8 @@
 #' @seealso \code{\link{screen_flow_data}}
 #'   
 #' @examples
+#' \dontrun{
+#' 
 #' # Plot missing dates using a data frame and data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' plot_missing_dates(data = flow_data)
@@ -41,6 +43,7 @@
 #'                    roll_days = 7,
 #'                    months = 7:9)
 #'                    
+#' }
 #' @export
 
 

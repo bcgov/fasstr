@@ -70,6 +70,8 @@ Calculates the long-term percentiles discharge of a streamflow dataset. Averages
   unless specified.
 }
 \examples{
+\dontrun{
+
 # Calculate the 20th percentile flow value from a flow record
 calc_longterm_percentile(station_number = "08NM116",
                          percentile = 20)
@@ -80,4 +82,5 @@ calc_longterm_percentile(station_number = "08NM116",
                          end_year = 2010, 
                          percentile = 90)
                          
+}
 }

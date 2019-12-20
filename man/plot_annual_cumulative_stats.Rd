@@ -82,6 +82,8 @@ Plots annual and seasonal total flows, volumetric or runoff yield flows, from a 
    designated by the water year which starts in November (designated by the calendar year in which it ends).
 }
 \examples{
+\dontrun{
+
 # Plot annual cumulative volume statistics
 plot_annual_cumulative_stats(station_number = "08NM116") 
 
@@ -99,6 +101,7 @@ plot_annual_cumulative_stats(station_number = "08NM116",
                              use_yield = TRUE,
                              include_seasons = TRUE)
                              
+}
 }
 \seealso{
 \code{\link{calc_annual_cumulative_stats}}

@@ -86,6 +86,8 @@ Calculates annual and seasonal total flows, volumetric or runoff yield flows, fr
    by the calendar or water year in which it occurs.
 }
 \examples{
+\dontrun{
+
 # Calculate annual total volumetric flow statistics
 calc_annual_cumulative_stats(station_number = "08NM116") 
 
@@ -98,4 +100,5 @@ calc_annual_cumulative_stats(station_number = "08NM116",
                              use_yield = TRUE,
                              basin_area = 800) 
                              
+}
 }

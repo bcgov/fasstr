@@ -96,6 +96,8 @@ Plots the long-term monthly mean, median, maximum, minimum, and 5, 25, 75, and 9
    calc_longterm_monthly_stats() function.
 }
 \examples{
+\dontrun{
+
 # Plot longterm monthly statistics using data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 plot_longterm_monthly_stats(data = flow_data,
@@ -111,6 +113,7 @@ plot_longterm_monthly_stats(station_number = "08NM116",
                             add_year = 1985) 
                               
                             
+}
 }
 \seealso{
 \code{\link{calc_longterm_monthly_stats}}

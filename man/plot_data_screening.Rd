@@ -67,6 +67,8 @@ Plots the mean, median, maximum, minimum, standard deviation of annual flows. Pl
    discharge values from all years, unless specified. Data calculated using screen_flow_data() function.
 }
 \examples{
+\dontrun{
+
 # Plot screening statistics using a data frame and data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 plot_data_screening(data = flow_data)
@@ -83,6 +85,7 @@ plot_data_screening(station_number = "08NM116",
                  roll_days = 7,
                  months = 7:9)
                  
+}
 }
 \seealso{
 \code{\link{screen_flow_data}}

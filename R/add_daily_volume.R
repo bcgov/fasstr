@@ -20,9 +20,12 @@
 #'   \item{Volume_m3}{daily total volumetric flow, in units of cubic metres}
 #'
 #' @examples
+#' \dontrun{
+#' 
 #' # Add a column of daily flow volumes
 #' add_daily_volume(station_number = "08NM116")
 #' 
+#' }
 #' @export
 
 

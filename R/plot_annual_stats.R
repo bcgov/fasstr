@@ -34,6 +34,8 @@
 #' @seealso \code{\link{calc_annual_stats}}
 #'   
 #' @examples
+#' \dontrun{
+#' 
 #' # Plot annual statistics using a data frame and data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' plot_annual_stats(data = flow_data)
@@ -74,6 +76,7 @@
 #'                   end_year = 2010,
 #'                   include_title = TRUE)
 #'                   
+#' }
 #' @export
 
 

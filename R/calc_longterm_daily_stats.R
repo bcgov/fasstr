@@ -37,6 +37,8 @@
 #'   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 #'   
 #' @examples
+#' \dontrun{
+#' 
 #' # Calculate long-term statistics using data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' calc_longterm_daily_stats(data = flow_data,
@@ -76,6 +78,7 @@
 #'                           custom_months = 7:9,
 #'                           custom_months_label = "Summer")                  
 #'                           
+#' }
 #' @export
 
 

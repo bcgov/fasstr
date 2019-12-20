@@ -30,6 +30,7 @@
 #' # Add a column of yields based on a custom basin area
 #' add_daily_yield(station_number = "08NM116",
 #'                 basin_area = 800)
+#'                 
 #' }
 #' @export
 

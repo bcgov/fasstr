@@ -38,6 +38,8 @@
 #' @seealso \code{\link{calc_annual_flow_timing}}
 #'   
 #' @examples
+#' \dontrun{
+#' 
 #' # Plot annual flow timing statistics with default percent totals
 #' plot_annual_flow_timing(station_number = "08NM116") 
 #' 
@@ -45,6 +47,7 @@
 #' plot_annual_flow_timing(station_number = "08NM116",
 #'                         percent_total = 50)
 #'                         
+#' }
 #' @export
 
 

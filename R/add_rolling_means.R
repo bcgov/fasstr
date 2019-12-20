@@ -28,6 +28,8 @@
 #'   \item{Q30Day}{rolling means of the 30-day flow values of the designated date and previous 29 days (roll_align = "right")}
 #'    
 #' @examples
+#' \dontrun{
+#' 
 #' # Add default 3, 7, and 30-day rolling mean columns, with "right" alignment
 #' add_rolling_means(station_number = "08NM116")
 #'
@@ -39,6 +41,7 @@
 #' add_rolling_means(station_number = "08NM116",
 #'                   roll_align = "left")                
 #'                   
+#' }
 #' @export
 
 

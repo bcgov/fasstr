@@ -40,6 +40,8 @@
 #' @seealso \code{\link{calc_longterm_monthly_stats}}
 #'   
 #' @examples
+#' \dontrun{
+#' 
 #' # Plot longterm monthly statistics using data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' plot_longterm_monthly_stats(data = flow_data,
@@ -55,6 +57,7 @@
 #'                             add_year = 1985) 
 #'                               
 #'                             
+#' }
 #' @export
 
 

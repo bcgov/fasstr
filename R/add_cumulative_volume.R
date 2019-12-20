@@ -22,10 +22,13 @@
 #'   \item{Cumul_Volume_m3}{cumulative volumetric flows for each day for each year, in units of cubic metres}
 #'   
 #' @examples
+#' \dontrun{
+#' 
 #' # Add a column based on water years starting in August
 #' add_cumulative_volume(station_number = "08NM116", 
 #'                       water_year_start = 8)
 #'                       
+#' }
 #' @export
 
 

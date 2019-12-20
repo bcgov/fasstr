@@ -33,6 +33,8 @@
 #' @seealso \code{\link{calc_annual_cumulative_stats}}
 #'   
 #' @examples
+#' \dontrun{
+#' 
 #' # Plot annual cumulative volume statistics
 #' plot_annual_cumulative_stats(station_number = "08NM116") 
 #' 
@@ -50,6 +52,7 @@
 #'                              use_yield = TRUE,
 #'                              include_seasons = TRUE)
 #'                              
+#' }
 #' @export
 
 

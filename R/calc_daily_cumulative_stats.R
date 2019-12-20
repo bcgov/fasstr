@@ -35,6 +35,8 @@
 #'   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 #'
 #' @examples
+#' \dontrun{
+#' 
 #' # Calculate annual daily cumulative volume statistics
 #' calc_daily_cumulative_stats(station_number = "08NM116") 
 #' 
@@ -49,6 +51,7 @@
 #'                             use_yield = TRUE,
 #'                             basin_area = 800) 
 #'                             
+#' }
 #' @export
 
 

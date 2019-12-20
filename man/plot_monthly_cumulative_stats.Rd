@@ -85,6 +85,8 @@ Plot the monthly cumulative mean, median, maximum, minimum, and 5, 25, 75, 95th 
    runoff yield.
 }
 \examples{
+\dontrun{
+
 # Plot annual cumulative volume statistics
 plot_monthly_cumulative_stats(station_number = "08NM116") 
 
@@ -97,6 +99,7 @@ plot_monthly_cumulative_stats(station_number = "08NM116",
                               use_yield = TRUE,
                               basin_area = 800) 
                               
+}
 }
 \seealso{
 \code{\link{calc_monthly_cumulative_stats}}

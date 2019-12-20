@@ -95,6 +95,8 @@ Plots the long-term monthly mean, median, maximum, minimum, and percentiles of d
    'inner_percentiles' and 'outer_percentiles' arguments. Data calculated using the calc_longterm_daily_stats() function.
 }
 \examples{
+\dontrun{
+
 # Plot longterm daily statistics using data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 plot_longterm_daily_stats(data = flow_data,
@@ -106,6 +108,7 @@ plot_longterm_daily_stats(station_number = "08NM116",
                           end_year = 2010,
                           water_year_start = 10)
                           
+}
 }
 \seealso{
 \code{\link{calc_longterm_daily_stats}}

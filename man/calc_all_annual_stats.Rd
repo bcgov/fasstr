@@ -113,6 +113,8 @@ Calculates all annual statistics of daily flow values from a streamflow dataset 
  }
 }
 \examples{
+\dontrun{
+
 # Calculate all annual statistics from this package with default arguments
 calc_all_annual_stats(station_number = "08NM116") 
 
@@ -128,6 +130,7 @@ calc_all_annual_stats(station_number = "08NM116",
                       timing_percent = c(25,33,50,75),
                       normal_percentiles = c(25,75)) 
 
+}
 }
 \seealso{
 \code{\link{calc_annual_stats}},

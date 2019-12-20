@@ -22,6 +22,8 @@
 #' @return A tibble data frame of a long-term percentile of selected years and months.
 #' 
 #' @examples
+#' \dontrun{
+#' 
 #' # Calculate the 20th percentile flow value from a flow record
 #' calc_longterm_percentile(station_number = "08NM116",
 #'                          percentile = 20)
@@ -32,6 +34,7 @@
 #'                          end_year = 2010, 
 #'                          percentile = 90)
 #'                          
+#' }
 #' @export
 
 

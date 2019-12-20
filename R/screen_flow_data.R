@@ -44,6 +44,8 @@
 #'   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 #'   
 #' @examples
+#' \dontrun{
+#' 
 #' # Calculate screening statistics usinga data frame and data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' screen_flow_data(data = flow_data)
@@ -60,6 +62,7 @@
 #'                  roll_days = 7,
 #'                  months = 7:9)
 #'                  
+#' }
 #' @export
 
 

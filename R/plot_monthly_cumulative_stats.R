@@ -36,6 +36,8 @@
 #' @seealso \code{\link{calc_monthly_cumulative_stats}}
 #'   
 #' @examples
+#' \dontrun{
+#' 
 #' # Plot annual cumulative volume statistics
 #' plot_monthly_cumulative_stats(station_number = "08NM116") 
 #' 
@@ -48,6 +50,7 @@
 #'                               use_yield = TRUE,
 #'                               basin_area = 800) 
 #'                               
+#' }
 #' @export
 
 

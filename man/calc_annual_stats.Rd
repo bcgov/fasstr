@@ -82,6 +82,8 @@ Calculates annual mean, median, maximum, minimum, and percentiles of daily flow 
    dataset. Calculates the statistics from all daily discharge values from all years, unless specified.
 }
 \examples{
+\dontrun{
+
 # Calculate annual statistics from a data frame using the data argument
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 calc_annual_stats(data = flow_data)
@@ -111,4 +113,5 @@ calc_annual_stats(station_number = "08NM116",
                   months = 7:9,
                   percentiles = c(25,75))
                   
+}
 }

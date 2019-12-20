@@ -40,6 +40,8 @@
 #'   not transposed.
 #'   
 #' @examples
+#' \dontrun{
+#' 
 #' # Calculate annual 1, 3, 7, and 30-day (default) low flows with 
 #' # default alignment ('right')
 #' calc_annual_lowflows(station_number = "08NM116") 
@@ -49,6 +51,7 @@
 #'                      roll_days = c(3,7),
 #'                      roll_align = "center")
 #'                      
+#' }
 #' @export
 
 

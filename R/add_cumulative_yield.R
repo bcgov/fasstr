@@ -24,6 +24,8 @@
 #'   \item{Cumul_Yield_mm}{cumulative yield flows for each day for each year, in units of millimetres}
 #'
 #' @examples
+#' \dontrun{
+#' 
 #' # Add a column based on water years starting in August
 #' add_cumulative_yield(station_number = "08NM116", 
 #'                      water_year_start = 8)
@@ -33,6 +35,7 @@
 #'                      water_year_start = 8,
 #'                      basin_area = 800)
 #'                      
+#' }
 #' @export
 
 

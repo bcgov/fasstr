@@ -25,7 +25,10 @@ A tibble data frame of the source data with an additional column:
 Add a column of daily volumetric flows to a streamflow dataset, in units of cubic metres. Converts the discharge to a volume.
 }
 \examples{
+\dontrun{
+
 # Add a column of daily flow volumes
 add_daily_volume(station_number = "08NM116")
 
+}
 }

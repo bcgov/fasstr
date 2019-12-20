@@ -22,6 +22,8 @@
 #' @return A tibble data frame, or a single numeric value if no station number proivded, of the percentile rank of a given flow value.
 #' 
 #' @examples
+#' \dontrun{
+#' 
 #' # Calculate the percentile rank of a 10-cms flow value from a full record
 #' calc_flow_percentile(station_number = "08NM116", 
 #'                      flow_value = 10)
@@ -37,6 +39,7 @@
 #'                      months = 6,
 #'                      flow_value = 10)
 #'                      
+#' }
 #' @export
 
 

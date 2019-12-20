@@ -81,6 +81,8 @@ Plots monthly mean, median, maximum, minimum, and percentiles for each month of 
    calculated using the calc_monthly_stats() function.
 }
 \examples{
+\dontrun{
+
 # Plot monthly statistics using a data frame and data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 results <- plot_monthly_stats(data = flow_data,
@@ -94,6 +96,7 @@ results <- plot_monthly_stats(station_number = "08NM116",
                               water_year_start = 10,
                               percentiles = 10)
                    
+}
 }
 \seealso{
 \code{\link{calc_monthly_stats}}

@@ -83,6 +83,8 @@ Calculate cumulative daily flow statistics for each day of the year of daily flo
    flows, can use \code{use_yield} and \code{basin_area} to convert to runoff yield.
 }
 \examples{
+\dontrun{
+
 # Calculate annual daily cumulative volume statistics
 calc_daily_cumulative_stats(station_number = "08NM116") 
 
@@ -97,4 +99,5 @@ calc_daily_cumulative_stats(station_number = "08NM116",
                             use_yield = TRUE,
                             basin_area = 800) 
                             
+}
 }

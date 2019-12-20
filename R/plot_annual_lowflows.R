@@ -27,6 +27,8 @@
 #' @seealso \code{\link{calc_annual_lowflows}}
 #' 
 #' @examples
+#' \dontrun{
+#' 
 #' # Plot annual 1, 3, 7, and 30-day (default) low flow statistics with default alignment
 #' plot_annual_lowflows(station_number = "08NM116") 
 #' 
@@ -35,6 +37,7 @@
 #'                      roll_days = c(3,7),
 #'                      roll_align = "center")
 #'                      
+#' }
 #' @export
 
 

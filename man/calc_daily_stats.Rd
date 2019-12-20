@@ -91,6 +91,8 @@ Calculates the daily mean, median, maximum, minimum, and percentiles for each da
    higher than non-leap years.
 }
 \examples{
+\dontrun{
+
 # Calculate daily statistics using data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 calc_daily_stats(data = flow_data,
@@ -128,4 +130,5 @@ calc_daily_stats(station_number = "08NM116",
                  months = 7:9,
                  percentiles = c(25,75))       
                  
+}
 }

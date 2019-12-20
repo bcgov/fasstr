@@ -35,6 +35,8 @@
 #'   Spreading data creates columns of Year and subsequent columns of Month-Statistics  (ex 'Jan-Mean').
 #'   
 #' @examples
+#' \dontrun{
+#' 
 #' # Calculate statistics using a data frame and data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' calc_monthly_stats(data = flow_data,
@@ -65,6 +67,7 @@
 #'                    percentiles = c(25,75),
 #'                    ignore_missing = TRUE)
 #'                    
+#' }
 #' @export
 
 

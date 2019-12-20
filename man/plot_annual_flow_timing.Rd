@@ -63,6 +63,8 @@ Plots annual the timing (day of year) of occurrence of portions of total annual 
    Data calculated using calc_annual_flow_timing() function.
 }
 \examples{
+\dontrun{
+
 # Plot annual flow timing statistics with default percent totals
 plot_annual_flow_timing(station_number = "08NM116") 
 
@@ -70,6 +72,7 @@ plot_annual_flow_timing(station_number = "08NM116")
 plot_annual_flow_timing(station_number = "08NM116",
                         percent_total = 50)
                         
+}
 }
 \references{
 \itemize{

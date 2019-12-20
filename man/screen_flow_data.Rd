@@ -85,6 +85,8 @@ Calculates mean, median, maximum, minimum, standard deviation of annual flows an
    unless specified.
 }
 \examples{
+\dontrun{
+
 # Calculate screening statistics usinga data frame and data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 screen_flow_data(data = flow_data)
@@ -101,4 +103,5 @@ screen_flow_data(station_number = "08NM116",
                  roll_days = 7,
                  months = 7:9)
                  
+}
 }

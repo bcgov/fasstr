@@ -39,6 +39,8 @@ Adds a column of seasons identifiers to a data frame with a column of dates call
    seasons starting with water year starting in December.
 }
 \examples{
+\dontrun{
+
 # Add a column with four annual seasons starting in January
 add_seasons(station_number = "08NM116",
             seasons_length = 4)
@@ -48,4 +50,5 @@ add_seasons(station_number = "08NM116",
             water_year_start = 10,
             seasons_length = 6)
             
+}
 }

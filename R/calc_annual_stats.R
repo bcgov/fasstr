@@ -55,6 +55,8 @@
 #'   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 #'   
 #' @examples
+#' \dontrun{
+#' 
 #' # Calculate annual statistics from a data frame using the data argument
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' calc_annual_stats(data = flow_data)
@@ -84,6 +86,7 @@
 #'                   months = 7:9,
 #'                   percentiles = c(25,75))
 #'                   
+#' }
 #' @export
 
 

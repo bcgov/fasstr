@@ -27,6 +27,8 @@
 #'   \item{DayofYear}{day of the year from the selected month start (1-365 or 366)}
 #'
 #' @examples
+#' \dontrun{
+#' 
 #' # Add date variables using calendar years
 #' add_date_variables(station_number = "08NM116")
 #' 
@@ -34,6 +36,7 @@
 #' add_date_variables(station_number = "08NM116", 
 #'                    water_year_start = 8)
 #'                    
+#' }
 #' @export
 
 
