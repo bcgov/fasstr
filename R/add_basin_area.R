@@ -28,7 +28,8 @@
 #'   \item{Basin_Area_sqkm}{area of upstream drainage basin area, in square kilometres}
 #'
 #' @examples
-#' \dontrun{
+#' # Run examples if HYDAT is downloaded
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
 #' # Add the HYDAT basin area to a data frame with station numbers
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")

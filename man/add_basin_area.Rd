@@ -35,7 +35,8 @@ A tibble data frame of the original source data with an additional column:
 Add a column of basin areas to a streamflow dataset, in units of square kilometres.
 }
 \examples{
-\dontrun{
+# Run examples if HYDAT is downloaded
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Add the HYDAT basin area to a data frame with station numbers
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
