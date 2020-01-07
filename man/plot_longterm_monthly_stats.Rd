@@ -96,7 +96,8 @@ Plots the long-term monthly mean, median, maximum, minimum, and 5, 25, 75, and 9
    calc_longterm_monthly_stats() function.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Plot longterm monthly statistics using data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")

@@ -35,7 +35,8 @@
 #'   Spreading data creates columns of Year and subsequent columns of Month-Statistics  (ex 'Jan-Mean').
 #'   
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
 #' # Calculate statistics using a data frame and data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")

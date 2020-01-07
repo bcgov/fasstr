@@ -71,7 +71,8 @@ Calculates the long-term mean annual discharge of a streamflow dataset. Averages
   unless specified.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Calculate the long-term mean annual discharge (MAD) using only years with no missing data
 calc_longterm_mean(station_number = "08NM116", 

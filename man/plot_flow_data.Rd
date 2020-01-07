@@ -76,7 +76,8 @@ Plot the daily mean flow values from a streamflow dataset. Plots the statistics 
    calculated using calc_daily_stats() function. Multiple groups/stations can be plotted if provided with the \code{groups} argument.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Plot data from a data frame and data argument
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")

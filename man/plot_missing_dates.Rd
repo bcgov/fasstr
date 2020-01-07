@@ -62,7 +62,8 @@ Plots the number of missing data for each month of each year. Calculates the sta
    values from all years, unless specified. Data calculated using screen_flow_data() function.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Plot missing dates using a data frame and data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")

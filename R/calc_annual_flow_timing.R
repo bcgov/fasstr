@@ -43,7 +43,8 @@
 #'   Transposing data creates a column of 'Statistics' (just DoY, not Date values) and subsequent columns for each year selected.
 #' 
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
 #' # Calculate annual flow timings with default percent of annual totals
 #' calc_annual_flow_timing(station_number = "08NM116") 

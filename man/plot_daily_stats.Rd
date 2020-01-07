@@ -101,7 +101,8 @@ Plot the daily mean, median, maximum, minimum, and percentiles for each day of t
    arguments.Data calculated using calc_daily_stats() function.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Plot daily statistics using a data frame and data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")

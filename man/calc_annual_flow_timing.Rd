@@ -70,7 +70,8 @@ Calculates annual the timing (day of year) and date of occurrence of portions of
    data, unless specified.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Calculate annual flow timings with default percent of annual totals
 calc_annual_flow_timing(station_number = "08NM116") 

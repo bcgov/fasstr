@@ -27,7 +27,8 @@
 #'   \item{DayofYear}{day of the year from the selected month start (1-365 or 366)}
 #'
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
 #' # Add date variables using calendar years
 #' add_date_variables(station_number = "08NM116")

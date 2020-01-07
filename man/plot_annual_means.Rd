@@ -70,7 +70,8 @@ Plot annual means using the long-term annual mean as the point of reference to c
    statistics from all daily discharge values from all years, unless specified. Data calculated using calc_annual_stats() function.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Plot annual means
 plot_annual_means(station_number = "08NM116")

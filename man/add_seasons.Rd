@@ -39,7 +39,8 @@ Adds a column of seasons identifiers to a data frame with a column of dates call
    seasons starting with water year starting in December.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Add a column with four annual seasons starting in January
 add_seasons(station_number = "08NM116",

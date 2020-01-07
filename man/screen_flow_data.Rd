@@ -85,7 +85,8 @@ Calculates mean, median, maximum, minimum, standard deviation of annual flows an
    unless specified.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Calculate screening statistics usinga data frame and data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")

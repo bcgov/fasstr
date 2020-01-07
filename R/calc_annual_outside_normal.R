@@ -29,7 +29,8 @@
 #'   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 #'
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
 #' # Calculate statistics with default limits of normal (25 and 75th percentiles)
 #' calc_annual_outside_normal(station_number = "08NM116") 

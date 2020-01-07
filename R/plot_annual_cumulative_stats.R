@@ -33,7 +33,8 @@
 #' @seealso \code{\link{calc_annual_cumulative_stats}}
 #'   
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
 #' # Plot annual cumulative volume statistics
 #' plot_annual_cumulative_stats(station_number = "08NM116") 

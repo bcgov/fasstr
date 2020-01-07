@@ -113,7 +113,8 @@ Calculates all annual statistics of daily flow values from a streamflow dataset 
  }
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Calculate all annual statistics from this package with default arguments
 calc_all_annual_stats(station_number = "08NM116") 

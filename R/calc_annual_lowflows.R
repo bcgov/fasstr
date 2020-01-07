@@ -40,7 +40,8 @@
 #'   not transposed.
 #'   
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
 #' # Calculate annual 1, 3, 7, and 30-day (default) low flows with 
 #' # default alignment ('right')

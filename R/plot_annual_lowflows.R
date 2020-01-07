@@ -27,7 +27,8 @@
 #' @seealso \code{\link{calc_annual_lowflows}}
 #' 
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
 #' # Plot annual 1, 3, 7, and 30-day (default) low flow statistics with default alignment
 #' plot_annual_lowflows(station_number = "08NM116") 

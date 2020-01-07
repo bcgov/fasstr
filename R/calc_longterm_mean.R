@@ -23,7 +23,8 @@
 #' @return A tibble data frame of numeric values of a long-term mean (and percent of long-term mean if selected) of selected years and months.
 #' 
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
 #' # Calculate the long-term mean annual discharge (MAD) using only years with no missing data
 #' calc_longterm_mean(station_number = "08NM116", 

@@ -20,7 +20,8 @@
 #'   \item{Volume_m3}{daily total volumetric flow, in units of cubic metres}
 #'
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
 #' # Add a column of daily flow volumes
 #' add_daily_volume(station_number = "08NM116")

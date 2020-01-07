@@ -41,7 +41,8 @@ Adds rows of dates with missing flow values to a streamflow dataset with daily f
    be filled in gaps between data and compeltely fill the first and last years (calendar or water year if selected).
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Fill missing dates with NA using calendar years
 fill_missing_dates(station_number = "08NM116")

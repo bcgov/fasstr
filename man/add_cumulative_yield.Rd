@@ -54,7 +54,8 @@ Add a column of rolling daily cumulative runoff yield flows on an annual basis t
    calculated in years with complete data.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Add a column based on water years starting in August
 add_cumulative_yield(station_number = "08NM116", 

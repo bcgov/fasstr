@@ -22,7 +22,8 @@
 #' @return A tibble data frame of a long-term percentile of selected years and months.
 #' 
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
 #' # Calculate the 20th percentile flow value from a flow record
 #' calc_longterm_percentile(station_number = "08NM116",

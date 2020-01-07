@@ -38,7 +38,8 @@
 #' @seealso \code{\link{calc_annual_flow_timing}}
 #'   
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
 #' # Plot annual flow timing statistics with default percent totals
 #' plot_annual_flow_timing(station_number = "08NM116") 

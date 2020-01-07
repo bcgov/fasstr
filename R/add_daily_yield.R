@@ -22,7 +22,8 @@
 #'   \item{Yield_mm}{daily runoff yield flow, in units of millimetres}
 #'
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
 #' # Add a column of yields based on HYDAT basin area
 #' add_daily_yield(station_number = "08NM116")

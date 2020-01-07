@@ -97,7 +97,8 @@ Calculates the long-term and long-term monthly mean, median, maximum, minimum, a
    from a streamflow dataset. Calculates the statistics from all daily values from all years, unless specified.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Calculate long-term statistics using data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")

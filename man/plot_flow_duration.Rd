@@ -88,7 +88,8 @@ Plots flow duration curves, percent time a flow value is equalled or exceeded, f
    function then converted for plotting.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Plot flow durations using a data frame and data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")

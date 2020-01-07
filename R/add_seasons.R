@@ -25,7 +25,8 @@
 #'   \item{Season}{season identifier labelled by the start and end month of the season}
 #'
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
 #' # Add a column with four annual seasons starting in January
 #' add_seasons(station_number = "08NM116",

@@ -27,7 +27,8 @@
 #' @return A ggplot2 object of daily flows from flow_data or HYDAT flow data provided
 #'
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
 #' # Plot data from a data frame and data argument
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")

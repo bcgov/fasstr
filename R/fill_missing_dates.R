@@ -21,7 +21,8 @@
 #' @return A tibble data frame of the source data with additional rows of filled values of missing dates.
 #'
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
 #' # Fill missing dates with NA using calendar years
 #' fill_missing_dates(station_number = "08NM116")

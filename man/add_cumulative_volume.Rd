@@ -43,7 +43,8 @@ Add a column of rolling daily cumulative volumetric flows on an annual basis to 
    The cumulative flows restart every year and are only calculated in years with complete data.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Add a column based on water years starting in August
 add_cumulative_volume(station_number = "08NM116", 

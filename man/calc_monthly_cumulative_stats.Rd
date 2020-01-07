@@ -82,7 +82,8 @@ Calculate cumulative monthly flow statistics for each month of the year of daily
    cumulative flows, can use \code{use_yield} and \code{basin_area} to convert to runoff yield.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Calculate annual monthly cumulative volume statistics
 calc_monthly_cumulative_stats(station_number = "08NM116") 

@@ -67,7 +67,8 @@ Calculates the percentile, or percentile rank, of a discharge value compared to 
    Looks up the value in the distribution (stats::ecdf() function) of all daily discharge values from all years, unless specified.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Calculate the percentile rank of a 10-cms flow value from a full record
 calc_flow_percentile(station_number = "08NM116", 

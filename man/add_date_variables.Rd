@@ -34,7 +34,8 @@ Add columns of Year (YYYY), Month (MM), MonthName (e.g. 'Jan'), and DayofYear (1
    (WaterDayofYear 365)).
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Add date variables using calendar years
 add_date_variables(station_number = "08NM116")

@@ -52,7 +52,8 @@ Adds selected n-day rolling means to a streamflow dataset. Based on selected n-d
   than the n-days provided.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Add default 3, 7, and 30-day rolling mean columns, with "right" alignment
 add_rolling_means(station_number = "08NM116")
