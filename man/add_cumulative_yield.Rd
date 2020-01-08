@@ -50,7 +50,7 @@ A tibble data frame of the source data with an additional column:
 \description{
 Add a column of rolling daily cumulative runoff yield flows on an annual basis to a streamflow dataset. Adds the 
    runoff yield discharge from each day with the previous day(s) for each year, in units of millimetres. Converts cumulative 
-   discharge to a depth of water based on the upstream drainge basin area.The cumulative flows restart every year and are only 
+   discharge to a depth of water based on the upstream drainage basin area.The cumulative flows restart every year and are only 
    calculated in years with complete data.
 }
 \examples{

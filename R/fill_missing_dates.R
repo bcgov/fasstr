@@ -14,7 +14,7 @@
 #' @title Fill dates of missing flow values with NA
 #'
 #' @description Adds rows of dates with missing flow values to a streamflow dataset with daily flow values of NA. Missing dates will 
-#'    be filled in gaps between data and compeltely fill the first and last years (calendar or water year if selected).
+#'    be filled in gaps between data and completely fill the first and last years (calendar or water year if selected).
 #'
 #' @inheritParams calc_annual_stats
 #' 

@@ -13,7 +13,7 @@
 #' @title Add daily volumetric runoff yields
 #'
 #' @description Add a column of daily runoff yields to a streamflow dataset, in units of millimetres. Converts the discharge to a depth
-#'   of water based on the upstream drainge basin area.
+#'   of water based on the upstream drainage basin area.
 #'
 #' @inheritParams calc_annual_stats
 #' @inheritParams add_basin_area

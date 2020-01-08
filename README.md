@@ -46,7 +46,7 @@ Useful features of functions include:
 ## Installation
 
 You can install ‘fasstr’ using the following code. It may take a few
-moments as there are several dependecy packages will also be installed,
+moments as there are several dependency packages will also be installed,
 including [‘tidyhydat’](https://CRAN.R-project.org/package=tidyhydat)
 for downloading Water Survey of Canada hydrometric data,
 [‘zyp’](https://CRAN.R-project.org/package=zyp) for trending,
@@ -276,7 +276,7 @@ To visualize the daily streamflow patterns on an annual basis, the
 `plot_daily_stats()` function will plot out various summary statistics
 for each day of the year. Data can also be filtered for certain years of
 interest (a 1981-2010 normals period for this example) using the
-`start_year` and `end_year` arguments. We can also compare indivual
+`start_year` and `end_year` arguments. We can also compare individual
 years against the statistics using `add_year` argument like below.
 
 ``` r
@@ -340,7 +340,7 @@ freq_results$Freq_Fitted_Quantiles
 #> 11 PIII               0.99             1.01   1.31
 ```
 
-The probabilty of observed extreme events can also be plotted (using
+The probability of observed extreme events can also be plotted (using
 selected plotting position) along with the computed quantiles curve for
 comparison.
 

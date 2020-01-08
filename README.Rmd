@@ -45,7 +45,7 @@ Useful features of functions include:
 
 ## Installation
 
-You can install 'fasstr' using the following code. It may take a few moments as there are several dependecy packages will also be installed, including ['tidyhydat'](https://CRAN.R-project.org/package=tidyhydat) for downloading Water Survey of Canada hydrometric data, ['zyp'](https://CRAN.R-project.org/package=zyp) for trending, ['ggplot2'](https://CRAN.R-project.org/package=ggplot2) for creating plots, and ['dplyr'](https://CRAN.R-project.org/package=dplyr) and ['tidyr'](https://CRAN.R-project.org/package=tidyr) for various data wrangling and summarizing functions, amongst others. 
+You can install 'fasstr' using the following code. It may take a few moments as there are several dependency packages will also be installed, including ['tidyhydat'](https://CRAN.R-project.org/package=tidyhydat) for downloading Water Survey of Canada hydrometric data, ['zyp'](https://CRAN.R-project.org/package=zyp) for trending, ['ggplot2'](https://CRAN.R-project.org/package=ggplot2) for creating plots, and ['dplyr'](https://CRAN.R-project.org/package=dplyr) and ['tidyr'](https://CRAN.R-project.org/package=tidyr) for various data wrangling and summarizing functions, amongst others. 
 
 ```{r, echo=TRUE, eval=FALSE}
 install.packages("fasstr")
@@ -150,7 +150,7 @@ calc_longterm_daily_stats(station_number = "08NM116",
 
 ### Plotting example: daily summary statistics
 
-To visualize the daily streamflow patterns on an annual basis, the `plot_daily_stats()` function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the `start_year` and `end_year` arguments. We can also compare indivual years against the statistics using `add_year` argument like below.
+To visualize the daily streamflow patterns on an annual basis, the `plot_daily_stats()` function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the `start_year` and `end_year` arguments. We can also compare individual years against the statistics using `add_year` argument like below.
 
 ```{r plot1, fig.height = 4, fig.width = 10}
 plot_daily_stats(station_number = "08NM116",
@@ -183,7 +183,7 @@ freq_results <- compute_annual_frequencies(station_number = "08NM116",
 freq_results$Freq_Fitted_Quantiles
 ```
 
-The probabilty of observed extreme events can also be plotted (using selected plotting position) along with the computed quantiles curve for comparison.
+The probability of observed extreme events can also be plotted (using selected plotting position) along with the computed quantiles curve for comparison.
 
 ```{r plot3, fig.height = 4, fig.width = 7}
 freq_results <- compute_annual_frequencies(station_number = "08NM116",

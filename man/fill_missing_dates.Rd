@@ -38,7 +38,7 @@ A tibble data frame of the source data with additional rows of filled values of 
 }
 \description{
 Adds rows of dates with missing flow values to a streamflow dataset with daily flow values of NA. Missing dates will 
-   be filled in gaps between data and compeltely fill the first and last years (calendar or water year if selected).
+   be filled in gaps between data and completely fill the first and last years (calendar or water year if selected).
 }
 \examples{
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())

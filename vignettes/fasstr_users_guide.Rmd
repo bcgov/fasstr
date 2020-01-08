@@ -37,7 +37,7 @@ This guide contains the following sections to help understand the usage of the '
 
 ### Installing and loading fasstr
 
-You can install 'fasstr' using the following code. It may take a few moments as there are several dependecy packages will also be installed, including ['tidyhydat'](https://CRAN.R-project.org/package=tidyhydat) for downloading Water Survey of Canada hydrometric data, ['zyp'](https://CRAN.R-project.org/package=zyp) for trending, ['ggplot2'](https://CRAN.R-project.org/package=ggplot2) for creating plots, and ['dplyr'](https://CRAN.R-project.org/package=dplyr) and ['tidyr'](https://CRAN.R-project.org/package=tidyr) for various data wrangling and summarizing functions, amongst others. 
+You can install 'fasstr' using the following code. It may take a few moments as there are several dependency packages will also be installed, including ['tidyhydat'](https://CRAN.R-project.org/package=tidyhydat) for downloading Water Survey of Canada hydrometric data, ['zyp'](https://CRAN.R-project.org/package=zyp) for trending, ['ggplot2'](https://CRAN.R-project.org/package=ggplot2) for creating plots, and ['dplyr'](https://CRAN.R-project.org/package=dplyr) and ['tidyr'](https://CRAN.R-project.org/package=tidyr) for various data wrangling and summarizing functions, amongst others. 
 
 ```{r, echo=TRUE, eval=FALSE}
 install.packages("fasstr")
@@ -365,7 +365,7 @@ plot_flow_data(station_number = c("08NM241", "08NM242"),
                one_plot = TRUE) 
 ```
 
-The `screen_flow_data()` function provides an over view of the number of flow values per year and each month per year, along with annual minimums, maximums, means, and standard deviations to inpsect for outliers in the data.
+The `screen_flow_data()` function provides an over view of the number of flow values per year and each month per year, along with annual minimums, maximums, means, and standard deviations to inspect for outliers in the data.
 
 ```{r, comment=NA}
 screen_flow_data(station_number = "08NM116")
@@ -423,7 +423,7 @@ plot_longterm_daily_stats(station_number = "08NM116",
                           start_year = 1974) 
 ```
 
-Similarly, the `*_longterm_monthly_stats()` funcions will calculate the mean, median, maximum, and percentiles of monthly mean flows. Meaning the all daily flows for each month and each year are averaged, and the statistics are based on these annual monthly means.  The "Annual" data row summarizes the mean, median, maximum, and percentiles from all annual means.
+Similarly, the `*_longterm_monthly_stats()` functions will calculate the mean, median, maximum, and percentiles of monthly mean flows. Meaning the all daily flows for each month and each year are averaged, and the statistics are based on these annual monthly means.  The "Annual" data row summarizes the mean, median, maximum, and percentiles from all annual means.
 
 ```{r, comment=NA}
 calc_longterm_monthly_stats(station_number = "08NM116", 

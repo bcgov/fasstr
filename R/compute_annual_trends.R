@@ -15,7 +15,7 @@
 #' @title Calculate prewhitened nonlinear annual trends on streamflow data
 #'
 #' @description Calculates prewhitened nonlinear trends on annual streamflow data. Uses the
-#'    \href{https://CRAN.R-project.org/package=zyp}{'zyp'} package to trend. Review 'zyp' to understand its methology.
+#'    \href{https://CRAN.R-project.org/package=zyp}{'zyp'} package to trend. Review 'zyp' to understand its methodology.
 #'    All annual statistics calculated using the calc_all_annual_stats() function which uses the following fasstr functions:
 #' \itemize{
 #'  \item{calc_annual_stats()}
@@ -33,7 +33,7 @@
 #' @param zyp_alpha Numeric value of the significance level (ex. 0.05) of when to plot a trend line. Leave blank for no line.
 #' 
 #' @return A list of tibbles and optional plots from the trending analysis including:
-#'   \item{Annual_Trends_Data}{a tibbble of the annual statistics used for trending}
+#'   \item{Annual_Trends_Data}{a tibble of the annual statistics used for trending}
 #'   \item{Annual_Trends_Results}{a tibble of the results of the zyp trending analysis}
 #'   \item{Annual_*}{each ggplot2 object for each annual trended statistic}
 #' 

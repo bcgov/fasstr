@@ -42,7 +42,7 @@ A tibble data frame of the source data with an additional column:
 }
 \description{
 Add a column of daily runoff yields to a streamflow dataset, in units of millimetres. Converts the discharge to a depth
-  of water based on the upstream drainge basin area.
+  of water based on the upstream drainage basin area.
 }
 \examples{
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())

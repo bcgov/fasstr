@@ -97,7 +97,7 @@ A list of ggplot2 objects with the following for each station provided:
 Plot the daily mean, median, maximum, minimum, and percentiles for each day of the year of daily flow values 
    from a streamflow dataset. Plots the statistics from all daily discharge values from all years, unless specified. Can determine
    statistics of rolling mean days (e.g. 7-day flows) using the roll_days argument. The Maximum-Minimum band can be removed using 
-   the 'include_extremes' argument and the percentile bands can be customized using the'inner_percentiles' and 'outer_percentiles' 
+   the 'include_extremes' argument and the percentile bands can be customized using the 'inner_percentiles' and 'outer_percentiles' 
    arguments.Data calculated using calc_daily_stats() function.
 }
 \examples{

@@ -46,7 +46,7 @@ inverse of probability, used to estimate the frequency statistic. Required.}
 
 \item{use_max}{Logical value to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}
 
-\item{use_log}{Logical value to indicate log-scale tranforming of flow data before analysis. Default \code{FALSE}.}
+\item{use_log}{Logical value to indicate log-scale transforming of flow data before analysis. Default \code{FALSE}.}
 
 \item{fit_distr}{Character string identifying the distribution to fit annual data, one of "PIII" (Pearson Log III distribution) 
 or "weibull" (Weibull distribution). Default \code{"PIII"}.}

@@ -32,12 +32,12 @@ measures (ex. '7-day low' and '30-day low') in column if multiple statistics are
 
 \item{use_max}{Logical value to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}
 
-\item{use_log}{Logical value to indicate log-scale tranforming of flow data before analysis. Default \code{FALSE}.}
+\item{use_log}{Logical value to indicate log-scale transforming of flow data before analysis. Default \code{FALSE}.}
 
 \item{prob_plot_position}{Character string indicating the plotting positions used in the frequency plots, one of "weibull",
 "median", or "hazen". Points are plotted against  (i-a)/(n+1-a-b) where \code{i} is the rank of the value; \code{n} is the 
 sample size and \code{a} and \code{b} are defined as: (a=0, b=0) for Weibull plotting positions; (a=.2; b=.3) for Median 
-plotting postions; and (a=.5; b=.5) for Hazen plotting positions. Default \code{"weibull"}.}
+plotting positions; and (a=.5; b=.5) for Hazen plotting positions. Default \code{"weibull"}.}
 
 \item{prob_scale_points}{Numeric vector of probabilities to be plotted along the X axis in the frequency plot. Inverse of 
 return period. Default \code{c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001)}.}
@@ -65,7 +65,7 @@ A list with the following elements:
 \description{
 Performs a flow volume frequency analysis from a streamflow dataset. Defaults to ranking by minimums; 
    use \code{use_max} for to rank by maximum flows. Calculates the statistics from events
-   and flow values provided. Columns of events (years), their values (mins or maxs), and identifiers (lowflows, highlows, etc),
+   and flow values provided. Columns of events (years), their values (mins or maxs), and identifiers (lowflows, highflows, etc),
    Function will calculate using all values in the provided data (no grouped analysis). Analysis methodology replicates that 
    from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
 }

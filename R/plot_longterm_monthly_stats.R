@@ -15,7 +15,7 @@
 #' @description Plots the long-term monthly mean, median, maximum, minimum, and 5, 25, 75, and 95 percentiles of  
 #'    annual monthly mean flow values from a single streamflow dataset. Plots statistics from discharge values from all 
 #'    years, unless specified. The Maximum-Minimum band can be removed using the 'include_extremes' argument and the percentile bands 
-#'    can be customized using the'inner_percentiles' and 'outer_percentiles' arguments. Data calculated using the
+#'    can be customized using the 'inner_percentiles' and 'outer_percentiles' arguments. Data calculated using the
 #'    calc_longterm_monthly_stats() function.
 #'
 #' @inheritParams calc_longterm_monthly_stats

@@ -119,7 +119,7 @@ trends_analysis <- compute_annual_trends(station_number = "08NM116",
                                          start_year = 1973, end_year = 2013)
 ```
 
-The following is an example of the outputed **Annual_Trends_Data** tibble:
+The following is an example of the outputted **Annual_Trends_Data** tibble:
 
 ```{r, echo=TRUE, comment=NA}
 trends_analysis$Annual_Trends_Data
@@ -127,7 +127,7 @@ trends_analysis$Annual_Trends_Data
 
 ### Analysis Results
 
-To complete a trends analysis, a variable to the `zyp_method` argument must be provided, either `"yuepilon"` or `"zhang"`, designated the two different approaches to analyzing data for trends.  See the 'zyp' documention for more information on the differences between the two methods. After running the function, the results of the trending analysis will be outputted in the **Annual_Trends_Results** tibble data frame. See the 'zyp' documentation for how to interpret the results. The results tibble contains the following columns:
+To complete a trends analysis, a variable to the `zyp_method` argument must be provided, either `"yuepilon"` or `"zhang"`, designated the two different approaches to analyzing data for trends.  See the 'zyp' documentation for more information on the differences between the two methods. After running the function, the results of the trending analysis will be outputted in the **Annual_Trends_Results** tibble data frame. See the 'zyp' documentation for how to interpret the results. The results tibble contains the following columns:
 
 Column Name   | Description
 --------------|---------------------------------------------------------------------

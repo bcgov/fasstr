@@ -25,7 +25,7 @@ Updated: 14 May 2019
   * Renamed 'include_year' argument to 'add_year' for some functions
   * complete_full_analysis just creates R objects; a new write_full_analysis saves the results in a single Excel document, with some plots in a plots folder; renamed 'sections' to 'analyses'
   * add_date_variables() outputs changed slightly to match new water_year_start argument
-  * Replaced NULL and NA default values for function agruments to nothing, cleaning up documentation.
+  * Replaced NULL and NA default values for function arguments to nothing, cleaning up documentation.
   * Replaced the package writexls with openxls for more functionality
   * Plotting: changed facet wrap labels, changed trending symbols
   * WSC station numbers with lower-case letters now accepted (08nm116 and 08NM116 both work)

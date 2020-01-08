@@ -80,7 +80,7 @@ A list of ggplot2 objects with the following for each station provided:
 \description{
 Plot the daily cumulative mean, median, maximum, minimum, and 5, 25, 75, 95th percentiles for each day of the year 
    from a streamflow dataset. Plots the statistics from all daily cumulative values from all years, unless specified. 
-   Data calculated using calc_daily_cumulative_stats() function. Can plot individual years for comparision using the 
+   Data calculated using calc_daily_cumulative_stats() function. Can plot individual years for comparison using the 
    add_year argument. Defaults to volumetric cumulative flows, can use \code{use_yield} and \code{basin_area} to convert to 
    runoff yield.
 }

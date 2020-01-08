@@ -60,7 +60,7 @@ Leave blank if using \code{data} argument.}
 all months (default \code{1:12}).}
 }
 \value{
-A tibble data frame, or a single numeric value if no station number proivded, of the percentile rank of a given flow value.
+A tibble data frame, or a single numeric value if no station number provided, of the percentile rank of a given flow value.
 }
 \description{
 Calculates the percentile, or percentile rank, of a discharge value compared to all flow values of a streamflow dataset. 

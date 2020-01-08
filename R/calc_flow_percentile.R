@@ -19,7 +19,7 @@
 #' @inheritParams calc_monthly_stats
 #' @param flow_value A numeric flow value of which to determine the percentile rank. Required.
 #'
-#' @return A tibble data frame, or a single numeric value if no station number proivded, of the percentile rank of a given flow value.
+#' @return A tibble data frame, or a single numeric value if no station number provided, of the percentile rank of a given flow value.
 #' 
 #' @examples
 #' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())

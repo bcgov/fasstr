@@ -70,7 +70,7 @@ A tibble data frame with the following columns:
 }
 \description{
 Calculates the number of days per year outside of the 'normal' range (typically between 25 and 75th percentiles) for
-   each day of the year. Upper and lower-range percentiles are calcuated for each day of the year of from all years, and then each 
+   each day of the year. Upper and lower-range percentiles are calculated for each day of the year of from all years, and then each 
    daily flow value for each year is compared. All days above or below the normal range are included. Calculates the statistics 
    from all daily discharge values from all years, unless specified.
 }

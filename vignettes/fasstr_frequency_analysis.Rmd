@@ -18,7 +18,7 @@ library(fasstr)
 
 The Flow Analysis Summary Statistics Tool for R ('fasstr') is a set of [R](https://www.r-project.org/) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
 
-This vignette is a guide on the various volume frequency analysis functions found in 'fasstr' to plot frequency data and determine frequency quantile statistics. The methods for these analysis follow those used in the US Army Corps of Engineers HEC-SSP Statistical Software Package. See their [website](http://www.hec.usace.army.mil/software/hec-ssp/) for more information on the software and links to their User Manual for more in-depth information. In this vignette you’ll learn what functions to use for specific analyeses, arguments to customize analyses, and what results and outputs are produced.
+This vignette is a guide on the various volume frequency analysis functions found in 'fasstr' to plot frequency data and determine frequency quantile statistics. The methods for these analysis follow those used in the US Army Corps of Engineers HEC-SSP Statistical Software Package. See their [website](http://www.hec.usace.army.mil/software/hec-ssp/) for more information on the software and links to their User Manual for more in-depth information. In this vignette you’ll learn what functions to use for specific analyses, arguments to customize analyses, and what results and outputs are produced.
 
 
 ## Overview
@@ -36,7 +36,7 @@ With the exception of the compute_frequency_quantile() function which only produ
 1) **Freq_Analysis_Data** - data used for analysis (either data provided in compute_frequency_analysis(), computed extremes in compute_annual_frequencies(), or HYDAT extracted extremes in compute_HYDAT_peak_frequencies()).
 2) **Freq_Plot_Data** - data used to plot probabilities based on the selected plotting positions (weibull, hazen, or median), includes the event values, probability and return periods. Option to include/exclude the compute curve.
 3) **Freq_Plot** - plot of event probabilities based on the selected plotting positions (weibull, hazen, or median).
-4) **Freq_Fitting** - the fitdistplus::fitdist object that contains information on the computed curve based on the selected distribution (Pearson Type III (or log of) or wiebull) and fitting methods (methods of moments or maximum likelihood estimation).
+4) **Freq_Fitting** - the fitdistplus::fitdist object that contains information on the computed curve based on the selected distribution (Pearson Type III (or log of) or weibull) and fitting methods (methods of moments or maximum likelihood estimation).
 5) **Freq_Fitted_Quantiles** - the computed fitted quantiles based on the selected fitting options and selected quantile probabilities.
 
 
@@ -110,7 +110,7 @@ freq_analysis <- compute_annual_frequencies(station_number = "08NM116",
                                             plot_curve = FALSE)
 ```
 
-The following is an example of the outputed **Freq_Analysis_Data** tibble:
+The following is an example of the outputted **Freq_Analysis_Data** tibble:
 
 ```{r, echo=TRUE, comment=NA}
 freq_analysis$Freq_Analysis_Data
