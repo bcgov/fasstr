@@ -1,7 +1,7 @@
 fasstr 0.3.1
 =========================
 
-Updated: 07 Jan 2019
+Updated: 08 Jan 2019
 
 #### Updates:
 
@@ -11,6 +11,8 @@ Updated: 07 Jan 2019
   * updated vignettes and README files
   * removed calc_longterm_stats and plot_longterm_stats
   * updated Examples in all documentation (replaced \dontrun{} with a function checking for a HYDAT, left for writing functions and larger analyses)
+  * fixed multiple typos
+  * updated DESCRIPTION file
 
 
 fasstr 0.3.0
