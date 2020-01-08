@@ -3,7 +3,8 @@ fasstr 0.3.1
 
 ## Resubmission
 
-This is a resubmission (initial submission 2019-12-12). 
+This is a resubmission (initial submission 2019-12-12).
+Github link of this version is in the "devel" branch located here: https://github.com/bcgov/fasstr/tree/devel. 
 In this version I have:
 
 * Shortened the title to less than 65 characters
