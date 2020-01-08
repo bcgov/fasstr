@@ -13,7 +13,7 @@ Description: The Flow Analysis Summary Statistics Tool for R, 'fasstr', provides
     handling dates, customizing data and metrics, and the ability to pull daily data directly from the Water Survey
     of Canada hydrometric database (<https://collaboration.cmc.ec.gc.ca/cmc/hydrometrics/www/>).
 Depends: R (>= 3.2.0)
-License: Apache License 2.0 | file LICENSE
+License: Apache License 2.0
 URL: https://github.com/bcgov/fasstr, https://www2.gov.bc.ca/gov/content/environment/air-land-water/water
 BugReports: https://github.com/bcgov/fasstr/issues
 Encoding: UTF-8
