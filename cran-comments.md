@@ -3,10 +3,11 @@ fasstr 0.3.1
 
 ## Resubmission
 
-This is a resubmission (initial submission 2019-12-12). In this version I have:
+This is a resubmission (initial submission 2019-12-12). 
+In this version I have:
 
 * Shortened the title to less than 65 characters
-* Added a link the Water Survey of Canada database (removed short-form name) in the Description
+* Added a link to the Water Survey of Canada database (removed short-form name) in the Description
 * Added references to methods in the description field in the DESCRIPTION file
 * Replaced "Apache License (==2.0)" with "Apache License 2.0" in the DESCRIPTION file, and removed the "| file LICENSE" text
 * Replaced \dontrun{} for most function documentation examples with an if-statement that checks for a local HYDAT (required for examples to run/test)
