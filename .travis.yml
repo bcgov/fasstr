@@ -3,18 +3,18 @@
 matrix:
   include:
     - os: linux
-      dist: trusty
+      dist: xenial
       r: devel
       env: _R_CHECK_LENGTH_1_LOGIC2_=TRUE
 
     - os: linux
-      dist: trusty
+      dist: xenial
       r: release
       env: _R_CHECK_LENGTH_1_LOGIC2_=TRUE
 
   allow_failures:
     - os: linux
-      dist: trusty
+      dist: xenial
       r: devel
       
 
