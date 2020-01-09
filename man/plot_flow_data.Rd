@@ -4,11 +4,25 @@
 \alias{plot_flow_data}
 \title{Plot daily mean streamflow}
 \usage{
-plot_flow_data(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, roll_days = 1,
-  roll_align = "right", water_year_start = 1, start_year, end_year,
-  exclude_years, start_date, end_date, log_discharge = FALSE,
-  plot_by_year = FALSE, one_plot = FALSE, include_title = FALSE)
+plot_flow_data(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  roll_days = 1,
+  roll_align = "right",
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  start_date,
+  end_date,
+  log_discharge = FALSE,
+  plot_by_year = FALSE,
+  one_plot = FALSE,
+  include_title = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -62,9 +76,10 @@ Plot the daily mean flow values from a streamflow dataset. Plots the statistics 
    calculated using calc_daily_stats() function. Multiple groups/stations can be plotted if provided with the \code{groups} argument.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Plot data from a data frame
+# Plot data from a data frame and data argument
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 plot_flow_data(data = flow_data)
 
@@ -85,5 +100,6 @@ plot_flow_data(station_number = "08NM116",
 # Plot data multiple groups on one plot
 plot_flow_data(station_number = c("08NM241", "08NM242"),
                one_plot = TRUE) 
+               
 }
 }

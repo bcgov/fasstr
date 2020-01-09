@@ -71,16 +71,19 @@
 #' @examples
 #' \dontrun{
 #' 
-#' # Compute a full analysis will all the analyses
-#' compute_full_analysis(station_number = "08NM116",
-#'                      start_year = 1980,
-#'                      end_year = 2010)
+#' # Working examples:
 #' 
-#' # Compute a full analysis with only Annual and Daily analyses
-#' compute_full_analysis(station_number = "08NM116",
-#'                      start_year = 1980,
-#'                      end_year = 2010,
-#'                      analyses = c(3,5))
+#' # Compute a full analysis will all the analyses
+#' results <- compute_full_analysis(station_number = "08NM116",
+#'                                  start_year = 1980,
+#'                                  end_year = 2010)
+#' 
+#' # Compute a full analysis with only Annual (3) and Daily (5) analyses
+#' results <- compute_full_analysis(station_number = "08NM116",
+#'                                  start_year = 1980,
+#'                                  end_year = 2010,
+#'                                  analyses = c(3,5))
+#'                      
 #' }
 #' @export
 
@@ -105,25 +108,25 @@ compute_full_analysis <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   if (missing(basin_area)) {
-    basin_area = NA
+    basin_area <- NA
   }
   if (missing(zyp_alpha)) {
-    zyp_alpha = NA
+    zyp_alpha <- NA
   }
   
   
@@ -214,7 +217,7 @@ compute_full_analysis <- function(data,
                                                     water_year_start = water_year_start))
     
     # Data screening
-    flow_screening = screen_flow_data(data = flow_data,
+    flow_screening <- screen_flow_data(data = flow_data,
                                       water_year_start = water_year_start)
     
     

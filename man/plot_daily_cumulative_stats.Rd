@@ -4,10 +4,22 @@
 \alias{plot_daily_cumulative_stats}
 \title{Plot cumulative daily flow statistics}
 \usage{
-plot_daily_cumulative_stats(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, use_yield = FALSE,
-  basin_area, water_year_start = 1, start_year, end_year, exclude_years,
-  log_discharge = FALSE, include_title = FALSE, add_year)
+plot_daily_cumulative_stats(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  use_yield = FALSE,
+  basin_area,
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  log_discharge = FALSE,
+  include_title = FALSE,
+  add_year
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -68,24 +80,26 @@ A list of ggplot2 objects with the following for each station provided:
 \description{
 Plot the daily cumulative mean, median, maximum, minimum, and 5, 25, 75, 95th percentiles for each day of the year 
    from a streamflow dataset. Plots the statistics from all daily cumulative values from all years, unless specified. 
-   Data calculated using calc_daily_cumulative_stats() function. Can plot individual years for comparision using the 
+   Data calculated using calc_daily_cumulative_stats() function. Can plot individual years for comparison using the 
    add_year argument. Defaults to volumetric cumulative flows, can use \code{use_yield} and \code{basin_area} to convert to 
    runoff yield.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Plot volume statistics
+# Plot annual daily volume statistics
 plot_daily_cumulative_stats(station_number = "08NM116") 
 
-# Plot yield statistics with default HYDAT basin area
+# Plot annual daily yield statistics with default HYDAT basin area
 plot_daily_cumulative_stats(station_number = "08NM116",
                             use_yield = TRUE) 
 
-# Plot yield statistics with custom basin area
+# Plot annual daily yield statistics with custom basin area
 plot_daily_cumulative_stats(station_number = "08NM116",
                             use_yield = TRUE,
                             basin_area = 800) 
+                            
 }
 }
 \seealso{

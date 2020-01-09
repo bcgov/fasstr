@@ -25,14 +25,16 @@
 #' @seealso \code{\link{calc_annual_stats}}
 #'   
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Plot statistics
+#' # Plot annual means
 #' plot_annual_means(station_number = "08NM116")
 #'
-#' # Plot statistics for mean flows from July-September
+#' # Plot mean flows from July-September
 #' plot_annual_means(station_number = "08NM116", 
 #'                   months = 7:9)
+#'                   
 #' }
 #' @export
 
@@ -56,19 +58,19 @@ plot_annual_means <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   
   include_title_checks(include_title)

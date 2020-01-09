@@ -14,21 +14,23 @@
 #' @title Fill dates of missing flow values with NA
 #'
 #' @description Adds rows of dates with missing flow values to a streamflow dataset with daily flow values of NA. Missing dates will 
-#'    be filled in gaps between data and compeltely fill the first and last years (calendar or water year if selected).
+#'    be filled in gaps between data and completely fill the first and last years (calendar or water year if selected).
 #'
 #' @inheritParams calc_annual_stats
 #' 
 #' @return A tibble data frame of the source data with additional rows of filled values of missing dates.
 #'
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
 #' # Fill missing dates with NA using calendar years
-#' fill_missing_dates(data = "08NM116")
+#' fill_missing_dates(station_number = "08NM116")
 #' 
 #' # Fill missing dates with NA using water years starting in August
-#' fill_missing_dates(data = "08NM116", 
+#' fill_missing_dates(station_number = "08NM116", 
 #'                    water_year_start = 8)
+#'                    
 #' }
 #' @export
 
@@ -45,10 +47,10 @@ fill_missing_dates <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   
   water_year_checks(water_year_start)

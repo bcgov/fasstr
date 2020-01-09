@@ -35,10 +35,34 @@
 #' @examples
 #' \dontrun{
 #' 
-#' compute_annual_frequencies(station_number = "08NM116",
-#'                            start_year = 1980,
-#'                            end_year = 2010)
-#' }
+#' # Working examples (see arguments for further analysis options):
+#' 
+#' # Compute an annual frequency analysis using default arguments
+#' results <- compute_annual_frequencies(station_number = "08NM116",
+#'                                       start_year = 1980,
+#'                                       end_year = 2010)
+#'                            
+#' # Compute an annual frequency analysis using default arguments (as listed)
+#' results <- compute_annual_frequencies(station_number = "08NM116",
+#'                                       roll_days = c(1,3,7,30),
+#'                                       start_year = 1980,
+#'                                       end_year = 2010,
+#'                                       prob_plot_position = "weibull",
+#'                                       prob_scale_points = c(.9999, .999, .99, .9, .5, 
+#'                                       .2, .1, .02, .01, .001, .0001),
+#'                                       fit_distr = "PIII",
+#'                                       fit_distr_method = "MOM")
+#'                                       
+#' # Compute a 7-day annual frequency analysis with "median" plotting positions
+#' # and fitting the data to a weibull distribution (not default PIII)
+#' results <- compute_annual_frequencies(station_number = "08NM116",
+#'                                       roll_days = 7,
+#'                                       start_year = 1980,
+#'                                       end_year = 2010,
+#'                                       prob_plot_position = "median",
+#'                                       fit_distr = "weibull")
+#'                
+#' }            
 #' @export
 
 
@@ -71,19 +95,19 @@ compute_annual_frequencies <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   
   rolling_days_checks(roll_days, roll_align, multiple = TRUE)

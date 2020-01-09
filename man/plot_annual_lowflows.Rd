@@ -4,11 +4,23 @@
 \alias{plot_annual_lowflows}
 \title{Plot annual lowflows}
 \usage{
-plot_annual_lowflows(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, roll_days = c(1, 3, 7, 30),
-  roll_align = "right", water_year_start = 1, start_year, end_year,
-  exclude_years, months = 1:12, ignore_missing = FALSE,
-  log_discharge = FALSE, include_title = FALSE)
+plot_annual_lowflows(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  roll_days = c(1, 3, 7, 30),
+  roll_align = "right",
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  months = 1:12,
+  ignore_missing = FALSE,
+  log_discharge = FALSE,
+  include_title = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -63,15 +75,17 @@ Plot annual n-day minimum values, and the day of year of occurrence of daily flo
    calculated from calc_annual_lowflows() function.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Plot statistics with default rolling days and alignment
+# Plot annual 1, 3, 7, and 30-day (default) low flow statistics with default alignment
 plot_annual_lowflows(station_number = "08NM116") 
 
-# Plot statistics with custom rolling days and alignment
+# Plot annual custom 3 and 7-day low flow statistics with "center" alignment
 plot_annual_lowflows(station_number = "08NM116",
                      roll_days = c(3,7),
                      roll_align = "center")
+                     
 }
 }
 \seealso{

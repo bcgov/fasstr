@@ -58,10 +58,24 @@
 #'          \code{\link{calc_annual_outside_normal}}
 #'
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Calculate statistics with default arguments
+#' # Calculate all annual statistics from this package with default arguments
 #' calc_all_annual_stats(station_number = "08NM116") 
+#' 
+#' # Calculate all annual statistics from this package with default arguments 
+#' # with some default arguments shown to customize metrics
+#' calc_all_annual_stats(station_number = "08NM116",
+#'                       annual_percentiles = c(10,90),
+#'                       monthly_percentiles = c(10,20),
+#'                       stats_days = 1,
+#'                       stats_align = "right",
+#'                       lowflow_days = c(1,3,7,30),
+#'                       lowflow_align = "right",
+#'                       timing_percent = c(25,33,50,75),
+#'                       normal_percentiles = c(25,75)) 
+#' 
 #' }
 #' @export
 
@@ -93,22 +107,22 @@ calc_all_annual_stats <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   if (missing(basin_area)) {
-    basin_area = NA
+    basin_area <- NA
   }
   
   water_year_checks(water_year_start)

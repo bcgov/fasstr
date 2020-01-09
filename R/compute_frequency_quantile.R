@@ -32,6 +32,9 @@
 #' @examples
 #' \dontrun{
 #' 
+#' # Working example:
+#' 
+#' # Compute the annual 7-day flow value with a 1 in 10 year return interval
 #' compute_frequency_quantile(station_number = "08NM116",
 #'                            roll_days = 7,
 #'                            return_period = 10)
@@ -68,19 +71,19 @@ compute_frequency_quantile <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   
   if (missing(roll_days)) stop("A numeric roll_days value is required.", call. = FALSE)

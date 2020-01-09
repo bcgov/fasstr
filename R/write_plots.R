@@ -30,6 +30,8 @@
 #' @examples
 #' \dontrun{
 #' 
+#' # Working examples:
+#' 
 #' # Example plots to save
 #' plots <- plot_annual_lowflows(station_number = "08NM116")
 #' 
@@ -42,6 +44,7 @@
 #' write_plots(plots = plots, 
 #'             folder_name = "Low Flow Plots",
 #'             combined_pdf = TRUE)
+#'             
 #' }
 #' @export
 
@@ -58,19 +61,19 @@ write_plots <- function(plots,
   # ---------------
   
   if (missing(plots)) {
-    plots = NULL
+    plots <- NULL
   }
   if (missing(folder_name)) {
     stop("Must provide a name of a folder name to creating using the folder_name argument.", call. = FALSE)
   }
   if (missing(plot_filetype)) {
-    plot_filetype = NULL
+    plot_filetype <- NULL
   }
   if (missing(width)) {
-    width = NA
+    width <- NA
   }
   if (missing(height)) {
-    height = NA
+    height <- NA
   }
   
   # Check list of plots

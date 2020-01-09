@@ -4,10 +4,20 @@
 \alias{plot_data_screening}
 \title{Plot annual summary statistics for data screening}
 \usage{
-plot_data_screening(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, roll_days = 1,
-  roll_align = "right", water_year_start = 1, months = 1:12,
-  start_year, end_year, include_title = FALSE)
+plot_data_screening(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  roll_days = 1,
+  roll_align = "right",
+  water_year_start = 1,
+  months = 1:12,
+  start_year,
+  end_year,
+  include_title = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -57,23 +67,25 @@ Plots the mean, median, maximum, minimum, standard deviation of annual flows. Pl
    discharge values from all years, unless specified. Data calculated using screen_flow_data() function.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Plot statistics using data argument with defaults
+# Plot screening statistics using a data frame and data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 plot_data_screening(data = flow_data)
 
-# Plot statistics using station_number argument with defaults
+# Plot screening statistics using station_number argument with defaults
 plot_data_screening(station_number = "08NM116")
                   
-# Plot statistics for water years starting in October
+# Plot screening statistics for water years starting in October
 plot_data_screening(station_number = "08NM116",
                  water_year_start = 10)
                   
-# Plot statistics for 7-day flows for July-September months only
+# Plot screening statistics for 7-day flows for July-September months only
 plot_data_screening(station_number = "08NM116",
                  roll_days = 7,
                  months = 7:9)
+                 
 }
 }
 \seealso{

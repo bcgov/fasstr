@@ -35,19 +35,21 @@
 #'   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 #'
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Calculate volume statistics
+#' # Calculate annual monthly cumulative volume statistics
 #' calc_monthly_cumulative_stats(station_number = "08NM116") 
 #' 
-#' # Calculate yield statistics with default HYDAT basin area
+#' # Calculate annual monthly cumulative volume statistics with default HYDAT basin area
 #' calc_monthly_cumulative_stats(station_number = "08NM116",
 #'                               use_yield = TRUE) 
 #' 
-#' # Calculate yield statistics with custom basin area
+#' # Calculate annual monthly cumulative volume statistics with custom basin area
 #' calc_monthly_cumulative_stats(station_number = "08NM116",
 #'                               use_yield = TRUE,
 #'                               basin_area = 800) 
+#'                               
 #' }
 #' @export
 
@@ -72,22 +74,22 @@ calc_monthly_cumulative_stats <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   if (missing(basin_area)) {
-    basin_area = NA
+    basin_area <- NA
   }
   
   percentiles_checks(percentiles)
@@ -148,7 +150,7 @@ calc_monthly_cumulative_stats <- function(data,
   flow_data <- dplyr::filter(flow_data, !(WaterYear %in% exclude_years))
   
   # Stop if all data is NA
-  no_values_error(flow_data$Cumul_Total)
+  #no_values_error(flow_data$Cumul_Total)
   
   # if (all(is.na(flow_data$Cumul_Total))) 
   #   stop("No basin_area values provided or extracted from HYDAT. Use basin_area argument to supply one.", call. = FALSE)
@@ -167,7 +169,7 @@ calc_monthly_cumulative_stats <- function(data,
   flow_data <- dplyr::select(flow_data, -complete_yr)
   
   # Stop if all data is NA
-  no_values_error(flow_data$Cumul_Total)
+ # no_values_error(flow_data$Cumul_Total)
   
   ## CALCULATE STATISTICS
   ## --------------------
@@ -200,7 +202,7 @@ calc_monthly_cumulative_stats <- function(data,
   # Rename Month column and reorder to proper levels (set in add_date_vars)
   monthly_cumul <- dplyr::rename(monthly_cumul, Month = MonthName)
   monthly_cumul <- with(monthly_cumul, monthly_cumul[order(STATION_NUMBER, Month),])
-  row.names(monthly_cumul) <- c(1:nrow(monthly_cumul))
+  row.names(monthly_cumul) <- seq_len(nrow(monthly_cumul))
 
 
   # If transpose if selected, switch columns and rows

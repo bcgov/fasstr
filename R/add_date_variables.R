@@ -27,14 +27,16 @@
 #'   \item{DayofYear}{day of the year from the selected month start (1-365 or 366)}
 #'
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Using calendar years as water years
-#' add_date_variables(data = "08NM116")
+#' # Add date variables using calendar years
+#' add_date_variables(station_number = "08NM116")
 #' 
-#' # Water years starting in August
-#' add_date_variables(data = "08NM116", 
+#' # Add date variables using water years starting in August
+#' add_date_variables(station_number = "08NM116", 
 #'                    water_year_start = 8)
+#'                    
 #' }
 #' @export
 
@@ -48,10 +50,10 @@ add_date_variables <- function(data,
   ## ARGUMENT CHECKS
   ## ---------------
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   
   water_year_checks(water_year_start)

@@ -1,42 +1,42 @@
 Package: fasstr
-Title: Tools for Streamflow Data Tidying, Analyses, and Visualization
-Version: 0.3.0
+Title: Analyze, Summarize, and Visualize Daily Streamflow Data
+Version: 0.3.1
 Authors@R: c(person("Jon", "Goetz", email = "jon.goetz@gov.bc.ca", role = c("aut", "cre")), 
              person("Carl James", "Schwarz", email = "cschwarz.stat.sfu.ca@gmail.com", role = "aut"),
              person("Robin", "Pike", email = "robin.g.pike@gov.bc.ca", role = "ctb"),
              person("Province of British Columbia", role = "cph"))
-Description: 'fasstr' (Flow Analysis Summary Statistics Tool for R) provides useful functions to tidy, 
-    analyze, and visualize daily streamflow time series data. This package provides functions with quick
-    solutions for: screening for missing dates and outliers; summarizing and plotting various daily, month, 
-    and long-term statistics; trending annual patterns; and computing low and high-flow frequency analyses. 
-    Various function arguments allow for easy customization of analyses and plotting. While not required
-    for use, this package integrates the 'tidyhydat' package to extract and tidy streamflow data from a 
-    Water Survey of Canada HYDAT database.
+Description: The Flow Analysis Summary Statistics Tool for R, 'fasstr', provides various 
+    functions to clean and screen daily stream discharge data; calculate and visualize various summary statistics
+    and metrics; and compute annual trending (using 'zyp' package methods <https://CRAN.R-project.org/package=zyp>)
+    and volume frequency analyses (using methods similar to HEC-SSP (2019) 
+    <https://www.hec.usace.army.mil/software/hec-ssp/>). It features useful function arguments for filtering of and
+    handling dates, customizing data and metrics, and the ability to pull daily data directly from the Water Survey
+    of Canada hydrometric database (<https://collaboration.cmc.ec.gc.ca/cmc/hydrometrics/www/>).
 Depends: R (>= 3.2.0)
-License: Apache License (== 2.0) | file LICENSE
-URL: https://github.com/bcgov/fasstr
+License: Apache License 2.0
+URL: https://github.com/bcgov/fasstr, https://www2.gov.bc.ca/gov/content/environment/air-land-water/water
 BugReports: https://github.com/bcgov/fasstr/issues
 Encoding: UTF-8
 Imports:
-    dplyr,
-    e1071,
-    fitdistrplus,
-    ggplot2,
+    dplyr (>= 0.8.1),
+    e1071 (>= 1.7.0.1),
+    fitdistrplus (>= 1.0.14),
+    ggplot2 (>= 3.1.0),
     grDevices,
-    lubridate,
-    PearsonDS,
-    plyr,
-    purrr,
-    RcppRoll,
-    scales,
-    tidyhydat,
-    tidyr,
-    openxlsx,
-    zyp
+    lubridate (>= 1.7.4),
+    PearsonDS (>= 1.1),
+    plyr (>= 1.8.4),
+    purrr (>= 0.3.2),
+    RcppRoll (>= 0.3.0),
+    scales (>= 1.0.0),
+    tidyhydat (>= 0.4.0),
+    tidyr (>= 0.8.3),
+    openxlsx (>= 4.1.0),
+    zyp (>= 0.10.1.1)
 Suggests: 
     knitr,
     rmarkdown,
     testthat
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 VignetteBuilder: knitr

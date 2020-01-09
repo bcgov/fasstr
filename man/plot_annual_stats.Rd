@@ -4,11 +4,24 @@
 \alias{plot_annual_stats}
 \title{Plot annual summary statistics}
 \usage{
-plot_annual_stats(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, percentiles, roll_days = 1,
-  roll_align = "right", water_year_start = 1, start_year, end_year,
-  exclude_years, months = 1:12, ignore_missing = FALSE,
-  log_discharge = FALSE, include_title = FALSE)
+plot_annual_stats(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  percentiles,
+  roll_days = 1,
+  roll_align = "right",
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  months = 1:12,
+  ignore_missing = FALSE,
+  log_discharge = FALSE,
+  include_title = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -69,46 +82,49 @@ Plot annual mean, median, maximum, minimum, and percentiles of daily flow values
    calculated using calc_annual_stats() function.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Plot statistics using data argument with defaults
+# Plot annual statistics using a data frame and data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 plot_annual_stats(data = flow_data)
 
-# Plot statistics using station_number argument with defaults
+# Plot annual statistics using station_number argument with defaults
 plot_annual_stats(station_number = "08NM116")
 
-# Plot statistics regardless if there is missing data for a given year
+# Plot annual statistics regardless if there is missing data for a given year
 plot_annual_stats(station_number = "08NM116",
                   ignore_missing = TRUE)
                   
-# Plot statistics for water years starting in October
+# Plot annual statistics for water years starting in October
 plot_annual_stats(station_number = "08NM116",
                   water_year_start = 10)
                   
-# Plot statistics with custom years
+# Plot annual statistics with custom years
 plot_annual_stats(station_number = "08NM116",
                   start_year = 1981,
                   end_year = 2010,
                   exclude_years = c(1991,1993:1995))
                   
-# Plot statistics for 7-day flows for July-September months only, with 25 and 75th percentiles
+# Plot annual statistics for 7-day flows for July-September months only, 
+# with 25 and 75th percentiles
 plot_annual_stats(station_number = "08NM116",
                   roll_days = 7,
                   months = 7:9,
                   percentiles = c(25,75))   
 
-# Plot statistics with the a log-scale Discharge axis
+# Plot annual statistics with the a log-scale Discharge axis
 plot_annual_stats(station_number = "08NM116",
                   start_year = 1981,
                   end_year = 2010,
                   log_discharge = TRUE)
 
-# Plot statistics and include a title with the grouping
+# Plot annual statistics and include a title with the grouping (default by STATION_NUMBER)
 plot_annual_stats(station_number = "08NM116",
                   start_year = 1981,
                   end_year = 2010,
                   include_title = TRUE)
+                  
 }
 }
 \seealso{

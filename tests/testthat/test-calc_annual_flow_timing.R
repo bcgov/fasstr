@@ -28,7 +28,7 @@ test_that("creates a dataframe with custom columns", {
 test_that("it is calculated correctly", {
   skip_on_cran()
   skip_on_travis()
-  percent = 51
+  percent <- 51
   data <- calc_annual_flow_timing(station_number = "08NM116", start_year = 1980, end_year = 1980,
                                   percent_total = percent)
   flow_data <- add_date_variables(station_number = "08NM116")

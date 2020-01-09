@@ -1,3 +1,20 @@
+fasstr 0.3.1
+=========================
+
+Updated: 08 Jan 2020
+
+#### Updates:
+
+  * added/modified files in prep for CRAN submission
+  * fixed vignette coding errors
+  * renamed function calc_longterm_mad to calc_longterm_mean
+  * updated vignettes and README files
+  * removed calc_longterm_stats and plot_longterm_stats
+  * updated Examples in all documentation (replaced \dontrun{} with a function checking for a HYDAT, left for writing functions and larger analyses)
+  * fixed multiple typos
+  * updated DESCRIPTION file
+
+
 fasstr 0.3.0
 =========================
 
@@ -10,7 +27,7 @@ Updated: 14 May 2019
   * Renamed 'include_year' argument to 'add_year' for some functions
   * complete_full_analysis just creates R objects; a new write_full_analysis saves the results in a single Excel document, with some plots in a plots folder; renamed 'sections' to 'analyses'
   * add_date_variables() outputs changed slightly to match new water_year_start argument
-  * Replaced NULL and NA default values for function agruments to nothing, cleaning up documentation.
+  * Replaced NULL and NA default values for function arguments to nothing, cleaning up documentation.
   * Replaced the package writexls with openxls for more functionality
   * Plotting: changed facet wrap labels, changed trending symbols
   * WSC station numbers with lower-case letters now accepted (08nm116 and 08NM116 both work)

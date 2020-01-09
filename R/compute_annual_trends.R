@@ -15,7 +15,7 @@
 #' @title Calculate prewhitened nonlinear annual trends on streamflow data
 #'
 #' @description Calculates prewhitened nonlinear trends on annual streamflow data. Uses the
-#'    \href{https://cran.r-project.org/web/packages/zyp/index.html}{'zyp'} package to trend. Review 'zyp' to understand its methology.
+#'    \href{https://CRAN.R-project.org/package=zyp}{'zyp'} package to trend. Review 'zyp' to understand its methodology.
 #'    All annual statistics calculated using the calc_all_annual_stats() function which uses the following fasstr functions:
 #' \itemize{
 #'  \item{calc_annual_stats()}
@@ -33,7 +33,7 @@
 #' @param zyp_alpha Numeric value of the significance level (ex. 0.05) of when to plot a trend line. Leave blank for no line.
 #' 
 #' @return A list of tibbles and optional plots from the trending analysis including:
-#'   \item{Annual_Trends_Data}{a tibbble of the annual statistics used for trending}
+#'   \item{Annual_Trends_Data}{a tibble of the annual statistics used for trending}
 #'   \item{Annual_Trends_Results}{a tibble of the results of the zyp trending analysis}
 #'   \item{Annual_*}{each ggplot2 object for each annual trended statistic}
 #' 
@@ -56,25 +56,28 @@
 #' @examples
 #' \dontrun{
 #' 
-#' # Compute trends statistics using data argument with defaults
+#' # Working examples:
+#' 
+#' # Compute trends statistics using a data frame and data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
-#' compute_annual_trends(data = flow_data,
-#'                       zyp_method = "yuepilon")
+#' trends <- compute_annual_trends(data = flow_data,
+#'                                 zyp_method = "yuepilon")
 #' 
 #' # Compute trends statistics using station_number with defaults
-#' compute_annual_trends(station_number = "08NM116",
-#'                       zyp_method = "yuepilon")
+#' trends <- compute_annual_trends(station_number = "08NM116",
+#'                                 zyp_method = "yuepilon")
 #'                       
 #' # Compute trends statistics and plot a trend line if the significance is less than 0.05
-#' compute_annual_trends(station_number = "08NM116",
-#'                       zyp_method = "yuepilon",
-#'                       zyp_alpha = 0.05)
+#' trends <- compute_annual_trends(station_number = "08NM116",
+#'                                 zyp_method = "yuepilon",
+#'                                 zyp_alpha = 0.05)
 #'                       
 #' # Compute trends statistics and do not plot the results
-#' compute_annual_trends(station_number = "08NM116",
-#'                       zyp_method = "yuepilon",
-#'                       include_plots = FALSE)
-#' }
+#' trends <- compute_annual_trends(station_number = "08NM116",
+#'                                 zyp_method = "yuepilon",
+#'                                 include_plots = FALSE)
+#' 
+#' }                
 #' @export
 
 
@@ -108,28 +111,28 @@ compute_annual_trends <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   if (missing(basin_area)) {
-    basin_area = NA
+    basin_area <- NA
   }
   if (missing(zyp_method)) {
-    zyp_method = NA
+    zyp_method <- NA
   }
   if (missing(zyp_alpha)) {
-    zyp_alpha = NA
+    zyp_alpha <- NA
   }
   
   zyp_method_checks(zyp_method)

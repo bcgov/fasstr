@@ -55,36 +55,38 @@
 #'   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 #'   
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Calculate statistics using data argument with defaults
+#' # Calculate annual statistics from a data frame using the data argument
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' calc_annual_stats(data = flow_data)
 #' 
-#' # Calculate statistics using station_number argument with defaults
+#' # Calculate annual statistics using station_number argument
 #' calc_annual_stats(station_number = "08NM116")
 #' 
-#' # Calculate statistics regardless if there 
+#' # Calculate annual statistics regardless if there 
 #' # is missing data for a given year
 #' calc_annual_stats(station_number = "08NM116",
 #'                   ignore_missing = TRUE)
 #'                   
-#' # Calculate statistics for water years starting in October
+#' # Calculate annual statistics for water years starting in October
 #' calc_annual_stats(station_number = "08NM116",
 #'                   water_year_start = 10)
 #'                   
-#' # Calculate statistics with custom years
+#' # Calculate annual statistics filtered for custom years
 #' calc_annual_stats(station_number = "08NM116",
 #'                   start_year = 1981,
 #'                   end_year = 2010,
 #'                   exclude_years = c(1991,1993:1995))
 #'                   
-#' # Calculate statistics for 7-day flows for July-September 
+#' # Calculate annual statistics for 7-day flows for July-September 
 #' # months only, with 25 and 75th percentiles
 #' calc_annual_stats(station_number = "08NM116",
 #'                   roll_days = 7,
 #'                   months = 7:9,
 #'                   percentiles = c(25,75))
+#'                   
 #' }
 #' @export
 
@@ -110,19 +112,19 @@ calc_annual_stats <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   
   rolling_days_checks(roll_days, roll_align)

@@ -18,7 +18,7 @@
 #'    statistics from all daily discharge values from all years, unless specified. Data calculated using calc_longterm_stats() 
 #'    function then converted for plotting.
 #'
-#' @inheritParams calc_longterm_stats
+#' @inheritParams calc_longterm_daily_stats
 #' @inheritParams plot_annual_stats
 #' @param months Numeric vector of month curves to plot. NA if no months required. Default \code{1:12}.
 #' @param include_longterm Logical value indicating whether to include longterm curve of all data. Default \code{TRUE}.
@@ -26,47 +26,27 @@
 #' @return A list of ggplot2 objects with the following for each station provided:
 #'   \item{Flow_Duration}{a plot that contains flow duration curves for each month, long-term, and (option) customized months}
 #'   
-#' @seealso \code{\link{calc_longterm_stats}}
+#' @seealso \code{\link{calc_longterm_daily_stats}}
 #'   
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Plot statistics using data argument with defaults
+#' # Plot flow durations using a data frame and data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' plot_flow_duration(data = flow_data,
 #'                     start_year = 1980)
 #' 
-#' # Plot statistics using station_number argument with defaults
+#' # Plot flow durations using station_number argument with defaults
 #' plot_flow_duration(station_number = "08NM116",
 #'                    start_year = 1980)
 #' 
-#' # Plot statistics regardless if there is missing data for a given year
-#' plot_flow_duration(station_number = "08NM116",
-#'                    ignore_missing = TRUE)
-#'                   
-#' # Plot statistics for water years starting in October
-#' plot_flow_duration(station_number = "08NM116",
-#'                    start_year = 1980,
-#'                    end_year = 2010,
-#'                    water_year_start = 10)
-#'                   
-#' # Plot statistics with custom years
-#' plot_flow_duration(station_number = "08NM116",
-#'                    start_year = 1981,
-#'                    end_year = 2010,
-#'                    exclude_years = c(1991,1993:1995))
-#' 
-#' # Plot statistics and add custom stats for July-September
+#' # Plot flow durations and add custom stats for July-September
 #' plot_flow_duration(station_number = "08NM116",
 #'                    start_year = 1980,
 #'                    custom_months = 7:9,
-#'                    custom_months_label = "Summer")  
-#' 
-#' # Plot statistics for just July-September
-#' plot_flow_duration(station_number = "08NM116",
-#'                    start_year = 1980,
-#'                    months = 7:9,
-#'                    include_longterm = FALSE)
+#'                    custom_months_label = "Summer")
+#'                    
 #' }
 #' @export
 
@@ -98,25 +78,25 @@ plot_flow_duration <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   if (missing(custom_months)) {
-    custom_months = NULL
+    custom_months <- NULL
   }
   if (missing(custom_months_label)) {
-    custom_months_label = "Custom-Months"
+    custom_months_label <- "Custom-Months"
   }
   
   log_discharge_checks(log_discharge)
@@ -180,7 +160,7 @@ plot_flow_duration <- function(data,
                     "Aug" = "red", "Sep" = "darkred", "Oct" = "orchid", "Nov" = "purple3",
                     "Dec" = "midnightblue", "Long-term" = "black")
   if (!is.null(custom_months)) { 
-    colour_list[[ custom_months_label ]] = "grey60"
+    colour_list[[ custom_months_label ]] <- "grey60"
   }
 
   if (all(is.na(percentiles_data$Value))) {

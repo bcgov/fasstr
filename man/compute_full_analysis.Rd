@@ -4,10 +4,22 @@
 \alias{compute_full_analysis}
 \title{Compute a suite of tables and plots from various fasstr functions}
 \usage{
-compute_full_analysis(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, analyses = 1:7, basin_area,
-  water_year_start = 1, start_year, end_year, exclude_years,
-  ignore_missing = FALSE, zyp_method = "yuepilon", zyp_alpha)
+compute_full_analysis(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  analyses = 1:7,
+  basin_area,
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  ignore_missing = FALSE,
+  zyp_method = "yuepilon",
+  zyp_alpha
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -78,16 +90,19 @@ Calculates tables and plots from a suite of statistics from fasstr functions. Th
 \examples{
 \dontrun{
 
-# Compute a full analysis will all the analyses
-compute_full_analysis(station_number = "08NM116",
-                     start_year = 1980,
-                     end_year = 2010)
+# Working examples:
 
-# Compute a full analysis with only Annual and Daily analyses
-compute_full_analysis(station_number = "08NM116",
-                     start_year = 1980,
-                     end_year = 2010,
-                     analyses = c(3,5))
+# Compute a full analysis will all the analyses
+results <- compute_full_analysis(station_number = "08NM116",
+                                 start_year = 1980,
+                                 end_year = 2010)
+
+# Compute a full analysis with only Annual (3) and Daily (5) analyses
+results <- compute_full_analysis(station_number = "08NM116",
+                                 start_year = 1980,
+                                 end_year = 2010,
+                                 analyses = c(3,5))
+                     
 }
 }
 \seealso{

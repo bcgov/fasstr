@@ -36,19 +36,21 @@
 #'   Transposing data creates a column of 'Statistics' and subsequent columns for each year selected. 
 #'   
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Calculate volume statistics
+#' # Calculate annual total volumetric flow statistics
 #' calc_annual_cumulative_stats(station_number = "08NM116") 
 #' 
-#' # Calculate yield statistics with default HYDAT basin area
+#' # Calculate annual total yield statistics with default HYDAT basin area
 #' calc_annual_cumulative_stats(station_number = "08NM116",
 #'                              use_yield = TRUE) 
 #' 
-#' # Calculate yield statistics with custom basin area
+#' # Calculate annual total yield statistics with a custom basin area
 #' calc_annual_cumulative_stats(station_number = "08NM116",
 #'                              use_yield = TRUE,
 #'                              basin_area = 800) 
+#'                              
 #' }
 #' @export
 
@@ -75,22 +77,22 @@ calc_annual_cumulative_stats <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   if (missing(basin_area)) {
-    basin_area = NA
+    basin_area <- NA
   }
   
 
@@ -157,7 +159,7 @@ calc_annual_cumulative_stats <- function(data,
   flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
   
   # Stop if all data is NA
-  no_values_error(flow_data$daily_total)
+  #no_values_error(flow_data$daily_total)
   
   ## CALCULATE STATISTICS
   ## --------------------

@@ -30,51 +30,22 @@
 #' @seealso \code{\link{calc_monthly_stats}}
 #'   
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Plot statistics using data argument with defaults
+#' # Plot monthly statistics using a data frame and data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
-#' plot_monthly_stats(data = flow_data,
-#'                    start_year = 1980)
+#' results <- plot_monthly_stats(data = flow_data,
+#'                               start_year = 1980,
+#'                               percentiles = 10)
 #' 
-#' # Plot statistics using station_number argument with defaults
-#' plot_monthly_stats(station_number = "08NM116",
-#'                    start_year = 1980)
-#' 
-#' # Plot statistics regardless if there is missing data for a given day of year
-#' plot_monthly_stats(station_number = "08NM116",
-#'                    ignore_missing = TRUE)
-#'                   
-#' # Plot statistics for water years starting in October
-#' plot_monthly_stats(station_number = "08NM116",
-#'                    start_year = 1980,
-#'                    end_year = 2010,
-#'                    water_year_start = 10)
-#'                  
-#' # Plot statistics with custom years
-#' plot_monthly_stats(station_number = "08NM116",
-#'                    start_year = 1981,
-#'                    end_year = 2010,
-#'                    exclude_years = c(1991,1993:1995))
-#'                   
-#' # Plot statistics for 7-day flows for July-September months only, and the 10th percentiles
-#' plot_monthly_stats(station_number = "08NM116",
-#'                    start_year = 1980,
-#'                    roll_days = 7,
-#'                    months = 7:9,
-#'                    percentiles = 10)
-#' 
-#' # Plot statistics with a log-scale Discharge axis
-#' plot_monthly_stats(station_number = "08NM116",
-#'                    start_year = 1981,
-#'                    end_year = 2010,
-#'                    log_discharge = TRUE)
-#' 
-#' # Plot statistics and include the title with the statistic
-#' plot_monthly_stats(station_number = "08NM116",
-#'                    start_year = 1981,
-#'                    end_year = 2010,
-#'                    include_title = TRUE)
+#' # Plot monthly statistics for water years starting in October
+#' results <- plot_monthly_stats(station_number = "08NM116",
+#'                               start_year = 1980,
+#'                               end_year = 2010,
+#'                               water_year_start = 10,
+#'                               percentiles = 10)
+#'                    
 #' }
 #' @export
 
@@ -103,22 +74,22 @@ plot_monthly_stats <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   if (missing(percentiles)) {
-    percentiles = NA
+    percentiles <- NA
   }
   
   log_discharge_checks(log_discharge) 

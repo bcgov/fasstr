@@ -30,6 +30,8 @@
 #' @examples
 #' \dontrun{
 #' 
+#' # Working examples:
+#' 
 #' # Write data from a data frame
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' write_flow_data(data = flow_data, 
@@ -43,6 +45,7 @@
 #' write_flow_data(station_number = "08NM116", 
 #'                 file_name = "Mission_Creek_daily_flows.xlsx",
 #'                 fill_missing = TRUE)
+#'
 #' }
 #' @export
 
@@ -67,28 +70,28 @@ write_flow_data <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(start_date)) {
-    start_date = "0000-01-01"
+    start_date <- "0000-01-01"
   }
   if (missing(end_date)) {
-    end_date = "3000-12-31"
+    end_date <- "3000-12-31"
   }
   if (missing(digits)) {
-    digits = 10
+    digits <- 10
   }
   if (missing(file_name)) {
-    file_name = ""
+    file_name <- ""
   }
 
   

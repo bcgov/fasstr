@@ -4,12 +4,27 @@
 \alias{calc_longterm_daily_stats}
 \title{Calculate long-term summary statistics from daily mean flows}
 \usage{
-calc_longterm_daily_stats(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, percentiles = c(10, 90),
-  roll_days = 1, roll_align = "right", water_year_start = 1,
-  start_year, end_year, exclude_years, months = 1:12,
-  complete_years = FALSE, include_longterm = TRUE, custom_months,
-  custom_months_label, transpose = FALSE, ignore_missing = FALSE)
+calc_longterm_daily_stats(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  percentiles = c(10, 90),
+  roll_days = 1,
+  roll_align = "right",
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  months = 1:12,
+  complete_years = FALSE,
+  include_longterm = TRUE,
+  custom_months,
+  custom_months_label,
+  transpose = FALSE,
+  ignore_missing = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -82,33 +97,35 @@ Calculates the long-term and long-term monthly mean, median, maximum, minimum, a
    from a streamflow dataset. Calculates the statistics from all daily values from all years, unless specified.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Calculate statistics using data argument with defaults
+# Calculate long-term statistics using data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 calc_longterm_daily_stats(data = flow_data,
                           start_year = 1980)
 
-# Calculate statistics using station_number argument with defaults
+# Calculate long-term statistics using station_number argument with defaults
 calc_longterm_daily_stats(station_number = "08NM116",
                           start_year = 1980)
 
-# Calculate statistics regardless if there is missing data for a given year
+# Calculate long-term statistics regardless if there is missing data for a given year
 calc_longterm_daily_stats(station_number = "08NM116",
                           ignore_missing = TRUE)
                   
-# Calculate statistics for water years starting in October
+# Calculate long-term statistics for water years starting in October
 calc_longterm_daily_stats(station_number = "08NM116",
                           start_year = 1980,
                           water_year_start = 10)
                   
-# Calculate statistics with custom years
+# Calculate long-term statistics with custom years
 calc_longterm_daily_stats(station_number = "08NM116",
                           start_year = 1981,
                           end_year = 2010,
                           exclude_years = c(1991,1993:1995))
                   
-# Calculate statistics for 7-day flows for July-September months only, with 25 and 75th percentiles
+# Calculate long-term statistics for 7-day flows for July-September months only, 
+# with 25 and 75th percentiles
 calc_longterm_daily_stats(station_number = "08NM116",
                           roll_days = 7,
                           months = 7:9,
@@ -116,10 +133,11 @@ calc_longterm_daily_stats(station_number = "08NM116",
                           ignore_missing = TRUE,
                           include_longterm = FALSE) # removes the Long-term numbers 
                     
-# Calculate statistics and add custom stats for July-September
+# Calculate long-term statistics and add custom stats for July-September
 calc_longterm_daily_stats(station_number = "08NM116",
                           start_year = 1980,
                           custom_months = 7:9,
                           custom_months_label = "Summer")                  
+                          
 }
 }

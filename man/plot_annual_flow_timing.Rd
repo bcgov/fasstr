@@ -4,10 +4,19 @@
 \alias{plot_annual_flow_timing}
 \title{Plot annual flow timing}
 \usage{
-plot_annual_flow_timing(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, percent_total = c(25, 33.3,
-  50, 75), water_year_start = 1, start_year, end_year, exclude_years,
-  include_title = FALSE)
+plot_annual_flow_timing(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  percent_total = c(25, 33.3, 50, 75),
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  include_title = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -54,14 +63,16 @@ Plots annual the timing (day of year) of occurrence of portions of total annual 
    Data calculated using calc_annual_flow_timing() function.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Plot statistics with default percent totals
+# Plot annual flow timing statistics with default percent totals
 plot_annual_flow_timing(station_number = "08NM116") 
 
-# Plot statistics with custom percent totals
+# Plot annual flow timing with custom percent totals
 plot_annual_flow_timing(station_number = "08NM116",
                         percent_total = 50)
+                        
 }
 }
 \references{

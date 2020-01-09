@@ -4,9 +4,15 @@
 \alias{add_rolling_means}
 \title{Add rolling n-day averages}
 \usage{
-add_rolling_means(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, roll_days = c(3, 7, 30),
-  roll_align = "right")
+add_rolling_means(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  roll_days = c(3, 7, 30),
+  roll_align = "right"
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -46,17 +52,19 @@ Adds selected n-day rolling means to a streamflow dataset. Based on selected n-d
   than the n-days provided.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Add default 3, 7, and 30-day rolling means, with "right" alignment
+# Add default 3, 7, and 30-day rolling mean columns, with "right" alignment
 add_rolling_means(station_number = "08NM116")
 
-# Add custom 5 and 10-day rolling means
+# Add custom 5 and 10-day rolling mean columns
 add_rolling_means(station_number = "08NM116",
                   roll_days = c(5,10))
                   
-# Add default 3, 7, and 30-day rolling means, with "left" alignment
+# Add default 3, 7, and 30-day rolling mean columns, with "left" alignment
 add_rolling_means(station_number = "08NM116",
                   roll_align = "left")                
+                  
 }
 }

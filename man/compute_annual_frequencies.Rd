@@ -4,16 +4,29 @@
 \alias{compute_annual_frequencies}
 \title{Perform an annual low or high-flow frequency analysis}
 \usage{
-compute_annual_frequencies(data, dates = Date, values = Value,
-  station_number, roll_days = c(1, 3, 7, 30), roll_align = "right",
-  use_max = FALSE, use_log = FALSE, prob_plot_position = c("weibull",
-  "median", "hazen"), prob_scale_points = c(0.9999, 0.999, 0.99, 0.9,
-  0.5, 0.2, 0.1, 0.02, 0.01, 0.001, 1e-04), fit_distr = c("PIII",
-  "weibull"), fit_distr_method = ifelse(fit_distr == "PIII", "MOM",
-  "MLE"), fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2,
-  0.1, 0.05, 0.01), plot_curve = TRUE, water_year_start = 1,
-  start_year, end_year, exclude_years, months = 1:12,
-  ignore_missing = FALSE)
+compute_annual_frequencies(
+  data,
+  dates = Date,
+  values = Value,
+  station_number,
+  roll_days = c(1, 3, 7, 30),
+  roll_align = "right",
+  use_max = FALSE,
+  use_log = FALSE,
+  prob_plot_position = c("weibull", "median", "hazen"),
+  prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5, 0.2, 0.1, 0.02, 0.01, 0.001,
+    1e-04),
+  fit_distr = c("PIII", "weibull"),
+  fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
+  fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1, 0.05, 0.01),
+  plot_curve = TRUE,
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  months = 1:12,
+  ignore_missing = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -36,12 +49,12 @@ Leave blank if using \code{data} argument.}
 
 \item{use_max}{Logical value to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}
 
-\item{use_log}{Logical value to indicate log-scale tranforming of flow data before analysis. Default \code{FALSE}.}
+\item{use_log}{Logical value to indicate log-scale transforming of flow data before analysis. Default \code{FALSE}.}
 
 \item{prob_plot_position}{Character string indicating the plotting positions used in the frequency plots, one of "weibull",
 "median", or "hazen". Points are plotted against  (i-a)/(n+1-a-b) where \code{i} is the rank of the value; \code{n} is the 
 sample size and \code{a} and \code{b} are defined as: (a=0, b=0) for Weibull plotting positions; (a=.2; b=.3) for Median 
-plotting postions; and (a=.5; b=.5) for Hazen plotting positions. Default \code{"weibull"}.}
+plotting positions; and (a=.5; b=.5) for Hazen plotting positions. Default \code{"weibull"}.}
 
 \item{prob_scale_points}{Numeric vector of probabilities to be plotted along the X axis in the frequency plot. Inverse of 
 return period. Default \code{c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001)}.}
@@ -90,10 +103,34 @@ Performs a flow volume frequency analysis on annual statistics from a streamflow
 \examples{
 \dontrun{
 
-compute_annual_frequencies(station_number = "08NM116",
-                           start_year = 1980,
-                           end_year = 2010)
-}
+# Working examples (see arguments for further analysis options):
+
+# Compute an annual frequency analysis using default arguments
+results <- compute_annual_frequencies(station_number = "08NM116",
+                                      start_year = 1980,
+                                      end_year = 2010)
+                           
+# Compute an annual frequency analysis using default arguments (as listed)
+results <- compute_annual_frequencies(station_number = "08NM116",
+                                      roll_days = c(1,3,7,30),
+                                      start_year = 1980,
+                                      end_year = 2010,
+                                      prob_plot_position = "weibull",
+                                      prob_scale_points = c(.9999, .999, .99, .9, .5, 
+                                      .2, .1, .02, .01, .001, .0001),
+                                      fit_distr = "PIII",
+                                      fit_distr_method = "MOM")
+                                      
+# Compute a 7-day annual frequency analysis with "median" plotting positions
+# and fitting the data to a weibull distribution (not default PIII)
+results <- compute_annual_frequencies(station_number = "08NM116",
+                                      roll_days = 7,
+                                      start_year = 1980,
+                                      end_year = 2010,
+                                      prob_plot_position = "median",
+                                      fit_distr = "weibull")
+               
+}            
 }
 \seealso{
 \code{\link{compute_frequency_analysis}}

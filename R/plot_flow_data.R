@@ -27,9 +27,10 @@
 #' @return A ggplot2 object of daily flows from flow_data or HYDAT flow data provided
 #'
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Plot data from a data frame
+#' # Plot data from a data frame and data argument
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' plot_flow_data(data = flow_data)
 #' 
@@ -50,6 +51,7 @@
 #' # Plot data multiple groups on one plot
 #' plot_flow_data(station_number = c("08NM241", "08NM242"),
 #'                one_plot = TRUE) 
+#'                
 #' }
 #' @export
 
@@ -78,25 +80,25 @@ plot_flow_data <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   if (missing(start_date)) {
-    start_date = "0000-01-01"
+    start_date <- "0000-01-01"
   }
   if (missing(end_date)) {
-    end_date = "3000-12-31"
+    end_date <- "3000-12-31"
   }
   
   rolling_days_checks(roll_days, roll_align)

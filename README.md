@@ -4,12 +4,13 @@
 # fasstr <img src="tools/readme/fasstr.PNG" align="right" />
 
 <a id="devex-badge" rel="Delivery" href="https://github.com/BCDevExchange/assets/blob/master/README.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a>
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Travis build
 status](https://travis-ci.org/bcgov/fasstr.svg?branch=master)](https://travis-ci.org/bcgov/fasstr)
 
 </div>
 
-The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of
+The Flow Analysis Summary Statistics Tool for R (‘fasstr’) is a set of
 [R](http://www.r-project.org) functions to clean, summarize, analyze,
 trend, and visualize streamflow data. This package summarizes continuous
 daily mean streamflow data into various daily, monthly, annual, and
@@ -31,7 +32,7 @@ This package provides functions with solutions for streamflow data:
 
 Useful features of functions include:
 
-  - the integration of the `tidyhydat` package to pull streamflow data
+  - the integration of the ‘tidyhydat’ package to pull streamflow data
     from a Water Survey of Canada
     [HYDAT](https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html)
     database for analyses;
@@ -44,68 +45,41 @@ Useful features of functions include:
 
 ## Installation
 
-To install the `fasstr` package, you need to install the `remotes`
-package then the `fasstr` package:
+You can install ‘fasstr’ using the following code. It may take a few
+moments as there are several dependency packages will also be installed,
+including [‘tidyhydat’](https://CRAN.R-project.org/package=tidyhydat)
+for downloading Water Survey of Canada hydrometric data,
+[‘zyp’](https://CRAN.R-project.org/package=zyp) for trending,
+[‘ggplot2’](https://CRAN.R-project.org/package=ggplot2) for creating
+plots, and [‘dplyr’](https://CRAN.R-project.org/package=dplyr) and
+[‘tidyr’](https://CRAN.R-project.org/package=tidyr) for various data
+wrangling and summarizing functions, amongst others.
 
 ``` r
-install.packages("remotes")
+install.packages("fasstr")
+```
+
+To install the development version of the ‘fasstr’ package, you need to
+install the remotes package then the ‘fasstr’ package.
+
+``` r
+if(!requireNamespace("remotes")) install.packages("remotes")
 remotes::install_github("bcgov/fasstr")
 ```
 
-Then to call the `fasstr` functions you can either load the package
-using the `library(fasstr)` function or access a specific function using
-a double-colon (e.g. `fasstr::calc_daily_stats()`). Several other
-packages will be installed in addition including
-[tidyhydat](https://cran.r-project.org/web/packages/tidyhydat/index.html)
-for data gathering,
-[zyp](https://cran.r-project.org/web/packages/zyp/index.html) for
-trending,
-[ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html)
-for creating plots, and
-[dplyr](https://cran.r-project.org/web/packages/dplyr/index.html) and
-[tidyr](https://cran.r-project.org/web/packages/tidyr/index.html) for
-various data wrangling and summarizing functions, amongst others. Many
-of the other packages are required for the frequency analysis functions.
+To call the ‘fasstr’ functions you can either load the package using the
+`library(fasstr)` function or access a specific function using a
+double-colon (e.g. `fasstr::calc_daily_stats()`).
 
-To utilize the `tidyhydat` features, you will need to download a HYDAT
-database using the `tidyhydat::download_hydat()` function.
+To utilize the ‘tidyhydat’ features (using the station\_number
+argument), you will need to download a HYDAT database using the
+`tidyhydat::download_hydat()` function.
 
 ## Using fasstr
 
-### Vignettes
-
-To help users traverse their way (example code, analyses, reference
-tables, etc) through fasstr there are five vignettes: Users Guide,
-Trending Analysis Guide, Frequency Analysis Guide, Full Analysis Guide,
-and Under the Hood. To install the vignettes, you must (re)install
-fasstr with the following code after a HYDAT file has been installed
-using `tidyhydat::download_hydat()`:
-
-``` r
-install.packages("remotes")
-remotes::install_github("bcgov/fasstr", build_opts = c("--no-resave-data", "--no-manual"))
-```
-
-The vignettes can be viewed using a few different ways. One is to view
-available vignettes in an HTML browser with links to each vignette:
-
-``` r
-browseVignettes("fasstr")
-```
-
-or each vignette can be displayed individually within a viewer:
-
-``` r
-vignette("fasstr_users_guide")
-vignette("fasstr_trending_analysis")
-vignette("fasstr_frequency_analysis")
-vignette("fasstr_full_analysis")
-vignette("fasstr_under_the_hood")
-```
-
 ### Data Input
 
-All functions in `fasstr` require a daily mean streamflow dataset from
+All functions in ‘fasstr’ require a daily mean streamflow dataset from
 one or more hydrometric stations. Long-term and continuous datasets are
 preferred for most analyses, but seasonal and partial data can be used.
 Other daily time series data, like temperature, precipitation or water
@@ -121,7 +95,7 @@ cubic metres per second in numeric format), and, optionally, grouping
 identifiers (character string of station names or numbers) is called. By
 default the functions will look for columns identified as ‘Date’,
 ‘Value’, and ‘STATION\_NUMBER’, respectively, to be compatible with
-the `tidyhydat` defaults, but columns of different names can be
+the ‘tidyhydat’ defaults, but columns of different names can be
 identified using the `dates`, `values`, `groups` column arguments (ex.
 `values = Yield_mm`). The following is an example of an appropriate
 dataframe (STATION\_NUMBER not required):
@@ -139,7 +113,7 @@ HYDAT database by listing station numbers in the `station_number`
 argument (ex. `station_number = "08NM116"` or `station_number =
 c("08NM116", "08NM242")`) while leaving the data arguments blank. A data
 frame of daily streamflow data for all stations listed will be extracted
-using `tidyhydat`. Use the following function to download a HYDAT
+using ‘tidyhydat’. Use the following function to download a HYDAT
 database:
 
 ``` r
@@ -222,11 +196,11 @@ to another month than 1 (for January). A water year can be defined as a
 can typically cross calendar year), typically starting with the month
 with minimum flows (the start of a new water recharge cycle). As water
 years commonly start in October, the default water year is October for
-`fasstr`. If another start month is desired, you can choose is using the
-`water_year_start` argument (numeric month) to designate the water year
-time period. The water year label is designated by the year it ends in
-(e.g. water year 2000 goes from Oct 1, 1999 to Sep 30, 2000). Start, end
-and excluded years will be based on the specified water year.
+‘fasstr’. If another start month is desired, you can choose is using
+the `water_year_start` argument (numeric month) to designate the water
+year time period. The water year label is designated by the year it ends
+in (e.g. water year 2000 goes from Oct 1, 1999 to Sep 30, 2000). Start,
+end and excluded years will be based on the specified water year.
 
 For your own analyses, you can add date variables to your dataset using
 the `add_date_variables()` or `add_seasons()` functions.
@@ -269,7 +243,7 @@ median, maximum, minimum, and some percentiles) you can use the
 `calc_longterm_daily_stats()` function. If the ‘Mission Creek near East
 Kelowna’ hydrometric station is of interest you can list the station
 number in the `station_number` argument to obtain the data (if
-`tidyhydat` and HYDAT are installed).
+‘tidyhydat’ and HYDAT are installed).
 
 ``` r
 calc_longterm_daily_stats(station_number = "08NM116", 
@@ -302,7 +276,7 @@ To visualize the daily streamflow patterns on an annual basis, the
 `plot_daily_stats()` function will plot out various summary statistics
 for each day of the year. Data can also be filtered for certain years of
 interest (a 1981-2010 normals period for this example) using the
-`start_year` and `end_year` arguments. We can also compare indivual
+`start_year` and `end_year` arguments. We can also compare individual
 years against the statistics using `add_year` argument like below.
 
 ``` r
@@ -366,7 +340,7 @@ freq_results$Freq_Fitted_Quantiles
 #> 11 PIII               0.99             1.01   1.31
 ```
 
-The probabilty of observed extreme events can also be plotted (using
+The probability of observed extreme events can also be plotted (using
 selected plotting position) along with the computed quantiles curve for
 comparison.
 
@@ -382,7 +356,7 @@ freq_results$Freq_Plot
 
 ## Project Status
 
-This package is under development. This package is maintained by the
+This package is set for delivery. This package is maintained by the
 Water Protection and Sustainability Branch of the [British Columbia
 Ministry of Environment and Climate Change
 Strategy](https://www2.gov.bc.ca/gov/content/environment/air-land-water/water).

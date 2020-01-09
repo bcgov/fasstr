@@ -43,14 +43,16 @@
 #'   Transposing data creates a column of 'Statistics' (just DoY, not Date values) and subsequent columns for each year selected.
 #' 
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Calculate statistics with default percent totals
+#' # Calculate annual flow timings with default percent of annual totals
 #' calc_annual_flow_timing(station_number = "08NM116") 
 #' 
-#' # Calculate statistics with custom percent totals
-#' calc_annual_cumulative_stats(station_number = "08NM116",
-#'                              percent_total = 50)
+#' # Calculate annual flow timings with custom percent of annual totals
+#' calc_annual_flow_timing(station_number = "08NM116",
+#'                         percent_total = 50)
+#'                              
 #' }
 #' @export
 
@@ -72,21 +74,21 @@ calc_annual_flow_timing <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
-  
+
   percent_total_checks(percent_total)
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)

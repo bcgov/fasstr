@@ -4,10 +4,20 @@
 \alias{screen_flow_data}
 \title{Calculate annual summary and missing data statistics}
 \usage{
-screen_flow_data(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, roll_days = 1,
-  roll_align = "right", water_year_start = 1, start_year, end_year,
-  months = 1:12, transpose = FALSE)
+screen_flow_data(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  roll_days = 1,
+  roll_align = "right",
+  water_year_start = 1,
+  start_year,
+  end_year,
+  months = 1:12,
+  transpose = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -75,22 +85,24 @@ Calculates mean, median, maximum, minimum, standard deviation of annual flows an
    unless specified.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Calculate statistics using data argument with defaults
+# Calculate screening statistics usinga data frame and data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 screen_flow_data(data = flow_data)
 
-# Calculate statistics using station_number argument with defaults
+# Calculate screening statistics using station_number argument with defaults
 screen_flow_data(station_number = "08NM116")
                   
-# Calculate statistics for water years starting in October
+# Calculate screening statistics for water years starting in October
 screen_flow_data(station_number = "08NM116",
                  water_year_start = 9)
                   
-# Calculate statistics for 7-day flows for July-September months only
+# Calculate screening statistics for 7-day flows for July-September months only
 screen_flow_data(station_number = "08NM116",
                  roll_days = 7,
                  months = 7:9)
+                 
 }
 }

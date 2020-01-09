@@ -4,15 +4,15 @@
 \name{fasstr-package}
 \alias{fasstr}
 \alias{fasstr-package}
-\title{fasstr: Tools for Streamflow Data Tidying, Analyses, and Visualization}
+\title{fasstr: Analyze, Summarize, and Visualize Daily Streamflow Data}
 \description{
-'fasstr' (Flow Analysis Summary Statistics Tool for R) provides useful functions to tidy, 
-    analyze, and visualize daily streamflow time series data. This package provides functions with quick
-    solutions for: screening for missing dates and outliers; summarizing and plotting various daily, month, 
-    and long-term statistics; trending annual patterns; and computing low and high-flow frequency analyses. 
-    Various function arguments allow for easy customization of analyses and plotting. While not required
-    for use, this package integrates the 'tidyhydat' package to extract and tidy streamflow data from a 
-    Water Survey of Canada HYDAT database.
+The Flow Analysis Summary Statistics Tool for R, 'fasstr', provides various 
+    functions to clean and screen daily stream discharge data; calculate and visualize various summary statistics
+    and metrics; and compute annual trending (using 'zyp' package methods <https://CRAN.R-project.org/package=zyp>)
+    and volume frequency analyses (using methods similar to HEC-SSP (2019) 
+    <https://www.hec.usace.army.mil/software/hec-ssp/>). It features useful function arguments for filtering of and
+    handling dates, customizing data and metrics, and the ability to pull daily data directly from the Water Survey
+    of Canada hydrometric database (<https://collaboration.cmc.ec.gc.ca/cmc/hydrometrics/www/>).
 }
 \references{
 tidyhydat information:
@@ -37,6 +37,7 @@ To use the station_number argument of the fasstr functions, please download the 
 Useful links:
 \itemize{
   \item \url{https://github.com/bcgov/fasstr}
+  \item \url{https://www2.gov.bc.ca/gov/content/environment/air-land-water/water}
   \item Report bugs at \url{https://github.com/bcgov/fasstr/issues}
 }
 

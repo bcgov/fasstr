@@ -25,16 +25,18 @@
 #'   \item{Season}{season identifier labelled by the start and end month of the season}
 #'
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Four seasons starting in January
-#' add_seasons(data = "08NM116",
+#' # Add a column with four annual seasons starting in January
+#' add_seasons(station_number = "08NM116",
 #'             seasons_length = 4)
 #' 
-#' # Two seasons starting in October
-#' add_seasons(data = "08NM116", 
+#' # Add a column with two annual seasons (of 6 months length) starting in October
+#' add_seasons(station_number = "08NM116", 
 #'             water_year_start = 10,
 #'             seasons_length = 6)
+#'             
 #' }
 #' @export
 
@@ -50,10 +52,10 @@ add_seasons <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   
   water_year_checks(water_year_start)

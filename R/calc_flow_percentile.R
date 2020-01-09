@@ -19,10 +19,11 @@
 #' @inheritParams calc_monthly_stats
 #' @param flow_value A numeric flow value of which to determine the percentile rank. Required.
 #'
-#' @return A tibble data frame, or a single numeric value if no station number proivded, of the percentile rank of a given flow value.
+#' @return A tibble data frame, or a single numeric value if no station number provided, of the percentile rank of a given flow value.
 #' 
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
 #' # Calculate the percentile rank of a 10-cms flow value from a full record
 #' calc_flow_percentile(station_number = "08NM116", 
@@ -38,6 +39,7 @@
 #'                      complete_years = TRUE,
 #'                      months = 6,
 #'                      flow_value = 10)
+#'                      
 #' }
 #' @export
 
@@ -63,19 +65,19 @@ calc_flow_percentile <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
 
   rolling_days_checks(roll_days, roll_align)

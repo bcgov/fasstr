@@ -15,7 +15,7 @@
 #' @description Plot the daily mean, median, maximum, minimum, and percentiles for each day of the year of daily flow values 
 #'    from a streamflow dataset. Plots the statistics from all daily discharge values from all years, unless specified. Can determine
 #'    statistics of rolling mean days (e.g. 7-day flows) using the roll_days argument. The Maximum-Minimum band can be removed using 
-#'    the 'include_extremes' argument and the percentile bands can be customized using the'inner_percentiles' and 'outer_percentiles' 
+#'    the 'include_extremes' argument and the percentile bands can be customized using the 'inner_percentiles' and 'outer_percentiles' 
 #'    arguments.Data calculated using calc_daily_stats() function.
 #'
 #' @inheritParams calc_daily_stats
@@ -41,53 +41,35 @@
 #' @seealso \code{\link{calc_daily_stats}}
 #'   
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Plot statistics using data argument with defaults
+#' # Plot daily statistics using a data frame and data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' plot_daily_stats(data = flow_data,
 #'                  start_year = 1980)
-#' 
-#' # Plot statistics using station_number argument with defaults
-#' plot_daily_stats(station_number = "08NM116",
-#'                  start_year = 1980)
-#' 
-#' # Plot statistics regardless if there is missing data for a given day of year
-#' plot_daily_stats(station_number = "08NM116",
-#'                  ignore_missing = TRUE)
 #'                   
-#' # Plot statistics using only years with no missing data
+#' # Plot daily statistics using only years with no missing data
 #' plot_daily_stats(station_number = "08NM116",
 #'                  complete_years = TRUE)
-#' 
-#' # Plot statistics for water years starting in October
-#' plot_daily_stats(station_number = "08NM116",
-#'                  start_year = 1980,
-#'                  end_year = 2010,
-#'                  water_year_start = 10)
-#'                  
-#' # Plot statistics with custom years
-#' plot_daily_stats(station_number = "08NM116",
-#'                  start_year = 1981,
-#'                  end_year = 2010,
-#'                  exclude_years = c(1991,1993:1995))
 #'  
-#' # Plot statistics and add a specific year's daily flows                
+#' # Plot daily statistics and add a specific year's daily flows                
 #' plot_daily_stats(station_number = "08NM116",
 #'                  start_year = 1980,
 #'                  add_year = 1985)                
 #'                   
-#' # Plot statistics for 7-day flows for July-September months only
+#' # Plot daily statistics for 7-day flows for July-September months only
 #' plot_daily_stats(station_number = "08NM116",
 #'                  start_year = 1980,
 #'                  roll_days = 7,
 #'                  months = 7:9)
 #' 
-#' # Plot statistics without a log-scale Discharge axis
+#' # Plot daily statistics without a log-scale Discharge axis
 #' plot_daily_stats(station_number = "08NM116",
 #'                  start_year = 1981,
 #'                  end_year = 2010,
 #'                  log_discharge = FALSE)
+#'                  
 #' }
 #' @export
 
@@ -119,22 +101,22 @@ plot_daily_stats <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(add_year)) {
-    add_year = NULL
+    add_year <- NULL
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   
   log_discharge_checks(log_discharge) 

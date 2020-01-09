@@ -4,14 +4,21 @@
 \alias{compute_frequency_analysis}
 \title{Perform a custom annual frequency analysis}
 \usage{
-compute_frequency_analysis(data, events = Year, values = Value,
-  measures = Measure, use_max = FALSE, use_log = FALSE,
+compute_frequency_analysis(
+  data,
+  events = Year,
+  values = Value,
+  measures = Measure,
+  use_max = FALSE,
+  use_log = FALSE,
   prob_plot_position = c("weibull", "median", "hazen"),
-  prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5, 0.2, 0.1, 0.02,
-  0.01, 0.001, 1e-04), fit_distr = c("PIII", "weibull"),
+  prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5, 0.2, 0.1, 0.02, 0.01, 0.001,
+    1e-04),
+  fit_distr = c("PIII", "weibull"),
   fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
-  fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1,
-  0.05, 0.01), plot_curve = TRUE)
+  fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1, 0.05, 0.01),
+  plot_curve = TRUE
+)
 }
 \arguments{
 \item{data}{A data frame of flow data that contains columns of events, flow values, and measures (data type).}
@@ -25,12 +32,12 @@ measures (ex. '7-day low' and '30-day low') in column if multiple statistics are
 
 \item{use_max}{Logical value to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}
 
-\item{use_log}{Logical value to indicate log-scale tranforming of flow data before analysis. Default \code{FALSE}.}
+\item{use_log}{Logical value to indicate log-scale transforming of flow data before analysis. Default \code{FALSE}.}
 
 \item{prob_plot_position}{Character string indicating the plotting positions used in the frequency plots, one of "weibull",
 "median", or "hazen". Points are plotted against  (i-a)/(n+1-a-b) where \code{i} is the rank of the value; \code{n} is the 
 sample size and \code{a} and \code{b} are defined as: (a=0, b=0) for Weibull plotting positions; (a=.2; b=.3) for Median 
-plotting postions; and (a=.5; b=.5) for Hazen plotting positions. Default \code{"weibull"}.}
+plotting positions; and (a=.5; b=.5) for Hazen plotting positions. Default \code{"weibull"}.}
 
 \item{prob_scale_points}{Numeric vector of probabilities to be plotted along the X axis in the frequency plot. Inverse of 
 return period. Default \code{c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001)}.}
@@ -58,12 +65,14 @@ A list with the following elements:
 \description{
 Performs a flow volume frequency analysis from a streamflow dataset. Defaults to ranking by minimums; 
    use \code{use_max} for to rank by maximum flows. Calculates the statistics from events
-   and flow values provided. Columns of events (years), their values (mins or maxs), and identifiers (lowflows, highlows, etc),
+   and flow values provided. Columns of events (years), their values (mins or maxs), and identifiers (lowflows, highflows, etc),
    Function will calculate using all values in the provided data (no grouped analysis). Analysis methodology replicates that 
    from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
 }
 \examples{
 \dontrun{
+
+ # Working example:
 
 # Calculate some values to use for a frequency analysis 
 # (requires years, values for those years, and the name of the measure/metric)
@@ -75,10 +84,10 @@ low_flows <- dplyr::select(low_flows, Year, Value = Min_7_Day)
 low_flows <- dplyr::mutate(low_flows, Measure = "7-Day")
 
 # Compute the frequency analysis using the default parameters
-compute_frequency_analysis(data = low_flows,
-                           events = Year,
-                           values = Value,
-                           measure = Measure)
+results <- compute_frequency_analysis(data = low_flows,
+                                      events = Year,
+                                      values = Value,
+                                      measure = Measure)
                             
 }
 }

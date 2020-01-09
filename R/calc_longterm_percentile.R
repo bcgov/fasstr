@@ -22,17 +22,19 @@
 #' @return A tibble data frame of a long-term percentile of selected years and months.
 #' 
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Calculate the 20th percentile
+#' # Calculate the 20th percentile flow value from a flow record
 #' calc_longterm_percentile(station_number = "08NM116",
 #'                          percentile = 20)
 #'                          
-#' # Calculate the 90th percentile value with custom years
+#' # Calculate the 90th percentile flow value with custom years
 #' calc_longterm_percentile(station_number = "08NM116", 
 #'                          start_year = 1980, 
 #'                          end_year = 2010, 
 #'                          percentile = 90)
+#'                          
 #' }
 #' @export
 
@@ -59,22 +61,22 @@ calc_longterm_percentile <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   if (missing(percentiles)) {
-    percentiles = NA
+    percentiles <- NA
   }
   
   rolling_days_checks(roll_days, roll_align)

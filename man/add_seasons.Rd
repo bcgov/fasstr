@@ -4,8 +4,13 @@
 \alias{add_seasons}
 \title{Add a column of seasons}
 \usage{
-add_seasons(data, dates = Date, station_number, water_year_start = 1,
-  seasons_length)
+add_seasons(
+  data,
+  dates = Date,
+  station_number,
+  water_year_start = 1,
+  seasons_length
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -34,15 +39,17 @@ Adds a column of seasons identifiers to a data frame with a column of dates call
    seasons starting with water year starting in December.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Four seasons starting in January
-add_seasons(data = "08NM116",
+# Add a column with four annual seasons starting in January
+add_seasons(station_number = "08NM116",
             seasons_length = 4)
 
-# Two seasons starting in October
-add_seasons(data = "08NM116", 
+# Add a column with two annual seasons (of 6 months length) starting in October
+add_seasons(station_number = "08NM116", 
             water_year_start = 10,
             seasons_length = 6)
+            
 }
 }

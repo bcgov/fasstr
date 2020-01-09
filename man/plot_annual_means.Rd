@@ -4,11 +4,22 @@
 \alias{plot_annual_means}
 \title{Plot annual means compared to the long-term mean}
 \usage{
-plot_annual_means(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, roll_days = 1,
-  roll_align = "right", water_year_start = 1, start_year, end_year,
-  exclude_years, months = 1:12, ignore_missing = FALSE,
-  include_title = FALSE)
+plot_annual_means(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  roll_days = 1,
+  roll_align = "right",
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  months = 1:12,
+  ignore_missing = FALSE,
+  include_title = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -59,14 +70,16 @@ Plot annual means using the long-term annual mean as the point of reference to c
    statistics from all daily discharge values from all years, unless specified. Data calculated using calc_annual_stats() function.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Plot statistics
+# Plot annual means
 plot_annual_means(station_number = "08NM116")
 
-# Plot statistics for mean flows from July-September
+# Plot mean flows from July-September
 plot_annual_means(station_number = "08NM116", 
                   months = 7:9)
+                  
 }
 }
 \seealso{

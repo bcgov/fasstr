@@ -27,15 +27,17 @@
 #' @seealso \code{\link{calc_annual_lowflows}}
 #' 
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Plot statistics with default rolling days and alignment
+#' # Plot annual 1, 3, 7, and 30-day (default) low flow statistics with default alignment
 #' plot_annual_lowflows(station_number = "08NM116") 
 #' 
-#' # Plot statistics with custom rolling days and alignment
+#' # Plot annual custom 3 and 7-day low flow statistics with "center" alignment
 #' plot_annual_lowflows(station_number = "08NM116",
 #'                      roll_days = c(3,7),
 #'                      roll_align = "center")
+#'                      
 #' }
 #' @export
 
@@ -64,19 +66,19 @@ plot_annual_lowflows <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   
   log_discharge_checks(log_discharge) 

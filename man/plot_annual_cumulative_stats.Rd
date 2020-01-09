@@ -4,11 +4,22 @@
 \alias{plot_annual_cumulative_stats}
 \title{Plot annual and seasonal total flows}
 \usage{
-plot_annual_cumulative_stats(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, use_yield = FALSE,
-  basin_area, water_year_start = 1, start_year, end_year, exclude_years,
-  include_seasons = FALSE, log_discharge = FALSE,
-  include_title = FALSE)
+plot_annual_cumulative_stats(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  use_yield = FALSE,
+  basin_area,
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  include_seasons = FALSE,
+  log_discharge = FALSE,
+  include_title = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -71,24 +82,26 @@ Plots annual and seasonal total flows, volumetric or runoff yield flows, from a 
    designated by the water year which starts in November (designated by the calendar year in which it ends).
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Plot volume statistics
+# Plot annual cumulative volume statistics
 plot_annual_cumulative_stats(station_number = "08NM116") 
 
-# Plot yield statistics with default HYDAT basin area
+# Plot annual cumulative yield statistics with default HYDAT basin area
 plot_annual_cumulative_stats(station_number = "08NM116",
                              use_yield = TRUE) 
 
-# Plot yield statistics with custom basin area
+# Plot annual cumulative yield statistics with custom basin area
 plot_annual_cumulative_stats(station_number = "08NM116",
                              use_yield = TRUE,
                              basin_area = 800) 
 
-# Plot yield statistics with seasons
+# Plot annual cumulative yield statistics and seasonal totals
 plot_annual_cumulative_stats(station_number = "08NM116",
                              use_yield = TRUE,
-                             include_seasons = TRUE) 
+                             include_seasons = TRUE)
+                             
 }
 }
 \seealso{

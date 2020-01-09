@@ -4,8 +4,13 @@
 \alias{add_daily_yield}
 \title{Add daily volumetric runoff yields}
 \usage{
-add_daily_yield(data, values = Value, groups = STATION_NUMBER,
-  station_number, basin_area)
+add_daily_yield(
+  data,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  basin_area
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -37,18 +42,18 @@ A tibble data frame of the source data with an additional column:
 }
 \description{
 Add a column of daily runoff yields to a streamflow dataset, in units of millimetres. Converts the discharge to a depth
-  of water based on the upstream drainge basin area.
+  of water based on the upstream drainage basin area.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Add a column of yields based on HYDAT basin area
-add_daily_yield(station_number = "08NM116", 
-                water_year_start = 8)
+add_daily_yield(station_number = "08NM116")
                      
 # Add a column of yields based on a custom basin area
-add_daily_yield(station_number = "08NM116", 
-                water_year_start = 8,
+add_daily_yield(station_number = "08NM116",
                 basin_area = 800)
+                
 }
 }

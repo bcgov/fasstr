@@ -4,10 +4,22 @@
 \alias{calc_flow_percentile}
 \title{Calculate the percentile rank of a flow value}
 \usage{
-calc_flow_percentile(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, roll_days = 1,
-  roll_align = "right", flow_value, water_year_start = 1, start_year,
-  end_year, exclude_years, complete_years = FALSE, months = 1:12)
+calc_flow_percentile(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  roll_days = 1,
+  roll_align = "right",
+  flow_value,
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  complete_years = FALSE,
+  months = 1:12
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -48,14 +60,15 @@ Leave blank if using \code{data} argument.}
 all months (default \code{1:12}).}
 }
 \value{
-A tibble data frame, or a single numeric value if no station number proivded, of the percentile rank of a given flow value.
+A tibble data frame, or a single numeric value if no station number provided, of the percentile rank of a given flow value.
 }
 \description{
 Calculates the percentile, or percentile rank, of a discharge value compared to all flow values of a streamflow dataset. 
    Looks up the value in the distribution (stats::ecdf() function) of all daily discharge values from all years, unless specified.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Calculate the percentile rank of a 10-cms flow value from a full record
 calc_flow_percentile(station_number = "08NM116", 
@@ -71,5 +84,6 @@ calc_flow_percentile(station_number = "08NM116",
                      complete_years = TRUE,
                      months = 6,
                      flow_value = 10)
+                     
 }
 }

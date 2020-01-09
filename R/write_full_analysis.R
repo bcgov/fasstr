@@ -60,6 +60,8 @@
 #' @examples
 #' \dontrun{
 #' 
+#' # Working examples:
+#' 
 #' # Save a full analysis will all the analyses
 #' write_full_analysis(station_number = "08NM116",
 #'                     file_name = "Mission Creek",
@@ -72,6 +74,7 @@
 #'                     start_year = 1980,
 #'                     end_year = 2010,
 #'                     analyses = c(3,5))
+#'                     
 #' }
 #' @export
 
@@ -99,25 +102,25 @@ write_full_analysis <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   if (missing(basin_area)) {
-    basin_area = NA
+    basin_area <- NA
   }
   if (missing(zyp_alpha)) {
-    zyp_alpha = NA
+    zyp_alpha <- NA
   }
   
   water_year_checks(water_year_start)
@@ -335,7 +338,7 @@ write_full_analysis <- function(data,
             row = 1,
             comment = NA)
   openxlsx::setColWidths(wb = output_excel, sheet = rawdata_sheet, 
-                         cols = 1:ncol(flow_data_source), widths = 11)
+                         cols = seq_len(ncol(flow_data_source)), widths = 11)
   
   
   
@@ -375,7 +378,7 @@ write_full_analysis <- function(data,
               row = 1,
               comment = data_function)
     openxlsx::setColWidths(wb = output_excel, sheet = timeseries_sheet, 
-                           cols = 1:ncol(flow_data_out), widths = 12)
+                           cols = seq_len(ncol(flow_data_source)), widths = 12)
     
     # Add plots
     add_plot(wb = output_excel,

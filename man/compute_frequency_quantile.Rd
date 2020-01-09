@@ -4,12 +4,25 @@
 \alias{compute_frequency_quantile}
 \title{Calculate an annual frequency analysis quantile}
 \usage{
-compute_frequency_quantile(data, dates = Date, values = Value,
-  station_number, roll_days = NA, roll_align = "right",
-  return_period = NA, use_max = FALSE, use_log = FALSE,
-  fit_distr = c("PIII", "weibull"), fit_distr_method = ifelse(fit_distr
-  == "PIII", "MOM", "MLE"), water_year_start = 1, start_year, end_year,
-  exclude_years, months = 1:12, ignore_missing = FALSE)
+compute_frequency_quantile(
+  data,
+  dates = Date,
+  values = Value,
+  station_number,
+  roll_days = NA,
+  roll_align = "right",
+  return_period = NA,
+  use_max = FALSE,
+  use_log = FALSE,
+  fit_distr = c("PIII", "weibull"),
+  fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  months = 1:12,
+  ignore_missing = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of flow data that contains columns of events, flow values, and measures (data type).}
@@ -33,7 +46,7 @@ inverse of probability, used to estimate the frequency statistic. Required.}
 
 \item{use_max}{Logical value to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}
 
-\item{use_log}{Logical value to indicate log-scale tranforming of flow data before analysis. Default \code{FALSE}.}
+\item{use_log}{Logical value to indicate log-scale transforming of flow data before analysis. Default \code{FALSE}.}
 
 \item{fit_distr}{Character string identifying the distribution to fit annual data, one of "PIII" (Pearson Log III distribution) 
 or "weibull" (Weibull distribution). Default \code{"PIII"}.}
@@ -70,6 +83,9 @@ Performs a volume frequency analysis on annual statistics from a streamflow data
 \examples{
 \dontrun{
 
+# Working example:
+
+# Compute the annual 7-day flow value with a 1 in 10 year return interval
 compute_frequency_quantile(station_number = "08NM116",
                            roll_days = 7,
                            return_period = 10)

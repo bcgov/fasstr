@@ -4,10 +4,22 @@
 \alias{calc_annual_cumulative_stats}
 \title{Calculate annual (and seasonal) cumulative flows}
 \usage{
-calc_annual_cumulative_stats(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, use_yield = FALSE,
-  basin_area, water_year_start = 1, start_year, end_year, exclude_years,
-  months = 1:12, include_seasons = FALSE, transpose = FALSE)
+calc_annual_cumulative_stats(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  use_yield = FALSE,
+  basin_area,
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  months = 1:12,
+  include_seasons = FALSE,
+  transpose = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -74,18 +86,20 @@ Calculates annual and seasonal total flows, volumetric or runoff yield flows, fr
    by the calendar or water year in which it occurs.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Calculate volume statistics
+# Calculate annual total volumetric flow statistics
 calc_annual_cumulative_stats(station_number = "08NM116") 
 
-# Calculate yield statistics with default HYDAT basin area
+# Calculate annual total yield statistics with default HYDAT basin area
 calc_annual_cumulative_stats(station_number = "08NM116",
                              use_yield = TRUE) 
 
-# Calculate yield statistics with custom basin area
+# Calculate annual total yield statistics with a custom basin area
 calc_annual_cumulative_stats(station_number = "08NM116",
                              use_yield = TRUE,
                              basin_area = 800) 
+                             
 }
 }

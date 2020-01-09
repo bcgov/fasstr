@@ -13,7 +13,7 @@
 #' @title Plot annual days above and below normal
 #'
 #' @description Plots the number of days per year outside of the 'normal' range (typically between 25 and 75th percentiles) for
-#'    each day of the year. Upper and lower-range percentiles are calcuated for each day of the year of from all years, and then each 
+#'    each day of the year. Upper and lower-range percentiles are calculated for each day of the year of from all years, and then each 
 #'    daily flow value for each year is compared. All days above or below the normal range are included. Calculates the statistics 
 #'    from all daily discharge values from all years, unless specified. Data calculated using calc_annual_outside_normal() function.
 #'
@@ -30,14 +30,16 @@
 #' @seealso \code{\link{calc_annual_outside_normal}}
 #' 
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Plot statistics with default limits of normal (25 and 75th percentiles)
+#' # Plot annual statistics with default limits of normal (25 and 75th percentiles)
 #' plot_annual_outside_normal(station_number = "08NM116") 
 #' 
-#' # Plot statistics with custom limits of normal
+#' # Plot annual statistics with custom limits of normal
 #' plot_annual_outside_normal(station_number = "08NM116",
 #'                            normal_percentiles = c(10,90))
+#'                            
 #' }
 #' @export
 
@@ -64,19 +66,19 @@ plot_annual_outside_normal <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   
   include_title_checks(include_title)

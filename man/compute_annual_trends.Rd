@@ -4,14 +4,30 @@
 \alias{compute_annual_trends}
 \title{Calculate prewhitened nonlinear annual trends on streamflow data}
 \usage{
-compute_annual_trends(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, zyp_method, basin_area,
-  water_year_start = 1, start_year, end_year, exclude_years,
-  annual_percentiles = c(10, 90), monthly_percentiles = c(10, 20),
-  stats_days = 1, stats_align = "right", lowflow_days = c(1, 3, 7,
-  30), lowflow_align = "right", timing_percent = c(25, 33, 50, 75),
-  normal_percentiles = c(25, 75), ignore_missing = FALSE,
-  include_plots = TRUE, zyp_alpha)
+compute_annual_trends(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  zyp_method,
+  basin_area,
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  annual_percentiles = c(10, 90),
+  monthly_percentiles = c(10, 20),
+  stats_days = 1,
+  stats_align = "right",
+  lowflow_days = c(1, 3, 7, 30),
+  lowflow_align = "right",
+  timing_percent = c(25, 33, 50, 75),
+  normal_percentiles = c(25, 75),
+  ignore_missing = FALSE,
+  include_plots = TRUE,
+  zyp_alpha
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -87,13 +103,13 @@ with no missing dates will be returned. Default \code{FALSE}.}
 }
 \value{
 A list of tibbles and optional plots from the trending analysis including:
-  \item{Annual_Trends_Data}{a tibbble of the annual statistics used for trending}
+  \item{Annual_Trends_Data}{a tibble of the annual statistics used for trending}
   \item{Annual_Trends_Results}{a tibble of the results of the zyp trending analysis}
   \item{Annual_*}{each ggplot2 object for each annual trended statistic}
 }
 \description{
 Calculates prewhitened nonlinear trends on annual streamflow data. Uses the
-   \href{https://cran.r-project.org/web/packages/zyp/index.html}{'zyp'} package to trend. Review 'zyp' to understand its methology.
+   \href{https://CRAN.R-project.org/package=zyp}{'zyp'} package to trend. Review 'zyp' to understand its methodology.
    All annual statistics calculated using the calc_all_annual_stats() function which uses the following fasstr functions:
 \itemize{
  \item{calc_annual_stats()}
@@ -107,25 +123,28 @@ Calculates prewhitened nonlinear trends on annual streamflow data. Uses the
 \examples{
 \dontrun{
 
-# Compute trends statistics using data argument with defaults
+# Working examples:
+
+# Compute trends statistics using a data frame and data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
-compute_annual_trends(data = flow_data,
-                      zyp_method = "yuepilon")
+trends <- compute_annual_trends(data = flow_data,
+                                zyp_method = "yuepilon")
 
 # Compute trends statistics using station_number with defaults
-compute_annual_trends(station_number = "08NM116",
-                      zyp_method = "yuepilon")
+trends <- compute_annual_trends(station_number = "08NM116",
+                                zyp_method = "yuepilon")
                       
 # Compute trends statistics and plot a trend line if the significance is less than 0.05
-compute_annual_trends(station_number = "08NM116",
-                      zyp_method = "yuepilon",
-                      zyp_alpha = 0.05)
+trends <- compute_annual_trends(station_number = "08NM116",
+                                zyp_method = "yuepilon",
+                                zyp_alpha = 0.05)
                       
 # Compute trends statistics and do not plot the results
-compute_annual_trends(station_number = "08NM116",
-                      zyp_method = "yuepilon",
-                      include_plots = FALSE)
-}
+trends <- compute_annual_trends(station_number = "08NM116",
+                                zyp_method = "yuepilon",
+                                include_plots = FALSE)
+
+}                
 }
 \references{
 References from zyp package:

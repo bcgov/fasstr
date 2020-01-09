@@ -15,7 +15,7 @@
 #'
 #' @description Performs a flow volume frequency analysis from a streamflow dataset. Defaults to ranking by minimums; 
 #'    use \code{use_max} for to rank by maximum flows. Calculates the statistics from events
-#'    and flow values provided. Columns of events (years), their values (mins or maxs), and identifiers (lowflows, highlows, etc),
+#'    and flow values provided. Columns of events (years), their values (mins or maxs), and identifiers (lowflows, highflows, etc),
 #'    Function will calculate using all values in the provided data (no grouped analysis). Analysis methodology replicates that 
 #'    from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
 #'
@@ -25,11 +25,11 @@
 #' @param measures  Column in \code{data} that contains measure identifiers (example data: '7-day low' or 'Annual Max'). Can have multiple
 #'    measures (ex. '7-day low' and '30-day low') in column if multiple statistics are desired. Default \code{"Measure"}.
 #' @param use_max  Logical value to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.
-#' @param use_log  Logical value to indicate log-scale tranforming of flow data before analysis. Default \code{FALSE}.
+#' @param use_log  Logical value to indicate log-scale transforming of flow data before analysis. Default \code{FALSE}.
 #' @param prob_plot_position Character string indicating the plotting positions used in the frequency plots, one of "weibull",
 #'    "median", or "hazen". Points are plotted against  (i-a)/(n+1-a-b) where \code{i} is the rank of the value; \code{n} is the 
 #'    sample size and \code{a} and \code{b} are defined as: (a=0, b=0) for Weibull plotting positions; (a=.2; b=.3) for Median 
-#'    plotting postions; and (a=.5; b=.5) for Hazen plotting positions. Default \code{"weibull"}.
+#'    plotting positions; and (a=.5; b=.5) for Hazen plotting positions. Default \code{"weibull"}.
 #' @param prob_scale_points  Numeric vector of probabilities to be plotted along the X axis in the frequency plot. Inverse of 
 #'    return period. Default \code{c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001)}.
 #' @param fit_distr Character string identifying the distribution to fit annual data, one of "PIII" (Pearson Log III distribution) 
@@ -52,6 +52,8 @@
 #' @examples
 #' \dontrun{
 #' 
+#'  # Working example:
+#' 
 #' # Calculate some values to use for a frequency analysis 
 #' # (requires years, values for those years, and the name of the measure/metric)
 #' low_flows <- calc_annual_lowflows(station_number = "08NM116", 
@@ -62,10 +64,10 @@
 #' low_flows <- dplyr::mutate(low_flows, Measure = "7-Day")
 #' 
 #' # Compute the frequency analysis using the default parameters
-#' compute_frequency_analysis(data = low_flows,
-#'                            events = Year,
-#'                            values = Value,
-#'                            measure = Measure)
+#' results <- compute_frequency_analysis(data = low_flows,
+#'                                       events = Year,
+#'                                       values = Value,
+#'                                       measure = Measure)
 #'                             
 #' }
 #' @export
@@ -188,7 +190,7 @@ compute_frequency_analysis <- function(data,
   plotdata <- plyr::ddply(Q_stat, "Measure", function(x, a, b, use_max){
     # sort the data
     x <- x[ order(x$Value),]
-    x$prob <- ((1:length(x$Value)) - a)/((length(x$Value) + 1 - a - b))
+    x$prob <- ((seq_len(length(x$Value))) - a)/((length(x$Value) + 1 - a - b))
     if(use_max)x$prob <- 1 - x$prob   # they like to use p(exceedance) if using a minimum
     #x$dist.prob <- stats::qnorm(1 - x$prob) temporarilty remove
     x$return <- 1/x$prob
@@ -201,9 +203,9 @@ compute_frequency_analysis <- function(data,
   # Setting dates and Values to actual Values. Some sort of environment() error in plotting due to function environment with dates and Values
   # Error in as.list.environment(x, all.names = TRUE) :
   #   object 'Value' not found
-  events = "Year"
-  values = "Value"
-  measures = "Measure"
+  events <- "Year"
+  values <- "Value"
+  measures <- "Measure"
   
   
   plotdata2$Measure <- factor(plotdata2$Measure, levels = unique(plotdata2$Measure))
@@ -234,7 +236,7 @@ compute_frequency_analysis <- function(data,
                    legend.title = ggplot2::element_text(size = 10))
   
   
-  legend.title.align = 1
+  legend.title.align <- 1
   if(!use_max){ freqplot <- freqplot + ggplot2::theme(legend.justification = c(1, 1), legend.position = c(.98, .98))}
   if(use_max){ freqplot <- freqplot + ggplot2::theme(legend.justification = c(1,0), legend.position = c(.98, 0.02))}
   if(!use_log){ freqplot <- freqplot + ggplot2::scale_y_log10(breaks = scales::pretty_breaks(n = 10))}
@@ -256,7 +258,7 @@ compute_frequency_analysis <- function(data,
   }
   
   fit <- plyr::dlply(Q_stat, "Measure", function(x, distr, fit_method){
-    start=NULL
+    start <- NULL
     # PIII is fit to log-of Values unless use_log has been set, in which case data has previous been logged
     if(distr == 'PIII' & !use_log){x$Value <- log10(x$Value)}
     # get starting Values
@@ -348,7 +350,7 @@ compute_frequency_analysis <- function(data,
   
   # Other modifications for outputs
   
-  row.names(Q_stat) <- 1:nrow(Q_stat)
+  row.names(Q_stat) <- seq_len(nrow(Q_stat))
   
   
   plotdata <- dplyr::rename(plotdata, 

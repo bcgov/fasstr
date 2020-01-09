@@ -17,22 +17,22 @@ library(fasstr)
 ```
 
 
-The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of [R](http://www.r-project.org) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
+The Flow Analysis Summary Statistics Tool for R ('fasstr') is a set of [R](https://www.r-project.org/) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
 
-This vignette documents the usage of the `compute_annual_trends()` function in fasstr. This vignette is a high-level adjunct to the details found in the function documentation (see `?compute_annual_trends()`). You’ll learn what arguments to provide to the function to customize your analysis, what analyses are computed, and what outputs are produced.
+This vignette documents the usage of the `compute_annual_trends()` function in 'fasstr'. This vignette is a high-level adjunct to the details found in the function documentation (see `?compute_annual_trends()`). You’ll learn what arguments to provide to the function to customize your analysis, what analyses are computed, and what outputs are produced.
 
 
 ## Overview
 
-Computing an annual trending analysis with fasstr allows for options and customization of both the inputs and outputs. This function takes 107 annual streamflow metrics (calculated using other annual fasstr functions) and calculate non-parametric trends using the [zyp](https://cran.r-project.org/web/packages/zyp/index.html) R package. See the zyp documentation for more information on the methods.
+Computing an annual trending analysis with 'fasstr' allows for options and customization of both the inputs and outputs. This function takes 107 annual streamflow metrics (calculated using other annual 'fasstr' functions) and calculate non-parametric trends using the ['zyp'](https://CRAN.R-project.org/package=zyp) R package. See the 'zyp' documentation for more information on the methods.
 
 Each annual metric/time-series is analyzed for trends using Trend-Free-Pre-Whitening to remove lag-1 correlation (may artificially detect a significant trend). The slope of each metric over time is estimated using the Theil-Sen approach. If the estimated slope is different from zero, then the data are detrended by the slope and the AR(1) 1s calculated for the detrended time series. The residuals and the trend are combined and
 then tested for significance using the Mann-Kendall trend test.
 
 The trending function results in a list containing two tibble data frame outputs and, if selected, a trends plot for each metric.
 
-1) **Annual_Trends_Data** - data used for analysis calculated from various annual fasstr functions
-2) **Annual_Trends_Results** - results of the zyp trending analysis, and includes various other statistics
+1) **Annual_Trends_Data** - data used for analysis calculated from various annual 'fasstr' functions
+2) **Annual_Trends_Results** - results of the 'zyp' trending analysis, and includes various other statistics
 3) **'Sep_Maximum'** - an example of each of 107 plots produced (one for each metric)
 
 
@@ -40,21 +40,21 @@ The trending function results in a list containing two tibble data frame outputs
 
 - `compute_annual_trends()`
 
-To determine annual trends from a daily streamflow data set, the `compute_annual_trends()` function will take daily data, either from HYDAT using the `station_number` argument or your own data frame of data using the `data` argument to complete the analysis. To complete a custom trends analysis of data please see the zyp functions for more information.
+To determine annual trends from a daily streamflow data set, the `compute_annual_trends()` function will take daily data, either from HYDAT using the `station_number` argument or your own data frame of data using the `data` argument to complete the analysis. To complete a custom trends analysis of data please see the 'zyp' functions for more information.
 
 
 ## Usage, Options, and Outputs
 
 ### Analysis Data
 
-This function is provided to calculate trends on a multitude of annual metrics, as calculate by various annual and monthly fasstr functions.  The functions will calculate metrics from each of the following functions:
+This function is provided to calculate trends on a multitude of annual metrics, as calculate by various annual and monthly 'fasstr' functions.  The functions will calculate metrics from each of the following functions:
 
 - `calc_annual_stats()` - calculate annual summary statistics
 - `calc_annual_cumulative_stats()` - calculate annual and seasonal cumulative flows, both volume and yield
 - `calc_annual_flow_timing()` - calculate annual flow timing
 - `calc_annual_lowflows()` - calculate annual lowflows
 - `calc_annual_outside_normal()` - calculate annual days above and below normal
-- `calc_monthly_stats()` - calculate monthly summary statistics
+- `calc_monthly_stats()` - calculate annual monthly summary statistics
 
 While each of the different metrics have default variables for their arguments, many of them can be customized.  The following table shows which arguments are used for which statistics and what the defaults are.  See the documentation for more information.
 
@@ -96,7 +96,7 @@ compute_annual_trends(station_number = "08NM116",
 ```
 
 
-This annual data is provided in the **Annual_Trends_Data** tibble objects.  The following is an example of the output, including all the annual metrics and a first few years of data used for the zyp trends analysis:
+This annual data is provided in the **Annual_Trends_Data** tibble objects.  The following is an example of the output, including all the annual metrics and a first few years of data used for the 'zyp' trends analysis:
 
 ```{r, comment=NA, echo=FALSE}
 trends <- compute_annual_trends(station_number = "08NM116",
@@ -119,7 +119,7 @@ trends_analysis <- compute_annual_trends(station_number = "08NM116",
                                          start_year = 1973, end_year = 2013)
 ```
 
-The following is an example of the outputed **Annual_Trends_Data** tibble:
+The following is an example of the outputted **Annual_Trends_Data** tibble:
 
 ```{r, echo=TRUE, comment=NA}
 trends_analysis$Annual_Trends_Data
@@ -127,22 +127,22 @@ trends_analysis$Annual_Trends_Data
 
 ### Analysis Results
 
-To complete a trends analysis, a variable to the `zyp_method` argument must be provided, either `"yuepilon"` or `"zhang"`, designated the two different approaches to analyzing data for trends.  See the zyp documention for more information on the differences between the two methods. After running the function, the results of the trending analysis will be outputted in the **Annual_Trends_Results** tibble data frame. See the zyp documentation for how to interpret the results. The results tibble contains the following columns:
+To complete a trends analysis, a variable to the `zyp_method` argument must be provided, either `"yuepilon"` or `"zhang"`, designated the two different approaches to analyzing data for trends.  See the 'zyp' documentation for more information on the differences between the two methods. After running the function, the results of the trending analysis will be outputted in the **Annual_Trends_Results** tibble data frame. See the 'zyp' documentation for how to interpret the results. The results tibble contains the following columns:
 
 Column Name   | Description
 --------------|---------------------------------------------------------------------
 Statistic   	| the annual statistic used for trending 
-lbound      	| the lower bound of the trend's confidence interval (zyp)
-trend       	| the Sens' slope (trend) per unit time (zyp)
-trendp      	| the Sen's slope (trend) over the time period (zyp)
-ubound      	| the upper bound of the trend's confidence interval (zyp)
-tau         	| Kendall's tau statistic computed on the final detrended timeseries (zyp)
-sig	          | Kendall's P-value computed for the final detrended timeseries (zyp)
-nruns	        | the number of runs required to converge upon a trend (zyp)
-autocor	      | the autocorrelation of the final detrended timeseries (zyp)
-valid_frac  	| the fraction of the data which is valid (not NA) once autocorrelation is removed (zyp)
-linear      	| the least squares fit trend on the same data (zyp)
-intercept     | the intercept of the Sen's slope (trend) (zyp)
+lbound      	| the lower bound of the trend's confidence interval ('zyp')
+trend       	| the Sens' slope (trend) per unit time ('zyp')
+trendp      	| the Sen's slope (trend) over the time period ('zyp')
+ubound      	| the upper bound of the trend's confidence interval ('zyp')
+tau         	| Kendall's tau statistic computed on the final detrended timeseries ('zyp')
+sig	          | Kendall's P-value computed for the final detrended timeseries ('zyp')
+nruns	        | the number of runs required to converge upon a trend ('zyp')
+autocor	      | the autocorrelation of the final detrended timeseries ('zyp')
+valid_frac  	| the fraction of the data which is valid (not NA) once autocorrelation is removed ('zyp')
+linear      	| the least squares fit trend on the same data ('zyp')
+intercept     | the intercept of the Sen's slope (trend) ('zyp')
 min_year    	| the minimum year used in the trending
 max_year      | the maximum year used in the trending
 n_years       | the number of years with data for trending
@@ -160,7 +160,7 @@ trends_analysis$Annual_Trends_Results
 
 ### Annual Trends Plots
 
-To provide the fasstr user the ability to visualize the trends, a time-series plot for each metric is provided when `include_plots = TRUE` (default; set it to `FALSE` to produce no plots). Each plot will show the annual value for all years and if a numerical `zyp_alpha` value, a significance level indicating the trend exists, is provided (typically `0.05`) then a trend line will also be plotted through the data.  To plot no lines, set `zyp_alpha = NA` (default) and to plot the lines regardless of significance, set `zyp_alpha = 1`. The metric name along with the significance level will be included as the title of the plot.
+To provide the 'fasstr' user the ability to visualize the trends, a time-series plot for each metric is provided when `include_plots = TRUE` (default; set it to `FALSE` to produce no plots). Each plot will show the annual value for all years and if a numerical `zyp_alpha` value, a significance level indicating the trend exists, is provided (typically `0.05`) then a trend line will also be plotted through the data.  To plot no lines, set `zyp_alpha = NA` (default) and to plot the lines regardless of significance, set `zyp_alpha = 1`. The metric name along with the significance level will be included as the title of the plot.
 
 The following plots demonstrate examples of where the `zyp_alpha` value is set to 0.05 and a trend is not, and is plotted, respectively.
 

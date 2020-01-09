@@ -4,13 +4,27 @@
 \alias{plot_longterm_daily_stats}
 \title{Plot long-term summary statistics from daily mean flows}
 \usage{
-plot_longterm_daily_stats(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, roll_days = 1,
-  roll_align = "right", water_year_start = 1, start_year, end_year,
-  exclude_years, complete_years = FALSE, ignore_missing = FALSE,
-  include_extremes = TRUE, inner_percentiles = c(25, 75),
-  outer_percentiles = c(5, 95), add_year, log_discharge = TRUE,
-  include_title = FALSE)
+plot_longterm_daily_stats(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  roll_days = 1,
+  roll_align = "right",
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  complete_years = FALSE,
+  ignore_missing = FALSE,
+  include_extremes = TRUE,
+  inner_percentiles = c(25, 75),
+  outer_percentiles = c(5, 95),
+  add_year,
+  log_discharge = TRUE,
+  include_title = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -81,43 +95,20 @@ Plots the long-term monthly mean, median, maximum, minimum, and percentiles of d
    'inner_percentiles' and 'outer_percentiles' arguments. Data calculated using the calc_longterm_daily_stats() function.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Plot statistics using data argument with defaults
+# Plot longterm daily statistics using data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 plot_longterm_daily_stats(data = flow_data,
                           start_year = 1980)
-
-# Plot statistics using station_number argument with defaults
-plot_longterm_daily_stats(station_number = "08NM116",
-                          start_year = 1980)
-
-# Plot statistics regardless if there is missing data for a given year
-plot_longterm_daily_stats(station_number = "08NM116",
-                          ignore_missing = TRUE)
                   
-# Plot statistics for water years starting in October
+# Plot longterm daily statistics for water years starting in October
 plot_longterm_daily_stats(station_number = "08NM116",
                           start_year = 1980,
                           end_year = 2010,
                           water_year_start = 10)
- 
-# Plot statistics and add a specific year's daily flows                
-plot_longterm_daily_stats(station_number = "08NM116",
-                          start_year = 1980,
-                          add_year = 1985)                
-  
-# Plot statistics with custom years
-plot_longterm_daily_stats(station_number = "08NM116",
-                          start_year = 1981,
-                          end_year = 2010,
-                          exclude_years = c(1991,1993:1995))
-
-# Plot statistics without a log-scale Discharge axis
-plot_longterm_daily_stats(station_number = "08NM116",
-                          start_year = 1981,
-                          end_year = 2010,
-                          log_discharge = FALSE)
+                          
 }
 }
 \seealso{

@@ -23,57 +23,59 @@
 #' @return A tibble data frame of numeric values of a long-term mean (and percent of long-term mean if selected) of selected years and months.
 #' 
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
 #' # Calculate the long-term mean annual discharge (MAD) using only years with no missing data
-#' calc_longterm_mad(station_number = "08NM116", 
-#'                   complete_years = TRUE)
+#' calc_longterm_mean(station_number = "08NM116", 
+#'                    complete_years = TRUE)
 #' 
 #' # Calculate the long-term MAD and 5, 10 and 20-percent MADs using only years with no missing data
-#' calc_longterm_mad(station_number = "08NM116", 
-#'                   complete_years = TRUE,
-#'                   percent_MAD = c(5,10,20))
+#' calc_longterm_mean(station_number = "08NM116", 
+#'                    complete_years = TRUE,
+#'                    percent_MAD = c(5,10,20))
+#'                    
 #' }
 #' @export
 
 
-calc_longterm_mad <- function(data,
-                              dates = Date,
-                              values = Value,
-                              groups = STATION_NUMBER,
-                              station_number,
-                              roll_days = 1,
-                              roll_align = "right",
-                              water_year_start = 1,
-                              start_year,
-                              end_year,
-                              exclude_years,
-                              complete_years = FALSE,
-                              months = 1:12,
-                              percent_MAD,
-                              transpose = FALSE){
+calc_longterm_mean <- function(data,
+                               dates = Date,
+                               values = Value,
+                               groups = STATION_NUMBER,
+                               station_number,
+                               roll_days = 1,
+                               roll_align = "right",
+                               water_year_start = 1,
+                               start_year,
+                               end_year,
+                               exclude_years,
+                               complete_years = FALSE,
+                               months = 1:12,
+                               percent_MAD,
+                               transpose = FALSE){
   
   
   ## ARGUMENT CHECKS
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   if (missing(percent_MAD)) {
-    percent_MAD = NA
+    percent_MAD <- NA
   }
   
   rolling_days_checks(roll_days, roll_align)

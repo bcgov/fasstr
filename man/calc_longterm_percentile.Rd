@@ -4,11 +4,23 @@
 \alias{calc_longterm_percentile}
 \title{Calculate the long-term percentiles}
 \usage{
-calc_longterm_percentile(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, percentiles, roll_days = 1,
-  roll_align = "right", water_year_start = 1, start_year, end_year,
-  exclude_years, complete_years = FALSE, months = 1:12,
-  transpose = FALSE)
+calc_longterm_percentile(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  percentiles,
+  roll_days = 1,
+  roll_align = "right",
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  complete_years = FALSE,
+  months = 1:12,
+  transpose = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -58,16 +70,18 @@ Calculates the long-term percentiles discharge of a streamflow dataset. Averages
   unless specified.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Calculate the 20th percentile
+# Calculate the 20th percentile flow value from a flow record
 calc_longterm_percentile(station_number = "08NM116",
                          percentile = 20)
                          
-# Calculate the 90th percentile value with custom years
+# Calculate the 90th percentile flow value with custom years
 calc_longterm_percentile(station_number = "08NM116", 
                          start_year = 1980, 
                          end_year = 2010, 
                          percentile = 90)
+                         
 }
 }

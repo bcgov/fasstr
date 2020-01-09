@@ -44,23 +44,25 @@
 #'   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 #'   
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Calculate statistics using data argument with defaults
+#' # Calculate screening statistics usinga data frame and data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' screen_flow_data(data = flow_data)
 #' 
-#' # Calculate statistics using station_number argument with defaults
+#' # Calculate screening statistics using station_number argument with defaults
 #' screen_flow_data(station_number = "08NM116")
 #'                   
-#' # Calculate statistics for water years starting in October
+#' # Calculate screening statistics for water years starting in October
 #' screen_flow_data(station_number = "08NM116",
 #'                  water_year_start = 9)
 #'                   
-#' # Calculate statistics for 7-day flows for July-September months only
+#' # Calculate screening statistics for 7-day flows for July-September months only
 #' screen_flow_data(station_number = "08NM116",
 #'                  roll_days = 7,
 #'                  months = 7:9)
+#'                  
 #' }
 #' @export
 
@@ -84,16 +86,16 @@ screen_flow_data <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
 
   rolling_days_checks(roll_days, roll_align)

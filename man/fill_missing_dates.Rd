@@ -4,8 +4,14 @@
 \alias{fill_missing_dates}
 \title{Fill dates of missing flow values with NA}
 \usage{
-fill_missing_dates(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, water_year_start = 1)
+fill_missing_dates(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  water_year_start = 1
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -32,16 +38,18 @@ A tibble data frame of the source data with additional rows of filled values of 
 }
 \description{
 Adds rows of dates with missing flow values to a streamflow dataset with daily flow values of NA. Missing dates will 
-   be filled in gaps between data and compeltely fill the first and last years (calendar or water year if selected).
+   be filled in gaps between data and completely fill the first and last years (calendar or water year if selected).
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Fill missing dates with NA using calendar years
-fill_missing_dates(data = "08NM116")
+fill_missing_dates(station_number = "08NM116")
 
 # Fill missing dates with NA using water years starting in August
-fill_missing_dates(data = "08NM116", 
+fill_missing_dates(station_number = "08NM116", 
                    water_year_start = 8)
+                   
 }
 }

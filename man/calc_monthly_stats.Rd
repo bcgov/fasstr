@@ -4,11 +4,24 @@
 \alias{calc_monthly_stats}
 \title{Calculate monthly summary statistics}
 \usage{
-calc_monthly_stats(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, percentiles = c(10, 90),
-  roll_days = 1, roll_align = "right", water_year_start = 1,
-  start_year, end_year, exclude_years, months = 1:12,
-  transpose = FALSE, spread = FALSE, ignore_missing = FALSE)
+calc_monthly_stats(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  percentiles = c(10, 90),
+  roll_days = 1,
+  roll_align = "right",
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  months = 1:12,
+  transpose = FALSE,
+  spread = FALSE,
+  ignore_missing = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -75,9 +88,10 @@ Calculates monthly mean, median, maximum, minimum, and percentiles for each mont
    from a streamflow dataset. Calculates the statistics from all daily discharge values from all years, unless specified.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Calculate statistics using data argument with defaults
+# Calculate statistics using a data frame and data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 calc_monthly_stats(data = flow_data,
                    start_year = 1980)
@@ -106,5 +120,6 @@ calc_monthly_stats(station_number = "08NM116",
                    roll_days = 7,
                    percentiles = c(25,75),
                    ignore_missing = TRUE)
+                   
 }
 }

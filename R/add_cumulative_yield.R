@@ -14,7 +14,7 @@
 #'
 #' @description Add a column of rolling daily cumulative runoff yield flows on an annual basis to a streamflow dataset. Adds the 
 #'    runoff yield discharge from each day with the previous day(s) for each year, in units of millimetres. Converts cumulative 
-#'    discharge to a depth of water based on the upstream drainge basin area.The cumulative flows restart every year and are only 
+#'    discharge to a depth of water based on the upstream drainage basin area.The cumulative flows restart every year and are only 
 #'    calculated in years with complete data.
 #'
 #' @inheritParams calc_annual_stats
@@ -24,16 +24,18 @@
 #'   \item{Cumul_Yield_mm}{cumulative yield flows for each day for each year, in units of millimetres}
 #'
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # HYDAT basin area
+#' # Add a column based on water years starting in August
 #' add_cumulative_yield(station_number = "08NM116", 
 #'                      water_year_start = 8)
 #'                      
-#' # Set the basin area
+#' # Add a column based on water years starting in August with a custom basin area to calculate yield
 #' add_cumulative_yield(station_number = "08NM116", 
 #'                      water_year_start = 8,
 #'                      basin_area = 800)
+#'                      
 #' }
 #' @export
 
@@ -51,13 +53,13 @@ add_cumulative_yield <- function(data,
   ## ARGUMENT CHECKS
   ## ---------------
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(basin_area)) {
-    basin_area = NA
+    basin_area <- NA
   }
   
   water_year_checks(water_year_start)

@@ -4,14 +4,28 @@
 \alias{calc_all_annual_stats}
 \title{Calculate all fasstr annual statistics}
 \usage{
-calc_all_annual_stats(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, basin_area,
-  water_year_start = 1, start_year, end_year, exclude_years,
-  annual_percentiles = c(10, 90), monthly_percentiles = c(10, 20),
-  stats_days = 1, stats_align = "right", lowflow_days = c(1, 3, 7,
-  30), lowflow_align = "right", timing_percent = c(25, 33, 50, 75),
-  normal_percentiles = c(25, 75), transpose = FALSE,
-  ignore_missing = FALSE)
+calc_all_annual_stats(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  basin_area,
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  annual_percentiles = c(10, 90),
+  monthly_percentiles = c(10, 20),
+  stats_days = 1,
+  stats_align = "right",
+  lowflow_days = c(1, 3, 7, 30),
+  lowflow_align = "right",
+  timing_percent = c(25, 33, 50, 75),
+  normal_percentiles = c(25, 75),
+  transpose = FALSE,
+  ignore_missing = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -99,10 +113,24 @@ Calculates all annual statistics of daily flow values from a streamflow dataset 
  }
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Calculate statistics with default arguments
+# Calculate all annual statistics from this package with default arguments
 calc_all_annual_stats(station_number = "08NM116") 
+
+# Calculate all annual statistics from this package with default arguments 
+# with some default arguments shown to customize metrics
+calc_all_annual_stats(station_number = "08NM116",
+                      annual_percentiles = c(10,90),
+                      monthly_percentiles = c(10,20),
+                      stats_days = 1,
+                      stats_align = "right",
+                      lowflow_days = c(1,3,7,30),
+                      lowflow_align = "right",
+                      timing_percent = c(25,33,50,75),
+                      normal_percentiles = c(25,75)) 
+
 }
 }
 \seealso{

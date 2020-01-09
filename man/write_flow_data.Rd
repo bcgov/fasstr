@@ -4,10 +4,21 @@
 \alias{write_flow_data}
 \title{Write a streamflow dataset as a .xlsx, .xls, or .csv file}
 \usage{
-write_flow_data(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, water_year_start = 1,
-  start_year, end_year, start_date, end_date, file_name,
-  fill_missing = FALSE, digits)
+write_flow_data(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  water_year_start = 1,
+  start_year,
+  end_year,
+  start_date,
+  end_date,
+  file_name,
+  fill_missing = FALSE,
+  digits
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -53,6 +64,8 @@ Write a streamflow dataset to a directory. Can fill missing dates or filter data
 \examples{
 \dontrun{
 
+# Working examples:
+
 # Write data from a data frame
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 write_flow_data(data = flow_data, 
@@ -66,5 +79,6 @@ write_flow_data(station_number = "08NM116",
 write_flow_data(station_number = "08NM116", 
                 file_name = "Mission_Creek_daily_flows.xlsx",
                 fill_missing = TRUE)
+
 }
 }

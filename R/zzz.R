@@ -91,7 +91,8 @@
           "REAL_TIME",
           "Info",
           "Month_Mean",
-          "Annual_Mean")
+          "Annual_Mean",
+          "miss_plots")
       )
     invisible()
   }

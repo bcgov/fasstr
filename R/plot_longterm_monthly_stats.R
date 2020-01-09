@@ -15,7 +15,7 @@
 #' @description Plots the long-term monthly mean, median, maximum, minimum, and 5, 25, 75, and 95 percentiles of  
 #'    annual monthly mean flow values from a single streamflow dataset. Plots statistics from discharge values from all 
 #'    years, unless specified. The Maximum-Minimum band can be removed using the 'include_extremes' argument and the percentile bands 
-#'    can be customized using the'inner_percentiles' and 'outer_percentiles' arguments. Data calculated using the
+#'    can be customized using the 'inner_percentiles' and 'outer_percentiles' arguments. Data calculated using the
 #'    calc_longterm_monthly_stats() function.
 #'
 #' @inheritParams calc_longterm_monthly_stats
@@ -40,43 +40,24 @@
 #' @seealso \code{\link{calc_longterm_monthly_stats}}
 #'   
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Plot statistics using data argument with defaults
+#' # Plot longterm monthly statistics using data argument with defaults
 #' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 #' plot_longterm_monthly_stats(data = flow_data,
 #'                             start_year = 1980)
 #' 
-#' # Plot statistics using station_number argument with defaults
+#' # Plot longterm monthly statistics using station_number argument with defaults
 #' plot_longterm_monthly_stats(station_number = "08NM116",
 #'                             start_year = 1980)
-#' 
-#' # Plot statistics regardless if there is missing data for a given year
-#' plot_longterm_monthly_stats(station_number = "08NM116",
-#'                             ignore_missing = TRUE)
-#'                   
-#' # Plot statistics for water years starting in October
-#' plot_longterm_monthly_stats(station_number = "08NM116",
-#'                             start_year = 1980,
-#'                             end_year = 2010,
-#'                             water_year_start = 10)
 #'             
-#' # Plot statistics and add a specific year's daily flows                
+#' # Plot longterm monthly statistics and add a specific year's daily flows                
 #' plot_longterm_monthly_stats(station_number = "08NM116",
 #'                             start_year = 1980,
 #'                             add_year = 1985) 
 #'                               
-#' # Plot statistics with custom years
-#' plot_longterm_monthly_stats(station_number = "08NM116",
-#'                             start_year = 1981,
-#'                             end_year = 2010,
-#'                             exclude_years = c(1991,1993:1995))
-#' 
-#' # Plot statistics without a log-scale Discharge axis
-#' plot_longterm_monthly_stats(station_number = "08NM116",
-#'                             start_year = 1981,
-#'                             end_year = 2010,
-#'                             log_discharge = FALSE)
+#'                             
 #' }
 #' @export
 
@@ -105,22 +86,22 @@ plot_longterm_monthly_stats <- function(data,
   ## ---------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(start_year)) {
-    start_year = 0
+    start_year <- 0
   }
   if (missing(end_year)) {
-    end_year = 9999
+    end_year <- 9999
   }
   if (missing(exclude_years)) {
-    exclude_years = NULL
+    exclude_years <- NULL
   }
   if (missing(add_year)) {
-    add_year = NULL
+    add_year <- NULL
   }
   
   log_discharge_checks(log_discharge)

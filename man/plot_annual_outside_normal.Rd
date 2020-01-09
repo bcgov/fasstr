@@ -4,11 +4,22 @@
 \alias{plot_annual_outside_normal}
 \title{Plot annual days above and below normal}
 \usage{
-plot_annual_outside_normal(data, dates = Date, values = Value,
-  groups = STATION_NUMBER, station_number, normal_percentiles = c(25,
-  75), roll_days = 1, roll_align = "right", water_year_start = 1,
-  start_year, end_year, exclude_years, months = 1:12,
-  include_title = FALSE)
+plot_annual_outside_normal(
+  data,
+  dates = Date,
+  values = Value,
+  groups = STATION_NUMBER,
+  station_number,
+  normal_percentiles = c(25, 75),
+  roll_days = 1,
+  roll_align = "right",
+  water_year_start = 1,
+  start_year,
+  end_year,
+  exclude_years,
+  months = 1:12,
+  include_title = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
@@ -59,19 +70,21 @@ A list of ggplot2 objects with the following for each station provided:
 }
 \description{
 Plots the number of days per year outside of the 'normal' range (typically between 25 and 75th percentiles) for
-   each day of the year. Upper and lower-range percentiles are calcuated for each day of the year of from all years, and then each 
+   each day of the year. Upper and lower-range percentiles are calculated for each day of the year of from all years, and then each 
    daily flow value for each year is compared. All days above or below the normal range are included. Calculates the statistics 
    from all daily discharge values from all years, unless specified. Data calculated using calc_annual_outside_normal() function.
 }
 \examples{
-\dontrun{
+# Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Plot statistics with default limits of normal (25 and 75th percentiles)
+# Plot annual statistics with default limits of normal (25 and 75th percentiles)
 plot_annual_outside_normal(station_number = "08NM116") 
 
-# Plot statistics with custom limits of normal
+# Plot annual statistics with custom limits of normal
 plot_annual_outside_normal(station_number = "08NM116",
                            normal_percentiles = c(10,90))
+                           
 }
 }
 \seealso{

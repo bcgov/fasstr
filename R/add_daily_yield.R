@@ -13,7 +13,7 @@
 #' @title Add daily volumetric runoff yields
 #'
 #' @description Add a column of daily runoff yields to a streamflow dataset, in units of millimetres. Converts the discharge to a depth
-#'   of water based on the upstream drainge basin area.
+#'   of water based on the upstream drainage basin area.
 #'
 #' @inheritParams calc_annual_stats
 #' @inheritParams add_basin_area
@@ -22,16 +22,16 @@
 #'   \item{Yield_mm}{daily runoff yield flow, in units of millimetres}
 #'
 #' @examples
-#' \dontrun{
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
 #' # Add a column of yields based on HYDAT basin area
-#' add_daily_yield(station_number = "08NM116", 
-#'                 water_year_start = 8)
+#' add_daily_yield(station_number = "08NM116")
 #'                      
 #' # Add a column of yields based on a custom basin area
-#' add_daily_yield(station_number = "08NM116", 
-#'                 water_year_start = 8,
+#' add_daily_yield(station_number = "08NM116",
 #'                 basin_area = 800)
+#'                 
 #' }
 #' @export
 
@@ -48,13 +48,13 @@ add_daily_yield <- function(data,
   ## -------------------------------
   
   if (missing(data)) {
-    data = NULL
+    data <- NULL
   }
   if (missing(station_number)) {
-    station_number = NULL
+    station_number <- NULL
   }
   if (missing(basin_area)) {
-    basin_area = NA
+    basin_area <- NA
   }
   
   # Check if data is provided and import it
