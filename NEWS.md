@@ -1,3 +1,14 @@
+fasstr 0.3.2
+=========================
+
+Updated: 13 Jan 2020
+
+#### Updates:
+
+  * README updated: sticker, badges
+  
+
+
 fasstr 0.3.1
 =========================
 

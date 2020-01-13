@@ -1,4 +1,6 @@
-# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
+language: R
+sudo: false
+cache: packages
 
 matrix:
   include:
@@ -18,6 +20,7 @@ matrix:
       r: devel
       
 
-language: R
-sudo: false
-cache: packages
+notifications:
+  email:
+    on_success: change
+    on_failure: change
