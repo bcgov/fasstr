@@ -20,22 +20,19 @@
 #'    
 #' @return A tibble data frame with the following columns:
 #'   \item{Year}{calendar or water year selected}
-#'   \item{Min_'n'_Day}{annual minimum for each n-day rolling mean, direction of mean specified by roll_align}
-#'   \item{Min_'n'_Day_DoY}{day of year for each annual minimum of n-day rolling mean}
-#'   \item{Min_'n'_Day_Date}{date (YYYY-MM-DD) for each annual minimum of n-day rolling mean}
+#'   \item{Min_'n'_Day}{annual minimum for selected n-day rolling mean, direction of mean specified by roll_align}
+#'   \item{Min_'n'_Day_DoY}{day of year for selected annual minimum of n-day rolling mean}
+#'   \item{Min_'n'_Day_Date}{date (YYYY-MM-DD) for selected annual minimum of n-day rolling mean}
+#'   \item{Max_'n'_Day}{annual maximum for selected n-day rolling mean, direction of mean specified by roll_align}
+#'   \item{Max_'n'_Day_DoY}{day of year for selected annual maximum of n-day rolling mean}
+#'   \item{Max_'n'_Day_Date}{date (YYYY-MM-DD) for selected annual maximum of n-day rolling mean}
 #'   Default columns:
 #'   \item{Min_1_Day}{annual 1-day mean minimum (roll_align = right)}
 #'   \item{Min_1_Day_DoY}{day of year of annual 1-day mean minimum}
 #'   \item{Min_1_Day_Date}{date (YYYY-MM-DD) of annual 1-day mean minimum}
-#'   \item{Min_3_Day}{annual 3-day mean minimum (roll_align = right)}
-#'   \item{Min_3_Day_DoY}{day of year of annual 3-day mean minimum}
-#'   \item{Min_3_Day_Date}{date (YYYY-MM-DD) of annual 3-day mean minimum}   
-#'   \item{Min_7_Day}{annual 7-day mean minimum (roll_align = right)}
-#'   \item{Min_7_Day_DoY}{day of year of annual 7-day mean minimum}
-#'   \item{Min_7_Day_Date}{date (YYYY-MM-DD) of annual 7-day mean minimum}
-#'   \item{Min_30_Day}{annual 30-day mean minimum (roll_align = right)}
-#'   \item{Min_30_Day_DoY}{day of year of annual 30-day mean minimum}
-#'   \item{Min_30_Day_Date}{date (YYYY-MM-DD) of annual 30-day mean minimum}
+#'   \item{Max_1_Day}{annual 1-day mean maximum (roll_align = right)}
+#'   \item{Max_1_Day_DoY}{day of year of annual 1-day mean maximum}
+#'   \item{Max_1_Day_Date}{date (YYYY-MM-DD) of annual 1-day mean maximum}   
 #'   Transposing data creates a column of 'Statistics' and subsequent columns for each year selected. 'Date' statistics
 #'   not transposed.
 #'   
