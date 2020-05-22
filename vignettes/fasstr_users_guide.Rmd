@@ -1,6 +1,8 @@
 ---
 title: "fasstr R Package Users Guide"
-output: rmarkdown::html_vignette #pdf_document rmarkdown::html_vignette word_document
+output: 
+  rmarkdown::html_vignette:
+    toc: true
 vignette: >
   %\VignetteIndexEntry{fasstr R Package Users Guide}
   %\VignetteEngine{knitr::rmarkdown}
@@ -642,6 +644,7 @@ Beside the basic summary statistics, there are other useful statistics for inter
 
 - `calc_annual_flow_timing()` - calculate annual flow timing
 - `calc_annual_lowflows()` - calculate annual low flow values and dates
+- `calc_annual_peaks()` - calculate annual low and high flow values and dates
 - `calc_annual_outside_normal()` - calculate annual days above and below normal
 - `calc_all_annual_stats()` - calculate all 'fasstr' annual statistics
 
@@ -683,6 +686,16 @@ The annual low flow values and the day of the low flow values can be plotted, se
 plot_annual_lowflows(station_number = "08NM116",
                      start_year = 1974) 
 ```
+
+#### Annual peaks
+
+Similar to `calc_annual_lowflows()`, `calc_annual_peaks()` calculates the annual minimum and maximum values, the day of year, and dates of specified rolling mean days. 
+
+```{r, comment=NA}
+calc_annual_peaks(station_number = "08NM116", 
+                  start_year = 1974)
+```
+
 
 #### Number of days per year outside of normal
 
@@ -1040,7 +1053,7 @@ To support saving the 'fasstr' tables and plots to a directory, there are severa
 - `write_plots()` - write plots from a list into a directory or PDF document
 - `write_objects_list()` - write all tables and plots contained in a list
 
-### Writing a flow dataset
+#### Writing a flow dataset
 
 To directly save a streamflow dataset from HYDAT or your own custom dataset onto your computer, you can use the `write_flow_data()` function. By listing the `station_number` or `data` data frame, the dataset will save a file into the working directory, unless other wise specified using the `file_name` argument. If using the `station_number` argument and listing only one station without listing a name with `file_name`, the name will include the number and followed by "_daily_data.xlsx"; and if multiple stations are listed the name will be "HYDAT_daily_data.xlsx". When using the `data` argument without listing a name with `file_name` the default name will be `fasstr_daily_data.xlsx`.  To use another file type than "xlsx" (options are "xlsx", "xls", or "csv") provide a file name using the `file_name` argument with the desired extension. Other argument options for this function include:
 
