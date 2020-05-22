@@ -1,7 +1,7 @@
 
 <!-- index.md is generated from index.Rmd. Please edit that file -->
 
-# fasstr <img src="man/figures/fasstr.PNG" align="right" />
+# fasstr <img src="man/figures/fasstr.png" align="right" />
 
 <!-- badges: start -->
 
@@ -48,7 +48,7 @@ Useful features of functions include:
   - plotting options; and,
   - choosing how missing dates are handled, amongst others.
 
-## Installation
+### Installation
 
 You can install ‘fasstr’ using the following code. It may take a few
 moments as there are several dependency packages will also be installed,
@@ -76,7 +76,7 @@ To utilize the ‘tidyhydat’ features (using the station\_number
 argument), you will need to download a HYDAT database using the
 `tidyhydat::download_hydat()` function.
 
-## Vignettes
+### Vignettes
 
   - [Get Started with
     fasstr](https://bcgov.github.io/fasstr/articles/fasstr.html)
@@ -91,12 +91,12 @@ argument), you will need to download a HYDAT database using the
   - [Under the
     Hood](https://bcgov.github.io/fasstr/articles/fasstr_under_the_hood.html)
 
-## Getting Help or Reporting an Issue
+### Getting Help or Reporting an Issue
 
 To report bugs/issues/feature requests, please file an
 [issue](https://github.com/bcgov/fasstr/issues/).
 
-## How to Contribute
+### How to Contribute
 
 If you would like to contribute to the package, please see our
 [CONTRIBUTING](CONTRIBUTING.md) guidelines.
@@ -105,7 +105,7 @@ Please note that this project is released with a [Contributor Code of
 Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree
 to abide by its terms.
 
-## License
+### License
 
     Copyright 2019 Province of British Columbia
     

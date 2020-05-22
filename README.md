@@ -26,7 +26,12 @@ daily mean streamflow data into various daily, monthly, annual, and
 long-term statistics, completes annual trends and frequency analyses, in
 both table and plot formats.
 
-## Features
+### Reference
+
+[fasstr package 📦 home page and reference
+guide](https://bcgov.github.io/fasstr/)
+
+### Features
 
 This package provides functions with solutions for streamflow data:
 
@@ -52,7 +57,7 @@ Useful features of functions include:
   - plotting options; and,
   - choosing how missing dates are handled, amongst others.
 
-## Installation
+### Installation
 
 You can install ‘fasstr’ using the following code. It may take a few
 moments as there are several dependency packages will also be installed,
@@ -84,9 +89,9 @@ To utilize the ‘tidyhydat’ features (using the station\_number
 argument), you will need to download a HYDAT database using the
 `tidyhydat::download_hydat()` function.
 
-## Using fasstr
+### Using fasstr
 
-### Data Input
+#### Data Input
 
 All functions in ‘fasstr’ require a daily mean streamflow dataset from
 one or more hydrometric stations. Long-term and continuous datasets are
@@ -135,9 +140,9 @@ using the `groups` column argument (defaults to STATION\_NUMBER). If
 grouping column doesn’t exist or is improperly named, then all values
 listed in the `values` column will be summarized.
 
-### Function Types
+#### Function Types
 
-#### Cleaning
+##### Cleaning
 
 These functions, that start with `add_*` and `fill_*`, add columns and
 rows, respectively, to your streamflow data frame to help set up your
@@ -146,7 +151,7 @@ date variables (Year, Month, DayofYear, etc.), adding basin areas,
 adding columns of volumetric and yield discharge, and filling dates with
 missing flow values with `NA`.
 
-#### Analysis
+##### Analysis
 
 The analysis functions summarize your discharge values into various
 statistics. `screen_*` functions summarize annual data for outliers and
@@ -170,9 +175,9 @@ package and its functions. All plots functions produce lists of plots
 (even if just one produced). Can use `write_plots()` to customize saving
 the lists of plots to a local drive (within folders or PDF documents).
 
-### Function Options
+#### Function Options
 
-#### Daily Rolling Means
+##### Daily Rolling Means
 
 If certain n-day rolling mean statistics are desired to be analyzed
 (e.g. 3- or 7-day rolling means) some functions provide the ability to
@@ -184,7 +189,7 @@ previous n-1 days, “centre” date is in the middle of the averages, and
 analyses you can add rolling means to your dataset using the
 `add_rolling_means()` function.
 
-#### Year and Month Filtering
+##### Year and Month Filtering
 
 To customize your analyses for specific time periods, you can designate
 the start and end years of your analysis using the `start_year` and
@@ -214,7 +219,7 @@ end and excluded years will be based on the specified water year.
 For your own analyses, you can add date variables to your dataset using
 the `add_date_variables()` or `add_seasons()` functions.
 
-#### Drainage Basin Area
+##### Drainage Basin Area
 
 Yield runoff statistics (in millimetres) calculated in the some of the
 functions require an upstream drainage basin area (in sq. km) using the
@@ -229,7 +234,7 @@ will automatically use the basin areas provided in HYDAT, if available,
 so `basin_area` is not required. For your own analyses, you can add
 basin areas to your dataset using the `add_basin_area()` function.
 
-#### Handling Missing Dates
+##### Handling Missing Dates
 
 With the use of the `ignore_missing` argument in most function, you can
 decide how to handle dates with missing flow values in calculations.
@@ -243,9 +248,9 @@ used, when set to `TRUE`, to filter out years that have partial datasets
 (for seasonal or other reasons) and only years with full data are used
 to calculate statistics.
 
-## Examples
+### Examples
 
-### Summary statistics example: long-term statistics
+#### Summary statistics example: long-term statistics
 
 To determine the summary statistics of daily data by month (mean,
 median, maximum, minimum, and some percentiles) you can use the
@@ -279,7 +284,7 @@ calc_longterm_daily_stats(station_number = "08NM116",
 #> 14 08NM116        Summer     3.61  1.98    54.5    0.332 0.799  7.64
 ```
 
-### Plotting example: daily summary statistics
+#### Plotting example: daily summary statistics
 
 To visualize the daily streamflow patterns on an annual basis, the
 `plot_daily_stats()` function will plot out various summary statistics
@@ -300,7 +305,7 @@ plot_daily_stats(station_number = "08NM116",
 
 ![](man/figures/plot1-1.png)<!-- -->
 
-### Plotting example: flow duration curves
+#### Plotting example: flow duration curves
 
 Flow duration curves can be produced using the `plot_flow_duration()`
 function.
@@ -314,7 +319,7 @@ plot_flow_duration(station_number = "08NM116",
 
 ![](man/figures/plot2-1.png)<!-- -->
 
-### Analysis example: low-flow frequency analysis
+#### Analysis example: low-flow frequency analysis
 
 This package also provides a function, `compute_annual_frequencies()`,
 to complete frequency analyses (using the same methods as
@@ -363,19 +368,19 @@ freq_results$Freq_Plot
 
 ![](man/figures/plot3-1.png)<!-- -->
 
-## Project Status
+### Project Status
 
 This package is set for delivery. This package is maintained by the
 Water Protection and Sustainability Branch of the [British Columbia
 Ministry of Environment and Climate Change
 Strategy](https://www2.gov.bc.ca/gov/content/environment/air-land-water/water).
 
-## Getting Help or Reporting an Issue
+### Getting Help or Reporting an Issue
 
 To report bugs/issues/feature requests, please file an
 [issue](https://github.com/bcgov/fasstr/issues/).
 
-## How to Contribute
+### How to Contribute
 
 If you would like to contribute to the package, please see our
 [CONTRIBUTING](CONTRIBUTING.md) guidelines.
@@ -384,7 +389,7 @@ Please note that this project is released with a [Contributor Code of
 Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree
 to abide by its terms.
 
-## License
+### License
 
     Copyright 2019 Province of British Columbia
     

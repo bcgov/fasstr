@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# fasstr <img src="man/figures/fasstr.PNG" align="right" />
+# fasstr <img src="man/figures/fasstr.png" align="right" />
 
 <!-- badges: start -->
 <a id="devex-badge" rel="Delivery" href="https://github.com/BCDevExchange/assets/blob/master/README.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a> [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) 
@@ -44,7 +44,7 @@ Useful features of functions include:
 - plotting options; and,
 - choosing how missing dates are handled, amongst others.
 
-## Installation
+### Installation
 
 You can install 'fasstr' using the following code. It may take a few moments as there are several dependency packages will also be installed, including ['tidyhydat'](https://CRAN.R-project.org/package=tidyhydat) for downloading Water Survey of Canada hydrometric data, ['zyp'](https://CRAN.R-project.org/package=zyp) for trending, ['ggplot2'](https://CRAN.R-project.org/package=ggplot2) for creating plots, and ['dplyr'](https://CRAN.R-project.org/package=dplyr) and ['tidyr'](https://CRAN.R-project.org/package=tidyr) for various data wrangling and summarizing functions, amongst others. 
 
@@ -61,7 +61,7 @@ remotes::install_github("bcgov/fasstr")
 
 To utilize the 'tidyhydat' features (using the station_number argument), you will need to download a HYDAT database using the `tidyhydat::download_hydat()` function.
 
-## Vignettes
+### Vignettes
 
 - [Get Started with fasstr](https://bcgov.github.io/fasstr/articles/fasstr.html)
 - [fasstr Users Guide](https://bcgov.github.io/fasstr/articles/fasstr_users_guide.html)
@@ -71,18 +71,18 @@ To utilize the 'tidyhydat' features (using the station_number argument), you wil
 - [Under the Hood](https://bcgov.github.io/fasstr/articles/fasstr_under_the_hood.html)
 
 
-## Getting Help or Reporting an Issue
+### Getting Help or Reporting an Issue
 
 To report bugs/issues/feature requests, please file an [issue](https://github.com/bcgov/fasstr/issues/).
 
-## How to Contribute
+### How to Contribute
 
 If you would like to contribute to the package, please see our 
 [CONTRIBUTING](CONTRIBUTING.md) guidelines.
 
 Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
 
-## License
+### License
 
     Copyright 2019 Province of British Columbia
 
