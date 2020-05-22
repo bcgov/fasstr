@@ -112,13 +112,11 @@
   <div class="contents col-md-9">
 <div id="fasstr-" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#fasstr-" class="anchor"></a>fasstr <img src="reference/figures/fasstr.PNG" align="right">
+<a href="#fasstr-" class="anchor"></a>fasstr <img src="reference/figures/fasstr.png" align="right">
 </h1></div>
 <!-- badges: start -->
 
 <p><a href="https://cran.r-project.org/package=fasstr"><img src="https://www.r-pkg.org/badges/version/fasstr" alt="CRAN_Status_Badge"></a> <a href="https://CRAN.R-project.org/package=fasstr"><img src="https://cranlogs.r-pkg.org/badges/fasstr?color=brightgreen" alt="CRAN Downloads"></a> <a href="https://CRAN.R-project.org/web/checks/check_results_fasstr.html"><img src="https://cranchecks.info/badges/worst/fasstr" alt="cran checks"></a> <!-- badges: end --></p>
-<div id="section" class="section level2">
-<h2></h2>
 <p>The Flow Analysis Summary Statistics Tool for R (‘fasstr’) is a set of <a href="http://www.r-project.org">R</a> functions to clean, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.</p>
 <p>This package provides functions with solutions for streamflow data:</p>
 <ul>
@@ -136,10 +134,9 @@
 <li>plotting options; and,</li>
 <li>choosing how missing dates are handled, amongst others.</li>
 </ul>
-</div>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<div id="installation" class="section level3">
+<h3 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h3>
 <p>You can install ‘fasstr’ using the following code. It may take a few moments as there are several dependency packages will also be installed, including <a href="https://CRAN.R-project.org/package=tidyhydat">‘tidyhydat’</a> for downloading Water Survey of Canada hydrometric data, <a href="https://CRAN.R-project.org/package=zyp">‘zyp’</a> for trending, <a href="https://CRAN.R-project.org/package=ggplot2">‘ggplot2’</a> for creating plots, and <a href="https://CRAN.R-project.org/package=dplyr">‘dplyr’</a> and <a href="https://CRAN.R-project.org/package=tidyr">‘tidyr’</a> for various data wrangling and summarizing functions, amongst others.</p>
 <div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"fasstr"</span>)</pre></div>
 <p>To install the development version of the ‘fasstr’ package, you need to install the remotes package then the ‘fasstr’ package.</p>
@@ -147,9 +144,9 @@
 <span class="kw pkg">remotes</span><span class="kw ns">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"bcgov/fasstr"</span>)</pre></div>
 <p>To utilize the ‘tidyhydat’ features (using the station_number argument), you will need to download a HYDAT database using the <code><a href="https://docs.ropensci.org/tidyhydat/reference/download_hydat.html">tidyhydat::download_hydat()</a></code> function.</p>
 </div>
-<div id="vignettes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#vignettes" class="anchor"></a>Vignettes</h2>
+<div id="vignettes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#vignettes" class="anchor"></a>Vignettes</h3>
 <ul>
 <li><a href="https://bcgov.github.io/fasstr/articles/fasstr.html">Get Started with fasstr</a></li>
 <li><a href="https://bcgov.github.io/fasstr/articles/fasstr_users_guide.html">fasstr Users Guide</a></li>
@@ -159,20 +156,20 @@
 <li><a href="https://bcgov.github.io/fasstr/articles/fasstr_under_the_hood.html">Under the Hood</a></li>
 </ul>
 </div>
-<div id="getting-help-or-reporting-an-issue" class="section level2">
-<h2 class="hasAnchor">
-<a href="#getting-help-or-reporting-an-issue" class="anchor"></a>Getting Help or Reporting an Issue</h2>
+<div id="getting-help-or-reporting-an-issue" class="section level3">
+<h3 class="hasAnchor">
+<a href="#getting-help-or-reporting-an-issue" class="anchor"></a>Getting Help or Reporting an Issue</h3>
 <p>To report bugs/issues/feature requests, please file an <a href="https://github.com/bcgov/fasstr/issues/">issue</a>.</p>
 </div>
-<div id="how-to-contribute" class="section level2">
-<h2 class="hasAnchor">
-<a href="#how-to-contribute" class="anchor"></a>How to Contribute</h2>
+<div id="how-to-contribute" class="section level3">
+<h3 class="hasAnchor">
+<a href="#how-to-contribute" class="anchor"></a>How to Contribute</h3>
 <p>If you would like to contribute to the package, please see our <a href="CONTRIBUTING.html">CONTRIBUTING</a> guidelines.</p>
 <p>Please note that this project is released with a <a href="CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</p>
 </div>
-<div id="license" class="section level2">
-<h2 class="hasAnchor">
-<a href="#license" class="anchor"></a>License</h2>
+<div id="license" class="section level3">
+<h3 class="hasAnchor">
+<a href="#license" class="anchor"></a>License</h3>
 <div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">Copyright <span class="dv">2019</span> Province of British Columbia</a>
 <a class="sourceLine" id="cb3-2" title="2"></a>
 <a class="sourceLine" id="cb3-3" title="3">Licensed under the Apache License, Version <span class="fl">2.0</span> (the <span class="st">"License"</span>);</a>
@@ -186,9 +183,6 @@
 <a class="sourceLine" id="cb3-11" title="11">WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
 <a class="sourceLine" id="cb3-12" title="12">See the License <span class="cf">for</span> the specific language governing permissions and</a>
 <a class="sourceLine" id="cb3-13" title="13">limitations under the License.</a></code></pre></div>
-</div>
-<div id="section-1" class="section level2">
-<h2></h2>
 <p>This package is maintained by the <a href="https://www2.gov.bc.ca/gov/content/environment/air-land-water/water">Water Protection and Sustainability Branch of the British Columbia Ministry of Environment and Climate Change Strategy</a>.</p>
 </div>
 </div>

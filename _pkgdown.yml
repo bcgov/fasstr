@@ -118,7 +118,7 @@ navbar:
     href: index.html
   - text: Get Started
     href: articles/fasstr.html
-  - text: Reference
+  - text: Functions
     href: reference/index.html
   - text: Articles
     menu:
