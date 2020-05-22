@@ -1,0 +1,144 @@
+template:
+  params:
+    bootswatch: flatly
+    
+destination: docs
+
+development:
+  mode: auto
+  
+url: https://bcgov.github.io/fasstr
+  
+reference:
+- title: Data Cleaning
+  desc: Functions to add rows and columns of dates and discharge conversions
+        to daily streamflow data frames to prepare for custom analyses.
+  contents:
+  - fill_missing_dates
+  - add_date_variables
+  - add_seasons
+  - add_rolling_means
+  - add_basin_area
+  - add_daily_volume
+  - add_daily_yield  
+  - add_cumulative_volume
+  - add_cumulative_yield
+
+
+- title: Data Screening
+  desc: Functions to calculate and plot statistics to screen data
+        for outliers, gaps, and missing dates.
+  contents:
+  - plot_flow_data
+  - screen_flow_data
+  - plot_data_screening
+  - plot_missing_dates
+  
+- title: Basic Summary Statistics
+  desc: Functions to calculate and plot mean, median, minimum, and selected 
+        percentiles flows. Can select duration (e.g. 7-day, 30-day) of 
+        statistics using 'roll_days' arguments.
+  contents:
+  - calc_daily_stats
+  - plot_daily_stats  
+  - calc_monthly_stats
+  - plot_monthly_stats
+  - calc_annual_stats
+  - plot_annual_stats
+  - plot_annual_means
+  - calc_longterm_daily_stats
+  - plot_longterm_daily_stats
+  - calc_longterm_monthly_stats
+  - plot_longterm_monthly_stats
+  - calc_longterm_mean
+  - calc_longterm_percentile
+  - calc_flow_percentile
+  - plot_flow_duration
+  
+- title: Cumulative Summary Statistics
+  desc: Functions to calculate and plot mean, median, minimum, and selected 
+        percentiles flows for years (or seasons) by volume (cubic m) or by
+        area-based yield (mm) using the 'use_yield' and 'basin_area' arguments.
+  contents:
+  - calc_annual_cumulative_stats
+  - plot_annual_cumulative_stats  
+  - calc_monthly_cumulative_stats
+  - plot_monthly_cumulative_stats   
+  - calc_daily_cumulative_stats
+  - plot_daily_cumulative_stats    
+  
+- title: Various Annual Statistics
+  desc: Functions to calculate and plot various annual statistics.
+  contents:
+  - calc_annual_flow_timing
+  - plot_annual_flow_timing
+  - calc_annual_lowflows
+  - plot_annual_lowflows
+  - calc_annual_peaks
+  - calc_annual_outside_normal
+  - plot_annual_outside_normal
+  - calc_all_annual_stats
+
+- title: Annual Trending Analysis
+  desc: Functions to compute and plot prewhitened, non-parametric
+        annual trends on streamflow data.
+  contents:
+  - compute_annual_trends
+  
+- title: Volume Frequency Analyses
+  desc: Functions to compute and plot volume frequency analyses on annual low
+        or high streamflow data (or custom data).
+  contents:
+  - compute_annual_frequencies
+  - compute_frequency_quantile
+  - compute_hydat_peak_frequencies
+  - compute_frequency_analysis
+
+- title: Computing a Full Analysis
+  desc: Functions to compute a suite of data and plots from many
+        of the fasstr functions.
+  contents:
+  - compute_full_analysis
+  - write_full_analysis
+  
+- title: Writing Functions
+  desc: Functions to save the outputted objected (tibbles and lists
+        of plots) from the fasstr functions
+  contents:
+  - write_flow_data
+  - write_results
+  - write_plots
+  - write_objects_list
+  
+  
+navbar:
+  type: default
+  left:
+  - icon: fa-home
+    href: index.html
+  - text: Get Started
+    href: articles/fasstr.html
+  - text: Reference
+    href: reference/index.html
+  - text: Articles
+    menu:
+    - text: Users Guide
+      href: articles/fasstr_users_guide.html
+    - text: Computing Annual Trends
+      href: articles/fasstr_trending_analysis.html
+    - text: Computing Volume Frequency Analyses
+      href: articles/fasstr_frequency_analysis.html
+    - text: Computing a Full Analysis
+      href: articles/fasstr_full_analysis.html
+    - text: Under the Hood
+      href: articles/fasstr_under_the_hood.html
+  - text: News
+    href: news/index.html
+  right:
+    - icon: fa-file-download
+      text: Download Cheatsheet
+      href: https://github.com/bcgov/fasstr/raw/master/fasstr_cheatsheet.pdf
+    - icon: fa-github fa-lg
+      text: GitHub
+      href: https://github.com/bcgov/fasstr
+
