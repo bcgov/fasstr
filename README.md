@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# fasstr <img src="tools/readme/fasstr.PNG" align="right" />
+# fasstr <img src="man/figures/fasstr.PNG" align="right" />
 
 <!-- badges: start -->
 
@@ -49,7 +49,7 @@ Useful features of functions include:
     (internally tidys your data);
   - choosing the start month of your water year;
   - selecting for rolling day averages (e.g. 7-day rolling average);
-  - plotting options;and,
+  - plotting options; and,
   - choosing how missing dates are handled, amongst others.
 
 ## Installation
@@ -298,7 +298,7 @@ plot_daily_stats(station_number = "08NM116",
 #> $Daily_Statistics
 ```
 
-![](tools/readme/README-plot1-1.png)<!-- -->
+![](man/figures/plot1-1.png)<!-- -->
 
 ### Plotting example: flow duration curves
 
@@ -312,7 +312,7 @@ plot_flow_duration(station_number = "08NM116",
 #> $Flow_Duration
 ```
 
-![](tools/readme/README-plot2-1.png)<!-- -->
+![](man/figures/plot2-1.png)<!-- -->
 
 ### Analysis example: low-flow frequency analysis
 
@@ -361,7 +361,7 @@ freq_results <- compute_annual_frequencies(station_number = "08NM116",
 freq_results$Freq_Plot
 ```
 
-![](tools/readme/README-plot3-1.png)<!-- -->
+![](man/figures/plot3-1.png)<!-- -->
 
 ## Project Status
 
