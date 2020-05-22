@@ -13,3 +13,9 @@
 ^LICENSE.md$
 ^CRAN-RELEASE$
 ^COMPLIANCE.yaml$
+^README\.Rmd$
+
+^_pkgdown\.yml$
+^docs$
+^index\.md$
+^index\.Rmd$

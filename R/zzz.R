@@ -92,7 +92,8 @@
           "Info",
           "Month_Mean",
           "Annual_Mean",
-          "miss_plots")
+          "miss_plots",
+          "MAX_VALUE")
       )
     invisible()
   }
