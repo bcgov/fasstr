@@ -1,5 +1,5 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- index.md is generated from index.Rmd. Please edit that file -->
 
 # fasstr <img src="man/figures/fasstr.PNG" align="right" />
 
@@ -16,8 +16,6 @@ Downloads](https://cranlogs.r-pkg.org/badges/fasstr?color=brightgreen)](https://
 [![cran
 checks](https://cranchecks.info/badges/worst/fasstr)](https://CRAN.R-project.org/web/checks/check_results_fasstr.html)
 <!-- badges: end -->
-
-## 
 
 The Flow Analysis Summary Statistics Tool for R (‘fasstr’) is a set of
 [R](http://www.r-project.org) functions to clean, summarize, analyze,
@@ -122,8 +120,6 @@ to abide by its terms.
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-## 
 
 This package is maintained by the [Water Protection and Sustainability
 Branch of the British Columbia Ministry of Environment and Climate

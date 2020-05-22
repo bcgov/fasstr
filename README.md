@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# fasstr <img src="man/figures/fasstr.PNG" align="right" />
+# fasstr <img src="man/figures/fasstr.png" align="right" />
 
 <!-- badges: start -->
 
