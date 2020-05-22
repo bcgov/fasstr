@@ -17,7 +17,8 @@ compute_frequency_analysis(
   fit_distr = c("PIII", "weibull"),
   fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
   fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1, 0.05, 0.01),
-  plot_curve = TRUE
+  plot_curve = TRUE,
+  remove_zeros = FALSE
 )
 }
 \arguments{
@@ -53,6 +54,8 @@ or "MLE" (maximum likelihood estimation). Selected as \code{"MOM"} if \code{fit_
 Default \code{c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)}.}
 
 \item{plot_curve}{Logical value to indicate plotting the computed curve on the probability plot. Default \code{TRUE}.}
+
+\item{remove_zeros}{Logical value to indicate removing any zero flow values from the dataset.}
 }
 \value{
 A list with the following elements:

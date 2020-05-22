@@ -85,7 +85,8 @@ compute_annual_frequencies <- function(data,
                                        end_year,
                                        exclude_years,
                                        months = 1:12,
-                                       ignore_missing = FALSE){
+                                       ignore_missing = FALSE,
+                                       remove_zeros = FALSE){
   
   # replicate the frequency analysis of the HEC-SSP program
   # refer to Chapter 7 of the user manual
@@ -220,7 +221,8 @@ compute_annual_frequencies <- function(data,
                                          fit_distr = fit_distr,
                                          fit_distr_method = fit_distr_method,
                                          fit_quantiles = fit_quantiles,
-                                         plot_curve = plot_curve)
+                                         plot_curve = plot_curve, 
+                                         remove_zeros = remove_zeros)
     
   return(analysis)
   

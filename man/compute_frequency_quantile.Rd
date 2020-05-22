@@ -21,7 +21,8 @@ compute_frequency_quantile(
   end_year,
   exclude_years,
   months = 1:12,
-  ignore_missing = FALSE
+  ignore_missing = FALSE,
+  remove_zeros = FALSE
 )
 }
 \arguments{
@@ -69,6 +70,8 @@ all months (default \code{1:12}).}
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
 with no missing dates will be returned. Default \code{FALSE}.}
+
+\item{remove_zeros}{Logical value to indicate removing any zero flow values from the dataset.}
 }
 \value{
 A numeric value of the frequency analysis quantile, given the roll_days and return_period

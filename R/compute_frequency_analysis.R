@@ -40,6 +40,7 @@
 #' @param fit_quantiles Numeric vector of quantiles to be estimated from the fitted distribution. 
 #'    Default \code{c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)}.
 #' @param plot_curve Logical value to indicate plotting the computed curve on the probability plot. Default \code{TRUE}.
+#' @param remove_zeros Logical value to indicate removing any zero flow values from the dataset.
 #' 
 #' @return A list with the following elements:
 #'   \item{Freq_Analysis_Data}{Data frame with computed annual summary statistics used in analysis.}
@@ -84,7 +85,8 @@ compute_frequency_analysis <- function(data,
                                        fit_distr = c("PIII", "weibull"),
                                        fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
                                        fit_quantiles = c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),
-                                       plot_curve = TRUE){
+                                       plot_curve = TRUE,
+                                       remove_zeros = FALSE){
   
   # replicate the frequency analysis of the HEC-SSP program
   # refer to Chapter 7 of the user manual
@@ -139,6 +141,9 @@ compute_frequency_analysis <- function(data,
     stop("Measures not found in data frame. Rename measure column to 'Measure' or identify the column using 'measures' argument.", call. = FALSE)
   names(data)[names(data) == as.character(substitute(measures))] <- "Measure"
   
+  if (remove_zeros) {
+    data <- dplyr::filter(data, Value > 0)
+  }
   
   # Set the Q_stat dataframe
   Q_stat <-  data
