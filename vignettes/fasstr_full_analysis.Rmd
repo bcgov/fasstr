@@ -18,14 +18,14 @@ library(fasstr)
 library(dplyr)
 ```
 
-The Flow Analysis Summary Statistics Tool for R ('fasstr') is a set of [R](https://www.r-project.org/) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.
+`fasstr`, the Flow Analysis Summary Statistics Tool for R, is a set of [R](https://www.r-project.org/) functions to clean, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.
 
-This vignette documents the usage of the `compute_full_analysis()` and `write_full_analysis()` functions in 'fasstr'. This vignette is a high-level adjunct to the details found in the function documentation (see `?compute_full_analysis` and `?write_full_analysis`). You’ll learn what arguments to provide to the function to customize your analyses, what analyses are computed, and what outputs are produced.
+This vignette documents the usage of the `compute_full_analysis()` and `write_full_analysis()` functions in `fasstr`. This vignette is a high-level adjunct to the details found in the function documentation (see `?compute_full_analysis` and `?write_full_analysis`). You’ll learn what arguments to provide to the function to customize your analyses, what analyses are computed, and what outputs are produced.
 
 
-## Use
+## Usage
 
-The full analysis functions produce a suite of tables and plots from the various 'fasstr' functions. There are seven groups of analyses (see below) which are stored in lists in the created object for the `compute_` function and written into an Excel workbook (and accompanying image files) for the `write_` function. All of the data selection (data or station_number arguments), data filtering, water year selection, missing dates options, basin area, and 'zyp' trending arguments are used in this function to customize your data and analysis.
+The full analysis functions produce a suite of tables and plots from the various `fasstr` functions. There are seven groups of analyses (see below) which are stored in lists in the created object for the `compute_` function and written into an Excel workbook (and accompanying image files) for the `write_` function. All of the data selection (`data` or `station_number` arguments), data filtering, water year selection, missing dates options, basin area, and `zyp` trending arguments are used in this function to customize your data and analysis.
 
 The outputs are grouped into the following categories:
 
@@ -42,7 +42,7 @@ While by default the function will create all outputs from all categories, there
 
 ## Outputs
 
-### compute_full_analysis() Object List
+### `compute_full_analysis()` Object List
 
 When using this function all of the objects will be saved within a list with a first level of lists with each of the categories as listed above (ex. `$Screening` or `$Annual`). Within each of those lists are the outputted objects, or another list of objects (ex. `$Screening$Flow_Screening` or `$Annual$Annual_Flow_Timing`). Use subsetting techniques to extract an individual tibble or plot.
 
@@ -64,9 +64,9 @@ trends_results <- mission_creek$Trending$Annual_Trends_Results
 ```
 
 
-### write_full_analysis() Excel and Image Files
+### `write_full_analysis()` Excel and Image Files
 
-The writing function provides a option to directly save all results onto your computer, thereby allowing the user to explore the outputs in Excel and image file formats. You will be required to provide the name of a the Excel file to create using the `file_name` argument. If the analyses in groups 5 and/or 6 are selected than a folder with the same name will be created to store a number of plots that are not suitable for the Excel file. By default it will save those plots in "pdf" format, but can be altered using the `plot_filetype` arguments, if necessary. Within the Excel workbook each of the tables and plots are saved within specific worksheets. The first worksheet in all outputs contain an overview of the analysis to know which arguments and options were used. The second worksheet contains the data provided to the function (the data frame or the data from HYDAT). The last worksheet (after all the analysis sheets) contain a table of 'fasstr' functions that can replicate each individual analysis output for further customization (these functions are also contained within the comments of the cells with table and plot titles).
+The writing function provides a option to directly save all results onto your computer, thereby allowing the user to explore the outputs in Excel and image file formats. You will be required to provide the name of a the Excel file to create using the `file_name` argument. If the analyses in groups 5 and/or 6 are selected than a folder with the same name will be created to store a number of plots that are not suitable for the Excel file. By default it will save those plots in "pdf" format, but can be altered using the `plot_filetype` arguments, if necessary. Within the Excel workbook each of the tables and plots are saved within specific worksheets. The first worksheet in all outputs contain an overview of the analysis to know which arguments and options were used. The second worksheet contains the data provided to the function (the data frame or the data from HYDAT). The last worksheet (after all the analysis sheets) contain a table of `fasstr` functions that can replicate each individual analysis output for further customization (these functions are also contained within the comments of the cells with table and plot titles).
 
 The following is an example of how to save all analyses to your computer:
 
@@ -86,51 +86,51 @@ The following is a table that lists of all objects and files (if `write_to_dir =
 
 Analyses                  |	Object                                    |	Type              | Function
 --------------------------|-------------------------------------------|-------------------|------------------------------
-1 - Screening	            | Daily_Flows     	                  	    | Table             | add_date_variables() %>% add_rolling_means() %>% add_basin_area()
-1 - Screening	            | Daily_Flows_Plot	                        | Plot              | plot_flow_data()
-1 - Screening	            |	Flow_Screening     	                  	  | Table             | screen_flow_data()
-1 - Screening	            |	Flow_Screening_Plot	                  	  | Plot              | plot_data_screening()
-1 - Screening	            |	Missing_Dates_Plot	                      | Plot              | plot_missing_dates()
-2 - Longterm	            |	Longterm_Monthly_Summary_Stats_Percentiles| Table             | calc_longterm_monthly_stats()
-2 - Longterm	            |	Longterm_Monthly_Summary_Stats_Plot       | Plot              | plot_longterm_monthly_stats()
-2 - Longterm	            |	Longterm_Daily_Summary_Stats_Percentiles  | Table             | calc_longterm_daily_stats()
-2 - Longterm	            |	Longterm_Daily_Summary_Stats_Plot         | Plot              | plot_longterm_daily_stats()
-2 - Longterm	            |	Flow_Duration_Curves                      | Plot              | plot_flow_duration()
-3 - Annual	              |	Annual_Summary_Stats                     	| Table             | calc_annual_stats()
-3 - Annual	              |	Annual_Summary_Stats_Plot                	| Plot              | plot_annual_stats()
-3 - Annual	              |	Annual_Cumul_Volume_Stats_m3 	            | Table             | calc_annual_cumulative_stats(include_seasons=TRUE)
-3 - Annual	              |	Annual_Cumul_Volume_Stats_m3_Plot     	  | Multiple Plots    | plot_annual_cumulative_stats(include_seasons=TRUE)
-3 - Annual	              |	Annual_Cumul_Yield_Stats_mm     	        | Table             | calc_annual_cumulative_stats(use_yield=TRUE, include_seasons=TRUE)
-3 - Annual	              |	Annual_Cumul_Yield_Stats_mm_Plot          | Multiple Plots    | plot_annual_cumulative_stats(use_yield=TRUE)
-3 - Annual	              |	Annual_Flow_Timing     	                  | Table             | calc_annual_flow_timing()
-3 - Annual	              |	Annual_Flow_Timing_Plot	                  | Plot              | plot_annual_flow_timing()
-3 - Annual	              |	Annual_Days_Outside_Normal     	          | Table             | calc_annual_outside_normal
-3 - Annual	              |	Annual_Days_Outside_Normal_Plot        	  | Multiple Plots    | plot_annual_outside_normal()
-3 - Annual	              |	Annual_Low_Flows     	                    | Table             | calc_annual_lowflows()
-3 - Annual	              |	Annual_Low_Flows_Plot                   	| Multiple Plots    | plot_annual_lowflows()
-3 - Annual	              |	Annual_Means    	                        | Plot              | plot_annual_means()
-4 - Monthly	              |	Monthly_Summary_Stats               	    | Table             | calc_monthly_stats()
-4 - Monthly	              |	Monthly_Summary_Stats_Plot                | Multiple Plots    | plot_monthly_stats()
-4 - Monthly	              |	Monthly_Total_Cumul_Volume_m3  	          | Table             | calc_monthly_cumulative_stats()
-4 - Monthly	              |	Monthly_Total_Cumul_Volume_m3_Plot    	  | Plot              | plot_monthly_cumulative_stats()
-4 - Monthly	              |	Monthly_Total_Cumul_Yield_mm	            | Table             | calc_monthly_cumulative_stats(use_yield=TRUE)
-4 - Monthly	              |	Monthly_Total_Cumul_Yield_mm_Plot  	      | Plot              | plot_monthly_cumulative_stats(use_yield=TRUE)
-5 - Daily	                |	Daily_Summary_Stats                    	  | Table             | calc_daily_stats()
-5 - Daily	                |	Daily_Summary_Stats_Plot                  | Plot              | plot_daily_stats()
-5 - Daily	                |	Daily_Summary_Stats_with_Years            | Multiple Plots    | plot_daily_stats(add_year)
-5 - Daily	                |	Daily_Total_Cumul_Volume_m3          	    | Table             | calc_daily_cumulative_stats()
-5 - Daily	                |	Daily_Total_Cumul_Volume_m3_Plot    	    | Plot              | plot_daily_cumulative_stats()
-5 - Daily	                |	Daily_Total_Cumul_Volume_m3_with_Years    | Multiple Plots    | plot_daily_cumulative_stats(add_year)
-5 - Daily	                |	Daily_Total_Cumul_Yield_mm                | Table             | calc_daily_cumulative_stats(use_yield=TRUE)
-5 - Daily 	              |	Daily_Total_Cumul_Yield_mm_Plot        	  | Plot              | plot_daily_cumulative_stats(use_yield=TRUE)
-5 - Daily	                |	Daily_Total_Cumul_Yield_mm_with_Years  	  | Multiple Plots    | plot_daily_cumulative_stats(use_yield=TRUE, add_year)
-6 - Trending              |	Annual_Trends_Data     	                  | Table             | compute_annual_trends()
-6 - Trending              |	Annual_Trends_Results                 	  | Table             | compute_annual_trends()
-6 - Trending              |	Annual_Trends_Results_Plots           	  | Multiple Plots    | compute_annual_trends(include_plots=TRUE)
-7 - Lowflow Frequencies   |	Freq_Analysis_Data (lowflows)          	  | Table             | compute_annual_frequencies()
-7 - Lowflow Frequencies   |	Freq_Plot_Data                         	  | Table             | compute_annual_frequencies()
-7 - Lowflow Frequencies   |	Freq_Plot                              	  | Plot              | compute_annual_frequencies()
-7 - Lowflow Frequencies   |	Freq_Fitted_Quantiles                     | Table             | compute_annual_frequencies()
+1 - Screening	            | Daily_Flows     	                  	    | Table             | `add_date_variables() %>% add_rolling_means() %>% add_basin_area()`
+1 - Screening	            | Daily_Flows_Plot	                        | Plot              | `plot_flow_data()`
+1 - Screening	            |	Flow_Screening     	                  	  | Table             | `screen_flow_data()`
+1 - Screening	            |	Flow_Screening_Plot	                  	  | Plot              | `plot_data_screening()`
+1 - Screening	            |	Missing_Dates_Plot	                      | Plot              | `plot_missing_dates()`
+2 - Longterm	            |	Longterm_Monthly_Summary_Stats_Percentiles| Table             | `calc_longterm_monthly_stats()`
+2 - Longterm	            |	Longterm_Monthly_Summary_Stats_Plot       | Plot              | `plot_longterm_monthly_stats()`
+2 - Longterm	            |	Longterm_Daily_Summary_Stats_Percentiles  | Table             | `calc_longterm_daily_stats()`
+2 - Longterm	            |	Longterm_Daily_Summary_Stats_Plot         | Plot              | `plot_longterm_daily_stats()`
+2 - Longterm	            |	Flow_Duration_Curves                      | Plot              | `plot_flow_duration()`
+3 - Annual	              |	Annual_Summary_Stats                     	| Table             | `calc_annual_stats()`
+3 - Annual	              |	Annual_Summary_Stats_Plot                	| Plot              | `plot_annual_stats()`
+3 - Annual	              |	Annual_Cumul_Volume_Stats_m3 	            | Table             | `calc_annual_cumulative_stats(include_seasons=TRUE)`
+3 - Annual	              |	Annual_Cumul_Volume_Stats_m3_Plot     	  | Multiple Plots    | `plot_annual_cumulative_stats(include_seasons=TRUE)`
+3 - Annual	              |	Annual_Cumul_Yield_Stats_mm     	        | Table             | `calc_annual_cumulative_stats(use_yield=TRUE, include_seasons=TRUE)`
+3 - Annual	              |	Annual_Cumul_Yield_Stats_mm_Plot          | Multiple Plots    | `plot_annual_cumulative_stats(use_yield=TRUE)`
+3 - Annual	              |	Annual_Flow_Timing     	                  | Table             | `calc_annual_flow_timing()`
+3 - Annual	              |	Annual_Flow_Timing_Plot	                  | Plot              | `plot_annual_flow_timing()`
+3 - Annual	              |	Annual_Days_Outside_Normal     	          | Table             | `calc_annual_outside_normal()`
+3 - Annual	              |	Annual_Days_Outside_Normal_Plot        	  | Multiple Plots    | `plot_annual_outside_normal()`
+3 - Annual	              |	Annual_Low_Flows     	                    | Table             | `calc_annual_lowflows()`
+3 - Annual	              |	Annual_Low_Flows_Plot                   	| Multiple Plots    | `plot_annual_lowflows()`
+3 - Annual	              |	Annual_Means    	                        | Plot              | `plot_annual_means()`
+4 - Monthly	              |	Monthly_Summary_Stats               	    | Table             | `calc_monthly_stats()`
+4 - Monthly	              |	Monthly_Summary_Stats_Plot                | Multiple Plots    | `plot_monthly_stats()`
+4 - Monthly	              |	Monthly_Total_Cumul_Volume_m3  	          | Table             | `calc_monthly_cumulative_stats()`
+4 - Monthly	              |	Monthly_Total_Cumul_Volume_m3_Plot    	  | Plot              | `plot_monthly_cumulative_stats()`
+4 - Monthly	              |	Monthly_Total_Cumul_Yield_mm	            | Table             | `calc_monthly_cumulative_stats(use_yield=TRUE)`
+4 - Monthly	              |	Monthly_Total_Cumul_Yield_mm_Plot  	      | Plot              | `plot_monthly_cumulative_stats(use_yield=TRUE)`
+5 - Daily	                |	Daily_Summary_Stats                    	  | Table             | `calc_daily_stats()`
+5 - Daily	                |	Daily_Summary_Stats_Plot                  | Plot              | `plot_daily_stats()`
+5 - Daily	                |	Daily_Summary_Stats_with_Years            | Multiple Plots    | `plot_daily_stats(add_year)`
+5 - Daily	                |	Daily_Total_Cumul_Volume_m3          	    | Table             | `calc_daily_cumulative_stats()`
+5 - Daily	                |	Daily_Total_Cumul_Volume_m3_Plot    	    | Plot              | `plot_daily_cumulative_stats()`
+5 - Daily	                |	Daily_Total_Cumul_Volume_m3_with_Years    | Multiple Plots    | `plot_daily_cumulative_stats(add_year)`
+5 - Daily	                |	Daily_Total_Cumul_Yield_mm                | Table             | `calc_daily_cumulative_stats(use_yield=TRUE)`
+5 - Daily 	              |	Daily_Total_Cumul_Yield_mm_Plot        	  | Plot              | `plot_daily_cumulative_stats(use_yield=TRUE)`
+5 - Daily	                |	Daily_Total_Cumul_Yield_mm_with_Years  	  | Multiple Plots    | `plot_daily_cumulative_stats(use_yield=TRUE, add_year)`
+6 - Trending              |	Annual_Trends_Data     	                  | Table             | `compute_annual_trends()`
+6 - Trending              |	Annual_Trends_Results                 	  | Table             | `compute_annual_trends()`
+6 - Trending              |	Annual_Trends_Results_Plots           	  | Multiple Plots    | `compute_annual_trends(include_plots=TRUE)`
+7 - Lowflow Frequencies   |	Freq_Analysis_Data (lowflows)          	  | Table             | `compute_annual_frequencies()`
+7 - Lowflow Frequencies   |	Freq_Plot_Data                         	  | Table             | `compute_annual_frequencies()`
+7 - Lowflow Frequencies   |	Freq_Plot                              	  | Plot              | `compute_annual_frequencies()`
+7 - Lowflow Frequencies   |	Freq_Fitted_Quantiles                     | Table             | `compute_annual_frequencies()`
 
 
 

@@ -1,16 +1,16 @@
 fasstr 0.3.2
 =========================
 
-Updated: 22 May 2020
+Updated: 26 May 2020
 
 #### Updates:
 
   * Added calc_annual_peaks() function to calculate both annual n-day min. and max. flows with dates of occurrence.
-  * Created GitHub Pages documentation using pkgdown
-  * Updated Users Guide Vignette - added Table of Contents, added peaks function
-  * Added fasstr Get Started Vignette 
+  * Created GitHub Pages (https://bcgov.github.io/fasstr/) documentation using pkgdown (index files, /docs folder)
+  * Updated all vignettes for package updates, corrections, and issues.
+  * Added new 'Get Started' vignette for package and GitHub Page
   * Updated README: sticker, badges, content
-  * Updated cheatsheet with relevant information
+  * Updated cheatsheet
   
 
 fasstr 0.3.1
