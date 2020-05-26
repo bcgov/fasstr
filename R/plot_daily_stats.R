@@ -16,7 +16,7 @@
 #'    from a streamflow dataset. Plots the statistics from all daily discharge values from all years, unless specified. Can determine
 #'    statistics of rolling mean days (e.g. 7-day flows) using the roll_days argument. The Maximum-Minimum band can be removed using 
 #'    the 'include_extremes' argument and the percentile bands can be customized using the 'inner_percentiles' and 'outer_percentiles' 
-#'    arguments.Data calculated using calc_daily_stats() function.
+#'    arguments. Data calculated using calc_daily_stats() function.
 #'
 #' @inheritParams calc_daily_stats
 #' @inheritParams plot_annual_stats
