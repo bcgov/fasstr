@@ -115,12 +115,12 @@
 
     
     
-<p>The Flow Analysis Summary Statistics Tool for R (‘fasstr’) is a set of <a href="https://www.r-project.org/">R</a> functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.</p>
-<p>This vignette documents the usage of the <code><a href="../reference/compute_full_analysis.html">compute_full_analysis()</a></code> and <code><a href="../reference/write_full_analysis.html">write_full_analysis()</a></code> functions in ‘fasstr’. This vignette is a high-level adjunct to the details found in the function documentation (see <code><a href="../reference/compute_full_analysis.html">?compute_full_analysis</a></code> and <code><a href="../reference/write_full_analysis.html">?write_full_analysis</a></code>). You’ll learn what arguments to provide to the function to customize your analyses, what analyses are computed, and what outputs are produced.</p>
-<div id="use" class="section level2">
+<p><code>fasstr</code>, the Flow Analysis Summary Statistics Tool for R, is a set of <a href="https://www.r-project.org/">R</a> functions to clean, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.</p>
+<p>This vignette documents the usage of the <code><a href="../reference/compute_full_analysis.html">compute_full_analysis()</a></code> and <code><a href="../reference/write_full_analysis.html">write_full_analysis()</a></code> functions in <code>fasstr</code>. This vignette is a high-level adjunct to the details found in the function documentation (see <code><a href="../reference/compute_full_analysis.html">?compute_full_analysis</a></code> and <code><a href="../reference/write_full_analysis.html">?write_full_analysis</a></code>). You’ll learn what arguments to provide to the function to customize your analyses, what analyses are computed, and what outputs are produced.</p>
+<div id="usage" class="section level2">
 <h2 class="hasAnchor">
-<a href="#use" class="anchor"></a>Use</h2>
-<p>The full analysis functions produce a suite of tables and plots from the various ‘fasstr’ functions. There are seven groups of analyses (see below) which are stored in lists in the created object for the <code>compute_</code> function and written into an Excel workbook (and accompanying image files) for the <code>write_</code> function. All of the data selection (data or station_number arguments), data filtering, water year selection, missing dates options, basin area, and ‘zyp’ trending arguments are used in this function to customize your data and analysis.</p>
+<a href="#usage" class="anchor"></a>Usage</h2>
+<p>The full analysis functions produce a suite of tables and plots from the various <code>fasstr</code> functions. There are seven groups of analyses (see below) which are stored in lists in the created object for the <code>compute_</code> function and written into an Excel workbook (and accompanying image files) for the <code>write_</code> function. All of the data selection (<code>data</code> or <code>station_number</code> arguments), data filtering, water year selection, missing dates options, basin area, and <code>zyp</code> trending arguments are used in this function to customize your data and analysis.</p>
 <p>The outputs are grouped into the following categories:</p>
 <ol style="list-style-type: decimal">
 <li>Screening</li>
@@ -138,7 +138,7 @@
 <a href="#outputs" class="anchor"></a>Outputs</h2>
 <div id="compute_full_analysis-object-list" class="section level3">
 <h3 class="hasAnchor">
-<a href="#compute_full_analysis-object-list" class="anchor"></a>compute_full_analysis() Object List</h3>
+<a href="#compute_full_analysis-object-list" class="anchor"></a><code>compute_full_analysis()</code> Object List</h3>
 <p>When using this function all of the objects will be saved within a list with a first level of lists with each of the categories as listed above (ex. <code>$Screening</code> or <code>$Annual</code>). Within each of those lists are the outputted objects, or another list of objects (ex. <code>$Screening$Flow_Screening</code> or <code>$Annual$Annual_Flow_Timing</code>). Use subsetting techniques to extract an individual tibble or plot.</p>
 <p>The following is an example of how to run the function and then how extract individual objects from the list:</p>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="no">mission_creek</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/compute_full_analysis.html">compute_full_analysis</a></span>(<span class="kw">station_number</span> <span class="kw">=</span> <span class="st">"08NM116"</span>,
@@ -155,8 +155,8 @@
 </div>
 <div id="write_full_analysis-excel-and-image-files" class="section level3">
 <h3 class="hasAnchor">
-<a href="#write_full_analysis-excel-and-image-files" class="anchor"></a>write_full_analysis() Excel and Image Files</h3>
-<p>The writing function provides a option to directly save all results onto your computer, thereby allowing the user to explore the outputs in Excel and image file formats. You will be required to provide the name of a the Excel file to create using the <code>file_name</code> argument. If the analyses in groups 5 and/or 6 are selected than a folder with the same name will be created to store a number of plots that are not suitable for the Excel file. By default it will save those plots in “pdf” format, but can be altered using the <code>plot_filetype</code> arguments, if necessary. Within the Excel workbook each of the tables and plots are saved within specific worksheets. The first worksheet in all outputs contain an overview of the analysis to know which arguments and options were used. The second worksheet contains the data provided to the function (the data frame or the data from HYDAT). The last worksheet (after all the analysis sheets) contain a table of ‘fasstr’ functions that can replicate each individual analysis output for further customization (these functions are also contained within the comments of the cells with table and plot titles).</p>
+<a href="#write_full_analysis-excel-and-image-files" class="anchor"></a><code>write_full_analysis()</code> Excel and Image Files</h3>
+<p>The writing function provides a option to directly save all results onto your computer, thereby allowing the user to explore the outputs in Excel and image file formats. You will be required to provide the name of a the Excel file to create using the <code>file_name</code> argument. If the analyses in groups 5 and/or 6 are selected than a folder with the same name will be created to store a number of plots that are not suitable for the Excel file. By default it will save those plots in “pdf” format, but can be altered using the <code>plot_filetype</code> arguments, if necessary. Within the Excel workbook each of the tables and plots are saved within specific worksheets. The first worksheet in all outputs contain an overview of the analysis to know which arguments and options were used. The second worksheet contains the data provided to the function (the data frame or the data from HYDAT). The last worksheet (after all the analysis sheets) contain a table of <code>fasstr</code> functions that can replicate each individual analysis output for further customization (these functions are also contained within the comments of the cells with table and plot titles).</p>
 <p>The following is an example of how to save all analyses to your computer:</p>
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="../reference/write_full_analysis.html">write_full_analysis</a></span>(<span class="kw">station_number</span> <span class="kw">=</span> <span class="st">"08NM116"</span>,
                     <span class="kw">start_year</span> <span class="kw">=</span> <span class="fl">1981</span>,
@@ -185,271 +185,271 @@
 <td>1 - Screening</td>
 <td>Daily_Flows</td>
 <td>Table</td>
-<td>add_date_variables() %&gt;% add_rolling_means() %&gt;% add_basin_area()</td>
+<td><code>add_date_variables() %&gt;% add_rolling_means() %&gt;% add_basin_area()</code></td>
 </tr>
 <tr class="even">
 <td>1 - Screening</td>
 <td>Daily_Flows_Plot</td>
 <td>Plot</td>
-<td>plot_flow_data()</td>
+<td><code><a href="../reference/plot_flow_data.html">plot_flow_data()</a></code></td>
 </tr>
 <tr class="odd">
 <td>1 - Screening</td>
 <td>Flow_Screening</td>
 <td>Table</td>
-<td>screen_flow_data()</td>
+<td><code><a href="../reference/screen_flow_data.html">screen_flow_data()</a></code></td>
 </tr>
 <tr class="even">
 <td>1 - Screening</td>
 <td>Flow_Screening_Plot</td>
 <td>Plot</td>
-<td>plot_data_screening()</td>
+<td><code><a href="../reference/plot_data_screening.html">plot_data_screening()</a></code></td>
 </tr>
 <tr class="odd">
 <td>1 - Screening</td>
 <td>Missing_Dates_Plot</td>
 <td>Plot</td>
-<td>plot_missing_dates()</td>
+<td><code><a href="../reference/plot_missing_dates.html">plot_missing_dates()</a></code></td>
 </tr>
 <tr class="even">
 <td>2 - Longterm</td>
 <td>Longterm_Monthly_Summary_Stats_Percentiles</td>
 <td>Table</td>
-<td>calc_longterm_monthly_stats()</td>
+<td><code><a href="../reference/calc_longterm_monthly_stats.html">calc_longterm_monthly_stats()</a></code></td>
 </tr>
 <tr class="odd">
 <td>2 - Longterm</td>
 <td>Longterm_Monthly_Summary_Stats_Plot</td>
 <td>Plot</td>
-<td>plot_longterm_monthly_stats()</td>
+<td><code><a href="../reference/plot_longterm_monthly_stats.html">plot_longterm_monthly_stats()</a></code></td>
 </tr>
 <tr class="even">
 <td>2 - Longterm</td>
 <td>Longterm_Daily_Summary_Stats_Percentiles</td>
 <td>Table</td>
-<td>calc_longterm_daily_stats()</td>
+<td><code><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats()</a></code></td>
 </tr>
 <tr class="odd">
 <td>2 - Longterm</td>
 <td>Longterm_Daily_Summary_Stats_Plot</td>
 <td>Plot</td>
-<td>plot_longterm_daily_stats()</td>
+<td><code><a href="../reference/plot_longterm_daily_stats.html">plot_longterm_daily_stats()</a></code></td>
 </tr>
 <tr class="even">
 <td>2 - Longterm</td>
 <td>Flow_Duration_Curves</td>
 <td>Plot</td>
-<td>plot_flow_duration()</td>
+<td><code><a href="../reference/plot_flow_duration.html">plot_flow_duration()</a></code></td>
 </tr>
 <tr class="odd">
 <td>3 - Annual</td>
 <td>Annual_Summary_Stats</td>
 <td>Table</td>
-<td>calc_annual_stats()</td>
+<td><code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code></td>
 </tr>
 <tr class="even">
 <td>3 - Annual</td>
 <td>Annual_Summary_Stats_Plot</td>
 <td>Plot</td>
-<td>plot_annual_stats()</td>
+<td><code><a href="../reference/plot_annual_stats.html">plot_annual_stats()</a></code></td>
 </tr>
 <tr class="odd">
 <td>3 - Annual</td>
 <td>Annual_Cumul_Volume_Stats_m3</td>
 <td>Table</td>
-<td>calc_annual_cumulative_stats(include_seasons=TRUE)</td>
+<td><code><a href="../reference/calc_annual_cumulative_stats.html">calc_annual_cumulative_stats(include_seasons=TRUE)</a></code></td>
 </tr>
 <tr class="even">
 <td>3 - Annual</td>
 <td>Annual_Cumul_Volume_Stats_m3_Plot</td>
 <td>Multiple Plots</td>
-<td>plot_annual_cumulative_stats(include_seasons=TRUE)</td>
+<td><code><a href="../reference/plot_annual_cumulative_stats.html">plot_annual_cumulative_stats(include_seasons=TRUE)</a></code></td>
 </tr>
 <tr class="odd">
 <td>3 - Annual</td>
 <td>Annual_Cumul_Yield_Stats_mm</td>
 <td>Table</td>
-<td>calc_annual_cumulative_stats(use_yield=TRUE, include_seasons=TRUE)</td>
+<td><code><a href="../reference/calc_annual_cumulative_stats.html">calc_annual_cumulative_stats(use_yield=TRUE, include_seasons=TRUE)</a></code></td>
 </tr>
 <tr class="even">
 <td>3 - Annual</td>
 <td>Annual_Cumul_Yield_Stats_mm_Plot</td>
 <td>Multiple Plots</td>
-<td>plot_annual_cumulative_stats(use_yield=TRUE)</td>
+<td><code><a href="../reference/plot_annual_cumulative_stats.html">plot_annual_cumulative_stats(use_yield=TRUE)</a></code></td>
 </tr>
 <tr class="odd">
 <td>3 - Annual</td>
 <td>Annual_Flow_Timing</td>
 <td>Table</td>
-<td>calc_annual_flow_timing()</td>
+<td><code><a href="../reference/calc_annual_flow_timing.html">calc_annual_flow_timing()</a></code></td>
 </tr>
 <tr class="even">
 <td>3 - Annual</td>
 <td>Annual_Flow_Timing_Plot</td>
 <td>Plot</td>
-<td>plot_annual_flow_timing()</td>
+<td><code><a href="../reference/plot_annual_flow_timing.html">plot_annual_flow_timing()</a></code></td>
 </tr>
 <tr class="odd">
 <td>3 - Annual</td>
 <td>Annual_Days_Outside_Normal</td>
 <td>Table</td>
-<td>calc_annual_outside_normal</td>
+<td><code><a href="../reference/calc_annual_outside_normal.html">calc_annual_outside_normal()</a></code></td>
 </tr>
 <tr class="even">
 <td>3 - Annual</td>
 <td>Annual_Days_Outside_Normal_Plot</td>
 <td>Multiple Plots</td>
-<td>plot_annual_outside_normal()</td>
+<td><code><a href="../reference/plot_annual_outside_normal.html">plot_annual_outside_normal()</a></code></td>
 </tr>
 <tr class="odd">
 <td>3 - Annual</td>
 <td>Annual_Low_Flows</td>
 <td>Table</td>
-<td>calc_annual_lowflows()</td>
+<td><code><a href="../reference/calc_annual_lowflows.html">calc_annual_lowflows()</a></code></td>
 </tr>
 <tr class="even">
 <td>3 - Annual</td>
 <td>Annual_Low_Flows_Plot</td>
 <td>Multiple Plots</td>
-<td>plot_annual_lowflows()</td>
+<td><code><a href="../reference/plot_annual_lowflows.html">plot_annual_lowflows()</a></code></td>
 </tr>
 <tr class="odd">
 <td>3 - Annual</td>
 <td>Annual_Means</td>
 <td>Plot</td>
-<td>plot_annual_means()</td>
+<td><code><a href="../reference/plot_annual_means.html">plot_annual_means()</a></code></td>
 </tr>
 <tr class="even">
 <td>4 - Monthly</td>
 <td>Monthly_Summary_Stats</td>
 <td>Table</td>
-<td>calc_monthly_stats()</td>
+<td><code><a href="../reference/calc_monthly_stats.html">calc_monthly_stats()</a></code></td>
 </tr>
 <tr class="odd">
 <td>4 - Monthly</td>
 <td>Monthly_Summary_Stats_Plot</td>
 <td>Multiple Plots</td>
-<td>plot_monthly_stats()</td>
+<td><code><a href="../reference/plot_monthly_stats.html">plot_monthly_stats()</a></code></td>
 </tr>
 <tr class="even">
 <td>4 - Monthly</td>
 <td>Monthly_Total_Cumul_Volume_m3</td>
 <td>Table</td>
-<td>calc_monthly_cumulative_stats()</td>
+<td><code><a href="../reference/calc_monthly_cumulative_stats.html">calc_monthly_cumulative_stats()</a></code></td>
 </tr>
 <tr class="odd">
 <td>4 - Monthly</td>
 <td>Monthly_Total_Cumul_Volume_m3_Plot</td>
 <td>Plot</td>
-<td>plot_monthly_cumulative_stats()</td>
+<td><code><a href="../reference/plot_monthly_cumulative_stats.html">plot_monthly_cumulative_stats()</a></code></td>
 </tr>
 <tr class="even">
 <td>4 - Monthly</td>
 <td>Monthly_Total_Cumul_Yield_mm</td>
 <td>Table</td>
-<td>calc_monthly_cumulative_stats(use_yield=TRUE)</td>
+<td><code><a href="../reference/calc_monthly_cumulative_stats.html">calc_monthly_cumulative_stats(use_yield=TRUE)</a></code></td>
 </tr>
 <tr class="odd">
 <td>4 - Monthly</td>
 <td>Monthly_Total_Cumul_Yield_mm_Plot</td>
 <td>Plot</td>
-<td>plot_monthly_cumulative_stats(use_yield=TRUE)</td>
+<td><code><a href="../reference/plot_monthly_cumulative_stats.html">plot_monthly_cumulative_stats(use_yield=TRUE)</a></code></td>
 </tr>
 <tr class="even">
 <td>5 - Daily</td>
 <td>Daily_Summary_Stats</td>
 <td>Table</td>
-<td>calc_daily_stats()</td>
+<td><code><a href="../reference/calc_daily_stats.html">calc_daily_stats()</a></code></td>
 </tr>
 <tr class="odd">
 <td>5 - Daily</td>
 <td>Daily_Summary_Stats_Plot</td>
 <td>Plot</td>
-<td>plot_daily_stats()</td>
+<td><code><a href="../reference/plot_daily_stats.html">plot_daily_stats()</a></code></td>
 </tr>
 <tr class="even">
 <td>5 - Daily</td>
 <td>Daily_Summary_Stats_with_Years</td>
 <td>Multiple Plots</td>
-<td>plot_daily_stats(add_year)</td>
+<td><code><a href="../reference/plot_daily_stats.html">plot_daily_stats(add_year)</a></code></td>
 </tr>
 <tr class="odd">
 <td>5 - Daily</td>
 <td>Daily_Total_Cumul_Volume_m3</td>
 <td>Table</td>
-<td>calc_daily_cumulative_stats()</td>
+<td><code><a href="../reference/calc_daily_cumulative_stats.html">calc_daily_cumulative_stats()</a></code></td>
 </tr>
 <tr class="even">
 <td>5 - Daily</td>
 <td>Daily_Total_Cumul_Volume_m3_Plot</td>
 <td>Plot</td>
-<td>plot_daily_cumulative_stats()</td>
+<td><code><a href="../reference/plot_daily_cumulative_stats.html">plot_daily_cumulative_stats()</a></code></td>
 </tr>
 <tr class="odd">
 <td>5 - Daily</td>
 <td>Daily_Total_Cumul_Volume_m3_with_Years</td>
 <td>Multiple Plots</td>
-<td>plot_daily_cumulative_stats(add_year)</td>
+<td><code><a href="../reference/plot_daily_cumulative_stats.html">plot_daily_cumulative_stats(add_year)</a></code></td>
 </tr>
 <tr class="even">
 <td>5 - Daily</td>
 <td>Daily_Total_Cumul_Yield_mm</td>
 <td>Table</td>
-<td>calc_daily_cumulative_stats(use_yield=TRUE)</td>
+<td><code><a href="../reference/calc_daily_cumulative_stats.html">calc_daily_cumulative_stats(use_yield=TRUE)</a></code></td>
 </tr>
 <tr class="odd">
 <td>5 - Daily</td>
 <td>Daily_Total_Cumul_Yield_mm_Plot</td>
 <td>Plot</td>
-<td>plot_daily_cumulative_stats(use_yield=TRUE)</td>
+<td><code><a href="../reference/plot_daily_cumulative_stats.html">plot_daily_cumulative_stats(use_yield=TRUE)</a></code></td>
 </tr>
 <tr class="even">
 <td>5 - Daily</td>
 <td>Daily_Total_Cumul_Yield_mm_with_Years</td>
 <td>Multiple Plots</td>
-<td>plot_daily_cumulative_stats(use_yield=TRUE, add_year)</td>
+<td><code><a href="../reference/plot_daily_cumulative_stats.html">plot_daily_cumulative_stats(use_yield=TRUE, add_year)</a></code></td>
 </tr>
 <tr class="odd">
 <td>6 - Trending</td>
 <td>Annual_Trends_Data</td>
 <td>Table</td>
-<td>compute_annual_trends()</td>
+<td><code><a href="../reference/compute_annual_trends.html">compute_annual_trends()</a></code></td>
 </tr>
 <tr class="even">
 <td>6 - Trending</td>
 <td>Annual_Trends_Results</td>
 <td>Table</td>
-<td>compute_annual_trends()</td>
+<td><code><a href="../reference/compute_annual_trends.html">compute_annual_trends()</a></code></td>
 </tr>
 <tr class="odd">
 <td>6 - Trending</td>
 <td>Annual_Trends_Results_Plots</td>
 <td>Multiple Plots</td>
-<td>compute_annual_trends(include_plots=TRUE)</td>
+<td><code><a href="../reference/compute_annual_trends.html">compute_annual_trends(include_plots=TRUE)</a></code></td>
 </tr>
 <tr class="even">
 <td>7 - Lowflow Frequencies</td>
 <td>Freq_Analysis_Data (lowflows)</td>
 <td>Table</td>
-<td>compute_annual_frequencies()</td>
+<td><code><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies()</a></code></td>
 </tr>
 <tr class="odd">
 <td>7 - Lowflow Frequencies</td>
 <td>Freq_Plot_Data</td>
 <td>Table</td>
-<td>compute_annual_frequencies()</td>
+<td><code><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies()</a></code></td>
 </tr>
 <tr class="even">
 <td>7 - Lowflow Frequencies</td>
 <td>Freq_Plot</td>
 <td>Plot</td>
-<td>compute_annual_frequencies()</td>
+<td><code><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies()</a></code></td>
 </tr>
 <tr class="odd">
 <td>7 - Lowflow Frequencies</td>
 <td>Freq_Fitted_Quantiles</td>
 <td>Table</td>
-<td>compute_annual_frequencies()</td>
+<td><code><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies()</a></code></td>
 </tr>
 </tbody>
 </table>

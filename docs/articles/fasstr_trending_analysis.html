@@ -115,19 +115,19 @@
 
     
     
-<p>The Flow Analysis Summary Statistics Tool for R (‘fasstr’) is a set of <a href="https://www.r-project.org/">R</a> functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.</p>
-<p>This vignette documents the usage of the <code><a href="../reference/compute_annual_trends.html">compute_annual_trends()</a></code> function in ‘fasstr’. This vignette is a high-level adjunct to the details found in the function documentation (see <code>?compute_annual_trends()</code>). You’ll learn what arguments to provide to the function to customize your analysis, what analyses are computed, and what outputs are produced.</p>
+<p><code>fasstr</code>, the Flow Analysis Summary Statistics Tool for R, is a set of <a href="https://www.r-project.org/">R</a> functions to clean, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.</p>
+<p>This vignette documents the usage of the <code><a href="../reference/compute_annual_trends.html">compute_annual_trends()</a></code> function in <code>fasstr</code>. This vignette is a high-level adjunct to the details found in the function documentation (see <code>?compute_annual_trends()</code>). You’ll learn what arguments to provide to the function to customize your analysis, what analyses are computed, and what outputs are produced.</p>
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p>Computing an annual trending analysis with ‘fasstr’ allows for options and customization of both the inputs and outputs. This function takes 107 annual streamflow metrics (calculated using other annual ‘fasstr’ functions) and calculate non-parametric trends using the <a href="https://CRAN.R-project.org/package=zyp">‘zyp’</a> R package. See the ‘zyp’ documentation for more information on the methods.</p>
-<p>Each annual metric/time-series is analyzed for trends using Trend-Free-Pre-Whitening to remove lag-1 correlation (may artificially detect a significant trend). The slope of each metric over time is estimated using the Theil-Sen approach. If the estimated slope is different from zero, then the data are detrended by the slope and the AR(1) 1s calculated for the detrended time series. The residuals and the trend are combined and then tested for significance using the Mann-Kendall trend test.</p>
-<p>The trending function results in a list containing two tibble data frame outputs and, if selected, a trends plot for each metric.</p>
+<p>Determining trends in streamflow data can provide information on potential changes in hydrological processes over time. The annual trending analysis with <code>fasstr</code> allows for customization of both the inputs and outputs. This function takes 107 annual streamflow metrics (calculated using various annual <code>fasstr</code> functions) and calculates prewhitened, non-parametric trends using the <a href="https://CRAN.R-project.org/package=zyp"><code>zyp</code></a> R package. See the <code>zyp</code> <a href="https://cran.r-project.org/web/packages/zyp/zyp.pdf">documentation</a> for more information on the methods.</p>
+<p>Each annual metric/time-series is analyzed for trends using trend-free prewhitening to remove lag-1 correlation (may artificially detect a significant trend). The slope of each metric over time is then estimated using the Theil-Sen approach. If the estimated slope is different from zero, then the data are detrended by the slope and the AR(1) 1s calculated for the detrended time series. The residuals and the trend are combined and then tested for significance using the Mann-Kendall trend test.</p>
+<p>The trending function results in a list containing two tibble data frame outputs and, if selected, plot for each metric trended.</p>
 <ol style="list-style-type: decimal">
 <li>
-<strong>Annual_Trends_Data</strong> - data used for analysis calculated from various annual ‘fasstr’ functions</li>
+<strong>Annual_Trends_Data</strong> - data used for analysis calculated from various annual <code>fasstr</code> functions</li>
 <li>
-<strong>Annual_Trends_Results</strong> - results of the ‘zyp’ trending analysis, and includes various other statistics</li>
+<strong>Annual_Trends_Results</strong> - results of the <code>zyp</code> trending analysis, and includes various other statistics</li>
 <li>
 <strong>‘Sep_Maximum’</strong> - an example of each of 107 plots produced (one for each metric)</li>
 </ol>
@@ -138,7 +138,7 @@
 <ul>
 <li><code><a href="../reference/compute_annual_trends.html">compute_annual_trends()</a></code></li>
 </ul>
-<p>To determine annual trends from a daily streamflow data set, the <code><a href="../reference/compute_annual_trends.html">compute_annual_trends()</a></code> function will take daily data, either from HYDAT using the <code>station_number</code> argument or your own data frame of data using the <code>data</code> argument to complete the analysis. To complete a custom trends analysis of data please see the ‘zyp’ functions for more information.</p>
+<p>To determine annual trends from a daily streamflow data set, the <code><a href="../reference/compute_annual_trends.html">compute_annual_trends()</a></code> function will take daily data, either from HYDAT using the <code>station_number</code> argument or your own data frame of data using the <code>data</code> argument to complete the analysis. To complete a custom trends analysis of data please see the <code>zyp</code> functions for more information.</p>
 </div>
 <div id="usage-options-and-outputs" class="section level2">
 <h2 class="hasAnchor">
@@ -146,7 +146,7 @@
 <div id="analysis-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#analysis-data" class="anchor"></a>Analysis Data</h3>
-<p>This function is provided to calculate trends on a multitude of annual metrics, as calculate by various annual and monthly ‘fasstr’ functions. The functions will calculate metrics from each of the following functions:</p>
+<p>This function is provided to calculate trends on a multitude of annual metrics, as calculate by various annual and monthly <code>fasstr</code> functions. The functions will calculate metrics from each of the following functions:</p>
 <ul>
 <li>
 <code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code> - calculate annual summary statistics</li>
@@ -230,7 +230,7 @@
                       <span class="kw">lowflow_align</span> <span class="kw">=</span> <span class="st">"right"</span>,
                       <span class="kw">timing_percent</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">25</span>,<span class="fl">33</span>,<span class="fl">50</span>,<span class="fl">75</span>),
                       <span class="kw">normal_percentiles</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">25</span>,<span class="fl">75</span>))</pre></body></html></div>
-<p>This annual data is provided in the <strong>Annual_Trends_Data</strong> tibble objects. The following is an example of the output, including all the annual metrics and a first few years of data used for the ‘zyp’ trends analysis:</p>
+<p>This annual data is provided in the <strong>Annual_Trends_Data</strong> tibble objects. The following is an example of the output, including all the annual metrics and a first few years of data used for the <code>zyp</code> trends analysis:</p>
 <pre><code>              Statistic          1973          1974          1975
 1        Annual_Maximum        37.700        66.000        48.700
 2           Annual_Mean         3.331         8.430         5.483
@@ -371,7 +371,7 @@
 <div id="analysis-results" class="section level3">
 <h3 class="hasAnchor">
 <a href="#analysis-results" class="anchor"></a>Analysis Results</h3>
-<p>To complete a trends analysis, a variable to the <code>zyp_method</code> argument must be provided, either <code>"yuepilon"</code> or <code>"zhang"</code>, designated the two different approaches to analyzing data for trends. See the ‘zyp’ documentation for more information on the differences between the two methods. After running the function, the results of the trending analysis will be outputted in the <strong>Annual_Trends_Results</strong> tibble data frame. See the ‘zyp’ documentation for how to interpret the results. The results tibble contains the following columns:</p>
+<p>To complete a trends analysis, a variable to the <code>zyp_method</code> argument must be provided, either <code>"yuepilon"</code> or <code>"zhang"</code>, designated the two different approaches to analyzing data for trends. See the <code>zyp</code> documentation for more information on the differences between the two methods. After running the function, the results of the trending analysis will be outputted in the <strong>Annual_Trends_Results</strong> tibble data frame. See the <code>zyp</code> documentation for how to interpret the results. The results tibble contains the following columns:</p>
 <table class="table">
 <colgroup>
 <col width="16%">
@@ -388,47 +388,47 @@
 </tr>
 <tr class="even">
 <td>lbound</td>
-<td>the lower bound of the trend’s confidence interval (‘zyp’)</td>
+<td>the lower bound of the trend’s confidence interval (<code>zyp</code>)</td>
 </tr>
 <tr class="odd">
 <td>trend</td>
-<td>the Sens’ slope (trend) per unit time (‘zyp’)</td>
+<td>the Sens’ slope (trend) per unit time (<code>zyp</code>)</td>
 </tr>
 <tr class="even">
 <td>trendp</td>
-<td>the Sen’s slope (trend) over the time period (‘zyp’)</td>
+<td>the Sen’s slope (trend) over the time period (<code>zyp</code>)</td>
 </tr>
 <tr class="odd">
 <td>ubound</td>
-<td>the upper bound of the trend’s confidence interval (‘zyp’)</td>
+<td>the upper bound of the trend’s confidence interval (<code>zyp</code>)</td>
 </tr>
 <tr class="even">
 <td>tau</td>
-<td>Kendall’s tau statistic computed on the final detrended timeseries (‘zyp’)</td>
+<td>Kendall’s tau statistic computed on the final detrended timeseries (<code>zyp</code>)</td>
 </tr>
 <tr class="odd">
 <td>sig</td>
-<td>Kendall’s P-value computed for the final detrended timeseries (‘zyp’)</td>
+<td>Kendall’s P-value computed for the final detrended timeseries (<code>zyp</code>)</td>
 </tr>
 <tr class="even">
 <td>nruns</td>
-<td>the number of runs required to converge upon a trend (‘zyp’)</td>
+<td>the number of runs required to converge upon a trend (<code>zyp</code>)</td>
 </tr>
 <tr class="odd">
 <td>autocor</td>
-<td>the autocorrelation of the final detrended timeseries (‘zyp’)</td>
+<td>the autocorrelation of the final detrended timeseries (<code>zyp</code>)</td>
 </tr>
 <tr class="even">
 <td>valid_frac</td>
-<td>the fraction of the data which is valid (not NA) once autocorrelation is removed (‘zyp’)</td>
+<td>the fraction of the data which is valid (not NA) once autocorrelation is removed (<code>zyp</code>)</td>
 </tr>
 <tr class="odd">
 <td>linear</td>
-<td>the least squares fit trend on the same data (‘zyp’)</td>
+<td>the least squares fit trend on the same data (<code>zyp</code>)</td>
 </tr>
 <tr class="even">
 <td>intercept</td>
-<td>the intercept of the Sen’s slope (trend) (‘zyp’)</td>
+<td>the intercept of the Sen’s slope (trend) (<code>zyp</code>)</td>
 </tr>
 <tr class="odd">
 <td>min_year</td>
@@ -483,8 +483,8 @@
 <div id="annual-trends-plots" class="section level3">
 <h3 class="hasAnchor">
 <a href="#annual-trends-plots" class="anchor"></a>Annual Trends Plots</h3>
-<p>To provide the ‘fasstr’ user the ability to visualize the trends, a time-series plot for each metric is provided when <code>include_plots = TRUE</code> (default; set it to <code>FALSE</code> to produce no plots). Each plot will show the annual value for all years and if a numerical <code>zyp_alpha</code> value, a significance level indicating the trend exists, is provided (typically <code>0.05</code>) then a trend line will also be plotted through the data. To plot no lines, set <code>zyp_alpha = NA</code> (default) and to plot the lines regardless of significance, set <code>zyp_alpha = 1</code>. The metric name along with the significance level will be included as the title of the plot.</p>
-<p>The following plots demonstrate examples of where the <code>zyp_alpha</code> value is set to 0.05 and a trend is not, and is plotted, respectively.</p>
+<p>To provide the ability to visualize the trends, a time-series plot for each metric is provided when <code>include_plots = TRUE</code> (default; set it to <code>FALSE</code> to produce no plots). Each plot will show the annual value for all years and if a numerical <code>zyp_alpha</code> value, a significance level indicating the trend exists, is provided (typically <code>0.05</code>) then a trend line of the calculated Sen’s Slope will also be plotted through the data. To plot no slopes, set <code>zyp_alpha = NA</code> (default) and to plot the lines regardless of significance, set <code>zyp_alpha = 1</code>. The metric name along with the significance level will be included as the title of the plot.</p>
+<p>The following plots demonstrate examples of where the <code>zyp_alpha</code> value is set to 0.05 and Sen’s Slopes trends are not and are significant, respectively.</p>
 <p><img src="fasstr_trending_analysis_files/figure-html/unnamed-chunk-9-1.png" width="672"></p>
 <p><img src="fasstr_trending_analysis_files/figure-html/unnamed-chunk-10-1.png" width="672"></p>
 </div>

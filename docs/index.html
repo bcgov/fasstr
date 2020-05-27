@@ -117,36 +117,40 @@
 <!-- badges: start -->
 
 <p><a href="https://cran.r-project.org/package=fasstr"><img src="https://www.r-pkg.org/badges/version/fasstr" alt="CRAN_Status_Badge"></a> <a href="https://CRAN.R-project.org/package=fasstr"><img src="https://cranlogs.r-pkg.org/badges/fasstr?color=brightgreen" alt="CRAN Downloads"></a> <a href="https://CRAN.R-project.org/web/checks/check_results_fasstr.html"><img src="https://cranchecks.info/badges/worst/fasstr" alt="cran checks"></a> <!-- badges: end --></p>
-<p>The Flow Analysis Summary Statistics Tool for R (‘fasstr’) is a set of <a href="http://www.r-project.org">R</a> functions to clean, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses, in both table and plot formats.</p>
-<p>This package provides functions with solutions for streamflow data:</p>
+<p>The Flow Analysis Summary Statistics Tool for R (<code>fasstr</code>) is a set of <a href="http://www.r-project.org">R</a> functions to clean, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses.</p>
+<p>This package provides functions for streamflow data analysis, including:</p>
 <ul>
-<li>cleaning (to prepare data for analyses; <code>add_*</code> and <code>fill_*</code> functions),</li>
-<li>screening (to look for outliers and missing data; <code>screen_*</code> functions),</li>
-<li>analyzing (basic summary statistics, frequency analyses, trending ;<code>calc_*</code> and <code>compute_*</code> functions), and</li>
-<li>visualizing (to plot statistics; <code>plot_*</code> functions), amongst others.</li>
+<li>data cleaning (to prepare data for analyses; <code>add_*</code> and <code>fill_*</code> functions),</li>
+<li>data screening (to identify data range, outliers and missing data; <code>screen_*</code> functions),</li>
+<li>calculating summary statistics (long-term, annual, monthly and daily statistics; <code>calc_*</code>functions),</li>
+<li>computing analyses (volume frequency analyses and annual trending; <code>compute_*</code> functions), and,</li>
+<li>visualizing data (plotting the various statistics; <code>plot_*</code> functions).</li>
 </ul>
 <p>Useful features of functions include:</p>
 <ul>
-<li>the integration of the ‘tidyhydat’ package to pull streamflow data from a Water Survey of Canada <a href="https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html">HYDAT</a> database for analyses;</li>
-<li>arguments for filtering of years and months in analyses and plotting (internally tidys your data);</li>
+<li>the integration of the <code>tidyhydat</code> package to pull streamflow data from a Water Survey of Canada <a href="https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html">HYDAT</a> database for analyses;</li>
+<li>arguments for filtering of years and months in analyses and plotting;</li>
 <li>choosing the start month of your water year;</li>
-<li>selecting for rolling day averages (e.g. 7-day rolling average);</li>
-<li>plotting options; and,</li>
+<li>selecting for rolling day averages (e.g. 7-day rolling average); and,</li>
 <li>choosing how missing dates are handled, amongst others.</li>
 </ul>
+<p>This package is maintained by the <a href="https://www2.gov.bc.ca/gov/content/environment/air-land-water/water">Water Protection and Sustainability Branch of the British Columbia Ministry of Environment and Climate Change Strategy</a>.</p>
 <div id="installation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h3>
-<p>You can install ‘fasstr’ using the following code. It may take a few moments as there are several dependency packages will also be installed, including <a href="https://CRAN.R-project.org/package=tidyhydat">‘tidyhydat’</a> for downloading Water Survey of Canada hydrometric data, <a href="https://CRAN.R-project.org/package=zyp">‘zyp’</a> for trending, <a href="https://CRAN.R-project.org/package=ggplot2">‘ggplot2’</a> for creating plots, and <a href="https://CRAN.R-project.org/package=dplyr">‘dplyr’</a> and <a href="https://CRAN.R-project.org/package=tidyr">‘tidyr’</a> for various data wrangling and summarizing functions, amongst others.</p>
+<p>You can install <code>fasstr</code> directly from <a href="https://cran.r-project.org/package=fasstr">CRAN</a>:</p>
 <div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"fasstr"</span>)</pre></div>
-<p>To install the development version of the ‘fasstr’ package, you need to install the remotes package then the ‘fasstr’ package.</p>
+<p>To install the development version from <a href="https://github.com/bcgov/fasstr">GitHub</a>, use the <a href="https://cran.r-project.org/package=remotes"><code>remotes</code></a> package then the <code>fasstr</code> package:</p>
 <div class="sourceCode" id="cb2"><pre class="r"><span class="kw">if</span>(!<span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span>(<span class="st">"remotes"</span>)) <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"remotes"</span>)
 <span class="kw pkg">remotes</span><span class="kw ns">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"bcgov/fasstr"</span>)</pre></div>
-<p>To utilize the ‘tidyhydat’ features (using the station_number argument), you will need to download a HYDAT database using the <code><a href="https://docs.ropensci.org/tidyhydat/reference/download_hydat.html">tidyhydat::download_hydat()</a></code> function.</p>
+<p>Several other packages will be installed with <code>fasstr</code>. These include <a href="https://CRAN.R-project.org/package=tidyhydat"><code>tidyhydat</code></a> for downloading Water Survey of Canada hydrometric data, <a href="https://CRAN.R-project.org/package=zyp"><code>zyp</code></a> for trending, <a href="https://CRAN.R-project.org/package=ggplot2"><code>ggplot2</code></a> for creating plots, and <a href="https://CRAN.R-project.org/package=tidyr"><code>tidyr</code></a> and <a href="https://CRAN.R-project.org/package=dplyr"><code>dplyr</code></a> for data wrangling and summarizing, amongst others.</p>
+<p>To use the <code>station_number</code> argument and pull data directly from a <a href="https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html">Water Survey of Canada HYDAT database</a> into <code>fasstr</code> functions, download a HYDAT file using the following code:</p>
+<div class="sourceCode" id="cb3"><pre class="r"><span class="kw pkg">tidyhydat</span><span class="kw ns">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/download_hydat.html">download_hydat</a></span>()</pre></div>
 </div>
-<div id="vignettes" class="section level3">
+<div id="using-fasstr" class="section level3">
 <h3 class="hasAnchor">
-<a href="#vignettes" class="anchor"></a>Vignettes</h3>
+<a href="#using-fasstr" class="anchor"></a>Using fasstr</h3>
+<p>There are several vignettes to provide more information on the usage of <code>fasstr</code> functions and how to customize them with various argument options.</p>
 <ul>
 <li><a href="https://bcgov.github.io/fasstr/articles/fasstr.html">Get Started with fasstr</a></li>
 <li><a href="https://bcgov.github.io/fasstr/articles/fasstr_users_guide.html">fasstr Users Guide</a></li>
@@ -170,20 +174,19 @@
 <div id="license" class="section level3">
 <h3 class="hasAnchor">
 <a href="#license" class="anchor"></a>License</h3>
-<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">Copyright <span class="dv">2019</span> Province of British Columbia</a>
-<a class="sourceLine" id="cb3-2" title="2"></a>
-<a class="sourceLine" id="cb3-3" title="3">Licensed under the Apache License, Version <span class="fl">2.0</span> (the <span class="st">"License"</span>);</a>
-<a class="sourceLine" id="cb3-4" title="4">you may not use this file except <span class="cf">in</span> compliance with the License.</a>
-<a class="sourceLine" id="cb3-5" title="5">You may obtain a copy of the License at </a>
-<a class="sourceLine" id="cb3-6" title="6"></a>
-<a class="sourceLine" id="cb3-7" title="7">   http<span class="op">:</span><span class="er">//</span>www.apache.org<span class="op">/</span>licenses<span class="op">/</span>LICENSE<span class="fl">-2.0</span></a>
-<a class="sourceLine" id="cb3-8" title="8"></a>
-<a class="sourceLine" id="cb3-9" title="9">Unless required by applicable law or agreed to <span class="cf">in</span> writing, software</a>
-<a class="sourceLine" id="cb3-10" title="10">distributed under the License is distributed on an <span class="st">"AS IS"</span> BASIS,</a>
-<a class="sourceLine" id="cb3-11" title="11">WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
-<a class="sourceLine" id="cb3-12" title="12">See the License <span class="cf">for</span> the specific language governing permissions and</a>
-<a class="sourceLine" id="cb3-13" title="13">limitations under the License.</a></code></pre></div>
-<p>This package is maintained by the <a href="https://www2.gov.bc.ca/gov/content/environment/air-land-water/water">Water Protection and Sustainability Branch of the British Columbia Ministry of Environment and Climate Change Strategy</a>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">Copyright <span class="dv">2019</span> Province of British Columbia</a>
+<a class="sourceLine" id="cb4-2" title="2"></a>
+<a class="sourceLine" id="cb4-3" title="3">Licensed under the Apache License, Version <span class="fl">2.0</span> (the <span class="st">"License"</span>);</a>
+<a class="sourceLine" id="cb4-4" title="4">you may not use this file except <span class="cf">in</span> compliance with the License.</a>
+<a class="sourceLine" id="cb4-5" title="5">You may obtain a copy of the License at </a>
+<a class="sourceLine" id="cb4-6" title="6"></a>
+<a class="sourceLine" id="cb4-7" title="7">   http<span class="op">:</span><span class="er">//</span>www.apache.org<span class="op">/</span>licenses<span class="op">/</span>LICENSE<span class="fl">-2.0</span></a>
+<a class="sourceLine" id="cb4-8" title="8"></a>
+<a class="sourceLine" id="cb4-9" title="9">Unless required by applicable law or agreed to <span class="cf">in</span> writing, software</a>
+<a class="sourceLine" id="cb4-10" title="10">distributed under the License is distributed on an <span class="st">"AS IS"</span> BASIS,</a>
+<a class="sourceLine" id="cb4-11" title="11">WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<a class="sourceLine" id="cb4-12" title="12">See the License <span class="cf">for</span> the specific language governing permissions and</a>
+<a class="sourceLine" id="cb4-13" title="13">limitations under the License.</a></code></pre></div>
 </div>
 </div>
   </div>
