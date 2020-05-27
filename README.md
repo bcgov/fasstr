@@ -117,8 +117,8 @@ options.
     Analysis](https://bcgov.github.io/fasstr/articles/fasstr_frequency_analysis.html)
   - [Computing a Full fasstr
     Analysis](https://bcgov.github.io/fasstr/articles/fasstr_full_analysis.html)
-  - [Under the
-    Hood](https://bcgov.github.io/fasstr/articles/fasstr_under_the_hood.html)
+  - [fnternal Wfasstr
+    orkflows](https://bcgov.github.io/fasstr/articles/fasstr_under_the_hood.html)
 
 #### Data Input
 

@@ -69,7 +69,7 @@ There are several vignettes to provide more information on the usage of `fasstr`
 - [Computing an Annual Trends Analysis](https://bcgov.github.io/fasstr/articles/fasstr_trending_analysis.html)
 - [Computing a Volume frequency Analysis](https://bcgov.github.io/fasstr/articles/fasstr_frequency_analysis.html)
 - [Computing a Full fasstr Analysis](https://bcgov.github.io/fasstr/articles/fasstr_full_analysis.html)
-- [Under the Hood](https://bcgov.github.io/fasstr/articles/fasstr_under_the_hood.html)
+- [fasstr Internal Workflows](https://bcgov.github.io/fasstr/articles/fasstr_under_the_hood.html)
 
 #### Data Input
 

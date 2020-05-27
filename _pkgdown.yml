@@ -8,6 +8,11 @@ development:
   mode: auto
   
 url: https://bcgov.github.io/fasstr
+
+home:
+  links:
+  - text: Browse other Hydrology CRAN Task View packages
+    href: https://CRAN.R-project.org/view=Hydrology
   
 reference:
 - title: Data Cleaning
@@ -130,7 +135,7 @@ navbar:
       href: articles/fasstr_frequency_analysis.html
     - text: Computing a Full Analysis
       href: articles/fasstr_full_analysis.html
-    - text: Under the Hood
+    - text: Internal fasstr Workflows
       href: articles/fasstr_under_the_hood.html
   - text: News
     href: news/index.html

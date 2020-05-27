@@ -1,10 +1,10 @@
 ---
-title: "fasstr R Package Users Guide"
+title: "fasstr Users Guide"
 output: 
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{fasstr R Package Users Guide}
+  %\VignetteIndexEntry{fasstr Users Guide}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
