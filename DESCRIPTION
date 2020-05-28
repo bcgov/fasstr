@@ -12,7 +12,7 @@ Description: The Flow Analysis Summary Statistics Tool for R, 'fasstr', provides
     <https://www.hec.usace.army.mil/software/hec-ssp/>). It features useful function arguments for filtering of and
     handling dates, customizing data and metrics, and the ability to pull daily data directly from the Water Survey
     of Canada hydrometric database (<https://collaboration.cmc.ec.gc.ca/cmc/hydrometrics/www/>).
-Depends: R (>= 3.2.0)
+Depends: R (>= 3.3.0)
 License: Apache License 2.0
 URL: https://bcgov.github.io/fasstr/,
      https://github.com/bcgov/fasstr, 
