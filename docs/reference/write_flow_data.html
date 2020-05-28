@@ -40,9 +40,9 @@
 
 
 <meta property="og:title" content="Write a streamflow dataset as a .xlsx, .xls, or .csv file — write_flow_data" />
-<meta property="og:description" content="Write a streamflow dataset to a directory. Can fill missing dates or filter data by years or dates before writing using 
-   given arguments. Just list data frame or HYDAT station number to write its entirety. Can write as .xls, .xlsx, or .csv file types.
-   Writing as Excel file type uses the 'writexl' package." />
+<meta property="og:description" content="Write a daily streamflow data set to a directory. Can fill missing dates or filter data by years or dates before 
+   writing using given arguments. List data frame or HYDAT station number to write its entirety. Can write as .xls, .xlsx, or .csv 
+   file types. Writing as Excel file type uses the writexl package." />
 
 
 
@@ -154,9 +154,9 @@
     </div>
 
     <div class="ref-description">
-    <p>Write a streamflow dataset to a directory. Can fill missing dates or filter data by years or dates before writing using 
-   given arguments. Just list data frame or HYDAT station number to write its entirety. Can write as .xls, .xlsx, or .csv file types.
-   Writing as Excel file type uses the 'writexl' package.</p>
+    <p>Write a daily streamflow data set to a directory. Can fill missing dates or filter data by years or dates before 
+   writing using given arguments. List data frame or HYDAT station number to write its entirety. Can write as .xls, .xlsx, or .csv 
+   file types. Writing as Excel file type uses the <code>writexl</code> package.</p>
     </div>
 
     <pre class="usage"><span class='fu'>write_flow_data</span>(
@@ -180,34 +180,36 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+      <td><p>Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>dates</th>
-      <td><p>Column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
-Date' (default). Leave blank if using <code>station_number</code> argument.</p></td>
+      <td><p>Name of column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
+'Date' (default). Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>values</th>
-      <td><p>Column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
+      <td><p>Name of column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>groups</th>
-      <td><p>Column in <code>data</code> that contains unique identifiers for different data sets, if applicable. Only required if
-groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
-Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using <code>station_number</code> argument.</p></td>
+      <td><p>Name of column in <code>data</code> that contains unique identifiers for different data sets, if applicable. Only required 
+if groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if 
+present. Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using <code>station_number</code> 
+argument.</p></td>
     </tr>
     <tr>
       <th>station_number</th>
-      <td><p>A character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
+      <td><p>Character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract daily streamflow data from a HYDAT database. Requires <code>tidyhydat</code> package and a HYDAT database.
 Leave blank if using <code>data</code> argument.</p></td>
     </tr>
     <tr>
       <th>water_year_start</th>
-      <td><p>Numeric value indicating the month of the start of the water year for analysis. Default <code>1</code>.</p></td>
+      <td><p>Numeric value indicating the month (<code>1</code> through <code>12</code>) of the start of water year for
+analysis. Default <code>1</code>.</p></td>
     </tr>
     <tr>
       <th>start_year</th>

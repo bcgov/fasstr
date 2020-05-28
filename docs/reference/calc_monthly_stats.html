@@ -40,8 +40,8 @@
 
 
 <meta property="og:title" content="Calculate monthly summary statistics — calc_monthly_stats" />
-<meta property="og:description" content="Calculates monthly mean, median, maximum, minimum, and percentiles for each month of all years of daily flow values 
-   from a streamflow dataset. Calculates the statistics from all daily discharge values from all years, unless specified." />
+<meta property="og:description" content="Calculates means, medians, maximums, minimums, and percentiles for each month of all years of flow values 
+   from a daily streamflow data set. Calculates statistics from all values, unless specified. Returns a tibble with statistics." />
 
 
 
@@ -153,8 +153,8 @@
     </div>
 
     <div class="ref-description">
-    <p>Calculates monthly mean, median, maximum, minimum, and percentiles for each month of all years of daily flow values 
-   from a streamflow dataset. Calculates the statistics from all daily discharge values from all years, unless specified.</p>
+    <p>Calculates means, medians, maximums, minimums, and percentiles for each month of all years of flow values 
+   from a daily streamflow data set. Calculates statistics from all values, unless specified. Returns a tibble with statistics.</p>
     </div>
 
     <pre class="usage"><span class='fu'>calc_monthly_stats</span>(
@@ -181,34 +181,35 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+      <td><p>Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>dates</th>
-      <td><p>Column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
-Date' (default). Leave blank if using <code>station_number</code> argument.</p></td>
+      <td><p>Name of column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
+'Date' (default). Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>values</th>
-      <td><p>Column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
+      <td><p>Name of column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>groups</th>
-      <td><p>Column in <code>data</code> that contains unique identifiers for different data sets, if applicable. Only required if
-groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
-Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using <code>station_number</code> argument.</p></td>
+      <td><p>Name of column in <code>data</code> that contains unique identifiers for different data sets, if applicable. Only required 
+if groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if 
+present. Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using <code>station_number</code> 
+argument.</p></td>
     </tr>
     <tr>
       <th>station_number</th>
-      <td><p>A character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
+      <td><p>Character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract daily streamflow data from a HYDAT database. Requires <code>tidyhydat</code> package and a HYDAT database.
 Leave blank if using <code>data</code> argument.</p></td>
     </tr>
     <tr>
       <th>percentiles</th>
-      <td><p>Numeric vector of percentiles to calculate. Set to NA if none required. Default <code><a href='https://rdrr.io/r/base/c.html'>c(10,90)</a></code>.</p></td>
+      <td><p>Numeric vector of percentiles to calculate. Set to <code>NA</code> if none required. Default <code><a href='https://rdrr.io/r/base/c.html'>c(10,90)</a></code>.</p></td>
     </tr>
     <tr>
       <th>roll_days</th>
@@ -217,11 +218,13 @@ Leave blank if using <code>data</code> argument.</p></td>
     <tr>
       <th>roll_align</th>
       <td><p>Character string identifying the direction of the rolling mean from the specified date, either by the first 
-('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default <code>'right'</code>.</p></td>
+(<code>'left'</code>), last (<code>'right'</code>), or middle (<code>'center'</code>) day of the rolling n-day group of observations. 
+Default <code>'right'</code>.</p></td>
     </tr>
     <tr>
       <th>water_year_start</th>
-      <td><p>Numeric value indicating the month of the start of the water year for analysis. Default <code>1</code>.</p></td>
+      <td><p>Numeric value indicating the month (<code>1</code> through <code>12</code>) of the start of water year for
+analysis. Default <code>1</code>.</p></td>
     </tr>
     <tr>
       <th>start_year</th>
@@ -237,7 +240,7 @@ Leave blank if using <code>data</code> argument.</p></td>
     </tr>
     <tr>
       <th>months</th>
-      <td><p>Numeric vector of months to include in analysis (e.g.. <code>6:8</code> for Jun-Aug). Leave blank to summarize 
+      <td><p>Numeric vector of months to include in analysis (e.g. <code>6:8</code> for Jun-Aug). Leave blank to summarize 
 all months (default <code>1:12</code>).</p></td>
     </tr>
     <tr>
@@ -251,8 +254,8 @@ all months (default <code>1:12</code>).</p></td>
     <tr>
       <th>ignore_missing</th>
       <td><p>Logical value indicating whether dates with missing values should be included in the calculation. If
-<code>TRUE</code> then a statistic will be calculated regardless of missing dates. If <code>FALSE</code> then only statistics from time periods 
-with no missing dates will be returned. Default <code>FALSE</code>.</p></td>
+<code>TRUE</code> then a statistic will be calculated regardless of missing dates. If <code>FALSE</code> then only those statistics from
+time periods with no missing dates will be returned. Default <code>FALSE</code>.</p></td>
     </tr>
     </table>
 

@@ -10,9 +10,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Add daily volumetric flows
+#' @title Add a daily volumetric flows column to daily flows
 #'
-#' @description Add a column of daily volumetric flows to a streamflow dataset, in units of cubic metres. Converts the discharge to a volume.
+#' @description Add a column of daily volumetric flows to a daily streamflow data set, in units of cubic metres. Converts the
+#'     discharge to a volume.
 #'
 #' @inheritParams calc_annual_stats
 #' 

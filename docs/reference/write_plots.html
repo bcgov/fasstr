@@ -40,9 +40,10 @@
 
 
 <meta property="og:title" content="Write plots from a list into a directory or PDF document — write_plots" />
-<meta property="og:description" content="Write a list of plots (ggplots; as used by fasstr ) into a directory or PDF document. 
-   When writing into a named directory each plot will be named by the plot name listed in the list; uses ggplot2::ggsave function.
-   When writing into a PDF document (combined_pdf == TRUE) the plot names will not appear; uses grDevices:pdf function." />
+<meta property="og:description" content="Write a list of plots (ggplots; as used by fasstr) into a directory or PDF document. 
+   When writing into a named directory each plot will be named by the plot name listed in the list; uses ggplot2::ggsave
+   function. When writing into a PDF document (combined_pdf == TRUE) the plot names will not appear; uses 
+   grDevices::pdf function." />
 
 
 
@@ -154,9 +155,10 @@
     </div>
 
     <div class="ref-description">
-    <p>Write a list of plots (ggplots; as used by fasstr ) into a directory or PDF document. 
-   When writing into a named directory each plot will be named by the plot name listed in the list; uses ggplot2::ggsave function.
-   When writing into a PDF document (<code>combined_pdf == TRUE</code>) the plot names will not appear; uses grDevices:pdf function.</p>
+    <p>Write a list of plots (ggplots; as used by <code>fasstr</code>) into a directory or PDF document. 
+   When writing into a named directory each plot will be named by the plot name listed in the list; uses <code><a href='https://ggplot2.tidyverse.org/reference/ggsave.html'>ggplot2::ggsave</a></code>
+   function. When writing into a PDF document (<code>combined_pdf == TRUE</code>) the plot names will not appear; uses 
+   <code><a href='https://rdrr.io/r/grDevices/pdf.html'>grDevices::pdf</a></code> function.</p>
     </div>
 
     <pre class="usage"><span class='fu'>write_plots</span>(
@@ -184,8 +186,8 @@ If using <code>combined_pdf</code> argument, then it will be the name of the PDF
     </tr>
     <tr>
       <th>plot_filetype</th>
-      <td><p>Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
-Image type will be overwritten if using <code>combined_pdf</code> is used.</p></td>
+      <td><p>Image type to write. One of <code>'png'</code>, <code>'eps'</code>, <code>'ps'</code>, <code>'tex'</code>, <code>'pdf'</code>, <code>'jpeg'</code>, 
+<code>'tiff'</code>, <code>'bmp'</code>, or <code>'svg'</code>. Image type will be overwritten if using <code>combined_pdf</code> is used.</p></td>
     </tr>
     <tr>
       <th>width</th>
@@ -197,7 +199,7 @@ Image type will be overwritten if using <code>combined_pdf</code> is used.</p></
     </tr>
     <tr>
       <th>units</th>
-      <td><p>Character string plot height and width units, one of "in", "cm", or "mm". Default <code>"in"</code>.</p></td>
+      <td><p>Character string plot height and width units, one of <code>'in'</code>, <code>'cm'</code>, or <code>'mm'</code>. Default <code>'in'</code>.</p></td>
     </tr>
     <tr>
       <th>dpi</th>
@@ -205,7 +207,7 @@ Image type will be overwritten if using <code>combined_pdf</code> is used.</p></
     </tr>
     <tr>
       <th>combined_pdf</th>
-      <td><p>Logical value indicating whether to combine list of plots into one pdf document. Default <code>FALSE</code>.</p></td>
+      <td><p>Logical value indicating whether to combine list of plots into one PDF document. Default <code>FALSE</code>.</p></td>
     </tr>
     </table>
 

@@ -13,11 +13,11 @@
 
 #' @title Calculate an annual frequency analysis quantile
 #'
-#' @description Performs a volume frequency analysis on annual statistics from a streamflow dataset and calculates a statistic based on
-#'    the provided mean n-days and return period of the statistic, defaults to minimum flows. For example, to determine the 7Q10 of a 
-#'    dataset, set the roll_days to \code{7} and the return_period to \code{10}. Calculates the statistic from all daily discharge 
-#'    values from all years and months, unless specified.Function will calculate using all values in the provided data (no grouped 
-#'    analysis). Analysis methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
+#' @description Performs a volume frequency analysis on annual statistics from a daily streamflow data set and calculates a statistic
+#'    based on the provided mean n-days and return period of the statistic, defaults to minimum flows. For example, to determine the
+#'    7Q10 of a data set, set the \code{roll_days} to \code{7} and the \code{return_period} to \code{10}. Function will calculate using 
+#'    all values in 'Values' column (no grouped analysis), unless specified. Analysis methodology replicates that from 
+#'    \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}. Returns a tibble with statistics.
 #'
 #' @inheritParams compute_frequency_analysis
 #' @inheritParams compute_annual_frequencies
@@ -25,7 +25,7 @@
 #' @param return_period Numeric vector of the estimated time interval, in years, between flow events of a similar size, 
 #'    inverse of probability, used to estimate the frequency statistic. Required.
 #' 
-#' @return A numeric value of the frequency analysis quantile, given the roll_days and return_period
+#' @return A numeric value of the frequency analysis quantile, given the roll_days and return_period.
 #'   
 #' @seealso \code{\link{compute_frequency_analysis}}
 #'   

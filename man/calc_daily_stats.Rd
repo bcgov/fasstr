@@ -24,31 +24,34 @@ calc_daily_stats(
 )
 }
 \arguments{
-\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+\item{data}{Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank if using \code{station_number} argument.}
 
-\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
-Date' (default). Leave blank if using \code{station_number} argument.}
+\item{dates}{Name of column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
+'Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+\item{values}{Name of column in \code{data} that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
-groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
-Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
+\item{groups}{Name of column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required 
+if groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if 
+present. Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} 
+argument.}
 
-\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+\item{station_number}{Character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
 Leave blank if using \code{data} argument.}
 
-\item{percentiles}{Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(5,25,75,95)}.}
+\item{percentiles}{Numeric vector of percentiles to calculate. Set to \code{NA} if none required. Default \code{c(5,25,75,95)}.}
 
 \item{roll_days}{Numeric value of the number of days to apply a rolling mean. Default \code{1}.}
 
 \item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
-('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
+(\code{'left'}), last (\code{'right'}), or middle (\code{'center'}) day of the rolling n-day group of observations. 
+Default \code{'right'}.}
 
-\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
+\item{water_year_start}{Numeric value indicating the month (\code{1} through \code{12}) of the start of water year for
+analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
@@ -58,14 +61,14 @@ Leave blank if using \code{data} argument.}
 
 \item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 
-\item{months}{Numeric vector of months to include in analysis (e.g.. \code{6:8} for Jun-Aug). Leave blank to summarize 
+\item{months}{Numeric vector of months to include in analysis (e.g. \code{6:8} for Jun-Aug). Leave blank to summarize 
 all months (default \code{1:12}).}
 
-\item{transpose}{Logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.}
+\item{transpose}{Logical value indicating whether to transpose rows and columns of results. Default \code{FALSE}.}
 
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
-\code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
-with no missing dates will be returned. Default \code{FALSE}.}
+\code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from
+time periods with no missing dates will be returned. Default \code{FALSE}.}
 }
 \value{
 A tibble data frame with the following columns:
@@ -84,11 +87,10 @@ A tibble data frame with the following columns:
   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 }
 \description{
-Calculates the daily mean, median, maximum, minimum, and percentiles for each day of the year of daily flow values 
-   from a streamflow dataset. Calculate the statistics from all daily discharge values from all years, unless specified. Can determine
-   statistics of rolling mean days (e.g. 7-day flows) using the roll_days argument. Note that statistics are based on the numeric days
-   of year (1-365) and not the date (Jan1 - Dec 31) of year so day of year values for days after Feb 29 in leap years will be one value
-   higher than non-leap years.
+Calculates means, medians, maximums, minimums, and percentiles for each day of the year of flow values 
+   from a daily streamflow data set. Can determine statistics of rolling mean days (e.g. 7-day flows) using the \code{roll_days} 
+   argument. Note that statistics are based on the numeric days of year (1-365) and not the date of year (Jan 1 - Dec 31).
+   Calculates statistics from all values, unless specified. Returns a tibble with statistics.
 }
 \examples{
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())

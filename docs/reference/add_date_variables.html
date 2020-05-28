@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Add year, month, and day of year variables — add_date_variables • fasstr</title>
+<title>Add year, month, and day of year variable columns to daily flows — add_date_variables • fasstr</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,10 @@
 
 
 
-<meta property="og:title" content="Add year, month, and day of year variables — add_date_variables" />
-<meta property="og:description" content="Add columns of Year (YYYY), Month (MM), MonthName (e.g. 'Jan'), and DayofYear (1-365 or 366); and WaterYear (YYYY) and 
-   WaterDayofYear (1-365 or 366) if selected; to a data frame with a column of dates called 'Date'. Water years are designated by 
-   the year in which they end. For example, Water Year 1999 (starting Oct) is from 1 Oct 1998 (WaterDayofYear 1) to 30 Sep 1999
-   (WaterDayofYear 365))." />
+<meta property="og:title" content="Add year, month, and day of year variable columns to daily flows — add_date_variables" />
+<meta property="og:description" content="Add columns of CalendarYear (YYYY), Month (MM), MonthName (e.g. 'Jan'), WaterYear (YYYY), and DayofYear (1-365 or 366; 
+   of WaterYear); to a data frame with a column of dates called 'Date'. Water years are designated by the year in which they end. 
+   For example, Water Year 1999 (starting Oct) is from 1 Oct 1998 (DayofYear 1) to 30 Sep 1999 (DayofYear 365))." />
 
 
 
@@ -149,16 +148,15 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Add year, month, and day of year variables</h1>
+    <h1>Add year, month, and day of year variable columns to daily flows</h1>
     <small class="dont-index">Source: <a href='https://github.com/bcgov/fasstr/blob/master/R/add_date_variables.R'><code>R/add_date_variables.R</code></a></small>
     <div class="hidden name"><code>add_date_variables.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Add columns of Year (YYYY), Month (MM), MonthName (e.g. 'Jan'), and DayofYear (1-365 or 366); and WaterYear (YYYY) and 
-   WaterDayofYear (1-365 or 366) if selected; to a data frame with a column of dates called 'Date'. Water years are designated by 
-   the year in which they end. For example, Water Year 1999 (starting Oct) is from 1 Oct 1998 (WaterDayofYear 1) to 30 Sep 1999
-   (WaterDayofYear 365)).</p>
+    <p>Add columns of CalendarYear (YYYY), Month (MM), MonthName (e.g. 'Jan'), WaterYear (YYYY), and DayofYear (1-365 or 366; 
+   of WaterYear); to a data frame with a column of dates called 'Date'. Water years are designated by the year in which they end. 
+   For example, Water Year 1999 (starting Oct) is from 1 Oct 1998 (DayofYear 1) to 30 Sep 1999 (DayofYear 365)).</p>
     </div>
 
     <pre class="usage"><span class='fu'>add_date_variables</span>(<span class='no'>data</span>, <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>Date</span>, <span class='no'>station_number</span>, <span class='kw'>water_year_start</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
@@ -168,23 +166,24 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+      <td><p>Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>dates</th>
-      <td><p>Column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
-Date' (default). Leave blank if using <code>station_number</code> argument.</p></td>
+      <td><p>Name of column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
+'Date' (default). Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>station_number</th>
-      <td><p>A character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
+      <td><p>Character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract daily streamflow data from a HYDAT database. Requires <code>tidyhydat</code> package and a HYDAT database.
 Leave blank if using <code>data</code> argument.</p></td>
     </tr>
     <tr>
       <th>water_year_start</th>
-      <td><p>Numeric value indicating the month of the start of the water year for analysis. Default <code>1</code>.</p></td>
+      <td><p>Numeric value indicating the month (<code>1</code> through <code>12</code>) of the start of water year for
+analysis. Default <code>1</code>.</p></td>
     </tr>
     </table>
 
@@ -193,7 +192,7 @@ Leave blank if using <code>data</code> argument.</p></td>
     <p>A tibble data frame of the source data with additional columns:</p>
 <dt>CalendarYear</dt><dd><p>calendar year</p></dd>
   <dt>Month</dt><dd><p>numeric month (1 to 12)</p></dd>
-  <dt>MonthName</dt><dd><p>month name (Jan-Dec)</p></dd>
+  <dt>MonthName</dt><dd><p>month abbreviation (Jan-Dec)</p></dd>
   <dt>WaterYear</dt><dd><p>year starting from the selected month start, water_year_start</p></dd>
   <dt>DayofYear</dt><dd><p>day of the year from the selected month start (1-365 or 366)</p></dd>
 

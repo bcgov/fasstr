@@ -13,8 +13,8 @@
 
 #' @title Plot annual and monthly missing dates
 #'
-#' @description Plots the number of missing data for each month of each year. Calculates the statistics from all daily discharge 
-#'    values from all years, unless specified. Data calculated using screen_flow_data() function.
+#' @description Plots the number of missing data for each month of each year. Calculates statistics from all values, unless specified.
+#'     Data calculated using \code{screen_flow_data()} function. Returns a list of plots.
 #'
 #' @inheritParams screen_flow_data
 #' @inheritParams plot_annual_stats

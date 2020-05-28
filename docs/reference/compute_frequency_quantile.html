@@ -40,11 +40,11 @@
 
 
 <meta property="og:title" content="Calculate an annual frequency analysis quantile — compute_frequency_quantile" />
-<meta property="og:description" content="Performs a volume frequency analysis on annual statistics from a streamflow dataset and calculates a statistic based on
-   the provided mean n-days and return period of the statistic, defaults to minimum flows. For example, to determine the 7Q10 of a 
-   dataset, set the roll_days to 7 and the return_period to 10. Calculates the statistic from all daily discharge 
-   values from all years and months, unless specified.Function will calculate using all values in the provided data (no grouped 
-   analysis). Analysis methodology replicates that from HEC-SSP." />
+<meta property="og:description" content="Performs a volume frequency analysis on annual statistics from a daily streamflow data set and calculates a statistic
+   based on the provided mean n-days and return period of the statistic, defaults to minimum flows. For example, to determine the
+   7Q10 of a data set, set the roll_days to 7 and the return_period to 10. Function will calculate using 
+   all values in 'Values' column (no grouped analysis), unless specified. Analysis methodology replicates that from 
+   HEC-SSP. Returns a tibble with statistics." />
 
 
 
@@ -156,11 +156,11 @@
     </div>
 
     <div class="ref-description">
-    <p>Performs a volume frequency analysis on annual statistics from a streamflow dataset and calculates a statistic based on
-   the provided mean n-days and return period of the statistic, defaults to minimum flows. For example, to determine the 7Q10 of a 
-   dataset, set the roll_days to <code>7</code> and the return_period to <code>10</code>. Calculates the statistic from all daily discharge 
-   values from all years and months, unless specified.Function will calculate using all values in the provided data (no grouped 
-   analysis). Analysis methodology replicates that from <a href='http://www.hec.usace.army.mil/software/hec-ssp/'>HEC-SSP</a>.</p>
+    <p>Performs a volume frequency analysis on annual statistics from a daily streamflow data set and calculates a statistic
+   based on the provided mean n-days and return period of the statistic, defaults to minimum flows. For example, to determine the
+   7Q10 of a data set, set the <code>roll_days</code> to <code>7</code> and the <code>return_period</code> to <code>10</code>. Function will calculate using 
+   all values in 'Values' column (no grouped analysis), unless specified. Analysis methodology replicates that from 
+   <a href='http://www.hec.usace.army.mil/software/hec-ssp/'>HEC-SSP</a>. Returns a tibble with statistics.</p>
     </div>
 
     <pre class="usage"><span class='fu'>compute_frequency_quantile</span>(
@@ -189,20 +189,20 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame of flow data that contains columns of events, flow values, and measures (data type).</p></td>
+      <td><p>A data frame of data that contains columns of events, flow values, and measures (data type).</p></td>
     </tr>
     <tr>
       <th>dates</th>
-      <td><p>Column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
-Date' (default). Leave blank if using <code>station_number</code> argument.</p></td>
+      <td><p>Name of column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
+'Date' (default). Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>values</th>
-      <td><p>Column in <code>data</code> that contains numeric flow values, in units of cubic metres per second. Default <code>"Value"</code>.</p></td>
+      <td><p>Column in <code>data</code> that contains numeric flow values, in units of cubic metres per second. Default <code>'Value'</code>.</p></td>
     </tr>
     <tr>
       <th>station_number</th>
-      <td><p>A character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
+      <td><p>Character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract daily streamflow data from a HYDAT database. Requires <code>tidyhydat</code> package and a HYDAT database.
 Leave blank if using <code>data</code> argument.</p></td>
     </tr>
@@ -213,7 +213,8 @@ Leave blank if using <code>data</code> argument.</p></td>
     <tr>
       <th>roll_align</th>
       <td><p>Character string identifying the direction of the rolling mean from the specified date, either by the first 
-('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default <code>'right'</code>.</p></td>
+(<code>'left'</code>), last (<code>'right'</code>), or middle (<code>'center'</code>) day of the rolling n-day group of observations. 
+Default <code>'right'</code>.</p></td>
     </tr>
     <tr>
       <th>return_period</th>
@@ -222,7 +223,7 @@ inverse of probability, used to estimate the frequency statistic. Required.</p><
     </tr>
     <tr>
       <th>use_max</th>
-      <td><p>Logical value to indicate using annual maximums rather than the minimums for analysis. Default <code>FALSE</code>.</p></td>
+      <td><p>Logical value to indicate using maximums rather than the minimums for analysis. Default <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>use_log</th>
@@ -230,18 +231,19 @@ inverse of probability, used to estimate the frequency statistic. Required.</p><
     </tr>
     <tr>
       <th>fit_distr</th>
-      <td><p>Character string identifying the distribution to fit annual data, one of "PIII" (Pearson Log III distribution) 
-or "weibull" (Weibull distribution). Default <code>"PIII"</code>.</p></td>
+      <td><p>Character string identifying the distribution to fit annual data, one of <code>'PIII'</code> (Pearson Log III 
+distribution) or <code>'weibull'</code> (Weibull distribution). Default <code>'PIII'</code>.</p></td>
     </tr>
     <tr>
       <th>fit_distr_method</th>
-      <td><p>Character string identifying the method used to fit the distribution, one of  "MOM" (method of moments) 
-or "MLE" (maximum likelihood estimation). Selected as <code>"MOM"</code> if <code>fit_distr</code>=="PIII" (default) or <code>"MLE"</code> if 
- <code>fit_distr</code>=="weibull".</p></td>
+      <td><p>Character string identifying the method used to fit the distribution, one of <code>'MOM'</code> (method of
+moments) or <code>'MLE'</code> (maximum likelihood estimation). Selected as <code>'MOM'</code> if <code>fit_distr ='PIII'</code> (default) or 
+<code>'MLE'</code> if <code>fit_distr = 'weibull'</code>.</p></td>
     </tr>
     <tr>
       <th>water_year_start</th>
-      <td><p>Numeric value indicating the month of the start of the water year for analysis. Default <code>1</code>.</p></td>
+      <td><p>Numeric value indicating the month (<code>1</code> through <code>12</code>) of the start of water year for
+analysis. Default <code>1</code>.</p></td>
     </tr>
     <tr>
       <th>start_year</th>
@@ -257,24 +259,24 @@ or "MLE" (maximum likelihood estimation). Selected as <code>"MOM"</code> if <cod
     </tr>
     <tr>
       <th>months</th>
-      <td><p>Numeric vector of months to include in analysis (e.g.. <code>6:8</code> for Jun-Aug). Leave blank to summarize 
+      <td><p>Numeric vector of months to include in analysis (e.g. <code>6:8</code> for Jun-Aug). Leave blank to summarize 
 all months (default <code>1:12</code>).</p></td>
     </tr>
     <tr>
       <th>ignore_missing</th>
       <td><p>Logical value indicating whether dates with missing values should be included in the calculation. If
-<code>TRUE</code> then a statistic will be calculated regardless of missing dates. If <code>FALSE</code> then only statistics from time periods 
-with no missing dates will be returned. Default <code>FALSE</code>.</p></td>
+<code>TRUE</code> then a statistic will be calculated regardless of missing dates. If <code>FALSE</code> then only those statistics from
+time periods with no missing dates will be returned. Default <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>remove_zeros</th>
-      <td><p>Logical value to indicate removing any zero flow values from the dataset.</p></td>
+      <td><p>Logical value to indicate removing any zero flow values from the data set. Default <code>FALSE</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A numeric value of the frequency analysis quantile, given the roll_days and return_period</p>
+    <p>A numeric value of the frequency analysis quantile, given the roll_days and return_period.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='compute_frequency_analysis.html'>compute_frequency_analysis</a></code></p></div>

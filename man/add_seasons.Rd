@@ -13,17 +13,18 @@ add_seasons(
 )
 }
 \arguments{
-\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+\item{data}{Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank if using \code{station_number} argument.}
 
-\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
-Date' (default). Leave blank if using \code{station_number} argument.}
+\item{dates}{Name of column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
+'Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+\item{station_number}{Character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
 Leave blank if using \code{data} argument.}
 
-\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
+\item{water_year_start}{Numeric value indicating the month (\code{1} through \code{12}) of the start of water year for
+analysis. Default \code{1}.}
 
 \item{seasons_length}{Numeric value indicating the desired length of seasons in months, divisible into 12. Required.}
 }
@@ -33,8 +34,8 @@ A tibble data frame of the source data with additional column:
 }
 \description{
 Adds a column of seasons identifiers to a data frame with a column of dates called 'Date'. The length of seasons,
-   in months, is provided using the seasons_length argument. As seasons are grouped by months the length of the seasons must be
-   divisible into 12 with one of the following season lengths: 1, 2, 3, 4, 6, or 12 months. The start of the first season 
+   in months, is provided using the \code{seasons_length} argument. As seasons are grouped by months the length of the seasons 
+   must be divisible into 12 with one of the following season lengths: 1, 2, 3, 4, 6, or 12 months. The start of the first season 
    coincides with the start month of each year; 'Jan-Jun' for 6-month seasons starting with calendar years or 'Dec-Feb' for 3-month
    seasons starting with water year starting in December.
 }

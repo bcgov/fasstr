@@ -11,10 +11,10 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 
-#' @title Calculate annual peaks
+#' @title Calculate annual peak flows
 #'
-#' @description Calculates annual n-day minimum and maximum values, and the day of year and date of occurrence of daily flow values from a 
-#'    streamflow dataset. Calculates the statistics from all daily discharge values from all years, unless specified.
+#' @description Calculates annual n-day minimum and maximum values, and the day of year and date of occurrence of daily flow values
+#'    from a daily streamflow data set. Calculates statistics from all values, unless specified. Returns a tibble with statistics.
 #'
 #' @inheritParams calc_annual_stats
 #'    

@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_annual_flow_timing.R
 \name{calc_annual_flow_timing}
 \alias{calc_annual_flow_timing}
-\title{Calculate annual flow timing}
+\title{Calculate annual timing of flows}
 \usage{
 calc_annual_flow_timing(
   data,
@@ -19,26 +19,28 @@ calc_annual_flow_timing(
 )
 }
 \arguments{
-\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+\item{data}{Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank if using \code{station_number} argument.}
 
-\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
-Date' (default). Leave blank if using \code{station_number} argument.}
+\item{dates}{Name of column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
+'Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+\item{values}{Name of column in \code{data} that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
-groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
-Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
+\item{groups}{Name of column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required 
+if groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if 
+present. Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} 
+argument.}
 
-\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+\item{station_number}{Character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
 Leave blank if using \code{data} argument.}
 
 \item{percent_total}{Numeric vector of percents of total annual flows to determine dates. Default \code{c(25,33.3,50,75)}.}
 
-\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
+\item{water_year_start}{Numeric value indicating the month (\code{1} through \code{12}) of the start of water year for
+analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
@@ -46,7 +48,7 @@ Leave blank if using \code{data} argument.}
 
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 
-\item{transpose}{Logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.}
+\item{transpose}{Logical value indicating whether to transpose rows and columns of results. Default \code{FALSE}.}
 }
 \value{
 A tibble data frame with the following columns:
@@ -65,9 +67,9 @@ A tibble data frame with the following columns:
   Transposing data creates a column of 'Statistics' (just DoY, not Date values) and subsequent columns for each year selected.
 }
 \description{
-Calculates annual the timing (day of year) and date of occurrence of portions of total annual flow of daily flow 
-   values from a streamflow dataset. Calculates the statistics from all daily discharge values from all years with complete annual
-   data, unless specified.
+Calculates the timing (day of year and date) of portions of total annual flow of daily flow 
+   values from a daily streamflow data set. Calculates statistics from all values from complete years, unless specified.
+   Returns a tibble with statistics.
 }
 \examples{
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())

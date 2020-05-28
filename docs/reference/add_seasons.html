@@ -41,8 +41,8 @@
 
 <meta property="og:title" content="Add a column of seasons — add_seasons" />
 <meta property="og:description" content="Adds a column of seasons identifiers to a data frame with a column of dates called 'Date'. The length of seasons,
-   in months, is provided using the seasons_length argument. As seasons are grouped by months the length of the seasons must be
-   divisible into 12 with one of the following season lengths: 1, 2, 3, 4, 6, or 12 months. The start of the first season 
+   in months, is provided using the seasons_length argument. As seasons are grouped by months the length of the seasons 
+   must be divisible into 12 with one of the following season lengths: 1, 2, 3, 4, 6, or 12 months. The start of the first season 
    coincides with the start month of each year; 'Jan-Jun' for 6-month seasons starting with calendar years or 'Dec-Feb' for 3-month
    seasons starting with water year starting in December." />
 
@@ -157,8 +157,8 @@
 
     <div class="ref-description">
     <p>Adds a column of seasons identifiers to a data frame with a column of dates called 'Date'. The length of seasons,
-   in months, is provided using the seasons_length argument. As seasons are grouped by months the length of the seasons must be
-   divisible into 12 with one of the following season lengths: 1, 2, 3, 4, 6, or 12 months. The start of the first season 
+   in months, is provided using the <code>seasons_length</code> argument. As seasons are grouped by months the length of the seasons 
+   must be divisible into 12 with one of the following season lengths: 1, 2, 3, 4, 6, or 12 months. The start of the first season 
    coincides with the start month of each year; 'Jan-Jun' for 6-month seasons starting with calendar years or 'Dec-Feb' for 3-month
    seasons starting with water year starting in December.</p>
     </div>
@@ -176,23 +176,24 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+      <td><p>Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>dates</th>
-      <td><p>Column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
-Date' (default). Leave blank if using <code>station_number</code> argument.</p></td>
+      <td><p>Name of column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
+'Date' (default). Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>station_number</th>
-      <td><p>A character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
+      <td><p>Character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract daily streamflow data from a HYDAT database. Requires <code>tidyhydat</code> package and a HYDAT database.
 Leave blank if using <code>data</code> argument.</p></td>
     </tr>
     <tr>
       <th>water_year_start</th>
-      <td><p>Numeric value indicating the month of the start of the water year for analysis. Default <code>1</code>.</p></td>
+      <td><p>Numeric value indicating the month (<code>1</code> through <code>12</code>) of the start of water year for
+analysis. Default <code>1</code>.</p></td>
     </tr>
     <tr>
       <th>seasons_length</th>

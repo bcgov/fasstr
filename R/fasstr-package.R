@@ -14,7 +14,6 @@
 #' 
 #' tidyhydat information:
 #' 
-#' 
 #' To use the station_number argument of the fasstr functions, please download the latest version of HYDAT using the function:
 #'  \itemize{
 #'   \item \code{tidyhydat::download_hydat()}

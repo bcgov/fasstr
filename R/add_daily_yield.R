@@ -10,16 +10,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Add daily volumetric runoff yields
+#' @title Add a daily volumetric water yield column to daily flows
 #'
-#' @description Add a column of daily runoff yields to a streamflow dataset, in units of millimetres. Converts the discharge to a depth
+#' @description Add a column of daily water yields to a daily streamflow data set, in units of millimetres. Converts the discharge to a depth
 #'   of water based on the upstream drainage basin area.
 #'
 #' @inheritParams calc_annual_stats
 #' @inheritParams add_basin_area
 #'    
 #' @return A tibble data frame of the source data with an additional column:
-#'   \item{Yield_mm}{daily runoff yield flow, in units of millimetres}
+#'   \item{Yield_mm}{daily water yield, in units of millimetres}
 #'
 #' @examples
 #' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())

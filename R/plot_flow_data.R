@@ -10,11 +10,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Plot daily mean streamflow
+#' @title Plot a daily streamflow data set
 #'
-#' @description Plot the daily mean flow values from a streamflow dataset. Plots the statistics from all daily discharge values from all 
-#'    years, unless specified. Can choose specific dates to start and end plotting. Can choose to plot out each year separately. Data 
-#'    calculated using calc_daily_stats() function. Multiple groups/stations can be plotted if provided with the \code{groups} argument.
+#' @description Plot the daily mean flow values from a streamflow data set. Plots daily discharge values 
+#'    from all years, unless specified. Can choose specific dates to start and end plotting. Can choose to plot out each year 
+#'    separately. Multiple groups/stations can be plotted if provided with the \code{groups} argument. Returns a list of plots.
 #'
 #' @inheritParams calc_annual_stats
 #' @inheritParams plot_annual_stats

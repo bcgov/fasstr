@@ -63,7 +63,7 @@ reference:
 - title: Cumulative Summary Statistics
   desc: Functions to calculate and plot mean, median, minimum, and selected 
         percentiles flows for years (or seasons) by volume (cubic m) or by
-        area-based yield (mm) using the 'use_yield' and 'basin_area' arguments.
+        area-based water yield (mm) using the 'use_yield' and 'basin_area' arguments.
   contents:
   - calc_annual_cumulative_stats
   - plot_annual_cumulative_stats  

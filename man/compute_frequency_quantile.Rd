@@ -26,37 +26,39 @@ compute_frequency_quantile(
 )
 }
 \arguments{
-\item{data}{A data frame of flow data that contains columns of events, flow values, and measures (data type).}
+\item{data}{A data frame of data that contains columns of events, flow values, and measures (data type).}
 
-\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
-Date' (default). Leave blank if using \code{station_number} argument.}
+\item{dates}{Name of column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
+'Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second. Default \code{"Value"}.}
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second. Default \code{'Value'}.}
 
-\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+\item{station_number}{Character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
 Leave blank if using \code{data} argument.}
 
 \item{roll_days}{Numeric value of the number of days to apply a rolling mean. Required.}
 
 \item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
-('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
+(\code{'left'}), last (\code{'right'}), or middle (\code{'center'}) day of the rolling n-day group of observations. 
+Default \code{'right'}.}
 
 \item{return_period}{Numeric vector of the estimated time interval, in years, between flow events of a similar size, 
 inverse of probability, used to estimate the frequency statistic. Required.}
 
-\item{use_max}{Logical value to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}
+\item{use_max}{Logical value to indicate using maximums rather than the minimums for analysis. Default \code{FALSE}.}
 
 \item{use_log}{Logical value to indicate log-scale transforming of flow data before analysis. Default \code{FALSE}.}
 
-\item{fit_distr}{Character string identifying the distribution to fit annual data, one of "PIII" (Pearson Log III distribution) 
-or "weibull" (Weibull distribution). Default \code{"PIII"}.}
+\item{fit_distr}{Character string identifying the distribution to fit annual data, one of \code{'PIII'} (Pearson Log III 
+distribution) or \code{'weibull'} (Weibull distribution). Default \code{'PIII'}.}
 
-\item{fit_distr_method}{Character string identifying the method used to fit the distribution, one of  "MOM" (method of moments) 
-or "MLE" (maximum likelihood estimation). Selected as \code{"MOM"} if \code{fit_distr}=="PIII" (default) or \code{"MLE"} if 
- \code{fit_distr}=="weibull".}
+\item{fit_distr_method}{Character string identifying the method used to fit the distribution, one of \code{'MOM'} (method of
+moments) or \code{'MLE'} (maximum likelihood estimation). Selected as \code{'MOM'} if \code{fit_distr ='PIII'} (default) or 
+\code{'MLE'} if \code{fit_distr = 'weibull'}.}
 
-\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
+\item{water_year_start}{Numeric value indicating the month (\code{1} through \code{12}) of the start of water year for
+analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
@@ -64,24 +66,24 @@ or "MLE" (maximum likelihood estimation). Selected as \code{"MOM"} if \code{fit_
 
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 
-\item{months}{Numeric vector of months to include in analysis (e.g.. \code{6:8} for Jun-Aug). Leave blank to summarize 
+\item{months}{Numeric vector of months to include in analysis (e.g. \code{6:8} for Jun-Aug). Leave blank to summarize 
 all months (default \code{1:12}).}
 
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
-\code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
-with no missing dates will be returned. Default \code{FALSE}.}
+\code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from
+time periods with no missing dates will be returned. Default \code{FALSE}.}
 
-\item{remove_zeros}{Logical value to indicate removing any zero flow values from the dataset.}
+\item{remove_zeros}{Logical value to indicate removing any zero flow values from the data set. Default \code{FALSE}.}
 }
 \value{
-A numeric value of the frequency analysis quantile, given the roll_days and return_period
+A numeric value of the frequency analysis quantile, given the roll_days and return_period.
 }
 \description{
-Performs a volume frequency analysis on annual statistics from a streamflow dataset and calculates a statistic based on
-   the provided mean n-days and return period of the statistic, defaults to minimum flows. For example, to determine the 7Q10 of a 
-   dataset, set the roll_days to \code{7} and the return_period to \code{10}. Calculates the statistic from all daily discharge 
-   values from all years and months, unless specified.Function will calculate using all values in the provided data (no grouped 
-   analysis). Analysis methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
+Performs a volume frequency analysis on annual statistics from a daily streamflow data set and calculates a statistic
+   based on the provided mean n-days and return period of the statistic, defaults to minimum flows. For example, to determine the
+   7Q10 of a data set, set the \code{roll_days} to \code{7} and the \code{return_period} to \code{10}. Function will calculate using 
+   all values in 'Values' column (no grouped analysis), unless specified. Analysis methodology replicates that from 
+   \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}. Returns a tibble with statistics.
 }
 \examples{
 \dontrun{

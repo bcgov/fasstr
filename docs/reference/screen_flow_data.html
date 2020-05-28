@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Calculate annual summary and missing data statistics — screen_flow_data • fasstr</title>
+<title>Calculate annual summary and missing data statistics for screening data — screen_flow_data • fasstr</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,10 @@
 
 
 
-<meta property="og:title" content="Calculate annual summary and missing data statistics — screen_flow_data" />
-<meta property="og:description" content="Calculates mean, median, maximum, minimum, standard deviation of annual flows and data availability and missing data
-   statistics for each year and month of each year. Calculates the statistics from all daily discharge values from all years, 
-   unless specified." />
+<meta property="og:title" content="Calculate annual summary and missing data statistics for screening data — screen_flow_data" />
+<meta property="og:description" content="Calculates means, medians, maximums, minimums, standard deviations of annual flows and data availability and missing 
+   data statistics for each year and month of each year. Calculates the statistics from all daily discharge values from all years, 
+   unless specified. Returns a tibble with statistics." />
 
 
 
@@ -148,15 +148,15 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Calculate annual summary and missing data statistics</h1>
+    <h1>Calculate annual summary and missing data statistics for screening data</h1>
     <small class="dont-index">Source: <a href='https://github.com/bcgov/fasstr/blob/master/R/screen_flow_data.R'><code>R/screen_flow_data.R</code></a></small>
     <div class="hidden name"><code>screen_flow_data.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Calculates mean, median, maximum, minimum, standard deviation of annual flows and data availability and missing data
-   statistics for each year and month of each year. Calculates the statistics from all daily discharge values from all years, 
-   unless specified.</p>
+    <p>Calculates means, medians, maximums, minimums, standard deviations of annual flows and data availability and missing 
+   data statistics for each year and month of each year. Calculates the statistics from all daily discharge values from all years, 
+   unless specified. Returns a tibble with statistics.</p>
     </div>
 
     <pre class="usage"><span class='fu'>screen_flow_data</span>(
@@ -179,28 +179,29 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+      <td><p>Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>dates</th>
-      <td><p>Column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
-Date' (default). Leave blank if using <code>station_number</code> argument.</p></td>
+      <td><p>Name of column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
+'Date' (default). Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>values</th>
-      <td><p>Column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
+      <td><p>Name of column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>groups</th>
-      <td><p>Column in <code>data</code> that contains unique identifiers for different data sets, if applicable. Only required if
-groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
-Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using <code>station_number</code> argument.</p></td>
+      <td><p>Name of column in <code>data</code> that contains unique identifiers for different data sets, if applicable. Only required 
+if groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if 
+present. Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using <code>station_number</code> 
+argument.</p></td>
     </tr>
     <tr>
       <th>station_number</th>
-      <td><p>A character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
+      <td><p>Character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract daily streamflow data from a HYDAT database. Requires <code>tidyhydat</code> package and a HYDAT database.
 Leave blank if using <code>data</code> argument.</p></td>
     </tr>
@@ -211,11 +212,13 @@ Leave blank if using <code>data</code> argument.</p></td>
     <tr>
       <th>roll_align</th>
       <td><p>Character string identifying the direction of the rolling mean from the specified date, either by the first 
-('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default <code>'right'</code>.</p></td>
+(<code>'left'</code>), last (<code>'right'</code>), or middle (<code>'center'</code>) day of the rolling n-day group of observations. 
+Default <code>'right'</code>.</p></td>
     </tr>
     <tr>
       <th>water_year_start</th>
-      <td><p>Numeric value indicating the month of the start of the water year for analysis. Default <code>1</code>.</p></td>
+      <td><p>Numeric value indicating the month (<code>1</code> through <code>12</code>) of the start of water year for
+analysis. Default <code>1</code>.</p></td>
     </tr>
     <tr>
       <th>start_year</th>
@@ -227,12 +230,12 @@ Leave blank if using <code>data</code> argument.</p></td>
     </tr>
     <tr>
       <th>months</th>
-      <td><p>Numeric vector of months to include in analysis (e.g.. <code>6:8</code> for Jun-Aug). Leave blank to summarize 
+      <td><p>Numeric vector of months to include in analysis (e.g. <code>6:8</code> for Jun-Aug). Leave blank to summarize 
 all months (default <code>1:12</code>).</p></td>
     </tr>
     <tr>
       <th>transpose</th>
-      <td><p>Logical value indicating if the results rows and columns are to be switched. Default <code>FALSE</code>.</p></td>
+      <td><p>Logical value indicating whether to transpose rows and columns of results. Default <code>FALSE</code>.</p></td>
     </tr>
     </table>
 

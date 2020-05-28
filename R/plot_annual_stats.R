@@ -13,14 +13,14 @@
 
 #' @title Plot annual summary statistics
 #'
-#' @description Plot annual mean, median, maximum, minimum, and percentiles of daily flow values from a streamflow 
-#'    dataset. Plots the statistics from all daily discharge values from all years, unless specified. Data 
-#'    calculated using calc_annual_stats() function.
+#' @description Plots means, medians, maximums, minimums, and percentiles for each year from all years of a daily streamflow 
+#'    data set. Calculates statistics from all values, unless specified. Data calculated using \code{calc_annual_stats()} function.
+#'    Returns a list of plots.
 #'
 #' @inheritParams calc_annual_stats
 #' @param log_discharge Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.
 #' @param include_title Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.
-#' @param percentiles Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{NA}.
+#' @param percentiles Numeric vector of percentiles to calculate. Set to \code{NA} if none required. Default \code{NA}.
 #' 
 #'
 #' @return A list of ggplot2 objects for with the following plots (percentile plots optional) for each station provided:

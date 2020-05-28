@@ -13,20 +13,21 @@
 
 #' @title Perform an annual low or high-flow frequency analysis
 #'
-#' @description Performs a flow volume frequency analysis on annual statistics from a streamflow dataset. Defaults to low-flow frequency 
-#'    analysis using annual minimums. Use \code{use_max} for annual high flow frequency analyses. Calculates the statistics from all 
-#'    daily discharge values from all years, unless specified. Function will calculate using all values in the provided data (no grouped
-#'    analysis). Analysis methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
+#' @description Performs a flow volume frequency analysis on annual statistics from a daily streamflow data set. Defaults to a low 
+#'    flow frequency analysis using annual minimums. Set \code{use_max = TRUE} for annual high flow frequency analyses. Calculates 
+#'    statistics from all values, unless specified. Function will calculate using all values in 'Values' column (no grouped analysis). 
+#'    Analysis methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}. Returns a list of
+#'    tibbles and plots.
 #'
 #' @inheritParams calc_annual_stats
 #' @inheritParams compute_frequency_analysis
-#' @param data A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
-#'    Leave blank if using \code{station_number} argument.
+#' @param data A data frame of daily data that contains columns of dates and flow values. Groupings and the \code{groups} argument
+#'    are not used for this function (i.e. station numbers). Leave blank if using \code{station_number} argument.
 #' 
 #' @return A list with the following elements:
 #'   \item{Freq_Analysis_Data}{Data frame with computed annual summary statistics used in analysis.}
 #'   \item{Freq_Plot_Data}{Data frame with co-ordinates used in frequency plot.}
-#'   \item{Freq_Plot}{ggplot2 object with frequency plot}
+#'   \item{Freq_Plot}{ggplot2 object with frequency plot.}
 #'   \item{Freq_Fitting}{List of fitted objects from fitdistrplus.}
 #'   \item{Freq_Fitted_Quantiles}{Data frame with fitted quantiles.}
 #'   

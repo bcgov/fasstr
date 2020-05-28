@@ -162,9 +162,9 @@ There are several functions that are used to prepare your flow dataset for your 
 - `add_rolling_means()` - add rolling n-day averages (e.g. 7-day rolling average)
 - `add_basin_area()` - add a basin area column to daily flows
 - `add_daily_volume()` - add daily volumetric flows (in cubic metres)
-- `add_daily_yield()` - add daily volumetric runoff yields (in millimetres)
+- `add_daily_yield()` - add daily water yields (in millimetres)
 - `add_cumulative_volume()` - add daily cumulative volumetric flows on an annual basis (in cubic metres)
-- `add_cumulative_yield()` - add daily cumulative runoff yield flows on an annual basis (in millimetres)
+- `add_cumulative_yield()` - add daily cumulative water yields on an annual basis (in millimetres)
 
 The functions are set up to easily incorporate the use of the pipe operator:
 
@@ -296,9 +296,9 @@ add_basin_area(station_number = c("08NM116","08NM242"),
                basin_area = c("08NM116" = 800, "08NM242" = 4))
 ```
 
-### Adding daily volumetric or yield flows
+### Adding daily volumetric discharge or water yields
 
-Converting daily mean discharge into other units can be useful for different analyses. Columns of total daily discharge converted from daily mean into volumetric flows, named "Volume_m3" in cubic metres per second, or runoff yield, named "Yield_mm" in millimetres can be used using the `add_daily_volume()` and `add_daily_yield()` functions, respectively. Volumetric gives the total volume per day, and the yield gives the total water depth, provided an upstream drainage basin area is provided. Basin area can be provided using the `basin_area` argument, or if there is a `groups` column of HYDAT station numbers in your data then it will automatically be extracted from HYDAT, if available. (see `adding basin areas above or section 8 for more information).
+Converting daily mean discharge into other units can be useful for different analyses. Columns of total daily discharge converted from daily mean into volumetric flows, named "Volume_m3" in cubic metres per second, or area-based water yields, named "Yield_mm" in millimetres, can be used using the `add_daily_volume()` and `add_daily_yield()` functions, respectively. Volumetric gives the total volume per day, and the water yield gives the total water depth, provided an upstream drainage basin area is provided. Basin area can be provided using the `basin_area` argument, or if there is a `groups` column of HYDAT station numbers in your data then it will automatically be extracted from HYDAT, if available. (see `adding basin areas above or section 8 for more information).
 
 ```{r, eval=FALSE}
 # Add a column of converted discharge (m3/s) into volume (m3)
@@ -313,9 +313,9 @@ add_daily_yield(station_number = "08NM116",
 ```
 
 
-### Adding annual cumulative daily volumetric or yield flows
+### Adding annual cumulative daily volumetric flows or water yields
 
-These functions create a rolling cumulative of daily total flows on an annual basis, as volumetric flows, named "Cumul_Volume_m3" in cubic metres per second, or runoff yield flows, named "Cumul_Yield_mm" in millimetres. A total flow for a given a day is the sum of all previous days and that day, within a given year (Jan 15 cumulative flow value is the sum of all total flows from Jan 1-15). It restarts for each year (based on the starting month) and no values for a year are calculated if there is missing data for a given year as the total for a given year cannot be determined.
+These functions create a rolling cumulative of daily total flows on an annual basis, as volumetric flows, named "Cumul_Volume_m3" in cubic metres per second, or area-based water yields, named "Cumul_Yield_mm" in millimetres. A total flow for a given a day is the sum of all previous days and that day, within a given year (Jan 15 cumulative flow value is the sum of all total flows from Jan 1-15). It restarts for each year (based on the starting month) and no values for a year are calculated if there is missing data for a given year as the total for a given year cannot be determined.
 
 ```{r, eval=FALSE}
 # Add a column of cumulative volumes (m3)

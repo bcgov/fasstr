@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Perform a flow frequency analysis on annual statistics — compute_hydat_peak_frequencies • fasstr</title>
+<title>Perform a frequency analysis on annual peak statistics from HYDAT — compute_hydat_peak_frequencies • fasstr</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,11 @@
 
 
 
-<meta property="og:title" content="Perform a flow frequency analysis on annual statistics — compute_hydat_peak_frequencies" />
-<meta property="og:description" content="Performs a volume frequency analysis on annual statistics from a streamflow dataset. Calculates the statistics from all 
-   daily discharge values from all years, unless specified. Function will calculate using all values in the provided data (no grouped
-   analysis). Analysis methodology replicates that from HEC-SSP." />
+<meta property="og:title" content="Perform a frequency analysis on annual peak statistics from HYDAT — compute_hydat_peak_frequencies" />
+<meta property="og:description" content="Performs a volume frequency analysis on annual peak statistics (instantaneous minimums or maximums) extracted from
+   HYDAT. Calculates statistics from all years, unless specified. The data argument is not available. Analysis 
+   methodology replicates that from HEC-SSP.  Returns a list of tibbles 
+   and plots." />
 
 
 
@@ -148,15 +149,16 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Perform a flow frequency analysis on annual statistics</h1>
+    <h1>Perform a frequency analysis on annual peak statistics from HYDAT</h1>
     <small class="dont-index">Source: <a href='https://github.com/bcgov/fasstr/blob/master/R/compute_hydat_peak_frequencies.R'><code>R/compute_hydat_peak_frequencies.R</code></a></small>
     <div class="hidden name"><code>compute_hydat_peak_frequencies.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Performs a volume frequency analysis on annual statistics from a streamflow dataset. Calculates the statistics from all 
-   daily discharge values from all years, unless specified. Function will calculate using all values in the provided data (no grouped
-   analysis). Analysis methodology replicates that from <a href='http://www.hec.usace.army.mil/software/hec-ssp/'>HEC-SSP</a>.</p>
+    <p>Performs a volume frequency analysis on annual peak statistics (instantaneous minimums or maximums) extracted from
+   HYDAT. Calculates statistics from all years, unless specified. The <code>data</code> argument is not available. Analysis 
+   methodology replicates that from <a href='http://www.hec.usace.army.mil/software/hec-ssp/'>HEC-SSP</a>.  Returns a list of tibbles 
+   and plots.</p>
     </div>
 
     <pre class="usage"><span class='fu'>compute_hydat_peak_frequencies</span>(
@@ -186,7 +188,7 @@ package and a HYDAT database.</p></td>
     </tr>
     <tr>
       <th>use_max</th>
-      <td><p>Logical value to indicate using annual maximums rather than the minimums for analysis. Default <code>FALSE</code>.</p></td>
+      <td><p>Logical value to indicate using maximums rather than the minimums for analysis. Default <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>use_log</th>
@@ -194,10 +196,10 @@ package and a HYDAT database.</p></td>
     </tr>
     <tr>
       <th>prob_plot_position</th>
-      <td><p>Character string indicating the plotting positions used in the frequency plots, one of "weibull",
-"median", or "hazen". Points are plotted against  (i-a)/(n+1-a-b) where <code>i</code> is the rank of the value; <code>n</code> is the 
+      <td><p>Character string indicating the plotting positions used in the frequency plots, one of <code>'weibull'</code>,
+<code>'median'</code>, or <code>'hazen'</code>. Points are plotted against  (i-a)/(n+1-a-b) where <code>i</code> is the rank of the value; <code>n</code> is the 
 sample size and <code>a</code> and <code>b</code> are defined as: (a=0, b=0) for Weibull plotting positions; (a=.2; b=.3) for Median 
-plotting positions; and (a=.5; b=.5) for Hazen plotting positions. Default <code>"weibull"</code>.</p></td>
+plotting positions; and (a=.5; b=.5) for Hazen plotting positions. Default <code>'weibull'</code>.</p></td>
     </tr>
     <tr>
       <th>prob_scale_points</th>
@@ -206,14 +208,14 @@ return period. Default <code><a href='https://rdrr.io/r/base/c.html'>c(.9999, .9
     </tr>
     <tr>
       <th>fit_distr</th>
-      <td><p>Character string identifying the distribution to fit annual data, one of "PIII" (Pearson Log III distribution) 
-or "weibull" (Weibull distribution). Default <code>"PIII"</code>.</p></td>
+      <td><p>Character string identifying the distribution to fit annual data, one of <code>'PIII'</code> (Pearson Log III 
+distribution) or <code>'weibull'</code> (Weibull distribution). Default <code>'PIII'</code>.</p></td>
     </tr>
     <tr>
       <th>fit_distr_method</th>
-      <td><p>Character string identifying the method used to fit the distribution, one of  "MOM" (method of moments) 
-or "MLE" (maximum likelihood estimation). Selected as <code>"MOM"</code> if <code>fit_distr</code>=="PIII" (default) or <code>"MLE"</code> if 
- <code>fit_distr</code>=="weibull".</p></td>
+      <td><p>Character string identifying the method used to fit the distribution, one of <code>'MOM'</code> (method of
+moments) or <code>'MLE'</code> (maximum likelihood estimation). Selected as <code>'MOM'</code> if <code>fit_distr ='PIII'</code> (default) or 
+<code>'MLE'</code> if <code>fit_distr = 'weibull'</code>.</p></td>
     </tr>
     <tr>
       <th>fit_quantiles</th>

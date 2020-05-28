@@ -12,7 +12,7 @@
 
 #' @title Add a basin area column to daily flows
 #'
-#' @description Add a column of basin areas to a streamflow dataset, in units of square kilometres.
+#' @description Add a column of basin areas to a daily streamflow data set, in units of square kilometres.
 #'
 #' @inheritParams calc_annual_stats
 #' @param basin_area Upstream drainage basin area, in square kilometres, to apply to observations. Three options:
@@ -22,7 +22,7 @@
 #'    (2) A single numeric value to apply to all observations.
 #'    
 #'    (3) List each basin area for each group/station in groups (can override HYDAT value if listed) as such \code{c("08NM116" = 795, 
-#'    "08NM242" = 10)}. If group is not listed the HYDAT area will be applied if it exists, otherwise it will be NA.
+#'    "08NM242" = 10)}. If group is not listed the HYDAT area will be applied if it exists, otherwise it will be \code{NA}.
 #'    
 #' @return A tibble data frame of the original source data with an additional column:
 #'   \item{Basin_Area_sqkm}{area of upstream drainage basin area, in square kilometres}

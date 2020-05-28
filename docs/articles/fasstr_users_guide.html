@@ -116,7 +116,7 @@
     
     
 <p><code>fasstr</code>, the Flow Analysis Summary Statistics Tool for R, is a set of <a href="https://www.r-project.org/">R</a> functions to clean, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.</p>
-<p>This vignette documents the usage of the many functions and arguments provided in <code>fasstr</code>. This vignette is a high-level adjunct to the details found in the various function documentations (see <code><a href="https://rdrr.io/pkg/fasstr/man">help(package = "fasstr")</a></code> for documentation). You’ll learn how to install the package and a HYDAT database, input data into <code>fasstr</code> functions, add relevant columns and rows to daily data, screen data for outliers and missing dates, calculate and visualize various summary statistics, trend annual flows, and complete volume frequency analyses.</p>
+<p>This vignette documents the usage of the many functions and arguments provided in <code>fasstr</code>. This vignette is a high-level adjunct to the details found in the various function documentations (see <code><a href="https://bcgov.github.io/fasstr/reference">help(package = "fasstr")</a></code> for documentation). You’ll learn how to install the package and a HYDAT database, input data into <code>fasstr</code> functions, add relevant columns and rows to daily data, screen data for outliers and missing dates, calculate and visualize various summary statistics, trend annual flows, and complete volume frequency analyses.</p>
 <p>A quick reference PDF cheat sheet is also available for <code>fasstr</code> usage of functions and arguments. It can be downloaded <a href="https://github.com/bcgov/fasstr/raw/master/fasstr_cheatsheet.pdf">here</a>.</p>
 <p>This guide contains the following sections to help understand the usage of the <code>fasstr</code> functions and arguments:</p>
 <ol style="list-style-type: decimal">
@@ -240,11 +240,11 @@
 <li>
 <code><a href="../reference/add_daily_volume.html">add_daily_volume()</a></code> - add daily volumetric flows (in cubic metres)</li>
 <li>
-<code><a href="../reference/add_daily_yield.html">add_daily_yield()</a></code> - add daily volumetric runoff yields (in millimetres)</li>
+<code><a href="../reference/add_daily_yield.html">add_daily_yield()</a></code> - add daily water yields (in millimetres)</li>
 <li>
 <code><a href="../reference/add_cumulative_volume.html">add_cumulative_volume()</a></code> - add daily cumulative volumetric flows on an annual basis (in cubic metres)</li>
 <li>
-<code><a href="../reference/add_cumulative_yield.html">add_cumulative_yield()</a></code> - add daily cumulative runoff yield flows on an annual basis (in millimetres)</li>
+<code><a href="../reference/add_cumulative_yield.html">add_cumulative_yield()</a></code> - add daily cumulative water yields on an annual basis (in millimetres)</li>
 </ul>
 <p>The functions are set up to easily incorporate the use of the pipe operator:</p>
 <div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu"><a href="../reference/fill_missing_dates.html">fill_missing_dates</a></span>(<span class="kw">station_number</span> <span class="kw">=</span> <span class="st">"08HA011"</span>) <span class="kw">%&gt;%</span>
@@ -368,10 +368,10 @@
 <span class="fu"><a href="../reference/add_basin_area.html">add_basin_area</a></span>(<span class="kw">station_number</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"08NM116"</span>,<span class="st">"08NM242"</span>),
                <span class="kw">basin_area</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"08NM116"</span> <span class="kw">=</span> <span class="fl">800</span>, <span class="st">"08NM242"</span> <span class="kw">=</span> <span class="fl">4</span>))</pre></body></html></div>
 </div>
-<div id="adding-daily-volumetric-or-yield-flows" class="section level3">
+<div id="adding-daily-volumetric-discharge-or-water-yields" class="section level3">
 <h3 class="hasAnchor">
-<a href="#adding-daily-volumetric-or-yield-flows" class="anchor"></a>Adding daily volumetric or yield flows</h3>
-<p>Converting daily mean discharge into other units can be useful for different analyses. Columns of total daily discharge converted from daily mean into volumetric flows, named “Volume_m3” in cubic metres per second, or runoff yield, named “Yield_mm” in millimetres can be used using the <code><a href="../reference/add_daily_volume.html">add_daily_volume()</a></code> and <code><a href="../reference/add_daily_yield.html">add_daily_yield()</a></code> functions, respectively. Volumetric gives the total volume per day, and the yield gives the total water depth, provided an upstream drainage basin area is provided. Basin area can be provided using the <code>basin_area</code> argument, or if there is a <code>groups</code> column of HYDAT station numbers in your data then it will automatically be extracted from HYDAT, if available. (see `adding basin areas above or section 8 for more information).</p>
+<a href="#adding-daily-volumetric-discharge-or-water-yields" class="anchor"></a>Adding daily volumetric discharge or water yields</h3>
+<p>Converting daily mean discharge into other units can be useful for different analyses. Columns of total daily discharge converted from daily mean into volumetric flows, named “Volume_m3” in cubic metres per second, or area-based water yields, named “Yield_mm” in millimetres, can be used using the <code><a href="../reference/add_daily_volume.html">add_daily_volume()</a></code> and <code><a href="../reference/add_daily_yield.html">add_daily_yield()</a></code> functions, respectively. Volumetric gives the total volume per day, and the water yield gives the total water depth, provided an upstream drainage basin area is provided. Basin area can be provided using the <code>basin_area</code> argument, or if there is a <code>groups</code> column of HYDAT station numbers in your data then it will automatically be extracted from HYDAT, if available. (see `adding basin areas above or section 8 for more information).</p>
 <div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="co"># Add a column of converted discharge (m3/s) into volume (m3)</span>
 <span class="fu"><a href="../reference/add_daily_volume.html">add_daily_volume</a></span>(<span class="kw">station_number</span> <span class="kw">=</span> <span class="st">"08NM116"</span>)
 
@@ -382,10 +382,10 @@
 <span class="fu"><a href="../reference/add_daily_yield.html">add_daily_yield</a></span>(<span class="kw">station_number</span> <span class="kw">=</span> <span class="st">"08NM116"</span>,
                 <span class="kw">basin_area</span> <span class="kw">=</span> <span class="fl">800</span>)</pre></body></html></div>
 </div>
-<div id="adding-annual-cumulative-daily-volumetric-or-yield-flows" class="section level3">
+<div id="adding-annual-cumulative-daily-volumetric-flows-or-water-yields" class="section level3">
 <h3 class="hasAnchor">
-<a href="#adding-annual-cumulative-daily-volumetric-or-yield-flows" class="anchor"></a>Adding annual cumulative daily volumetric or yield flows</h3>
-<p>These functions create a rolling cumulative of daily total flows on an annual basis, as volumetric flows, named “Cumul_Volume_m3” in cubic metres per second, or runoff yield flows, named “Cumul_Yield_mm” in millimetres. A total flow for a given a day is the sum of all previous days and that day, within a given year (Jan 15 cumulative flow value is the sum of all total flows from Jan 1-15). It restarts for each year (based on the starting month) and no values for a year are calculated if there is missing data for a given year as the total for a given year cannot be determined.</p>
+<a href="#adding-annual-cumulative-daily-volumetric-flows-or-water-yields" class="anchor"></a>Adding annual cumulative daily volumetric flows or water yields</h3>
+<p>These functions create a rolling cumulative of daily total flows on an annual basis, as volumetric flows, named “Cumul_Volume_m3” in cubic metres per second, or area-based water yields, named “Cumul_Yield_mm” in millimetres. A total flow for a given a day is the sum of all previous days and that day, within a given year (Jan 15 cumulative flow value is the sum of all total flows from Jan 1-15). It restarts for each year (based on the starting month) and no values for a year are calculated if there is missing data for a given year as the total for a given year cannot be determined.</p>
 <div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="co"># Add a column of cumulative volumes (m3)</span>
 <span class="fu"><a href="../reference/add_cumulative_volume.html">add_cumulative_volume</a></span>(<span class="kw">station_number</span> <span class="kw">=</span> <span class="st">"08NM116"</span>)
 

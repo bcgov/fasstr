@@ -15,22 +15,24 @@
 #' @title Calculate prewhitened nonlinear annual trends on streamflow data
 #'
 #' @description Calculates prewhitened nonlinear trends on annual streamflow data. Uses the
-#'    \href{https://CRAN.R-project.org/package=zyp}{'zyp'} package to trend. Review 'zyp' to understand its methodology.
-#'    All annual statistics calculated using the calc_all_annual_stats() function which uses the following fasstr functions:
+#'    \href{https://CRAN.R-project.org/package=zyp}{\code{zyp}} package to calculate trends. Review \code{zyp} for more information
+#'    Calculates statistics from all values, unless specified. Returns a list of tibbles and plots.
+#'    All annual statistics calculated using the \code{calc_all_annual_stats()} function which uses the following 
+#'    \code{fasstr} functions:
 #' \itemize{
-#'  \item{calc_annual_stats()}
-#'  \item{calc_annual_lowflows()}
-#'  \item{calc_annual_cumulative_stats()}
-#'  \item{calc_annual_flow_timing()}
-#'  \item{calc_monthly_stats()}
-#'  \item{calc_annual_outside_normal()}
+#'  \item{\code{calc_annual_stats()}}
+#'  \item{\code{calc_annual_lowflows()}}
+#'  \item{\code{calc_annual_cumulative_stats()}}
+#'  \item{\code{calc_annual_flow_timing()}}
+#'  \item{\code{calc_monthly_stats()}}
+#'  \item{\code{calc_annual_outside_normal()}}
 #'  }
 #' 
 #' @inheritParams calc_all_annual_stats
-#' @param zyp_method Character string identifying the prewhitened trend method to use from 'zyp', either "zhang' or "yuepilon". 
-#'    Required.
+#' @param zyp_method Character string identifying the prewhitened trend method to use from \code{zyp}, either \code{'zhang'}
+#'     or \code{'yuepilon'}. Required.
 #' @param include_plots Logical value indicating if annual trending plots should be included. Default \code{TRUE}.
-#' @param zyp_alpha Numeric value of the significance level (ex. 0.05) of when to plot a trend line. Leave blank for no line.
+#' @param zyp_alpha Numeric value of the significance level (ex. \code{0.05}) of when to plot a trend line. Leave blank for no line.
 #' 
 #' @return A list of tibbles and optional plots from the trending analysis including:
 #'   \item{Annual_Trends_Data}{a tibble of the annual statistics used for trending}

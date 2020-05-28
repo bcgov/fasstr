@@ -27,29 +27,32 @@ plot_flow_duration(
 )
 }
 \arguments{
-\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+\item{data}{Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank if using \code{station_number} argument.}
 
-\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
-Date' (default). Leave blank if using \code{station_number} argument.}
+\item{dates}{Name of column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
+'Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+\item{values}{Name of column in \code{data} that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
-groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
-Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
+\item{groups}{Name of column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required 
+if groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if 
+present. Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} 
+argument.}
 
-\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+\item{station_number}{Character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
 Leave blank if using \code{data} argument.}
 
 \item{roll_days}{Numeric value of the number of days to apply a rolling mean. Default \code{1}.}
 
 \item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
-('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
+(\code{'left'}), last (\code{'right'}), or middle (\code{'center'}) day of the rolling n-day group of observations. 
+Default \code{'right'}.}
 
-\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
+\item{water_year_start}{Numeric value indicating the month (\code{1} through \code{12}) of the start of water year for
+analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
@@ -60,19 +63,19 @@ Leave blank if using \code{data} argument.}
 \item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 
 \item{custom_months}{Numeric vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Adds results to the end of table.
-If wanting months that overlap calendar years (ex. Oct-Mar), choose water_year_start that begins before the first 
+If wanting months that overlap calendar years (ex. Oct-Mar), choose \code{water_year_start} that begins before the first 
 month listed. Leave blank for no custom month summary.}
 
-\item{custom_months_label}{Character string to label custom months. For example, if choosing months 7:9  you may choose 
-"Summer" or "Jul-Sep". Default \code{"Custom-Months"}.}
+\item{custom_months_label}{Character string to label custom months. For example, if \code{months = 7:9} you may choose 
+\code{"Summer"} or \code{"Jul-Sep"}. Default \code{"Custom-Months"}.}
 
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
-\code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only statistics from time periods 
-with no missing dates will be returned. Default \code{FALSE}.}
+\code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from
+time periods with no missing dates will be returned. Default \code{FALSE}.}
 
-\item{months}{Numeric vector of month curves to plot. NA if no months required. Default \code{1:12}.}
+\item{months}{Numeric vector of month curves to plot. \code{NA} if no months required. Default \code{1:12}.}
 
-\item{include_longterm}{Logical value indicating whether to include longterm curve of all data. Default \code{TRUE}.}
+\item{include_longterm}{Logical value indicating whether to include long-term curve of all data. Default \code{TRUE}.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
 
@@ -83,9 +86,9 @@ A list of ggplot2 objects with the following for each station provided:
   \item{Flow_Duration}{a plot that contains flow duration curves for each month, long-term, and (option) customized months}
 }
 \description{
-Plots flow duration curves, percent time a flow value is equalled or exceeded, for a streamflow dataset. Plots 
-   statistics from all daily discharge values from all years, unless specified. Data calculated using calc_longterm_stats() 
-   function then converted for plotting.
+Plots flow duration curves of flow data from a daily streamflow data set. Plots the percent time flows are 
+   equalled or exceeded. Calculates statistics from all values, unless specified. Data calculated using 
+   \code{calc_longterm_stats()} function then converted for plotting. Returns a list of plots.
 }
 \examples{
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())

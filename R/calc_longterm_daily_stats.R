@@ -12,17 +12,18 @@
 
 #' @title Calculate long-term summary statistics from daily mean flows
 #'
-#' @description Calculates the long-term and long-term monthly mean, median, maximum, minimum, and percentiles of daily flow values 
-#'    from a streamflow dataset. Calculates the statistics from all daily values from all years, unless specified.
+#' @description Calculates the long-term mean, median, maximum, minimum, and percentiles of daily flow values for over all months and 
+#'    all data (Long-term) from a daily streamflow data set. Calculates statistics from all values, unless specified.
+#'    Returns a tibble with statistics.
 #'
 #' @inheritParams calc_daily_stats
-#' @param percentiles Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(10,90)}.
-#' @param include_longterm Logical value indicating whether to include longterm calculation of all data. Default \code{TRUE}.
+#' @param percentiles Numeric vector of percentiles to calculate. Set to \code{NA} if none required. Default \code{c(10,90)}.
+#' @param include_longterm Logical value indicating whether to include long-term calculation of all data. Default \code{TRUE}.
 #' @param custom_months Numeric vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Adds results to the end of table.
-#'    If wanting months that overlap calendar years (ex. Oct-Mar), choose water_year_start that begins before the first 
+#'    If wanting months that overlap calendar years (ex. Oct-Mar), choose \code{water_year_start} that begins before the first 
 #'    month listed. Leave blank for no custom month summary.
-#' @param custom_months_label Character string to label custom months. For example, if choosing months 7:9  you may choose 
-#'    "Summer" or "Jul-Sep". Default \code{"Custom-Months"}.
+#' @param custom_months_label Character string to label custom months. For example, if \code{months = 7:9} you may choose 
+#'    \code{"Summer"} or \code{"Jul-Sep"}. Default \code{"Custom-Months"}.
 #' 
 #' @return A tibble data frame with the following columns:
 #'   \item{Month}{month of the year, included 'Long-term' for all months, and 'Custom-Months' if selected}

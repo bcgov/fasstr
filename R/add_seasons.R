@@ -13,8 +13,8 @@
 #' @title Add a column of seasons
 #' 
 #' @description Adds a column of seasons identifiers to a data frame with a column of dates called 'Date'. The length of seasons,
-#'    in months, is provided using the seasons_length argument. As seasons are grouped by months the length of the seasons must be
-#'    divisible into 12 with one of the following season lengths: 1, 2, 3, 4, 6, or 12 months. The start of the first season 
+#'    in months, is provided using the \code{seasons_length} argument. As seasons are grouped by months the length of the seasons 
+#'    must be divisible into 12 with one of the following season lengths: 1, 2, 3, 4, 6, or 12 months. The start of the first season 
 #'    coincides with the start month of each year; 'Jan-Jun' for 6-month seasons starting with calendar years or 'Dec-Feb' for 3-month
 #'    seasons starting with water year starting in December.
 #'

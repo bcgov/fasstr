@@ -12,15 +12,16 @@
 
 #' @title Calculate the long-term mean annual discharge
 #'
-#' @description Calculates the long-term mean annual discharge of a streamflow dataset. Averages all daily discharge values from all years,
-#'   unless specified.
+#' @description Calculates the long-term mean annual discharge (MAD) from a daily streamflow data set. Calculates statistics from all
+#'    values, unless specified. Returns a tibble with statistics.
 #'
 #' @inheritParams calc_daily_stats
 #' @inheritParams calc_monthly_stats
-#' @param percent_MAD Numeric vector of percents of long-term mean annual discharge to add to the table (ex. 20 for 20 percent MAD).
-#'    Leave blank for no values to be calculated.
+#' @param percent_MAD Numeric vector of percents of long-term mean annual discharge to add to the table (ex. \code{20} for 20 percent 
+#'    MAD or \code{c(5,10,20)} for multiple portions of MAD). Leave blank for no values to be calculated.
 #'
-#' @return A tibble data frame of numeric values of a long-term mean (and percent of long-term mean if selected) of selected years and months.
+#' @return A tibble data frame of numeric values of a long-term mean (and percent of long-term mean if selected) of selected years
+#'    and months.
 #' 
 #' @examples
 #' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())

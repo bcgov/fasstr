@@ -1,7 +1,7 @@
 fasstr 0.3.2
 =========================
 
-Updated: 26 May 2020
+Updated: 28 May 2020
 
 #### Updates:
 
@@ -11,6 +11,7 @@ Updated: 26 May 2020
   * Added new 'Get Started' vignette for package and GitHub Page
   * Updated README: sticker, badges, content
   * Updated cheatsheet
+  * changed yield terminology to water yield from runoff yield
   
 
 fasstr 0.3.1

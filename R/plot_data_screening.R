@@ -13,8 +13,8 @@
 
 #' @title Plot annual summary statistics for data screening
 #'
-#' @description Plots the mean, median, maximum, minimum, standard deviation of annual flows. Plots the statistics from all daily 
-#'    discharge values from all years, unless specified. Data calculated using screen_flow_data() function.
+#' @description Plots the mean, median, maximum, minimum, standard deviation of annual flows. Calculates statistics
+#'    from all values, unless specified. Data calculated using \code{screen_flow_data()} function. Returns a list of plots.
 #'
 #' @inheritParams screen_flow_data
 #' @inheritParams plot_annual_stats

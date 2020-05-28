@@ -17,7 +17,6 @@ The Flow Analysis Summary Statistics Tool for R, 'fasstr', provides various
 \references{
 tidyhydat information:
 
-
 To use the station_number argument of the fasstr functions, please download the latest version of HYDAT using the function:
  \itemize{
   \item \code{tidyhydat::download_hydat()}
@@ -36,6 +35,7 @@ To use the station_number argument of the fasstr functions, please download the 
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://bcgov.github.io/fasstr/}
   \item \url{https://github.com/bcgov/fasstr}
   \item \url{https://www2.gov.bc.ca/gov/content/environment/air-land-water/water}
   \item Report bugs at \url{https://github.com/bcgov/fasstr/issues}

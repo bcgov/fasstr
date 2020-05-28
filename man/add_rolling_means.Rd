@@ -2,7 +2,7 @@
 % Please edit documentation in R/add_rolling_means.R
 \name{add_rolling_means}
 \alias{add_rolling_means}
-\title{Add rolling n-day averages}
+\title{Add rolling n-day average column(s) to daily flows}
 \usage{
 add_rolling_means(
   data,
@@ -15,27 +15,29 @@ add_rolling_means(
 )
 }
 \arguments{
-\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+\item{data}{Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank if using \code{station_number} argument.}
 
-\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
-Date' (default). Leave blank if using \code{station_number} argument.}
+\item{dates}{Name of column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
+'Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+\item{values}{Name of column in \code{data} that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
-groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
-Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
+\item{groups}{Name of column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required 
+if groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if 
+present. Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} 
+argument.}
 
-\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+\item{station_number}{Character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
 Leave blank if using \code{data} argument.}
 
 \item{roll_days}{Numeric values of the number of days to apply a rolling mean. Default \code{c(3,7,30)}.}
 
 \item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
-('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.}
+(\code{'left'}), last (\code{'right'}), or middle (\code{'center'}) day of the rolling n-day group of observations. 
+Default \code{'right'}.}
 }
 \value{
 A data frame of the source data with an additional column(s):
@@ -46,10 +48,9 @@ A data frame of the source data with an additional column(s):
   \item{Q30Day}{rolling means of the 30-day flow values of the designated date and previous 29 days (roll_align = "right")}
 }
 \description{
-Adds selected n-day rolling means to a streamflow dataset. Based on selected n-days and alignment, the rolling mean for
-  a given day is obtained by averaging the adjacent dates of daily mean values. For example, rolling days of '7' and 'right' alignment 
-  would obtain a mean of the given and previous 6 days of daily mean flow. Rolling mean values will not be calculated if there is less 
-  than the n-days provided.
+Adds selected n-day rolling means to a daily streamflow data set. Based on selected n-days and alignment, the rolling 
+  mean for a given day is obtained by averaging the adjacent dates of daily mean values. For example, rolling days of \code{'7'} 
+  and \code{'right'} alignment would obtain a mean of the given and previous 6 days of daily mean flow.
 }
 \examples{
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())

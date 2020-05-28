@@ -40,11 +40,12 @@
 
 
 <meta property="og:title" content="Compute a suite of tables and plots from various fasstr functions — compute_full_analysis" />
-<meta property="og:description" content="Calculates tables and plots from a suite of statistics from fasstr functions. The statistics are grouped into
-   7 analysis groups (see 'analyses' argument) which are stored in lists in the object. Due to the number of tables and plots to 
-   be made, this function may take several minutes to complete. If using ignore_missing = FALSE (default) and there is
-   missing data, some tables and plots may be empty and produce warnings. Use ignore_missing = TRUE to ignore the missing
-   values or filter your data to complete years." />
+<meta property="og:description" content="Calculates tables and plots from a suite of statistics from fasstr functions. Calculates statistics from all 
+   values, unless specified.The statistics are grouped into 7 analysis groups (see analyses argument) which are stored in 
+   lists in the object. Due to the number of tables and plots to be made, this function may take several minutes to complete. If 
+   ignore_missing = FALSE (default) and there is missing data, some tables and plots may be empty and produce warnings. 
+   Use ignore_missing = TRUE to ignore the missing values or filter your data to complete years.
+   Returns a list of tibbles and plots." />
 
 
 
@@ -156,11 +157,12 @@
     </div>
 
     <div class="ref-description">
-    <p>Calculates tables and plots from a suite of statistics from fasstr functions. The statistics are grouped into
-   7 analysis groups (see 'analyses' argument) which are stored in lists in the object. Due to the number of tables and plots to 
-   be made, this function may take several minutes to complete. If using <code>ignore_missing = FALSE</code> (default) and there is
-   missing data, some tables and plots may be empty and produce warnings. Use <code>ignore_missing = TRUE</code> to ignore the missing
-   values or filter your data to complete years.</p>
+    <p>Calculates tables and plots from a suite of statistics from <code>fasstr</code> functions. Calculates statistics from all 
+   values, unless specified.The statistics are grouped into 7 analysis groups (see <code>analyses</code> argument) which are stored in 
+   lists in the object. Due to the number of tables and plots to be made, this function may take several minutes to complete. If 
+   <code>ignore_missing = FALSE</code> (default) and there is missing data, some tables and plots may be empty and produce warnings. 
+   Use <code>ignore_missing = TRUE</code> to ignore the missing values or filter your data to complete years.
+   Returns a list of tibbles and plots.</p>
     </div>
 
     <pre class="usage"><span class='fu'>compute_full_analysis</span>(
@@ -185,28 +187,29 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+      <td><p>Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>dates</th>
-      <td><p>Column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
-Date' (default). Leave blank if using <code>station_number</code> argument.</p></td>
+      <td><p>Name of column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
+'Date' (default). Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>values</th>
-      <td><p>Column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
+      <td><p>Name of column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>groups</th>
-      <td><p>Column in <code>data</code> that contains unique identifiers for different data sets, if applicable. Only required if
-groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
-Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using <code>station_number</code> argument.</p></td>
+      <td><p>Name of column in <code>data</code> that contains unique identifiers for different data sets, if applicable. Only required 
+if groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if 
+present. Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using <code>station_number</code> 
+argument.</p></td>
     </tr>
     <tr>
       <th>station_number</th>
-      <td><p>A character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
+      <td><p>Character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract daily streamflow data from a HYDAT database. Requires <code>tidyhydat</code> package and a HYDAT database.
 Leave blank if using <code>data</code> argument.</p></td>
     </tr>
@@ -228,11 +231,12 @@ Leave blank if using <code>data</code> argument.</p></td>
 <p>(1) Leave blank if <code>groups</code> is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.</p>
 <p>(2) A single numeric value to apply to all observations.</p>
 <p>(3) List each basin area for each group/station in groups (can override HYDAT value if listed) as such <code><a href='https://rdrr.io/r/base/c.html'>c("08NM116" = 795, 
-"08NM242" = 10)</a></code>. If group is not listed the HYDAT area will be applied if it exists, otherwise it will be NA.</p></td>
+"08NM242" = 10)</a></code>. If group is not listed the HYDAT area will be applied if it exists, otherwise it will be <code>NA</code>.</p></td>
     </tr>
     <tr>
       <th>water_year_start</th>
-      <td><p>Numeric value indicating the month of the start of the water year for analysis. Default <code>1</code>.</p></td>
+      <td><p>Numeric value indicating the month (<code>1</code> through <code>12</code>) of the start of water year for
+analysis. Default <code>1</code>.</p></td>
     </tr>
     <tr>
       <th>start_year</th>
@@ -249,17 +253,17 @@ Leave blank if using <code>data</code> argument.</p></td>
     <tr>
       <th>ignore_missing</th>
       <td><p>Logical value indicating whether dates with missing values should be included in the calculation. If
-<code>TRUE</code> then a statistic will be calculated regardless of missing dates. If <code>FALSE</code> then only statistics from time periods 
-with no missing dates will be returned. Default <code>FALSE</code>.</p></td>
+<code>TRUE</code> then a statistic will be calculated regardless of missing dates. If <code>FALSE</code> then only those statistics from
+time periods with no missing dates will be returned. Default <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>zyp_method</th>
-      <td><p>Character string identifying the prewhitened trend method to use from 'zyp', either "zhang' or "yuepilon". 
-Only required if analysis group 6 is included. Default <code>"yuepilon"</code>.</p></td>
+      <td><p>Character string identifying the prewhitened trend method to use from <code>'zyp'</code>, either <code>'zhang'</code> or
+<code>'yuepilon'</code>. Only required if analysis group 6 is included. Default <code>'yuepilon'</code>.</p></td>
     </tr>
     <tr>
       <th>zyp_alpha</th>
-      <td><p>Numeric value of the significance level (ex. 0.05) of when to plot a trend line. Leave blank for no line.</p></td>
+      <td><p>Numeric value of the significance level (ex. <code>0.05</code>) of when to plot a trend line. Leave blank for no line.</p></td>
     </tr>
     </table>
 

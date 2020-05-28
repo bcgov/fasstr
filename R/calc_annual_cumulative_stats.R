@@ -12,16 +12,17 @@
 
 #' @title Calculate annual (and seasonal) cumulative flows
 #' 
-#' @description Calculates annual and seasonal total flows, volumetric or runoff yield flows, from a streamflow dataset. Calculates 
-#'    the statistics from all daily discharge values from all years, unless specified. For water year and seasonal data, the designated
-#'    year is the year in which the year or season ends. Two-seasons and four-seasons per year are calculated, with each 6 and 3-month
-#'    seasons starting with the first month of the year (Jan for calendar year, specified for water year). Each season is designated
-#'    by the calendar or water year in which it occurs.
+#' @description Calculates annual and seasonal total flows, as volumetric discharge or water yields, from a daily streamflow data set.
+#'    For water year and seasonal data, the year is identified by the year in which the year or season ends. Two-seasons and 
+#'    four-seasons per year are calculated, with each 6 and 3-month seasons starting with the first month of the year (Jan for 
+#'    calendar year, specified for water year). Each season is designated by the calendar or water year in which it occurs.
+#'    Calculates statistics from all values from complete years, unless specified. Returns a tibble with statistics.
 #'
 #' @inheritParams calc_annual_stats
 #' @inheritParams add_basin_area
-#' @param use_yield Logical value indicating whether to use yield runoff, in mm, instead of volumetric. Default \code{FALSE}.
-#' @param include_seasons Logical value indication whether to include seasonal yields and total discharges. Default \code{TRUE}.
+#' @param use_yield Logical value indicating whether to calculate area-based water yield, in mm, instead of volumetric discharge. 
+#'     Default \code{FALSE}.
+#' @param include_seasons Logical value indication whether to include seasonal yields or volumetric discharges. Default \code{TRUE}.
 #' 
 #' @return A tibble data frame with the following columns, ending with '_Volume_m3' or '_Yield_mm' based on selection:
 #'   \item{Year}{calendar or water year selected}

@@ -12,9 +12,9 @@
 
 #' @title Write a streamflow dataset as a .xlsx, .xls, or .csv file
 #'
-#' @description Write a streamflow dataset to a directory. Can fill missing dates or filter data by years or dates before writing using 
-#'    given arguments. Just list data frame or HYDAT station number to write its entirety. Can write as .xls, .xlsx, or .csv file types.
-#'    Writing as Excel file type uses the 'writexl' package.
+#' @description Write a daily streamflow data set to a directory. Can fill missing dates or filter data by years or dates before 
+#'    writing using given arguments. List data frame or HYDAT station number to write its entirety. Can write as .xls, .xlsx, or .csv 
+#'    file types. Writing as Excel file type uses the \code{writexl} package.
 #'
 #' @inheritParams calc_annual_stats
 #' @param start_year Numeric value of the first year of data to write. Leave blank to use the first year of the source data.

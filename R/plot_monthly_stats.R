@@ -12,10 +12,11 @@
 
 #' @title Plot monthly summary statistics
 #'
-#' @description Plots monthly mean, median, maximum, minimum, and percentiles for each month of all years of daily flow values 
-#'    from a streamflow dataset. Plots the statistics from all daily discharge values from all years, unless specified. Data
-#'    calculated using the calc_monthly_stats() function.
-#' @param percentiles Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{NA}.
+#' @description Plots means, medians, maximums, minimums, and percentiles for each month of all years of flow values 
+#'    from a daily streamflow data set. Calculates statistics from all values, unless specified. Data calculated using the 
+#'    \code{calc_monthly_stats()} function. Produces a list containing a plot for each statistic. Returns a list of plots.
+#'    
+#' @param percentiles Numeric vector of percentiles to calculate. Set to \code{NA} if none required. Default \code{NA}.
 #' 
 #' @inheritParams calc_monthly_stats
 #' @inheritParams plot_annual_stats

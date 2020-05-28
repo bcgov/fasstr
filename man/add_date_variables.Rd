@@ -2,36 +2,36 @@
 % Please edit documentation in R/add_date_variables.R
 \name{add_date_variables}
 \alias{add_date_variables}
-\title{Add year, month, and day of year variables}
+\title{Add year, month, and day of year variable columns to daily flows}
 \usage{
 add_date_variables(data, dates = Date, station_number, water_year_start = 1)
 }
 \arguments{
-\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+\item{data}{Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank if using \code{station_number} argument.}
 
-\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
-Date' (default). Leave blank if using \code{station_number} argument.}
+\item{dates}{Name of column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
+'Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+\item{station_number}{Character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
 Leave blank if using \code{data} argument.}
 
-\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
+\item{water_year_start}{Numeric value indicating the month (\code{1} through \code{12}) of the start of water year for
+analysis. Default \code{1}.}
 }
 \value{
 A tibble data frame of the source data with additional columns:
   \item{CalendarYear}{calendar year}
   \item{Month}{numeric month (1 to 12)}
-  \item{MonthName}{month name (Jan-Dec)}
+  \item{MonthName}{month abbreviation (Jan-Dec)}
   \item{WaterYear}{year starting from the selected month start, water_year_start}
   \item{DayofYear}{day of the year from the selected month start (1-365 or 366)}
 }
 \description{
-Add columns of Year (YYYY), Month (MM), MonthName (e.g. 'Jan'), and DayofYear (1-365 or 366); and WaterYear (YYYY) and 
-   WaterDayofYear (1-365 or 366) if selected; to a data frame with a column of dates called 'Date'. Water years are designated by 
-   the year in which they end. For example, Water Year 1999 (starting Oct) is from 1 Oct 1998 (WaterDayofYear 1) to 30 Sep 1999
-   (WaterDayofYear 365)).
+Add columns of CalendarYear (YYYY), Month (MM), MonthName (e.g. 'Jan'), WaterYear (YYYY), and DayofYear (1-365 or 366; 
+   of WaterYear); to a data frame with a column of dates called 'Date'. Water years are designated by the year in which they end. 
+   For example, Water Year 1999 (starting Oct) is from 1 Oct 1998 (DayofYear 1) to 30 Sep 1999 (DayofYear 365)).
 }
 \examples{
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())

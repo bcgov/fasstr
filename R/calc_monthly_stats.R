@@ -12,8 +12,8 @@
 
 #' @title Calculate monthly summary statistics
 #'
-#' @description Calculates monthly mean, median, maximum, minimum, and percentiles for each month of all years of daily flow values 
-#'    from a streamflow dataset. Calculates the statistics from all daily discharge values from all years, unless specified.
+#' @description Calculates means, medians, maximums, minimums, and percentiles for each month of all years of flow values 
+#'    from a daily streamflow data set. Calculates statistics from all values, unless specified. Returns a tibble with statistics.
 #'
 #' @inheritParams calc_annual_stats
 #' @param transpose Logical value indicating if each month statistic should be individual rows. Default \code{FALSE}.

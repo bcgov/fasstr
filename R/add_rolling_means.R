@@ -10,12 +10,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Add rolling n-day averages
+#' @title Add rolling n-day average column(s) to daily flows
 #'
-#' @description Adds selected n-day rolling means to a streamflow dataset. Based on selected n-days and alignment, the rolling mean for
-#'   a given day is obtained by averaging the adjacent dates of daily mean values. For example, rolling days of '7' and 'right' alignment 
-#'   would obtain a mean of the given and previous 6 days of daily mean flow. Rolling mean values will not be calculated if there is less 
-#'   than the n-days provided.
+#' @description Adds selected n-day rolling means to a daily streamflow data set. Based on selected n-days and alignment, the rolling 
+#'   mean for a given day is obtained by averaging the adjacent dates of daily mean values. For example, rolling days of \code{'7'} 
+#'   and \code{'right'} alignment would obtain a mean of the given and previous 6 days of daily mean flow.
 #'
 #' @inheritParams calc_annual_stats
 #' @param roll_days Numeric values of the number of days to apply a rolling mean. Default \code{c(3,7,30)}.

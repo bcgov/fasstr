@@ -13,12 +13,12 @@
 #' @title Write a data frame as a .xlsx, .xls, or .csv file
 #'
 #' @description Write a data frame to a directory with all numbers rounded to specified digits. Can write as .xls, .xlsx, or .csv 
-#'    file types. Writing as .xlsx or .xls uses the 'writexl' package.
+#'    file types. Writing as .xlsx or .xls uses the \code{writexl} package.
 #'
 #' @param data Data frame to be written to a directory.
 #' @param file_name Character string naming the output file. Required.
 #' @param digits Integer indicating the number of decimal places or significant digits used to round flow values. Use follows 
-#'    that of base::round() digits argument.
+#'    that of \code{base::round()} digits argument.
 #'
 #' @examples
 #' \dontrun{

@@ -40,10 +40,11 @@
 
 
 <meta property="og:title" content="Perform an annual low or high-flow frequency analysis — compute_annual_frequencies" />
-<meta property="og:description" content="Performs a flow volume frequency analysis on annual statistics from a streamflow dataset. Defaults to low-flow frequency 
-   analysis using annual minimums. Use use_max for annual high flow frequency analyses. Calculates the statistics from all 
-   daily discharge values from all years, unless specified. Function will calculate using all values in the provided data (no grouped
-   analysis). Analysis methodology replicates that from HEC-SSP." />
+<meta property="og:description" content="Performs a flow volume frequency analysis on annual statistics from a daily streamflow data set. Defaults to a low 
+   flow frequency analysis using annual minimums. Set use_max = TRUE for annual high flow frequency analyses. Calculates 
+   statistics from all values, unless specified. Function will calculate using all values in 'Values' column (no grouped analysis). 
+   Analysis methodology replicates that from HEC-SSP. Returns a list of
+   tibbles and plots." />
 
 
 
@@ -155,10 +156,11 @@
     </div>
 
     <div class="ref-description">
-    <p>Performs a flow volume frequency analysis on annual statistics from a streamflow dataset. Defaults to low-flow frequency 
-   analysis using annual minimums. Use <code>use_max</code> for annual high flow frequency analyses. Calculates the statistics from all 
-   daily discharge values from all years, unless specified. Function will calculate using all values in the provided data (no grouped
-   analysis). Analysis methodology replicates that from <a href='http://www.hec.usace.army.mil/software/hec-ssp/'>HEC-SSP</a>.</p>
+    <p>Performs a flow volume frequency analysis on annual statistics from a daily streamflow data set. Defaults to a low 
+   flow frequency analysis using annual minimums. Set <code>use_max = TRUE</code> for annual high flow frequency analyses. Calculates 
+   statistics from all values, unless specified. Function will calculate using all values in 'Values' column (no grouped analysis). 
+   Analysis methodology replicates that from <a href='http://www.hec.usace.army.mil/software/hec-ssp/'>HEC-SSP</a>. Returns a list of
+   tibbles and plots.</p>
     </div>
 
     <pre class="usage"><span class='fu'>compute_annual_frequencies</span>(
@@ -191,22 +193,22 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
-Leave blank if using <code>station_number</code> argument.</p></td>
+      <td><p>A data frame of daily data that contains columns of dates and flow values. Groupings and the <code>groups</code> argument
+are not used for this function (i.e. station numbers). Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>dates</th>
-      <td><p>Column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
-Date' (default). Leave blank if using <code>station_number</code> argument.</p></td>
+      <td><p>Name of column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
+'Date' (default). Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>values</th>
-      <td><p>Column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
+      <td><p>Name of column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>station_number</th>
-      <td><p>A character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
+      <td><p>Character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract daily streamflow data from a HYDAT database. Requires <code>tidyhydat</code> package and a HYDAT database.
 Leave blank if using <code>data</code> argument.</p></td>
     </tr>
@@ -217,11 +219,12 @@ Leave blank if using <code>data</code> argument.</p></td>
     <tr>
       <th>roll_align</th>
       <td><p>Character string identifying the direction of the rolling mean from the specified date, either by the first 
-('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default <code>'right'</code>.</p></td>
+(<code>'left'</code>), last (<code>'right'</code>), or middle (<code>'center'</code>) day of the rolling n-day group of observations. 
+Default <code>'right'</code>.</p></td>
     </tr>
     <tr>
       <th>use_max</th>
-      <td><p>Logical value to indicate using annual maximums rather than the minimums for analysis. Default <code>FALSE</code>.</p></td>
+      <td><p>Logical value to indicate using maximums rather than the minimums for analysis. Default <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>use_log</th>
@@ -229,10 +232,10 @@ Leave blank if using <code>data</code> argument.</p></td>
     </tr>
     <tr>
       <th>prob_plot_position</th>
-      <td><p>Character string indicating the plotting positions used in the frequency plots, one of "weibull",
-"median", or "hazen". Points are plotted against  (i-a)/(n+1-a-b) where <code>i</code> is the rank of the value; <code>n</code> is the 
+      <td><p>Character string indicating the plotting positions used in the frequency plots, one of <code>'weibull'</code>,
+<code>'median'</code>, or <code>'hazen'</code>. Points are plotted against  (i-a)/(n+1-a-b) where <code>i</code> is the rank of the value; <code>n</code> is the 
 sample size and <code>a</code> and <code>b</code> are defined as: (a=0, b=0) for Weibull plotting positions; (a=.2; b=.3) for Median 
-plotting positions; and (a=.5; b=.5) for Hazen plotting positions. Default <code>"weibull"</code>.</p></td>
+plotting positions; and (a=.5; b=.5) for Hazen plotting positions. Default <code>'weibull'</code>.</p></td>
     </tr>
     <tr>
       <th>prob_scale_points</th>
@@ -241,14 +244,14 @@ return period. Default <code><a href='https://rdrr.io/r/base/c.html'>c(.9999, .9
     </tr>
     <tr>
       <th>fit_distr</th>
-      <td><p>Character string identifying the distribution to fit annual data, one of "PIII" (Pearson Log III distribution) 
-or "weibull" (Weibull distribution). Default <code>"PIII"</code>.</p></td>
+      <td><p>Character string identifying the distribution to fit annual data, one of <code>'PIII'</code> (Pearson Log III 
+distribution) or <code>'weibull'</code> (Weibull distribution). Default <code>'PIII'</code>.</p></td>
     </tr>
     <tr>
       <th>fit_distr_method</th>
-      <td><p>Character string identifying the method used to fit the distribution, one of  "MOM" (method of moments) 
-or "MLE" (maximum likelihood estimation). Selected as <code>"MOM"</code> if <code>fit_distr</code>=="PIII" (default) or <code>"MLE"</code> if 
- <code>fit_distr</code>=="weibull".</p></td>
+      <td><p>Character string identifying the method used to fit the distribution, one of <code>'MOM'</code> (method of
+moments) or <code>'MLE'</code> (maximum likelihood estimation). Selected as <code>'MOM'</code> if <code>fit_distr ='PIII'</code> (default) or 
+<code>'MLE'</code> if <code>fit_distr = 'weibull'</code>.</p></td>
     </tr>
     <tr>
       <th>fit_quantiles</th>
@@ -261,7 +264,8 @@ Default <code><a href='https://rdrr.io/r/base/c.html'>c(.975, .99, .98, .95, .90
     </tr>
     <tr>
       <th>water_year_start</th>
-      <td><p>Numeric value indicating the month of the start of the water year for analysis. Default <code>1</code>.</p></td>
+      <td><p>Numeric value indicating the month (<code>1</code> through <code>12</code>) of the start of water year for
+analysis. Default <code>1</code>.</p></td>
     </tr>
     <tr>
       <th>start_year</th>
@@ -277,18 +281,18 @@ Default <code><a href='https://rdrr.io/r/base/c.html'>c(.975, .99, .98, .95, .90
     </tr>
     <tr>
       <th>months</th>
-      <td><p>Numeric vector of months to include in analysis (e.g.. <code>6:8</code> for Jun-Aug). Leave blank to summarize 
+      <td><p>Numeric vector of months to include in analysis (e.g. <code>6:8</code> for Jun-Aug). Leave blank to summarize 
 all months (default <code>1:12</code>).</p></td>
     </tr>
     <tr>
       <th>ignore_missing</th>
       <td><p>Logical value indicating whether dates with missing values should be included in the calculation. If
-<code>TRUE</code> then a statistic will be calculated regardless of missing dates. If <code>FALSE</code> then only statistics from time periods 
-with no missing dates will be returned. Default <code>FALSE</code>.</p></td>
+<code>TRUE</code> then a statistic will be calculated regardless of missing dates. If <code>FALSE</code> then only those statistics from
+time periods with no missing dates will be returned. Default <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>remove_zeros</th>
-      <td><p>Logical value to indicate removing any zero flow values from the dataset.</p></td>
+      <td><p>Logical value to indicate removing any zero flow values from the data set. Default <code>FALSE</code>.</p></td>
     </tr>
     </table>
 
@@ -297,7 +301,7 @@ with no missing dates will be returned. Default <code>FALSE</code>.</p></td>
     <p>A list with the following elements:</p>
 <dt>Freq_Analysis_Data</dt><dd><p>Data frame with computed annual summary statistics used in analysis.</p></dd>
   <dt>Freq_Plot_Data</dt><dd><p>Data frame with co-ordinates used in frequency plot.</p></dd>
-  <dt>Freq_Plot</dt><dd><p>ggplot2 object with frequency plot</p></dd>
+  <dt>Freq_Plot</dt><dd><p>ggplot2 object with frequency plot.</p></dd>
   <dt>Freq_Fitting</dt><dd><p>List of fitted objects from fitdistrplus.</p></dd>
   <dt>Freq_Fitted_Quantiles</dt><dd><p>Data frame with fitted quantiles.</p></dd>
 

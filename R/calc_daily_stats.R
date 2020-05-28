@@ -12,14 +12,13 @@
 
 #' @title Calculate daily summary statistics
 #'
-#' @description Calculates the daily mean, median, maximum, minimum, and percentiles for each day of the year of daily flow values 
-#'    from a streamflow dataset. Calculate the statistics from all daily discharge values from all years, unless specified. Can determine
-#'    statistics of rolling mean days (e.g. 7-day flows) using the roll_days argument. Note that statistics are based on the numeric days
-#'    of year (1-365) and not the date (Jan1 - Dec 31) of year so day of year values for days after Feb 29 in leap years will be one value
-#'    higher than non-leap years.
+#' @description Calculates means, medians, maximums, minimums, and percentiles for each day of the year of flow values 
+#'    from a daily streamflow data set. Can determine statistics of rolling mean days (e.g. 7-day flows) using the \code{roll_days} 
+#'    argument. Note that statistics are based on the numeric days of year (1-365) and not the date of year (Jan 1 - Dec 31).
+#'    Calculates statistics from all values, unless specified. Returns a tibble with statistics.
 #'    
 #' @inheritParams calc_annual_stats
-#' @param percentiles Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(5,25,75,95)}.
+#' @param percentiles Numeric vector of percentiles to calculate. Set to \code{NA} if none required. Default \code{c(5,25,75,95)}.
 #' @param complete_years Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.          
 #'    
 #' @return A tibble data frame with the following columns:

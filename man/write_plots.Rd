@@ -21,23 +21,24 @@ write_plots(
 \item{folder_name}{Name of folder to create on disk (if it does not exist) to write each plot from list. 
 If using \code{combined_pdf} argument, then it will be the name of the PDF document.}
 
-\item{plot_filetype}{Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
-Image type will be overwritten if using \code{combined_pdf} is used.}
+\item{plot_filetype}{Image type to write. One of \code{'png'}, \code{'eps'}, \code{'ps'}, \code{'tex'}, \code{'pdf'}, \code{'jpeg'}, 
+\code{'tiff'}, \code{'bmp'}, or \code{'svg'}. Image type will be overwritten if using \code{combined_pdf} is used.}
 
 \item{width}{Numeric plot width in \code{units}. If not supplied, uses the size of current graphics device.}
 
 \item{height}{Numeric plot height in \code{units}. If not supplied, uses the size of current graphics device.}
 
-\item{units}{Character string plot height and width units, one of "in", "cm", or "mm". Default \code{"in"}.}
+\item{units}{Character string plot height and width units, one of \code{'in'}, \code{'cm'}, or \code{'mm'}. Default \code{'in'}.}
 
 \item{dpi}{Numeric resolution of plots. Default \code{300}.}
 
-\item{combined_pdf}{Logical value indicating whether to combine list of plots into one pdf document. Default \code{FALSE}.}
+\item{combined_pdf}{Logical value indicating whether to combine list of plots into one PDF document. Default \code{FALSE}.}
 }
 \description{
-Write a list of plots (ggplots; as used by fasstr ) into a directory or PDF document. 
-   When writing into a named directory each plot will be named by the plot name listed in the list; uses ggplot2::ggsave function.
-   When writing into a PDF document (\code{combined_pdf == TRUE}) the plot names will not appear; uses grDevices:pdf function.
+Write a list of plots (ggplots; as used by \code{fasstr}) into a directory or PDF document. 
+   When writing into a named directory each plot will be named by the plot name listed in the list; uses \code{ggplot2::ggsave}
+   function. When writing into a PDF document (\code{combined_pdf == TRUE}) the plot names will not appear; uses 
+   \code{grDevices::pdf} function.
 }
 \examples{
 \dontrun{

@@ -10,9 +10,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Add daily cumulative volumetric flows on an annual basis
+#' @title Add a daily cumulative volumetric flows column to daily flows
 #'
-#' @description Add a column of rolling daily cumulative volumetric flows on an annual basis to a streamflow dataset. Adds the 
+#' @description Add a column of rolling daily cumulative volumetric flows on an annual basis to a daily streamflow data set. Adds the 
 #'    volumetric discharge from each day with the previous day(s) for each year, in units of cubic metres. 
 #'    The cumulative flows restart every year and are only calculated in years with complete data.
 #'

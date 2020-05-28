@@ -14,37 +14,39 @@
 
 #' @title Calculate all fasstr annual statistics
 #'
-#' @description Calculates all annual statistics of daily flow values from a streamflow dataset from all annual fasstr functions. 
-#'    Calculates the statistics from all daily discharge values from all years, unless specified. Data is ideally long-term and continuous 
-#'    with minimal missing/seasonal data as annual statistics are calculated. Data calculated using the folling functions:
+#' @description Calculates annual statistics from all annual \code{fasstr} functions from a daily streamflow data set.
+#'    Data is ideally long-term and continuous with minimal missing/seasonal data as annual statistics are calculated.
+#'    Calculates statistics from all values, unless specified. Returns a tibble with statistics. 
+#'    Data calculated using the following functions:
 #' \itemize{
-#'  \item{calc_annual_stats()}
-#'  \item{calc_annual_lowflows()}
-#'  \item{calc_annual_cumulative_stats()}
-#'  \item{calc_annual_flow_timing()}
-#'  \item{calc_monthly_stats()}
-#'  \item{calc_annual_outside_normal()}
+#'  \item{\code{calc_annual_stats()}}
+#'  \item{\code{calc_annual_lowflows()}}
+#'  \item{\code{calc_annual_cumulative_stats()}}
+#'  \item{\code{calc_annual_flow_timing()}}
+#'  \item{\code{calc_annual_outside_normal()}}
+#'  \item{\code{calc_monthly_stats()}}
 #'  }
 #'    
 #' @inheritParams calc_annual_stats
 #' @inheritParams calc_annual_cumulative_stats
 #' @inheritParams calc_annual_outside_normal
-#' @param annual_percentiles Numeric vector of percentiles to calculate annually. Set to NA if none required. Used for calc_annual_stats()
-#'    function. Default \code{c(10,90)}.
-#' @param monthly_percentiles Numeric vector of percentiles to calculate monthly for each year. Set to NA if none required. Used for 
-#'    calc_monthly_stats() function. Default \code{c(10,20)}.
+#' @param annual_percentiles Numeric vector of percentiles to calculate annually. Set to \code{NA} if none required. Used for
+#'    \code{calc_annual_stats()} function. Default \code{c(10,90)}.
+#' @param monthly_percentiles Numeric vector of percentiles to calculate monthly for each year. Set to \code{NA} if none required. 
+#'    Used for \code{calc_monthly_stats()} function. Default \code{c(10,20)}.
 #' @param stats_days Numeric vector of the number of days to apply a rolling mean on basic stats. Default \code{c(1)}.
-#'    Used for calc_annual_stats() and calc_monthly_stats() functions.
+#'    Used for \code{calc_annual_stats()} and \code{calc_monthly_stats()} functions.
 #' @param stats_align Character string identifying the direction of the rolling mean on basic stats from the specified date, either by 
-#'    the first ('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.
-#'    Used for calc_annual_stats(), calc_monthly_stats(), and calc_annual_outside_normal() functions.
-#' @param lowflow_days Numeric vector of the number of days to apply a rolling mean on lowflow stats. Default \code{c(1,3,7,30)}.
-#'    Used for calc_lowflow_stats() function.
-#' @param lowflow_align Character string identifying the direction of the rolling mean on lowflow stats from the specified date, either by 
-#'    the first ('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default \code{'right'}.
-#'    Used for calc_lowflow_stats() function.
-#' @param timing_percent Numeric vector of percents of annual total flows to determine dates. Used for calc_annual_flow_timing() function. 
-#'    Default \code{c(25,33.3,50,75)}.
+#'    the first (\code{'left'}), last (\code{'right'}), or middle (\code{'center'}) day of the rolling n-day group of observations.
+#'    Default \code{'right'}. Used for \code{calc_annual_stats()}, \code{calc_monthly_stats()}, and \code{calc_annual_outside_normal()}
+#'    functions.
+#' @param lowflow_days Numeric vector of the number of days to apply a rolling mean on low flow stats. Default \code{c(1,3,7,30)}.
+#'    Used for \code{calc_lowflow_stats()} function.
+#' @param lowflow_align Character string identifying the direction of the rolling mean on low flow stats from the specified date,
+#'    either by the first (\code{'left'}), last (\code{'right'}), or middle (\code{'center'}) day of the rolling n-day group of 
+#'    observations. Default \code{'right'}. Used for \code{calc_lowflow_stats()} function.
+#' @param timing_percent Numeric vector of percents of annual total flows to determine dates. Used for \code{calc_annual_flow_timing()}
+#'    function. Default \code{c(25,33.3,50,75)}.
 #' 
 #' @return A tibble data frame with column "Year" and then 107 (default) variables from the fasstr annual functions.
 #'    See listed functions above for default variables. Transposing data creates a column of "Statistics" and subsequent

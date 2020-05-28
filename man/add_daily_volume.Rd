@@ -2,18 +2,18 @@
 % Please edit documentation in R/add_daily_volume.R
 \name{add_daily_volume}
 \alias{add_daily_volume}
-\title{Add daily volumetric flows}
+\title{Add a daily volumetric flows column to daily flows}
 \usage{
 add_daily_volume(data, values = Value, station_number)
 }
 \arguments{
-\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+\item{data}{Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+\item{values}{Name of column in \code{data} that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+\item{station_number}{Character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
 Leave blank if using \code{data} argument.}
 }
@@ -22,7 +22,8 @@ A tibble data frame of the source data with an additional column:
   \item{Volume_m3}{daily total volumetric flow, in units of cubic metres}
 }
 \description{
-Add a column of daily volumetric flows to a streamflow dataset, in units of cubic metres. Converts the discharge to a volume.
+Add a column of daily volumetric flows to a daily streamflow data set, in units of cubic metres. Converts the
+    discharge to a volume.
 }
 \examples{
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())

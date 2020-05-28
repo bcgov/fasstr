@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Add daily volumetric flows — add_daily_volume • fasstr</title>
+<title>Add a daily volumetric flows column to daily flows — add_daily_volume • fasstr</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Add daily volumetric flows — add_daily_volume" />
-<meta property="og:description" content="Add a column of daily volumetric flows to a streamflow dataset, in units of cubic metres. Converts the discharge to a volume." />
+<meta property="og:title" content="Add a daily volumetric flows column to daily flows — add_daily_volume" />
+<meta property="og:description" content="Add a column of daily volumetric flows to a daily streamflow data set, in units of cubic metres. Converts the
+    discharge to a volume." />
 
 
 
@@ -146,13 +147,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Add daily volumetric flows</h1>
+    <h1>Add a daily volumetric flows column to daily flows</h1>
     <small class="dont-index">Source: <a href='https://github.com/bcgov/fasstr/blob/master/R/add_daily_volume.R'><code>R/add_daily_volume.R</code></a></small>
     <div class="hidden name"><code>add_daily_volume.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Add a column of daily volumetric flows to a streamflow dataset, in units of cubic metres. Converts the discharge to a volume.</p>
+    <p>Add a column of daily volumetric flows to a daily streamflow data set, in units of cubic metres. Converts the
+    discharge to a volume.</p>
     </div>
 
     <pre class="usage"><span class='fu'>add_daily_volume</span>(<span class='no'>data</span>, <span class='kw'>values</span> <span class='kw'>=</span> <span class='no'>Value</span>, <span class='no'>station_number</span>)</pre>
@@ -162,17 +164,17 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+      <td><p>Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>values</th>
-      <td><p>Column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
+      <td><p>Name of column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>station_number</th>
-      <td><p>A character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
+      <td><p>Character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract daily streamflow data from a HYDAT database. Requires <code>tidyhydat</code> package and a HYDAT database.
 Leave blank if using <code>data</code> argument.</p></td>
     </tr>

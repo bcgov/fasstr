@@ -40,10 +40,11 @@
 
 
 <meta property="og:title" content="Plot long-term summary statistics from daily mean flows — plot_longterm_daily_stats" />
-<meta property="og:description" content="Plots the long-term monthly mean, median, maximum, minimum, and percentiles of daily flow values for a given month
-   from a streamflow dataset. Plots statistics from discharge values from all years, unless specified. The Maximum-Minimum band
-   can be removed using the 'include_extremes' argument and the percentile bands can be customized using the
-   'inner_percentiles' and 'outer_percentiles' arguments. Data calculated using the calc_longterm_daily_stats() function." />
+<meta property="og:description" content="Plots the long-term mean, median, maximum, minimum, and percentiles of daily flow values for over all months and 
+   all data (Long-term) from a daily streamflow data set. Calculates statistics from all values, unless specified. 
+   The Maximum-Minimum band can be removed using the include_extremes argument and the percentile bands can be
+   customized using the inner_percentiles and outer_percentiles arguments. Data calculated using the 
+   calc_longterm_daily_stats() function. Returns a list of plots." />
 
 
 
@@ -155,10 +156,11 @@
     </div>
 
     <div class="ref-description">
-    <p>Plots the long-term monthly mean, median, maximum, minimum, and percentiles of daily flow values for a given month
-   from a streamflow dataset. Plots statistics from discharge values from all years, unless specified. The Maximum-Minimum band
-   can be removed using the 'include_extremes' argument and the percentile bands can be customized using the
-   'inner_percentiles' and 'outer_percentiles' arguments. Data calculated using the calc_longterm_daily_stats() function.</p>
+    <p>Plots the long-term mean, median, maximum, minimum, and percentiles of daily flow values for over all months and 
+   all data (Long-term) from a daily streamflow data set. Calculates statistics from all values, unless specified. 
+   The Maximum-Minimum band can be removed using the <code>include_extremes</code> argument and the percentile bands can be
+   customized using the <code>inner_percentiles</code> and <code>outer_percentiles</code> arguments. Data calculated using the 
+   <code><a href='calc_longterm_daily_stats.html'>calc_longterm_daily_stats()</a></code> function. Returns a list of plots.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plot_longterm_daily_stats</span>(
@@ -188,28 +190,29 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+      <td><p>Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>dates</th>
-      <td><p>Column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
-Date' (default). Leave blank if using <code>station_number</code> argument.</p></td>
+      <td><p>Name of column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
+'Date' (default). Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>values</th>
-      <td><p>Column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
+      <td><p>Name of column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>groups</th>
-      <td><p>Column in <code>data</code> that contains unique identifiers for different data sets, if applicable. Only required if
-groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
-Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using <code>station_number</code> argument.</p></td>
+      <td><p>Name of column in <code>data</code> that contains unique identifiers for different data sets, if applicable. Only required 
+if groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if 
+present. Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using <code>station_number</code> 
+argument.</p></td>
     </tr>
     <tr>
       <th>station_number</th>
-      <td><p>A character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
+      <td><p>Character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract daily streamflow data from a HYDAT database. Requires <code>tidyhydat</code> package and a HYDAT database.
 Leave blank if using <code>data</code> argument.</p></td>
     </tr>
@@ -220,11 +223,13 @@ Leave blank if using <code>data</code> argument.</p></td>
     <tr>
       <th>roll_align</th>
       <td><p>Character string identifying the direction of the rolling mean from the specified date, either by the first 
-('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default <code>'right'</code>.</p></td>
+(<code>'left'</code>), last (<code>'right'</code>), or middle (<code>'center'</code>) day of the rolling n-day group of observations. 
+Default <code>'right'</code>.</p></td>
     </tr>
     <tr>
       <th>water_year_start</th>
-      <td><p>Numeric value indicating the month of the start of the water year for analysis. Default <code>1</code>.</p></td>
+      <td><p>Numeric value indicating the month (<code>1</code> through <code>12</code>) of the start of water year for
+analysis. Default <code>1</code>.</p></td>
     </tr>
     <tr>
       <th>start_year</th>
@@ -245,8 +250,8 @@ Leave blank if using <code>data</code> argument.</p></td>
     <tr>
       <th>ignore_missing</th>
       <td><p>Logical value indicating whether dates with missing values should be included in the calculation. If
-<code>TRUE</code> then a statistic will be calculated regardless of missing dates. If <code>FALSE</code> then only statistics from time periods 
-with no missing dates will be returned. Default <code>FALSE</code>.</p></td>
+<code>TRUE</code> then a statistic will be calculated regardless of missing dates. If <code>FALSE</code> then only those statistics from
+time periods with no missing dates will be returned. Default <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>include_extremes</th>
@@ -255,12 +260,12 @@ Default <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>inner_percentiles</th>
-      <td><p>Numeric vector of two values of two percentiles indicating the lower and upper limits of the 
+      <td><p>Numeric vector of two percentile values indicating the lower and upper limits of the 
 inner percentiles ribbon for plotting. Default <code><a href='https://rdrr.io/r/base/c.html'>c(25,75)</a></code>, set to <code>NULL</code> for no inner ribbon.</p></td>
     </tr>
     <tr>
       <th>outer_percentiles</th>
-      <td><p>Numeric vector of two values of two percentiles indicating the lower and upper limits of the 
+      <td><p>Numeric vector of two percentile values indicating the lower and upper limits of the 
 outer percentiles ribbon for plotting. Default <code><a href='https://rdrr.io/r/base/c.html'>c(5,95)</a></code>, set to <code>NULL</code> for no outer ribbon.</p></td>
     </tr>
     <tr>

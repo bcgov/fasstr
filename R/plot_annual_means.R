@@ -13,8 +13,8 @@
 
 #' @title Plot annual means compared to the long-term mean
 #'
-#' @description Plot annual means using the long-term annual mean as the point of reference to compare wet vs. dry years. Plots the
-#'    statistics from all daily discharge values from all years, unless specified. Data calculated using calc_annual_stats() function.
+#' @description Plot annual means using the long-term annual mean as the point of reference for annual means. Calculates statistics
+#'    from all values, unless specified. Data calculated using \code{calc_annual_stats()} function. Returns a list of plots.
 #'
 #' @inheritParams calc_annual_stats
 #' @param include_title Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.

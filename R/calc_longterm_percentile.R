@@ -10,14 +10,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Calculate the long-term percentiles
+#' @title Calculate long-term percentiles
 #'
-#' @description Calculates the long-term percentiles discharge of a streamflow dataset. Averages all daily discharge values from all years,
-#'   unless specified.
+#' @description Calculates the long-term percentiles from a daily streamflow data set. Calculates statistics from all values, 
+#'    unless specified. Returns a tibble with statistics.
 #'   
 #' @inheritParams calc_daily_stats
 #' @inheritParams calc_monthly_stats
-#' @param percentiles Numeric vector of percentiles to calculate. Required.
+#' @param percentiles Numeric vector of percentiles (ex. \code{c(5,10,25,75)}) to calculate. Required.
 #'
 #' @return A tibble data frame of a long-term percentile of selected years and months.
 #' 

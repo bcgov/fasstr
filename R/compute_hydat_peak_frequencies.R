@@ -11,11 +11,12 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 
-#' @title Perform a flow frequency analysis on annual statistics
+#' @title Perform a frequency analysis on annual peak statistics from HYDAT
 #'
-#' @description Performs a volume frequency analysis on annual statistics from a streamflow dataset. Calculates the statistics from all 
-#'    daily discharge values from all years, unless specified. Function will calculate using all values in the provided data (no grouped
-#'    analysis). Analysis methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
+#' @description Performs a volume frequency analysis on annual peak statistics (instantaneous minimums or maximums) extracted from
+#'    HYDAT. Calculates statistics from all years, unless specified. The \code{data} argument is not available. Analysis 
+#'    methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.  Returns a list of tibbles 
+#'    and plots.
 #'
 #' @inheritParams compute_frequency_analysis
 #' @inheritParams compute_annual_frequencies

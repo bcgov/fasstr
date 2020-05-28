@@ -12,20 +12,20 @@
 
 #' @title Plot long-term summary statistics from annual monthly mean flows
 #'
-#' @description Plots the long-term monthly mean, median, maximum, minimum, and 5, 25, 75, and 95 percentiles of  
-#'    annual monthly mean flow values from a single streamflow dataset. Plots statistics from discharge values from all 
-#'    years, unless specified. The Maximum-Minimum band can be removed using the 'include_extremes' argument and the percentile bands 
-#'    can be customized using the 'inner_percentiles' and 'outer_percentiles' arguments. Data calculated using the
-#'    calc_longterm_monthly_stats() function.
+#' @description Plots the long-term mean, median, maximum, minimum, and percentiles of annual monthly mean flow values for all
+#'    months and all data (Long-term) from a daily streamflow data set. Calculates statistics from all values, unless specified. 
+#'    The Maximum-Minimum band can be removed using the \code{include_extremes} argument and the percentile bands 
+#'    can be customized using the \code{inner_percentiles} and \code{outer_percentiles} arguments. Data calculated using the 
+#'    \code{calc_longterm_monthly_stats()} function. Returns a list of plots.
 #'
 #' @inheritParams calc_longterm_monthly_stats
 #' @inheritParams plot_annual_stats
 #' @param add_year Numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.
 #' @param include_extremes Logical value to indicate plotting a ribbon with the range of daily minimum and maximum flows. 
 #'    Default \code{TRUE}.
-#' @param inner_percentiles Numeric vector of two values of two percentiles indicating the lower and upper limits of the 
+#' @param inner_percentiles Numeric vector of two percentile values indicating the lower and upper limits of the 
 #'    inner percentiles ribbon for plotting. Default \code{c(25,75)}, set to \code{NULL} for no inner ribbon.
-#' @param outer_percentiles Numeric vector of two values of two percentiles indicating the lower and upper limits of the 
+#' @param outer_percentiles Numeric vector of two percentile values indicating the lower and upper limits of the 
 #'    outer percentiles ribbon for plotting. Default \code{c(5,95)}, set to \code{NULL} for no outer ribbon.
 #'
 #' @return A list of ggplot2 objects with the following for each station provided:

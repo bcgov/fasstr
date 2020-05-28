@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Add rolling n-day averages — add_rolling_means • fasstr</title>
+<title>Add rolling n-day average column(s) to daily flows — add_rolling_means • fasstr</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,10 @@
 
 
 
-<meta property="og:title" content="Add rolling n-day averages — add_rolling_means" />
-<meta property="og:description" content="Adds selected n-day rolling means to a streamflow dataset. Based on selected n-days and alignment, the rolling mean for
-  a given day is obtained by averaging the adjacent dates of daily mean values. For example, rolling days of '7' and 'right' alignment 
-  would obtain a mean of the given and previous 6 days of daily mean flow. Rolling mean values will not be calculated if there is less 
-  than the n-days provided." />
+<meta property="og:title" content="Add rolling n-day average column(s) to daily flows — add_rolling_means" />
+<meta property="og:description" content="Adds selected n-day rolling means to a daily streamflow data set. Based on selected n-days and alignment, the rolling 
+  mean for a given day is obtained by averaging the adjacent dates of daily mean values. For example, rolling days of '7' 
+  and 'right' alignment would obtain a mean of the given and previous 6 days of daily mean flow." />
 
 
 
@@ -149,16 +148,15 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Add rolling n-day averages</h1>
+    <h1>Add rolling n-day average column(s) to daily flows</h1>
     <small class="dont-index">Source: <a href='https://github.com/bcgov/fasstr/blob/master/R/add_rolling_means.R'><code>R/add_rolling_means.R</code></a></small>
     <div class="hidden name"><code>add_rolling_means.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Adds selected n-day rolling means to a streamflow dataset. Based on selected n-days and alignment, the rolling mean for
-  a given day is obtained by averaging the adjacent dates of daily mean values. For example, rolling days of '7' and 'right' alignment 
-  would obtain a mean of the given and previous 6 days of daily mean flow. Rolling mean values will not be calculated if there is less 
-  than the n-days provided.</p>
+    <p>Adds selected n-day rolling means to a daily streamflow data set. Based on selected n-days and alignment, the rolling 
+  mean for a given day is obtained by averaging the adjacent dates of daily mean values. For example, rolling days of <code>'7'</code> 
+  and <code>'right'</code> alignment would obtain a mean of the given and previous 6 days of daily mean flow.</p>
     </div>
 
     <pre class="usage"><span class='fu'>add_rolling_means</span>(
@@ -176,28 +174,29 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+      <td><p>Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>dates</th>
-      <td><p>Column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
-Date' (default). Leave blank if using <code>station_number</code> argument.</p></td>
+      <td><p>Name of column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
+'Date' (default). Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>values</th>
-      <td><p>Column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
+      <td><p>Name of column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>groups</th>
-      <td><p>Column in <code>data</code> that contains unique identifiers for different data sets, if applicable. Only required if
-groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
-Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using <code>station_number</code> argument.</p></td>
+      <td><p>Name of column in <code>data</code> that contains unique identifiers for different data sets, if applicable. Only required 
+if groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if 
+present. Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using <code>station_number</code> 
+argument.</p></td>
     </tr>
     <tr>
       <th>station_number</th>
-      <td><p>A character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
+      <td><p>Character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract daily streamflow data from a HYDAT database. Requires <code>tidyhydat</code> package and a HYDAT database.
 Leave blank if using <code>data</code> argument.</p></td>
     </tr>
@@ -208,7 +207,8 @@ Leave blank if using <code>data</code> argument.</p></td>
     <tr>
       <th>roll_align</th>
       <td><p>Character string identifying the direction of the rolling mean from the specified date, either by the first 
-('left'), last ('right), or middle ('center') day of the rolling n-day group of observations. Default <code>'right'</code>.</p></td>
+(<code>'left'</code>), last (<code>'right'</code>), or middle (<code>'center'</code>) day of the rolling n-day group of observations. 
+Default <code>'right'</code>.</p></td>
     </tr>
     </table>
 

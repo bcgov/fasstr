@@ -173,8 +173,8 @@ These functions, start with either `add_*` or `fill_*`, add columns and
 rows, respectively, to streamflow data frames to help set up your data
 for further analysis. Examples include adding rolling means, adding date
 variables (WaterYear, Month, DayofYear, etc.), adding basin areas,
-adding columns of volumetric and yield discharge, and filling dates with
-missing flow values with `NA`.
+adding columns of volumetric discharge and water yields, and filling
+dates with missing flow values with `NA`.
 
 ##### Analysis
 

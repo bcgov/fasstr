@@ -14,8 +14,8 @@
 #'
 #' @description Calculates the number of days per year outside of the 'normal' range (typically between 25 and 75th percentiles) for
 #'    each day of the year. Upper and lower-range percentiles are calculated for each day of the year of from all years, and then each 
-#'    daily flow value for each year is compared. All days above or below the normal range are included. Calculates the statistics 
-#'    from all daily discharge values from all years, unless specified.
+#'    daily flow value for each year is compared. All days above or below the normal range are included. Calculates statistics from all 
+#'    values from complete years, unless specified. Returns a tibble with statistics.
 #'
 #' @inheritParams calc_annual_stats
 #' @param normal_percentiles Numeric vector of two values, lower and upper percentiles, respectively indicating the limits of the 

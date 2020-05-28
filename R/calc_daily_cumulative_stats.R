@@ -12,9 +12,9 @@
 
 #' @title Calculate cumulative daily flow statistics
 #'
-#' @description Calculate cumulative daily flow statistics for each day of the year of daily flow values from a streamflow dataset. 
-#'    Calculates the statistics from all daily discharge values from all years, unless specified. Defaults to volumetric cumulative 
-#'    flows, can use \code{use_yield} and \code{basin_area} to convert to runoff yield.
+#' @description Calculate cumulative daily flow statistics for each day of the year of daily flow values from a daily streamflow 
+#'    data set. Defaults to volumetric cumulative flows, can use \code{use_yield} and \code{basin_area} to convert to area-based 
+#'    water yield. Calculates statistics from all values from all complete years, unless specified. Returns a tibble with statistics.
 #'
 #' @inheritParams calc_daily_stats
 #' @inheritParams calc_annual_cumulative_stats

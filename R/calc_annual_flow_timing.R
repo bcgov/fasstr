@@ -10,11 +10,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Calculate annual flow timing
+#' @title Calculate annual timing of flows
 #'
-#' @description Calculates annual the timing (day of year) and date of occurrence of portions of total annual flow of daily flow 
-#'    values from a streamflow dataset. Calculates the statistics from all daily discharge values from all years with complete annual
-#'    data, unless specified.
+#' @description Calculates the timing (day of year and date) of portions of total annual flow of daily flow 
+#'    values from a daily streamflow data set. Calculates statistics from all values from complete years, unless specified.
+#'    Returns a tibble with statistics.
 #'
 #' @inheritParams calc_annual_stats
 #' @param percent_total Numeric vector of percents of total annual flows to determine dates. Default \code{c(25,33.3,50,75)}.

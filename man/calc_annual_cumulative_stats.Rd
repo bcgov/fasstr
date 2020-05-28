@@ -22,24 +22,26 @@ calc_annual_cumulative_stats(
 )
 }
 \arguments{
-\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+\item{data}{Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank if using \code{station_number} argument.}
 
-\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
-Date' (default). Leave blank if using \code{station_number} argument.}
+\item{dates}{Name of column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
+'Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+\item{values}{Name of column in \code{data} that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
-groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
-Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
+\item{groups}{Name of column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required 
+if groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if 
+present. Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} 
+argument.}
 
-\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+\item{station_number}{Character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
 Leave blank if using \code{data} argument.}
 
-\item{use_yield}{Logical value indicating whether to use yield runoff, in mm, instead of volumetric. Default \code{FALSE}.}
+\item{use_yield}{Logical value indicating whether to calculate area-based water yield, in mm, instead of volumetric discharge. 
+Default \code{FALSE}.}
 
 \item{basin_area}{Upstream drainage basin area, in square kilometres, to apply to observations. Three options:
 
@@ -48,9 +50,10 @@ Leave blank if using \code{data} argument.}
 (2) A single numeric value to apply to all observations.
 
 (3) List each basin area for each group/station in groups (can override HYDAT value if listed) as such \code{c("08NM116" = 795, 
-"08NM242" = 10)}. If group is not listed the HYDAT area will be applied if it exists, otherwise it will be NA.}
+"08NM242" = 10)}. If group is not listed the HYDAT area will be applied if it exists, otherwise it will be \code{NA}.}
 
-\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
+\item{water_year_start}{Numeric value indicating the month (\code{1} through \code{12}) of the start of water year for
+analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
@@ -58,12 +61,12 @@ Leave blank if using \code{data} argument.}
 
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 
-\item{months}{Numeric vector of months to include in analysis (e.g.. \code{6:8} for Jun-Aug). Leave blank to summarize 
+\item{months}{Numeric vector of months to include in analysis (e.g. \code{6:8} for Jun-Aug). Leave blank to summarize 
 all months (default \code{1:12}).}
 
-\item{include_seasons}{Logical value indication whether to include seasonal yields and total discharges. Default \code{TRUE}.}
+\item{include_seasons}{Logical value indication whether to include seasonal yields or volumetric discharges. Default \code{TRUE}.}
 
-\item{transpose}{Logical value indicating if the results rows and columns are to be switched. Default \code{FALSE}.}
+\item{transpose}{Logical value indicating whether to transpose rows and columns of results. Default \code{FALSE}.}
 }
 \value{
 A tibble data frame with the following columns, ending with '_Volume_m3' or '_Yield_mm' based on selection:
@@ -79,11 +82,11 @@ A tibble data frame with the following columns, ending with '_Volume_m3' or '_Yi
   Transposing data creates a column of 'Statistics' and subsequent columns for each year selected.
 }
 \description{
-Calculates annual and seasonal total flows, volumetric or runoff yield flows, from a streamflow dataset. Calculates 
-   the statistics from all daily discharge values from all years, unless specified. For water year and seasonal data, the designated
-   year is the year in which the year or season ends. Two-seasons and four-seasons per year are calculated, with each 6 and 3-month
-   seasons starting with the first month of the year (Jan for calendar year, specified for water year). Each season is designated
-   by the calendar or water year in which it occurs.
+Calculates annual and seasonal total flows, as volumetric discharge or water yields, from a daily streamflow data set.
+   For water year and seasonal data, the year is identified by the year in which the year or season ends. Two-seasons and 
+   four-seasons per year are calculated, with each 6 and 3-month seasons starting with the first month of the year (Jan for 
+   calendar year, specified for water year). Each season is designated by the calendar or water year in which it occurs.
+   Calculates statistics from all values from complete years, unless specified. Returns a tibble with statistics.
 }
 \examples{
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())

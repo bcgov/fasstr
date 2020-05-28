@@ -10,19 +10,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Add year, month, and day of year variables
+#' @title Add year, month, and day of year variable columns to daily flows
 #' 
-#' @description Add columns of Year (YYYY), Month (MM), MonthName (e.g. 'Jan'), and DayofYear (1-365 or 366); and WaterYear (YYYY) and 
-#'    WaterDayofYear (1-365 or 366) if selected; to a data frame with a column of dates called 'Date'. Water years are designated by 
-#'    the year in which they end. For example, Water Year 1999 (starting Oct) is from 1 Oct 1998 (WaterDayofYear 1) to 30 Sep 1999
-#'    (WaterDayofYear 365)).
+#' @description Add columns of CalendarYear (YYYY), Month (MM), MonthName (e.g. 'Jan'), WaterYear (YYYY), and DayofYear (1-365 or 366; 
+#'    of WaterYear); to a data frame with a column of dates called 'Date'. Water years are designated by the year in which they end. 
+#'    For example, Water Year 1999 (starting Oct) is from 1 Oct 1998 (DayofYear 1) to 30 Sep 1999 (DayofYear 365)).
 #' 
 #' @inheritParams calc_annual_stats
 #' 
 #' @return A tibble data frame of the source data with additional columns:
 #'   \item{CalendarYear}{calendar year}
 #'   \item{Month}{numeric month (1 to 12)}
-#'   \item{MonthName}{month name (Jan-Dec)}
+#'   \item{MonthName}{month abbreviation (Jan-Dec)}
 #'   \item{WaterYear}{year starting from the selected month start, water_year_start}
 #'   \item{DayofYear}{day of the year from the selected month start (1-365 or 366)}
 #'

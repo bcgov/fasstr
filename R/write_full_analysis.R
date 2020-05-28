@@ -12,17 +12,19 @@
 
 #' @title Write a suite of tables and plots from various fasstr functions into a directory
 #'
-#' @description Calculates and writes tables and plots from a suite of statistics from fasstr functions into 
+#' @description Calculates and writes tables and plots from a suite of statistics from \code{fasstr} functions into 
 #'    an Excel workbook, and accompanying plot files for certain analyses. Due to the number of tables and plots to be made, this 
-#'    function may take several minutes to complete. If using \code{ignore_missing = FALSE} (default) and there is missing data, 
+#'    function may take several minutes to complete. If \code{ignore_missing = FALSE} (default) and there is missing data, 
 #'    some tables and plots may be empty and produce warnings. Use \code{ignore_missing = TRUE} to ignore the missing values or 
-#'    filter your data to complete years.
+#'    filter your data to complete years. Calculates statistics from all values, unless specified. Returns a list of tibbles and
+#'    plots, along with saving the Excel and image files in a directory.
 #'    
 #' @inheritParams compute_full_analysis
 #' @param file_name Character string of the name of the Excel Workbook (and folder for plots if necessary) to create on drive to 
 #'    write all results. 
-#' @param plot_filetype Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
-#'    If not "pdf" then individual plots will be created instead of a combined PDF. Default \code{"pdf"}.
+#' @param plot_filetype Image type to write. One of \code{'png'}, \code{'eps'}, \code{'ps'}, \code{'tex'}, \code{'pdf'}, 
+#'    \code{'jpeg'}, \code{'tiff'}, \code{'bmp'}, or \code{'svg'}. If not \code{'pdf'} then individual plots will be created instead 
+#'    of a combined PDF. Default \code{'pdf'}.
 #' 
 #' @seealso \code{\link{compute_full_analysis}},
 #'          \code{\link{screen_flow_data}},

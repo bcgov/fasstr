@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_annual_cumulative_stats.R
 \name{plot_annual_cumulative_stats}
 \alias{plot_annual_cumulative_stats}
-\title{Plot annual and seasonal total flows}
+\title{Plot annual (and seasonal) cumulative flows}
 \usage{
 plot_annual_cumulative_stats(
   data,
@@ -22,24 +22,26 @@ plot_annual_cumulative_stats(
 )
 }
 \arguments{
-\item{data}{A data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
+\item{data}{Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank if using \code{station_number} argument.}
 
-\item{dates}{Column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not '
-Date' (default). Leave blank if using \code{station_number} argument.}
+\item{dates}{Name of column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
+'Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second.
+\item{values}{Name of column in \code{data} that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
 
-\item{groups}{Column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required if
-groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if present.
-Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} argument.}
+\item{groups}{Name of column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required 
+if groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if 
+present. Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} 
+argument.}
 
-\item{station_number}{A character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
+\item{station_number}{Character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
 Leave blank if using \code{data} argument.}
 
-\item{use_yield}{Logical value indicating whether to use yield runoff, in mm, instead of volumetric. Default \code{FALSE}.}
+\item{use_yield}{Logical value indicating whether to calculate area-based water yield, in mm, instead of volumetric discharge. 
+Default \code{FALSE}.}
 
 \item{basin_area}{Upstream drainage basin area, in square kilometres, to apply to observations. Three options:
 
@@ -48,9 +50,10 @@ Leave blank if using \code{data} argument.}
 (2) A single numeric value to apply to all observations.
 
 (3) List each basin area for each group/station in groups (can override HYDAT value if listed) as such \code{c("08NM116" = 795, 
-"08NM242" = 10)}. If group is not listed the HYDAT area will be applied if it exists, otherwise it will be NA.}
+"08NM242" = 10)}. If group is not listed the HYDAT area will be applied if it exists, otherwise it will be \code{NA}.}
 
-\item{water_year_start}{Numeric value indicating the month of the start of the water year for analysis. Default \code{1}.}
+\item{water_year_start}{Numeric value indicating the month (\code{1} through \code{12}) of the start of water year for
+analysis. Default \code{1}.}
 
 \item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
 
@@ -58,7 +61,7 @@ Leave blank if using \code{data} argument.}
 
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 
-\item{include_seasons}{Logical value indication whether to include seasonal yields and total discharges. Default \code{TRUE}.}
+\item{include_seasons}{Logical value indication whether to include seasonal yields or volumetric discharges. Default \code{TRUE}.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
 
@@ -70,16 +73,15 @@ A list of ggplot2 objects with the following for each station provided:
   \item{Two_Seasons_Total_Volume}{if include_seasons = TRUE, two seasons total volumetric discharges, in cubic metres}
   \item{Four_Seasons_Total_Volume}{if include_seasons = TRUE, four seasons total volumetric discharges, in cubic metres}
   If \code{use_yield} argument is used the list will contain the following objects:
-  \item{Annual_Yield}{annual runoff yield, in millimetres}
-  \item{Two_Seasons_Yield}{if include_seasons = TRUE, two seasons runoff yields, in millimetres}
-  \item{Four_Seasons_Yield}{if include_seasons = TRUE, four seasons runoff yields, in millimetres}
+  \item{Annual_Yield}{annual water yield, in millimetres}
+  \item{Two_Seasons_Yield}{if include_seasons = TRUE, two seasons water yield, in millimetres}
+  \item{Four_Seasons_Yield}{if include_seasons = TRUE, four seasons water yield, in millimetres}
 }
 \description{
-Plots annual and seasonal total flows, volumetric or runoff yield flows, from a streamflow dataset. Calculates 
-   the statistics from all daily discharge values from all years, unless specified. Data calculated from
-   plot_annual_cumulative_stats() function. For water year and seasonal data, the designated
-   year is the year in which the year or season ends. For example, if using water years with a start month of 11, the OND season is
-   designated by the water year which starts in November (designated by the calendar year in which it ends).
+Plots annual and seasonal (if \code{include_seaons = TRUE}) total flows, volumetric discharge or water yields, from a 
+   daily streamflow data set. Calculates statistics from all values, unless specified. Data calculated from 
+   \code{plot_annual_cumulative_stats()} function. For water year and seasonal data, the designated year is the year in which the 
+   year or season ends. Returns a list of plots.
 }
 \examples{
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())

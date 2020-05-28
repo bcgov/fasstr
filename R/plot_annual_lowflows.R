@@ -11,11 +11,11 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 
-#' @title Plot annual lowflows
+#' @title Plot annual low flows and dates
 #'
-#' @description Plot annual n-day minimum values, and the day of year of occurrence of daily flow values from a 
-#'    streamflow dataset. Plots statistics from all daily discharge values from all years, unless specified. Data
-#'    calculated from calc_annual_lowflows() function.
+#' @description Plot annual n-day minimum values, and the day of year and date of occurrence of daily flow values from a daily 
+#'    streamflow data set. Calculates statistics from all values, unless specified. Data calculated from \code{calc_annual_lowflows()}
+#'    function. Returns a list of plots.
 #'
 #' @inheritParams calc_annual_lowflows
 #' @inheritParams plot_annual_stats

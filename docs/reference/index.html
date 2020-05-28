@@ -173,13 +173,13 @@
         <td>
           <p><code><a href="fill_missing_dates.html">fill_missing_dates()</a></code> </p>
         </td>
-        <td><p>Fill dates of missing flow values with NA</p></td>
+        <td><p>Add rows of missing dates and fill missing flow values with NA</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="add_date_variables.html">add_date_variables()</a></code> </p>
         </td>
-        <td><p>Add year, month, and day of year variables</p></td>
+        <td><p>Add year, month, and day of year variable columns to daily flows</p></td>
       </tr><tr>
         
         <td>
@@ -191,7 +191,7 @@
         <td>
           <p><code><a href="add_rolling_means.html">add_rolling_means()</a></code> </p>
         </td>
-        <td><p>Add rolling n-day averages</p></td>
+        <td><p>Add rolling n-day average column(s) to daily flows</p></td>
       </tr><tr>
         
         <td>
@@ -203,25 +203,25 @@
         <td>
           <p><code><a href="add_daily_volume.html">add_daily_volume()</a></code> </p>
         </td>
-        <td><p>Add daily volumetric flows</p></td>
+        <td><p>Add a daily volumetric flows column to daily flows</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="add_daily_yield.html">add_daily_yield()</a></code> </p>
         </td>
-        <td><p>Add daily volumetric runoff yields</p></td>
+        <td><p>Add a daily volumetric water yield column to daily flows</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="add_cumulative_volume.html">add_cumulative_volume()</a></code> </p>
         </td>
-        <td><p>Add daily cumulative volumetric flows on an annual basis</p></td>
+        <td><p>Add a daily cumulative volumetric flows column to daily flows</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="add_cumulative_yield.html">add_cumulative_yield()</a></code> </p>
         </td>
-        <td><p>Add daily cumulative runoff yield flows on an annual basis</p></td>
+        <td><p>Add a daily cumulative water yield column to daily flows</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -240,13 +240,13 @@
         <td>
           <p><code><a href="plot_flow_data.html">plot_flow_data()</a></code> </p>
         </td>
-        <td><p>Plot daily mean streamflow</p></td>
+        <td><p>Plot a daily streamflow data set</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="screen_flow_data.html">screen_flow_data()</a></code> </p>
         </td>
-        <td><p>Calculate annual summary and missing data statistics</p></td>
+        <td><p>Calculate annual summary and missing data statistics for screening data</p></td>
       </tr><tr>
         
         <td>
@@ -349,7 +349,7 @@
         <td>
           <p><code><a href="calc_longterm_percentile.html">calc_longterm_percentile()</a></code> </p>
         </td>
-        <td><p>Calculate the long-term percentiles</p></td>
+        <td><p>Calculate long-term percentiles</p></td>
       </tr><tr>
         
         <td>
@@ -367,7 +367,7 @@
       <tr>
         <th colspan="2">
           <h2 id="section-cumulative-summary-statistics" class="hasAnchor"><a href="#section-cumulative-summary-statistics" class="anchor"></a>Cumulative Summary Statistics</h2>
-          <p class="section-desc"><p>Functions to calculate and plot mean, median, minimum, and selected percentiles flows for years (or seasons) by volume (cubic m) or by area-based yield (mm) using the ‘use_yield’ and ‘basin_area’ arguments.</p></p>
+          <p class="section-desc"><p>Functions to calculate and plot mean, median, minimum, and selected percentiles flows for years (or seasons) by volume (cubic m) or by area-based water yield (mm) using the ‘use_yield’ and ‘basin_area’ arguments.</p></p>
         </th>
       </tr>
       
@@ -386,7 +386,7 @@
         <td>
           <p><code><a href="plot_annual_cumulative_stats.html">plot_annual_cumulative_stats()</a></code> </p>
         </td>
-        <td><p>Plot annual and seasonal total flows</p></td>
+        <td><p>Plot annual (and seasonal) cumulative flows</p></td>
       </tr><tr>
         
         <td>
@@ -429,31 +429,31 @@
         <td>
           <p><code><a href="calc_annual_flow_timing.html">calc_annual_flow_timing()</a></code> </p>
         </td>
-        <td><p>Calculate annual flow timing</p></td>
+        <td><p>Calculate annual timing of flows</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="plot_annual_flow_timing.html">plot_annual_flow_timing()</a></code> </p>
         </td>
-        <td><p>Plot annual flow timing</p></td>
+        <td><p>Plot annual timing of flows</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="calc_annual_lowflows.html">calc_annual_lowflows()</a></code> </p>
         </td>
-        <td><p>Calculate annual lowflows</p></td>
+        <td><p>Calculate annual low flows and dates</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="plot_annual_lowflows.html">plot_annual_lowflows()</a></code> </p>
         </td>
-        <td><p>Plot annual lowflows</p></td>
+        <td><p>Plot annual low flows and dates</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="calc_annual_peaks.html">calc_annual_peaks()</a></code> </p>
         </td>
-        <td><p>Calculate annual peaks</p></td>
+        <td><p>Calculate annual peak flows</p></td>
       </tr><tr>
         
         <td>
@@ -521,13 +521,13 @@
         <td>
           <p><code><a href="compute_hydat_peak_frequencies.html">compute_hydat_peak_frequencies()</a></code> </p>
         </td>
-        <td><p>Perform a flow frequency analysis on annual statistics</p></td>
+        <td><p>Perform a frequency analysis on annual peak statistics from HYDAT</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="compute_frequency_analysis.html">compute_frequency_analysis()</a></code> </p>
         </td>
-        <td><p>Perform a custom annual frequency analysis</p></td>
+        <td><p>Perform a custom volume frequency analysis</p></td>
       </tr>
     </tbody><tbody>
       <tr>

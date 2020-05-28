@@ -2,7 +2,7 @@
 % Please edit documentation in R/compute_frequency_analysis.R
 \name{compute_frequency_analysis}
 \alias{compute_frequency_analysis}
-\title{Perform a custom annual frequency analysis}
+\title{Perform a custom volume frequency analysis}
 \usage{
 compute_frequency_analysis(
   data,
@@ -22,40 +22,40 @@ compute_frequency_analysis(
 )
 }
 \arguments{
-\item{data}{A data frame of flow data that contains columns of events, flow values, and measures (data type).}
+\item{data}{A data frame of data that contains columns of events, flow values, and measures (data type).}
 
-\item{events}{Column in \code{data} that contains event identifiers, typically year values. Default \code{"Year"}.}
+\item{events}{Column in \code{data} that contains event identifiers, typically year values. Default \code{'Year'}.}
 
-\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second. Default \code{"Value"}.}
+\item{values}{Column in \code{data} that contains numeric flow values, in units of cubic metres per second. Default \code{'Value'}.}
 
-\item{measures}{Column in \code{data} that contains measure identifiers (example data: '7-day low' or 'Annual Max'). Can have multiple
-measures (ex. '7-day low' and '30-day low') in column if multiple statistics are desired. Default \code{"Measure"}.}
+\item{measures}{Column in \code{data} that contains measure identifiers (example data: '7-day low' or 'Annual Max'). Can have 
+multiple measures (ex. '7-day low' and '30-day low') in column if multiple statistics are desired. Default \code{'Measure'}.}
 
-\item{use_max}{Logical value to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}
+\item{use_max}{Logical value to indicate using maximums rather than the minimums for analysis. Default \code{FALSE}.}
 
 \item{use_log}{Logical value to indicate log-scale transforming of flow data before analysis. Default \code{FALSE}.}
 
-\item{prob_plot_position}{Character string indicating the plotting positions used in the frequency plots, one of "weibull",
-"median", or "hazen". Points are plotted against  (i-a)/(n+1-a-b) where \code{i} is the rank of the value; \code{n} is the 
+\item{prob_plot_position}{Character string indicating the plotting positions used in the frequency plots, one of \code{'weibull'},
+\code{'median'}, or \code{'hazen'}. Points are plotted against  (i-a)/(n+1-a-b) where \code{i} is the rank of the value; \code{n} is the 
 sample size and \code{a} and \code{b} are defined as: (a=0, b=0) for Weibull plotting positions; (a=.2; b=.3) for Median 
-plotting positions; and (a=.5; b=.5) for Hazen plotting positions. Default \code{"weibull"}.}
+plotting positions; and (a=.5; b=.5) for Hazen plotting positions. Default \code{'weibull'}.}
 
 \item{prob_scale_points}{Numeric vector of probabilities to be plotted along the X axis in the frequency plot. Inverse of 
 return period. Default \code{c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001)}.}
 
-\item{fit_distr}{Character string identifying the distribution to fit annual data, one of "PIII" (Pearson Log III distribution) 
-or "weibull" (Weibull distribution). Default \code{"PIII"}.}
+\item{fit_distr}{Character string identifying the distribution to fit annual data, one of \code{'PIII'} (Pearson Log III 
+distribution) or \code{'weibull'} (Weibull distribution). Default \code{'PIII'}.}
 
-\item{fit_distr_method}{Character string identifying the method used to fit the distribution, one of  "MOM" (method of moments) 
-or "MLE" (maximum likelihood estimation). Selected as \code{"MOM"} if \code{fit_distr}=="PIII" (default) or \code{"MLE"} if 
- \code{fit_distr}=="weibull".}
+\item{fit_distr_method}{Character string identifying the method used to fit the distribution, one of \code{'MOM'} (method of
+moments) or \code{'MLE'} (maximum likelihood estimation). Selected as \code{'MOM'} if \code{fit_distr ='PIII'} (default) or 
+\code{'MLE'} if \code{fit_distr = 'weibull'}.}
 
 \item{fit_quantiles}{Numeric vector of quantiles to be estimated from the fitted distribution. 
 Default \code{c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)}.}
 
 \item{plot_curve}{Logical value to indicate plotting the computed curve on the probability plot. Default \code{TRUE}.}
 
-\item{remove_zeros}{Logical value to indicate removing any zero flow values from the dataset.}
+\item{remove_zeros}{Logical value to indicate removing any zero flow values from the data set. Default \code{FALSE}.}
 }
 \value{
 A list with the following elements:
@@ -66,11 +66,11 @@ A list with the following elements:
   \item{Freq_Fitted_Quantiles}{Data frame with fitted quantiles.}
 }
 \description{
-Performs a flow volume frequency analysis from a streamflow dataset. Defaults to ranking by minimums; 
-   use \code{use_max} for to rank by maximum flows. Calculates the statistics from events
-   and flow values provided. Columns of events (years), their values (mins or maxs), and identifiers (lowflows, highflows, etc),
-   Function will calculate using all values in the provided data (no grouped analysis). Analysis methodology replicates that 
-   from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
+Performs a volume frequency analysis on custom data. Defaults to ranking by minimums; use \code{use_max} for to 
+   rank by maximum flows. Calculates the statistics from events and flow values provided. Columns of events (e.g. years), their 
+   values (minimums or maximums), and identifiers (low-flows, high-flows, etc.). Function will calculate using all values in the
+   provided data (no grouped analysis). Analysis methodology replicates that from 
+   \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}. Returns a list of tibbles and plots.
 }
 \examples{
 \dontrun{

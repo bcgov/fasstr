@@ -14,14 +14,14 @@
 
 #' @title Plot flow duration curves
 #'
-#' @description Plots flow duration curves, percent time a flow value is equalled or exceeded, for a streamflow dataset. Plots 
-#'    statistics from all daily discharge values from all years, unless specified. Data calculated using calc_longterm_stats() 
-#'    function then converted for plotting.
+#' @description Plots flow duration curves of flow data from a daily streamflow data set. Plots the percent time flows are 
+#'    equalled or exceeded. Calculates statistics from all values, unless specified. Data calculated using 
+#'    \code{calc_longterm_stats()} function then converted for plotting. Returns a list of plots.
 #'
 #' @inheritParams calc_longterm_daily_stats
 #' @inheritParams plot_annual_stats
-#' @param months Numeric vector of month curves to plot. NA if no months required. Default \code{1:12}.
-#' @param include_longterm Logical value indicating whether to include longterm curve of all data. Default \code{TRUE}.
+#' @param months Numeric vector of month curves to plot. \code{NA} if no months required. Default \code{1:12}.
+#' @param include_longterm Logical value indicating whether to include long-term curve of all data. Default \code{TRUE}.
 #'
 #' @return A list of ggplot2 objects with the following for each station provided:
 #'   \item{Flow_Duration}{a plot that contains flow duration curves for each month, long-term, and (option) customized months}

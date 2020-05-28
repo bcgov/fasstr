@@ -12,18 +12,18 @@
 
 #' @title Write all data frames and plots from a list of objects into a directory
 #'
-#' @description Write a list of tables (data.frames) and plots (ggplots; as used by fasstr ) into a directory. Objects that are not
-#'    class "data.frame" or "gg" will not be saved. Each table and plot will be named by the object name in the list.
+#' @description Write a list of tables (data frames) and plots (\code{ggplots}; as used by \code{fasstr}) into a directory. Objects 
+#'    that are not class "data.frame" or "gg" will not be saved. Each table and plot will be named by the object name in the list.
 #'
 #' @param list List of data frames and plots to write to disk.
 #' @param folder_name Name of folder to create on disk (if it does not exist) to write each plot from list. 
 #'    If using \code{combined_pdf} argument, then it will be the name of the PDF document.
-#' @param table_filetype Table file type to write. One of "csv", "xls", or "xslx".
-#' @param plot_filetype Image type to write. One of "png", "eps", "ps", "tex", "pdf", "jpeg", "tiff", "bmp", or "svg".
-#'    Image type will be overwritten if using \code{combined_pdf} is used.
+#' @param table_filetype Table file type to write. One of \code{'csv'}, \code{'xls'}, or \code{'xslx'}.
+#' @param plot_filetype Image type to write. One of \code{'png'}, \code{'eps'}, \code{'ps'}, \code{'tex'}, \code{'pdf'}, \code{'jpeg'}, 
+#'    \code{'tiff'}, \code{'bmp'}, or \code{'svg'}. Image type will be overwritten if using \code{combined_pdf} is used.
 #' @param width Numeric plot width in \code{units}. If not supplied, uses the size of current graphics device.
 #' @param height Numeric plot height in \code{units}. If not supplied, uses the size of current graphics device.
-#' @param units Character string plot height and width units, one of "in", "cm", or "mm". Default \code{"in"}.
+#' @param units Character string plot height and width units, one of \code{'in'}, \code{'cm'}, or \code{'mm'}. Default \code{'in'}.
 #' @param dpi Numeric resolution of plots. Default \code{300}.
 #'
 #' @examples

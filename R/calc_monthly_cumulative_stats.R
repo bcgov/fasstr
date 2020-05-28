@@ -12,13 +12,13 @@
 
 #' @title Calculate cumulative monthly flow statistics
 #'
-#' @description Calculate cumulative monthly flow statistics for each month of the year of daily flow values from a streamflow dataset. 
-#'    Calculates the statistics from all daily discharge values for each month from all years, unless specified. Defaults to volumetric 
-#'    cumulative flows, can use \code{use_yield} and \code{basin_area} to convert to runoff yield.
+#' @description Calculate cumulative monthly flow statistics for each month of the year of daily flow values from a daily streamflow 
+#'    data set. Calculates statistics from all values from complete years, unless specified. Defaults to volumetric cumulative flows, 
+#'    can use \code{use_yield} and \code{basin_area} to convert to area-based water yield. Returns a tibble with statistics.
 #'
 #' @inheritParams calc_annual_cumulative_stats
 #' @inheritParams calc_daily_stats
-#' @param percentiles Numeric vector of percentiles to calculate. Set to NA if none required. Default \code{c(5,25,75,95)}.
+#' @param percentiles Numeric vector of percentiles to calculate. Set to \code{NA} if none required. Default \code{c(5,25,75,95)}.
 #'    
 #' @return A tibble data frame with the following columns, default units in cubic metres, or millimetres if use_yield and basin_area provided:
 #'   \item{Month}{month (MMM-DD) of cumulative statistics}

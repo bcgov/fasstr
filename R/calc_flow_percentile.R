@@ -12,8 +12,9 @@
 
 #' @title Calculate the percentile rank of a flow value
 #'
-#' @description Calculates the percentile, or percentile rank, of a discharge value compared to all flow values of a streamflow dataset. 
-#'    Looks up the value in the distribution (stats::ecdf() function) of all daily discharge values from all years, unless specified.
+#' @description Calculates the percentile rank of a discharge value compared to all flow values of a streamflow data set. 
+#'    Looks up the value in the distribution (\code{stats::ecdf()} function) of all daily discharge values from all years, unless
+#'    specified. Returns a tibble with statistics.
 #'
 #' @inheritParams calc_daily_stats
 #' @inheritParams calc_monthly_stats

@@ -12,11 +12,12 @@
 
 #' @title Compute a suite of tables and plots from various fasstr functions
 #'
-#' @description Calculates tables and plots from a suite of statistics from fasstr functions. The statistics are grouped into
-#'    7 analysis groups (see 'analyses' argument) which are stored in lists in the object. Due to the number of tables and plots to 
-#'    be made, this function may take several minutes to complete. If using \code{ignore_missing = FALSE} (default) and there is
-#'    missing data, some tables and plots may be empty and produce warnings. Use \code{ignore_missing = TRUE} to ignore the missing
-#'    values or filter your data to complete years.
+#' @description Calculates tables and plots from a suite of statistics from \code{fasstr} functions. Calculates statistics from all 
+#'    values, unless specified.The statistics are grouped into 7 analysis groups (see \code{analyses} argument) which are stored in 
+#'    lists in the object. Due to the number of tables and plots to be made, this function may take several minutes to complete. If 
+#'    \code{ignore_missing = FALSE} (default) and there is missing data, some tables and plots may be empty and produce warnings. 
+#'    Use \code{ignore_missing = TRUE} to ignore the missing values or filter your data to complete years.
+#'    Returns a list of tibbles and plots.
 #'    
 #' @inheritParams compute_annual_trends
 #' @param analyses Numeric vector of analyses to run (default is all (\code{1:7})):
@@ -29,8 +30,8 @@
 #'  \item{6: Annual Trends}
 #'  \item{7: Low-flow Frequencies}
 #'  }
-#' @param zyp_method Character string identifying the prewhitened trend method to use from 'zyp', either "zhang' or "yuepilon". 
-#'    Only required if analysis group 6 is included. Default \code{"yuepilon"}.
+#' @param zyp_method Character string identifying the prewhitened trend method to use from \code{'zyp'}, either \code{'zhang'} or
+#'    \code{'yuepilon'}. Only required if analysis group 6 is included. Default \code{'yuepilon'}.
 #' 
 #' @return A list of lists of tibble data frames and ggplot2 objects from various fasstr functions
 #'    organized by the analysis groups as listed above.

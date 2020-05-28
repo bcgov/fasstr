@@ -11,11 +11,11 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 
-#' @title Plot annual flow timing
+#' @title Plot annual timing of flows
 #'
-#' @description Plots annual the timing (day of year) of occurrence of portions of total annual flow of daily flow 
-#'    values from a streamflow dataset. Calculates the statistics from all daily discharge values from all years, unless specified.
-#'    Data calculated using calc_annual_flow_timing() function.
+#' @description Plots the timing (day of year and date) of portions of total annual flow of daily flow 
+#'    values from a daily streamflow data set. Calculates statistics from all values from complete years, unless specified. 
+#'    Data calculated using \code{calc_annual_flow_timing()} function. Returns a list of plots.
 #'
 #' @inheritParams calc_annual_flow_timing
 #' @inheritParams plot_annual_stats

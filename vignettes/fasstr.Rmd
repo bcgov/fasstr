@@ -93,7 +93,7 @@ This package allows for multiple stations (or other groupings) to be analyzed in
 
 ##### Cleaning 
 
-These functions, start with either `add_*` or `fill_*`, add columns and rows, respectively, to streamflow data frames to help set up your data for further analysis. Examples include adding rolling means, adding date variables (WaterYear, Month, DayofYear, etc.), adding basin areas, adding columns of volumetric and yield discharge, and filling dates with missing flow values with `NA`.
+These functions, start with either `add_*` or `fill_*`, add columns and rows, respectively, to streamflow data frames to help set up your data for further analysis. Examples include adding rolling means, adding date variables (WaterYear, Month, DayofYear, etc.), adding basin areas, adding columns of volumetric discharge and water yield, and filling dates with missing flow values with `NA`.
 
 ##### Analysis
 
@@ -120,7 +120,7 @@ For your own analyses, you can add date variables to your dataset using the `add
 
 ##### Drainage Basin Area
 
-Yield runoff statistics (in millimetres) calculated in the some of the functions require an upstream drainage basin area (in sq. km) using the `basin_area` argument. If no basin areas are supplied, all yield results will be `NA`. To apply a basin area (10 sqkm for example) to all daily observations, set the argument as `basin_area = 10`. If there are multiple stations or groups to apply multiple basin areas (using the `groups` argument), set them individually using this option: `basin_area = c("08NM116" = 795,  "08NM242" = 22)`. If a STATION_NUMBER column exists with HYDAT station numbers, the function will automatically use the basin areas provided in HYDAT, if available, so `basin_area` is not required. For your own analyses, you can add basin areas to your dataset using the `add_basin_area()` function.
+Water yield statistics (in millimetres) calculated in the some of the functions require an upstream drainage basin area (in sq. km) using the `basin_area` argument. If no basin areas are supplied, all yield results will be `NA`. To apply a basin area (10 sqkm for example) to all daily observations, set the argument as `basin_area = 10`. If there are multiple stations or groups to apply multiple basin areas (using the `groups` argument), set them individually using this option: `basin_area = c("08NM116" = 795,  "08NM242" = 22)`. If a STATION_NUMBER column exists with HYDAT station numbers, the function will automatically use the basin areas provided in HYDAT, if available, so `basin_area` is not required. For your own analyses, you can add basin areas to your dataset using the `add_basin_area()` function.
 
 ##### Handling Missing Dates
 

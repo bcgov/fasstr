@@ -2,7 +2,7 @@
 % Please edit documentation in R/compute_hydat_peak_frequencies.R
 \name{compute_hydat_peak_frequencies}
 \alias{compute_hydat_peak_frequencies}
-\title{Perform a flow frequency analysis on annual statistics}
+\title{Perform a frequency analysis on annual peak statistics from HYDAT}
 \usage{
 compute_hydat_peak_frequencies(
   station_number,
@@ -25,24 +25,24 @@ compute_hydat_peak_frequencies(
 which to extract annual peak minimum or maximum instantaneous streamflow data from a HYDAT database. Requires \code{tidyhydat} 
 package and a HYDAT database.}
 
-\item{use_max}{Logical value to indicate using annual maximums rather than the minimums for analysis. Default \code{FALSE}.}
+\item{use_max}{Logical value to indicate using maximums rather than the minimums for analysis. Default \code{FALSE}.}
 
 \item{use_log}{Logical value to indicate log-scale transforming of flow data before analysis. Default \code{FALSE}.}
 
-\item{prob_plot_position}{Character string indicating the plotting positions used in the frequency plots, one of "weibull",
-"median", or "hazen". Points are plotted against  (i-a)/(n+1-a-b) where \code{i} is the rank of the value; \code{n} is the 
+\item{prob_plot_position}{Character string indicating the plotting positions used in the frequency plots, one of \code{'weibull'},
+\code{'median'}, or \code{'hazen'}. Points are plotted against  (i-a)/(n+1-a-b) where \code{i} is the rank of the value; \code{n} is the 
 sample size and \code{a} and \code{b} are defined as: (a=0, b=0) for Weibull plotting positions; (a=.2; b=.3) for Median 
-plotting positions; and (a=.5; b=.5) for Hazen plotting positions. Default \code{"weibull"}.}
+plotting positions; and (a=.5; b=.5) for Hazen plotting positions. Default \code{'weibull'}.}
 
 \item{prob_scale_points}{Numeric vector of probabilities to be plotted along the X axis in the frequency plot. Inverse of 
 return period. Default \code{c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001)}.}
 
-\item{fit_distr}{Character string identifying the distribution to fit annual data, one of "PIII" (Pearson Log III distribution) 
-or "weibull" (Weibull distribution). Default \code{"PIII"}.}
+\item{fit_distr}{Character string identifying the distribution to fit annual data, one of \code{'PIII'} (Pearson Log III 
+distribution) or \code{'weibull'} (Weibull distribution). Default \code{'PIII'}.}
 
-\item{fit_distr_method}{Character string identifying the method used to fit the distribution, one of  "MOM" (method of moments) 
-or "MLE" (maximum likelihood estimation). Selected as \code{"MOM"} if \code{fit_distr}=="PIII" (default) or \code{"MLE"} if 
- \code{fit_distr}=="weibull".}
+\item{fit_distr_method}{Character string identifying the method used to fit the distribution, one of \code{'MOM'} (method of
+moments) or \code{'MLE'} (maximum likelihood estimation). Selected as \code{'MOM'} if \code{fit_distr ='PIII'} (default) or 
+\code{'MLE'} if \code{fit_distr = 'weibull'}.}
 
 \item{fit_quantiles}{Numeric vector of quantiles to be estimated from the fitted distribution. 
 Default \code{c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)}.}
@@ -64,9 +64,10 @@ A list with the following elements:
   \item{Freq_Fitted_Quantiles}{Data frame with fitted quantiles.}
 }
 \description{
-Performs a volume frequency analysis on annual statistics from a streamflow dataset. Calculates the statistics from all 
-   daily discharge values from all years, unless specified. Function will calculate using all values in the provided data (no grouped
-   analysis). Analysis methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.
+Performs a volume frequency analysis on annual peak statistics (instantaneous minimums or maximums) extracted from
+   HYDAT. Calculates statistics from all years, unless specified. The \code{data} argument is not available. Analysis 
+   methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.  Returns a list of tibbles 
+   and plots.
 }
 \examples{
 \dontrun{
