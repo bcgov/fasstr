@@ -115,13 +115,13 @@
 
     
     
-<p><code>fasstr</code>, the Flow Analysis Summary Statistics Tool for R, is a set of <a href="https://www.r-project.org/">R</a> functions to clean, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.</p>
+<p><code>fasstr</code>, the Flow Analysis Summary Statistics Tool for R, is a set of <a href="https://www.r-project.org/">R</a> functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.</p>
 <div id="features" class="section level2">
 <h2 class="hasAnchor">
 <a href="#features" class="anchor"></a>Features</h2>
 <p>This package provides functions for streamflow data analysis, including:</p>
 <ul>
-<li>data cleaning (to prepare data for analyses; <code>add_*</code> and <code>fill_*</code> functions),</li>
+<li>data tidying (to prepare data for analyses; <code>add_*</code> and <code>fill_*</code> functions),</li>
 <li>data screening (to identify data range, outliers and missing data; <code>screen_*</code> functions),</li>
 <li>calculating summary statistics (long-term, annual, monthly and daily statistics; <code>calc_*</code>functions),</li>
 <li>computing analyses (volume frequency analyses and annual trending; <code>compute_*</code> functions), and,</li>
@@ -179,9 +179,9 @@
 <div id="function-types" class="section level3">
 <h3 class="hasAnchor">
 <a href="#function-types" class="anchor"></a>Function Types</h3>
-<div id="cleaning" class="section level4">
+<div id="tidying" class="section level4">
 <h4 class="hasAnchor">
-<a href="#cleaning" class="anchor"></a>Cleaning</h4>
+<a href="#tidying" class="anchor"></a>Tidying</h4>
 <p>These functions, start with either <code>add_*</code> or <code>fill_*</code>, add columns and rows, respectively, to streamflow data frames to help set up your data for further analysis. Examples include adding rolling means, adding date variables (WaterYear, Month, DayofYear, etc.), adding basin areas, adding columns of volumetric discharge and water yield, and filling dates with missing flow values with <code>NA</code>.</p>
 </div>
 <div id="analysis" class="section level4">

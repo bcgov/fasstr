@@ -16,7 +16,7 @@ message = FALSE)
 ```
 
 
-`fasstr`, the Flow Analysis Summary Statistics Tool for R, is a set of [R](https://www.r-project.org/) functions to clean, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.
+`fasstr`, the Flow Analysis Summary Statistics Tool for R, is a set of [R](https://www.r-project.org/) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.
 
 This vignette documents the usage of the many functions and arguments provided in `fasstr`. This vignette is a high-level adjunct to the details found in the various function documentations (see `help(package = "fasstr")` for documentation). You’ll learn how to install the package and a HYDAT database, input data into `fasstr` functions, add relevant columns and rows to daily data, screen data for outliers and missing dates, calculate and visualize various summary statistics, trend annual flows, and complete volume frequency analyses.
 
@@ -27,7 +27,7 @@ This guide contains the following sections to help understand the usage of the `
 1. Getting Started
 2. Flow Data Inputs
 3. Function Outputs
-4. Data Cleaning (`fill_*` and `add_*` functions)
+4. Data Tidying (`fill_*` and `add_*` functions)
 5. Data Screening (`screen_*` functions)
 6. Calculating Statistics (`calc_*` functions)
 7. Analyses (`compute_*` functions)
@@ -133,7 +133,7 @@ This package allows for multiple stations (or other groupings) to be analyzed in
 
 `fasstr` provides various functions to help in streamflow analyses. They can be generally categorized into the following groups (with more details in the sections below):
 
-- data cleaning (to prepare data for analyses; `add_*` and `fill_*` functions),
+- data tidying (to prepare data for analyses; `add_*` and `fill_*` functions),
 - data screening (to look for outliers and missing data; `screen_*` functions),
 - calculating summary statistics (long-term, annual, monthly and daily statistics; `calc_*`functions),
 - computing analyses (volume frequency analyses and trending; `compute_*` functions),
@@ -152,7 +152,7 @@ Some functions produce both tibbles and plots as lists and can be subsequently s
 
 ***
 
-## 4. Data Cleaning Functions
+## 4. Data Tidying Functions
 
 There are several functions that are used to prepare your flow dataset for your own analysis. These functions begin with `add_` or `fill_` and add columns or rows, respectively, to your flow data frame. These functions include:
 
@@ -332,7 +332,7 @@ add_cumulative_yield(station_number = "08NM116",
 
 ### Pipelines
 
-By utilizing the `data` argument as the first one list, it enables the user to work with the cleaning functions within a tidy 'pipeline' and can pass onto the other `fasstr` functions.
+By utilizing the `data` argument as the first one list, it enables the user to work with the tidying functions within a tidy 'pipeline' and can pass onto the other `fasstr` functions.
 
 ```{r, comment=NA}
 fill_missing_dates(station_number = "08NM116") %>% 
@@ -425,7 +425,7 @@ These other long-term functions summarize the data over the entire record:
 
 The long-term `calc_` and `plot_` functions calculate the long-term and long-term monthly mean, median, maximum, minimum, and percentiles of all daily mean flows. 
 
-For `calc_longterm_daily_stats()`, for a given month, all daily flow values for a given month over the entire record are summarized together. For the 'Long-term' category, it summarizes all flow values over the entire record to determine the mean, median, maximum, minimum, and selected percentiles of daily flows. You can also specify a certain period of months to summarize together (ex. Jul-Sep flows) using the `custom_months` argument (listing the months) and labelling it using the `custom_months_label` argument (ex. "Summer Flows").
+For `calc_longterm_daily_stats()`, for a given month, all daily flow values for a given month over the entire record are summarized together. For the 'Long-term' category, it summarizes all flow values over the entire record to determine the mean, median, maximum, minimum, and selected percentiles of daily flows. You can also specify a certain period of months to summarize together (ex. Jul-Sep flows) using the `custom_months` argument (listing the months) and labeling it using the `custom_months_label` argument (ex. "Summer Flows").
 
 ```{r, comment=NA}
 calc_longterm_daily_stats(station_number = "08NM116", 
@@ -794,7 +794,7 @@ The plots and tables are grouped into the following analyses:
 
 ## 8. Customizing Functions with Arguments - Data Filtering and Options
 
-While cleaning and filtering data to desired parameters or time periods can be completed to flow data frames prior to passing them onto `fasstr` functions, a suite of function arguments have been provided to allow for in-function customization of cleaning and filtering. Described here are some of the options available in `fasstr` functions on how to handle missing dates, filter for specific years or months, and select desired statistics from some of the `fasstr` functions. Not all functions have all these options see the [documentation](https://bcgov.github.io/fasstr/reference/index.html) for each function usage (can also use `?calc_annual_stats` to see documentation in R).
+While tidying and filtering data to desired parameters or time periods can be completed to flow data frames prior to passing them onto `fasstr` functions, a suite of function arguments have been provided to allow for in-function customization of tidying and filtering. Described here are some of the options available in `fasstr` functions on how to handle missing dates, filter for specific years or months, and select desired statistics from some of the `fasstr` functions. Not all functions have all these options see the [documentation](https://bcgov.github.io/fasstr/reference/index.html) for each function usage (can also use `?calc_annual_stats` to see documentation in R).
 
 ### Handling Missing Dates
 

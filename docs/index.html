@@ -13,7 +13,7 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Analyze, Summarize, and Visualize Daily Streamflow Data">
 <meta property="og:description" content="The Flow Analysis Summary Statistics Tool for R, fasstr, provides various 
-    functions to clean and screen daily stream discharge data; calculate and visualize various summary statistics
+    functions to tidy and screen daily stream discharge data; calculate and visualize various summary statistics
     and metrics; and compute annual trending (using zyp package methods &lt;https://CRAN.R-project.org/package=zyp&gt;)
     and volume frequency analyses (using methods similar to HEC-SSP (2019) 
     &lt;https://www.hec.usace.army.mil/software/hec-ssp/&gt;). It features useful function arguments for filtering of and
@@ -117,10 +117,10 @@
 <!-- badges: start -->
 
 <p><a href="https://cran.r-project.org/package=fasstr"><img src="https://www.r-pkg.org/badges/version/fasstr" alt="CRAN_Status_Badge"></a> <a href="https://CRAN.R-project.org/package=fasstr"><img src="https://cranlogs.r-pkg.org/badges/fasstr?color=brightgreen" alt="CRAN Downloads"></a> <a href="https://CRAN.R-project.org/web/checks/check_results_fasstr.html"><img src="https://cranchecks.info/badges/worst/fasstr" alt="cran checks"></a> <!-- badges: end --></p>
-<p>The Flow Analysis Summary Statistics Tool for R (<code>fasstr</code>) is a set of <a href="http://www.r-project.org">R</a> functions to clean, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses.</p>
+<p>The Flow Analysis Summary Statistics Tool for R (<code>fasstr</code>) is a set of <a href="http://www.r-project.org">R</a> functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses.</p>
 <p>This package provides functions for streamflow data analysis, including:</p>
 <ul>
-<li>data cleaning (to prepare data for analyses; <code>add_*</code> and <code>fill_*</code> functions),</li>
+<li>data tidying (to prepare data for analyses; <code>add_*</code> and <code>fill_*</code> functions),</li>
 <li>data screening (to identify data range, outliers and missing data; <code>screen_*</code> functions),</li>
 <li>calculating summary statistics (long-term, annual, monthly and daily statistics; <code>calc_*</code>functions),</li>
 <li>computing analyses (volume frequency analyses and annual trending; <code>compute_*</code> functions), and,</li>

@@ -13,9 +13,9 @@ library(fasstr)
 
 ```
 
-`fasstr`, the Flow Analysis Summary Statistics Tool for R, is a set of [R](https://www.r-project.org/) functions to clean, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.
+`fasstr`, the Flow Analysis Summary Statistics Tool for R, is a set of [R](https://www.r-project.org/) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.
 
-This vignette guide contains a look at the steps and internal functions used within the various `fasstr` functions. It includes descriptions of the function and steps on data importing, cleaning and wrangling, filtering, analyzing, and plotting. It also describes some of the functions in the internal [utils.R file](https://github.com/bcgov/fasstr/blob/master/R/utils.R) and the packages required to use the `fasstr` package.
+This vignette guide contains a look at the steps and internal functions used within the various `fasstr` functions. It includes descriptions of the function and steps on data importing, tidying and wrangling, filtering, analyzing, and plotting. It also describes some of the functions in the internal [utils.R file](https://github.com/bcgov/fasstr/blob/master/R/utils.R) and the packages required to use the `fasstr` package.
 
 
 ## Introduction
@@ -25,7 +25,7 @@ This vignette guide contains a look at the steps and internal functions used wit
 This vignette is broken into the following sections that describe some of the workflows involved in the `fasstr` functions:
 
 1. Data Importing and Checking
-2. Cleaning Functions (`add_` and `fill_`)
+2. Tidying Functions (`add_` and `fill_`)
 3. Analysis Functions (`calc_` and `compute_`)
 4. Plotting Functions (`plot_`)
 5. Internal Functions (utils.R file)
@@ -41,11 +41,11 @@ The `fasstr` functions primarily require daily mean streamflow data in cubic met
 
 The first step is to import daily data. The internal `flowdata_import()` function provides checks on the `data` and `station_number` arguments, and either extracts daily data from HYDAT (returns an error if the number isn't in HYDAT) using the `tidyhydat` package, or makes sure that `data` is in fact a data frame.
 
-At this point in a `fasstr` function, all the column names of the data are saved as in a vector and any grouping (tidy grouping) is removed. The column names are saved as they may be changed in the following steps and the original names will be returned at the end of the analysis. Any grouping is removed to allow for the appropriate grouping of the analysis. For the cleaning functions (`add_` and `fill_`) any grouping will be returned.
+At this point in a `fasstr` function, all the column names of the data are saved as in a vector and any grouping (tidy grouping) is removed. The column names are saved as they may be changed in the following steps and the original names will be returned at the end of the analysis. Any grouping is removed to allow for the appropriate grouping of the analysis. For the tidying functions (`add_` and `fill_`) any grouping will be returned.
 
 The next step is to ensure the column names of dates, values, and groups are consistent as 'Date', 'Value', and 'STATION_NUMBER' (to match the HYDAT outputs), respectively, for the analysis. This is required as grouping and summarizing functions in the following steps use these specific column names, and provided data may not use the same names. The facilitate the column renaming and checking, there are several internal functions in the utils.R. For each of the three columns there is a function that checks if it exists, the proper formatting, and renames the columns to the appropriate name.  These functions are `format_dates_col()`, `format_values_col()`, and `format_groups_col()`. If no grouping is provided, a fake 'STATION_NUMBER' of 'XXXXXXX' is provided (and removed at the end of the `fasstr` function). As all three columns are required for many `fasstr` functions, there is a `formal_all_cols()` that uses all three functions, with an option to remove all other columns.
 
-At this point in a function there is now a data frame of data, usually called 'flow_data' that has three columns of 'Date', 'Value', and 'STATION_NUMBER', that is ready to be cleaned for analysis.
+At this point in a function there is now a data frame of data, usually called 'flow_data' that has three columns of 'Date', 'Value', and 'STATION_NUMBER', that is ready to be tidied for analysis.
 
 Note: some functions use different data sources than daily data. The `compute_HYDAT_peaks_frequencies()` does not permit the `data` argument and just extracts data from HYDAT (and sets it up appropriately) and the `compute_frequency_analysis()` function requires a unique dataset (see `?compute_frequency_analysis` for more information on the function).
 
@@ -70,13 +70,13 @@ flow_data <- format_all_cols(data = flow_data,
 
 ------
 
-## 2. Cleaning Functions (`add_` and `fill_`)
+## 2. Tidying Functions (`add_` and `fill_`)
 
-The `fasstr` cleaning functions (start with `add_` or `fill_`) just add rows or columns of data so there are fewer steps than the other `fasstr` functions.
+The `fasstr` tidying functions (start with `add_` or `fill_`) just add rows or columns of data so there are fewer steps than the other `fasstr` functions.
 
 After the data has been prepped with the appropriate columns, the columns are added with their equations or other functions, or dates are filled with NA if they are missing. Then if any of the column names were changed in the formatting, they are returned to their original names, and if there was a grouping beforehand, that grouping is returned.
 
-The following is an example of remaining steps of a cleaning function (from `add_daily_yield()`):
+The following is an example of remaining steps of a tidying function (from `add_daily_yield()`):
 
 ``` {r, eval=FALSE}
 ## SET UP BASIN AREA
@@ -108,18 +108,18 @@ dplyr::as_tibble(flow_data)
 
 ## 3. Analysis Functions (`calc_` and `compute_`)
 
-The `fasstr` analysis functions (start with `calc_` or `compute_` or `screen_`) require steps of cleaning (adding appropriate columns), filtering, analyzing and any final data wrangling.
+The `fasstr` analysis functions (start with `calc_` or `compute_` or `screen_`) require steps of tidying (adding appropriate columns), filtering, analyzing and any final data wrangling.
 
 
-#### Data Cleaning and Preparing
+#### Data Tidying and Preparing
 
-After the data has been prepped with the appropriate columns, additional columns of dates (years, months, days), rolling days, basin areas, yields or volumes may be added, depending on the analysis. Dates with no data are also filled with NA values so that complete years can be analyzed (and appropriate warnings made if NA's are produced). To facilitate these steps there is an internal function in the utils.R file called `analysis_prep()`.  This function will fill the missing dates and add columns of 'CalendarYear', 'Month', 'MonthName', 'WaterYear', and 'DayofYear' to the data frame.  It also creates a column of 'AnalysisDate' if necessary, that extracts the dates and converts them into a single year for columns or plotting. This is to provide consistency to the analysis functions (as the Wateryear can change based on the `water_year_start` argument choice). Any other columns (rolling means, yield, etc.) are added as necessary using the necessary cleaning functions.
+After the data has been prepped with the appropriate columns, additional columns of dates (years, months, days), rolling days, basin areas, yields or volumes may be added, depending on the analysis. Dates with no data are also filled with NA values so that complete years can be analyzed (and appropriate warnings made if NA's are produced). To facilitate these steps there is an internal function in the utils.R file called `analysis_prep()`.  This function will fill the missing dates and add columns of 'CalendarYear', 'Month', 'MonthName', 'WaterYear', and 'DayofYear' to the data frame.  It also creates a column of 'AnalysisDate' if necessary, that extracts the dates and converts them into a single year for columns or plotting. This is to provide consistency to the analysis functions (as the Wateryear can change based on the `water_year_start` argument choice). Any other columns (rolling means, yield, etc.) are added as necessary using the necessary tidying functions.
 
 For some functions a 'RollingValue' column is created for the statistics calculations so that a roll_day value of other than 1 can be used. For this, the add_rolling_days() function creates an additional column based on the users selection and is renamed to 'RollingValue'.
 
 At this point in a function the data frame of data, flow_data, has three columns of 'Date', 'Value' or 'RollingValue', and 'STATION_NUMBER', and any other date and necessary column required to be filtered for analysis.
 
-The following is an example of the cleaning steps (from `calc_annual_stats()`):
+The following is an example of the tidying steps (from `calc_annual_stats()`):
 
 ``` {r, eval=FALSE}
 # Fill missing dates, add date variables

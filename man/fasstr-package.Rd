@@ -7,7 +7,7 @@
 \title{fasstr: Analyze, Summarize, and Visualize Daily Streamflow Data}
 \description{
 The Flow Analysis Summary Statistics Tool for R, 'fasstr', provides various 
-    functions to clean and screen daily stream discharge data; calculate and visualize various summary statistics
+    functions to tidy and screen daily stream discharge data; calculate and visualize various summary statistics
     and metrics; and compute annual trending (using 'zyp' package methods <https://CRAN.R-project.org/package=zyp>)
     and volume frequency analyses (using methods similar to HEC-SSP (2019) 
     <https://www.hec.usace.army.mil/software/hec-ssp/>). It features useful function arguments for filtering of and

@@ -20,7 +20,7 @@ checks](https://cranchecks.info/badges/worst/fasstr)](https://CRAN.R-project.org
 </div>
 
 The Flow Analysis Summary Statistics Tool for R (‘fasstr’) is a set of
-[R](http://www.r-project.org) functions to clean, summarize, analyze,
+[R](http://www.r-project.org) functions to tidy, summarize, analyze,
 trend, and visualize streamflow data. This package summarizes continuous
 daily mean streamflow data into various daily, monthly, annual, and
 long-term statistics, completes annual trends and frequency analyses, in
@@ -35,13 +35,13 @@ guide](https://bcgov.github.io/fasstr/)
 
 This package provides functions for streamflow data analysis, including:
 
-  - data cleaning (to prepare data for analyses; `add_*` and `fill_*`
+  - data tidying (to prepare data for analyses; `add_*` and `fill_*`
     functions),
   - data screening (to identify data range, outliers and missing data;
     `screen_*` functions),
   - calculating summary statistics (long-term, annual, monthly and daily
     statistics; `calc_*`functions),
-  - computing analyses (volume frequency analyses and tannual rending;
+  - computing analyses (volume frequency analyses and annual trending;
     `compute_*` functions), and,
   - visualizing (data plotting the various statistics; `plot_*`
     functions).
@@ -167,7 +167,7 @@ listed in the `values` column will be summarized.
 
 #### Function Types
 
-##### Cleaning
+##### Tidying
 
 These functions, start with either `add_*` or `fill_*`, add columns and
 rows, respectively, to streamflow data frames to help set up your data

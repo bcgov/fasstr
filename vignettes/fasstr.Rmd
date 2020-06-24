@@ -14,13 +14,13 @@ message = FALSE)
 library(fasstr)
 ```
 
-`fasstr`, the Flow Analysis Summary Statistics Tool for R, is a set of [R](https://www.r-project.org/) functions to clean, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.
+`fasstr`, the Flow Analysis Summary Statistics Tool for R, is a set of [R](https://www.r-project.org/) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.
 
 ## Features
 
 This package provides functions for streamflow data analysis, including:
 
-- data cleaning (to prepare data for analyses; `add_*` and `fill_*` functions),
+- data tidying (to prepare data for analyses; `add_*` and `fill_*` functions),
 - data screening (to identify data range, outliers and missing data; `screen_*` functions),
 - calculating summary statistics (long-term, annual, monthly and daily statistics; `calc_*`functions),
 - computing analyses (volume frequency analyses and annual trending; `compute_*` functions), and,
@@ -91,7 +91,7 @@ This package allows for multiple stations (or other groupings) to be analyzed in
 
 ### Function Types
 
-#### Cleaning 
+#### Tidying 
 
 These functions, start with either `add_*` or `fill_*`, add columns and rows, respectively, to streamflow data frames to help set up your data for further analysis. Examples include adding rolling means, adding date variables (WaterYear, Month, DayofYear, etc.), adding basin areas, adding columns of volumetric discharge and water yield, and filling dates with missing flow values with `NA`.
 
