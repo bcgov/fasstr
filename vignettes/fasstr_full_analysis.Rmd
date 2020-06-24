@@ -23,7 +23,7 @@ library(dplyr)
 This vignette documents the usage of the `compute_full_analysis()` and `write_full_analysis()` functions in `fasstr`. This vignette is a high-level adjunct to the details found in the function documentation (see `?compute_full_analysis` and `?write_full_analysis`). You’ll learn what arguments to provide to the function to customize your analyses, what analyses are computed, and what outputs are produced.
 
 
-## Usage
+## Overview
 
 The full analysis functions produce a suite of tables and plots from the various `fasstr` functions. There are seven groups of analyses (see below) which are stored in lists in the created object for the `compute_` function and written into an Excel workbook (and accompanying image files) for the `write_` function. All of the data selection (`data` or `station_number` arguments), data filtering, water year selection, missing dates options, basin area, and `zyp` trending arguments are used in this function to customize your data and analysis.
 
@@ -40,7 +40,7 @@ The outputs are grouped into the following categories:
 While by default the function will create all outputs from all categories, there is the option to select which groups are analyzed using the `analyses` argument. By default the `analyses` argument is `1:7`, with numbers 1 through 7 representing each of the categories as listed above. So `analyses = 1` would output only the screening outputs; while `analyses = c(1,3,5:7)` would output all but the long-term and monthly analyses.
 
 
-## Outputs
+## Functions and Data Inputs
 
 ### `compute_full_analysis()` Object List
 
@@ -80,7 +80,7 @@ write_full_analysis(station_number = "08NM116",
 
 
 
-### Objects Directory and Functions Used
+## Usage, Options, and outputs
 
 The following is a table that lists of all objects and files (if `write_to_dir = TRUE)` created using the `compute_full_analysis()` function, with their respective section list / folder, type of object, and the function use to produce the object:
 

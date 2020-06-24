@@ -112,7 +112,7 @@ add_cumulative_yield <- function(data,
   
   # Add cumulative volume column and ungroup (remove analysisyear group)
   flow_data_temp <- dplyr::ungroup(flow_data_temp)
-  flow_data_temp <- dplyr::mutate(dplyr::group_by(flow_data_temp, STATION_NUMBER, WaterYear, add = TRUE), 
+  flow_data_temp <- dplyr::mutate(dplyr::group_by(flow_data_temp, STATION_NUMBER, WaterYear, .add = TRUE), 
                                   Cumul_Yield_mm = cumsum_na(Value) * 86400 / (Basin_Area_sqkm_temp * 1000))
   flow_data_temp <- dplyr::ungroup(flow_data_temp)
   

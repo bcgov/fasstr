@@ -122,8 +122,8 @@ options.
 
 #### Data Input
 
-All functions in `fasstr` require a daily mean streamflow dataset from
-one or more hydrometric stations. Long-term and continuous datasets are
+All functions in `fasstr` require a daily mean streamflow data set from
+one or more hydrometric stations. Long-term and continuous data sets are
 preferred for most analyses, but seasonal and partial data can be used.
 Other daily time series data, like temperature, precipitation or water
 levels, may also be used, but with certain caution as some
@@ -211,22 +211,22 @@ select for that as function arguments (e.g. `rolling_days = 7` and
 the date amongst the n-day means, where “right” averages the day-of and
 previous n-1 days, “centre” date is in the middle of the averages, and
 “left” averages the day-of and the following n-1 days. For your own
-analyses you can add rolling means to your dataset using the
+analyses you can add rolling means to your data set using the
 `add_rolling_means()` function.
 
 ##### Year and Month Filtering
 
 To customize your analyses for specific time periods, you can designate
 the start and end years of your analysis using the `start_year` and
-`end_year` arguments and remove any unwanted years (for partial datasets
-for example) by listing them in the `excluded_years` argument
+`end_year` arguments and remove any unwanted years (for partial data
+sets for example) by listing them in the `excluded_years` argument
 (e.g. `excluded_years = c(1990, 1992:1994)`). Alternatively, some
 functions have an argument called `complete_years` that summarizes data
 from just those years which have complete flow records. Some functions
 will also allow you to select the months of a year to analyze, using the
 `months` argument, as opposed to all months (if you want just summer
 low-flows, for example). Leaving these arguments blank will result in
-the summary/analysis of all years and months of the provided dataset.
+the summary/analysis of all years and months of the provided data set.
 
 To group analyses by water, or hydrologic, years instead of calendar
 years, if desired, you can set `water_year_start` within most functions
@@ -240,7 +240,7 @@ year it ends in (e.g. a water year from Oct 1, 1999 to Sep 30, 2000 is
 designated as 2000). Start, end and excluded years will be based on the
 specified water year.
 
-For your own analyses, you can add date variables to your dataset using
+For your own analyses, you can add date variables to your data set using
 the `add_date_variables()` or `add_seasons()` functions.
 
 ##### Drainage Basin Area
@@ -255,8 +255,8 @@ multiple stations or groups to apply multiple basin areas (using the
 = c("08NM116" = 795, "08NM242" = 22)`. If a STATION\_NUMBER column
 exists with HYDAT station numbers, the function will automatically use
 the basin areas provided in HYDAT, if available, so `basin_area` is not
-required. For your own analyses, you can add basin areas to your dataset
-using the `add_basin_area()` function.
+required. For your own analyses, you can add basin areas to your data
+set using the `add_basin_area()` function.
 
 ##### Handling Missing Dates
 
@@ -268,9 +268,9 @@ flow values. When `ignore_missing = FALSE` the returned value for the
 period will be `NA` if there are missing values.
 
 Some functions have an argument called `complete_years` which can be
-used, when set to `TRUE`, to filter out years that have partial datasets
-(for seasonal or other reasons) and only years with full data are used
-to calculate statistics.
+used, when set to `TRUE`, to filter out years that have partial data
+sets (for seasonal or other reasons) and only years with full data are
+used to calculate statistics.
 
 ### Examples
 

@@ -43,7 +43,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Jon Goetz \email{jon.goetz@gov.bc.ca}
+\strong{Maintainer}: Jon Goetz \email{jon.goetz@gov.bc.ca} (\href{https://orcid.org/0000-0002-4993-1119}{ORCID})
 
 Authors:
 \itemize{
