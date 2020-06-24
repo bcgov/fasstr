@@ -15,7 +15,7 @@ home:
     href: https://CRAN.R-project.org/view=Hydrology
   
 reference:
-- title: Data Cleaning
+- title: Data Tidying
   desc: Functions to add rows and columns of dates and discharge conversions
         to daily streamflow data frames to prepare for custom analyses.
   contents:
