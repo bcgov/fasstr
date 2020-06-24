@@ -102,7 +102,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="fasstr_full_analysis_files/header-attrs-2.2/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Computing a Full Analysis with fasstr</h1>
@@ -117,9 +117,9 @@
     
 <p><code>fasstr</code>, the Flow Analysis Summary Statistics Tool for R, is a set of <a href="https://www.r-project.org/">R</a> functions to clean, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.</p>
 <p>This vignette documents the usage of the <code><a href="../reference/compute_full_analysis.html">compute_full_analysis()</a></code> and <code><a href="../reference/write_full_analysis.html">write_full_analysis()</a></code> functions in <code>fasstr</code>. This vignette is a high-level adjunct to the details found in the function documentation (see <code><a href="../reference/compute_full_analysis.html">?compute_full_analysis</a></code> and <code><a href="../reference/write_full_analysis.html">?write_full_analysis</a></code>). You’ll learn what arguments to provide to the function to customize your analyses, what analyses are computed, and what outputs are produced.</p>
-<div id="usage" class="section level2">
+<div id="overview" class="section level2">
 <h2 class="hasAnchor">
-<a href="#usage" class="anchor"></a>Usage</h2>
+<a href="#overview" class="anchor"></a>Overview</h2>
 <p>The full analysis functions produce a suite of tables and plots from the various <code>fasstr</code> functions. There are seven groups of analyses (see below) which are stored in lists in the created object for the <code>compute_</code> function and written into an Excel workbook (and accompanying image files) for the <code>write_</code> function. All of the data selection (<code>data</code> or <code>station_number</code> arguments), data filtering, water year selection, missing dates options, basin area, and <code>zyp</code> trending arguments are used in this function to customize your data and analysis.</p>
 <p>The outputs are grouped into the following categories:</p>
 <ol style="list-style-type: decimal">
@@ -133,9 +133,9 @@
 </ol>
 <p>While by default the function will create all outputs from all categories, there is the option to select which groups are analyzed using the <code>analyses</code> argument. By default the <code>analyses</code> argument is <code>1:7</code>, with numbers 1 through 7 representing each of the categories as listed above. So <code>analyses = 1</code> would output only the screening outputs; while <code>analyses = c(1,3,5:7)</code> would output all but the long-term and monthly analyses.</p>
 </div>
-<div id="outputs" class="section level2">
+<div id="functions-and-data-inputs" class="section level2">
 <h2 class="hasAnchor">
-<a href="#outputs" class="anchor"></a>Outputs</h2>
+<a href="#functions-and-data-inputs" class="anchor"></a>Functions and Data Inputs</h2>
 <div id="compute_full_analysis-object-list" class="section level3">
 <h3 class="hasAnchor">
 <a href="#compute_full_analysis-object-list" class="anchor"></a><code>compute_full_analysis()</code> Object List</h3>
@@ -163,9 +163,10 @@
                     <span class="kw">end_year</span> <span class="kw">=</span> <span class="fl">2000</span>,
                     <span class="kw">file_name</span> <span class="kw">=</span> <span class="st">"Mission Creek"</span>)</pre></body></html></div>
 </div>
-<div id="objects-directory-and-functions-used" class="section level3">
-<h3 class="hasAnchor">
-<a href="#objects-directory-and-functions-used" class="anchor"></a>Objects Directory and Functions Used</h3>
+</div>
+<div id="usage-options-and-outputs" class="section level2">
+<h2 class="hasAnchor">
+<a href="#usage-options-and-outputs" class="anchor"></a>Usage, Options, and outputs</h2>
 <p>The following is a table that lists of all objects and files (if <code>write_to_dir = TRUE)</code> created using the <code><a href="../reference/compute_full_analysis.html">compute_full_analysis()</a></code> function, with their respective section list / folder, type of object, and the function use to produce the object:</p>
 <table class="table">
 <colgroup>
@@ -453,7 +454,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <div id="objects-examples" class="section level3">
 <h3 class="hasAnchor">
 <a href="#objects-examples" class="anchor"></a>Objects Examples</h3>

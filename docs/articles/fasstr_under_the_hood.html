@@ -102,7 +102,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="fasstr_under_the_hood_files/header-attrs-2.2/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Internal fasstr Workflows</h1>
@@ -263,7 +263,7 @@
 <p>After all wrangling, the final results are returned from the function as a tibble.</p>
 <p>The following is an example of the final wrangling steps (from <code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code>):</p>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="co"># Rename year column</span>
-<span class="no">annual_stats</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="no">annual_stats</span>, <span class="kw">Year</span> <span class="kw">=</span> <span class="no">WaterYear</span>)
+<span class="no">annual_stats</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="no">annual_stats</span>, <span class="kw">Year</span> <span class="kw">=</span> <span class="no">WaterYear</span>)
 
 <span class="co"># Remove selected excluded years</span>
 <span class="no">annual_stats</span>[<span class="no">annual_stats</span>$<span class="no">Year</span> <span class="kw">%in%</span> <span class="no">exclude_years</span>, -(<span class="fl">1</span>:<span class="fl">2</span>)] <span class="kw">&lt;-</span> <span class="fl">NA</span>

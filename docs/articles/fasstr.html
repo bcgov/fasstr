@@ -102,7 +102,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="fasstr_files/header-attrs-2.2/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Get Started with fasstr</h1>
@@ -116,9 +116,9 @@
     
     
 <p><code>fasstr</code>, the Flow Analysis Summary Statistics Tool for R, is a set of <a href="https://www.r-project.org/">R</a> functions to clean, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.</p>
-<div id="features" class="section level3">
-<h3 class="hasAnchor">
-<a href="#features" class="anchor"></a>Features</h3>
+<div id="features" class="section level2">
+<h2 class="hasAnchor">
+<a href="#features" class="anchor"></a>Features</h2>
 <p>This package provides functions for streamflow data analysis, including:</p>
 <ul>
 <li>data cleaning (to prepare data for analyses; <code>add_*</code> and <code>fill_*</code> functions),</li>
@@ -137,9 +137,9 @@
 </ul>
 <p>This package is maintained by the <a href="https://www2.gov.bc.ca/gov/content/environment/air-land-water/water">Water Protection and Sustainability Branch of the British Columbia Ministry of Environment and Climate Change Strategy</a>.</p>
 </div>
-<div id="installation" class="section level3">
-<h3 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h3>
+<div id="installation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install <code>fasstr</code> directly from <a href="https://cran.r-project.org/package=fasstr">CRAN</a>:</p>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"fasstr"</span>)</pre></body></html></div>
 <p>To install the development version from <a href="https://github.com/bcgov/fasstr">GitHub</a>, use the <a href="https://cran.r-project.org/package=remotes"><code>remotes</code></a> package then the <code>fasstr</code> package:</p>
@@ -149,9 +149,9 @@
 <p>To use the <code>station_number</code> argument and pull data directly from a <a href="https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html">Water Survey of Canada HYDAT database</a> into <code>fasstr</code> functions, download a HYDAT file using the following code:</p>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="kw pkg">tidyhydat</span><span class="kw ns">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/download_hydat.html">download_hydat</a></span>()</pre></body></html></div>
 </div>
-<div id="using-fasstr" class="section level3">
-<h3 class="hasAnchor">
-<a href="#using-fasstr" class="anchor"></a>Using fasstr</h3>
+<div id="using-fasstr" class="section level2">
+<h2 class="hasAnchor">
+<a href="#using-fasstr" class="anchor"></a>Using fasstr</h2>
 <p>There are several vignettes to provide more information on the usage of <code>fasstr</code> functions and how to customize them with various argument options.</p>
 <ul>
 <li><a href="https://bcgov.github.io/fasstr/articles/fasstr.html">Get Started with fasstr</a></li>
@@ -161,10 +161,10 @@
 <li><a href="https://bcgov.github.io/fasstr/articles/fasstr_full_analysis.html">Computing a Full fasstr Analysis</a></li>
 <li><a href="https://bcgov.github.io/fasstr/articles/fasstr_under_the_hood.html">fasstr Internal Workflows</a></li>
 </ul>
-<div id="data-input" class="section level4">
-<h4 class="hasAnchor">
-<a href="#data-input" class="anchor"></a>Data Input</h4>
-<p>All functions in <code>fasstr</code> require a daily mean streamflow dataset from one or more hydrometric stations. Long-term and continuous datasets are preferred for most analyses, but seasonal and partial data can be used. Other daily time series data, like temperature, precipitation or water levels, may also be used, but with certain caution as some calculations/conversions are based on units of streamflow (cubic metres per second). Data is provided to each function using the either the <code>data</code> argument as a data frame of flow values, or the <code>station_number</code> argument as a list of Water Survey of Canada HYDAT station numbers.</p>
+<div id="data-input" class="section level3">
+<h3 class="hasAnchor">
+<a href="#data-input" class="anchor"></a>Data Input</h3>
+<p>All functions in <code>fasstr</code> require a daily mean streamflow data set from one or more hydrometric stations. Long-term and continuous data sets are preferred for most analyses, but seasonal and partial data can be used. Other daily time series data, like temperature, precipitation or water levels, may also be used, but with certain caution as some calculations/conversions are based on units of streamflow (cubic metres per second). Data is provided to each function using the either the <code>data</code> argument as a data frame of flow values, or the <code>station_number</code> argument as a list of Water Survey of Canada HYDAT station numbers.</p>
 <p>When using the <code>data</code> option, a data frame of daily data containing columns of dates (YYYY-MM-DD in date format), values (mean daily discharge in cubic metres per second in numeric format), and, optionally, grouping identifiers (character string of station names or numbers) is called. By default the functions will look for columns identified as ‘Date’, ‘Value’, and ‘STATION_NUMBER’, respectively, to be compatible with the ‘tidyhydat’ defaults, but columns of different names can be identified using the <code>dates</code>, <code>values</code>, <code>groups</code> column arguments (ex. <code>values = Yield_mm</code>). The following is an example of an appropriate data frame (STATION_NUMBER not required):</p>
 <pre><code>##   STATION_NUMBER       Date Value
 ## 1        08NM116 1949-04-01  1.13
@@ -176,59 +176,59 @@
 <p>Alternatively, you can directly pull a flow data set directly from a HYDAT database (if installed) by providing a list of station numbers in the <code>station_number</code> argument (ex. <code>station_number = "08NM116"</code> or <code>station_number = c("08NM116", "08NM242")</code>) while leaving the data arguments blank. A data frame of daily streamflow data for all stations listed will be extracted using <code>tidyhydat</code> and then <code>fasstr</code> calculations will produce results of the functions.</p>
 <p>This package allows for multiple stations (or other groupings) to be analyzed in many of the functions provided identifiers are provided using the <code>groups</code> column argument (defaults to STATION_NUMBER). If grouping column doesn’t exist or is improperly named, then all values listed in the <code>values</code> column will be summarized.</p>
 </div>
-<div id="function-types" class="section level4">
+<div id="function-types" class="section level3">
+<h3 class="hasAnchor">
+<a href="#function-types" class="anchor"></a>Function Types</h3>
+<div id="cleaning" class="section level4">
 <h4 class="hasAnchor">
-<a href="#function-types" class="anchor"></a>Function Types</h4>
-<div id="cleaning" class="section level5">
-<h5 class="hasAnchor">
-<a href="#cleaning" class="anchor"></a>Cleaning</h5>
+<a href="#cleaning" class="anchor"></a>Cleaning</h4>
 <p>These functions, start with either <code>add_*</code> or <code>fill_*</code>, add columns and rows, respectively, to streamflow data frames to help set up your data for further analysis. Examples include adding rolling means, adding date variables (WaterYear, Month, DayofYear, etc.), adding basin areas, adding columns of volumetric discharge and water yield, and filling dates with missing flow values with <code>NA</code>.</p>
 </div>
-<div id="analysis" class="section level5">
-<h5 class="hasAnchor">
-<a href="#analysis" class="anchor"></a>Analysis</h5>
+<div id="analysis" class="section level4">
+<h4 class="hasAnchor">
+<a href="#analysis" class="anchor"></a>Analysis</h4>
 <p>The analysis functions summarize your discharge values into various statistics. <code>screen_*</code> functions summarize annual data for outliers and missing dates. <code>calc_*</code> functions calculate daily, monthly, annual, and long-term statistics (e.g. mean, median, maximum, minimum, percentiles, amongst others) of daily, rolling days, and cumulative flow data. <code>compute_*</code> functions also analyze data but produce more in-depth analyses, like frequency and trending analysis, and may produce multiple plots and tables as a result. All tables are in tibble data frame formats. Can use <code><a href="../reference/write_flow_data.html">write_flow_data()</a></code> or <code><a href="../reference/write_results.html">write_results()</a></code> to customize saving tibbles to a local drive.</p>
 </div>
-<div id="visualization" class="section level5">
-<h5 class="hasAnchor">
-<a href="#visualization" class="anchor"></a>Visualization</h5>
+<div id="visualization" class="section level4">
+<h4 class="hasAnchor">
+<a href="#visualization" class="anchor"></a>Visualization</h4>
 <p>The visualization functions, which begin with <code>plot_*</code>, plot the various summary statistics and analyses as a way to visualize the data. While most plotting function statistics can be customized, some come pre-set with statistics that cannot be changed. Plots can be further modified by the user using the <code>ggplot2</code> package and its functions. All plots functions produce lists of plots (even if just one produced). Can use <code><a href="../reference/write_plots.html">write_plots()</a></code> to customize saving the lists of plots to a local drive (within folders or PDF documents).</p>
 </div>
 </div>
-<div id="function-options" class="section level4">
-<h4 class="hasAnchor">
-<a href="#function-options" class="anchor"></a>Function Options</h4>
-<div id="daily-rolling-means" class="section level5">
-<h5 class="hasAnchor">
-<a href="#daily-rolling-means" class="anchor"></a>Daily Rolling Means</h5>
-<p>If certain n-day rolling mean statistics are desired to be analyzed (e.g. 3- or 7-day rolling means) some functions provide the ability to select for that as function arguments (e.g. <code>rolling_days = 7</code> and <code>rolling_align = "right"</code>). The rolling day align is the placement of the date amongst the n-day means, where “right” averages the day-of and previous n-1 days, “centre” date is in the middle of the averages, and “left” averages the day-of and the following n-1 days. For your own analyses you can add rolling means to your dataset using the <code><a href="../reference/add_rolling_means.html">add_rolling_means()</a></code> function.</p>
-</div>
-<div id="year-and-month-filtering" class="section level5">
-<h5 class="hasAnchor">
-<a href="#year-and-month-filtering" class="anchor"></a>Year and Month Filtering</h5>
-<p>To customize your analyses for specific time periods, you can designate the start and end years of your analysis using the <code>start_year</code> and <code>end_year</code> arguments and remove any unwanted years (for partial datasets for example) by listing them in the <code>excluded_years</code> argument (e.g. <code>excluded_years = c(1990, 1992:1994)</code>). Alternatively, some functions have an argument called <code>complete_years</code> that summarizes data from just those years which have complete flow records. Some functions will also allow you to select the months of a year to analyze, using the <code>months</code> argument, as opposed to all months (if you want just summer low-flows, for example). Leaving these arguments blank will result in the summary/analysis of all years and months of the provided dataset.</p>
-<p>To group analyses by water, or hydrologic, years instead of calendar years, if desired, you can set <code>water_year_start</code> within most functions to another month than 1 (for January). A water year can be defined as a 12-month period that comprises a complete hydrologic cycle (wet seasons can typically cross calendar year), typically starting with the month with minimum flows (the start of a new water recharge cycle). If another start month is desired, you can choose it using the <code>water_year_start</code> argument (numeric month). The water year identifier is designated by the year it ends in (e.g. a water year from Oct 1, 1999 to Sep 30, 2000 is designated as 2000). Start, end and excluded years will be based on the specified water year.</p>
-<p>For your own analyses, you can add date variables to your dataset using the <code><a href="../reference/add_date_variables.html">add_date_variables()</a></code> or <code><a href="../reference/add_seasons.html">add_seasons()</a></code> functions.</p>
-</div>
-<div id="drainage-basin-area" class="section level5">
-<h5 class="hasAnchor">
-<a href="#drainage-basin-area" class="anchor"></a>Drainage Basin Area</h5>
-<p>Water yield statistics (in millimetres) calculated in the some of the functions require an upstream drainage basin area (in sq. km) using the <code>basin_area</code> argument. If no basin areas are supplied, all yield results will be <code>NA</code>. To apply a basin area (10 sqkm for example) to all daily observations, set the argument as <code>basin_area = 10</code>. If there are multiple stations or groups to apply multiple basin areas (using the <code>groups</code> argument), set them individually using this option: <code>basin_area = c("08NM116" = 795,  "08NM242" = 22)</code>. If a STATION_NUMBER column exists with HYDAT station numbers, the function will automatically use the basin areas provided in HYDAT, if available, so <code>basin_area</code> is not required. For your own analyses, you can add basin areas to your dataset using the <code><a href="../reference/add_basin_area.html">add_basin_area()</a></code> function.</p>
-</div>
-<div id="handling-missing-dates" class="section level5">
-<h5 class="hasAnchor">
-<a href="#handling-missing-dates" class="anchor"></a>Handling Missing Dates</h5>
-<p>With the use of the <code>ignore_missing</code> argument in most functions, you can decide how to handle dates with missing flow values in calculations. When you set <code>ignore_missing = TRUE</code> a statistic will be calculated for a given year, all years, or month regardless of if there are missing flow values. When <code>ignore_missing = FALSE</code> the returned value for the period will be <code>NA</code> if there are missing values.</p>
-<p>Some functions have an argument called <code>complete_years</code> which can be used, when set to <code>TRUE</code>, to filter out years that have partial datasets (for seasonal or other reasons) and only years with full data are used to calculate statistics.</p>
-</div>
-</div>
-</div>
-<div id="examples" class="section level3">
+<div id="function-options" class="section level3">
 <h3 class="hasAnchor">
-<a href="#examples" class="anchor"></a>Examples</h3>
-<div id="summary-statistics-example-long-term-statistics" class="section level4">
+<a href="#function-options" class="anchor"></a>Function Options</h3>
+<div id="daily-rolling-means" class="section level4">
 <h4 class="hasAnchor">
-<a href="#summary-statistics-example-long-term-statistics" class="anchor"></a>Summary statistics example: long-term statistics</h4>
+<a href="#daily-rolling-means" class="anchor"></a>Daily Rolling Means</h4>
+<p>If certain n-day rolling mean statistics are desired to be analyzed (e.g. 3- or 7-day rolling means) some functions provide the ability to select for that as function arguments (e.g. <code>rolling_days = 7</code> and <code>rolling_align = "right"</code>). The rolling day align is the placement of the date amongst the n-day means, where “right” averages the day-of and previous n-1 days, “centre” date is in the middle of the averages, and “left” averages the day-of and the following n-1 days. For your own analyses you can add rolling means to your data set using the <code><a href="../reference/add_rolling_means.html">add_rolling_means()</a></code> function.</p>
+</div>
+<div id="year-and-month-filtering" class="section level4">
+<h4 class="hasAnchor">
+<a href="#year-and-month-filtering" class="anchor"></a>Year and Month Filtering</h4>
+<p>To customize your analyses for specific time periods, you can designate the start and end years of your analysis using the <code>start_year</code> and <code>end_year</code> arguments and remove any unwanted years (for partial data sets for example) by listing them in the <code>excluded_years</code> argument (e.g. <code>excluded_years = c(1990, 1992:1994)</code>). Alternatively, some functions have an argument called <code>complete_years</code> that summarizes data from just those years which have complete flow records. Some functions will also allow you to select the months of a year to analyze, using the <code>months</code> argument, as opposed to all months (if you want just summer low-flows, for example). Leaving these arguments blank will result in the summary/analysis of all years and months of the provided data set.</p>
+<p>To group analyses by water, or hydrologic, years instead of calendar years, if desired, you can set <code>water_year_start</code> within most functions to another month than 1 (for January). A water year can be defined as a 12-month period that comprises a complete hydrologic cycle (wet seasons can typically cross calendar year), typically starting with the month with minimum flows (the start of a new water recharge cycle). If another start month is desired, you can choose it using the <code>water_year_start</code> argument (numeric month). The water year identifier is designated by the year it ends in (e.g. a water year from Oct 1, 1999 to Sep 30, 2000 is designated as 2000). Start, end and excluded years will be based on the specified water year.</p>
+<p>For your own analyses, you can add date variables to your data set using the <code><a href="../reference/add_date_variables.html">add_date_variables()</a></code> or <code><a href="../reference/add_seasons.html">add_seasons()</a></code> functions.</p>
+</div>
+<div id="drainage-basin-area" class="section level4">
+<h4 class="hasAnchor">
+<a href="#drainage-basin-area" class="anchor"></a>Drainage Basin Area</h4>
+<p>Water yield statistics (in millimetres) calculated in the some of the functions require an upstream drainage basin area (in sq. km) using the <code>basin_area</code> argument. If no basin areas are supplied, all yield results will be <code>NA</code>. To apply a basin area (10 sqkm for example) to all daily observations, set the argument as <code>basin_area = 10</code>. If there are multiple stations or groups to apply multiple basin areas (using the <code>groups</code> argument), set them individually using this option: <code>basin_area = c("08NM116" = 795,  "08NM242" = 22)</code>. If a STATION_NUMBER column exists with HYDAT station numbers, the function will automatically use the basin areas provided in HYDAT, if available, so <code>basin_area</code> is not required. For your own analyses, you can add basin areas to your data set using the <code><a href="../reference/add_basin_area.html">add_basin_area()</a></code> function.</p>
+</div>
+<div id="handling-missing-dates" class="section level4">
+<h4 class="hasAnchor">
+<a href="#handling-missing-dates" class="anchor"></a>Handling Missing Dates</h4>
+<p>With the use of the <code>ignore_missing</code> argument in most functions, you can decide how to handle dates with missing flow values in calculations. When you set <code>ignore_missing = TRUE</code> a statistic will be calculated for a given year, all years, or month regardless of if there are missing flow values. When <code>ignore_missing = FALSE</code> the returned value for the period will be <code>NA</code> if there are missing values.</p>
+<p>Some functions have an argument called <code>complete_years</code> which can be used, when set to <code>TRUE</code>, to filter out years that have partial data sets (for seasonal or other reasons) and only years with full data are used to calculate statistics.</p>
+</div>
+</div>
+</div>
+<div id="examples" class="section level2">
+<h2 class="hasAnchor">
+<a href="#examples" class="anchor"></a>Examples</h2>
+<div id="summary-statistics-example-long-term-statistics" class="section level3">
+<h3 class="hasAnchor">
+<a href="#summary-statistics-example-long-term-statistics" class="anchor"></a>Summary statistics example: long-term statistics</h3>
 <p>To determine the long-term summary statistics of daily data for each month (mean, median, maximum, minimum, and some percentiles) you can use the <code><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats()</a></code> function. If the ‘Mission Creek near East Kelowna’ hydrometric station is of interest you can list the station number in the <code>station_number</code> argument to obtain the data (if <code>tidyhydat</code> and HYDAT are installed). Statistics over several months can also be calculated, if of interest. See the summer statistics (from July to Septmber) in this example.</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span>(<span class="kw">station_number</span> <span class="kw">=</span> <span class="st">"08NM116"</span>,
                           <span class="kw">start_year</span> <span class="kw">=</span> <span class="fl">1981</span>,
@@ -253,9 +253,9 @@
 ## 13 08NM116        Long-term  6.17  1.89    84.5    0.140 0.680 19.3 
 ## 14 08NM116        Summer     3.61  1.98    54.5    0.332 0.799  7.64</code></pre>
 </div>
-<div id="plotting-example-daily-summary-statistics" class="section level4">
-<h4 class="hasAnchor">
-<a href="#plotting-example-daily-summary-statistics" class="anchor"></a>Plotting example: daily summary statistics</h4>
+<div id="plotting-example-daily-summary-statistics" class="section level3">
+<h3 class="hasAnchor">
+<a href="#plotting-example-daily-summary-statistics" class="anchor"></a>Plotting example: daily summary statistics</h3>
 <p>To visualize the daily streamflow patterns on an annual basis, the <code><a href="../reference/plot_daily_stats.html">plot_daily_stats()</a></code> function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the <code>start_year</code> and <code>end_year</code> arguments. We can also compare individual years against the statistics using <code>add_year</code> argument like below.</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="../reference/plot_daily_stats.html">plot_daily_stats</a></span>(<span class="kw">station_number</span> <span class="kw">=</span> <span class="st">"08NM116"</span>,
                  <span class="kw">start_year</span> <span class="kw">=</span> <span class="fl">1981</span>,
@@ -265,9 +265,9 @@
 <pre><code>## $Daily_Statistics</code></pre>
 <p><img src="fasstr_files/figure-html/plot1-1.png" width="960"></p>
 </div>
-<div id="plotting-example-flow-duration-curves" class="section level4">
-<h4 class="hasAnchor">
-<a href="#plotting-example-flow-duration-curves" class="anchor"></a>Plotting example: flow duration curves</h4>
+<div id="plotting-example-flow-duration-curves" class="section level3">
+<h3 class="hasAnchor">
+<a href="#plotting-example-flow-duration-curves" class="anchor"></a>Plotting example: flow duration curves</h3>
 <p>Flow duration curves can be produced using the <code><a href="../reference/plot_flow_duration.html">plot_flow_duration()</a></code> function.</p>
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="../reference/plot_flow_duration.html">plot_flow_duration</a></span>(<span class="kw">station_number</span> <span class="kw">=</span> <span class="st">"08NM116"</span>,
                    <span class="kw">start_year</span> <span class="kw">=</span> <span class="fl">1981</span>,
@@ -275,9 +275,9 @@
 <pre><code>## $Flow_Duration</code></pre>
 <p><img src="fasstr_files/figure-html/plot2-1.png" width="672"></p>
 </div>
-<div id="analysis-example-low-flow-frequency-analysis" class="section level4">
-<h4 class="hasAnchor">
-<a href="#analysis-example-low-flow-frequency-analysis" class="anchor"></a>Analysis example: low-flow frequency analysis</h4>
+<div id="analysis-example-low-flow-frequency-analysis" class="section level3">
+<h3 class="hasAnchor">
+<a href="#analysis-example-low-flow-frequency-analysis" class="anchor"></a>Analysis example: low-flow frequency analysis</h3>
 <p>This package also provides a function, <code><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies()</a></code>, to complete a volume frequency analysis (using the same methods as <a href="http://www.hec.usace.army.mil/software/hec-ssp/">HEC-SSP</a>). The default fitting distribution is ‘log-Pearson Type III’, but the ‘Weibull’ distribution can also be used. Other default plotting and fitting methods are described in the function documentation. For this example, the 7-day low-flow (low-flow is default) quantiles are calculated for the Mission Creek hydrometric station using the ‘log-Pearson Type III’ distribution. With this, several low-flow indicators can be determined (i.e. 7Q5, 7Q10).</p>
 <div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">freq_results</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span>(<span class="kw">station_number</span> <span class="kw">=</span> <span class="st">"08NM116"</span>,
                                            <span class="kw">start_year</span> <span class="kw">=</span> <span class="fl">1981</span>,
@@ -311,7 +311,9 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-      </div>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
+</div>
 
 </div>
 
