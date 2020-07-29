@@ -60,6 +60,10 @@
 #'          \code{\link{calc_annual_outside_normal}}
 #'
 #' @examples
+#' \dontrun{
+#' 
+#' # Working examples:
+#' 
 #' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
 #' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
@@ -78,6 +82,7 @@
 #'                       timing_percent = c(25,33,50,75),
 #'                       normal_percentiles = c(25,75)) 
 #' 
+#' }
 #' }
 #' @export
 

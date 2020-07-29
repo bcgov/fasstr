@@ -91,6 +91,10 @@ Plots flow duration curves of flow data from a daily streamflow data set. Plots 
    \code{calc_longterm_stats()} function then converted for plotting. Returns a list of plots.
 }
 \examples{
+\dontrun{
+
+# Working examples:
+
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
 if (file.exists(tidyhydat::hy_downloaded_db())) {
 
@@ -109,6 +113,7 @@ plot_flow_duration(station_number = "08NM116",
                    custom_months = 7:9,
                    custom_months_label = "Summer")
                    
+}
 }
 }
 \seealso{

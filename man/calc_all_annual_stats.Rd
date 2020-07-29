@@ -117,6 +117,10 @@ Calculates annual statistics from all annual \code{fasstr} functions from a dail
  }
 }
 \examples{
+\dontrun{
+
+# Working examples:
+
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
 if (file.exists(tidyhydat::hy_downloaded_db())) {
 
@@ -135,6 +139,7 @@ calc_all_annual_stats(station_number = "08NM116",
                       timing_percent = c(25,33,50,75),
                       normal_percentiles = c(25,75)) 
 
+}
 }
 }
 \seealso{

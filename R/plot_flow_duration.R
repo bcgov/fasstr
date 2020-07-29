@@ -29,6 +29,10 @@
 #' @seealso \code{\link{calc_longterm_daily_stats}}
 #'   
 #' @examples
+#' \dontrun{
+#' 
+#' # Working examples:
+#' 
 #' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
 #' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
@@ -47,6 +51,7 @@
 #'                    custom_months = 7:9,
 #'                    custom_months_label = "Summer")
 #'                    
+#' }
 #' }
 #' @export
 

@@ -288,7 +288,11 @@ time periods with no missing dates will be returned. Default <code>FALSE</code>.
     <div class='dont-index'><p><code><a href='calc_longterm_daily_stats.html'>calc_longterm_daily_stats</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+
+<span class='co'># Working examples:</span>
+
+<span class='co'># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span>
 <span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='kw pkg'>tidyhydat</span><span class='kw ns'>::</span><span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span>())) {
 
 <span class='co'># Plot flow durations using a data frame and data argument with defaults</span>
@@ -306,7 +310,8 @@ time periods with no missing dates will be returned. Default <code>FALSE</code>.
                    <span class='kw'>custom_months</span> <span class='kw'>=</span> <span class='fl'>7</span>:<span class='fl'>9</span>,
                    <span class='kw'>custom_months_label</span> <span class='kw'>=</span> <span class='st'>"Summer"</span>)
 
-}</div><div class='output co'>#&gt; $Flow_Duration</div><div class='img'><img src='plot_flow_duration-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div></pre>
+}
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
