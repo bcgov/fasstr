@@ -163,7 +163,8 @@
   <span class='kw'>values</span> <span class='kw'>=</span> <span class='no'>Value</span>,
   <span class='kw'>groups</span> <span class='kw'>=</span> <span class='no'>STATION_NUMBER</span>,
   <span class='no'>station_number</span>,
-  <span class='kw'>water_year_start</span> <span class='kw'>=</span> <span class='fl'>1</span>
+  <span class='kw'>water_year_start</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>fill_end_years</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -201,6 +202,11 @@ Leave blank if using <code>data</code> argument.</p></td>
       <th>water_year_start</th>
       <td><p>Numeric value indicating the month (<code>1</code> through <code>12</code>) of the start of water year for
 analysis. Default <code>1</code>.</p></td>
+    </tr>
+    <tr>
+      <th>fill_end_years</th>
+      <td><p>Logical value indicating whether to fill incomplete start and end years with rows of dates with NA flow values. 
+If <code>FALSE</code> then only missing dates between the provided start and end dates will be filled. Default <code>TRUE</code>.</p></td>
     </tr>
     </table>
 

@@ -17,7 +17,9 @@
 #'    be filled in gaps between data and completely fill the first and last years.
 #'
 #' @inheritParams calc_annual_stats
-#' 
+#' @param fill_end_years Logical value indicating whether to fill incomplete start and end years with rows of dates with NA flow values. 
+#'    If \code{FALSE} then only missing dates between the provided start and end dates will be filled. Default \code{TRUE}.
+#'  
 #' @return A tibble data frame of the source data with additional rows of filled values of missing dates.
 #'
 #' @examples
@@ -40,7 +42,8 @@ fill_missing_dates <- function(data,
                                values = Value,
                                groups = STATION_NUMBER,
                                station_number,
-                               water_year_start = 1){
+                               water_year_start = 1,
+                               fill_end_years = TRUE){
   
   
   ## ARGUMENT CHECKS
@@ -52,6 +55,8 @@ fill_missing_dates <- function(data,
   if (missing(station_number)) {
     station_number <- NULL
   }
+  if (!is.logical(fill_end_years[1]))        
+    stop("fill_end_years must be logical (TRUE/FALSE).", call. = FALSE)
   
   water_year_checks(water_year_start)
   
@@ -84,6 +89,9 @@ fill_missing_dates <- function(data,
     # Filter for station number
     flow_data_stn <- dplyr::filter(flow_data, STATION_NUMBER == stn)
     flow_data_stn <- flow_data_stn[order(flow_data_stn$Date), ]
+    
+    stn_min_date <- min(flow_data_stn$Date, na.rm = TRUE)
+    stn_max_date <- max(flow_data_stn$Date, na.rm = TRUE)
     
     # Fill if water year is TRUE and month is not January
     if (water_year_start > 1) {
@@ -131,10 +139,18 @@ fill_missing_dates <- function(data,
     flow_data_stn$STATION_NUMBER <- stn
     flow_data_stn$Parameter <- "Flow"
     
+
+    if (!fill_end_years) {
+      flow_data_stn <- dplyr::filter(flow_data_stn,
+                                     Date >= stn_min_date,
+                                     Date <= stn_max_date)
+    }
+    
     # Append to flow_data
     flow_data_new <- dplyr::bind_rows(flow_data_new, flow_data_stn)
     
   }
+  
   flow_data <- flow_data_new
   
   

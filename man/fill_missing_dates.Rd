@@ -10,7 +10,8 @@ fill_missing_dates(
   values = Value,
   groups = STATION_NUMBER,
   station_number,
-  water_year_start = 1
+  water_year_start = 1,
+  fill_end_years = TRUE
 )
 }
 \arguments{
@@ -34,6 +35,9 @@ Leave blank if using \code{data} argument.}
 
 \item{water_year_start}{Numeric value indicating the month (\code{1} through \code{12}) of the start of water year for
 analysis. Default \code{1}.}
+
+\item{fill_end_years}{Logical value indicating whether to fill incomplete start and end years with rows of dates with NA flow values. 
+If \code{FALSE} then only missing dates between the provided start and end dates will be filled. Default \code{TRUE}.}
 }
 \value{
 A tibble data frame of the source data with additional rows of filled values of missing dates.
