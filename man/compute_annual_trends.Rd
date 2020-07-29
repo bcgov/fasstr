@@ -166,6 +166,5 @@ References from zyp package:
 }
 \seealso{
 \code{\link[zyp]{zyp-package}}, 
-         \code{\link[zyp]{zyp.trend.dataframe}}, 
          \code{\link{calc_all_annual_stats}}
 }
