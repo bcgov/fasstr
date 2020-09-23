@@ -160,19 +160,19 @@
     </div>
 
     <pre class="usage"><span class='fu'>write_flow_data</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>Date</span>,
-  <span class='kw'>values</span> <span class='kw'>=</span> <span class='no'>Value</span>,
-  <span class='kw'>groups</span> <span class='kw'>=</span> <span class='no'>STATION_NUMBER</span>,
-  <span class='no'>station_number</span>,
-  <span class='kw'>water_year_start</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='no'>start_year</span>,
-  <span class='no'>end_year</span>,
-  <span class='no'>start_date</span>,
-  <span class='no'>end_date</span>,
-  <span class='no'>file_name</span>,
-  <span class='kw'>fill_missing</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='no'>digits</span>
+  <span class='kw'>data</span>,
+  dates = <span class='kw'>Date</span>,
+  values = <span class='kw'>Value</span>,
+  groups = <span class='kw'>STATION_NUMBER</span>,
+  <span class='kw'>station_number</span>,
+  water_year_start = <span class='fl'>1</span>,
+  <span class='kw'>start_year</span>,
+  <span class='kw'>end_year</span>,
+  <span class='kw'>start_date</span>,
+  <span class='kw'>end_date</span>,
+  <span class='kw'>file_name</span>,
+  fill_missing = <span class='fl'>FALSE</span>,
+  <span class='kw'>digits</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -245,25 +245,26 @@ that of base::round() digits argument.</p></td>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
 
 <span class='co'># Working examples:</span>
 
 <span class='co'># Write data from a data frame</span>
-<span class='no'>flow_data</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>tidyhydat</span><span class='kw ns'>::</span><span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_daily_flows.html'>hy_daily_flows</a></span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>)
-<span class='fu'>write_flow_data</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>flow_data</span>,
-                <span class='kw'>file_name</span> <span class='kw'>=</span> <span class='st'>"Mission_Creek_daily_flows.xlsx"</span>)
+<span class='kw'>flow_data</span> <span class='op'>&lt;-</span> <span class='kw'>tidyhydat</span>::<span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_daily_flows.html'>hy_daily_flows</a></span>(station_number = <span class='st'>"08NM116"</span>)
+<span class='fu'>write_flow_data</span>(data = <span class='kw'>flow_data</span>, 
+                file_name = <span class='st'>"Mission_Creek_daily_flows.xlsx"</span>)
 
 <span class='co'># Write data directly from HYDAT</span>
-<span class='fu'>write_flow_data</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                <span class='kw'>file_name</span> <span class='kw'>=</span> <span class='st'>"Mission_Creek_daily_flows.xlsx"</span>)
+<span class='fu'>write_flow_data</span>(station_number = <span class='st'>"08NM116"</span>, 
+                file_name = <span class='st'>"Mission_Creek_daily_flows.xlsx"</span>)
 
 <span class='co'># Write data directly from HYDAT and fill missing dates with NA</span>
-<span class='fu'>write_flow_data</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                <span class='kw'>file_name</span> <span class='kw'>=</span> <span class='st'>"Mission_Creek_daily_flows.xlsx"</span>,
-                <span class='kw'>fill_missing</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'>write_flow_data</span>(station_number = <span class='st'>"08NM116"</span>, 
+                file_name = <span class='st'>"Mission_Creek_daily_flows.xlsx"</span>,
+                fill_missing = <span class='fl'>TRUE</span>)
 
-}</div></pre>
+}
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -279,7 +280,7 @@ that of base::round() digits argument.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

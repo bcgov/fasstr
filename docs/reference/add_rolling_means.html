@@ -160,13 +160,13 @@
     </div>
 
     <pre class="usage"><span class='fu'>add_rolling_means</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>Date</span>,
-  <span class='kw'>values</span> <span class='kw'>=</span> <span class='no'>Value</span>,
-  <span class='kw'>groups</span> <span class='kw'>=</span> <span class='no'>STATION_NUMBER</span>,
-  <span class='no'>station_number</span>,
-  <span class='kw'>roll_days</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>7</span>, <span class='fl'>30</span>),
-  <span class='kw'>roll_align</span> <span class='kw'>=</span> <span class='st'>"right"</span>
+  <span class='kw'>data</span>,
+  dates = <span class='kw'>Date</span>,
+  values = <span class='kw'>Value</span>,
+  groups = <span class='kw'>STATION_NUMBER</span>,
+  <span class='kw'>station_number</span>,
+  roll_days = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>7</span>, <span class='fl'>30</span>),
+  roll_align = <span class='st'>"right"</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -224,20 +224,21 @@ Default <code>'right'</code>.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span>
-<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='kw pkg'>tidyhydat</span><span class='kw ns'>::</span><span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span>())) {
+<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='kw'>tidyhydat</span>::<span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span>())) {
 
 <span class='co'># Add default 3, 7, and 30-day rolling mean columns, with "right" alignment</span>
-<span class='fu'>add_rolling_means</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>)
+<span class='fu'>add_rolling_means</span>(station_number = <span class='st'>"08NM116"</span>)
 
 <span class='co'># Add custom 5 and 10-day rolling mean columns</span>
-<span class='fu'>add_rolling_means</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                  <span class='kw'>roll_days</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>,<span class='fl'>10</span>))
-
+<span class='fu'>add_rolling_means</span>(station_number = <span class='st'>"08NM116"</span>,
+                  roll_days = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>,<span class='fl'>10</span>))
+                  
 <span class='co'># Add default 3, 7, and 30-day rolling mean columns, with "left" alignment</span>
-<span class='fu'>add_rolling_means</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                  <span class='kw'>roll_align</span> <span class='kw'>=</span> <span class='st'>"left"</span>)
-
-}</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 21,983 x 8</span><span>
+<span class='fu'>add_rolling_means</span>(station_number = <span class='st'>"08NM116"</span>,
+                  roll_align = <span class='st'>"left"</span>)                
+                  
+}
+</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 21,983 x 8</span><span>
 #&gt;    STATION_NUMBER Date       Parameter Value Symbol Q3Day Q7Day Q30Day
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'> 1</span><span> 08NM116        1949-04-01 Flow       1.13 E       1.58  1.93   7.51
@@ -266,7 +267,7 @@ Default <code>'right'</code>.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

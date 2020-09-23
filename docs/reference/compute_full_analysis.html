@@ -166,20 +166,20 @@
     </div>
 
     <pre class="usage"><span class='fu'>compute_full_analysis</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>Date</span>,
-  <span class='kw'>values</span> <span class='kw'>=</span> <span class='no'>Value</span>,
-  <span class='kw'>groups</span> <span class='kw'>=</span> <span class='no'>STATION_NUMBER</span>,
-  <span class='no'>station_number</span>,
-  <span class='kw'>analyses</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>7</span>,
-  <span class='no'>basin_area</span>,
-  <span class='kw'>water_year_start</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='no'>start_year</span>,
-  <span class='no'>end_year</span>,
-  <span class='no'>exclude_years</span>,
-  <span class='kw'>ignore_missing</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>zyp_method</span> <span class='kw'>=</span> <span class='st'>"yuepilon"</span>,
-  <span class='no'>zyp_alpha</span>
+  <span class='kw'>data</span>,
+  dates = <span class='kw'>Date</span>,
+  values = <span class='kw'>Value</span>,
+  groups = <span class='kw'>STATION_NUMBER</span>,
+  <span class='kw'>station_number</span>,
+  analyses = <span class='fl'>1</span><span class='op'>:</span><span class='fl'>7</span>,
+  <span class='kw'>basin_area</span>,
+  water_year_start = <span class='fl'>1</span>,
+  <span class='kw'>start_year</span>,
+  <span class='kw'>end_year</span>,
+  <span class='kw'>exclude_years</span>,
+  ignore_missing = <span class='fl'>FALSE</span>,
+  zyp_method = <span class='st'>"yuepilon"</span>,
+  <span class='kw'>zyp_alpha</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -307,22 +307,23 @@ time periods with no missing dates will be returned. Default <code>FALSE</code>.
          <code><a href='write_plots.html'>write_plots</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
 
 <span class='co'># Working examples:</span>
 
 <span class='co'># Compute a full analysis will all the analyses</span>
-<span class='no'>results</span> <span class='kw'>&lt;-</span> <span class='fu'>compute_full_analysis</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                                 <span class='kw'>start_year</span> <span class='kw'>=</span> <span class='fl'>1980</span>,
-                                 <span class='kw'>end_year</span> <span class='kw'>=</span> <span class='fl'>2010</span>)
+<span class='kw'>results</span> <span class='op'>&lt;-</span> <span class='fu'>compute_full_analysis</span>(station_number = <span class='st'>"08NM116"</span>,
+                                 start_year = <span class='fl'>1980</span>,
+                                 end_year = <span class='fl'>2010</span>)
 
 <span class='co'># Compute a full analysis with only Annual (3) and Daily (5) analyses</span>
-<span class='no'>results</span> <span class='kw'>&lt;-</span> <span class='fu'>compute_full_analysis</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                                 <span class='kw'>start_year</span> <span class='kw'>=</span> <span class='fl'>1980</span>,
-                                 <span class='kw'>end_year</span> <span class='kw'>=</span> <span class='fl'>2010</span>,
-                                 <span class='kw'>analyses</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>,<span class='fl'>5</span>))
-
-}</div></pre>
+<span class='kw'>results</span> <span class='op'>&lt;-</span> <span class='fu'>compute_full_analysis</span>(station_number = <span class='st'>"08NM116"</span>,
+                                 start_year = <span class='fl'>1980</span>,
+                                 end_year = <span class='fl'>2010</span>,
+                                 analyses = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>,<span class='fl'>5</span>))
+                     
+}
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -338,7 +339,7 @@ time periods with no missing dates will be returned. Default <code>FALSE</code>.
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

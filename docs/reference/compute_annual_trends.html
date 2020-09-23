@@ -180,28 +180,28 @@ calc_annual_outside_normal()
     </div>
 
     <pre class="usage"><span class='fu'>compute_annual_trends</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>Date</span>,
-  <span class='kw'>values</span> <span class='kw'>=</span> <span class='no'>Value</span>,
-  <span class='kw'>groups</span> <span class='kw'>=</span> <span class='no'>STATION_NUMBER</span>,
-  <span class='no'>station_number</span>,
-  <span class='no'>zyp_method</span>,
-  <span class='no'>basin_area</span>,
-  <span class='kw'>water_year_start</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='no'>start_year</span>,
-  <span class='no'>end_year</span>,
-  <span class='no'>exclude_years</span>,
-  <span class='kw'>annual_percentiles</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>, <span class='fl'>90</span>),
-  <span class='kw'>monthly_percentiles</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>, <span class='fl'>20</span>),
-  <span class='kw'>stats_days</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>stats_align</span> <span class='kw'>=</span> <span class='st'>"right"</span>,
-  <span class='kw'>lowflow_days</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>3</span>, <span class='fl'>7</span>, <span class='fl'>30</span>),
-  <span class='kw'>lowflow_align</span> <span class='kw'>=</span> <span class='st'>"right"</span>,
-  <span class='kw'>timing_percent</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>25</span>, <span class='fl'>33</span>, <span class='fl'>50</span>, <span class='fl'>75</span>),
-  <span class='kw'>normal_percentiles</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>25</span>, <span class='fl'>75</span>),
-  <span class='kw'>ignore_missing</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>include_plots</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>zyp_alpha</span>
+  <span class='kw'>data</span>,
+  dates = <span class='kw'>Date</span>,
+  values = <span class='kw'>Value</span>,
+  groups = <span class='kw'>STATION_NUMBER</span>,
+  <span class='kw'>station_number</span>,
+  <span class='kw'>zyp_method</span>,
+  <span class='kw'>basin_area</span>,
+  water_year_start = <span class='fl'>1</span>,
+  <span class='kw'>start_year</span>,
+  <span class='kw'>end_year</span>,
+  <span class='kw'>exclude_years</span>,
+  annual_percentiles = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>, <span class='fl'>90</span>),
+  monthly_percentiles = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>, <span class='fl'>20</span>),
+  stats_days = <span class='fl'>1</span>,
+  stats_align = <span class='st'>"right"</span>,
+  lowflow_days = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>3</span>, <span class='fl'>7</span>, <span class='fl'>30</span>),
+  lowflow_align = <span class='st'>"right"</span>,
+  timing_percent = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>25</span>, <span class='fl'>33</span>, <span class='fl'>50</span>, <span class='fl'>75</span>),
+  normal_percentiles = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>25</span>, <span class='fl'>75</span>),
+  ignore_missing = <span class='fl'>FALSE</span>,
+  include_plots = <span class='fl'>TRUE</span>,
+  <span class='kw'>zyp_alpha</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -350,30 +350,31 @@ time periods with no missing dates will be returned. Default <code>FALSE</code>.
          <code><a href='calc_all_annual_stats.html'>calc_all_annual_stats</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
 
 <span class='co'># Working examples:</span>
 
 <span class='co'># Compute trends statistics using a data frame and data argument with defaults</span>
-<span class='no'>flow_data</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>tidyhydat</span><span class='kw ns'>::</span><span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_daily_flows.html'>hy_daily_flows</a></span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>)
-<span class='no'>trends</span> <span class='kw'>&lt;-</span> <span class='fu'>compute_annual_trends</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>flow_data</span>,
-                                <span class='kw'>zyp_method</span> <span class='kw'>=</span> <span class='st'>"yuepilon"</span>)
+<span class='kw'>flow_data</span> <span class='op'>&lt;-</span> <span class='kw'>tidyhydat</span>::<span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_daily_flows.html'>hy_daily_flows</a></span>(station_number = <span class='st'>"08NM116"</span>)
+<span class='kw'>trends</span> <span class='op'>&lt;-</span> <span class='fu'>compute_annual_trends</span>(data = <span class='kw'>flow_data</span>,
+                                zyp_method = <span class='st'>"yuepilon"</span>)
 
 <span class='co'># Compute trends statistics using station_number with defaults</span>
-<span class='no'>trends</span> <span class='kw'>&lt;-</span> <span class='fu'>compute_annual_trends</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                                <span class='kw'>zyp_method</span> <span class='kw'>=</span> <span class='st'>"yuepilon"</span>)
-
+<span class='kw'>trends</span> <span class='op'>&lt;-</span> <span class='fu'>compute_annual_trends</span>(station_number = <span class='st'>"08NM116"</span>,
+                                zyp_method = <span class='st'>"yuepilon"</span>)
+                      
 <span class='co'># Compute trends statistics and plot a trend line if the significance is less than 0.05</span>
-<span class='no'>trends</span> <span class='kw'>&lt;-</span> <span class='fu'>compute_annual_trends</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                                <span class='kw'>zyp_method</span> <span class='kw'>=</span> <span class='st'>"yuepilon"</span>,
-                                <span class='kw'>zyp_alpha</span> <span class='kw'>=</span> <span class='fl'>0.05</span>)
-
+<span class='kw'>trends</span> <span class='op'>&lt;-</span> <span class='fu'>compute_annual_trends</span>(station_number = <span class='st'>"08NM116"</span>,
+                                zyp_method = <span class='st'>"yuepilon"</span>,
+                                zyp_alpha = <span class='fl'>0.05</span>)
+                      
 <span class='co'># Compute trends statistics and do not plot the results</span>
-<span class='no'>trends</span> <span class='kw'>&lt;-</span> <span class='fu'>compute_annual_trends</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                                <span class='kw'>zyp_method</span> <span class='kw'>=</span> <span class='st'>"yuepilon"</span>,
-                                <span class='kw'>include_plots</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='kw'>trends</span> <span class='op'>&lt;-</span> <span class='fu'>compute_annual_trends</span>(station_number = <span class='st'>"08NM116"</span>,
+                                zyp_method = <span class='st'>"yuepilon"</span>,
+                                include_plots = <span class='fl'>FALSE</span>)
 
-}</div></pre>
+}                
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -389,7 +390,7 @@ time periods with no missing dates will be returned. Default <code>FALSE</code>.
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

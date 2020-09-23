@@ -162,14 +162,14 @@
     </div>
 
     <pre class="usage"><span class='fu'>write_plots</span>(
-  <span class='no'>plots</span>,
-  <span class='no'>folder_name</span>,
-  <span class='no'>plot_filetype</span>,
-  <span class='no'>width</span>,
-  <span class='no'>height</span>,
-  <span class='kw'>units</span> <span class='kw'>=</span> <span class='st'>"in"</span>,
-  <span class='kw'>dpi</span> <span class='kw'>=</span> <span class='fl'>300</span>,
-  <span class='kw'>combined_pdf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>plots</span>,
+  <span class='kw'>folder_name</span>,
+  <span class='kw'>plot_filetype</span>,
+  <span class='kw'>width</span>,
+  <span class='kw'>height</span>,
+  units = <span class='st'>"in"</span>,
+  dpi = <span class='fl'>300</span>,
+  combined_pdf = <span class='fl'>FALSE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -213,24 +213,25 @@ If using <code>combined_pdf</code> argument, then it will be the name of the PDF
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
 
 <span class='co'># Working examples:</span>
 
 <span class='co'># Example plots to save</span>
-<span class='no'>plots</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='plot_annual_lowflows.html'>plot_annual_lowflows</a></span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>)
+<span class='kw'>plots</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_annual_lowflows.html'>plot_annual_lowflows</a></span>(station_number = <span class='st'>"08NM116"</span>)
 
 <span class='co'># Write the plots as "png" files</span>
-<span class='fu'>write_plots</span>(<span class='kw'>plots</span> <span class='kw'>=</span> <span class='no'>plots</span>,
-            <span class='kw'>folder_name</span> <span class='kw'>=</span> <span class='st'>"Low Flow Plots"</span>,
-            <span class='kw'>plot_filetype</span> <span class='kw'>=</span> <span class='st'>"png"</span>)
+<span class='fu'>write_plots</span>(plots = <span class='kw'>plots</span>, 
+            folder_name = <span class='st'>"Low Flow Plots"</span>,
+            plot_filetype = <span class='st'>"png"</span>)
 
 <span class='co'># Write the plots as a combined "pdf" document</span>
-<span class='fu'>write_plots</span>(<span class='kw'>plots</span> <span class='kw'>=</span> <span class='no'>plots</span>,
-            <span class='kw'>folder_name</span> <span class='kw'>=</span> <span class='st'>"Low Flow Plots"</span>,
-            <span class='kw'>combined_pdf</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-
-}</div></pre>
+<span class='fu'>write_plots</span>(plots = <span class='kw'>plots</span>, 
+            folder_name = <span class='st'>"Low Flow Plots"</span>,
+            combined_pdf = <span class='fl'>TRUE</span>)
+            
+}
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -246,7 +247,7 @@ If using <code>combined_pdf</code> argument, then it will be the name of the PDF
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

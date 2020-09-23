@@ -164,20 +164,20 @@
     </div>
 
     <pre class="usage"><span class='fu'>plot_monthly_cumulative_stats</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>Date</span>,
-  <span class='kw'>values</span> <span class='kw'>=</span> <span class='no'>Value</span>,
-  <span class='kw'>groups</span> <span class='kw'>=</span> <span class='no'>STATION_NUMBER</span>,
-  <span class='no'>station_number</span>,
-  <span class='kw'>use_yield</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='no'>basin_area</span>,
-  <span class='kw'>water_year_start</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='no'>start_year</span>,
-  <span class='no'>end_year</span>,
-  <span class='no'>exclude_years</span>,
-  <span class='kw'>log_discharge</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>include_title</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='no'>add_year</span>
+  <span class='kw'>data</span>,
+  dates = <span class='kw'>Date</span>,
+  values = <span class='kw'>Value</span>,
+  groups = <span class='kw'>STATION_NUMBER</span>,
+  <span class='kw'>station_number</span>,
+  use_yield = <span class='fl'>FALSE</span>,
+  <span class='kw'>basin_area</span>,
+  water_year_start = <span class='fl'>1</span>,
+  <span class='kw'>start_year</span>,
+  <span class='kw'>end_year</span>,
+  <span class='kw'>exclude_years</span>,
+  log_discharge = <span class='fl'>FALSE</span>,
+  include_title = <span class='fl'>FALSE</span>,
+  <span class='kw'>add_year</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -275,21 +275,22 @@ analysis. Default <code>1</code>.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span>
-<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='kw pkg'>tidyhydat</span><span class='kw ns'>::</span><span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span>())) {
+<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='kw'>tidyhydat</span>::<span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span>())) {
 
 <span class='co'># Plot annual cumulative volume statistics</span>
-<span class='fu'>plot_monthly_cumulative_stats</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>)
+<span class='fu'>plot_monthly_cumulative_stats</span>(station_number = <span class='st'>"08NM116"</span>) 
 
 <span class='co'># Plot annual cumulative yield statistics with default HYDAT basin area</span>
-<span class='fu'>plot_monthly_cumulative_stats</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                              <span class='kw'>use_yield</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'>plot_monthly_cumulative_stats</span>(station_number = <span class='st'>"08NM116"</span>,
+                              use_yield = <span class='fl'>TRUE</span>) 
 
 <span class='co'># Plot annual cumulative yield statistics with custom basin area</span>
-<span class='fu'>plot_monthly_cumulative_stats</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                              <span class='kw'>use_yield</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-                              <span class='kw'>basin_area</span> <span class='kw'>=</span> <span class='fl'>800</span>)
-
-}</div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; $Monthly_Cumulative_Yield_Stats</div><div class='img'><img src='plot_monthly_cumulative_stats-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div></pre>
+<span class='fu'>plot_monthly_cumulative_stats</span>(station_number = <span class='st'>"08NM116"</span>,
+                              use_yield = <span class='fl'>TRUE</span>,
+                              basin_area = <span class='fl'>800</span>) 
+                              
+}
+</div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; $Monthly_Cumulative_Yield_Stats</div><div class='img'><img src='plot_monthly_cumulative_stats-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -305,7 +306,7 @@ analysis. Default <code>1</code>.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

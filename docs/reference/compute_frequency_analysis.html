@@ -160,24 +160,23 @@
    rank by maximum flows. Calculates the statistics from events and flow values provided. Columns of events (e.g. years), their 
    values (minimums or maximums), and identifiers (low-flows, high-flows, etc.). Function will calculate using all values in the
    provided data (no grouped analysis). Analysis methodology replicates that from 
-   <a href='http://www.hec.usace.army.mil/software/hec-ssp/'>HEC-SSP</a>. Returns a list of tibbles and plots.</p>
+   <a href='https://www.hec.usace.army.mil/software/hec-ssp/'>HEC-SSP</a>. Returns a list of tibbles and plots.</p>
     </div>
 
     <pre class="usage"><span class='fu'>compute_frequency_analysis</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>events</span> <span class='kw'>=</span> <span class='no'>Year</span>,
-  <span class='kw'>values</span> <span class='kw'>=</span> <span class='no'>Value</span>,
-  <span class='kw'>measures</span> <span class='kw'>=</span> <span class='no'>Measure</span>,
-  <span class='kw'>use_max</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>use_log</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>prob_plot_position</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"weibull"</span>, <span class='st'>"median"</span>, <span class='st'>"hazen"</span>),
-  <span class='kw'>prob_scale_points</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.9999</span>, <span class='fl'>0.999</span>, <span class='fl'>0.99</span>, <span class='fl'>0.9</span>, <span class='fl'>0.5</span>, <span class='fl'>0.2</span>, <span class='fl'>0.1</span>, <span class='fl'>0.02</span>, <span class='fl'>0.01</span>, <span class='fl'>0.001</span>,
+  <span class='kw'>data</span>,
+  events = <span class='kw'>Year</span>,
+  values = <span class='kw'>Value</span>,
+  measures = <span class='kw'>Measure</span>,
+  use_max = <span class='fl'>FALSE</span>,
+  use_log = <span class='fl'>FALSE</span>,
+  prob_plot_position = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"weibull"</span>, <span class='st'>"median"</span>, <span class='st'>"hazen"</span>),
+  prob_scale_points = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.9999</span>, <span class='fl'>0.999</span>, <span class='fl'>0.99</span>, <span class='fl'>0.9</span>, <span class='fl'>0.5</span>, <span class='fl'>0.2</span>, <span class='fl'>0.1</span>, <span class='fl'>0.02</span>, <span class='fl'>0.01</span>, <span class='fl'>0.001</span>,
     <span class='fl'>1e-04</span>),
-  <span class='kw'>fit_distr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"PIII"</span>, <span class='st'>"weibull"</span>),
-  <span class='kw'>fit_distr_method</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='no'>fit_distr</span> <span class='kw'>==</span> <span class='st'>"PIII"</span>, <span class='st'>"MOM"</span>, <span class='st'>"MLE"</span>),
-  <span class='kw'>fit_quantiles</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.975</span>, <span class='fl'>0.99</span>, <span class='fl'>0.98</span>, <span class='fl'>0.95</span>, <span class='fl'>0.9</span>, <span class='fl'>0.8</span>, <span class='fl'>0.5</span>, <span class='fl'>0.2</span>, <span class='fl'>0.1</span>, <span class='fl'>0.05</span>, <span class='fl'>0.01</span>),
-  <span class='kw'>plot_curve</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>remove_zeros</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  fit_distr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"PIII"</span>, <span class='st'>"weibull"</span>),
+  fit_distr_method = <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='kw'>fit_distr</span> <span class='op'>==</span> <span class='st'>"PIII"</span>, <span class='st'>"MOM"</span>, <span class='st'>"MLE"</span>),
+  fit_quantiles = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.975</span>, <span class='fl'>0.99</span>, <span class='fl'>0.98</span>, <span class='fl'>0.95</span>, <span class='fl'>0.9</span>, <span class='fl'>0.8</span>, <span class='fl'>0.5</span>, <span class='fl'>0.2</span>, <span class='fl'>0.1</span>, <span class='fl'>0.05</span>, <span class='fl'>0.01</span>),
+  plot_curve = <span class='fl'>TRUE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -240,10 +239,6 @@ Default <code><a href='https://rdrr.io/r/base/c.html'>c(.975, .99, .98, .95, .90
       <th>plot_curve</th>
       <td><p>Logical value to indicate plotting the computed curve on the probability plot. Default <code>TRUE</code>.</p></td>
     </tr>
-    <tr>
-      <th>remove_zeros</th>
-      <td><p>Logical value to indicate removing any zero flow values from the data set. Default <code>FALSE</code>.</p></td>
-    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -257,26 +252,27 @@ Default <code><a href='https://rdrr.io/r/base/c.html'>c(.975, .99, .98, .95, .90
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
 
  <span class='co'># Working example:</span>
 
 <span class='co'># Calculate some values to use for a frequency analysis </span>
 <span class='co'># (requires years, values for those years, and the name of the measure/metric)</span>
-<span class='no'>low_flows</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='calc_annual_lowflows.html'>calc_annual_lowflows</a></span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                                  <span class='kw'>start_year</span> <span class='kw'>=</span> <span class='fl'>1980</span>,
-                                  <span class='kw'>end_year</span> <span class='kw'>=</span> <span class='fl'>2000</span>,
-                                  <span class='kw'>roll_days</span> <span class='kw'>=</span> <span class='fl'>7</span>)
-<span class='no'>low_flows</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='no'>low_flows</span>, <span class='no'>Year</span>, <span class='kw'>Value</span> <span class='kw'>=</span> <span class='no'>Min_7_Day</span>)
-<span class='no'>low_flows</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='no'>low_flows</span>, <span class='kw'>Measure</span> <span class='kw'>=</span> <span class='st'>"7-Day"</span>)
+<span class='kw'>low_flows</span> <span class='op'>&lt;-</span> <span class='fu'><a href='calc_annual_lowflows.html'>calc_annual_lowflows</a></span>(station_number = <span class='st'>"08NM116"</span>, 
+                                  start_year = <span class='fl'>1980</span>, 
+                                  end_year = <span class='fl'>2000</span>,
+                                  roll_days = <span class='fl'>7</span>)
+<span class='kw'>low_flows</span> <span class='op'>&lt;-</span> <span class='kw'>dplyr</span>::<span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='kw'>low_flows</span>, <span class='kw'>Year</span>, Value = <span class='kw'>Min_7_Day</span>)
+<span class='kw'>low_flows</span> <span class='op'>&lt;-</span> <span class='kw'>dplyr</span>::<span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>low_flows</span>, Measure = <span class='st'>"7-Day"</span>)
 
 <span class='co'># Compute the frequency analysis using the default parameters</span>
-<span class='no'>results</span> <span class='kw'>&lt;-</span> <span class='fu'>compute_frequency_analysis</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>low_flows</span>,
-                                      <span class='kw'>events</span> <span class='kw'>=</span> <span class='no'>Year</span>,
-                                      <span class='kw'>values</span> <span class='kw'>=</span> <span class='no'>Value</span>,
-                                      <span class='kw'>measure</span> <span class='kw'>=</span> <span class='no'>Measure</span>)
-
-}</div></pre>
+<span class='kw'>results</span> <span class='op'>&lt;-</span> <span class='fu'>compute_frequency_analysis</span>(data = <span class='kw'>low_flows</span>,
+                                      events = <span class='kw'>Year</span>,
+                                      values = <span class='kw'>Value</span>,
+                                      measure = <span class='kw'>Measure</span>)
+                            
+}
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -292,7 +288,7 @@ Default <code><a href='https://rdrr.io/r/base/c.html'>c(.975, .99, .98, .95, .90
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

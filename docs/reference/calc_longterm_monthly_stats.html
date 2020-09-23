@@ -160,25 +160,25 @@
     </div>
 
     <pre class="usage"><span class='fu'>calc_longterm_monthly_stats</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>Date</span>,
-  <span class='kw'>values</span> <span class='kw'>=</span> <span class='no'>Value</span>,
-  <span class='kw'>groups</span> <span class='kw'>=</span> <span class='no'>STATION_NUMBER</span>,
-  <span class='no'>station_number</span>,
-  <span class='kw'>percentiles</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>, <span class='fl'>90</span>),
-  <span class='kw'>roll_days</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>roll_align</span> <span class='kw'>=</span> <span class='st'>"right"</span>,
-  <span class='kw'>water_year_start</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='no'>start_year</span>,
-  <span class='no'>end_year</span>,
-  <span class='no'>exclude_years</span>,
-  <span class='kw'>months</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>12</span>,
-  <span class='kw'>complete_years</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>include_annual</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>custom_months</span>,
-  <span class='no'>custom_months_label</span>,
-  <span class='kw'>transpose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>ignore_missing</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>data</span>,
+  dates = <span class='kw'>Date</span>,
+  values = <span class='kw'>Value</span>,
+  groups = <span class='kw'>STATION_NUMBER</span>,
+  <span class='kw'>station_number</span>,
+  percentiles = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>, <span class='fl'>90</span>),
+  roll_days = <span class='fl'>1</span>,
+  roll_align = <span class='st'>"right"</span>,
+  water_year_start = <span class='fl'>1</span>,
+  <span class='kw'>start_year</span>,
+  <span class='kw'>end_year</span>,
+  <span class='kw'>exclude_years</span>,
+  months = <span class='fl'>1</span><span class='op'>:</span><span class='fl'>12</span>,
+  complete_years = <span class='fl'>FALSE</span>,
+  include_annual = <span class='fl'>TRUE</span>,
+  <span class='kw'>custom_months</span>,
+  <span class='kw'>custom_months_label</span>,
+  transpose = <span class='fl'>FALSE</span>,
+  ignore_missing = <span class='fl'>FALSE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -296,48 +296,49 @@ time periods with no missing dates will be returned. Default <code>FALSE</code>.
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span>
-<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='kw pkg'>tidyhydat</span><span class='kw ns'>::</span><span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span>())) {
+<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='kw'>tidyhydat</span>::<span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span>())) {
 
 <span class='co'># Calculate long-term monthly statistics using data argument with defaults</span>
-<span class='no'>flow_data</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>tidyhydat</span><span class='kw ns'>::</span><span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_daily_flows.html'>hy_daily_flows</a></span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>)
-<span class='fu'>calc_longterm_monthly_stats</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>flow_data</span>,
-                            <span class='kw'>start_year</span> <span class='kw'>=</span> <span class='fl'>1980</span>)
+<span class='kw'>flow_data</span> <span class='op'>&lt;-</span> <span class='kw'>tidyhydat</span>::<span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_daily_flows.html'>hy_daily_flows</a></span>(station_number = <span class='st'>"08NM116"</span>)
+<span class='fu'>calc_longterm_monthly_stats</span>(data = <span class='kw'>flow_data</span>,
+                            start_year = <span class='fl'>1980</span>)
 
 <span class='co'># Calculate long-term monthly statistics using station_number argument with defaults</span>
-<span class='fu'>calc_longterm_monthly_stats</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                            <span class='kw'>start_year</span> <span class='kw'>=</span> <span class='fl'>1980</span>)
+<span class='fu'>calc_longterm_monthly_stats</span>(station_number = <span class='st'>"08NM116"</span>,
+                            start_year = <span class='fl'>1980</span>)
 
 <span class='co'># Calculate long-term monthly statistics regardless if there is missing data for a given year</span>
-<span class='fu'>calc_longterm_monthly_stats</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                            <span class='kw'>ignore_missing</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-
+<span class='fu'>calc_longterm_monthly_stats</span>(station_number = <span class='st'>"08NM116"</span>,
+                            ignore_missing = <span class='fl'>TRUE</span>)
+                  
 <span class='co'># Calculate long-term monthly statistics for water years starting in October</span>
-<span class='fu'>calc_longterm_monthly_stats</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                            <span class='kw'>start_year</span> <span class='kw'>=</span> <span class='fl'>1980</span>,
-                            <span class='kw'>water_year_start</span> <span class='kw'>=</span> <span class='fl'>10</span>)
-
+<span class='fu'>calc_longterm_monthly_stats</span>(station_number = <span class='st'>"08NM116"</span>,
+                            start_year = <span class='fl'>1980</span>,
+                            water_year_start = <span class='fl'>10</span>)
+                  
 <span class='co'># Calculate long-term monthly statistics with custom years</span>
-<span class='fu'>calc_longterm_monthly_stats</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                            <span class='kw'>start_year</span> <span class='kw'>=</span> <span class='fl'>1981</span>,
-                            <span class='kw'>end_year</span> <span class='kw'>=</span> <span class='fl'>2010</span>,
-                            <span class='kw'>exclude_years</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1991</span>,<span class='fl'>1993</span>:<span class='fl'>1995</span>))
-
+<span class='fu'>calc_longterm_monthly_stats</span>(station_number = <span class='st'>"08NM116"</span>,
+                            start_year = <span class='fl'>1981</span>,
+                            end_year = <span class='fl'>2010</span>,
+                            exclude_years = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1991</span>,<span class='fl'>1993</span><span class='op'>:</span><span class='fl'>1995</span>))
+                  
 <span class='co'># Calculate long-term monthly statistics for 7-day flows for July-September months only, </span>
 <span class='co'># with 25 and 75th percentiles</span>
-<span class='fu'>calc_longterm_monthly_stats</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                            <span class='kw'>roll_days</span> <span class='kw'>=</span> <span class='fl'>7</span>,
-                            <span class='kw'>months</span> <span class='kw'>=</span> <span class='fl'>7</span>:<span class='fl'>9</span>,
-                            <span class='kw'>percentiles</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>25</span>,<span class='fl'>75</span>),
-                            <span class='kw'>ignore_missing</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-                            <span class='kw'>include_annual</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>) <span class='co'># removes the Long-term numbers </span>
-
+<span class='fu'>calc_longterm_monthly_stats</span>(station_number = <span class='st'>"08NM116"</span>,
+                            roll_days = <span class='fl'>7</span>,
+                            months = <span class='fl'>7</span><span class='op'>:</span><span class='fl'>9</span>,
+                            percentiles = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>25</span>,<span class='fl'>75</span>),
+                            ignore_missing = <span class='fl'>TRUE</span>,
+                            include_annual = <span class='fl'>FALSE</span>) <span class='co'># removes the Long-term numbers </span>
+                    
 <span class='co'># Calculate long-term monthly statistics and add custom stats for July-September</span>
-<span class='fu'>calc_longterm_monthly_stats</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                            <span class='kw'>start_year</span> <span class='kw'>=</span> <span class='fl'>1980</span>,
-                            <span class='kw'>custom_months</span> <span class='kw'>=</span> <span class='fl'>7</span>:<span class='fl'>9</span>,
-                            <span class='kw'>custom_months_label</span> <span class='kw'>=</span> <span class='st'>"Summer"</span>)
-
-}</div><div class='output co'>#&gt; <span class='warning'>Warning: One or more calculations included missing values and NA's were produced. Filter data for complete years or months, or use to ignore_missing = TRUE to ignore missing values.</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 14 x 8</span><span>
+<span class='fu'>calc_longterm_monthly_stats</span>(station_number = <span class='st'>"08NM116"</span>,
+                            start_year = <span class='fl'>1980</span>,
+                            custom_months = <span class='fl'>7</span><span class='op'>:</span><span class='fl'>9</span>,
+                            custom_months_label = <span class='st'>"Summer"</span>)                  
+                            
+}
+</div><div class='output co'>#&gt; <span class='warning'>Warning: One or more calculations included missing values and NA's were produced. Filter data for complete years or months, or use to ignore_missing = TRUE to ignore missing values.</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 14 x 8</span><span>
 #&gt;    STATION_NUMBER Month   Mean Median Maximum Minimum    P10   P90
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;fct&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'> 1</span><span> 08NM116        Jan     1.16  0.972    6.12   0.316  0.619  1.63
@@ -369,7 +370,7 @@ time periods with no missing dates will be returned. Default <code>FALSE</code>.
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

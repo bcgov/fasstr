@@ -160,19 +160,19 @@
     </div>
 
     <pre class="usage"><span class='fu'>calc_monthly_cumulative_stats</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>Date</span>,
-  <span class='kw'>values</span> <span class='kw'>=</span> <span class='no'>Value</span>,
-  <span class='kw'>groups</span> <span class='kw'>=</span> <span class='no'>STATION_NUMBER</span>,
-  <span class='no'>station_number</span>,
-  <span class='kw'>percentiles</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>, <span class='fl'>25</span>, <span class='fl'>75</span>, <span class='fl'>95</span>),
-  <span class='kw'>use_yield</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='no'>basin_area</span>,
-  <span class='kw'>water_year_start</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='no'>start_year</span>,
-  <span class='no'>end_year</span>,
-  <span class='no'>exclude_years</span>,
-  <span class='kw'>transpose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>data</span>,
+  dates = <span class='kw'>Date</span>,
+  values = <span class='kw'>Value</span>,
+  groups = <span class='kw'>STATION_NUMBER</span>,
+  <span class='kw'>station_number</span>,
+  percentiles = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>, <span class='fl'>25</span>, <span class='fl'>75</span>, <span class='fl'>95</span>),
+  use_yield = <span class='fl'>FALSE</span>,
+  <span class='kw'>basin_area</span>,
+  water_year_start = <span class='fl'>1</span>,
+  <span class='kw'>start_year</span>,
+  <span class='kw'>end_year</span>,
+  <span class='kw'>exclude_years</span>,
+  transpose = <span class='fl'>FALSE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -265,21 +265,22 @@ analysis. Default <code>1</code>.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span>
-<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='kw pkg'>tidyhydat</span><span class='kw ns'>::</span><span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span>())) {
+<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='kw'>tidyhydat</span>::<span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span>())) {
 
 <span class='co'># Calculate annual monthly cumulative volume statistics</span>
-<span class='fu'>calc_monthly_cumulative_stats</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>)
+<span class='fu'>calc_monthly_cumulative_stats</span>(station_number = <span class='st'>"08NM116"</span>) 
 
 <span class='co'># Calculate annual monthly cumulative volume statistics with default HYDAT basin area</span>
-<span class='fu'>calc_monthly_cumulative_stats</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                              <span class='kw'>use_yield</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'>calc_monthly_cumulative_stats</span>(station_number = <span class='st'>"08NM116"</span>,
+                              use_yield = <span class='fl'>TRUE</span>) 
 
 <span class='co'># Calculate annual monthly cumulative volume statistics with custom basin area</span>
-<span class='fu'>calc_monthly_cumulative_stats</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                              <span class='kw'>use_yield</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-                              <span class='kw'>basin_area</span> <span class='kw'>=</span> <span class='fl'>800</span>)
-
-}</div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 12 x 10</span><span>
+<span class='fu'>calc_monthly_cumulative_stats</span>(station_number = <span class='st'>"08NM116"</span>,
+                              use_yield = <span class='fl'>TRUE</span>,
+                              basin_area = <span class='fl'>800</span>) 
+                              
+}
+</div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 12 x 10</span><span>
 #&gt;    STATION_NUMBER Month   Mean Median Maximum Minimum     P5    P25    P75
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;fct&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'> 1</span><span> 08NM116        Jan     3.65   2.99    20.5    1.06   1.53   2.44   4.26
@@ -310,7 +311,7 @@ analysis. Default <code>1</code>.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

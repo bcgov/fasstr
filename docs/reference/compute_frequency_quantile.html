@@ -160,28 +160,27 @@
    based on the provided mean n-days and return period of the statistic, defaults to minimum flows. For example, to determine the
    7Q10 of a data set, set the <code>roll_days</code> to <code>7</code> and the <code>return_period</code> to <code>10</code>. Function will calculate using 
    all values in 'Values' column (no grouped analysis), unless specified. Analysis methodology replicates that from 
-   <a href='http://www.hec.usace.army.mil/software/hec-ssp/'>HEC-SSP</a>. Returns a tibble with statistics.</p>
+   <a href='https://www.hec.usace.army.mil/software/hec-ssp/'>HEC-SSP</a>. Returns a tibble with statistics.</p>
     </div>
 
     <pre class="usage"><span class='fu'>compute_frequency_quantile</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>Date</span>,
-  <span class='kw'>values</span> <span class='kw'>=</span> <span class='no'>Value</span>,
-  <span class='no'>station_number</span>,
-  <span class='kw'>roll_days</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>roll_align</span> <span class='kw'>=</span> <span class='st'>"right"</span>,
-  <span class='kw'>return_period</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>use_max</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>use_log</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>fit_distr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"PIII"</span>, <span class='st'>"weibull"</span>),
-  <span class='kw'>fit_distr_method</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='no'>fit_distr</span> <span class='kw'>==</span> <span class='st'>"PIII"</span>, <span class='st'>"MOM"</span>, <span class='st'>"MLE"</span>),
-  <span class='kw'>water_year_start</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='no'>start_year</span>,
-  <span class='no'>end_year</span>,
-  <span class='no'>exclude_years</span>,
-  <span class='kw'>months</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>12</span>,
-  <span class='kw'>ignore_missing</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>remove_zeros</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>data</span>,
+  dates = <span class='kw'>Date</span>,
+  values = <span class='kw'>Value</span>,
+  <span class='kw'>station_number</span>,
+  roll_days = <span class='fl'>NA</span>,
+  roll_align = <span class='st'>"right"</span>,
+  return_period = <span class='fl'>NA</span>,
+  use_max = <span class='fl'>FALSE</span>,
+  use_log = <span class='fl'>FALSE</span>,
+  fit_distr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"PIII"</span>, <span class='st'>"weibull"</span>),
+  fit_distr_method = <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='kw'>fit_distr</span> <span class='op'>==</span> <span class='st'>"PIII"</span>, <span class='st'>"MOM"</span>, <span class='st'>"MLE"</span>),
+  water_year_start = <span class='fl'>1</span>,
+  <span class='kw'>start_year</span>,
+  <span class='kw'>end_year</span>,
+  <span class='kw'>exclude_years</span>,
+  months = <span class='fl'>1</span><span class='op'>:</span><span class='fl'>12</span>,
+  ignore_missing = <span class='fl'>FALSE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -268,10 +267,6 @@ all months (default <code>1:12</code>).</p></td>
 <code>TRUE</code> then a statistic will be calculated regardless of missing dates. If <code>FALSE</code> then only those statistics from
 time periods with no missing dates will be returned. Default <code>FALSE</code>.</p></td>
     </tr>
-    <tr>
-      <th>remove_zeros</th>
-      <td><p>Logical value to indicate removing any zero flow values from the data set. Default <code>FALSE</code>.</p></td>
-    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -282,16 +277,17 @@ time periods with no missing dates will be returned. Default <code>FALSE</code>.
     <div class='dont-index'><p><code><a href='compute_frequency_analysis.html'>compute_frequency_analysis</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
 
 <span class='co'># Working example:</span>
 
 <span class='co'># Compute the annual 7-day flow value with a 1 in 10 year return interval</span>
-<span class='fu'>compute_frequency_quantile</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                           <span class='kw'>roll_days</span> <span class='kw'>=</span> <span class='fl'>7</span>,
-                           <span class='kw'>return_period</span> <span class='kw'>=</span> <span class='fl'>10</span>)
-
-}</div></pre>
+<span class='fu'>compute_frequency_quantile</span>(station_number = <span class='st'>"08NM116"</span>,
+                           roll_days = <span class='fl'>7</span>,
+                           return_period = <span class='fl'>10</span>)
+                            
+}
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -307,7 +303,7 @@ time periods with no missing dates will be returned. Default <code>FALSE</code>.
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

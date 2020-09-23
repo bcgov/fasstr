@@ -160,25 +160,26 @@
 <h2 class="hasAnchor">
 <a href="#build-and-check-within-rdevtools" class="anchor"></a>Build and check within <code>R/devtools</code>
 </h2>
-<pre><code>devtools::check_win_devel()
+<pre><code><a href="https://devtools.r-lib.org//reference/check_win.html">devtools::check_win_devel()
 devtools::check_win_release()
-devtools::check() ## build locally</code></pre>
+devtools::check() ## build locally</a></code></pre>
 </div>
 <div id="build-and-check-on-rhub" class="section level2">
 <h2 class="hasAnchor">
 <a href="#build-and-check-on-rhub" class="anchor"></a>Build and check on rhub</h2>
-<pre><code>library(rhub)
+<pre><code><a href="https://github.com/r-hub/rhub">library(rhub)
 
 check_with_rdevel()
 check_for_cran()
 check_on_windows()
-check_on_macos()</code></pre>
+check(platform = 'macos-highsierra-release')
+check(platform = 'macos-highsierra-release-cran')</a></code></pre>
 </div>
 <div id="run-this-in-the-console" class="section level2">
 <h2 class="hasAnchor">
 <a href="#run-this-in-the-console" class="anchor"></a>Run this in the console</h2>
 <pre><code>R CMD build fasstr
-R CMD check fasstr_0.3.1.tar.gz --as-cran </code></pre>
+R CMD check fasstr_0.3.2.tar.gz --as-cran </code></pre>
 </div>
 <div id="documentation" class="section level2">
 <h2 class="hasAnchor">
@@ -230,7 +231,7 @@ git push --tags</code></pre>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -139,13 +139,19 @@
 <h3 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h3>
 <p>You can install <code>fasstr</code> directly from <a href="https://cran.r-project.org/package=fasstr">CRAN</a>:</p>
-<div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"fasstr"</span>)</pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"fasstr"</span>)
+</pre></div>
 <p>To install the development version from <a href="https://github.com/bcgov/fasstr">GitHub</a>, use the <a href="https://cran.r-project.org/package=remotes"><code>remotes</code></a> package then the <code>fasstr</code> package:</p>
-<div class="sourceCode" id="cb2"><pre class="r"><span class="kw">if</span>(!<span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span>(<span class="st">"remotes"</span>)) <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"remotes"</span>)
-<span class="kw pkg">remotes</span><span class="kw ns">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"bcgov/fasstr"</span>)</pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="co">if</span>(<span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span>(<span class="st">"remotes"</span>)) <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"remotes"</span>)
+<span class="kw">remotes</span>::<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"bcgov/fasstr"</span>)
+</pre></div>
 <p>Several other packages will be installed with <code>fasstr</code>. These include <a href="https://CRAN.R-project.org/package=tidyhydat"><code>tidyhydat</code></a> for downloading Water Survey of Canada hydrometric data, <a href="https://CRAN.R-project.org/package=zyp"><code>zyp</code></a> for trending, <a href="https://CRAN.R-project.org/package=ggplot2"><code>ggplot2</code></a> for creating plots, and <a href="https://CRAN.R-project.org/package=tidyr"><code>tidyr</code></a> and <a href="https://CRAN.R-project.org/package=dplyr"><code>dplyr</code></a> for data wrangling and summarizing, amongst others.</p>
 <p>To use the <code>station_number</code> argument and pull data directly from a <a href="https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html">Water Survey of Canada HYDAT database</a> into <code>fasstr</code> functions, download a HYDAT file using the following code:</p>
-<div class="sourceCode" id="cb3"><pre class="r"><span class="kw pkg">tidyhydat</span><span class="kw ns">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/download_hydat.html">download_hydat</a></span>()</pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="kw">tidyhydat</span>::<span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/download_hydat.html">download_hydat</a></span>()
+</pre></div>
 </div>
 <div id="using-fasstr" class="section level3">
 <h3 class="hasAnchor">
@@ -245,7 +251,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

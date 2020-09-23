@@ -102,7 +102,7 @@
 
       
 
-      </header><script src="fasstr_under_the_hood_files/header-attrs-2.2/header-attrs.js"></script><div class="row">
+      </header><script src="fasstr_under_the_hood_files/header-attrs-2.3/header-attrs.js"></script><script src="fasstr_under_the_hood_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Internal fasstr Workflows</h1>
@@ -142,20 +142,22 @@
 <p>At this point in a function there is now a data frame of data, usually called ‘flow_data’ that has three columns of ‘Date’, ‘Value’, and ‘STATION_NUMBER’, that is ready to be tidied for analysis.</p>
 <p>Note: some functions use different data sources than daily data. The <code>compute_HYDAT_peaks_frequencies()</code> does not permit the <code>data</code> argument and just extracts data from HYDAT (and sets it up appropriately) and the <code><a href="../reference/compute_frequency_analysis.html">compute_frequency_analysis()</a></code> function requires a unique dataset (see <code><a href="../reference/compute_frequency_analysis.html">?compute_frequency_analysis</a></code> for more information on the function).</p>
 <p>The following is an example of these first steps (from <code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code>):</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="co"># Check if data is provided and import it</span>
-<span class="no">flow_data</span> <span class="kw">&lt;-</span> <span class="fu">flowdata_import</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">data</span>,
-                             <span class="kw">station_number</span> <span class="kw">=</span> <span class="no">station_number</span>)
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="co"># Check if data is provided and import it</span>
+<span class="kw">flow_data</span> <span class="op">&lt;-</span> <span class="fu">flowdata_import</span>(data = <span class="kw">data</span>, 
+                             station_number = <span class="kw">station_number</span>)
 
 <span class="co"># Save the original columns (to check for STATION_NUMBER col at end) and ungroup if necessary</span>
-<span class="no">orig_cols</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">flow_data</span>)
-<span class="no">flow_data</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span>(<span class="no">flow_data</span>)
+<span class="kw">orig_cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">flow_data</span>)
+<span class="kw">flow_data</span> <span class="op">&lt;-</span> <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span>(<span class="kw">flow_data</span>)
 
 <span class="co"># Check and rename columns</span>
-<span class="no">flow_data</span> <span class="kw">&lt;-</span> <span class="fu">format_all_cols</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">flow_data</span>,
-                             <span class="kw">dates</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span>(<span class="no">dates</span>)),
-                             <span class="kw">values</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span>(<span class="no">values</span>)),
-                             <span class="kw">groups</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span>(<span class="no">groups</span>)),
-                             <span class="kw">rm_other_cols</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<span class="kw">flow_data</span> <span class="op">&lt;-</span> <span class="fu">format_all_cols</span>(data = <span class="kw">flow_data</span>,
+                             dates = <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span>(<span class="kw">dates</span>)),
+                             values = <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span>(<span class="kw">values</span>)),
+                             groups = <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span>(<span class="kw">groups</span>)),
+                             rm_other_cols = <span class="fl">TRUE</span>)
+</pre></div>
 <hr>
 </div>
 <div id="tidying-functions-add_-and-fill_" class="section level2">
@@ -164,29 +166,31 @@
 <p>The <code>fasstr</code> tidying functions (start with <code>add_</code> or <code>fill_</code>) just add rows or columns of data so there are fewer steps than the other <code>fasstr</code> functions.</p>
 <p>After the data has been prepped with the appropriate columns, the columns are added with their equations or other functions, or dates are filled with NA if they are missing. Then if any of the column names were changed in the formatting, they are returned to their original names, and if there was a grouping beforehand, that grouping is returned.</p>
 <p>The following is an example of remaining steps of a tidying function (from <code><a href="../reference/add_daily_yield.html">add_daily_yield()</a></code>):</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="co">## SET UP BASIN AREA</span>
-<span class="fu"><a href="https://rdrr.io/r/base/warning.html">suppressWarnings</a></span>(<span class="no">flow_data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/add_basin_area.html">add_basin_area</a></span>(<span class="no">flow_data</span>, <span class="kw">basin_area</span> <span class="kw">=</span> <span class="no">basin_area</span>))
-<span class="no">flow_data</span>$<span class="no">Basin_Area_sqkm_temp</span> <span class="kw">&lt;-</span> <span class="no">flow_data</span>$<span class="no">Basin_Area_sqkm</span>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="co">## SET UP BASIN AREA</span>
+<span class="fu"><a href="https://rdrr.io/r/base/warning.html">suppressWarnings</a></span>(<span class="kw">flow_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_basin_area.html">add_basin_area</a></span>(<span class="kw">flow_data</span>, basin_area = <span class="kw">basin_area</span>))
+<span class="kw">flow_data</span><span class="op">$</span><span class="kw">Basin_Area_sqkm_temp</span> <span class="op">&lt;-</span> <span class="kw">flow_data</span><span class="op">$</span><span class="kw">Basin_Area_sqkm</span>
 
 <span class="co">## ADD YIELD COLUMN</span>
-<span class="no">flow_data</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="no">flow_data</span>, <span class="kw">Yield_mm</span> <span class="kw">=</span> <span class="no">Value</span> * <span class="fl">86400</span> / (<span class="no">Basin_Area_sqkm_temp</span> * <span class="fl">1000</span>))
+<span class="kw">flow_data</span> <span class="op">&lt;-</span> <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">flow_data</span>, Yield_mm = <span class="kw">Value</span> <span class="op">*</span> <span class="fl">86400</span> <span class="op">/</span> (<span class="kw">Basin_Area_sqkm_temp</span> <span class="op">*</span> <span class="fl">1000</span>))
 
 <span class="co"># Return the original names of the Date and Value columns</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">flow_data</span>)[<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">flow_data</span>) <span class="kw">==</span> <span class="st">'Value'</span>] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span>(<span class="no">values</span>))
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">flow_data</span>)[<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">flow_data</span>) <span class="kw">==</span> <span class="st">'STATION_NUMBER'</span>] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span>(<span class="no">groups</span>))
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">flow_data</span>)[<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">flow_data</span>) <span class="op">==</span> <span class="st">'Value'</span>] <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span>(<span class="kw">values</span>))
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">flow_data</span>)[<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">flow_data</span>) <span class="op">==</span> <span class="st">'STATION_NUMBER'</span>] <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span>(<span class="kw">groups</span>))
 
 
 <span class="co">## Reformat to original names and groups</span>
 <span class="co">## -------------------------------------</span>
 
 <span class="co"># Return columns to original order plus new column</span>
-<span class="kw">if</span>(<span class="st">'Yield_mm'</span> <span class="kw">%in%</span> <span class="no">orig_cols</span>){
-  <span class="no">flow_data</span> <span class="kw">&lt;-</span>  <span class="no">flow_data</span>[, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">orig_cols</span>)]
-} <span class="kw">else</span> {
-  <span class="no">flow_data</span> <span class="kw">&lt;-</span>  <span class="no">flow_data</span>[, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">orig_cols</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">'Yield_mm'</span>))]
+<span class="co">if</span>(<span class="st">'Yield_mm'</span> <span class="op">%in%</span> <span class="kw">orig_cols</span>){
+  <span class="kw">flow_data</span> <span class="op">&lt;-</span>  <span class="kw">flow_data</span>[, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw">orig_cols</span>)]
+} <span class="co">else</span> {
+  <span class="kw">flow_data</span> <span class="op">&lt;-</span>  <span class="kw">flow_data</span>[, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw">orig_cols</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">'Yield_mm'</span>))]
 }
 
-<span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/reexports.html">as_tibble</a></span>(<span class="no">flow_data</span>)</pre></body></html></div>
+<span class="kw">dplyr</span>::<span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span>(<span class="kw">flow_data</span>)
+</pre></div>
 <hr>
 </div>
 <div id="analysis-functions-calc_-and-compute_" class="section level2">
@@ -200,13 +204,15 @@
 <p>For some functions a ‘RollingValue’ column is created for the statistics calculations so that a roll_day value of other than 1 can be used. For this, the add_rolling_days() function creates an additional column based on the users selection and is renamed to ‘RollingValue’.</p>
 <p>At this point in a function the data frame of data, flow_data, has three columns of ‘Date’, ‘Value’ or ‘RollingValue’, and ‘STATION_NUMBER’, and any other date and necessary column required to be filtered for analysis.</p>
 <p>The following is an example of the tidying steps (from <code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code>):</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co"># Fill missing dates, add date variables</span>
-<span class="no">flow_data</span> <span class="kw">&lt;-</span> <span class="fu">analysis_prep</span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">flow_data</span>,
-                           <span class="kw">water_year_start</span> <span class="kw">=</span> <span class="no">water_year_start</span>)
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="co"># Fill missing dates, add date variables</span>
+<span class="kw">flow_data</span> <span class="op">&lt;-</span> <span class="fu">analysis_prep</span>(data = <span class="kw">flow_data</span>, 
+                           water_year_start = <span class="kw">water_year_start</span>)
 
 <span class="co"># Add rolling means to end of dataframe</span>
-<span class="no">flow_data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/add_rolling_means.html">add_rolling_means</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">flow_data</span>, <span class="kw">roll_days</span> <span class="kw">=</span> <span class="no">roll_days</span>, <span class="kw">roll_align</span> <span class="kw">=</span> <span class="no">roll_align</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">flow_data</span>)[<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="no">flow_data</span>)] <span class="kw">&lt;-</span> <span class="st">'RollingValue'</span></pre></body></html></div>
+<span class="kw">flow_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_rolling_means.html">add_rolling_means</a></span>(data = <span class="kw">flow_data</span>, roll_days = <span class="kw">roll_days</span>, roll_align = <span class="kw">roll_align</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="kw">flow_data</span>)[<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="kw">flow_data</span>)] <span class="op">&lt;-</span> <span class="st">'RollingValue'</span>
+</pre></div>
 </div>
 <div id="data-filtering" class="section level4">
 <h4 class="hasAnchor">
@@ -214,9 +220,11 @@
 <p>With all the necessary columns of data for analysis, the data can be filtered for the years, months, dates, etc. as specified in the <code>fasstr</code> function arguments. These are mostly completed with simple tidy filtering functions. However when using the <code>complete_years</code> argument in some of the <code>fasstr</code> functions, there is an internal function in the utils.R file called <code>filter_complete_yrs()</code> that removes data from years with incomplete data.</p>
 <p>At this point in a function the data frame of data, flow_data, has three columns of ‘Date’, ‘Value’, and ‘STATION_NUMBER’, and any other date and necessary column, and is filtered for the analysis.</p>
 <p>The following is an example of the filtering steps (from <code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code>):</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="co"># Filter for the selected year (remove excluded years after)</span>
-<span class="no">flow_data</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">flow_data</span>, <span class="no">WaterYear</span> <span class="kw">&gt;=</span> <span class="no">start_year</span> <span class="kw">&amp;</span> <span class="no">WaterYear</span> <span class="kw">&lt;=</span> <span class="no">end_year</span>)
-<span class="no">flow_data</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">flow_data</span>, <span class="no">Month</span> <span class="kw">%in%</span> <span class="no">months</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="co"># Filter for the selected year (remove excluded years after)</span>
+<span class="kw">flow_data</span> <span class="op">&lt;-</span> <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="kw">flow_data</span>, <span class="kw">WaterYear</span> <span class="op">&gt;=</span> <span class="kw">start_year</span> <span class="op">&amp;</span> <span class="kw">WaterYear</span> <span class="op">&lt;=</span> <span class="kw">end_year</span>)
+<span class="kw">flow_data</span> <span class="op">&lt;-</span> <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="kw">flow_data</span>, <span class="kw">Month</span> <span class="op">%in%</span> <span class="kw">months</span>)
+</pre></div>
 </div>
 <div id="calculating-statistics" class="section level4">
 <h4 class="hasAnchor">
@@ -225,35 +233,37 @@
 <p>Then the data is typically analyzed using the <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">dplyr::summarize()</a></code> function (for means, median, minimums, etc). If an analysis considers if missing data is available or not, then the <code>na.rm</code> argument is set to the <code>ignore_missing</code> function provided in the <code>fasstr</code> functions. If <code>NAN</code> or <code>Inf</code> values are produced in the results, then they are replaced with <code>NA</code> for consistency. If percentiles are being calculated, another code chunk will loop through each percentile selected and attach to the data.</p>
 <p>Data is then ungrouped to allow for further data wrangling and outputting.</p>
 <p>The following is an example of the calculation steps (from <code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code>):</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="co"># Calculate basic stats</span>
-<span class="no">annual_stats</span> <span class="kw">&lt;-</span>   <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span>(<span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">flow_data</span>, <span class="no">STATION_NUMBER</span>, <span class="no">WaterYear</span>),
-                                   <span class="kw">Mean</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">RollingValue</span>, <span class="kw">na.rm</span> <span class="kw">=</span> <span class="no">ignore_missing</span>),
-                                   <span class="kw">Median</span> <span class="kw">=</span> <span class="kw pkg">stats</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span>(<span class="no">RollingValue</span>, <span class="kw">na.rm</span> <span class="kw">=</span> <span class="no">ignore_missing</span>),
-                                   <span class="kw">Maximum</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span> (<span class="no">RollingValue</span>, <span class="kw">na.rm</span> <span class="kw">=</span> <span class="no">ignore_missing</span>),
-                                   <span class="kw">Minimum</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span> (<span class="no">RollingValue</span>, <span class="kw">na.rm</span> <span class="kw">=</span> <span class="no">ignore_missing</span>))
-<span class="no">annual_stats</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span>(<span class="no">annual_stats</span>)
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="co"># Calculate basic stats</span>
+<span class="kw">annual_stats</span> <span class="op">&lt;-</span>   <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span>(<span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="kw">flow_data</span>, <span class="kw">STATION_NUMBER</span>, <span class="kw">WaterYear</span>),
+                                   Mean = <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="kw">RollingValue</span>, na.rm = <span class="kw">ignore_missing</span>),
+                                   Median = <span class="kw">stats</span>::<span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span>(<span class="kw">RollingValue</span>, na.rm = <span class="kw">ignore_missing</span>),
+                                   Maximum = <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span> (<span class="kw">RollingValue</span>, na.rm = <span class="kw">ignore_missing</span>),
+                                   Minimum = <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span> (<span class="kw">RollingValue</span>, na.rm = <span class="kw">ignore_missing</span>))
+<span class="kw">annual_stats</span> <span class="op">&lt;-</span> <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span>(<span class="kw">annual_stats</span>)
 
 <span class="co">#Remove Nans and Infs</span>
-<span class="no">annual_stats</span>$<span class="no">Mean</span>[<span class="fu"><a href="https://rdrr.io/r/base/is.finite.html">is.nan</a></span>(<span class="no">annual_stats</span>$<span class="no">Mean</span>)] <span class="kw">&lt;-</span> <span class="fl">NA</span>
-<span class="no">annual_stats</span>$<span class="no">Maximum</span>[<span class="fu"><a href="https://rdrr.io/r/base/is.finite.html">is.infinite</a></span>(<span class="no">annual_stats</span>$<span class="no">Maximum</span>)] <span class="kw">&lt;-</span> <span class="fl">NA</span>
-<span class="no">annual_stats</span>$<span class="no">Minimum</span>[<span class="fu"><a href="https://rdrr.io/r/base/is.finite.html">is.infinite</a></span>(<span class="no">annual_stats</span>$<span class="no">Minimum</span>)] <span class="kw">&lt;-</span> <span class="fl">NA</span>
+<span class="kw">annual_stats</span><span class="op">$</span><span class="kw">Mean</span>[<span class="fu"><a href="https://rdrr.io/r/base/is.finite.html">is.nan</a></span>(<span class="kw">annual_stats</span><span class="op">$</span><span class="kw">Mean</span>)] <span class="op">&lt;-</span> <span class="fl">NA</span>
+<span class="kw">annual_stats</span><span class="op">$</span><span class="kw">Maximum</span>[<span class="fu"><a href="https://rdrr.io/r/base/is.finite.html">is.infinite</a></span>(<span class="kw">annual_stats</span><span class="op">$</span><span class="kw">Maximum</span>)] <span class="op">&lt;-</span> <span class="fl">NA</span>
+<span class="kw">annual_stats</span><span class="op">$</span><span class="kw">Minimum</span>[<span class="fu"><a href="https://rdrr.io/r/base/is.finite.html">is.infinite</a></span>(<span class="kw">annual_stats</span><span class="op">$</span><span class="kw">Minimum</span>)] <span class="op">&lt;-</span> <span class="fl">NA</span>
 
 <span class="co"># Calculate annual percentiles</span>
-<span class="kw">if</span>(!<span class="fu"><a href="https://rdrr.io/r/base/all.html">all</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="no">percentiles</span>))) {
-  <span class="kw">for</span> (<span class="no">ptile</span> <span class="kw">in</span> <span class="no">percentiles</span>) {
+<span class="co">if</span>(<span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/all.html">all</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="kw">percentiles</span>))) {
+  <span class="co">for</span> (<span class="kw">ptile</span> <span class="co">in</span> <span class="kw">percentiles</span>) {
     <span class="co"># Calculate percentiles</span>
-    <span class="no">annual_stats_ptile</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span>(<span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">flow_data</span>, <span class="no">STATION_NUMBER</span>, <span class="no">WaterYear</span>),
-                                           <span class="kw">Percentile</span> <span class="kw">=</span> <span class="kw pkg">stats</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="no">RollingValue</span>, <span class="no">ptile</span> / <span class="fl">100</span>, <span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>))
-    <span class="no">annual_stats_ptile</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span>(<span class="no">annual_stats_ptile</span>)
-    <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">annual_stats_ptile</span>)[<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">annual_stats_ptile</span>) <span class="kw">==</span> <span class="st">'Percentile'</span>] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">'P'</span>, <span class="no">ptile</span>)
-
+    <span class="kw">annual_stats_ptile</span> <span class="op">&lt;-</span> <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span>(<span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="kw">flow_data</span>, <span class="kw">STATION_NUMBER</span>, <span class="kw">WaterYear</span>),
+                                           Percentile = <span class="kw">stats</span>::<span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="kw">RollingValue</span>, <span class="kw">ptile</span> <span class="op">/</span> <span class="fl">100</span>, na.rm = <span class="fl">TRUE</span>))
+    <span class="kw">annual_stats_ptile</span> <span class="op">&lt;-</span> <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span>(<span class="kw">annual_stats_ptile</span>)
+    <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">annual_stats_ptile</span>)[<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">annual_stats_ptile</span>) <span class="op">==</span> <span class="st">'Percentile'</span>] <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">'P'</span>, <span class="kw">ptile</span>)
+    
     <span class="co"># Merge with stats</span>
-    <span class="no">annual_stats</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html">merge</a></span>(<span class="no">annual_stats</span>, <span class="no">annual_stats_ptile</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'STATION_NUMBER'</span>, <span class="st">'WaterYear'</span>))
-
+    <span class="kw">annual_stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html">merge</a></span>(<span class="kw">annual_stats</span>, <span class="kw">annual_stats_ptile</span>, by = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'STATION_NUMBER'</span>, <span class="st">'WaterYear'</span>))
+    
     <span class="co"># Remove percentile if mean is NA (workaround for na.rm=FALSE in quantile)</span>
-    <span class="no">annual_stats</span>[, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="no">annual_stats</span>)] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="no">annual_stats</span>$<span class="no">Mean</span>), <span class="fl">NA</span>, <span class="no">annual_stats</span>[, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="no">annual_stats</span>)])
+    <span class="kw">annual_stats</span>[, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="kw">annual_stats</span>)] <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(<span class="kw">annual_stats</span><span class="op">$</span><span class="kw">Mean</span>), <span class="fl">NA</span>, <span class="kw">annual_stats</span>[, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="kw">annual_stats</span>)])
   }
-}</pre></body></html></div>
+}
+</pre></div>
 </div>
 <div id="final-data-wrangling" class="section level4">
 <h4 class="hasAnchor">
@@ -262,39 +272,41 @@
 <p>If the option to transpose the results data was set to <code>TRUE</code> with the <code>transpose</code> argument, then the data is gathered and spread such that each statistics is a single row as opposed to a column in the original results.</p>
 <p>After all wrangling, the final results are returned from the function as a tibble.</p>
 <p>The following is an example of the final wrangling steps (from <code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code>):</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="co"># Rename year column</span>
-<span class="no">annual_stats</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="no">annual_stats</span>, <span class="kw">Year</span> <span class="kw">=</span> <span class="no">WaterYear</span>)
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="co"># Rename year column</span>
+<span class="kw">annual_stats</span> <span class="op">&lt;-</span> <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="kw">annual_stats</span>, Year = <span class="kw">WaterYear</span>)
 
 <span class="co"># Remove selected excluded years</span>
-<span class="no">annual_stats</span>[<span class="no">annual_stats</span>$<span class="no">Year</span> <span class="kw">%in%</span> <span class="no">exclude_years</span>, -(<span class="fl">1</span>:<span class="fl">2</span>)] <span class="kw">&lt;-</span> <span class="fl">NA</span>
+<span class="kw">annual_stats</span>[<span class="kw">annual_stats</span><span class="op">$</span><span class="kw">Year</span> <span class="op">%in%</span> <span class="kw">exclude_years</span>, <span class="op">-</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">2</span>)] <span class="op">&lt;-</span> <span class="fl">NA</span>
 
 
 <span class="co"># If transpose if selected</span>
-<span class="kw">if</span> (<span class="no">transpose</span>) {
+<span class="co">if</span> (<span class="kw">transpose</span>) {
   <span class="co"># Get list of columns to order the Statistic column after transposing</span>
-  <span class="no">stat_levels</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">annual_stats</span>[-(<span class="fl">1</span>:<span class="fl">2</span>)])
-
+  <span class="kw">stat_levels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">annual_stats</span>[<span class="op">-</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">2</span>)])
+  
   <span class="co"># Transpose the columns for rows</span>
-  <span class="no">annual_stats</span> <span class="kw">&lt;-</span> <span class="kw pkg">tidyr</span><span class="kw ns">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/gather.html">gather</a></span>(<span class="no">annual_stats</span>, <span class="no">Statistic</span>, <span class="no">Value</span>, -<span class="no">STATION_NUMBER</span>, -<span class="no">Year</span>)
-  <span class="no">annual_stats</span> <span class="kw">&lt;-</span> <span class="kw pkg">tidyr</span><span class="kw ns">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/spread.html">spread</a></span>(<span class="no">annual_stats</span>, <span class="no">Year</span>, <span class="no">Value</span>)
-
+  <span class="kw">annual_stats</span> <span class="op">&lt;-</span> <span class="kw">tidyr</span>::<span class="fu"><a href="https://tidyr.tidyverse.org/reference/gather.html">gather</a></span>(<span class="kw">annual_stats</span>, <span class="kw">Statistic</span>, <span class="kw">Value</span>, <span class="op">-</span><span class="kw">STATION_NUMBER</span>, <span class="op">-</span><span class="kw">Year</span>)
+  <span class="kw">annual_stats</span> <span class="op">&lt;-</span> <span class="kw">tidyr</span>::<span class="fu"><a href="https://tidyr.tidyverse.org/reference/spread.html">spread</a></span>(<span class="kw">annual_stats</span>, <span class="kw">Year</span>, <span class="kw">Value</span>)
+  
   <span class="co"># Order the columns</span>
-  <span class="no">annual_stats</span>$<span class="no">Statistic</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="no">annual_stats</span>$<span class="no">Statistic</span>, <span class="kw">levels</span> <span class="kw">=</span> <span class="no">stat_levels</span>)
-  <span class="no">annual_stats</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(<span class="no">annual_stats</span>, <span class="no">STATION_NUMBER</span>, <span class="no">Statistic</span>)
+  <span class="kw">annual_stats</span><span class="op">$</span><span class="kw">Statistic</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="kw">annual_stats</span><span class="op">$</span><span class="kw">Statistic</span>, levels = <span class="kw">stat_levels</span>)
+  <span class="kw">annual_stats</span> <span class="op">&lt;-</span> <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(<span class="kw">annual_stats</span>, <span class="kw">STATION_NUMBER</span>, <span class="kw">Statistic</span>)
 }
 
 <span class="co"># Give warning if any NA values</span>
-<span class="fu">missing_values_warning</span>(<span class="no">annual_stats</span>[, <span class="fl">3</span>:<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="no">annual_stats</span>)])
+<span class="fu">missing_values_warning</span>(<span class="kw">annual_stats</span>[, <span class="fl">3</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="kw">annual_stats</span>)])
 
 
 <span class="co"># Recheck if station_number/grouping was in original data and rename or remove as necessary</span>
-<span class="kw">if</span>(<span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span>(<span class="no">groups</span>)) <span class="kw">%in%</span> <span class="no">orig_cols</span>) {
-  <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">annual_stats</span>)[<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">annual_stats</span>) <span class="kw">==</span> <span class="st">'STATION_NUMBER'</span>] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span>(<span class="no">groups</span>))
-} <span class="kw">else</span> {
-  <span class="no">annual_stats</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="no">annual_stats</span>, -<span class="no">STATION_NUMBER</span>)
+<span class="co">if</span>(<span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span>(<span class="kw">groups</span>)) <span class="op">%in%</span> <span class="kw">orig_cols</span>) {
+  <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">annual_stats</span>)[<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">annual_stats</span>) <span class="op">==</span> <span class="st">'STATION_NUMBER'</span>] <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/substitute.html">substitute</a></span>(<span class="kw">groups</span>))
+} <span class="co">else</span> {
+  <span class="kw">annual_stats</span> <span class="op">&lt;-</span> <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">annual_stats</span>, <span class="op">-</span><span class="kw">STATION_NUMBER</span>)
 }
 
-<span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/reexports.html">as_tibble</a></span>(<span class="no">annual_stats</span>)</pre></body></html></div>
+<span class="kw">dplyr</span>::<span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span>(<span class="kw">annual_stats</span>)
+</pre></div>
 <hr>
 </div>
 </div>
@@ -313,41 +325,43 @@
 <p>Before plotting, some variables are created based on the custom options provided in the arguments (axis labels etc).</p>
 <p>As there is the potential for many plots to be produced in the <code>fasstr</code> functions, a tidy method was used to create multiple plots simultaneously in an efficient process using <code>dplyr</code>, <code>tidyr</code>, <code>purrr</code>, and <code>ggplot2</code> packages to create a tibble of plots. See this <a href="http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/">webpage</a> for more information on the method. For <code>fasstr</code> plotting functions, this entails creating a single tibble of groups (‘STATION_NUMBER’s), data, and plots. First the data is grouped by the grouping (typically ’STATION_NUMBER’s) using the <code>dplyr::group()</code> function; this will create a single plot for each grouping. Then using <code><a href="https://tidyr.tidyverse.org/reference/nest.html">tidyr::nest()</a></code> a tibble is created with two columns, the first being the ’STATION_NUMBER’ and the second being a tibble of data for each ‘STATION_NUMBER’ (a tibble of tibbles). Then using <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">dplyr::mutate()</a></code> function a column of ggplots is created; and using <code><a href="https://purrr.tidyverse.org/reference/map2.html">purrr::map2()</a></code> all of the plots can be created simultaneously (thus saving time in the function). As this type of table isn’t entirely user-friendly, each plot is extracted into a list and named appropriately (typically by each grouping and then the statistic).</p>
 <p>The following is an example of the process of the creating the plots (with simplified plotting).</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="co"># Calculate the statistics</span>
-<span class="no">annual_stats</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span>(<span class="kw">station_number</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'08NM116'</span>, <span class="st">'08NM240'</span>),
-                                  <span class="kw">start_year</span> <span class="kw">=</span> <span class="fl">1985</span>, <span class="kw">end_year</span> <span class="kw">=</span> <span class="fl">2015</span>)
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="co"># Calculate the statistics</span>
+<span class="kw">annual_stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span>(station_number = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'08NM116'</span>, <span class="st">'08NM240'</span>),
+                                  start_year = <span class="fl">1985</span>, end_year = <span class="fl">2015</span>)
 
 <span class="co"># Wrangle statistics for plotting</span>
-<span class="no">annual_stats</span> <span class="kw">&lt;-</span> <span class="kw pkg">tidyr</span><span class="kw ns">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/gather.html">gather</a></span>(<span class="no">annual_stats</span>, <span class="no">Statistic</span>, <span class="no">Value</span>, -<span class="no">Year</span>, -<span class="no">STATION_NUMBER</span>)
+<span class="kw">annual_stats</span> <span class="op">&lt;-</span> <span class="kw">tidyr</span>::<span class="fu"><a href="https://tidyr.tidyverse.org/reference/gather.html">gather</a></span>(<span class="kw">annual_stats</span>, <span class="kw">Statistic</span>, <span class="kw">Value</span>, <span class="op">-</span><span class="kw">Year</span>, <span class="op">-</span><span class="kw">STATION_NUMBER</span>)
 
 <span class="co"># Group data by grouping</span>
-<span class="no">tidy_plots</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">annual_stats</span>, <span class="no">STATION_NUMBER</span>)
+<span class="kw">tidy_plots</span> <span class="op">&lt;-</span> <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="kw">annual_stats</span>, <span class="kw">STATION_NUMBER</span>)
 
 <span class="co"># Create a tibble with a column of STATION_NUMBERs and a column of data for each STATION_NUMBER</span>
-<span class="no">tidy_plots</span> <span class="kw">&lt;-</span> <span class="kw pkg">tidyr</span><span class="kw ns">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">nest</a></span>(<span class="no">tidy_plots</span>)
+<span class="kw">tidy_plots</span> <span class="op">&lt;-</span> <span class="kw">tidyr</span>::<span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">nest</a></span>(<span class="kw">tidy_plots</span>)
 
 <span class="co"># Create a new column of plots using mutate and purrr::map2</span>
-<span class="no">tidy_plots</span> <span class="kw">&lt;-</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="no">tidy_plots</span>,
-                            <span class="kw">plot</span> <span class="kw">=</span> <span class="kw pkg">purrr</span><span class="kw ns">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html">map2</a></span>(<span class="no">data</span>, <span class="no">STATION_NUMBER</span>,
-                                               ~<span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">.</span>, <span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">Year</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">Value</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="no">Statistic</span>)) +
-                                                 <span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="kw">plot.title</span> <span class="kw">=</span> <span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="kw">hjust</span> <span class="kw">=</span> <span class="fl">0.5</span>)) +
-                                                 <span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>(<span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">0.5</span>, <span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>) +
-                                                 <span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span>(<span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>) +
-                                                 <span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span>(<span class="st">'Discharge (cms)'</span>)
+<span class="kw">tidy_plots</span> <span class="op">&lt;-</span> <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">tidy_plots</span>,
+                            plot = <span class="kw">purrr</span>::<span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html">map2</a></span>(<span class="kw">data</span>, <span class="kw">STATION_NUMBER</span>, 
+                                               <span class="op">~</span><span class="kw">ggplot2</span>::<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(data = <span class="kw">.</span>, <span class="kw">ggplot2</span>::<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(x = <span class="kw">Year</span>, y = <span class="kw">Value</span>, color = <span class="kw">Statistic</span>)) <span class="op">+</span>
+                                                 <span class="kw">ggplot2</span>::<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(plot.title = <span class="kw">ggplot2</span>::<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(hjust = <span class="fl">0.5</span>)) <span class="op">+</span>
+                                                 <span class="kw">ggplot2</span>::<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>(alpha = <span class="fl">0.5</span>, na.rm = <span class="fl">TRUE</span>) <span class="op">+</span>
+                                                 <span class="kw">ggplot2</span>::<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span>(na.rm = <span class="fl">TRUE</span>) <span class="op">+</span>
+                                                 <span class="kw">ggplot2</span>::<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span>(<span class="st">'Discharge (cms)'</span>)
 
                             ))
 
 
 <span class="co"># Create a list of named plots extracted from the tibble</span>
-<span class="no">plots</span> <span class="kw">&lt;-</span> <span class="no">tidy_plots</span>$<span class="no">plot</span>
-<span class="kw">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">tidy_plots</span>) <span class="kw">==</span> <span class="fl">1</span>) {
-  <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">plots</span>) <span class="kw">&lt;-</span> <span class="st">'Annual_Statistics'</span>
-} <span class="kw">else</span> {
-  <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">plots</span>) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="no">tidy_plots</span>$<span class="no">STATION_NUMBER</span>, <span class="st">'_Annual_Statistics'</span>)
+<span class="kw">plots</span> <span class="op">&lt;-</span> <span class="kw">tidy_plots</span><span class="op">$</span><span class="kw">plot</span>
+<span class="co">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="kw">tidy_plots</span>) <span class="op">==</span> <span class="fl">1</span>) {
+  <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">plots</span>) <span class="op">&lt;-</span> <span class="st">'Annual_Statistics'</span>
+} <span class="co">else</span> {
+  <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">plots</span>) <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="kw">tidy_plots</span><span class="op">$</span><span class="kw">STATION_NUMBER</span>, <span class="st">'_Annual_Statistics'</span>)
 }
 
 <span class="co"># Return the plots</span>
-<span class="no">plots</span></pre></body></html></div>
+<span class="kw">plots</span>
+</pre></div>
 <pre><code>$`08NM116_Annual_Statistics`</code></pre>
 <p><img src="fasstr_under_the_hood_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
 <pre><code>
@@ -432,7 +446,7 @@ $`08NM240_Annual_Statistics`</code></pre>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

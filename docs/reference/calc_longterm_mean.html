@@ -158,21 +158,21 @@
     </div>
 
     <pre class="usage"><span class='fu'>calc_longterm_mean</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>Date</span>,
-  <span class='kw'>values</span> <span class='kw'>=</span> <span class='no'>Value</span>,
-  <span class='kw'>groups</span> <span class='kw'>=</span> <span class='no'>STATION_NUMBER</span>,
-  <span class='no'>station_number</span>,
-  <span class='kw'>roll_days</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>roll_align</span> <span class='kw'>=</span> <span class='st'>"right"</span>,
-  <span class='kw'>water_year_start</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='no'>start_year</span>,
-  <span class='no'>end_year</span>,
-  <span class='no'>exclude_years</span>,
-  <span class='kw'>complete_years</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>months</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>12</span>,
-  <span class='no'>percent_MAD</span>,
-  <span class='kw'>transpose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>data</span>,
+  dates = <span class='kw'>Date</span>,
+  values = <span class='kw'>Value</span>,
+  groups = <span class='kw'>STATION_NUMBER</span>,
+  <span class='kw'>station_number</span>,
+  roll_days = <span class='fl'>1</span>,
+  roll_align = <span class='st'>"right"</span>,
+  water_year_start = <span class='fl'>1</span>,
+  <span class='kw'>start_year</span>,
+  <span class='kw'>end_year</span>,
+  <span class='kw'>exclude_years</span>,
+  complete_years = <span class='fl'>FALSE</span>,
+  months = <span class='fl'>1</span><span class='op'>:</span><span class='fl'>12</span>,
+  <span class='kw'>percent_MAD</span>,
+  transpose = <span class='fl'>FALSE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -260,18 +260,19 @@ MAD or <code><a href='https://rdrr.io/r/base/c.html'>c(5,10,20)</a></code> for m
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span>
-<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='kw pkg'>tidyhydat</span><span class='kw ns'>::</span><span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span>())) {
+<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='kw'>tidyhydat</span>::<span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span>())) {
 
 <span class='co'># Calculate the long-term mean annual discharge (MAD) using only years with no missing data</span>
-<span class='fu'>calc_longterm_mean</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                   <span class='kw'>complete_years</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'>calc_longterm_mean</span>(station_number = <span class='st'>"08NM116"</span>, 
+                   complete_years = <span class='fl'>TRUE</span>)
 
 <span class='co'># Calculate the long-term MAD and 5, 10 and 20-percent MADs using only years with no missing data</span>
-<span class='fu'>calc_longterm_mean</span>(<span class='kw'>station_number</span> <span class='kw'>=</span> <span class='st'>"08NM116"</span>,
-                   <span class='kw'>complete_years</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-                   <span class='kw'>percent_MAD</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>,<span class='fl'>10</span>,<span class='fl'>20</span>))
-
-}</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 1 x 5</span><span>
+<span class='fu'>calc_longterm_mean</span>(station_number = <span class='st'>"08NM116"</span>, 
+                   complete_years = <span class='fl'>TRUE</span>,
+                   percent_MAD = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>,<span class='fl'>10</span>,<span class='fl'>20</span>))
+                   
+}
+</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 1 x 5</span><span>
 #&gt;   STATION_NUMBER LTMAD `5%MAD` `10%MAD` `20%MAD`
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'>1</span><span> 08NM116         6.20   0.310    0.620     1.24</div></span></pre>
@@ -290,7 +291,7 @@ MAD or <code><a href='https://rdrr.io/r/base/c.html'>c(5,10,20)</a></code> for m
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
