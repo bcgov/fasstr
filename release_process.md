@@ -21,13 +21,14 @@ library(rhub)
 check_with_rdevel()
 check_for_cran()
 check_on_windows()
-check_on_macos()
+check(platform = 'macos-highsierra-release')
+check(platform = 'macos-highsierra-release-cran')
 ```
 
 ## Run this in the console
 ```
 R CMD build fasstr
-R CMD check fasstr_0.3.1.tar.gz --as-cran 
+R CMD check fasstr_0.3.2.tar.gz --as-cran 
 ```
 
 ## Documentation

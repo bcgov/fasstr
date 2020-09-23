@@ -27,6 +27,7 @@ Imports:
     ggplot2 (>= 3.1.0),
     grDevices,
     lubridate (>= 1.7.4),
+    openxlsx (>= 4.1.0),
     PearsonDS (>= 1.1),
     plyr (>= 1.8.4),
     purrr (>= 0.3.2),
@@ -34,12 +35,11 @@ Imports:
     scales (>= 1.0.0),
     tidyhydat (>= 0.4.0),
     tidyr (>= 0.8.3),
-    openxlsx (>= 4.1.0),
     zyp (>= 0.10.1.1)
 Suggests: 
     knitr,
     rmarkdown,
     testthat
 LazyData: true
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr
