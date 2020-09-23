@@ -198,7 +198,7 @@ plot_annual_cumulative_stats <- function(data,
           ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
           {if(length(unique(seasons2_data$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(seasons2_data$Year))}+
           ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
-          ggplot2::ylab("Volume (m3)") +
+          ggplot2::ylab("Volume (cubic metres)") +
           {if (use_yield) ggplot2::ylab("Yield (mm)")} +
           ggplot2::xlab("Year")+
           ggplot2::scale_color_brewer(palette = "Set1") +

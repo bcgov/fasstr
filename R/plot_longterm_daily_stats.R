@@ -222,9 +222,9 @@ plot_longterm_daily_stats <- function(data,
   }
   
   # Create axis label based on input columns
-  y_axis_title <- ifelse(as.character(substitute(Value)) == "Volume_m3", expression(Volume~(m^3)),
-                         ifelse(as.character(substitute(Value)) == "Yield_mm", "Yield (mm)", 
-                                expression(Discharge~(m^3/s))))
+  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (cubic metres)", #expression(Volume~(m^3))
+                         ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)", 
+                                "Discharge (cms)")) #expression(Discharge~(m^3/s))
   
   # Plot
   lt_plots <- dplyr::group_by(longterm_stats, STATION_NUMBER)

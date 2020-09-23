@@ -176,9 +176,9 @@ plot_flow_duration <- function(data,
   ## ----------
   
   # Create axis label based on input columns
-  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", expression(Volume~(m^3)),
+  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (cubic metres)", #expression(Volume~(m^3))
                          ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)", 
-                                expression(Discharge~(m^3/s))))
+                                "Discharge (cms)")) #expression(Discharge~(m^3/s))
   
   flow_plots <- dplyr::group_by(percentiles_data, STATION_NUMBER)
   flow_plots <- tidyr::nest(flow_plots)
