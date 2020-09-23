@@ -21,8 +21,7 @@ compute_frequency_quantile(
   end_year,
   exclude_years,
   months = 1:12,
-  ignore_missing = FALSE,
-  remove_zeros = FALSE
+  ignore_missing = FALSE
 )
 }
 \arguments{
@@ -72,8 +71,6 @@ all months (default \code{1:12}).}
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from
 time periods with no missing dates will be returned. Default \code{FALSE}.}
-
-\item{remove_zeros}{Logical value to indicate removing any zero flow values from the data set. Default \code{FALSE}.}
 }
 \value{
 A numeric value of the frequency analysis quantile, given the roll_days and return_period.
@@ -83,7 +80,7 @@ Performs a volume frequency analysis on annual statistics from a daily streamflo
    based on the provided mean n-days and return period of the statistic, defaults to minimum flows. For example, to determine the
    7Q10 of a data set, set the \code{roll_days} to \code{7} and the \code{return_period} to \code{10}. Function will calculate using 
    all values in 'Values' column (no grouped analysis), unless specified. Analysis methodology replicates that from 
-   \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}. Returns a tibble with statistics.
+   \href{https://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}. Returns a tibble with statistics.
 }
 \examples{
 \dontrun{

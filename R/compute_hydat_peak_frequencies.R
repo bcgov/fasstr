@@ -15,7 +15,7 @@
 #'
 #' @description Performs a volume frequency analysis on annual peak statistics (instantaneous minimums or maximums) extracted from
 #'    HYDAT. Calculates statistics from all years, unless specified. The \code{data} argument is not available. Analysis 
-#'    methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.  Returns a list of tibbles 
+#'    methodology replicates that from \href{https://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}.  Returns a list of tibbles 
 #'    and plots.
 #'
 #' @inheritParams compute_frequency_analysis

@@ -16,7 +16,7 @@
 #' @description Performs a flow volume frequency analysis on annual statistics from a daily streamflow data set. Defaults to a low 
 #'    flow frequency analysis using annual minimums. Set \code{use_max = TRUE} for annual high flow frequency analyses. Calculates 
 #'    statistics from all values, unless specified. Function will calculate using all values in 'Values' column (no grouped analysis). 
-#'    Analysis methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}. Returns a list of
+#'    Analysis methodology replicates that from \href{https://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}. Returns a list of
 #'    tibbles and plots.
 #'
 #' @inheritParams calc_annual_stats
@@ -86,8 +86,7 @@ compute_annual_frequencies <- function(data,
                                        end_year,
                                        exclude_years,
                                        months = 1:12,
-                                       ignore_missing = FALSE,
-                                       remove_zeros = FALSE){
+                                       ignore_missing = FALSE){
   
   # replicate the frequency analysis of the HEC-SSP program
   # refer to Chapter 7 of the user manual
@@ -222,8 +221,7 @@ compute_annual_frequencies <- function(data,
                                          fit_distr = fit_distr,
                                          fit_distr_method = fit_distr_method,
                                          fit_quantiles = fit_quantiles,
-                                         plot_curve = plot_curve, 
-                                         remove_zeros = remove_zeros)
+                                         plot_curve = plot_curve)
     
   return(analysis)
   

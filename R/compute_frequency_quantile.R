@@ -17,7 +17,7 @@
 #'    based on the provided mean n-days and return period of the statistic, defaults to minimum flows. For example, to determine the
 #'    7Q10 of a data set, set the \code{roll_days} to \code{7} and the \code{return_period} to \code{10}. Function will calculate using 
 #'    all values in 'Values' column (no grouped analysis), unless specified. Analysis methodology replicates that from 
-#'    \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}. Returns a tibble with statistics.
+#'    \href{https://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}. Returns a tibble with statistics.
 #'
 #' @inheritParams compute_frequency_analysis
 #' @inheritParams compute_annual_frequencies
@@ -59,8 +59,7 @@ compute_frequency_quantile <- function(data,
                                        end_year,
                                        exclude_years,
                                        months = 1:12,
-                                       ignore_missing = FALSE,
-                                       remove_zeros = FALSE){
+                                       ignore_missing = FALSE){
   
   
   # replicate the frequency analysis of the HEC-SSP program
@@ -140,8 +139,7 @@ compute_frequency_quantile <- function(data,
                                       end_year = end_year,
                                       exclude_years = exclude_years,
                                       months = months,
-                                      ignore_missing = ignore_missing,
-                                      remove_zeros = remove_zeros)$Freq_Fitted_Quantiles[1,4]
+                                      ignore_missing = ignore_missing)$Freq_Fitted_Quantiles[1,4]
   
   as.numeric(quant)
   

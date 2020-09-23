@@ -17,7 +17,7 @@
 #'    rank by maximum flows. Calculates the statistics from events and flow values provided. Columns of events (e.g. years), their 
 #'    values (minimums or maximums), and identifiers (low-flows, high-flows, etc.). Function will calculate using all values in the
 #'    provided data (no grouped analysis). Analysis methodology replicates that from 
-#'    \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}. Returns a list of tibbles and plots.
+#'    \href{https://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}. Returns a list of tibbles and plots.
 #'
 #' @param data  A data frame of data that contains columns of events, flow values, and measures (data type).
 #' @param events Column in \code{data} that contains event identifiers, typically year values. Default \code{'Year'}.
@@ -40,7 +40,6 @@
 #' @param fit_quantiles Numeric vector of quantiles to be estimated from the fitted distribution. 
 #'    Default \code{c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)}.
 #' @param plot_curve Logical value to indicate plotting the computed curve on the probability plot. Default \code{TRUE}.
-#' @param remove_zeros Logical value to indicate removing any zero flow values from the data set. Default \code{FALSE}.
 #' 
 #' @return A list with the following elements:
 #'   \item{Freq_Analysis_Data}{Data frame with computed annual summary statistics used in analysis.}
@@ -85,8 +84,7 @@ compute_frequency_analysis <- function(data,
                                        fit_distr = c("PIII", "weibull"),
                                        fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
                                        fit_quantiles = c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),
-                                       plot_curve = TRUE,
-                                       remove_zeros = FALSE){
+                                       plot_curve = TRUE){
   
   # replicate the frequency analysis of the HEC-SSP program
   # refer to Chapter 7 of the user manual
@@ -141,9 +139,9 @@ compute_frequency_analysis <- function(data,
     stop("Measures not found in data frame. Rename measure column to 'Measure' or identify the column using 'measures' argument.", call. = FALSE)
   names(data)[names(data) == as.character(substitute(measures))] <- "Measure"
   
-  if (remove_zeros) {
-    data <- dplyr::filter(data, Value > 0)
-  }
+  #if (remove_zeros[1]) {
+  #  data <- dplyr::filter(data, Value > 0)
+  #}
   
   # Set the Q_stat dataframe
   Q_stat <-  data
@@ -198,7 +196,7 @@ compute_frequency_analysis <- function(data,
     x$prob <- ((seq_len(length(x$Value))) - a)/((length(x$Value) + 1 - a - b))
     if(use_max)x$prob <- 1 - x$prob   # they like to use p(exceedance) if using a minimum
     #x$dist.prob <- stats::qnorm(1 - x$prob) temporarilty remove
-    x$return <- 1/x$prob
+    x$Return_P <- 1/x$prob
     x
   }, a = a, b = b, use_max = use_max)
   
@@ -246,10 +244,14 @@ compute_frequency_analysis <- function(data,
   if(use_max){ freqplot <- freqplot + ggplot2::theme(legend.justification = c(1,0), legend.position = c(.98, 0.02))}
   if(!use_log){ freqplot <- freqplot + ggplot2::scale_y_log10(breaks = scales::pretty_breaks(n = 10))}
   if(use_log){ freqplot <- freqplot + ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 10))}
-  if(use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab(expression(lnDischarge~(m^3/s)))}  # adjust the Y axis label
-  if(use_log & !use_max){freqplot <- freqplot + ggplot2::ylab(expression(lnDischarge~(m^3/s)))}
-  if(!use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab(expression(Discharge~(m^3/s)))}
-  if(!use_log & !use_max){freqplot <- freqplot + ggplot2::ylab(expression(Discharge~(m^3/s)))}
+  # if(use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab(expression(lnDischarge~(m^3/s)))}  # adjust the Y axis label
+  # if(use_log & !use_max){freqplot <- freqplot + ggplot2::ylab(expression(lnDischarge~(m^3/s)))}
+  # if(!use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab(expression(Discharge~(m^3/s)))}
+  # if(!use_log & !use_max){freqplot <- freqplot + ggplot2::ylab(expression(Discharge~(m^3/s)))}
+  if(use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab("lnDischarge (cms)")}  # adjust the Y axis label
+  if(use_log & !use_max){freqplot <- freqplot + ggplot2::ylab("lnDischarge (cms)")}
+  if(!use_log &  use_max ){freqplot <- freqplot + ggplot2::ylab("Discharge (cms)")}
+  if(!use_log & !use_max){freqplot <- freqplot + ggplot2::ylab("Discharge (cms)")}
   
   #--------------------------------------------------------------
   # fit the distribution to each measure
@@ -317,7 +319,7 @@ compute_frequency_analysis <- function(data,
   }, prob = fit_quantiles, fit = fit, use_max = use_max, use_log = use_log)
   
   # get the transposed version
-  fitted_quantiles$Return <- 1 / fitted_quantiles$prob
+  fitted_quantiles$Return_P <- 1 / fitted_quantiles$prob
   
   fitted_quantiles$Measure <- factor(fitted_quantiles$Measure, levels = unique(fitted_quantiles$Measure))
   
@@ -325,7 +327,7 @@ compute_frequency_analysis <- function(data,
   fitted_quantiles_output <- dplyr::rename(fitted_quantiles_output,
                                            Distribution = distr,
                                            Probability = prob,
-                                           "Return Period" = Return)
+                                           "Return Period" = Return_P)
   
   ## Add fitted curves to the freqplot
   fit_quantiles_plot <-  seq(to = 0.99, from = 0.01, by = .005)
@@ -360,7 +362,7 @@ compute_frequency_analysis <- function(data,
   
   plotdata <- dplyr::rename(plotdata, 
                             Probability = prob,
-                            "Return Period" = return)
+                            "Return Period" = Return_P)
   
   
   freq_results <- list(Freq_Analysis_Data = dplyr::as_tibble(Q_stat),

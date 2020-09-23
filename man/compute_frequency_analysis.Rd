@@ -17,8 +17,7 @@ compute_frequency_analysis(
   fit_distr = c("PIII", "weibull"),
   fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
   fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1, 0.05, 0.01),
-  plot_curve = TRUE,
-  remove_zeros = FALSE
+  plot_curve = TRUE
 )
 }
 \arguments{
@@ -54,8 +53,6 @@ moments) or \code{'MLE'} (maximum likelihood estimation). Selected as \code{'MOM
 Default \code{c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)}.}
 
 \item{plot_curve}{Logical value to indicate plotting the computed curve on the probability plot. Default \code{TRUE}.}
-
-\item{remove_zeros}{Logical value to indicate removing any zero flow values from the data set. Default \code{FALSE}.}
 }
 \value{
 A list with the following elements:
@@ -70,7 +67,7 @@ Performs a volume frequency analysis on custom data. Defaults to ranking by mini
    rank by maximum flows. Calculates the statistics from events and flow values provided. Columns of events (e.g. years), their 
    values (minimums or maximums), and identifiers (low-flows, high-flows, etc.). Function will calculate using all values in the
    provided data (no grouped analysis). Analysis methodology replicates that from 
-   \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}. Returns a list of tibbles and plots.
+   \href{https://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}. Returns a list of tibbles and plots.
 }
 \examples{
 \dontrun{

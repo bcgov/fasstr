@@ -25,8 +25,7 @@ compute_annual_frequencies(
   end_year,
   exclude_years,
   months = 1:12,
-  ignore_missing = FALSE,
-  remove_zeros = FALSE
+  ignore_missing = FALSE
 )
 }
 \arguments{
@@ -88,8 +87,6 @@ all months (default \code{1:12}).}
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from
 time periods with no missing dates will be returned. Default \code{FALSE}.}
-
-\item{remove_zeros}{Logical value to indicate removing any zero flow values from the data set. Default \code{FALSE}.}
 }
 \value{
 A list with the following elements:
@@ -103,7 +100,7 @@ A list with the following elements:
 Performs a flow volume frequency analysis on annual statistics from a daily streamflow data set. Defaults to a low 
    flow frequency analysis using annual minimums. Set \code{use_max = TRUE} for annual high flow frequency analyses. Calculates 
    statistics from all values, unless specified. Function will calculate using all values in 'Values' column (no grouped analysis). 
-   Analysis methodology replicates that from \href{http://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}. Returns a list of
+   Analysis methodology replicates that from \href{https://www.hec.usace.army.mil/software/hec-ssp/}{HEC-SSP}. Returns a list of
    tibbles and plots.
 }
 \examples{
