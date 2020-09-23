@@ -24,9 +24,9 @@
 #'  \itemize{
 #'    \item Please see this description of the database: goo.gl/H3NXJQ
 #'    \item This page is landing page for technical description of HYDAT:
-#'    \url{http://collaboration.cmc.ec.gc.ca/cmc/hydrometrics/www/}
+#'    \url{https://collaboration.cmc.ec.gc.ca/cmc/hydrometrics/www/}
 #'    \item This page links to a document that outlines database table definitions:
-#'    \url{http://collaboration.cmc.ec.gc.ca/cmc/hydrometrics/www/HYDAT_Definition_EN.pdf}
+#'    \url{https://collaboration.cmc.ec.gc.ca/cmc/hydrometrics/www/HYDAT_Definition_EN.pdf}
 #'    }
 #'
 #' @keywords internal
