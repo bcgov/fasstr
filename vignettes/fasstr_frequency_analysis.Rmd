@@ -18,15 +18,15 @@ library(fasstr)
 
 `fasstr`, the Flow Analysis Summary Statistics Tool for R, is a set of [R](https://www.r-project.org/) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.
 
-This vignette is a guide on the various volume frequency analysis functions found in `fasstr` to plot frequency data and determine frequency quantile statistics. The methods for these analysis follow those used in the US Army Corps of Engineers HEC-SSP Statistical Software Package. See the [website](http://www.hec.usace.army.mil/software/hec-ssp/) for more information on the software and links to their User Manual for more in-depth information. In this vignette you’ll learn what functions to use for specific analyses, arguments to customize analyses, and what results and outputs are produced.
+This vignette is a guide on the various volume frequency analysis functions found in `fasstr` to plot frequency data and determine frequency quantile statistics using the Log-Pearson Type III or Weibull distributions. In this vignette you’ll learn what functions to use for specific analyses, arguments to customize analyses, and what results and outputs are produced.
 
 
 ## Overview
 
-Computing a frequency analysis with `fasstr` allows for options and customization of both the inputs and outputs. These functions plot probabilities of flow data using chosen plotting options and calculates frequency quantiles (ex. 7Q10) based on fitting data to distributions using selected fitting methods. There are four functions within `fasstr` that conduct frequency analyses:
+Computing a frequency analysis with `fasstr` allows for options and customization of both the inputs and outputs. These functions plot probabilities of flow data using chosen plotting options and calculates frequency quantiles (ex. 7Q10) based on fitting data to either Log-Pearson Type III or Weibull distributions. There are four functions within `fasstr` that conduct frequency analyses:
 
 1) **`compute_annual_frequencies()`** - conduct an annual frequency analysis from daily streamflow data (analysis calculates minimums/maximums and subsequently ranks that data).
-2) **`compute_frequency_quantile()`** - conduct an annual frequency analysis from daily streamflow data and output a specific quantile based on a duration (rolling mean days) and return period (analysis calculates minimums/maximums and subsequently ranks that data).
+2) **`compute_frequency_quantile()`** - conduct an annual frequency analysis from daily streamflow data and return a specific quantile based on a duration (rolling mean days) and return period (analysis calculates minimums/maximums and subsequently ranks that data).
 3) **`compute_HYDAT_peak_frequencies()`** - conduct an annual frequency analysis from instantaneous peak data (minimum or maximum) for stations from a HYDAT database.
 4) **`compute_frequency_analysis()`** - conduct a frequency analysis with custom data (analysis ranks data provided; is the main frequency analysis function used within each of the frequency analysis functions).
 
@@ -110,7 +110,7 @@ freq_analysis <- compute_annual_frequencies(station_number = "08NM116",
                                             plot_curve = FALSE)
 ```
 
-The following is an example of the outputted **Freq_Analysis_Data** tibble:
+The following is an example of the returned **Freq_Analysis_Data** tibble:
 
 ```{r, echo=TRUE, comment=NA}
 freq_analysis$Freq_Analysis_Data
@@ -130,35 +130,30 @@ where:
 
 The probability plotting positions (A and B constants) are selected using the `prob_plot_position` argument, listing `'weibull'` where A and B are 0, `'median'` where A and B are 0.3, or `'hazen'` where A and B are 0.5. The selected plotting position does not have an effect on the final computed curve. To plot the data on a logarithmic scale, set the `use_log` argument to `TRUE`.
 
-With these options set, the data used for plotting is outputted in the **Freq_Plot_Data** tibble object. The events are sorted by measure, and ranked by the event value, and provides the probability and the return period for each event, used for plotting. See the following for an example of this output:
+With these options set, the data used for plotting is returned in the **Freq_Plot_Data** tibble object. The events are sorted by measure, and ranked by the event value, and provides the probability and the return period for each event, used for plotting. See the following for an example of this output:
 
 ```{r, echo=TRUE, comment=NA}
 freq_analysis$Freq_Plot_Data
 ```
 
-This data is then used for plotting and outputted in the **Freq_Plot** `ggplot2` object. See the example below. To change the probabilities/vertical lines shown on the x-axis, change the values using the  `prob_scale_points` argument to list the breaks.
+This data is then used for plotting and returned in the **Freq_Plot** `ggplot2` object. See the example below. To change the probabilities/vertical lines shown on the x-axis, change the values using the  `prob_scale_points` argument to list the breaks.
 
 ```{r, echo=TRUE, fig.height = 4, fig.width = 7}
 freq_analysis$Freq_Plot
 ```
 
-### Frequency Analysis
+### Distribution Fitting and Computing Frequency Quantiles 
 
-The `fasstr` functions also compute frequency quantiles, like commonly used 7Q5, 7Q10, 5Q30, etc. This is done so by choosing the appropriate distribution to fit with the data, choosing either `"PIII"` (default) or `"weibull"` with the `fit_dist` argument. For the `"PIII"` distribution, the data will be fit using method of moments fitting or `"MOM"`, while `"weibull"` can use `"MOM"` or maximum likelihood `"MLE"` by selecting it using the `fit_distr_method` argument. Using these two arguments, the data will be fitted to your distribution of choice and compute the curve.
+The `fasstr` functions also compute frequency quantiles, like commonly used 7Q5, 7Q10, 5Q30, etc. Calculating frequency quantiles requires fitting historical event data (annual minimums, maximums or others) to a probability distribution (i.e. Log-Pearson Type III or Weibull in `fasstr`). The flow quantiles are then extracted from the distribution for given probabilities (and equivalent return periods). In the `fasstr` frequency analysis functions, this is done so by choosing a probability distribution and method of fitting to fit the data (may require data exploration for determining most appropriate distribution). Results from this fitting are found in 3 objects:
 
-To see how the computed curve fits against the plotted events, you can set the `plot_curve` argument to `TRUE` (default):
-
-```{r, echo=TRUE, fig.height = 4, fig.width = 7}
-freq_analysis <- compute_annual_frequencies(station_number = "08NM116",
-                                            roll_days = 7,
-                                            plot_curve = TRUE)
-freq_analysis$Freq_Plot
-```
+- **Freq_Plot** - the computed frequency curves are plotted against the plotted events data when the `plot_curve` argument to `TRUE` (default).
+- **Freq_Fitting** - a `fitdistplus::fitdist` object that contains information about the fitting, including various parameter estimates, fitting statistics, and various plots.
+- **Freq_Fitted_Quantiles** - the computed fitted quantiles based on the selected fitting options and selected quantile probabilities.
 
 
-#### Curve Fitting Parameters
+#### Fitting Data to Probability Distributions
 
-The computed curve is calculated using the ['fitdistrplus'](https://CRAN.R-project.org/package=fitdistrplus) package, and the results from the function are saved in the **Freq_Fitting** object in the list. The `fitdist` object contains information regarding the fitting process, including the shape, location, and scale parameters, amongst other statistics.  See the `fitdistrplus` documentation for more information. As per the documentation, there are several ways to view the fitdist object, three of these including using the generic `print()`, `summary()` and `plot()` functions. See the following examples for how to view some of the fitting information.
+Computing frequency quantiles in `fasstr` requires choosing a probability distribution to fit the data, either Log-Pearson Type III, `"PIII"` (default), or Weibull, `"weibull"`, distributions with the `fit_dist` argument. When using the `"PIII"` distribution, data provided is log-transformed (base 10) before being fit to a Pearson Type III distribution. The method of fitting data to distributions is selected using the `fit_distr_method` argument with either `"MLE"` for 'maximum likelihood estimation' or `"MOM"` (default) for 'method of moments'. For the `"PIII"` distribution, the data will be fit using `"MOM"` or `"MLE"`,  while `"weibull"` can only use `"MOM"`. Internally, these arguments are passed on to the `fitdistrplus::fitdist` function from the ['fitdistrplus'](https://CRAN.R-project.org/package=fitdistrplus) package (see for more information). Fitting results from the `fitdistrplus::fitdist` function are returned in the **Freq_Fitting** object in the list and contain information regarding the fitting process, including the parameter estimates (e.g. shape, location, and scale), AIC statistics, Q-Q and density plots, amongst other statistics. As per the `fitdistrplus::fitdist` documentation, there are several ways to view the `fitdist` object, three of these including using the generic `print()`, `summary()` and `plot()` functions. See the following examples for how to view some of the fitting information.
 
 ```{r, echo=TRUE, comment=NA}
 print(freq_analysis$Freq_Fitting$`7-Day`)
@@ -172,14 +167,26 @@ summary(freq_analysis$Freq_Fitting$`7-Day`)
 plot(freq_analysis$Freq_Fitting$`7-Day`)
 ```
 
+When `plot_curve` argument is set to `TRUE` (default) the computed frequency curves are plotted against the events data in the **Freq_Plot** object:
+
+```{r, echo=TRUE, fig.height = 4, fig.width = 7}
+freq_analysis <- compute_annual_frequencies(station_number = "08NM116",
+                                            roll_days = 7,
+                                            plot_curve = TRUE)
+freq_analysis$Freq_Plot
+```
 
 #### Fitted Quantiles
 
-Based on the fitting the events to the distribution, flow events with specific probabilities/return periods (quantiles) can be extracted from the computed curve.  The desired quantiles are selected by listing the probabilities in the `fit_quantiles` argument (defaults to `c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),`).  The results are outputted in the **Freq_Fitted_Quantiles** tibble in the list. In the example below of the quantiles, the 7Q5 value would be the 7-day flow value with a 5-year return period, so 0.409 cms in this example.
+Based on the fitted distribution, flow events with specific probabilities/return periods (quantiles) can be extracted from the computed curves. The desired quantiles are selected by listing the probabilities in the `fit_quantiles` argument (defaults to `c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),`).  The results are returned in the **Freq_Fitted_Quantiles** tibble in the list. In the example below of the quantiles, the 7Q5 value would be the 7-day flow value with a 5-year return period, so 0.409 cms in this example.
 
 ```{r, echo=TRUE, comment=NA}
 freq_analysis$Freq_Fitted_Quantiles
 ```
 
+
+#### Notes on use of the Log-Pearson Type III Distribution
+
+As noted, when using the `"PIII"` distribution in `fasstr`, the provided data is log-transformed (log base 10 using `log10()`) before being fit to a Pearson Type III distribution. These log-transformed values are what are seen as the 'Data' and 'quantiles' axes when plotting the **Freq_Fitting** `fitdist` objects (as seen above). The resulting quantiles are then transformed back to the original scale when computing the final quantiles returned in the **Fitted_Quantiles** object and the plotted computed curves in the **Freq_Plot** object. To use the natural log (using `log()`) instead of the base 10 log, set `use_log = TRUE`. Since the log of zero or negative numbers cannot be computed, data provided with these values (e.g. data with minimums of zero flow) will not be accepted into the functions.
 
 

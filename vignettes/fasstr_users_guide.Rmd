@@ -81,7 +81,7 @@ tidyhydat::hy_version()
 
 ## 2. Flow Data Inputs
 
-All functions in `fasstr` require a daily mean streamflow dataset from one or more hydrometric stations. Long-term and continuous datasets are preferred for most analyses, but seasonal and partial data can be used. Note that if partial datasets are used, `NA`'s may be produced for certain statistics. Please see the 'Handling Missing Dates' section in Section 8 for more information. Data is provided to each function using one of the following arguments:
+All functions in `fasstr` require a daily mean streamflow data set from one or more hydrometric stations. Long-term and continuous data sets are preferred for most analyses, but seasonal and partial data can be used. Note that if partial data sets are used, `NA`'s may be produced for certain statistics. Please see the 'Handling Missing Dates' section in Section 8 for more information. Data is provided to each function using one of the following arguments:
 
 - `data`, as a data frame of daily flow values, or
 - `station_number`, as a list of Water Survey of Canada HYDAT station numbers.
@@ -154,7 +154,7 @@ Some functions produce both tibbles and plots as lists and can be subsequently s
 
 ## 4. Data Tidying Functions
 
-There are several functions that are used to prepare your flow dataset for your own analysis. These functions begin with `add_` or `fill_` and add columns or rows, respectively, to your flow data frame. These functions include:
+There are several functions that are used to prepare your flow data set for your own analysis. These functions begin with `add_` or `fill_` and add columns or rows, respectively, to your flow data frame. These functions include:
 
 - `fill_missing_dates()` - fills in missing dates or dates with no flow values with NA
 - `add_date_variables()` - add year, month, and day of year variables (and water years if selected)
@@ -588,7 +588,7 @@ These statistics can also be viewed using their corresponding plotting functions
 - `plot_monthly_cumulative_stats()` - plot cumulative monthly flow statistics
 - `plot_daily_cumulative_stats()` - plot cumulative daily flow statistics
 
-While these functions default to volumetric flows, using `use_yield = TRUE` and `basin_area` arguments will calculate totals in runoff yield. If there is a `groups` column of HYDAT station numbers, then the function will automatically pull the basin area out of HYDAT if available; otherwise a basin area will be required. Due to the requirements of a complete annual dataset to calculate total flows, only years of complete data are used.
+While these functions default to volumetric flows, using `use_yield = TRUE` and `basin_area` arguments will calculate totals in runoff yield. If there is a `groups` column of HYDAT station numbers, then the function will automatically pull the basin area out of HYDAT if available; otherwise a basin area will be required. Due to the requirements of a complete annual data set to calculate total flows, only years of complete data are used.
 
 #### Cumulative annual statistics
 
@@ -760,19 +760,19 @@ The `compute_annual_trends()` function outputs several objects in a list:
 2. $Annual_Trends_Results -  a tibble of annual trending results, from both `zyp` and `fasstr`
 3. $Annual_* - a `ggplot2` object for every annual statistic trended, with the slope plotted if an alpha value is chosen using the `zyp_alpha` argument (ex. `zyp_alpha = 0.05`).
 
-### Annual Volume Frequency Analysis
+### Volume Frequency Analyses
 
-There are four `fasstr` functions that perform volume frequency analyses on annual low-flow or high-flow data. The analysis follows the volume frequency analysis methods as used in the U.S. Army Corps of Engineers Statistical Software Package ([HEC-SSP](http://www.hec.usace.army.mil/software/hec-ssp/)). The analyses produce plotting of annual series and quantiles fitted from various distributions. See the [frequency analysis vignette](https://bcgov.github.io/fasstr/articles/fasstr_frequency_analysis.html) for more information. 
+There are five `fasstr` functions that perform various volume frequency analyses. Frequency analyses are used to determine probabilities of events of certain sizes (typically annual high or low flows). The analyses produce plots of event series and computed quantiles fitted from either Log-Pearson Type III or Weibull probability distributions. See the [frequency analysis vignette](https://bcgov.github.io/fasstr/articles/fasstr_frequency_analysis.html) for more information. 
 
-The `compute_annual_frequencies()` performs an annual daily (or rolling mean) low-flow (by default) or high-flow (using `use_max = TRUE` argument) frequency analysis on annual series. This analysis uses the daily mean lows or highs. The `compute_hydat_peak_frequencies()` function performs an annual instantaneous low (by default) or high peak frequency analysis. The `data` argument cannot be used for the HYDAT peak analysis. Both functions output several objects in a list:
+The `compute_annual_frequencies()` performs an annual daily (or selected duration using `roll_days` argument) low-flow (by default) or high-flow (using `use_max = TRUE` argument) frequency analysis on annual series. This analysis uses the daily mean lows or highs. The `compute_hydat_peak_frequencies()` function performs an annual instantaneous low (by default) or high peak frequency analysis. The `data` argument cannot be used for the HYDAT peak analysis. Both functions output several objects in a list:
 
 1. $Freq_Analysis_Data - Tibble of computed annual minimums (or maximums)
 2. $Freq_Plot_Data - Tibble of plotting coordinates used in the frequency plot
 3. $Freq_Plot - `ggplot2` object of the frequency plot
-4. $Freq_Fitting - List of [`fitdistrplus`](https://cran.r-project.org/package=fitdistrplus) objects to fit the quantiles
+4. $Freq_Fitting - List of [`fitdistrplus`](https://cran.r-project.org/package=fitdistrplus) objects of the fitted distributions.
 5. $Freq_Fitted_Quantiles - Tibble with fitted quantiles.
 
-The `compute_frequency_quantile()` function performs annual daily (or rolling mean) low-flow (by default) or high-flow (using `use_max = TRUE` argument) frequency analysis on annual series but only returns the fitted quantile based on the selected return period. Both the numeric arguments `roll_days` and `return_period` are required. It results in a single value.  For example, supplying `roll_days = 7` and `return_period = 10` to the function with a dataset will return the 7-day low-flow with a 10-year return period (i.e. 7Q10).
+The `compute_frequency_quantile()` function performs annual daily (or selected duration) low-flow (by default) or high-flow (using `use_max = TRUE` argument) frequency analysis on annual series but only returns the fitted quantile based on the selected return period. Both the numeric arguments `roll_days` and `return_period` are required. It results in a single value.  For example, supplying `roll_days = 7` and `return_period = 10` to the function with a data set will return the 7-day low-flow with a 10-year return period (i.e. 7Q10).
 
 To compute a volume frequency analysis on custom data, use the `compute_frequency_analysis()` function. The data points to be used in the analysis must be provided in a data frame with a column of events (or years), the flow values (values), and the measure (or the type of value it is, "7-day lows", for example. All other data filtering options are not included.
 
@@ -838,7 +838,7 @@ calc_annual_stats(station_number = "08NM116",
 
 #### Selecting and excluding years
 
-To specify select years used in your analysis, the `start_year` and `end_year` arguments (providing a single value) can filter the years. Using the `exclude_years` argument (providing a single or vector of years) will allow you to remove certain years from the analysis. Leaving these arguments blank will include all years in the dataset for the analysis.
+To specify select years used in your analysis, the `start_year` and `end_year` arguments (providing a single value) can filter the years. Using the `exclude_years` argument (providing a single or vector of years) will allow you to remove certain years from the analysis. Leaving these arguments blank will include all years in the data set for the analysis.
 
 Example of filtering for start and end years:
 
@@ -881,7 +881,7 @@ calc_annual_flow_timing(station_number = "08NM116")
 
 #### Selecting for months
 
-Some functions allow you to specify select months used in your analysis, using the `months` argument. By providing a vector of months (1 through 12) only those months will be used in an analysis. For example, using the `months` argument with the `calc_annual_stats()` function will calculate the annual statistics for only those months listed. So, if summer statistics are required you supply `months = 6:8` to the function. Leaving this arguments blank will include all months in the dataset for the analysis.
+Some functions allow you to specify select months used in your analysis, using the `months` argument. By providing a vector of months (1 through 12) only those months will be used in an analysis. For example, using the `months` argument with the `calc_annual_stats()` function will calculate the annual statistics for only those months listed. So, if summer statistics are required you supply `months = 6:8` to the function. Leaving this arguments blank will include all months in the data set for the analysis.
 
 Example of filtering for months June through August:
 
@@ -1061,14 +1061,14 @@ plot +
 
 To support saving the `fasstr` tables and plots to a directory, there are several functions included in this package. These include the following:
 
-- `write_flow_data()` - write a streamflow dataset as a .xlsx, .xls, or .csv file
+- `write_flow_data()` - write a streamflow data set as a .xlsx, .xls, or .csv file
 - `write_results()` - write a data frame as a .xlsx, .xls, or .csv file
 - `write_plots()` - write plots from a list into a directory or PDF document
 - `write_objects_list()` - write all tables and plots contained in a list
 
-#### Writing a flow dataset
+#### Writing a flow data set
 
-To directly save a streamflow dataset from HYDAT or your own custom data frame onto your computer, you can use the `write_flow_data()` function. By listing the `station_number` or `data` data frame, the dataset will save a file into the working directory, unless otherwise specified using the `file_name` argument. If using the `station_number` argument and listing only one station without listing a name with `file_name`, the name will include the number and followed by "_daily_data.xlsx"; and if multiple stations are listed the name will be "HYDAT_daily_data.xlsx". When using the `data` argument without listing a name with `file_name` the default name will be `fasstr_daily_data.xlsx`.  To use another file type than "xlsx" (options are "xlsx", "xls", or "csv") provide a file name using the `file_name` argument with the desired extension. Other argument options for this function include:
+To directly save a streamflow data set from HYDAT or your own custom data frame onto your computer, you can use the `write_flow_data()` function. By listing the `station_number` or `data` data frame, the data set will save a file into the working directory, unless otherwise specified using the `file_name` argument. If using the `station_number` argument and listing only one station without listing a name with `file_name`, the name will include the number and followed by "_daily_data.xlsx"; and if multiple stations are listed the name will be "HYDAT_daily_data.xlsx". When using the `data` argument without listing a name with `file_name` the default name will be `fasstr_daily_data.xlsx`.  To use another file type than "xlsx" (options are "xlsx", "xls", or "csv") provide a file name using the `file_name` argument with the desired extension. Other argument options for this function include:
 
 - selecting for the start and end years or dates
 - choosing to use water years when selecting specific years
