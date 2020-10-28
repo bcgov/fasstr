@@ -32,8 +32,8 @@
 #'    plotting positions; and (a=.5; b=.5) for Hazen plotting positions. Default \code{'weibull'}.
 #' @param prob_scale_points  Numeric vector of probabilities to be plotted along the X axis in the frequency plot. Inverse of 
 #'    return period. Default \code{c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001)}.
-#' @param fit_distr Character string identifying the distribution to fit annual data, one of \code{'PIII'} (Pearson Log III 
-#'    distribution) or \code{'weibull'} (Weibull distribution). Default \code{'PIII'}.
+#' @param fit_distr Character string identifying the distribution to fit annual data, one of \code{'PIII'} (Log Pearson Type III)
+#'    or \code{'weibull'} (Weibull) distributions. Default \code{'PIII'}.
 #' @param fit_distr_method  Character string identifying the method used to fit the distribution, one of \code{'MOM'} (method of
 #'    moments) or \code{'MLE'} (maximum likelihood estimation). Selected as \code{'MOM'} if \code{fit_distr ='PIII'} (default) or 
 #'    \code{'MLE'} if \code{fit_distr = 'weibull'}.
@@ -139,15 +139,14 @@ compute_frequency_analysis <- function(data,
     stop("Measures not found in data frame. Rename measure column to 'Measure' or identify the column using 'measures' argument.", call. = FALSE)
   names(data)[names(data) == as.character(substitute(measures))] <- "Measure"
   
-  #if (remove_zeros[1]) {
-  #  data <- dplyr::filter(data, Value > 0)
-  #}
-  
+
   # Set the Q_stat dataframe
   Q_stat <-  data
   
   if(fit_distr[1] == 'weibull' & any(Q_stat$Value < 0, na.rm = TRUE))
     stop("Cannot fit weibull distribution with negative flow values.", call. = FALSE)
+  if(fit_distr[1] == 'PIII' & any(Q_stat$Value <= 0, na.rm = TRUE))
+    stop("Cannot fit 'PIII' distribution with negative or zero flow values.", call. = FALSE)
   
   ## Define functions for analysis
   ##------------------------------

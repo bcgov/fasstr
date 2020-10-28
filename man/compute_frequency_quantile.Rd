@@ -49,8 +49,8 @@ inverse of probability, used to estimate the frequency statistic. Required.}
 
 \item{use_log}{Logical value to indicate log-scale transforming of flow data before analysis. Default \code{FALSE}.}
 
-\item{fit_distr}{Character string identifying the distribution to fit annual data, one of \code{'PIII'} (Pearson Log III 
-distribution) or \code{'weibull'} (Weibull distribution). Default \code{'PIII'}.}
+\item{fit_distr}{Character string identifying the distribution to fit annual data, one of \code{'PIII'} (Log Pearson Type III)
+or \code{'weibull'} (Weibull) distributions. Default \code{'PIII'}.}
 
 \item{fit_distr_method}{Character string identifying the method used to fit the distribution, one of \code{'MOM'} (method of
 moments) or \code{'MLE'} (maximum likelihood estimation). Selected as \code{'MOM'} if \code{fit_distr ='PIII'} (default) or 
