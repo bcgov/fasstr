@@ -1,17 +1,20 @@
 fasstr 0.3.2
 =========================
 
-Updated: 28 May 2020
+Updated: 28 Oct 2020
 
 #### Updates:
 
   * Added calc_annual_peaks() function to calculate both annual n-day min. and max. flows with dates of occurrence.
+  * Added error in volume frequency analysis when providing zero or negative flow values to the logPIII dist.
+  * Updated volume frequency analysis documentation.
   * Created GitHub Pages (https://bcgov.github.io/fasstr/) documentation using pkgdown (index files, /docs folder)
   * Updated all vignettes for package updates, corrections, and issues.
   * Added new 'Get Started' vignette for package and GitHub Page
   * Updated README: sticker, badges, content
   * Updated cheatsheet
   * changed yield terminology to water yield from runoff yield
+  * changed plot axis titles with expression()'s (e.g. m3/s --> cms)
   
 
 fasstr 0.3.1
