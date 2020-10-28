@@ -1,5 +1,5 @@
 library(testthat)
 library(fasstr)
-library(dplyr)
+suppressMessages(library(dplyr))
 
 test_check("fasstr")
