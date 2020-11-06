@@ -1,0 +1,21 @@
+---
+title: "Fun with fasstr"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Fun with fasstr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+  
+
+```{r options, include=FALSE}
+knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")))
+```
+
+```{r, include=FALSE}
+library(fasstr)
+```
+
+
+`fasstr`, the Flow Analysis Summary Statistics Tool for R, is a set of [R](https://www.r-project.org/) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.
+

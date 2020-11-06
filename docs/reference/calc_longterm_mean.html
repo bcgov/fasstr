@@ -99,7 +99,12 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/fasstr_users_guide.html">Users Guide</a>
+      <a href="../articles/index.html">All Articles</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Tutorials</li>
+    <li>
+      <a href="../articles/fasstr_users_guide.html">General Usage</a>
     </li>
     <li>
       <a href="../articles/fasstr_trending_analysis.html">Computing Annual Trends</a>
@@ -110,8 +115,10 @@
     <li>
       <a href="../articles/fasstr_full_analysis.html">Computing a Full Analysis</a>
     </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Under the Hood</li>
     <li>
-      <a href="../articles/fasstr_under_the_hood.html">Internal fasstr Workflows</a>
+      <a href="../articles/fasstr_under_the_hood.html">Internal Workflows</a>
     </li>
   </ul>
 </li>
@@ -157,23 +164,23 @@
    values, unless specified. Returns a tibble with statistics.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>calc_longterm_mean</span>(
-  <span class='kw'>data</span>,
-  dates = <span class='kw'>Date</span>,
-  values = <span class='kw'>Value</span>,
-  groups = <span class='kw'>STATION_NUMBER</span>,
-  <span class='kw'>station_number</span>,
-  roll_days = <span class='fl'>1</span>,
-  roll_align = <span class='st'>"right"</span>,
-  water_year_start = <span class='fl'>1</span>,
-  <span class='kw'>start_year</span>,
-  <span class='kw'>end_year</span>,
-  <span class='kw'>exclude_years</span>,
-  complete_years = <span class='fl'>FALSE</span>,
-  months = <span class='fl'>1</span><span class='op'>:</span><span class='fl'>12</span>,
-  <span class='kw'>percent_MAD</span>,
-  transpose = <span class='fl'>FALSE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>calc_longterm_mean</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  dates <span class='op'>=</span> <span class='va'>Date</span>,
+  values <span class='op'>=</span> <span class='va'>Value</span>,
+  groups <span class='op'>=</span> <span class='va'>STATION_NUMBER</span>,
+  <span class='va'>station_number</span>,
+  roll_days <span class='op'>=</span> <span class='fl'>1</span>,
+  roll_align <span class='op'>=</span> <span class='st'>"right"</span>,
+  water_year_start <span class='op'>=</span> <span class='fl'>1</span>,
+  <span class='va'>start_year</span>,
+  <span class='va'>end_year</span>,
+  <span class='va'>exclude_years</span>,
+  complete_years <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  months <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>12</span>,
+  <span class='va'>percent_MAD</span>,
+  transpose <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -260,18 +267,18 @@ MAD or <code><a href='https://rdrr.io/r/base/c.html'>c(5,10,20)</a></code> for m
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span>
-<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='kw'>tidyhydat</span>::<span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span>())) {
+<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span><span class='op'>(</span><span class='fu'>tidyhydat</span><span class='fu'>::</span><span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
 
 <span class='co'># Calculate the long-term mean annual discharge (MAD) using only years with no missing data</span>
-<span class='fu'>calc_longterm_mean</span>(station_number = <span class='st'>"08NM116"</span>, 
-                   complete_years = <span class='fl'>TRUE</span>)
+<span class='fu'>calc_longterm_mean</span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span>, 
+                   complete_years <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
 <span class='co'># Calculate the long-term MAD and 5, 10 and 20-percent MADs using only years with no missing data</span>
-<span class='fu'>calc_longterm_mean</span>(station_number = <span class='st'>"08NM116"</span>, 
-                   complete_years = <span class='fl'>TRUE</span>,
-                   percent_MAD = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>,<span class='fl'>10</span>,<span class='fl'>20</span>))
+<span class='fu'>calc_longterm_mean</span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span>, 
+                   complete_years <span class='op'>=</span> <span class='cn'>TRUE</span>,
+                   percent_MAD <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>,<span class='fl'>10</span>,<span class='fl'>20</span><span class='op'>)</span><span class='op'>)</span>
                    
-}
+<span class='op'>}</span>
 </div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 1 x 5</span><span>
 #&gt;   STATION_NUMBER LTMAD `5%MAD` `10%MAD` `20%MAD`
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>

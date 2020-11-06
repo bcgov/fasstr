@@ -57,7 +57,12 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/fasstr_users_guide.html">Users Guide</a>
+      <a href="../articles/index.html">All Articles</a>
+    </li>
+    <li class="divider">
+    <li class="dropdown-header">Tutorials</li>
+    <li>
+      <a href="../articles/fasstr_users_guide.html">General Usage</a>
     </li>
     <li>
       <a href="../articles/fasstr_trending_analysis.html">Computing Annual Trends</a>
@@ -68,8 +73,10 @@
     <li>
       <a href="../articles/fasstr_full_analysis.html">Computing a Full Analysis</a>
     </li>
+    <li class="divider">
+    <li class="dropdown-header">Under the Hood</li>
     <li>
-      <a href="../articles/fasstr_under_the_hood.html">Internal fasstr Workflows</a>
+      <a href="../articles/fasstr_under_the_hood.html">Internal Workflows</a>
     </li>
   </ul>
 </li>
@@ -102,7 +109,8 @@
 
       
 
-      </header><script src="fasstr_full_analysis_files/header-attrs-2.3/header-attrs.js"></script><script src="fasstr_full_analysis_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="fasstr_full_analysis_files/header-attrs-2.5/header-attrs.js"></script><script src="fasstr_full_analysis_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="fasstr_full_analysis_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="fasstr_full_analysis_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Computing a Full Analysis with fasstr</h1>
@@ -142,18 +150,17 @@
 <p>When using this function all of the objects will be saved within a list with a first level of lists with each of the categories as listed above (ex. <code>$Screening</code> or <code>$Annual</code>). Within each of those lists are the outputted objects, or another list of objects (ex. <code>$Screening$Flow_Screening</code> or <code>$Annual$Annual_Flow_Timing</code>). Use subsetting techniques to extract an individual tibble or plot.</p>
 <p>The following is an example of how to run the function and then how extract individual objects from the list:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw">mission_creek</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_full_analysis.html">compute_full_analysis</a></span>(station_number = <span class="st">"08NM116"</span>,
-                                       start_year = <span class="fl">1981</span>,
-                                       end_year = <span class="fl">2000</span>)
+<span class="va">mission_creek</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_full_analysis.html">compute_full_analysis</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
+                                       start_year <span class="op">=</span> <span class="fl">1981</span>,
+                                       end_year <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span>
 
-<span class="kw">screening_plot</span> <span class="op">&lt;-</span> <span class="kw">mission_creek</span><span class="op">$</span><span class="kw">Screening</span><span class="op">$</span><span class="kw">Flow_Screening_Plot</span>
+<span class="va">screening_plot</span> <span class="op">&lt;-</span> <span class="va">mission_creek</span><span class="op">$</span><span class="va">Screening</span><span class="op">$</span><span class="va">Flow_Screening_Plot</span>
 
-<span class="kw">daily_stats</span> <span class="op">&lt;-</span> <span class="kw">mission_creek</span><span class="op">$</span><span class="kw">Daily</span><span class="op">$</span><span class="kw">Daily_Summary_Stats</span>
+<span class="va">daily_stats</span> <span class="op">&lt;-</span> <span class="va">mission_creek</span><span class="op">$</span><span class="va">Daily</span><span class="op">$</span><span class="va">Daily_Summary_Stats</span>
 
-<span class="kw">daily_stats_with_1985</span> <span class="op">&lt;-</span> <span class="kw">mission_creek</span><span class="op">$</span><span class="kw">Daily</span><span class="op">$</span><span class="kw">Daily_Summary_Stats_with_Years</span><span class="op">$</span><span class="kw">`1985_Daily_Statistics`</span>
+<span class="va">daily_stats_with_1985</span> <span class="op">&lt;-</span> <span class="va">mission_creek</span><span class="op">$</span><span class="va">Daily</span><span class="op">$</span><span class="va">Daily_Summary_Stats_with_Years</span><span class="op">$</span><span class="va">`1985_Daily_Statistics`</span>
 
-<span class="kw">trends_results</span> <span class="op">&lt;-</span> <span class="kw">mission_creek</span><span class="op">$</span><span class="kw">Trending</span><span class="op">$</span><span class="kw">Annual_Trends_Results</span>
-</pre></div>
+<span class="va">trends_results</span> <span class="op">&lt;-</span> <span class="va">mission_creek</span><span class="op">$</span><span class="va">Trending</span><span class="op">$</span><span class="va">Annual_Trends_Results</span></pre></div>
 </div>
 <div id="write_full_analysis-excel-and-image-files" class="section level3">
 <h3 class="hasAnchor">
@@ -161,11 +168,10 @@
 <p>The writing function provides a option to directly save all results onto your computer, thereby allowing the user to explore the outputs in Excel and image file formats. You will be required to provide the name of a the Excel file to create using the <code>file_name</code> argument. If the analyses in groups 5 and/or 6 are selected than a folder with the same name will be created to store a number of plots that are not suitable for the Excel file. By default it will save those plots in “pdf” format, but can be altered using the <code>plot_filetype</code> arguments, if necessary. Within the Excel workbook each of the tables and plots are saved within specific worksheets. The first worksheet in all outputs contain an overview of the analysis to know which arguments and options were used. The second worksheet contains the data provided to the function (the data frame or the data from HYDAT). The last worksheet (after all the analysis sheets) contain a table of <code>fasstr</code> functions that can replicate each individual analysis output for further customization (these functions are also contained within the comments of the cells with table and plot titles).</p>
 <p>The following is an example of how to save all analyses to your computer:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="fu"><a href="../reference/write_full_analysis.html">write_full_analysis</a></span>(station_number = <span class="st">"08NM116"</span>,
-                    start_year = <span class="fl">1981</span>,
-                    end_year = <span class="fl">2000</span>,
-                    file_name = <span class="st">"Mission Creek"</span>)
-</pre></div>
+<span class="fu"><a href="../reference/write_full_analysis.html">write_full_analysis</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
+                    start_year <span class="op">=</span> <span class="fl">1981</span>,
+                    end_year <span class="op">=</span> <span class="fl">2000</span>,
+                    file_name <span class="op">=</span> <span class="st">"Mission Creek"</span><span class="op">)</span></pre></div>
 </div>
 </div>
 <div id="usage-options-and-outputs" class="section level2">

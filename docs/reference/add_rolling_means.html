@@ -100,7 +100,12 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/fasstr_users_guide.html">Users Guide</a>
+      <a href="../articles/index.html">All Articles</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Tutorials</li>
+    <li>
+      <a href="../articles/fasstr_users_guide.html">General Usage</a>
     </li>
     <li>
       <a href="../articles/fasstr_trending_analysis.html">Computing Annual Trends</a>
@@ -111,8 +116,10 @@
     <li>
       <a href="../articles/fasstr_full_analysis.html">Computing a Full Analysis</a>
     </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Under the Hood</li>
     <li>
-      <a href="../articles/fasstr_under_the_hood.html">Internal fasstr Workflows</a>
+      <a href="../articles/fasstr_under_the_hood.html">Internal Workflows</a>
     </li>
   </ul>
 </li>
@@ -159,15 +166,15 @@
   and <code>'right'</code> alignment would obtain a mean of the given and previous 6 days of daily mean flow.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>add_rolling_means</span>(
-  <span class='kw'>data</span>,
-  dates = <span class='kw'>Date</span>,
-  values = <span class='kw'>Value</span>,
-  groups = <span class='kw'>STATION_NUMBER</span>,
-  <span class='kw'>station_number</span>,
-  roll_days = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>7</span>, <span class='fl'>30</span>),
-  roll_align = <span class='st'>"right"</span>
-)</pre>
+    <pre class="usage"><span class='fu'>add_rolling_means</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  dates <span class='op'>=</span> <span class='va'>Date</span>,
+  values <span class='op'>=</span> <span class='va'>Value</span>,
+  groups <span class='op'>=</span> <span class='va'>STATION_NUMBER</span>,
+  <span class='va'>station_number</span>,
+  roll_days <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>7</span>, <span class='fl'>30</span><span class='op'>)</span>,
+  roll_align <span class='op'>=</span> <span class='st'>"right"</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -224,20 +231,20 @@ Default <code>'right'</code>.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span>
-<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='kw'>tidyhydat</span>::<span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span>())) {
+<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span><span class='op'>(</span><span class='fu'>tidyhydat</span><span class='fu'>::</span><span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
 
 <span class='co'># Add default 3, 7, and 30-day rolling mean columns, with "right" alignment</span>
-<span class='fu'>add_rolling_means</span>(station_number = <span class='st'>"08NM116"</span>)
+<span class='fu'>add_rolling_means</span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span><span class='op'>)</span>
 
 <span class='co'># Add custom 5 and 10-day rolling mean columns</span>
-<span class='fu'>add_rolling_means</span>(station_number = <span class='st'>"08NM116"</span>,
-                  roll_days = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>,<span class='fl'>10</span>))
+<span class='fu'>add_rolling_means</span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span>,
+                  roll_days <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>,<span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span>
                   
 <span class='co'># Add default 3, 7, and 30-day rolling mean columns, with "left" alignment</span>
-<span class='fu'>add_rolling_means</span>(station_number = <span class='st'>"08NM116"</span>,
-                  roll_align = <span class='st'>"left"</span>)                
+<span class='fu'>add_rolling_means</span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span>,
+                  roll_align <span class='op'>=</span> <span class='st'>"left"</span><span class='op'>)</span>                
                   
-}
+<span class='op'>}</span>
 </div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 21,983 x 8</span><span>
 #&gt;    STATION_NUMBER Date       Parameter Value Symbol Q3Day Q7Day Q30Day
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>

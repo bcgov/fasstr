@@ -5,7 +5,7 @@
 
 <!-- badges: start -->
 
-<a id="devex-badge" rel="Delivery" href="https://github.com/BCDevExchange/assets/blob/master/README.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a>
+<a id="devex-badge" rel="Stable" href="https://github.com/bcgov/repomountie/blob/enhancement/stateBadges/doc/lifecycle-badges.md"><img alt="The project is in a reliable state and major changes are unlikely to happen." style="border-width:0" src="https://img.shields.io/badge/Lifecycle-Stable-97ca00" title="The project is in a reliable state and major changes are unlikely to happen." /></a>
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Travis build
 status](https://travis-ci.org/bcgov/fasstr.svg?branch=master)](https://travis-ci.org/bcgov/fasstr)
@@ -103,7 +103,7 @@ options.
     Guide](https://bcgov.github.io/fasstr/articles/fasstr_users_guide.html)
   - [Computing an Annual Trends
     Analysis](https://bcgov.github.io/fasstr/articles/fasstr_trending_analysis.html)
-  - [Computing a Volume frequency
+  - [Computing a Volume Frequency
     Analysis](https://bcgov.github.io/fasstr/articles/fasstr_frequency_analysis.html)
   - [Computing a Full fasstr
     Analysis](https://bcgov.github.io/fasstr/articles/fasstr_full_analysis.html)

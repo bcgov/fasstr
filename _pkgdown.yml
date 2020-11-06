@@ -11,7 +11,7 @@ url: https://bcgov.github.io/fasstr
 
 home:
   links:
-  - text: Browse other Hydrology CRAN Task View packages
+  - text: Browse other CRAN Task View Hydrology packages
     href: https://CRAN.R-project.org/view=Hydrology
   
 reference:
@@ -72,7 +72,7 @@ reference:
   - calc_daily_cumulative_stats
   - plot_daily_cumulative_stats    
   
-- title: Various Annual Statistics
+- title: Annual Hydrograph Statistics
   desc: Functions to calculate and plot various annual statistics.
   contents:
   - calc_annual_flow_timing
@@ -114,8 +114,21 @@ reference:
   - write_results
   - write_plots
   - write_objects_list
-  
-  
+
+articles:
+  - title: Tutorials
+    desc: Using fasstr
+    contents:
+    - fasstr_users_guide
+    - fasstr_trending_analysis
+    - fasstr_frequency_analysis
+    - fasstr_full_analysis
+#    - articles/fun_with_fasstr
+  - title: Under the Hood
+    desc: Internal fasstr workings
+    contents:
+    - fasstr_under_the_hood
+
 navbar:
   type: default
   left:
@@ -127,7 +140,11 @@ navbar:
     href: reference/index.html
   - text: Articles
     menu:
-    - text: Users Guide
+    - text: All Articles
+      href: articles/index.html
+    - text: --------
+    - text: Tutorials
+    - text: General Usage
       href: articles/fasstr_users_guide.html
     - text: Computing Annual Trends
       href: articles/fasstr_trending_analysis.html
@@ -135,7 +152,11 @@ navbar:
       href: articles/fasstr_frequency_analysis.html
     - text: Computing a Full Analysis
       href: articles/fasstr_full_analysis.html
-    - text: Internal fasstr Workflows
+#    - text: Fun with fasstr
+#      href: articles/articles/fun_with_fasstr.html
+    - text: --------
+    - text: Under the Hood
+    - text: Internal Workflows
       href: articles/fasstr_under_the_hood.html
   - text: News
     href: news/index.html

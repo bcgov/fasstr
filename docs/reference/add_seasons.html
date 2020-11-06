@@ -102,7 +102,12 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/fasstr_users_guide.html">Users Guide</a>
+      <a href="../articles/index.html">All Articles</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Tutorials</li>
+    <li>
+      <a href="../articles/fasstr_users_guide.html">General Usage</a>
     </li>
     <li>
       <a href="../articles/fasstr_trending_analysis.html">Computing Annual Trends</a>
@@ -113,8 +118,10 @@
     <li>
       <a href="../articles/fasstr_full_analysis.html">Computing a Full Analysis</a>
     </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Under the Hood</li>
     <li>
-      <a href="../articles/fasstr_under_the_hood.html">Internal fasstr Workflows</a>
+      <a href="../articles/fasstr_under_the_hood.html">Internal Workflows</a>
     </li>
   </ul>
 </li>
@@ -163,13 +170,13 @@
    seasons starting with water year starting in December.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>add_seasons</span>(
-  <span class='kw'>data</span>,
-  dates = <span class='kw'>Date</span>,
-  <span class='kw'>station_number</span>,
-  water_year_start = <span class='fl'>1</span>,
-  <span class='kw'>seasons_length</span>
-)</pre>
+    <pre class="usage"><span class='fu'>add_seasons</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  dates <span class='op'>=</span> <span class='va'>Date</span>,
+  <span class='va'>station_number</span>,
+  water_year_start <span class='op'>=</span> <span class='fl'>1</span>,
+  <span class='va'>seasons_length</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -209,18 +216,18 @@ analysis. Default <code>1</code>.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span>
-<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='kw'>tidyhydat</span>::<span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span>())) {
+<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span><span class='op'>(</span><span class='fu'>tidyhydat</span><span class='fu'>::</span><span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
 
 <span class='co'># Add a column with four annual seasons starting in January</span>
-<span class='fu'>add_seasons</span>(station_number = <span class='st'>"08NM116"</span>,
-            seasons_length = <span class='fl'>4</span>)
+<span class='fu'>add_seasons</span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span>,
+            seasons_length <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span>
 
 <span class='co'># Add a column with two annual seasons (of 6 months length) starting in October</span>
-<span class='fu'>add_seasons</span>(station_number = <span class='st'>"08NM116"</span>, 
-            water_year_start = <span class='fl'>10</span>,
-            seasons_length = <span class='fl'>6</span>)
+<span class='fu'>add_seasons</span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span>, 
+            water_year_start <span class='op'>=</span> <span class='fl'>10</span>,
+            seasons_length <span class='op'>=</span> <span class='fl'>6</span><span class='op'>)</span>
             
-}
+<span class='op'>}</span>
 </div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 21,983 x 6</span><span>
 #&gt;    STATION_NUMBER Date       Parameter Value Symbol Season 
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;fct&gt;</span><span>  

@@ -97,7 +97,12 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="articles/fasstr_users_guide.html">Users Guide</a>
+      <a href="articles/index.html">All Articles</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Tutorials</li>
+    <li>
+      <a href="articles/fasstr_users_guide.html">General Usage</a>
     </li>
     <li>
       <a href="articles/fasstr_trending_analysis.html">Computing Annual Trends</a>
@@ -108,8 +113,10 @@
     <li>
       <a href="articles/fasstr_full_analysis.html">Computing a Full Analysis</a>
     </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Under the Hood</li>
     <li>
-      <a href="articles/fasstr_under_the_hood.html">Internal fasstr Workflows</a>
+      <a href="articles/fasstr_under_the_hood.html">Internal Workflows</a>
     </li>
   </ul>
 </li>
@@ -160,7 +167,9 @@
 <h2 class="hasAnchor">
 <a href="#build-and-check-within-rdevtools" class="anchor"></a>Build and check within <code>R/devtools</code>
 </h2>
-<pre><code><a href="https://devtools.r-lib.org//reference/check_win.html">devtools::check_win_devel()
+<pre><code><a href="https://devtools.r-lib.org//reference/check_win.html">####################### CHECK THE DEV BADGE BEFORE SUBMITTING
+###########################
+devtools::check_win_devel()
 devtools::check_win_release()
 devtools::check() ## build locally</a></code></pre>
 </div>

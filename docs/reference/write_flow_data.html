@@ -100,7 +100,12 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/fasstr_users_guide.html">Users Guide</a>
+      <a href="../articles/index.html">All Articles</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Tutorials</li>
+    <li>
+      <a href="../articles/fasstr_users_guide.html">General Usage</a>
     </li>
     <li>
       <a href="../articles/fasstr_trending_analysis.html">Computing Annual Trends</a>
@@ -111,8 +116,10 @@
     <li>
       <a href="../articles/fasstr_full_analysis.html">Computing a Full Analysis</a>
     </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Under the Hood</li>
     <li>
-      <a href="../articles/fasstr_under_the_hood.html">Internal fasstr Workflows</a>
+      <a href="../articles/fasstr_under_the_hood.html">Internal Workflows</a>
     </li>
   </ul>
 </li>
@@ -159,21 +166,21 @@
    file types. Writing as Excel file type uses the <code>writexl</code> package.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>write_flow_data</span>(
-  <span class='kw'>data</span>,
-  dates = <span class='kw'>Date</span>,
-  values = <span class='kw'>Value</span>,
-  groups = <span class='kw'>STATION_NUMBER</span>,
-  <span class='kw'>station_number</span>,
-  water_year_start = <span class='fl'>1</span>,
-  <span class='kw'>start_year</span>,
-  <span class='kw'>end_year</span>,
-  <span class='kw'>start_date</span>,
-  <span class='kw'>end_date</span>,
-  <span class='kw'>file_name</span>,
-  fill_missing = <span class='fl'>FALSE</span>,
-  <span class='kw'>digits</span>
-)</pre>
+    <pre class="usage"><span class='fu'>write_flow_data</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  dates <span class='op'>=</span> <span class='va'>Date</span>,
+  values <span class='op'>=</span> <span class='va'>Value</span>,
+  groups <span class='op'>=</span> <span class='va'>STATION_NUMBER</span>,
+  <span class='va'>station_number</span>,
+  water_year_start <span class='op'>=</span> <span class='fl'>1</span>,
+  <span class='va'>start_year</span>,
+  <span class='va'>end_year</span>,
+  <span class='va'>start_date</span>,
+  <span class='va'>end_date</span>,
+  <span class='va'>file_name</span>,
+  fill_missing <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  <span class='va'>digits</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -245,25 +252,25 @@ that of base::round() digits argument.</p></td>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 
 <span class='co'># Working examples:</span>
 
 <span class='co'># Write data from a data frame</span>
-<span class='kw'>flow_data</span> <span class='op'>&lt;-</span> <span class='kw'>tidyhydat</span>::<span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_daily_flows.html'>hy_daily_flows</a></span>(station_number = <span class='st'>"08NM116"</span>)
-<span class='fu'>write_flow_data</span>(data = <span class='kw'>flow_data</span>, 
-                file_name = <span class='st'>"Mission_Creek_daily_flows.xlsx"</span>)
+<span class='va'>flow_data</span> <span class='op'>&lt;-</span> <span class='fu'>tidyhydat</span><span class='fu'>::</span><span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_daily_flows.html'>hy_daily_flows</a></span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span><span class='op'>)</span>
+<span class='fu'>write_flow_data</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>flow_data</span>, 
+                file_name <span class='op'>=</span> <span class='st'>"Mission_Creek_daily_flows.xlsx"</span><span class='op'>)</span>
 
 <span class='co'># Write data directly from HYDAT</span>
-<span class='fu'>write_flow_data</span>(station_number = <span class='st'>"08NM116"</span>, 
-                file_name = <span class='st'>"Mission_Creek_daily_flows.xlsx"</span>)
+<span class='fu'>write_flow_data</span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span>, 
+                file_name <span class='op'>=</span> <span class='st'>"Mission_Creek_daily_flows.xlsx"</span><span class='op'>)</span>
 
 <span class='co'># Write data directly from HYDAT and fill missing dates with NA</span>
-<span class='fu'>write_flow_data</span>(station_number = <span class='st'>"08NM116"</span>, 
-                file_name = <span class='st'>"Mission_Creek_daily_flows.xlsx"</span>,
-                fill_missing = <span class='fl'>TRUE</span>)
+<span class='fu'>write_flow_data</span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span>, 
+                file_name <span class='op'>=</span> <span class='st'>"Mission_Creek_daily_flows.xlsx"</span>,
+                fill_missing <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
-}
+<span class='op'>}</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

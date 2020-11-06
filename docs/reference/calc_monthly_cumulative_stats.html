@@ -100,7 +100,12 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/fasstr_users_guide.html">Users Guide</a>
+      <a href="../articles/index.html">All Articles</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Tutorials</li>
+    <li>
+      <a href="../articles/fasstr_users_guide.html">General Usage</a>
     </li>
     <li>
       <a href="../articles/fasstr_trending_analysis.html">Computing Annual Trends</a>
@@ -111,8 +116,10 @@
     <li>
       <a href="../articles/fasstr_full_analysis.html">Computing a Full Analysis</a>
     </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Under the Hood</li>
     <li>
-      <a href="../articles/fasstr_under_the_hood.html">Internal fasstr Workflows</a>
+      <a href="../articles/fasstr_under_the_hood.html">Internal Workflows</a>
     </li>
   </ul>
 </li>
@@ -159,21 +166,21 @@
    can use <code>use_yield</code> and <code>basin_area</code> to convert to area-based water yield. Returns a tibble with statistics.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>calc_monthly_cumulative_stats</span>(
-  <span class='kw'>data</span>,
-  dates = <span class='kw'>Date</span>,
-  values = <span class='kw'>Value</span>,
-  groups = <span class='kw'>STATION_NUMBER</span>,
-  <span class='kw'>station_number</span>,
-  percentiles = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>, <span class='fl'>25</span>, <span class='fl'>75</span>, <span class='fl'>95</span>),
-  use_yield = <span class='fl'>FALSE</span>,
-  <span class='kw'>basin_area</span>,
-  water_year_start = <span class='fl'>1</span>,
-  <span class='kw'>start_year</span>,
-  <span class='kw'>end_year</span>,
-  <span class='kw'>exclude_years</span>,
-  transpose = <span class='fl'>FALSE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>calc_monthly_cumulative_stats</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  dates <span class='op'>=</span> <span class='va'>Date</span>,
+  values <span class='op'>=</span> <span class='va'>Value</span>,
+  groups <span class='op'>=</span> <span class='va'>STATION_NUMBER</span>,
+  <span class='va'>station_number</span>,
+  percentiles <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>, <span class='fl'>25</span>, <span class='fl'>75</span>, <span class='fl'>95</span><span class='op'>)</span>,
+  use_yield <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  <span class='va'>basin_area</span>,
+  water_year_start <span class='op'>=</span> <span class='fl'>1</span>,
+  <span class='va'>start_year</span>,
+  <span class='va'>end_year</span>,
+  <span class='va'>exclude_years</span>,
+  transpose <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -265,21 +272,21 @@ analysis. Default <code>1</code>.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span>
-<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span>(<span class='kw'>tidyhydat</span>::<span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span>())) {
+<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span><span class='op'>(</span><span class='fu'>tidyhydat</span><span class='fu'>::</span><span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
 
 <span class='co'># Calculate annual monthly cumulative volume statistics</span>
-<span class='fu'>calc_monthly_cumulative_stats</span>(station_number = <span class='st'>"08NM116"</span>) 
+<span class='fu'>calc_monthly_cumulative_stats</span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span><span class='op'>)</span> 
 
 <span class='co'># Calculate annual monthly cumulative volume statistics with default HYDAT basin area</span>
-<span class='fu'>calc_monthly_cumulative_stats</span>(station_number = <span class='st'>"08NM116"</span>,
-                              use_yield = <span class='fl'>TRUE</span>) 
+<span class='fu'>calc_monthly_cumulative_stats</span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span>,
+                              use_yield <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> 
 
 <span class='co'># Calculate annual monthly cumulative volume statistics with custom basin area</span>
-<span class='fu'>calc_monthly_cumulative_stats</span>(station_number = <span class='st'>"08NM116"</span>,
-                              use_yield = <span class='fl'>TRUE</span>,
-                              basin_area = <span class='fl'>800</span>) 
+<span class='fu'>calc_monthly_cumulative_stats</span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span>,
+                              use_yield <span class='op'>=</span> <span class='cn'>TRUE</span>,
+                              basin_area <span class='op'>=</span> <span class='fl'>800</span><span class='op'>)</span> 
                               
-}
+<span class='op'>}</span>
 </div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 12 x 10</span><span>
 #&gt;    STATION_NUMBER Month   Mean Median Maximum Minimum     P5    P25    P75
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;fct&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>

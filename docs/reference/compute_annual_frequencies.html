@@ -102,7 +102,12 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/fasstr_users_guide.html">Users Guide</a>
+      <a href="../articles/index.html">All Articles</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Tutorials</li>
+    <li>
+      <a href="../articles/fasstr_users_guide.html">General Usage</a>
     </li>
     <li>
       <a href="../articles/fasstr_trending_analysis.html">Computing Annual Trends</a>
@@ -113,8 +118,10 @@
     <li>
       <a href="../articles/fasstr_full_analysis.html">Computing a Full Analysis</a>
     </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Under the Hood</li>
     <li>
-      <a href="../articles/fasstr_under_the_hood.html">Internal fasstr Workflows</a>
+      <a href="../articles/fasstr_under_the_hood.html">Internal Workflows</a>
     </li>
   </ul>
 </li>
@@ -163,29 +170,29 @@
    tibbles and plots.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>compute_annual_frequencies</span>(
-  <span class='kw'>data</span>,
-  dates = <span class='kw'>Date</span>,
-  values = <span class='kw'>Value</span>,
-  <span class='kw'>station_number</span>,
-  roll_days = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>3</span>, <span class='fl'>7</span>, <span class='fl'>30</span>),
-  roll_align = <span class='st'>"right"</span>,
-  use_max = <span class='fl'>FALSE</span>,
-  use_log = <span class='fl'>FALSE</span>,
-  prob_plot_position = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"weibull"</span>, <span class='st'>"median"</span>, <span class='st'>"hazen"</span>),
-  prob_scale_points = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.9999</span>, <span class='fl'>0.999</span>, <span class='fl'>0.99</span>, <span class='fl'>0.9</span>, <span class='fl'>0.5</span>, <span class='fl'>0.2</span>, <span class='fl'>0.1</span>, <span class='fl'>0.02</span>, <span class='fl'>0.01</span>, <span class='fl'>0.001</span>,
-    <span class='fl'>1e-04</span>),
-  fit_distr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"PIII"</span>, <span class='st'>"weibull"</span>),
-  fit_distr_method = <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='kw'>fit_distr</span> <span class='op'>==</span> <span class='st'>"PIII"</span>, <span class='st'>"MOM"</span>, <span class='st'>"MLE"</span>),
-  fit_quantiles = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.975</span>, <span class='fl'>0.99</span>, <span class='fl'>0.98</span>, <span class='fl'>0.95</span>, <span class='fl'>0.9</span>, <span class='fl'>0.8</span>, <span class='fl'>0.5</span>, <span class='fl'>0.2</span>, <span class='fl'>0.1</span>, <span class='fl'>0.05</span>, <span class='fl'>0.01</span>),
-  plot_curve = <span class='fl'>TRUE</span>,
-  water_year_start = <span class='fl'>1</span>,
-  <span class='kw'>start_year</span>,
-  <span class='kw'>end_year</span>,
-  <span class='kw'>exclude_years</span>,
-  months = <span class='fl'>1</span><span class='op'>:</span><span class='fl'>12</span>,
-  ignore_missing = <span class='fl'>FALSE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>compute_annual_frequencies</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  dates <span class='op'>=</span> <span class='va'>Date</span>,
+  values <span class='op'>=</span> <span class='va'>Value</span>,
+  <span class='va'>station_number</span>,
+  roll_days <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>3</span>, <span class='fl'>7</span>, <span class='fl'>30</span><span class='op'>)</span>,
+  roll_align <span class='op'>=</span> <span class='st'>"right"</span>,
+  use_max <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  use_log <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  prob_plot_position <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"median"</span>, <span class='st'>"hazen"</span><span class='op'>)</span>,
+  prob_scale_points <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.9999</span>, <span class='fl'>0.999</span>, <span class='fl'>0.99</span>, <span class='fl'>0.9</span>, <span class='fl'>0.5</span>, <span class='fl'>0.2</span>, <span class='fl'>0.1</span>, <span class='fl'>0.02</span>, <span class='fl'>0.01</span>, <span class='fl'>0.001</span>,
+    <span class='fl'>1e-04</span><span class='op'>)</span>,
+  fit_distr <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"PIII"</span>, <span class='st'>"weibull"</span><span class='op'>)</span>,
+  fit_distr_method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>fit_distr</span> <span class='op'>==</span> <span class='st'>"PIII"</span>, <span class='st'>"MOM"</span>, <span class='st'>"MLE"</span><span class='op'>)</span>,
+  fit_quantiles <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.975</span>, <span class='fl'>0.99</span>, <span class='fl'>0.98</span>, <span class='fl'>0.95</span>, <span class='fl'>0.9</span>, <span class='fl'>0.8</span>, <span class='fl'>0.5</span>, <span class='fl'>0.2</span>, <span class='fl'>0.1</span>, <span class='fl'>0.05</span>, <span class='fl'>0.01</span><span class='op'>)</span>,
+  plot_curve <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  water_year_start <span class='op'>=</span> <span class='fl'>1</span>,
+  <span class='va'>start_year</span>,
+  <span class='va'>end_year</span>,
+  <span class='va'>exclude_years</span>,
+  months <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>12</span>,
+  ignore_missing <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -243,8 +250,8 @@ return period. Default <code><a href='https://rdrr.io/r/base/c.html'>c(.9999, .9
     </tr>
     <tr>
       <th>fit_distr</th>
-      <td><p>Character string identifying the distribution to fit annual data, one of <code>'PIII'</code> (Pearson Log III 
-distribution) or <code>'weibull'</code> (Weibull distribution). Default <code>'PIII'</code>.</p></td>
+      <td><p>Character string identifying the distribution to fit annual data, one of <code>'PIII'</code> (Log Pearson Type III)
+or <code>'weibull'</code> (Weibull) distributions. Default <code>'PIII'</code>.</p></td>
     </tr>
     <tr>
       <th>fit_distr_method</th>
@@ -305,36 +312,36 @@ time periods with no missing dates will be returned. Default <code>FALSE</code>.
     <div class='dont-index'><p><code><a href='compute_frequency_analysis.html'>compute_frequency_analysis</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 
 <span class='co'># Working examples (see arguments for further analysis options):</span>
 
 <span class='co'># Compute an annual frequency analysis using default arguments</span>
-<span class='kw'>results</span> <span class='op'>&lt;-</span> <span class='fu'>compute_annual_frequencies</span>(station_number = <span class='st'>"08NM116"</span>,
-                                      start_year = <span class='fl'>1980</span>,
-                                      end_year = <span class='fl'>2010</span>)
+<span class='va'>results</span> <span class='op'>&lt;-</span> <span class='fu'>compute_annual_frequencies</span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span>,
+                                      start_year <span class='op'>=</span> <span class='fl'>1980</span>,
+                                      end_year <span class='op'>=</span> <span class='fl'>2010</span><span class='op'>)</span>
                            
 <span class='co'># Compute an annual frequency analysis using default arguments (as listed)</span>
-<span class='kw'>results</span> <span class='op'>&lt;-</span> <span class='fu'>compute_annual_frequencies</span>(station_number = <span class='st'>"08NM116"</span>,
-                                      roll_days = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>3</span>,<span class='fl'>7</span>,<span class='fl'>30</span>),
-                                      start_year = <span class='fl'>1980</span>,
-                                      end_year = <span class='fl'>2010</span>,
-                                      prob_plot_position = <span class='st'>"weibull"</span>,
-                                      prob_scale_points = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>.9999</span>, <span class='fl'>.999</span>, <span class='fl'>.99</span>, <span class='fl'>.9</span>, <span class='fl'>.5</span>, 
-                                      <span class='fl'>.2</span>, <span class='fl'>.1</span>, <span class='fl'>.02</span>, <span class='fl'>.01</span>, <span class='fl'>.001</span>, <span class='fl'>.0001</span>),
-                                      fit_distr = <span class='st'>"PIII"</span>,
-                                      fit_distr_method = <span class='st'>"MOM"</span>)
+<span class='va'>results</span> <span class='op'>&lt;-</span> <span class='fu'>compute_annual_frequencies</span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span>,
+                                      roll_days <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>3</span>,<span class='fl'>7</span>,<span class='fl'>30</span><span class='op'>)</span>,
+                                      start_year <span class='op'>=</span> <span class='fl'>1980</span>,
+                                      end_year <span class='op'>=</span> <span class='fl'>2010</span>,
+                                      prob_plot_position <span class='op'>=</span> <span class='st'>"weibull"</span>,
+                                      prob_scale_points <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>.9999</span>, <span class='fl'>.999</span>, <span class='fl'>.99</span>, <span class='fl'>.9</span>, <span class='fl'>.5</span>, 
+                                      <span class='fl'>.2</span>, <span class='fl'>.1</span>, <span class='fl'>.02</span>, <span class='fl'>.01</span>, <span class='fl'>.001</span>, <span class='fl'>.0001</span><span class='op'>)</span>,
+                                      fit_distr <span class='op'>=</span> <span class='st'>"PIII"</span>,
+                                      fit_distr_method <span class='op'>=</span> <span class='st'>"MOM"</span><span class='op'>)</span>
                                       
 <span class='co'># Compute a 7-day annual frequency analysis with "median" plotting positions</span>
 <span class='co'># and fitting the data to a weibull distribution (not default PIII)</span>
-<span class='kw'>results</span> <span class='op'>&lt;-</span> <span class='fu'>compute_annual_frequencies</span>(station_number = <span class='st'>"08NM116"</span>,
-                                      roll_days = <span class='fl'>7</span>,
-                                      start_year = <span class='fl'>1980</span>,
-                                      end_year = <span class='fl'>2010</span>,
-                                      prob_plot_position = <span class='st'>"median"</span>,
-                                      fit_distr = <span class='st'>"weibull"</span>)
+<span class='va'>results</span> <span class='op'>&lt;-</span> <span class='fu'>compute_annual_frequencies</span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span>,
+                                      roll_days <span class='op'>=</span> <span class='fl'>7</span>,
+                                      start_year <span class='op'>=</span> <span class='fl'>1980</span>,
+                                      end_year <span class='op'>=</span> <span class='fl'>2010</span>,
+                                      prob_plot_position <span class='op'>=</span> <span class='st'>"median"</span>,
+                                      fit_distr <span class='op'>=</span> <span class='st'>"weibull"</span><span class='op'>)</span>
                
-}            
+<span class='op'>}</span>            
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
