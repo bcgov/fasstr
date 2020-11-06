@@ -5,7 +5,7 @@
 
 <!-- badges: start -->
 
-<a id="devex-badge" rel="Delivery" href="https://github.com/BCDevExchange/assets/blob/master/README.md"><img alt="In production, but maybe in Alpha or Beta. Intended to persist and be supported." style="border-width:0" src="https://assets.bcdevexchange.org/images/badges/delivery.svg" title="In production, but maybe in Alpha or Beta. Intended to persist and be supported." /></a>
+<a id="devex-badge" rel="Stable" href="https://github.com/bcgov/repomountie/blob/enhancement/stateBadges/doc/lifecycle-badges.md"><img alt="The project is in a reliable state and major changes are unlikely to happen." style="border-width:0" src="https://img.shields.io/badge/Lifecycle-Stable-97ca00" title="The project is in a reliable state and major changes are unlikely to happen." /></a>
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Travis build
 status](https://travis-ci.org/bcgov/fasstr.svg?branch=master)](https://travis-ci.org/bcgov/fasstr)
@@ -347,21 +347,21 @@ plot_flow_duration(station_number = "08NM116",
 #### Analysis example: low-flow frequency analysis
 
 This package also provides a function, `compute_annual_frequencies()`,
-to complete a volume frequency analysis (using the same methods as
-[HEC-SSP](http://www.hec.usace.army.mil/software/hec-ssp/)). The default
-fitting distribution is ‘log-Pearson Type III’, but the ‘Weibull’
-distribution can also be used. Other default plotting and fitting
-methods are described in the function documentation. For this example,
-the 7-day low-flow (low-flow is default) quantiles are calculated for
-the Mission Creek hydrometric station using the ‘log-Pearson Type III’
-distribution. With this, several low-flow indicators can be determined
-(i.e. 7Q5, 7Q10).
+to complete a volume frequency analysis by fitting annual minimums or
+maximums to Log-Pearson Type III or Weibull probability distributions.
+See the volume frequency analyses documentation for more information.
+For this example, the 7-day low-flow quantiles are calculated for the
+Mission Creek hydrometric station using the Log-Pearson Type III
+distribution and method of moments fitting method (both default). With
+this, several low-flow indicators can be determined (i.e. 7Q5, 7Q10).
 
 ``` r
 freq_results <- compute_annual_frequencies(station_number = "08NM116",
                                            start_year = 1981,
                                            end_year = 2010,
-                                           roll_days = 7)
+                                           roll_days = 7,
+                                           fit_distr = "PIII",
+                                           fit_distr_method = "MOM")
 freq_results$Freq_Fitted_Quantiles
 #> # A tibble: 11 x 4
 #>    Distribution Probability `Return Period` `7-Day`
