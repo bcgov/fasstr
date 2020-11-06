@@ -14,7 +14,7 @@
 ^CRAN-RELEASE$
 ^COMPLIANCE.yaml$
 ^README\.Rmd$
-
+^vignettes/articles$
 ^_pkgdown\.yml$
 ^docs$
 ^index\.md$

@@ -1,3 +1,24 @@
+fasstr 0.3.2
+=========================
+
+## Test environments
+
+* win-builder (via `devtools::check_win_devel()` and `devtools::check_win_release()`)
+* local Windows 10, R 4.0.2 (via R CMD check --as-cran)
+* ubuntu, R 4.0.2 (travis-ci) (release)
+* ubuntu, R 4.0.2 (travis-ci) (devel)
+* Fedora Linux, R-devel, clang, gfortran - r-hub
+* Ubuntu Linux 16.04 LTS, R-release, GCC - r-hub
+* Debian Linux, R-devel, GCC - r-hub
+* Windows Server 2008 R2 SP1, R-devel, 32/64 bit - r-hub
+* Windows Server 2008 R2 SP1, R-release, 32/64 bit - r-hub
+* macOS 10.13.6 High Sierra, R-release, brew - r-hub
+* macOS 10.13.6 High Sierra, R-release, CRAN's setup - r-hub
+
+## R CMD check results
+There were no ERRORs or WARNINGs or NOTES. 
+
+
 fasstr 0.3.1
 =========================
 
