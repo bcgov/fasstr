@@ -1,6 +1,12 @@
 fasstr 0.3.2
 =========================
 
+## Resubmission
+
+Initial submission 2020-11-06
+
+* Corrected invalid URL from initial submission
+
 ## Test environments
 
 * win-builder (via `devtools::check_win_devel()` and `devtools::check_win_release()`)
