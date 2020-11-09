@@ -227,13 +227,13 @@
 <h4 class="hasAnchor">
 <a href="#examples" class="anchor"></a>Examples</h4>
 <p>Example with default arguments:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
                       zyp_method <span class="op">=</span> <span class="st">"yuepilon"</span>,
-                      start_year <span class="op">=</span> <span class="fl">1973</span>, end_year <span class="op">=</span> <span class="fl">2013</span><span class="op">)</span></pre></div>
+                      start_year <span class="op">=</span> <span class="fl">1973</span>, end_year <span class="op">=</span> <span class="fl">2013</span><span class="op">)</span></code></pre></div>
 <p>Example with custom arguments:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
                       zyp_method <span class="op">=</span> <span class="st">"yuepilon"</span>,
                       start_year <span class="op">=</span> <span class="fl">1973</span>, end_year <span class="op">=</span> <span class="fl">2013</span>,
                       annual_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">90</span><span class="op">)</span>,
@@ -243,7 +243,7 @@
                       lowflow_days <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">7</span>,<span class="fl">30</span><span class="op">)</span>,
                       lowflow_align <span class="op">=</span> <span class="st">"right"</span>,
                       timing_percent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">33</span>,<span class="fl">50</span>,<span class="fl">75</span><span class="op">)</span>,
-                      normal_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">75</span><span class="op">)</span><span class="op">)</span></pre></div>
+                      normal_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">75</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>This annual data is provided in the <strong>Annual_Trends_Data</strong> tibble objects. The following is an example of the output, including all the annual metrics and a first few years of data used for the <code>zyp</code> trends analysis:</p>
 <pre><code>              Statistic          1973          1974          1975
 1        Annual_Maximum        37.700        66.000        48.700
@@ -354,13 +354,13 @@
 106             Dec_P10         1.020         0.609         1.050
 107             Dec_P20         1.210         0.637         1.120</code></pre>
 <p>To provide examples of the outputs, an analysis will be completed on a Mission Creek HYDAT station from 1973 to 2013. The argument <code>zyp_method</code> is described below in the Analysis Results section:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="va">trends_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">trends_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
                                          zyp_method <span class="op">=</span> <span class="st">"yuepilon"</span>,
-                                         start_year <span class="op">=</span> <span class="fl">1973</span>, end_year <span class="op">=</span> <span class="fl">2013</span><span class="op">)</span></pre></div>
+                                         start_year <span class="op">=</span> <span class="fl">1973</span>, end_year <span class="op">=</span> <span class="fl">2013</span><span class="op">)</span></code></pre></div>
 <p>The following is an example of the outputted <strong>Annual_Trends_Data</strong> tibble:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="va">trends_analysis</span><span class="op">$</span><span class="va">Annual_Trends_Data</span></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">trends_analysis</span><span class="op">$</span><span class="va">Annual_Trends_Data</span></code></pre></div>
 <pre><code># A tibble: 107 x 43
    STATION_NUMBER Statistic  `1973`  `1974` `1975` `1976`  `1977` `1978`  `1979`
    &lt;chr&gt;          &lt;fct&gt;       &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
@@ -477,8 +477,8 @@
 </tbody>
 </table>
 <p>The following is an example of the outputted <strong>Annual_Trends_Results</strong> tibble from the Mission Creek HYDAT station from 1973 to 2013:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="va">trends_analysis</span><span class="op">$</span><span class="va">Annual_Trends_Results</span></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">trends_analysis</span><span class="op">$</span><span class="va">Annual_Trends_Results</span></code></pre></div>
 <pre><code># A tibble: 107 x 20
    STATION_NUMBER Statistic   lbound    trend  trendp  ubound      tau    sig
    &lt;chr&gt;          &lt;fct&gt;        &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;

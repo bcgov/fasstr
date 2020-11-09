@@ -7,15 +7,61 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
   
-
+  
 ```{r options, include=FALSE}
-knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")))
+knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")),
+                      warning = FALSE, 
+                      message = FALSE)
 ```
 
-```{r, include=FALSE}
+
+
+These examples use the following packages
+```{r}
 library(fasstr)
+library(dplyr)
+```
+
+### Plotting with yields comparison
+### Stats and plotting GW Levels
+### adding lines to daily plots
+### Other probability distribution fitting with fasstr results
+
+
+
+
+fasstr data doesnt require objects to be certain classes, just requires a data frame with the time series (Dates and Values). 
+
+These examples use the following packages
+```{r}
+library(fasstr)
+library(dplyr)
+```
+
+### tidyhydat
+
+tidyhydat is integrated into fasstr, but can use apart and bring into fasstr functions.
+
+
+### USGS Data
+
+
+
+### FlowScreen Timeseries
+
+```{r}
+data <- tidyhydat::hy_daily_flows(station_number = "08NM116") %>% 
+  rename(SYM = Symbol,
+         Flow = Value,
+         ID = STATION_NUMBER) %>% 
+  mutate(Agency = "WSC")
+data <- FlowScreen::create.ts(data)
 ```
 
 
-`fasstr`, the Flow Analysis Summary Statistics Tool for R, is a set of [R](https://www.r-project.org/) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.
+### lfstat objects
+
+```{r}
+
+```
 

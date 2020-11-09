@@ -149,16 +149,16 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install <code>fasstr</code> directly from <a href="https://cran.r-project.org/package=fasstr">CRAN</a>:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"fasstr"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"fasstr"</span><span class="op">)</span></code></pre></div>
 <p>To install the development version from <a href="https://github.com/bcgov/fasstr">GitHub</a>, use the <a href="https://cran.r-project.org/package=remotes"><code>remotes</code></a> package then the <code>fasstr</code> package:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"bcgov/fasstr"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"bcgov/fasstr"</span><span class="op">)</span></code></pre></div>
 <p>Several other packages will be installed with <code>fasstr</code>. These include <a href="https://CRAN.R-project.org/package=tidyhydat"><code>tidyhydat</code></a> for downloading Water Survey of Canada hydrometric data, <a href="https://CRAN.R-project.org/package=zyp"><code>zyp</code></a> for trending, <a href="https://CRAN.R-project.org/package=ggplot2"><code>ggplot2</code></a> for creating plots, and <a href="https://CRAN.R-project.org/package=tidyr"><code>tidyr</code></a> and <a href="https://CRAN.R-project.org/package=dplyr"><code>dplyr</code></a> for data wrangling and summarizing, amongst others.</p>
 <p>To use the <code>station_number</code> argument and pull data directly from a <a href="https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html">Water Survey of Canada HYDAT database</a> into <code>fasstr</code> functions, download a HYDAT file using the following code:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/download_hydat.html">download_hydat</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/download_hydat.html">download_hydat</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="using-fasstr" class="section level2">
 <h2 class="hasAnchor">
@@ -241,12 +241,12 @@
 <h3 class="hasAnchor">
 <a href="#summary-statistics-example-long-term-statistics" class="anchor"></a>Summary statistics example: long-term statistics</h3>
 <p>To determine the long-term summary statistics of daily data for each month (mean, median, maximum, minimum, and some percentiles) you can use the <code><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats()</a></code> function. If the ‘Mission Creek near East Kelowna’ hydrometric station is of interest you can list the station number in the <code>station_number</code> argument to obtain the data (if <code>tidyhydat</code> and HYDAT are installed). Statistics over several months can also be calculated, if of interest. See the summer statistics (from July to Septmber) in this example.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                           start_year <span class="op">=</span> <span class="fl">1981</span>, 
                           end_year <span class="op">=</span> <span class="fl">2010</span>,
                           custom_months <span class="op">=</span> <span class="fl">7</span><span class="op">:</span><span class="fl">9</span>, 
-                          custom_months_label <span class="op">=</span> <span class="st">"Summer"</span><span class="op">)</span></pre></div>
+                          custom_months_label <span class="op">=</span> <span class="st">"Summer"</span><span class="op">)</span></code></pre></div>
 <pre><code>## # A tibble: 14 x 8
 ##    STATION_NUMBER Month      Mean Median Maximum Minimum   P10   P90
 ##    &lt;chr&gt;          &lt;fct&gt;     &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
@@ -269,12 +269,12 @@
 <h3 class="hasAnchor">
 <a href="#plotting-example-daily-summary-statistics" class="anchor"></a>Plotting example: daily summary statistics</h3>
 <p>To visualize the daily streamflow patterns on an annual basis, the <code><a href="../reference/plot_daily_stats.html">plot_daily_stats()</a></code> function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the <code>start_year</code> and <code>end_year</code> arguments. We can also compare individual years against the statistics using <code>add_year</code> argument like below.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_daily_stats.html">plot_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_daily_stats.html">plot_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
                  start_year <span class="op">=</span> <span class="fl">1981</span>,
                  end_year <span class="op">=</span> <span class="fl">2010</span>,
                  log_discharge <span class="op">=</span> <span class="cn">TRUE</span>,
-                 add_year <span class="op">=</span> <span class="fl">1991</span><span class="op">)</span></pre></div>
+                 add_year <span class="op">=</span> <span class="fl">1991</span><span class="op">)</span></code></pre></div>
 <pre><code>## $Daily_Statistics</code></pre>
 <p><img src="fasstr_files/figure-html/plot1-1.png" width="960"></p>
 </div>
@@ -282,10 +282,10 @@
 <h3 class="hasAnchor">
 <a href="#plotting-example-flow-duration-curves" class="anchor"></a>Plotting example: flow duration curves</h3>
 <p>Flow duration curves can be produced using the <code><a href="../reference/plot_flow_duration.html">plot_flow_duration()</a></code> function.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_flow_duration.html">plot_flow_duration</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_flow_duration.html">plot_flow_duration</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
                    start_year <span class="op">=</span> <span class="fl">1981</span>,
-                   end_year <span class="op">=</span> <span class="fl">2010</span><span class="op">)</span></pre></div>
+                   end_year <span class="op">=</span> <span class="fl">2010</span><span class="op">)</span></code></pre></div>
 <pre><code>## $Flow_Duration</code></pre>
 <p><img src="fasstr_files/figure-html/plot2-1.png" width="672"></p>
 </div>
@@ -293,14 +293,14 @@
 <h3 class="hasAnchor">
 <a href="#analysis-example-low-flow-frequency-analysis" class="anchor"></a>Analysis example: low-flow frequency analysis</h3>
 <p>This package also provides a function, <code><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies()</a></code>, to complete a volume frequency analysis by fitting annual minimums or maximums to Log-Pearson Type III or Weibull probability distributions. See the volume frequency analyses documentation for more information. For this example, the 7-day low-flow quantiles are calculated for the Mission Creek hydrometric station using the Log-Pearson Type III distribution and method of moments fitting method (both default). With this, several low-flow indicators can be determined (i.e. 7Q5, 7Q10).</p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="va">freq_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">freq_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
                                            start_year <span class="op">=</span> <span class="fl">1981</span>,
                                            end_year <span class="op">=</span> <span class="fl">2010</span>,
                                            roll_days <span class="op">=</span> <span class="fl">7</span>,
                                            fit_distr <span class="op">=</span> <span class="st">"PIII"</span>,
                                            fit_distr_method <span class="op">=</span> <span class="st">"MOM"</span><span class="op">)</span>
-<span class="va">freq_results</span><span class="op">$</span><span class="va">Freq_Fitted_Quantiles</span></pre></div>
+<span class="va">freq_results</span><span class="op">$</span><span class="va">Freq_Fitted_Quantiles</span></code></pre></div>
 <pre><code>## # A tibble: 11 x 4
 ##    Distribution Probability `Return Period` `7-Day`
 ##    &lt;chr&gt;              &lt;dbl&gt;           &lt;dbl&gt;   &lt;dbl&gt;
@@ -316,12 +316,12 @@
 ## 10 PIII               0.98             1.02   1.21 
 ## 11 PIII               0.99             1.01   1.31</code></pre>
 <p>The probability of observed extreme events can also be plotted (using selected plotting position) along with the computed quantiles curve for comparison.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit">
-<span class="va">freq_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">freq_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
                                            start_year <span class="op">=</span> <span class="fl">1981</span>,
                                            end_year <span class="op">=</span> <span class="fl">2010</span>,
                                            roll_days <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">7</span>,<span class="fl">30</span><span class="op">)</span><span class="op">)</span>
-<span class="va">freq_results</span><span class="op">$</span><span class="va">Freq_Plot</span></pre></div>
+<span class="va">freq_results</span><span class="op">$</span><span class="va">Freq_Plot</span></code></pre></div>
 <p><img src="fasstr_files/figure-html/plot3-1.png" width="672"></p>
 </div>
 </div>

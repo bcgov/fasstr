@@ -145,27 +145,27 @@
 <h3 class="hasAnchor">
 <a href="#installing-and-loading-fasstr" class="anchor"></a>Installing and loading fasstr</h3>
 <p>You can install <code>fasstr</code> directly from <a href="https://cran.r-project.org/package=fasstr">CRAN</a>:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"fasstr"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"fasstr"</span><span class="op">)</span></code></pre></div>
 <p>To install the development version from <a href="https://github.com/bcgov/fasstr">GitHub</a>, use the <a href="https://cran.r-project.org/package=remotes"><code>remotes</code></a> package then the <code>fasstr</code> package:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"bcgov/fasstr"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"bcgov/fasstr"</span><span class="op">)</span></code></pre></div>
 <p>Several other packages will be installed with <code>fasstr</code>. These include <a href="https://CRAN.R-project.org/package=tidyhydat"><code>tidyhydat</code></a> for downloading Water Survey of Canada hydrometric data, <a href="https://CRAN.R-project.org/package=zyp"><code>zyp</code></a> for trending, <a href="https://CRAN.R-project.org/package=ggplot2"><code>ggplot2</code></a> for creating plots, and <a href="https://CRAN.R-project.org/package=tidyr"><code>tidyr</code></a> and <a href="https://CRAN.R-project.org/package=dplyr"><code>dplyr</code></a> for data wrangling and summarizing, amongst others.</p>
 <p>To call <code>fasstr</code> functions you can either load the package using the <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> function or access a specific function using a double-colon (e.g. <code><a href="../reference/calc_daily_stats.html">fasstr::calc_daily_stats()</a></code>). <code>fasstr</code> exports the pipe, <code><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></code>, so it can be used for tidy workflows. For this vignette, functions from the <code>dplyr</code> package will also be used.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bcgov.github.io/fasstr/">fasstr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bcgov.github.io/fasstr/">fasstr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></code></pre></div>
 </div>
 <div id="downloading-hydat" class="section level3">
 <h3 class="hasAnchor">
 <a href="#downloading-hydat" class="anchor"></a>Downloading HYDAT</h3>
 <p>To use the <code>station_number</code> argument of the <code>fasstr</code> functions, you will need to download a <a href="https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html">Water Survey of Canada HYDAT database</a> to your computer using the following <code>tidyhydat</code> function. The function will save the database on your computer and know where to find it each time you open R or RStudio. Due to the size of the database, it will take several minutes to download.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/download_hydat.html">download_hydat</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/download_hydat.html">download_hydat</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>As HYDAT is updated frequently you may want to periodically update it yourself using the function above. You can check the local version using the following code:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_version.html">hy_version</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_version.html">hy_version</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <hr>
 </div>
 </div>
@@ -191,14 +191,14 @@
 5        08NM116 1949-04-05  2.21
 6        08NM116 1949-04-06  2.21</code></pre>
 <p>The following is an example <code>fasstr</code> function arguments if your daily data data frame has the default columns names (no need to list them):</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">flow_data</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">flow_data</span><span class="op">)</span></code></pre></div>
 <p>The following is an example if your daily data data frame has non-default columns names of “Stations”, “Dates”, and “Flows”:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">flow_data</span>,
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">flow_data</span>,
                           dates <span class="op">=</span> <span class="va">Dates</span>,
                           values <span class="op">=</span> <span class="va">Flows</span>,
-                          groups <span class="op">=</span> <span class="va">Stations</span><span class="op">)</span></pre></div>
+                          groups <span class="op">=</span> <span class="va">Stations</span><span class="op">)</span></code></pre></div>
 <p>The <code>data</code> argument is listed first in the list of arguments for each function, so flow data frames can be passed onto <code>fasstr</code> functions using the pipe operator, <code><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></code>, without listing the data frame in a tidy workflow.</p>
 </div>
 <div id="station_number" class="section level3">
@@ -206,9 +206,9 @@
 <a href="#station_number" class="anchor"></a><code>station_number</code>
 </h3>
 <p>Alternatively, you can directly extract flow data directly from a HYDAT database by listing station numbers in the <code>station_number</code> argument while leaving the data arguments blank. Data frames from HYDAT also include ‘Parameter’ and ‘Symbol’ columns. The following is an example of listing stations:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"08NM116"</span>, <span class="st">"08NM242"</span><span class="op">)</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"08NM116"</span>, <span class="st">"08NM242"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>This package allows for multiple stations (or other groupings) to be analyzed in many of the functions; provided they are identified using the <code>groups</code> column argument (defaults to STATION_NUMBER). If named grouping column doesn’t exist or is improperly named then all values listed in the <code>values</code> column will be summarized.</p>
 <hr>
 </div>
@@ -263,11 +263,11 @@
 <code><a href="../reference/add_cumulative_yield.html">add_cumulative_yield()</a></code> - add daily cumulative water yields on an annual basis (in millimetres)</li>
 </ul>
 <p>The functions are set up to easily incorporate the use of the pipe operator:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="fu"><a href="../reference/fill_missing_dates.html">fill_missing_dates</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08HA011"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/fill_missing_dates.html">fill_missing_dates</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08HA011"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Date</span>, <span class="va">Value</span><span class="op">)</span> <span class="op">%&gt;%</span>  <span class="co"># keeps just the Date and Value columns</span>
   <span class="fu"><a href="../reference/add_date_variables.html">add_date_variables</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/add_rolling_means.html">add_rolling_means</a></span><span class="op">(</span>roll_days <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></pre></div>
+  <span class="fu"><a href="../reference/add_rolling_means.html">add_rolling_means</a></span><span class="op">(</span>roll_days <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 21,915 x 8
    Date       Value CalendarYear Month MonthName WaterYear DayofYear Q7Day
    &lt;date&gt;     &lt;dbl&gt;        &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;         &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;
@@ -287,13 +287,13 @@
 <a href="#filling-missing-dates" class="anchor"></a>Filling missing dates</h3>
 <p>To ensure that analyses do not skip over dates, the <code><a href="../reference/fill_missing_dates.html">fill_missing_dates()</a></code> function looks for gaps in dates and adds the dates and fills in the flow values with <code>NA</code>. It does not do any gap filling (linear or correlations, for example), it assigns missing flow values with <code>NA</code>. It also fills dates to create complete start and end years. For example, if data starts in April, all flow values starting from January will be filled with <code>NA</code>. The timing of the year depends on the <code>water_year_start</code> argument. When <code>water_year_start</code> is left blank, it will fill to complete calendar years (Jan-Dec). If <code>water_year_start</code> is set to another month (numeric) then it will fill to complete water years of the desired year.</p>
 <p>Run and compare the following lines to see how missing dates are filled:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit">
-<span class="co"># Very gappy (early years):</span>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Very gappy (early years):</span>
 <span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_daily_flows.html">hy_daily_flows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span>
 
 <span class="co"># Gap filled with NA's</span>
 <span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_daily_flows.html">hy_daily_flows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/fill_missing_dates.html">fill_missing_dates</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+  <span class="fu"><a href="../reference/fill_missing_dates.html">fill_missing_dates</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>It is ideal to fill missing dates before using other <code>add_*</code> functions so dates added are not missing the other new date values.</p>
 </div>
 <div id="adding-date-variables-and-seasons" class="section level3">
@@ -301,16 +301,16 @@
 <a href="#adding-date-variables-and-seasons" class="anchor"></a>Adding date variables and seasons</h3>
 <p>The <code><a href="../reference/add_date_variables.html">add_date_variables()</a></code> function adds useful dates columns for summarizing data. The function defaults include ‘CalendarYear’, ‘Month’ (numeric), ‘MonthName’ (month abbreviation; e.g. Jan), ‘WaterYear’ (year based on selected <code>water_year_start</code>), and ‘DayofYear’ (the day of year based on selected <code>water_year_start</code> from 1-365). The month of the start of the water year is chosen using the <code>water_year_start</code> argument, which defaults to “1” for January.</p>
 <p>Run and compare the following lines to see how the date columns are added:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit">
-<span class="co"># Just calendar year info</span>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Just calendar year info</span>
 <span class="fu"><a href="../reference/add_date_variables.html">add_date_variables</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span>
 
 <span class="co"># If water years are required starting August (use month number)</span>
 <span class="fu"><a href="../reference/add_date_variables.html">add_date_variables</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                   water_year_start <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></pre></div>
+                   water_year_start <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></code></pre></div>
 <p>The <code><a href="../reference/add_seasons.html">add_seasons()</a></code> function adds a column of seasons identifiers called “Season”. The length of seasons, in months, is provided using the <code>seasons_length</code> argument. As seasons are grouped by months the length of the seasons must be divisible into 12 with season lengths of 1, 2, 3, 4, 6, or 12 months. The start of the first season coincides with the start month of each year; ‘Jan-Jun’ for 6-month seasons starting with calendar years or ‘Dec-Feb’ for 3-month seasons starting with water year starting in December. Run and compare the following lines to see how seasons columns are added:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit">
-<span class="co">#  2 seasons starting January</span>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">#  2 seasons starting January</span>
 <span class="fu"><a href="../reference/add_seasons.html">add_seasons</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
             seasons_length <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
 
@@ -322,7 +322,7 @@
 <span class="co">#  4 Seasons starting December</span>
 <span class="fu"><a href="../reference/add_seasons.html">add_seasons</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
             water_year_start <span class="op">=</span> <span class="fl">12</span>,
-            seasons_length <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></pre></div>
+            seasons_length <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="adding-rolling-means" class="section level3">
 <h3 class="hasAnchor">
@@ -377,8 +377,8 @@
 <li>for different areas for multiple stations, you list each basin area for each station (i.e. <code>basin_area = c("08NM116" = 800, "08NM242" = 4)</code>)</li>
 </ul>
 <p>Run and compare the following lines to see how basin area columns are added:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit">
-<span class="co"># Using the station_number argument or data frame as HYDAT groupings</span>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Using the station_number argument or data frame as HYDAT groupings</span>
 <span class="fu"><a href="../reference/add_basin_area.html">add_basin_area</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span>
 
 <span class="co"># Using the basin_area argument</span>
@@ -387,14 +387,14 @@
 
 <span class="co"># Using the basin_area argument with multiple stations</span>
 <span class="fu"><a href="../reference/add_basin_area.html">add_basin_area</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"08NM116"</span>,<span class="st">"08NM242"</span><span class="op">)</span>, 
-               basin_area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"08NM116"</span> <span class="op">=</span> <span class="fl">800</span>, <span class="st">"08NM242"</span> <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></pre></div>
+               basin_area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"08NM116"</span> <span class="op">=</span> <span class="fl">800</span>, <span class="st">"08NM242"</span> <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="adding-daily-volumetric-discharge-or-water-yields" class="section level3">
 <h3 class="hasAnchor">
 <a href="#adding-daily-volumetric-discharge-or-water-yields" class="anchor"></a>Adding daily volumetric discharge or water yields</h3>
 <p>Converting daily mean discharge into other units can be useful for different analyses. Columns of total daily discharge converted from daily mean into volumetric flows, named “Volume_m3” in cubic metres per second, or area-based water yields, named “Yield_mm” in millimetres, can be used using the <code><a href="../reference/add_daily_volume.html">add_daily_volume()</a></code> and <code><a href="../reference/add_daily_yield.html">add_daily_yield()</a></code> functions, respectively. Volumetric gives the total volume per day, and the water yield gives the total water depth, provided an upstream drainage basin area is provided. Basin area can be provided using the <code>basin_area</code> argument, or if there is a <code>groups</code> column of HYDAT station numbers in your data then it will automatically be extracted from HYDAT, if available. (see `adding basin areas above or section 8 for more information).</p>
-<div class="sourceCode" id="cb18"><pre class="downlit">
-<span class="co"># Add a column of converted discharge (m3/s) into volume (m3)</span>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Add a column of converted discharge (m3/s) into volume (m3)</span>
 <span class="fu"><a href="../reference/add_daily_volume.html">add_daily_volume</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span>    
 
 <span class="co"># Add a column of converted discharge (m3/s) into yield (mm), with HYDAT station groups</span>
@@ -402,14 +402,14 @@
 
 <span class="co"># Add a column of converted discharge (m3/s) into yield (mm), with setting the basin area</span>
 <span class="fu"><a href="../reference/add_daily_yield.html">add_daily_yield</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                basin_area <span class="op">=</span> <span class="fl">800</span><span class="op">)</span>   </pre></div>
+                basin_area <span class="op">=</span> <span class="fl">800</span><span class="op">)</span>   </code></pre></div>
 </div>
 <div id="adding-annual-cumulative-daily-volumetric-flows-or-water-yields" class="section level3">
 <h3 class="hasAnchor">
 <a href="#adding-annual-cumulative-daily-volumetric-flows-or-water-yields" class="anchor"></a>Adding annual cumulative daily volumetric flows or water yields</h3>
 <p>These functions create a rolling cumulative of daily total flows on an annual basis, as volumetric flows, named “Cumul_Volume_m3” in cubic metres per second, or area-based water yields, named “Cumul_Yield_mm” in millimetres. A total flow for a given a day is the sum of all previous days and that day, within a given year (Jan 15 cumulative flow value is the sum of all total flows from Jan 1-15). It restarts for each year (based on the starting month) and no values for a year are calculated if there is missing data for a given year as the total for a given year cannot be determined.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit">
-<span class="co"># Add a column of cumulative volumes (m3)</span>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Add a column of cumulative volumes (m3)</span>
 <span class="fu"><a href="../reference/add_cumulative_volume.html">add_cumulative_volume</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> 
 
 <span class="co"># Add a column of cumulative yield (mm), with HYDAT station number groups</span>
@@ -417,14 +417,14 @@
 
 <span class="co"># Add a column of cumulative yield (mm), with setting the basin area</span>
 <span class="fu"><a href="../reference/add_cumulative_yield.html">add_cumulative_yield</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                     basin_area <span class="op">=</span> <span class="fl">800</span><span class="op">)</span>  </pre></div>
+                     basin_area <span class="op">=</span> <span class="fl">800</span><span class="op">)</span>  </code></pre></div>
 </div>
 <div id="pipelines" class="section level3">
 <h3 class="hasAnchor">
 <a href="#pipelines" class="anchor"></a>Pipelines</h3>
 <p>By utilizing the <code>data</code> argument as the first one list, it enables the user to work with the tidying functions within a tidy ‘pipeline’ and can pass onto the other <code>fasstr</code> functions.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit">
-<span class="fu"><a href="../reference/fill_missing_dates.html">fill_missing_dates</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/fill_missing_dates.html">fill_missing_dates</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="../reference/add_date_variables.html">add_date_variables</a></span><span class="op">(</span>water_year_start <span class="op">=</span> <span class="fl">9</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/add_seasons.html">add_seasons</a></span><span class="op">(</span>seasons_length <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="../reference/add_rolling_means.html">add_rolling_means</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -432,7 +432,7 @@
   <span class="fu"><a href="../reference/add_daily_volume.html">add_daily_volume</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/add_daily_yield.html">add_daily_yield</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/add_cumulative_volume.html">add_cumulative_volume</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/add_cumulative_yield.html">add_cumulative_yield</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+  <span class="fu"><a href="../reference/add_cumulative_yield.html">add_cumulative_yield</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 25,202 x 19
    STATION_NUMBER Date       Parameter Value Symbol CalendarYear Month MonthName
    &lt;chr&gt;          &lt;date&gt;     &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;    
@@ -468,19 +468,19 @@
 <code><a href="../reference/plot_missing_dates.html">plot_missing_dates()</a></code> - plot annual and monthly missing dates</li>
 </ul>
 <p>To view the entire daily flow data set to view for gaps and outliers, or changes in flow over time, the <code><a href="../reference/plot_flow_data.html">plot_flow_data()</a></code> function will plot all daily data in the data frame. The plot can be filtered by years and dates.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_flow_data.html">plot_flow_data</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> </pre></div>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_flow_data.html">plot_flow_data</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> </code></pre></div>
 <pre><code>$Daily_Flows</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-18-1.png" width="672"></p>
 <p>When plotting multiple stations, they automatically produce a separate plot for each station. However, setting <code>one_plot = TRUE</code> will plot all stations on the same plot.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_flow_data.html">plot_flow_data</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"08NM241"</span>, <span class="st">"08NM242"</span><span class="op">)</span>,
-               one_plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </pre></div>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_flow_data.html">plot_flow_data</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"08NM241"</span>, <span class="st">"08NM242"</span><span class="op">)</span>,
+               one_plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </code></pre></div>
 <pre><code>$Daily_Flows</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-19-1.png" width="672"></p>
 <p>The <code><a href="../reference/screen_flow_data.html">screen_flow_data()</a></code> function provides an overview of the number of flow values per year and each month per year, along with annual minimums, maximums, means, and standard deviations to inspect for outliers in the data.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit">
-<span class="fu"><a href="../reference/screen_flow_data.html">screen_flow_data</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/screen_flow_data.html">screen_flow_data</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 69 x 22
    STATION_NUMBER  Year n_days   n_Q n_missing_Q Minimum Maximum  Mean Median
    &lt;chr&gt;          &lt;dbl&gt;  &lt;int&gt; &lt;int&gt;       &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
@@ -500,13 +500,13 @@
 #   Jul_missing_Q &lt;int&gt;, Aug_missing_Q &lt;int&gt;, Sep_missing_Q &lt;int&gt;,
 #   Oct_missing_Q &lt;int&gt;, Nov_missing_Q &lt;int&gt;, Dec_missing_Q &lt;int&gt;</code></pre>
 <p>To view the summary data in the <code><a href="../reference/screen_flow_data.html">screen_flow_data()</a></code> function, the <code><a href="../reference/plot_data_screening.html">plot_data_screening()</a></code> function will plot the annual minimums, maximums, means, and standard deviations.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_data_screening.html">plot_data_screening</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> </pre></div>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_data_screening.html">plot_data_screening</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> </code></pre></div>
 <pre><code>$Data_Screening</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-21-1.png" width="672"></p>
 <p>Use the <code><a href="../reference/plot_missing_dates.html">plot_missing_dates()</a></code> function to plot out the missing dates for each month of each year to view for data availability and gaps.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_missing_dates.html">plot_missing_dates</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> </pre></div>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_missing_dates.html">plot_missing_dates</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> </code></pre></div>
 <pre><code>$Missing_Dates</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-22-1.png" width="672"></p>
 <hr>
@@ -563,9 +563,9 @@
 <a href="#basic-long-term-statistics" class="anchor"></a>Basic long-term statistics</h4>
 <p>The long-term <code>calc_</code> and <code>plot_</code> functions calculate the long-term and long-term monthly mean, median, maximum, minimum, and percentiles of all daily mean flows.</p>
 <p>For <code><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats()</a></code>, for a given month, all daily flow values for a given month over the entire record are summarized together. For the ‘Long-term’ category, it summarizes all flow values over the entire record to determine the mean, median, maximum, minimum, and selected percentiles of daily flows. You can also specify a certain period of months to summarize together (ex. Jul-Sep flows) using the <code>custom_months</code> argument (listing the months) and labeling it using the <code>custom_months_label</code> argument (ex. “Summer Flows”).</p>
-<div class="sourceCode" id="cb32"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                          start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                          start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 13 x 8
    STATION_NUMBER Month      Mean Median Maximum Minimum    P10   P90
    &lt;chr&gt;          &lt;fct&gt;     &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
@@ -583,17 +583,17 @@
 12 08NM116        Dec        1.26  1.07     7.30   0.244  0.541  2.20
 13 08NM116        Long-term  6.28  1.81    86.2    0.140  0.710 20.1 </code></pre>
 <p>The <code><a href="../reference/plot_longterm_daily_stats.html">plot_longterm_daily_stats()</a></code> will plot the monthly mean, median, maximum, and minimum values along with selected inner and outer percentiles ribbons on one plot. Change the inner and outer percentile ranges using the <code>inner_percentiles</code> and <code>outer_percentiles</code> arguments, remove the maximum and minimum ribbon using <code>include_extremes = FALSE</code>, or add a specific year using <code>add_year</code>.</p>
-<div class="sourceCode" id="cb34"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_longterm_daily_stats.html">plot_longterm_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_longterm_daily_stats.html">plot_longterm_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                           start_year <span class="op">=</span> <span class="fl">1974</span>,
                           inner_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">75</span><span class="op">)</span>,
-                          outer_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">90</span><span class="op">)</span><span class="op">)</span> </pre></div>
+                          outer_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">90</span><span class="op">)</span><span class="op">)</span> </code></pre></div>
 <pre><code>$`Long-term_Daily_Statistics`</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-24-1.png" width="672"></p>
 <p>Similarly, the <code><a href="../reference/calc_longterm_monthly_stats.html">calc_longterm_monthly_stats()</a></code> functions will calculate the mean, median, maximum, and percentiles of monthly mean flows from all years. Meaning the all daily flows for each month and each year are averaged, and the statistics are based on these annual monthly means. The “Annual” data row summarizes the mean, median, maximum, and percentiles from all annual means.</p>
-<div class="sourceCode" id="cb36"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_longterm_monthly_stats.html">calc_longterm_monthly_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                            start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_longterm_monthly_stats.html">calc_longterm_monthly_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                            start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 13 x 8
    STATION_NUMBER Month   Mean Median Maximum Minimum    P10   P90
    &lt;chr&gt;          &lt;fct&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
@@ -611,9 +611,9 @@
 12 08NM116        Dec     1.26  1.10     3.65   0.450  0.548  2.14
 13 08NM116        Annual  6.28  6.26    11.1    2.88   4.37   8.36</code></pre>
 <p>The corresponding <code><a href="../reference/plot_longterm_monthly_stats.html">plot_longterm_monthly_stats()</a></code> function plots the data, with similar options as <code><a href="../reference/plot_longterm_daily_stats.html">plot_longterm_daily_stats()</a></code>.</p>
-<div class="sourceCode" id="cb38"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_longterm_monthly_stats.html">plot_longterm_monthly_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                            start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </pre></div>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_longterm_monthly_stats.html">plot_longterm_monthly_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                            start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </code></pre></div>
 <pre><code>$`Long-term_Monthly_Statistics`</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-26-1.png" width="672"></p>
 </div>
@@ -621,9 +621,9 @@
 <h4 class="hasAnchor">
 <a href="#basic-annual-statistics" class="anchor"></a>Basic annual statistics</h4>
 <p>The <code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code> and <code><a href="../reference/plot_annual_stats.html">plot_annual_stats()</a></code> functions calculate the mean, median, maximum, minimum, and percentiles of daily flows for every year of data provided. In calculating, all daily flow values are grouped by year.</p>
-<div class="sourceCode" id="cb40"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                  start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                  start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 44 x 8
    STATION_NUMBER  Year  Mean Median Maximum Minimum   P10   P90
    &lt;chr&gt;          &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
@@ -639,9 +639,9 @@
 10 08NM116         1983  7.85   3.13    60.2   0.530 1.44   23.5
 # ... with 34 more rows</code></pre>
 <p>The percentiles in the <code><a href="../reference/plot_annual_stats.html">plot_annual_stats()</a></code> function are fully customizable like the <code>calc_</code> function.</p>
-<div class="sourceCode" id="cb42"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_annual_stats.html">plot_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                  start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </pre></div>
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_annual_stats.html">plot_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                  start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </code></pre></div>
 <pre><code>$Annual_Statistics</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-28-1.png" width="672"></p>
 </div>
@@ -649,9 +649,9 @@
 <h4 class="hasAnchor">
 <a href="#basic-monthly-statistics" class="anchor"></a>Basic monthly statistics</h4>
 <p>The <code><a href="../reference/calc_monthly_stats.html">calc_monthly_stats()</a></code> and <code><a href="../reference/plot_monthly_stats.html">plot_monthly_stats()</a></code> functions calculate the mean, median, maximum, minimum, and percentiles of daily flows for each month of each year. In calculating, all daily flow values are grouped by year and month.</p>
-<div class="sourceCode" id="cb44"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_monthly_stats.html">calc_monthly_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                   start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_monthly_stats.html">calc_monthly_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                   start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 528 x 9
    STATION_NUMBER  Year Month   Mean Median Maximum Minimum    P10   P90
    &lt;chr&gt;          &lt;dbl&gt; &lt;fct&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
@@ -667,9 +667,9 @@
 10 08NM116         1974 Oct    1.23   1.12     2.08   0.838  0.867  1.69
 # ... with 518 more rows</code></pre>
 <p>The percentiles in the <code><a href="../reference/plot_monthly_stats.html">plot_monthly_stats()</a></code> function are fully customizable like the <code>calc_</code> function. A plot for each different statistic (meana, medians, percentiles, etc.) is created to visualize the monthly patterns over the years.</p>
-<div class="sourceCode" id="cb46"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_monthly_stats.html">plot_monthly_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                   start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></pre></div>
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_monthly_stats.html">plot_monthly_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                   start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></code></pre></div>
 <pre><code>$Mean_Monthly_Statistics</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-30-1.png" width="672"></p>
 </div>
@@ -677,9 +677,9 @@
 <h4 class="hasAnchor">
 <a href="#basic-daily-statistics" class="anchor"></a>Basic daily statistics</h4>
 <p>The <code><a href="../reference/calc_daily_stats.html">calc_daily_stats()</a></code> and <code><a href="../reference/plot_daily_stats.html">plot_daily_stats()</a></code> functions calculate the mean, median, maximum, minimum, and percentiles of daily flows for each day of the year. For example, for a given day of year (i.e. day 1 (Jan-01) or day 2 (Jan-02)), all flow values for that day from the entire record are summarized together. Only the first 365 days of each year are summarized (ignores the 366th day from leap years). In calculating, all daily flow values are grouped by day of year.</p>
-<div class="sourceCode" id="cb48"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_daily_stats.html">calc_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                 start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_daily_stats.html">calc_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                 start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 365 x 11
    STATION_NUMBER Date  DayofYear  Mean Median Minimum Maximum    P5   P25   P75
    &lt;chr&gt;          &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
@@ -695,15 +695,15 @@
 10 08NM116        Jan-~        10  1.12  0.947   0.334    4.70 0.450 0.707  1.30
 # ... with 355 more rows, and 1 more variable: P95 &lt;dbl&gt;</code></pre>
 <p>The plotting daily statistics function will plot the monthly mean, median, maximum, and minimum values along with selected inner and outer percentiles ribbons on one plot. Change the inner and outer percentile ranges using the <code>inner_percentiles</code> and <code>outer_percentiles</code> arguments, remove the maximum and minimum ribbon using <code>include_extremes = FALSE</code>, or add a specific year using <code>add_year</code>.</p>
-<div class="sourceCode" id="cb50"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_daily_stats.html">plot_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                 start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </pre></div>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_daily_stats.html">plot_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                 start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </code></pre></div>
 <pre><code>$Daily_Statistics</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-32-1.png" width="672"></p>
-<div class="sourceCode" id="cb52"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_daily_stats.html">plot_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_daily_stats.html">plot_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                  start_year <span class="op">=</span> <span class="fl">1974</span>,
-                 add_year <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span> </pre></div>
+                 add_year <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span> </code></pre></div>
 <pre><code>$Daily_Statistics</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-33-1.png" width="672"></p>
 </div>
@@ -711,16 +711,16 @@
 <h4 class="hasAnchor">
 <a href="#flow-duration" class="anchor"></a>Flow Duration</h4>
 <p>Flow duration curves can be produced using the function, where selected months and time periods can be selected:</p>
-<div class="sourceCode" id="cb54"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_flow_duration.html">plot_flow_duration</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
-                   start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </pre></div>
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_flow_duration.html">plot_flow_duration</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
+                   start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </code></pre></div>
 <pre><code>$Flow_Duration</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-34-1.png" width="672"></p>
-<div class="sourceCode" id="cb56"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_flow_duration.html">plot_flow_duration</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_flow_duration.html">plot_flow_duration</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
                    start_year <span class="op">=</span> <span class="fl">1974</span>,
                    months <span class="op">=</span> <span class="fl">7</span><span class="op">:</span><span class="fl">9</span>,
-                   include_longterm <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> </pre></div>
+                   include_longterm <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> </code></pre></div>
 <pre><code>$Flow_Duration</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-35-1.png" width="672"></p>
 </div>
@@ -728,28 +728,28 @@
 <h4 class="hasAnchor">
 <a href="#other-long-term-statistics" class="anchor"></a>Other Long-term Statistics</h4>
 <p><code><a href="../reference/calc_longterm_mean.html">calc_longterm_mean()</a></code> calculates the mean of all the daily flows, and specific percents of the long-term mean (using <code>percent_MAD</code> argument). It can also be known as the long-term mean annual discharge, MAD.</p>
-<div class="sourceCode" id="cb58"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_longterm_mean.html">calc_longterm_mean</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_longterm_mean.html">calc_longterm_mean</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                    start_year <span class="op">=</span> <span class="fl">1974</span>,
-                   percent_MAD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">10</span>,<span class="fl">20</span><span class="op">)</span><span class="op">)</span></pre></div>
+                   percent_MAD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">10</span>,<span class="fl">20</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 1 x 5
   STATION_NUMBER LTMAD `5%MAD` `10%MAD` `20%MAD`
   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
 1 08NM116         6.28   0.314    0.628     1.26</code></pre>
 <p><code><a href="../reference/calc_longterm_percentile.html">calc_longterm_percentile()</a></code> calculates the selected long-term percentiles of all the daily flow values.</p>
-<div class="sourceCode" id="cb60"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_longterm_percentile.html">calc_longterm_percentile</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_longterm_percentile.html">calc_longterm_percentile</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
                          start_year <span class="op">=</span> <span class="fl">1974</span>,
-                         percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">50</span>,<span class="fl">75</span><span class="op">)</span><span class="op">)</span></pre></div>
+                         percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">50</span>,<span class="fl">75</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 1 x 4
   STATION_NUMBER   P25   P50   P75
   &lt;chr&gt;          &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
 1 08NM116         1.03  1.81  5.72</code></pre>
 <p><code><a href="../reference/calc_flow_percentile.html">calc_flow_percentile()</a></code> calculates the percentile rank of a specified flow value, provided as <code>flow_value</code>. It compares the flow value to all daily flow values to determines the percentile rank.</p>
-<div class="sourceCode" id="cb62"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_flow_percentile.html">calc_flow_percentile</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_flow_percentile.html">calc_flow_percentile</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                      start_year <span class="op">=</span> <span class="fl">1974</span>,
-                     flow_value <span class="op">=</span> <span class="fl">6.270</span><span class="op">)</span></pre></div>
+                     flow_value <span class="op">=</span> <span class="fl">6.270</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 1 x 2
   STATION_NUMBER Percentile
   &lt;chr&gt;               &lt;dbl&gt;
@@ -760,16 +760,16 @@
 <a href="#basic-statistics-and-plotting-volumetric-and-yield-flows" class="anchor"></a>Basic statistics and plotting volumetric and yield flows</h4>
 <p>The <code>calc_</code> and <code>plot_</code> functions will summarize any values provided to the functions with the default column being ‘Value’. While for <code>fasstr</code> this defaults to daily mean flows, any daily value can be summarized (water level, precipitation amount, etc.) if the methods of analyses are similar for the parameter type. As there are no units presented in the <code>calc_</code> functions this should not be problem for most calculations. However, the plots come standard with a “Discharge (cms)” y-axis, which can be changed afterwards using <code>ggplot2</code> functions.</p>
 <p>To facilitate the plotting of the daily volume or yield statistics from <code>fasstr</code>, after adding them to your flow data using the <code><a href="../reference/add_daily_volume.html">add_daily_volume()</a></code> or <code><a href="../reference/add_daily_yield.html">add_daily_yield()</a></code> functions, by listing the <code>values</code> argument as either ‘Volume_m3’ or ‘Yield_mm’ (from their respective <code>add_*</code> functions), the discharge axis title will adjust accordingly.</p>
-<div class="sourceCode" id="cb64"><pre class="downlit">
-<span class="fu"><a href="../reference/add_daily_volume.html">add_daily_volume</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/add_daily_volume.html">add_daily_volume</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plot_annual_stats.html">plot_annual_stats</a></span><span class="op">(</span>values <span class="op">=</span> <span class="st">"Volume_m3"</span>,
-                    start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </pre></div>
+                    start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </code></pre></div>
 <pre><code>$Annual_Statistics</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-39-1.png" width="672"></p>
-<div class="sourceCode" id="cb66"><pre class="downlit">
-<span class="fu"><a href="../reference/add_daily_yield.html">add_daily_yield</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/add_daily_yield.html">add_daily_yield</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/plot_daily_stats.html">plot_daily_stats</a></span><span class="op">(</span>values <span class="op">=</span> <span class="st">"Yield_mm"</span>,
-                   start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </pre></div>
+                   start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </code></pre></div>
 <pre><code>$Daily_Statistics</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-40-1.png" width="672"></p>
 </div>
@@ -800,8 +800,8 @@
 <h4 class="hasAnchor">
 <a href="#cumulative-annual-statistics" class="anchor"></a>Cumulative annual statistics</h4>
 <p>The <code><a href="../reference/calc_annual_cumulative_stats.html">calc_annual_cumulative_stats()</a></code> function provides the total annual volume or runoff yield (if <code>use_yield = TRUE</code> is used). It totals all flows for a given year in cubic metres.</p>
-<div class="sourceCode" id="cb68"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_annual_cumulative_stats.html">calc_annual_cumulative_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_annual_cumulative_stats.html">calc_annual_cumulative_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 44 x 3
    STATION_NUMBER  Year Total_Volume_m3
    &lt;chr&gt;          &lt;dbl&gt;           &lt;dbl&gt;
@@ -817,10 +817,10 @@
 10 08NM116         1983      247618080.
 # ... with 34 more rows</code></pre>
 <p>By using the <code>include_seasons = TRUE</code> (logical TRUE/FALSE) argument, total seasonal flows columns will be added to the results. Two columns of two-seasons (2-six months), and four columns of four-seasons (4-three months) will be added. The start month of the first seasons will begin in the first month of the year (ex. Jan for Calendar years or Oct for water years starting in October).</p>
-<div class="sourceCode" id="cb70"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_annual_cumulative_stats.html">calc_annual_cumulative_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_annual_cumulative_stats.html">calc_annual_cumulative_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                              start_year <span class="op">=</span> <span class="fl">1974</span>,
-                             include_seasons <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></pre></div>
+                             include_seasons <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 44 x 9
    STATION_NUMBER  Year Total_Volume_m3 `Jan-Jun_Volume~ `Jul-Dec_Volume~
    &lt;chr&gt;          &lt;dbl&gt;           &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
@@ -838,9 +838,9 @@
 #   `Apr-Jun_Volume_m3` &lt;dbl&gt;, `Jul-Sep_Volume_m3` &lt;dbl&gt;,
 #   `Oct-Dec_Volume_m3` &lt;dbl&gt;</code></pre>
 <p>The total volumes for each year can be plotted using the <code><a href="../reference/plot_annual_cumulative_stats.html">plot_annual_cumulative_stats()</a></code> function. When using <code>include_seasons = TRUE</code> two additional plots will be created, one for two- and four-seasons.</p>
-<div class="sourceCode" id="cb72"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_annual_cumulative_stats.html">plot_annual_cumulative_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                             start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </pre></div>
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_annual_cumulative_stats.html">plot_annual_cumulative_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                             start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </code></pre></div>
 <pre><code>$Total_Volume</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-43-1.png" width="672"></p>
 </div>
@@ -848,9 +848,9 @@
 <h4 class="hasAnchor">
 <a href="#cumulative-monthly-and-statistics" class="anchor"></a>Cumulative monthly and statistics</h4>
 <p>The <code><a href="../reference/calc_monthly_cumulative_stats.html">calc_monthly_cumulative_stats()</a></code> and <code><a href="../reference/plot_monthly_cumulative_stats.html">plot_monthly_cumulative_stats()</a></code> functions calculate the mean, median, maximum, minimum, and percentiles of total cumulative monthly flows. For each month of each year, the total volume or runoff yield is determined. Then within a given year, the cumulative total for each month is determined by added all previous months (ex. Jan = Jan total; Feb = Jan+Feb totals, etc.). Then the mean, median, maximum, minimum, and percentiles are calculated based on those monthly cumulative totals for each year. In interpreting the information, if a given total flow is below the mean value, then the cumulative flow is less than average, or less volume has passed through the station than average at that point in time. The percentiles in the <code>calc_</code> function are flexible using the <code>percentiles</code> argument.</p>
-<div class="sourceCode" id="cb74"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_monthly_cumulative_stats.html">calc_monthly_cumulative_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                              start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_monthly_cumulative_stats.html">calc_monthly_cumulative_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                              start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 12 x 10
    STATION_NUMBER Month   Mean Median Maximum Minimum     P5    P25    P75
    &lt;chr&gt;          &lt;fct&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
@@ -868,9 +868,9 @@
 12 08NM116        Dec   1.98e8 1.97e8  3.51e8  9.07e7 1.12e8 1.55e8 2.39e8
 # ... with 1 more variable: P95 &lt;dbl&gt;</code></pre>
 <p>The <code><a href="../reference/plot_monthly_cumulative_stats.html">plot_monthly_cumulative_stats()</a></code> function will plot the monthly total mean, median, maximum, and minimum values along with the 5th, 25th, 75th, and 95th percentiles all on one plot. The percentiles are not customizable for this function.</p>
-<div class="sourceCode" id="cb76"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_monthly_cumulative_stats.html">plot_monthly_cumulative_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                              start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </pre></div>
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_monthly_cumulative_stats.html">plot_monthly_cumulative_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                              start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </code></pre></div>
 <pre><code>$Monthly_Cumulative_Volumetric_Stats</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-45-1.png" width="672"></p>
 </div>
@@ -878,9 +878,9 @@
 <h4 class="hasAnchor">
 <a href="#cumulative-daily-statistics" class="anchor"></a>Cumulative daily statistics</h4>
 <p>The <code><a href="../reference/calc_daily_cumulative_stats.html">calc_daily_cumulative_stats()</a></code> and <code><a href="../reference/plot_daily_cumulative_stats.html">plot_daily_cumulative_stats()</a></code> functions calculate the mean, median, maximum, minimum, and percentiles of total cumulative daily flows. For each day of each year, the total volume or runoff yield is determined. Then within a given year, the cumulative total for each day is determined by added all previous days (ex. Jan-01 = Jan-01 total; Jan-02 = Jan-01+Jan-02 totals, etc.). Then the mean, median, maximum, minimum, and percentiles are calculated based on those daily cumulative totals for each year. In interpreting the information, if a given total flow is below the mean value, then the cumulative flow is less than average. In other words, less volume has passed through the station than normal at that point in time. Viewing the plot below may help understand how this function works. The percentiles in the <code>calc_</code> function are flexible using the <code>percentiles</code> argument.</p>
-<div class="sourceCode" id="cb78"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_daily_cumulative_stats.html">calc_daily_cumulative_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                            start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_daily_cumulative_stats.html">calc_daily_cumulative_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                            start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 365 x 11
    STATION_NUMBER Date  DayofYear   Mean Median Minimum Maximum     P5    P25
    &lt;chr&gt;          &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
@@ -896,10 +896,10 @@
 10 08NM116        Jan-~        10 9.21e5 8.03e5 269222.  2.21e6 4.65e5 6.27e5
 # ... with 355 more rows, and 2 more variables: P75 &lt;dbl&gt;, P95 &lt;dbl&gt;</code></pre>
 <p>The <code><a href="../reference/plot_daily_cumulative_stats.html">plot_daily_cumulative_stats()</a></code> function will plot the daily cumulative total mean, median, maximum, and minimum values along with the 5th, 25th, 75th, and 95th percentiles all on one plot. The percentiles are not customizable for this function.</p>
-<div class="sourceCode" id="cb80"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_daily_cumulative_stats.html">plot_daily_cumulative_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_daily_cumulative_stats.html">plot_daily_cumulative_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                             start_year <span class="op">=</span> <span class="fl">1974</span>,
-                            use_yield <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </pre></div>
+                            use_yield <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </code></pre></div>
 <pre><code>$Daily_Cumulative_Yield_Stats</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-47-1.png" width="672"></p>
 </div>
@@ -935,9 +935,9 @@
 <h4 class="hasAnchor">
 <a href="#annual-flow-timing" class="anchor"></a>Annual flow timing</h4>
 <p>The <code><a href="../reference/calc_annual_flow_timing.html">calc_annual_flow_timing()</a></code> calculates the day of year when a portion of a total annual volumetric flow has occurred. Using the <code>percent_total</code> argument, one or multiple portions of annual flow can be calculated. Using 50 as the <code>percent_total</code> is similar to the center of volume or timing of half flow. The day of year and date will be also be produced.</p>
-<div class="sourceCode" id="cb82"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_annual_flow_timing.html">calc_annual_flow_timing</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                        start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_annual_flow_timing.html">calc_annual_flow_timing</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                        start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 44 x 10
    STATION_NUMBER  Year DoY_25pct_TotalQ Date_25pct_Tota~ DoY_33.3pct_Tot~
    &lt;chr&gt;          &lt;dbl&gt;            &lt;dbl&gt; &lt;date&gt;                      &lt;dbl&gt;
@@ -955,9 +955,9 @@
 #   DoY_50pct_TotalQ &lt;dbl&gt;, Date_50pct_TotalQ &lt;date&gt;, DoY_75pct_TotalQ &lt;dbl&gt;,
 #   Date_75pct_TotalQ &lt;date&gt;</code></pre>
 <p>The timing of flows can also be plotted.</p>
-<div class="sourceCode" id="cb84"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_annual_flow_timing.html">plot_annual_flow_timing</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
-                        start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </pre></div>
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_annual_flow_timing.html">plot_annual_flow_timing</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
+                        start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </code></pre></div>
 <pre><code>$Annual_Flow_Timing</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-49-1.png" width="672"></p>
 </div>
@@ -965,9 +965,9 @@
 <h4 class="hasAnchor">
 <a href="#annual-low-flows" class="anchor"></a>Annual low-flows</h4>
 <p>The <code><a href="../reference/calc_annual_lowflows.html">calc_annual_lowflows()</a></code> calculates the annual minimum values, the day of year, and dates of specified rolling mean days (can do multiple days if desired).</p>
-<div class="sourceCode" id="cb86"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_annual_lowflows.html">calc_annual_lowflows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                     start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_annual_lowflows.html">calc_annual_lowflows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                     start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 44 x 14
    STATION_NUMBER  Year Min_1_Day Min_1_Day_DoY Min_1_Day_Date Min_3_Day
    &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt; &lt;date&gt;             &lt;dbl&gt;
@@ -986,9 +986,9 @@
 #   Min_7_Day_Date &lt;date&gt;, Min_30_Day &lt;dbl&gt;, Min_30_Day_DoY &lt;dbl&gt;,
 #   Min_30_Day_Date &lt;date&gt;</code></pre>
 <p>The annual low flow values and the day of the low flow values can be plotted, separately, using the <code><a href="../reference/plot_annual_lowflows.html">plot_annual_lowflows()</a></code> function.</p>
-<div class="sourceCode" id="cb88"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_annual_lowflows.html">plot_annual_lowflows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
-                     start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </pre></div>
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_annual_lowflows.html">plot_annual_lowflows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
+                     start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </code></pre></div>
 <pre><code>$Annual_Low_Flows</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-51-1.png" width="672"></p>
 <pre><code>
@@ -999,9 +999,9 @@ $Annual_Low_Flows_Dates</code></pre>
 <h4 class="hasAnchor">
 <a href="#annual-peaks" class="anchor"></a>Annual peaks</h4>
 <p>Similar to <code><a href="../reference/calc_annual_lowflows.html">calc_annual_lowflows()</a></code>, <code><a href="../reference/calc_annual_peaks.html">calc_annual_peaks()</a></code> calculates the annual minimum and maximum values, the day of year, and dates of specified rolling mean days.</p>
-<div class="sourceCode" id="cb91"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_annual_peaks.html">calc_annual_peaks</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                  start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_annual_peaks.html">calc_annual_peaks</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                  start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 44 x 8
    STATION_NUMBER  Year Min_1_Day Min_1_Day_DoY Min_1_Day_Date Max_1_Day
    &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt; &lt;date&gt;             &lt;dbl&gt;
@@ -1022,9 +1022,9 @@ $Annual_Low_Flows_Dates</code></pre>
 <h4 class="hasAnchor">
 <a href="#number-of-days-per-year-outside-of-normal" class="anchor"></a>Number of days per year outside of normal</h4>
 <p>The <code><a href="../reference/calc_annual_outside_normal.html">calc_annual_outside_normal()</a></code> calculates the number of days per year that are above and below “normal”, “normal” typically defined as 25th and 75th percentiles. The normal limits can be determined using the <code>normal_percentiles</code> argument, listing the lower and upper normal ranges, respectively (e.g. <code>normal_percentiles = c(25, 75)</code>). The function calculates the lower and upper percentiles for each day of the year over all years and sums all days that are above or below the daily normal ranges for a given year. Rolling averages can also be used in this function using the <code>roll_days</code> argument.</p>
-<div class="sourceCode" id="cb93"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_annual_outside_normal.html">calc_annual_outside_normal</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                           start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_annual_outside_normal.html">calc_annual_outside_normal</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                           start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 44 x 5
    STATION_NUMBER  Year Days_Below_Normal Days_Above_Normal Days_Outside_Normal
    &lt;chr&gt;          &lt;dbl&gt;             &lt;int&gt;             &lt;int&gt;               &lt;int&gt;
@@ -1040,9 +1040,9 @@ $Annual_Low_Flows_Dates</code></pre>
 10 08NM116         1983                14               208                 222
 # ... with 34 more rows</code></pre>
 <p>Each of the above, below, and total days outside of normal can be plotted using the <code><a href="../reference/plot_annual_outside_normal.html">plot_annual_outside_normal()</a></code> function.</p>
-<div class="sourceCode" id="cb95"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_annual_outside_normal.html">plot_annual_outside_normal</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                           start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </pre></div>
+<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_annual_outside_normal.html">plot_annual_outside_normal</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                           start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </code></pre></div>
 <pre><code>$Annual_Days_Outside_Normal</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-54-1.png" width="672"></p>
 </div>
@@ -1050,9 +1050,9 @@ $Annual_Low_Flows_Dates</code></pre>
 <h4 class="hasAnchor">
 <a href="#calculating-all-annual-statistics" class="anchor"></a>Calculating all annual statistics</h4>
 <p>The <code><a href="../reference/calc_all_annual_stats.html">calc_all_annual_stats()</a></code> calculates all statistics that have a single annual value. This includes all the <code>calc_annual_*</code> and the <code>calc_monthly_statistics()</code> functions. Several arguments provided for customization of the statistics. There is no corresponding plotting function for this calculation function.</p>
-<div class="sourceCode" id="cb97"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="fu"><a href="../reference/calc_all_annual_stats.html">calc_all_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
-                               start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="fu"><a href="../reference/calc_all_annual_stats.html">calc_all_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
+                               start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>  [1] "STATION_NUMBER"      "Year"                "Annual_Maximum"     
   [4] "Annual_Mean"         "Annual_Median"       "Annual_Minimum"     
   [7] "Annual_P10"          "Annual_P90"          "Min_1_Day"          
@@ -1095,9 +1095,9 @@ $Annual_Low_Flows_Dates</code></pre>
 <h4 class="hasAnchor">
 <a href="#plotting-annual-means" class="anchor"></a>Plotting annual means</h4>
 <p>The <code><a href="../reference/plot_annual_means.html">plot_annual_means()</a></code> function provides a way to visualize how annual means fluctuate around the long-term mean. The x-axis is located at the long-term mean annual discharge (mean of all discharge values over all years) and the bars shows the annual means. The plot is essentially an anomaly plot but with their y-value matching the mean value and not difference from the mean.</p>
-<div class="sourceCode" id="cb99"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_annual_means.html">plot_annual_means</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                  start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </pre></div>
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_annual_means.html">plot_annual_means</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                  start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </code></pre></div>
 <pre><code>$Annual_Means</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-56-1.png" width="672"></p>
 <hr>
@@ -1160,12 +1160,12 @@ $Annual_Low_Flows_Dates</code></pre>
 <h3 class="hasAnchor">
 <a href="#handling-missing-dates" class="anchor"></a>Handling Missing Dates</h3>
 <p>Most functions will automatically (<code>ignore_missing = FALSE</code>) not calculate a statistic for a given period (a year or month or day of year, for example) if there is a date with missing data (<code>NA</code> value) and will result in an NA value or will not plot (base <code>na.rm = FALSE</code>). For example, if there at least one missing day for a given year, an annual statistic will not be calculated for that year. A warning message will appear in the console indicating as such to ensure the user is aware of missing data. See the following code for an example with missing dates:</p>
-<div class="sourceCode" id="cb101"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></code></pre></div>
 <p>If you want to calculate the statistics regardless of missing dates, use the <code>ignore_missing = TRUE</code> argument. Otherwise you may need to filter for complete data years (see the <code><a href="../reference/screen_flow_data.html">screen_flow_data()</a></code> function).</p>
-<div class="sourceCode" id="cb102"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                  ignore_missing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                  ignore_missing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="dates-filtering" class="section level3">
 <h3 class="hasAnchor">
@@ -1176,66 +1176,66 @@ $Annual_Low_Flows_Dates</code></pre>
 <a href="#water-year-and-start-month" class="anchor"></a>Water year and start month</h4>
 <p>By default, the functions will analyze/group/filter data by calendar years (Jan-Dec). However, some analyses require use of water years, or hydrologic years, starting in other months. If use of water years is desired not starting in January, then set <code>water_year_start</code> with a month other than 1. The water year is identified by the calendar year in which it ends. For example, a water year from Oct 2000 to Sep 2001 would be water year 2001.</p>
 <p>Example of a default water year, starting in October:</p>
-<div class="sourceCode" id="cb103"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                   ignore_missing <span class="op">=</span> <span class="cn">TRUE</span>,
-                  water_year_start <span class="op">=</span> <span class="fl">9</span><span class="op">)</span></pre></div>
+                  water_year_start <span class="op">=</span> <span class="fl">9</span><span class="op">)</span></code></pre></div>
 <p>Example of a water year starting in August:</p>
-<div class="sourceCode" id="cb104"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                   ignore_missing <span class="op">=</span> <span class="cn">TRUE</span>,
-                  water_year_start <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></pre></div>
+                  water_year_start <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="selecting-and-excluding-years" class="section level4">
 <h4 class="hasAnchor">
 <a href="#selecting-and-excluding-years" class="anchor"></a>Selecting and excluding years</h4>
 <p>To specify select years used in your analysis, the <code>start_year</code> and <code>end_year</code> arguments (providing a single value) can filter the years. Using the <code>exclude_years</code> argument (providing a single or vector of years) will allow you to remove certain years from the analysis. Leaving these arguments blank will include all years in the data set for the analysis.</p>
 <p>Example of filtering for start and end years:</p>
-<div class="sourceCode" id="cb105"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                   start_year <span class="op">=</span> <span class="fl">1980</span>, 
-                  end_year <span class="op">=</span> <span class="fl">2010</span><span class="op">)</span></pre></div>
+                  end_year <span class="op">=</span> <span class="fl">2010</span><span class="op">)</span></code></pre></div>
 <p>Examples of removing certain years (outliers, bad data, etc.) using exclude_years:</p>
-<div class="sourceCode" id="cb106"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                   start_year <span class="op">=</span> <span class="fl">1980</span>, 
                   end_year <span class="op">=</span> <span class="fl">2010</span>,
-                  exclude_years <span class="op">=</span> <span class="fl">1982</span><span class="op">)</span></pre></div>
-<div class="sourceCode" id="cb107"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                  exclude_years <span class="op">=</span> <span class="fl">1982</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                   start_year <span class="op">=</span> <span class="fl">1980</span>, 
                   end_year <span class="op">=</span> <span class="fl">2010</span>,
-                  exclude_years <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1982</span><span class="op">:</span><span class="fl">1984</span><span class="op">)</span><span class="op">)</span></pre></div>
+                  exclude_years <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1982</span><span class="op">:</span><span class="fl">1984</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="using-only-years-with-complete-data" class="section level4">
 <h4 class="hasAnchor">
 <a href="#using-only-years-with-complete-data" class="anchor"></a>Using only years with complete data</h4>
 <p>If your data has missing dates, but you would like to use only those years with complete data, some functions utilize the <code>complete_years</code> argument where the data will automatically be filtered for years with complete data and statistics will be calculated. Only years with complete data will be included into the following example.</p>
-<div class="sourceCode" id="cb108"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                          complete_years <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+                          complete_years <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>Some functions, like below, require only years with complete data (statistics are based on full years of data), so years with missing dates will be automatically ignored:</p>
-<div class="sourceCode" id="cb109"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_annual_flow_timing.html">calc_annual_flow_timing</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_annual_flow_timing.html">calc_annual_flow_timing</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="selecting-for-months" class="section level4">
 <h4 class="hasAnchor">
 <a href="#selecting-for-months" class="anchor"></a>Selecting for months</h4>
 <p>Some functions allow you to specify select months used in your analysis, using the <code>months</code> argument. By providing a vector of months (1 through 12) only those months will be used in an analysis. For example, using the <code>months</code> argument with the <code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code> function will calculate the annual statistics for only those months listed. So, if summer statistics are required you supply <code>months = 6:8</code> to the function. Leaving this arguments blank will include all months in the data set for the analysis.</p>
 <p>Example of filtering for months June through August:</p>
-<div class="sourceCode" id="cb110"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                   start_year <span class="op">=</span> <span class="fl">1980</span>, 
                   end_year <span class="op">=</span> <span class="fl">2010</span>,
-                  months <span class="op">=</span> <span class="fl">6</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span></pre></div>
+                  months <span class="op">=</span> <span class="fl">6</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span></code></pre></div>
 <p>A few functions, including the <code><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats()</a></code>, <code><a href="../reference/plot_longterm_daily_stats.html">plot_longterm_daily_stats()</a></code>, and <code><a href="../reference/plot_flow_duration.html">plot_flow_duration()</a></code> functions will allow you to add a customized time period to your data frame or plot. Using the <code>custom_months</code> argument you can list a vector of months (numeric 1:12). By default, the data will be labelled as “Custom-Months” but can be customized by providing a character string to the <code>custom_months_label</code> argument.</p>
 <p>Example of custom months and labelling:</p>
-<div class="sourceCode" id="cb111"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                           start_year <span class="op">=</span> <span class="fl">1980</span>, 
                           end_year <span class="op">=</span> <span class="fl">2010</span>,
                           custom_months <span class="op">=</span> <span class="fl">6</span><span class="op">:</span><span class="fl">8</span>,
-                          custom_months_label <span class="op">=</span> <span class="st">"Summer"</span><span class="op">)</span></pre></div>
+                          custom_months_label <span class="op">=</span> <span class="st">"Summer"</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div id="rolling-averages" class="section level3">
@@ -1243,17 +1243,17 @@ $Annual_Low_Flows_Dates</code></pre>
 <a href="#rolling-averages" class="anchor"></a>Rolling averages</h3>
 <p>Some functions allow you to specify analyzing the data using rolling mean data as opposed to the daily means. For those functions with the <code>roll_days</code> and <code>roll_align</code> arguments, analyses will be computed on the daily mean by default (can leave them blank if so). If choosing to conduct an analysis on 7-day rolling means, you would set <code>roll_days = 7</code>. Some functions allow multiple rolling days to be provided (see function documentation). The <code>roll_align</code> argument determines the direction of the rolling mean: see the “Adding rolling means” portion in Section 4 to see how the <code>roll_days</code> and <code>roll_align</code> work together.</p>
 <p>Example of a 7-day rolling mean analysis (single <code>roll_days</code> use):</p>
-<div class="sourceCode" id="cb112"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                   start_year <span class="op">=</span> <span class="fl">1980</span>,
                   end_year <span class="op">=</span> <span class="fl">2010</span>,
-                  roll_days <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></pre></div>
+                  roll_days <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></code></pre></div>
 <p>Example of a 7- and 30-day rolling mean analysis (multiple <code>roll_days</code> use):</p>
-<div class="sourceCode" id="cb113"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_annual_lowflows.html">plot_annual_lowflows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_annual_lowflows.html">plot_annual_lowflows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                      start_year <span class="op">=</span> <span class="fl">1980</span>, 
                      end_year <span class="op">=</span> <span class="fl">2010</span>,
-                     roll_days <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">7</span>,<span class="fl">30</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></pre></div>
+                     roll_days <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">7</span>,<span class="fl">30</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-69-1.png" width="672"></p>
 </div>
 <div id="percentiles-and-other-statistics" class="section level3">
@@ -1262,39 +1262,39 @@ $Annual_Low_Flows_Dates</code></pre>
 <p>Each <code>fasstr</code> function comes with their default statistics to be calculated. While some cannot be changed (some plotting functions), most have the ability to customize what is calculated. Look up the default settings for each function in their documentation (<code><a href="../reference/calc_longterm_daily_stats.html">?calc_longterm_daily_stats</a></code> for example).</p>
 <p>By default, the basic summary statistics functions will calculate the mean, median, maximum, and minimum values for each time period; these will automatically be calculated can cannot be removed by an argument option (can remove afterwards if necessary). These functions also calculate default percentiles, which can be customized by changing the desired percentiles by providing a numeric vector of numbers (between 0 and 100) to the <code>percentiles</code> argument.</p>
 <p>This example shows the default percentiles for the <code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code> function (10 and 90th percentiles):</p>
-<div class="sourceCode" id="cb114"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                   start_year <span class="op">=</span> <span class="fl">1980</span>, 
-                  end_year <span class="op">=</span> <span class="fl">2010</span><span class="op">)</span></pre></div>
+                  end_year <span class="op">=</span> <span class="fl">2010</span><span class="op">)</span></code></pre></div>
 <p>This example shows custom percentiles for the <code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code> function (5 and 25th percentiles):</p>
-<div class="sourceCode" id="cb115"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                   start_year <span class="op">=</span> <span class="fl">1980</span>, 
                   end_year <span class="op">=</span> <span class="fl">2010</span>,
-                  percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">25</span><span class="op">)</span><span class="op">)</span></pre></div>
+                  percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">25</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>The following are some examples of how to customize results from other types of functions. See function documentations for full argument uses.</p>
 <p>Example of calculating dates of the 10 and 20 percent of total annual flow:</p>
-<div class="sourceCode" id="cb116"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_annual_flow_timing.html">calc_annual_flow_timing</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_annual_flow_timing.html">calc_annual_flow_timing</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                         start_year <span class="op">=</span> <span class="fl">1980</span>, 
                         end_year <span class="op">=</span> <span class="fl">2010</span>,
-                        percent_total <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">20</span><span class="op">)</span><span class="op">)</span></pre></div>
+                        percent_total <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">20</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Example of plotting the number of days per years outside of the 10th and 90th percentiles (25th and 75th percentiles are default):</p>
-<div class="sourceCode" id="cb117"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_annual_outside_normal.html">plot_annual_outside_normal</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_annual_outside_normal.html">plot_annual_outside_normal</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                            start_year <span class="op">=</span> <span class="fl">1980</span>, 
                            end_year <span class="op">=</span> <span class="fl">2010</span>,
-                           normal_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">90</span><span class="op">)</span><span class="op">)</span></pre></div>
+                           normal_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">90</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>$Annual_Days_Outside_Normal</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-73-1.png" width="672"></p>
 <div id="data-frame-options" class="section level4">
 <h4 class="hasAnchor">
 <a href="#data-frame-options" class="anchor"></a>Data frame options</h4>
 <p>An option when working with the functions that produce data frames is to transpose the rows and columns of the data. Most functions by default provide data results such there are columns of statistics for each station and time period. See the example here:</p>
-<div class="sourceCode" id="cb119"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                           start_year <span class="op">=</span> <span class="fl">1980</span>, 
-                          end_year <span class="op">=</span> <span class="fl">2010</span><span class="op">)</span></pre></div>
+                          end_year <span class="op">=</span> <span class="fl">2010</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 13 x 8
    STATION_NUMBER Month      Mean Median Maximum Minimum   P10   P90
    &lt;chr&gt;          &lt;fct&gt;     &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
@@ -1312,11 +1312,11 @@ $Annual_Low_Flows_Dates</code></pre>
 12 08NM116        Dec        1.31  1.08     7.30   0.342 0.5    2.37
 13 08NM116        Long-term  6.14  1.89    84.5    0.140 0.685 19.3 </code></pre>
 <p>In some circumstances, however, it may be more convenient to wrangle the data such that there are columns for stations (or groupings) and a single column with all statistics, and then the values are placed in columns for each respective time period. See the following example when setting <code>transpose = TRUE</code>.</p>
-<div class="sourceCode" id="cb121"><pre class="downlit">
-<span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                           start_year <span class="op">=</span> <span class="fl">1980</span>, 
                           end_year <span class="op">=</span> <span class="fl">2010</span>,
-                          transpose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></pre></div>
+                          transpose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <pre><code># A tibble: 6 x 15
   STATION_NUMBER Statistic   Jan   Feb   Mar    Apr   May    Jun    Jul    Aug
   &lt;chr&gt;          &lt;fct&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
@@ -1336,18 +1336,18 @@ $Annual_Low_Flows_Dates</code></pre>
 <h5 class="hasAnchor">
 <a href="#logarithmic-discharge-scale" class="anchor"></a>Logarithmic discharge scale</h5>
 <p>Depending on the plotting function, discharge data will be plotted using a linear or a logarithmic scale (depending on the scale of data). This can be altered using the <code>log_discharge</code> argument. Here is example of plotting with a linear scale (default <code>log_discharge = FALSE</code>):</p>
-<div class="sourceCode" id="cb123"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_annual_stats.html">plot_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_annual_stats.html">plot_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                   start_year <span class="op">=</span> <span class="fl">1980</span>,
-                  end_year <span class="op">=</span> <span class="fl">2010</span><span class="op">)</span></pre></div>
+                  end_year <span class="op">=</span> <span class="fl">2010</span><span class="op">)</span></code></pre></div>
 <pre><code>$Annual_Statistics</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-76-1.png" width="672"></p>
 <p>Set the discharge scale to be logarithmic (<code>log_discharge = TRUE</code>):</p>
-<div class="sourceCode" id="cb125"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_annual_stats.html">plot_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_annual_stats.html">plot_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                   start_year <span class="op">=</span> <span class="fl">1980</span>,
                   end_year <span class="op">=</span> <span class="fl">2010</span>,
-                  log_discharge <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></pre></div>
+                  log_discharge <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <pre><code>$Annual_Statistics</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-77-1.png" width="672"></p>
 </div>
@@ -1356,23 +1356,23 @@ $Annual_Low_Flows_Dates</code></pre>
 <a href="#including-a-standard-title-on-the-plot" class="anchor"></a>Including a standard title on the plot</h5>
 <p>The logical <code>include_title</code> argument adds the station number (or grouping identifier from the <code>groupings</code> argument), and in some cases the statistics as well. The argument’s default is <code>FALSE</code>.</p>
 <p>Example of including a title when plotting (<code>include_title = TRUE</code>):</p>
-<div class="sourceCode" id="cb127"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_annual_stats.html">plot_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_annual_stats.html">plot_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                   start_year <span class="op">=</span> <span class="fl">1980</span>,
                   end_year <span class="op">=</span> <span class="fl">2010</span>,
-                  include_title <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></pre></div>
+                  include_title <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <pre><code>$Annual_Statistics</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-78-1.png" width="672"></p>
 <p>Example of including a title when plotting <code>include_title = TRUE</code> where the statistic is also displayed:</p>
-<div class="sourceCode" id="cb129"><pre class="downlit">
-<span class="fu"><a href="../reference/plot_monthly_stats.html">plot_monthly_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_monthly_stats.html">plot_monthly_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                    start_year <span class="op">=</span> <span class="fl">1980</span>,
                    end_year <span class="op">=</span> <span class="fl">2010</span>,
-                   include_title <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></pre></div>
+                   include_title <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-79-1.png" width="672"></p>
 <p>Customizing a plot by using additional <code>ggplot2</code> functions:</p>
-<div class="sourceCode" id="cb130"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
+<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
 
 <span class="co"># Create the plot list and extract the plot using [[1]]</span>
 <span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_daily_stats.html">plot_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, start_year <span class="op">=</span> <span class="fl">1980</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
@@ -1383,7 +1383,7 @@ $Annual_Low_Flows_Dates</code></pre>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="st">"1900-03-01"</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"darkgray"</span>, linetype <span class="op">=</span> <span class="fl">1</span>, size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="st">"1900-08-05"</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"darkgray"</span>, linetype <span class="op">=</span> <span class="fl">1</span>, size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Mission Creek Annual Hydrograph"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Flow (cms)"</span><span class="op">)</span></pre></div>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Flow (cms)"</span><span class="op">)</span></code></pre></div>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-80-1.png" width="672"></p>
 <hr>
 </div>
@@ -1415,8 +1415,8 @@ $Annual_Low_Flows_Dates</code></pre>
 <li>selecting the number of digits to round the flow values (numeric <code>digits</code> argument)</li>
 </ul>
 <p>The following will write an “xlsx” file called “08NM116_data_data.xlsx” into your working directory that includes all daily flow data from that station in HYDAT:</p>
-<div class="sourceCode" id="cb131"><pre class="downlit">
-<span class="fu"><a href="../reference/write_flow_data.html">write_flow_data</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/write_flow_data.html">write_flow_data</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></code></pre></div>
 <p>The following is an example of possible customization:</p>
 <div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1"></a><span class="kw">write_flow_data</span>(<span class="dt">station_number =</span> <span class="st">"08NM116"</span>,</span>
 <span id="cb132-2"><a href="#cb132-2"></a>                <span class="dt">start_year =</span> <span class="dv">1960</span>,</span>
@@ -1428,31 +1428,31 @@ $Annual_Low_Flows_Dates</code></pre>
 <h4 class="hasAnchor">
 <a href="#writing-a-data-frame" class="anchor"></a>Writing a data frame</h4>
 <p>While you can use the base R <code>write_csv()</code> or <code>writexl</code> package functions to save your data, the package provides a function with options to choose for file type and the rounding of digits. To directly save a data frame onto your computer you can use the <code><a href="../reference/write_results.html">write_results()</a></code> function. This function allows you to decide on file extensions of “xlsx”, “xls”, or “csv” by including it in the <code>file_name</code> argument when you name the file. This function also allows you to round all numeric columns by selecting the number of digits using the numeric <code>digits</code> argument.</p>
-<div class="sourceCode" id="cb133"><pre class="downlit">
-<span class="va">annual_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span>
+<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">annual_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/write_results.html">write_results</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">annual_data</span>,
               digits <span class="op">=</span> <span class="fl">3</span>,
-              file_name <span class="op">=</span> <span class="st">"mission_creek_annual_flows.xlsx"</span><span class="op">)</span></pre></div>
+              file_name <span class="op">=</span> <span class="st">"mission_creek_annual_flows.xlsx"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="writing-a-list-of-plots" class="section level4">
 <h4 class="hasAnchor">
 <a href="#writing-a-list-of-plots" class="anchor"></a>Writing a list of plots</h4>
 <p>As all plots produced with this package are contained within lists, a function is provided to assist in saving a list of plots into either a folder, where all plot files are named by the object names within the list, or combined PDF document, using the <code><a href="../reference/write_plots.html">write_plots()</a></code> function. The name of the folder or PDF document is provided using the <code>folder_name</code> argument. If the folder does not exist, one will be created. Options to customize output size with <code>width</code>, <code>height</code>, <code>units</code> and <code>dpi</code> arguments, as similar to those in <code>ggplots2:ggsave()</code>, can also be used.</p>
 <p>The following will save each annual plot as a “png” file in a folder called “Annual Plots” in the working directory:</p>
-<div class="sourceCode" id="cb134"><pre class="downlit">
-<span class="va">annual_plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_annual_stats.html">plot_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"08NM116"</span>,<span class="st">"08NM242"</span><span class="op">)</span><span class="op">)</span>
+<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">annual_plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_annual_stats.html">plot_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"08NM116"</span>,<span class="st">"08NM242"</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/write_plots.html">write_plots</a></span><span class="op">(</span>plots <span class="op">=</span> <span class="va">annual_data</span>,
             folder_name <span class="op">=</span> <span class="st">"Annual Plots"</span>,
-            plot_filetype <span class="op">=</span> <span class="st">"png"</span><span class="op">)</span></pre></div>
+            plot_filetype <span class="op">=</span> <span class="st">"png"</span><span class="op">)</span></code></pre></div>
 <p>The following will save all annual plots as combined “pdf” document called “Annual Plots” in the working directory with each plot on a different page:</p>
-<div class="sourceCode" id="cb135"><pre class="downlit">
-<span class="va">annual_plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_annual_stats.html">plot_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"08NM116"</span>,<span class="st">"08NM242"</span><span class="op">)</span><span class="op">)</span>
+<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">annual_plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_annual_stats.html">plot_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"08NM116"</span>,<span class="st">"08NM242"</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/write_plots.html">write_plots</a></span><span class="op">(</span>plots <span class="op">=</span> <span class="va">annual_data</span>,
             folder_name <span class="op">=</span> <span class="st">"Annual Plots"</span>,
-            combined_pdf <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></pre></div>
+            combined_pdf <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>If you would prefer to save the plots using other functions, like the <code><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggplot2::ggsave()</a></code> function, the desired plot must subsetted from the list first so the object provided the function is a plot object and not a list. Individual plots can be subsetted from their lists using either the dollar sign, $ (e.g. <code>one_plot &lt;- plots$plotname</code>), or double square brackets, [ ] (e.g. <code>one_plot &lt;- plots[[plotname]]</code> or <code>one_plot &lt;- plots[[1]]</code>).</p>
 </div>
 <div id="writing-a-list-of-data-frames-and-plots" class="section level4">
@@ -1460,13 +1460,13 @@ $Annual_Low_Flows_Dates</code></pre>
 <a href="#writing-a-list-of-data-frames-and-plots" class="anchor"></a>Writing a list of data frames and plots</h4>
 <p>As some objects produced with this package, mainly with the <code>compute_*</code> functions, contain lists of both data frames and <code>ggplot2</code> objects, a function is provided, called <code><a href="../reference/write_objects_list.html">write_objects_list()</a></code>, to assist in saving all objects within the list into a designated directory folder, where all table and plot files are named by the object names. The name of the folder is provided using the <code>folder_name</code> argument. If the folder does not exist, one will be created. The file type for tables and plots are chosen using the <code>table_filetype</code> and <code>plot_filetype</code> arguments respectively. There are also options to customize plot output size with <code>width</code>, <code>height</code>, <code>units</code> and <code>dpi</code> arguments, as similar to those in <code>ggplots2:ggsave()</code> can also be used.</p>
 <p>The following will save all plots and tables in a folder called “Frequency Analysis” in the working directory:</p>
-<div class="sourceCode" id="cb136"><pre class="downlit">
-<span class="va">freq_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span>
+<div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">freq_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/write_objects_list.html">write_objects_list</a></span><span class="op">(</span>list <span class="op">=</span> <span class="va">freq_analysis</span>,
                    folder_name <span class="op">=</span> <span class="st">"Frequency Analysis"</span>,
                    plot_filetype <span class="op">=</span> <span class="st">"png"</span>,
-                   table_filetype <span class="op">=</span> <span class="st">"xlsx"</span><span class="op">)</span></pre></div>
+                   table_filetype <span class="op">=</span> <span class="st">"xlsx"</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
   </div>

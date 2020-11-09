@@ -190,14 +190,14 @@
 <strong>measures</strong> - the type of flow value/event (i.e. “Inst. Peak” or “7-Day Low”); can have multiple measures (ex. 3-day and 7-day) that will be plotted and computed.</li>
 </ol>
 <p>Here is an example of data the can be provided, wrangled from the annual lowflows function:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_annual_lowflows.html">calc_annual_lowflows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_annual_lowflows.html">calc_annual_lowflows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                                   start_year <span class="op">=</span> <span class="fl">1980</span>, 
                                   end_year <span class="op">=</span> <span class="fl">2000</span>,
                                   roll_days <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>
 <span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">low_flows</span>, <span class="va">Year</span>, Value <span class="op">=</span> <span class="va">Min_7_Day</span><span class="op">)</span>
 <span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">low_flows</span>, Measure <span class="op">=</span> <span class="st">"7-Day"</span><span class="op">)</span>
-<span class="va">low_flows</span></pre></div>
+<span class="va">low_flows</span></code></pre></div>
 <pre><code># A tibble: 21 x 3
     Year Value Measure
    &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  
@@ -213,11 +213,11 @@
 10  1989 0.577 7-Day  
 # ... with 11 more rows</code></pre>
 <p>This data can then be applied to the <code><a href="../reference/compute_frequency_analysis.html">compute_frequency_analysis()</a></code> function. This example has the default column names in the data and this do not need to be listed, but are shown for demonstration.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="fu"><a href="../reference/compute_frequency_analysis.html">compute_frequency_analysis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">low_flows</span>,
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/compute_frequency_analysis.html">compute_frequency_analysis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">low_flows</span>,
                            events <span class="op">=</span> <span class="va">Year</span>,
                            values <span class="op">=</span> <span class="va">Value</span>,
-                           measures <span class="op">=</span> <span class="va">Measure</span><span class="op">)</span></pre></div>
+                           measures <span class="op">=</span> <span class="va">Measure</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div id="usage-options-and-outputs" class="section level2">
@@ -228,15 +228,15 @@
 <a href="#analysis-data" class="anchor"></a>Analysis Data</h3>
 <p>The returned <strong>Freq_Analysis_Data</strong> object provides the raw data used in the frequency analyses. Based on the selected frequency function used, this tibble will contain the respective data; the provided values with the custom analysis, the computed extremes with the annual analysis, and the HYDAT extreme peaks from HYDAT in the peak analysis. See each functions’ documentation for more information. This tibble object provides the analysis data as the annual and HYDAT peak data are calculated or extracted from HYDAT.</p>
 <p>To provide examples of the outputs, an annual analysis will be completed on a Mission Creek HYDAT station (the <code>plot_curve</code> argument is set to <code>FALSE</code> for the start of this example):</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="va">freq_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">freq_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
                                             start_year <span class="op">=</span> <span class="fl">1981</span>,
                                             end_year <span class="op">=</span> <span class="fl">2010</span>,
                                             roll_days <span class="op">=</span> <span class="fl">7</span>,
-                                            plot_curve <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></pre></div>
+                                            plot_curve <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p>The following is an example of the returned <strong>Freq_Analysis_Data</strong> tibble:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Analysis_Data</span></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Analysis_Data</span></code></pre></div>
 <pre><code># A tibble: 30 x 3
     Year Measure Value
    &lt;dbl&gt; &lt;fct&gt;   &lt;dbl&gt;
@@ -267,8 +267,8 @@
 </ul>
 <p>The probability plotting positions (A and B constants) are selected using the <code>prob_plot_position</code> argument, listing <code>'weibull'</code> where A and B are 0, <code>'median'</code> where A and B are 0.3, or <code>'hazen'</code> where A and B are 0.5. The selected plotting position does not have an effect on the final computed curve. To plot the data on a logarithmic scale, set the <code>use_log</code> argument to <code>TRUE</code>.</p>
 <p>With these options set, the data used for plotting is returned in the <strong>Freq_Plot_Data</strong> tibble object. The events are sorted by measure, and ranked by the event value, and provides the probability and the return period for each event, used for plotting. See the following for an example of this output:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Plot_Data</span></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Plot_Data</span></code></pre></div>
 <pre><code># A tibble: 30 x 5
     Year Measure Value Probability `Return Period`
    &lt;dbl&gt; &lt;fct&gt;   &lt;dbl&gt;       &lt;dbl&gt;           &lt;dbl&gt;
@@ -284,8 +284,8 @@
 10  2009 7-Day   0.502      0.323             3.1 
 # ... with 20 more rows</code></pre>
 <p>This data is then used for plotting and returned in the <strong>Freq_Plot</strong> <code>ggplot2</code> object. See the example below. To change the probabilities/vertical lines shown on the x-axis, change the values using the <code>prob_scale_points</code> argument to list the breaks.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Plot</span></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Plot</span></code></pre></div>
 <p><img src="fasstr_frequency_analysis_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
 </div>
 <div id="distribution-fitting-and-computing-frequency-quantiles" class="section level3">
@@ -304,16 +304,16 @@
 <h4 class="hasAnchor">
 <a href="#fitting-data-to-probability-distributions" class="anchor"></a>Fitting Data to Probability Distributions</h4>
 <p>Computing frequency quantiles in <code>fasstr</code> requires choosing a probability distribution to fit the data, either Log-Pearson Type III, <code>"PIII"</code> (default), or Weibull, <code>"weibull"</code>, distributions with the <code>fit_dist</code> argument. When using the <code>"PIII"</code> distribution, data provided is log-transformed (base 10) before being fit to a Pearson Type III distribution. The method of fitting data to distributions is selected using the <code>fit_distr_method</code> argument with either <code>"MLE"</code> for ‘maximum likelihood estimation’ or <code>"MOM"</code> (default) for ‘method of moments’. For the <code>"PIII"</code> distribution, the data will be fit using <code>"MOM"</code> or <code>"MLE"</code>, while <code>"weibull"</code> can only use <code>"MOM"</code>. Internally, these arguments are passed on to the <code><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html">fitdistrplus::fitdist</a></code> function from the <a href="https://CRAN.R-project.org/package=fitdistrplus">‘fitdistrplus’</a> package (see for more information). Fitting results from the <code><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html">fitdistrplus::fitdist</a></code> function are returned in the <strong>Freq_Fitting</strong> object in the list and contain information regarding the fitting process, including the parameter estimates (e.g. shape, location, and scale), AIC statistics, Q-Q and density plots, amongst other statistics. As per the <code><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html">fitdistrplus::fitdist</a></code> documentation, there are several ways to view the <code>fitdist</code> object, three of these including using the generic <code><a href="https://rdrr.io/r/base/print.html">print()</a></code>, <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> and <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> functions. See the following examples for how to view some of the fitting information.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></code></pre></div>
 <pre><code>Fitting of the distribution ' PIII ' by matching moments 
 Parameters:
             estimate
 shape    21.71135693
 location  0.58975205
 scale    -0.03836902</code></pre>
-<div class="sourceCode" id="cb12"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></code></pre></div>
 <pre><code>Fitting of the distribution ' PIII ' by matching moments 
 Parameters : 
             estimate
@@ -321,23 +321,23 @@ shape    21.71135693
 location  0.58975205
 scale    -0.03836902
 Loglikelihood:  9.973448   AIC:  -13.9469   BIC:  -9.743303 </code></pre>
-<div class="sourceCode" id="cb14"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></code></pre></div>
 <p><img src="fasstr_frequency_analysis_files/figure-html/unnamed-chunk-10-1.png" width="672"></p>
 <p>When <code>plot_curve</code> argument is set to <code>TRUE</code> (default) the computed frequency curves are plotted against the events data in the <strong>Freq_Plot</strong> object:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit">
-<span class="va">freq_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">freq_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
                                             roll_days <span class="op">=</span> <span class="fl">7</span>,
                                             plot_curve <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Plot</span></pre></div>
+<span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Plot</span></code></pre></div>
 <p><img src="fasstr_frequency_analysis_files/figure-html/unnamed-chunk-11-1.png" width="672"></p>
 </div>
 <div id="fitted-quantiles" class="section level4">
 <h4 class="hasAnchor">
 <a href="#fitted-quantiles" class="anchor"></a>Fitted Quantiles</h4>
 <p>Based on the fitted distribution, flow events with specific probabilities/return periods (quantiles) can be extracted from the computed curves. The desired quantiles are selected by listing the probabilities in the <code>fit_quantiles</code> argument (defaults to <code>c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),</code>). The results are returned in the <strong>Freq_Fitted_Quantiles</strong> tibble in the list. In the example below of the quantiles, the 7Q5 value would be the 7-day flow value with a 5-year return period, so 0.409 cms in this example.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit">
-<span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitted_Quantiles</span></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitted_Quantiles</span></code></pre></div>
 <pre><code># A tibble: 11 x 4
    Distribution Probability `Return Period` `7-Day`
    &lt;chr&gt;              &lt;dbl&gt;           &lt;dbl&gt;   &lt;dbl&gt;

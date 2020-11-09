@@ -73,15 +73,6 @@ if(!requireNamespace("remotes")) install.packages("remotes")
 remotes::install_github("bcgov/fasstr")
 ```
 
-Several other packages will be installed with `fasstr`. These include
-[`tidyhydat`](https://CRAN.R-project.org/package=tidyhydat) for
-downloading Water Survey of Canada hydrometric data,
-[`zyp`](https://CRAN.R-project.org/package=zyp) for trending,
-[`ggplot2`](https://CRAN.R-project.org/package=ggplot2) for creating
-plots, and [`tidyr`](https://CRAN.R-project.org/package=tidyr) and
-[`dplyr`](https://CRAN.R-project.org/package=dplyr) for data wrangling
-and summarizing, amongst others.
-
 To use the `station_number` argument and pull data directly from a
 [Water Survey of Canada HYDAT
 database](https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html)
@@ -93,22 +84,26 @@ tidyhydat::download_hydat()
 
 ### Using fasstr
 
-There are several vignettes to provide more information on the usage of
-`fasstr` functions and how to customize them with various argument
+There are several vignettes and a cheatsheet to provide more information
+on the usage of `fasstr` functions and how to customize various argument
 options.
 
-  - [Get Started with
-    fasstr](https://bcgov.github.io/fasstr/articles/fasstr.html)
-  - [fasstr Users
+  - [Getting
+    Started](https://bcgov.github.io/fasstr/articles/fasstr.html)
+  - [Users
     Guide](https://bcgov.github.io/fasstr/articles/fasstr_users_guide.html)
   - [Computing an Annual Trends
     Analysis](https://bcgov.github.io/fasstr/articles/fasstr_trending_analysis.html)
-  - [Computing a Volume Frequency
+  - [Computing a Volume frequency
     Analysis](https://bcgov.github.io/fasstr/articles/fasstr_frequency_analysis.html)
   - [Computing a Full fasstr
     Analysis](https://bcgov.github.io/fasstr/articles/fasstr_full_analysis.html)
   - [Internal fasstr
     Workflows](https://bcgov.github.io/fasstr/articles/fasstr_under_the_hood.html)
+
+#### Cheatsheet
+
+<a href="https://github.com/bcgov/fasstr/raw/master/fasstr_cheatsheet.pdf"><img src="man/figures/fasstr_cheatsheet.png" width="630" height="252"/></a>
 
 ### Getting Help or Reporting an Issue
 
