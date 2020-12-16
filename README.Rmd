@@ -31,12 +31,11 @@ library(fasstr)
 # fasstr <img src="man/figures/fasstr.png" align="right" />
 
 <!-- badges: start -->
-[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/fasstr)](https://cran.r-project.org/package=fasstr) [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/fasstr?color=brightgreen)](https://CRAN.R-project.org/package=fasstr) [![cran checks](https://cranchecks.info/badges/worst/fasstr)](https://CRAN.R-project.org/web/checks/check_results_fasstr.html)
-
 [![img](https://img.shields.io/badge/Lifecycle-Stable-97ca00)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) 
 [![Travis build status](https://travis-ci.org/bcgov/fasstr.svg?branch=master)](https://travis-ci.org/bcgov/fasstr)
 
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/fasstr)](https://cran.r-project.org/package=fasstr) [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/fasstr?color=brightgreen)](https://CRAN.R-project.org/package=fasstr) [![cran checks](https://cranchecks.info/badges/worst/fasstr)](https://CRAN.R-project.org/web/checks/check_results_fasstr.html)
 <!-- badges: end -->
 
 </div>
