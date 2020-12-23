@@ -32,12 +32,14 @@ library(dplyr)
 ### Plotting with yields comparison
 ### Stats and plotting GW Levels
 ### adding lines to daily plots
+### add realtime data to daily plot
+### writing results with fasstr function within (quick excel file for exploration)
 ### Other probability distribution fitting with fasstr results
 ##### calculate low flows or high flows
 ##### test for independence, stationarity, homegeniety
 ##### frequency curve for plotting
 ##### fit distribution
-
+https://rpubs.com/blakeobeans/fitdistrplus
 
 
 
