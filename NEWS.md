@@ -1,3 +1,13 @@
+fasstr 0.3.3
+=========================
+
+Updated: 28 Apr 2021
+
+#### Updates:
+
+  * Removed check for a hydat.sqlite3 file. Stop error from tidyhydat catches error.
+
+
 fasstr 0.3.2
 =========================
 
