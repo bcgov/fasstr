@@ -27,9 +27,6 @@ flowdata_import <- function(data = NULL, station_number = NULL){
   
   # If a station_number is provided, check if they exist in HYDAT, if they do extract the daily data
   if (is.null(data)) {
-    if (!file.exists(file.path(tidyhydat::hy_dir(),"HYDAT.sqlite3")))
-      stop("A HYDAT database has not been downloaded yet using the tidyhydat::download_hydat() function. 
-       Download HYDAT before using station_number argument.", call. = FALSE)
     if (!is.character(station_number))  stop("station_number must be a character vector containing HYDAT station number(s).", call. = FALSE)
     station_number <- toupper(station_number) # make lower-case typos into uppercase
     if (!all(station_number %in% dplyr::pull(suppressMessages(tidyhydat::hy_stations()[1])))) 
