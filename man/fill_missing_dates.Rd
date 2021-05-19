@@ -2,7 +2,7 @@
 % Please edit documentation in R/fill_missing_dates.R
 \name{fill_missing_dates}
 \alias{fill_missing_dates}
-\title{Add rows of missing dates and fill missing flow values with NA}
+\title{Fills data gaps of missing dates}
 \usage{
 fill_missing_dates(
   data,
@@ -21,8 +21,8 @@ Leave blank if using \code{station_number} argument.}
 \item{dates}{Name of column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
 'Date' (default). Leave blank if using \code{station_number} argument.}
 
-\item{values}{Name of column in \code{data} that contains numeric flow values, in units of cubic metres per second.
-Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
+\item{values}{Name of column in \code{data} that contains numeric flow values, in units of cubic metres per second. Not required as
+of fasstr 0.3.3 as all other columns are filled with \code{NA}.}
 
 \item{groups}{Name of column in \code{data} that contains unique identifiers for different data sets, if applicable. Only required 
 if groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if 
@@ -36,15 +36,16 @@ Leave blank if using \code{data} argument.}
 \item{water_year_start}{Numeric value indicating the month (\code{1} through \code{12}) of the start of water year for
 analysis. Default \code{1}.}
 
-\item{fill_end_years}{Logical value indicating whether to fill incomplete start and end years with rows of dates with NA flow values. 
+\item{fill_end_years}{Logical value indicating whether to fill incomplete start and end years with rows of dates. 
 If \code{FALSE} then only missing dates between the provided start and end dates will be filled. Default \code{TRUE}.}
 }
 \value{
-A tibble data frame of the source data with additional rows of filled values of missing dates.
+A tibble data frame of the source data with additional rows where mising dates existed.
 }
 \description{
-Adds rows of dates with missing flow values to a streamflow data set with daily flow values of NA. Missing dates will 
-   be filled in gaps between data and completely fill the first and last years.
+Fills data gaps of missing dates of the data provided. Builds a continuous data set from the start date to the end date.
+   Only missing dates are filled, all other columns will be filled with NA. Will completely fill first and last years, 
+   unless specified using \code{fill_end_years = FALSE}.
 }
 \examples{
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
