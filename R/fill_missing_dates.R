@@ -14,8 +14,8 @@
 #' @title Fills data gaps of missing dates
 #'
 #' @description Fills data gaps of missing dates of the data provided. Builds a continuous data set from the start date to the end date.
-#'    Only missing dates are filled, all other columns will be filled with NA. Will completely fill first and last years, 
-#'    unless specified using \code{fill_end_years = FALSE}.
+#'    Only missing dates are filled, columns not specified as dates or groups will be filled with NA. Will completely fill first and 
+#'    last years, unless specified using \code{fill_end_years = FALSE}.
 #'
 #' @inheritParams calc_annual_stats
 #' @param values Name of column in \code{data} that contains numeric flow values, in units of cubic metres per second. Not required as
@@ -62,7 +62,7 @@ fill_missing_dates <- function(data,
     stop("fill_end_years must be logical (TRUE/FALSE).", call. = FALSE)
   
   if (as.character(substitute(values)) != "Value") 
-    message("values argument is deprected for this function and not required. All other columns willed with NA.")
+    message("values argument is deprected for this function and not required. values still filled with NA if provided.")
   
   water_year_checks(water_year_start)
   

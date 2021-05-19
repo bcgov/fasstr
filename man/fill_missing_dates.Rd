@@ -44,8 +44,8 @@ A tibble data frame of the source data with additional rows where mising dates e
 }
 \description{
 Fills data gaps of missing dates of the data provided. Builds a continuous data set from the start date to the end date.
-   Only missing dates are filled, all other columns will be filled with NA. Will completely fill first and last years, 
-   unless specified using \code{fill_end_years = FALSE}.
+   Only missing dates are filled, columns not specified as dates or groups will be filled with NA. Will completely fill first and 
+   last years, unless specified using \code{fill_end_years = FALSE}.
 }
 \examples{
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
