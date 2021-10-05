@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Add rows of missing dates and fill missing flow values with NA — fill_missing_dates • fasstr</title>
+<title>Fills data gaps of missing dates — fill_missing_dates • fasstr</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,10 @@
 
 
 
-<meta property="og:title" content="Add rows of missing dates and fill missing flow values with NA — fill_missing_dates" />
-<meta property="og:description" content="Adds rows of dates with missing flow values to a streamflow data set with daily flow values of NA. Missing dates will 
-   be filled in gaps between data and completely fill the first and last years." />
+<meta property="og:title" content="Fills data gaps of missing dates — fill_missing_dates" />
+<meta property="og:description" content="Fills data gaps of missing dates of the data provided. Builds a continuous data set from the start date to the end date.
+   Only missing dates are filled, columns not specified as dates or groups will be filled with NA. Will completely fill first and 
+   last years, unless specified using fill_end_years = FALSE." />
 
 
 
@@ -73,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
       </span>
     </div>
 
@@ -154,14 +155,15 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Add rows of missing dates and fill missing flow values with NA</h1>
+    <h1>Fills data gaps of missing dates</h1>
     <small class="dont-index">Source: <a href='https://github.com/bcgov/fasstr/blob/master/R/fill_missing_dates.R'><code>R/fill_missing_dates.R</code></a></small>
     <div class="hidden name"><code>fill_missing_dates.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Adds rows of dates with missing flow values to a streamflow data set with daily flow values of NA. Missing dates will 
-   be filled in gaps between data and completely fill the first and last years.</p>
+    <p>Fills data gaps of missing dates of the data provided. Builds a continuous data set from the start date to the end date.
+   Only missing dates are filled, columns not specified as dates or groups will be filled with NA. Will completely fill first and 
+   last years, unless specified using <code>fill_end_years = FALSE</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>fill_missing_dates</span><span class='op'>(</span>
@@ -189,8 +191,8 @@ Leave blank if using <code>station_number</code> argument.</p></td>
     </tr>
     <tr>
       <th>values</th>
-      <td><p>Name of column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
-Only required if values column name is not 'Value' (default). Leave blank if using <code>station_number</code> argument.</p></td>
+      <td><p>Name of column in <code>data</code> that contains numeric flow values, in units of cubic metres per second. Not required as
+of fasstr 0.3.3 as all other columns are filled with <code>NA</code>.</p></td>
     </tr>
     <tr>
       <th>groups</th>
@@ -212,14 +214,14 @@ analysis. Default <code>1</code>.</p></td>
     </tr>
     <tr>
       <th>fill_end_years</th>
-      <td><p>Logical value indicating whether to fill incomplete start and end years with rows of dates with NA flow values. 
+      <td><p>Logical value indicating whether to fill incomplete start and end years with rows of dates. 
 If <code>FALSE</code> then only missing dates between the provided start and end dates will be filled. Default <code>TRUE</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble data frame of the source data with additional rows of filled values of missing dates.</p>
+    <p>A tibble data frame of the source data with additional rows where mising dates existed.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span>
@@ -233,20 +235,20 @@ If <code>FALSE</code> then only missing dates between the provided start and end
                    water_year_start <span class='op'>=</span> <span class='fl'>8</span><span class='op'>)</span>
                    
 <span class='op'>}</span>
-</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 25,567 x 5</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 25,567 x 5</span>
 #&gt;    STATION_NUMBER Date       Parameter Value Symbol
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> 
-#&gt; </span><span style='color: #555555;'> 1</span><span> 08NM116        1948-08-01 Flow         </span><span style='color: #BB0000;'>NA</span><span> </span><span style='color: #BB0000;'>NA</span><span>    
-#&gt; </span><span style='color: #555555;'> 2</span><span> 08NM116        1948-08-02 Flow         </span><span style='color: #BB0000;'>NA</span><span> </span><span style='color: #BB0000;'>NA</span><span>    
-#&gt; </span><span style='color: #555555;'> 3</span><span> 08NM116        1948-08-03 Flow         </span><span style='color: #BB0000;'>NA</span><span> </span><span style='color: #BB0000;'>NA</span><span>    
-#&gt; </span><span style='color: #555555;'> 4</span><span> 08NM116        1948-08-04 Flow         </span><span style='color: #BB0000;'>NA</span><span> </span><span style='color: #BB0000;'>NA</span><span>    
-#&gt; </span><span style='color: #555555;'> 5</span><span> 08NM116        1948-08-05 Flow         </span><span style='color: #BB0000;'>NA</span><span> </span><span style='color: #BB0000;'>NA</span><span>    
-#&gt; </span><span style='color: #555555;'> 6</span><span> 08NM116        1948-08-06 Flow         </span><span style='color: #BB0000;'>NA</span><span> </span><span style='color: #BB0000;'>NA</span><span>    
-#&gt; </span><span style='color: #555555;'> 7</span><span> 08NM116        1948-08-07 Flow         </span><span style='color: #BB0000;'>NA</span><span> </span><span style='color: #BB0000;'>NA</span><span>    
-#&gt; </span><span style='color: #555555;'> 8</span><span> 08NM116        1948-08-08 Flow         </span><span style='color: #BB0000;'>NA</span><span> </span><span style='color: #BB0000;'>NA</span><span>    
-#&gt; </span><span style='color: #555555;'> 9</span><span> 08NM116        1948-08-09 Flow         </span><span style='color: #BB0000;'>NA</span><span> </span><span style='color: #BB0000;'>NA</span><span>    
-#&gt; </span><span style='color: #555555;'>10</span><span> 08NM116        1948-08-10 Flow         </span><span style='color: #BB0000;'>NA</span><span> </span><span style='color: #BB0000;'>NA</span><span>    
-#&gt; </span><span style='color: #555555;'># ... with 25,557 more rows</span><span></div></span></pre>
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>          <span style='color: #949494; font-style: italic;'>&lt;date&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span> 
+#&gt; <span style='color: #BCBCBC;'> 1</span> 08NM116        1948-08-01 Flow         <span style='color: #BB0000;'>NA</span> <span style='color: #BB0000;'>NA</span>    
+#&gt; <span style='color: #BCBCBC;'> 2</span> 08NM116        1948-08-02 Flow         <span style='color: #BB0000;'>NA</span> <span style='color: #BB0000;'>NA</span>    
+#&gt; <span style='color: #BCBCBC;'> 3</span> 08NM116        1948-08-03 Flow         <span style='color: #BB0000;'>NA</span> <span style='color: #BB0000;'>NA</span>    
+#&gt; <span style='color: #BCBCBC;'> 4</span> 08NM116        1948-08-04 Flow         <span style='color: #BB0000;'>NA</span> <span style='color: #BB0000;'>NA</span>    
+#&gt; <span style='color: #BCBCBC;'> 5</span> 08NM116        1948-08-05 Flow         <span style='color: #BB0000;'>NA</span> <span style='color: #BB0000;'>NA</span>    
+#&gt; <span style='color: #BCBCBC;'> 6</span> 08NM116        1948-08-06 Flow         <span style='color: #BB0000;'>NA</span> <span style='color: #BB0000;'>NA</span>    
+#&gt; <span style='color: #BCBCBC;'> 7</span> 08NM116        1948-08-07 Flow         <span style='color: #BB0000;'>NA</span> <span style='color: #BB0000;'>NA</span>    
+#&gt; <span style='color: #BCBCBC;'> 8</span> 08NM116        1948-08-08 Flow         <span style='color: #BB0000;'>NA</span> <span style='color: #BB0000;'>NA</span>    
+#&gt; <span style='color: #BCBCBC;'> 9</span> 08NM116        1948-08-09 Flow         <span style='color: #BB0000;'>NA</span> <span style='color: #BB0000;'>NA</span>    
+#&gt; <span style='color: #BCBCBC;'>10</span> 08NM116        1948-08-10 Flow         <span style='color: #BB0000;'>NA</span> <span style='color: #BB0000;'>NA</span>    
+#&gt; <span style='color: #949494;'># ... with 25,557 more rows</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

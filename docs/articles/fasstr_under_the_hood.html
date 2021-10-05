@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
       </span>
     </div>
 
@@ -109,8 +109,7 @@
 
       
 
-      </header><script src="fasstr_under_the_hood_files/header-attrs-2.5/header-attrs.js"></script><script src="fasstr_under_the_hood_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="fasstr_under_the_hood_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="fasstr_under_the_hood_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><script src="fasstr_under_the_hood_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Internal fasstr Workflows</h1>
@@ -128,7 +127,7 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p><code>fasstr</code> utilizes tidy coding to utilize many efficient and useful packages and functions; the tidyverse packages <code>tidy</code>, <code>dplyr</code>, <code>ggplot2</code> are used frequently, amongst others for specific functions. Because of this, <code>fasstr</code> also exports the pipe <code><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></code> to assist in using <code>fasstr</code> in a tidy code routine.</p>
+<p><code>fasstr</code> utilizes tidy coding to utilize many efficient and useful packages and functions; the tidyverse packages <code>tidy</code>, <code>dplyr</code>, <code>ggplot2</code> are used frequently, amongst others for specific functions. Because of this, <code>fasstr</code> also exports the pipe <code><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></code> to assist in using <code>fasstr</code> in a tidy code routine.</p>
 <p>This vignette is broken into the following sections that describe some of the workflows involved in the <code>fasstr</code> functions:</p>
 <ol style="list-style-type: decimal">
 <li>Data Importing and Checking</li>
@@ -408,8 +407,6 @@ $`08NM240_Annual_Statistics`</code></pre>
 <a href="https://cran.r-project.org/package=fitdistrplus"><code>fitdistrplus</code></a> - used in the frequency analyses for fitting data to the distributions</li>
 <li>
 <a href="https://cran.r-project.org/package=ggplot2"><code>ggplot2</code></a> - used for plotting the data</li>
-<li>
-<a href="https://cran.r-project.org/package=lubridate"><code>lubridate</code></a> - used for easy creation of date columns</li>
 <li>
 <a href="https://cran.r-project.org/package=PearsonDS"><code>PearsonDS</code></a> - used in the frequency analyses for fitting data to the distributions</li>
 <li>

@@ -14,11 +14,9 @@
 <script src="pkgdown.js"></script><meta property="og:title" content="Analyze, Summarize, and Visualize Daily Streamflow Data">
 <meta property="og:description" content="The Flow Analysis Summary Statistics Tool for R, fasstr, provides various 
     functions to tidy and screen daily stream discharge data; calculate and visualize various summary statistics
-    and metrics; and compute annual trending (using zyp package methods &lt;https://CRAN.R-project.org/package=zyp&gt;)
-    and volume frequency analyses (using methods similar to HEC-SSP (2019) 
-    &lt;https://www.hec.usace.army.mil/software/hec-ssp/&gt;). It features useful function arguments for filtering of and
-    handling dates, customizing data and metrics, and the ability to pull daily data directly from the Water Survey
-    of Canada hydrometric database (&lt;https://collaboration.cmc.ec.gc.ca/cmc/hydrometrics/www/&gt;).">
+    and metrics; and compute annual trending and volume frequency analyses. It features useful function arguments 
+    for filtering of and handling dates, customizing data and metrics, and the ability to pull daily data directly 
+    from the Water Survey of Canada hydrometric database (&lt;https://collaboration.cmc.ec.gc.ca/cmc/hydrometrics/www/&gt;).">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -37,7 +35,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
       </span>
     </div>
 
@@ -188,19 +186,19 @@
 <div id="license" class="section level3">
 <h3 class="hasAnchor">
 <a href="#license" class="anchor"></a>License</h3>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>Copyright <span class="dv">2019</span> Province of British Columbia</span>
-<span id="cb4-2"><a href="#cb4-2"></a></span>
-<span id="cb4-3"><a href="#cb4-3"></a>Licensed under the Apache License, Version <span class="fl">2.0</span> (the <span class="st">"License"</span>);</span>
-<span id="cb4-4"><a href="#cb4-4"></a>you may not use this file except <span class="cf">in</span> compliance with the License.</span>
-<span id="cb4-5"><a href="#cb4-5"></a>You may obtain a copy of the License at </span>
-<span id="cb4-6"><a href="#cb4-6"></a></span>
-<span id="cb4-7"><a href="#cb4-7"></a>   http<span class="op">:</span><span class="er">//</span>www.apache.org<span class="op">/</span>licenses<span class="op">/</span>LICENSE<span class="fl">-2.0</span></span>
-<span id="cb4-8"><a href="#cb4-8"></a></span>
-<span id="cb4-9"><a href="#cb4-9"></a>Unless required by applicable law or agreed to <span class="cf">in</span> writing, software</span>
-<span id="cb4-10"><a href="#cb4-10"></a>distributed under the License is distributed on an <span class="st">"AS IS"</span> BASIS,</span>
-<span id="cb4-11"><a href="#cb4-11"></a>WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
-<span id="cb4-12"><a href="#cb4-12"></a>See the License <span class="cf">for</span> the specific language governing permissions and</span>
-<span id="cb4-13"><a href="#cb4-13"></a>limitations under the License.</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Copyright <span class="dv">2019</span> Province of British Columbia</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>Licensed under the Apache License, Version <span class="fl">2.0</span> (the <span class="st">"License"</span>);</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>you may not use this file except <span class="cf">in</span> compliance with the License.</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>You may obtain a copy of the License at </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>   http<span class="sc">:</span><span class="er">//</span>www.apache.org<span class="sc">/</span>licenses<span class="sc">/</span>LICENSE<span class="fl">-2.0</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>Unless required by applicable law or agreed to <span class="cf">in</span> writing, software</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>distributed under the License is distributed on an <span class="st">"AS IS"</span> BASIS,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>See the License <span class="cf">for</span> the specific language governing permissions and</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>limitations under the License.</span></code></pre></div>
 </div>
 </div>
   </div>
@@ -245,7 +243,7 @@
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a id="devex-badge" rel="Stable" href="https://github.com/bcgov/repomountie/blob/enhancement/stateBadges/doc/lifecycle-badges.md"><img alt="The project is in a reliable state and major changes are unlikely to happen." style="border-width:0" src="https://img.shields.io/badge/Lifecycle-Stable-97ca00" title="The project is in a reliable state and major changes are unlikely to happen."></a></li>
+<li><a href="https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md"><img src="https://img.shields.io/badge/Lifecycle-Stable-97ca00" alt="img"></a></li>
 <li><a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License"></a></li>
 <li><a href="https://travis-ci.org/bcgov/fasstr"><img src="https://travis-ci.org/bcgov/fasstr.svg?branch=master" alt="Travis build status"></a></li>
 </ul>

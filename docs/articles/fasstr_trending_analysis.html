@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
       </span>
     </div>
 
@@ -109,8 +109,7 @@
 
       
 
-      </header><script src="fasstr_trending_analysis_files/header-attrs-2.5/header-attrs.js"></script><script src="fasstr_trending_analysis_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="fasstr_trending_analysis_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="fasstr_trending_analysis_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><script src="fasstr_trending_analysis_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Computing Annual Trends with fasstr</h1>
@@ -374,14 +373,13 @@
  8 08NM116        Min_1_Da~ 2.93e+2 333     11     38      73     55     268    
  9 08NM116        Min_3_Day 4.53e-2   0.533  0.378  0.741   0.627  0.630   0.416
 10 08NM116        Min_3_Da~ 2.95e+2 334     39     63     252      3     269    
-# ... with 97 more rows, and 34 more variables: `1980` &lt;dbl&gt;, `1981` &lt;dbl&gt;,
-#   `1982` &lt;dbl&gt;, `1983` &lt;dbl&gt;, `1984` &lt;dbl&gt;, `1985` &lt;dbl&gt;, `1986` &lt;dbl&gt;,
-#   `1987` &lt;dbl&gt;, `1988` &lt;dbl&gt;, `1989` &lt;dbl&gt;, `1990` &lt;dbl&gt;, `1991` &lt;dbl&gt;,
-#   `1992` &lt;dbl&gt;, `1993` &lt;dbl&gt;, `1994` &lt;dbl&gt;, `1995` &lt;dbl&gt;, `1996` &lt;dbl&gt;,
-#   `1997` &lt;dbl&gt;, `1998` &lt;dbl&gt;, `1999` &lt;dbl&gt;, `2000` &lt;dbl&gt;, `2001` &lt;dbl&gt;,
-#   `2002` &lt;dbl&gt;, `2003` &lt;dbl&gt;, `2004` &lt;dbl&gt;, `2005` &lt;dbl&gt;, `2006` &lt;dbl&gt;,
-#   `2007` &lt;dbl&gt;, `2008` &lt;dbl&gt;, `2009` &lt;dbl&gt;, `2010` &lt;dbl&gt;, `2011` &lt;dbl&gt;,
-#   `2012` &lt;dbl&gt;, `2013` &lt;dbl&gt;</code></pre>
+# ... with 97 more rows, and 34 more variables: 1980 &lt;dbl&gt;, 1981 &lt;dbl&gt;,
+#   1982 &lt;dbl&gt;, 1983 &lt;dbl&gt;, 1984 &lt;dbl&gt;, 1985 &lt;dbl&gt;, 1986 &lt;dbl&gt;, 1987 &lt;dbl&gt;,
+#   1988 &lt;dbl&gt;, 1989 &lt;dbl&gt;, 1990 &lt;dbl&gt;, 1991 &lt;dbl&gt;, 1992 &lt;dbl&gt;, 1993 &lt;dbl&gt;,
+#   1994 &lt;dbl&gt;, 1995 &lt;dbl&gt;, 1996 &lt;dbl&gt;, 1997 &lt;dbl&gt;, 1998 &lt;dbl&gt;, 1999 &lt;dbl&gt;,
+#   2000 &lt;dbl&gt;, 2001 &lt;dbl&gt;, 2002 &lt;dbl&gt;, 2003 &lt;dbl&gt;, 2004 &lt;dbl&gt;, 2005 &lt;dbl&gt;,
+#   2006 &lt;dbl&gt;, 2007 &lt;dbl&gt;, 2008 &lt;dbl&gt;, 2009 &lt;dbl&gt;, 2010 &lt;dbl&gt;, 2011 &lt;dbl&gt;,
+#   2012 &lt;dbl&gt;, 2013 &lt;dbl&gt;</code></pre>
 </div>
 </div>
 <div id="analysis-results" class="section level3">
@@ -480,18 +478,18 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">trends_analysis</span><span class="op">$</span><span class="va">Annual_Trends_Results</span></code></pre></div>
 <pre><code># A tibble: 107 x 20
-   STATION_NUMBER Statistic   lbound    trend  trendp  ubound      tau    sig
-   &lt;chr&gt;          &lt;fct&gt;        &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;
- 1 08NM116        Annual_M~ -0.368    5.71e-2  2.34   0.517    0.00513 0.972 
- 2 08NM116        Annual_M~ -0.0608  -4.47e-3 -0.183  0.0476  -0.0718  0.522 
- 3 08NM116        Annual_M~ -0.0297  -7.45e-3 -0.305  0.0100  -0.138   0.213 
- 4 08NM116        Annual_M~ -0.00480 -2.97e-4 -0.0122 0.00450 -0.0487  0.666 
- 5 08NM116        Annual_P~ -0.0102  -4.19e-3 -0.172  0.00300 -0.105   0.345 
- 6 08NM116        Annual_P~ -0.211    2.05e-3  0.0839 0.218   -0.0308  0.789 
- 7 08NM116        Min_1_Day -0.00480 -2.97e-4 -0.0122 0.00450 -0.0487  0.666 
- 8 08NM116        Min_1_Da~ -0.5      1.74e+0 71.3    6.55     0.285   0.0100
- 9 08NM116        Min_3_Day -0.00460  3.45e-4  0.0142 0.00529 -0.0282  0.807 
-10 08NM116        Min_3_Da~ -1.65     7.57e-1 31.0    3        0.131   0.239 
+   STATION_NUMBER Statistic      lbound    trend  trendp  ubound      tau    sig
+   &lt;chr&gt;          &lt;fct&gt;           &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;
+ 1 08NM116        Annual_Maxi~ -0.368    5.71e-2  2.34   0.517    0.00513 0.972 
+ 2 08NM116        Annual_Mean  -0.0608  -4.47e-3 -0.183  0.0476  -0.0718  0.522 
+ 3 08NM116        Annual_Medi~ -0.0297  -7.45e-3 -0.305  0.0100  -0.138   0.213 
+ 4 08NM116        Annual_Mini~ -0.00480 -2.97e-4 -0.0122 0.00450 -0.0487  0.666 
+ 5 08NM116        Annual_P10   -0.0102  -4.19e-3 -0.172  0.00300 -0.105   0.345 
+ 6 08NM116        Annual_P90   -0.211    2.05e-3  0.0839 0.218   -0.0308  0.789 
+ 7 08NM116        Min_1_Day    -0.00480 -2.97e-4 -0.0122 0.00450 -0.0487  0.666 
+ 8 08NM116        Min_1_Day_D~ -0.5      1.74e+0 71.3    6.55     0.285   0.0100
+ 9 08NM116        Min_3_Day    -0.00460  3.45e-4  0.0142 0.00529 -0.0282  0.807 
+10 08NM116        Min_3_Day_D~ -1.65     7.57e-1 31.0    3        0.131   0.239 
 # ... with 97 more rows, and 12 more variables: nruns &lt;dbl&gt;, autocor &lt;dbl&gt;,
 #   valid_frac &lt;dbl&gt;, linear &lt;dbl&gt;, intercept &lt;dbl&gt;, min_year &lt;dbl&gt;,
 #   max_year &lt;dbl&gt;, n_years &lt;int&gt;, mean &lt;dbl&gt;, median &lt;dbl&gt;, min &lt;dbl&gt;,

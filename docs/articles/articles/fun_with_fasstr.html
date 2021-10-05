@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
       </span>
     </div>
 
@@ -109,8 +109,7 @@
 
       
 
-      </header><script src="fun_with_fasstr_files/header-attrs-2.5/header-attrs.js"></script><script src="fun_with_fasstr_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="fun_with_fasstr_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="fun_with_fasstr_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><script src="fun_with_fasstr_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Fun with fasstr</h1>
@@ -123,6 +122,13 @@
 
     
     
+<p>Topics</p>
+<ul>
+<li>Tidyverse fun (daily with reference lines)</li>
+<li>Integration with other packages</li>
+<li>Groundwater Data</li>
+<li>Fitting data to other distributions (fasstr uses those in HEC-SSP, but others)</li>
+</ul>
 <p>These examples use the following packages</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bcgov.github.io/fasstr/">fasstr</a></span><span class="op">)</span>
@@ -139,14 +145,39 @@
 <h3 class="hasAnchor">
 <a href="#adding-lines-to-daily-plots" class="anchor"></a>adding lines to daily plots</h3>
 </div>
+<div id="add-realtime-data-to-daily-plot" class="section level3">
+<h3 class="hasAnchor">
+<a href="#add-realtime-data-to-daily-plot" class="anchor"></a>add realtime data to daily plot</h3>
+</div>
+<div id="writing-results-with-fasstr-function-within-quick-excel-file-for-exploration" class="section level3">
+<h3 class="hasAnchor">
+<a href="#writing-results-with-fasstr-function-within-quick-excel-file-for-exploration" class="anchor"></a>writing results with fasstr function within (quick excel file for exploration)</h3>
+</div>
 <div id="other-probability-distribution-fitting-with-fasstr-results" class="section level3">
 <h3 class="hasAnchor">
 <a href="#other-probability-distribution-fitting-with-fasstr-results" class="anchor"></a>Other probability distribution fitting with fasstr results</h3>
+<div id="calculate-low-flows-or-high-flows" class="section level5">
+<h5 class="hasAnchor">
+<a href="#calculate-low-flows-or-high-flows" class="anchor"></a>calculate low flows or high flows</h5>
+</div>
+<div id="test-for-independence-stationarity-homegeniety" class="section level5">
+<h5 class="hasAnchor">
+<a href="#test-for-independence-stationarity-homegeniety" class="anchor"></a>test for independence, stationarity, homegeniety</h5>
+</div>
+<div id="frequency-curve-for-plotting" class="section level5">
+<h5 class="hasAnchor">
+<a href="#frequency-curve-for-plotting" class="anchor"></a>frequency curve for plotting</h5>
+</div>
+<div id="fit-distribution" class="section level5">
+<h5 class="hasAnchor">
+<a href="#fit-distribution" class="anchor"></a>fit distribution</h5>
+<p><a href="https://rpubs.com/blakeobeans/fitdistrplus" class="uri">https://rpubs.com/blakeobeans/fitdistrplus</a></p>
 <p>fasstr data doesnt require objects to be certain classes, just requires a data frame with the time series (Dates and Values).</p>
 <p>These examples use the following packages</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bcgov.github.io/fasstr/">fasstr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></code></pre></div>
+</div>
 </div>
 <div id="tidyhydat" class="section level3">
 <h3 class="hasAnchor">
