@@ -132,7 +132,7 @@ compute_hydat_peak_frequencies <- function(station_number,
   if (use_max & nrow(inst_peaks) == 0)  stop("No maximum peak flow data available for this station_number.", call. = FALSE) 
   if (!use_max & nrow(inst_peaks) == 0) stop("No minimum peak flow data available for this station_number.", call. = FALSE) 
 
-  inst_peaks$Year <- lubridate::year(inst_peaks$Date)
+  inst_peaks$Year <- as.numeric(format(as.Date(inst_peaks$Date), format = "%Y"))
   inst_peaks <- dplyr::select(inst_peaks, Year, Measure = PEAK_CODE, Value)
   inst_peaks <- dplyr::mutate(inst_peaks, Measure = paste0("Instantaneous ", ifelse(use_max,"Maximum", "Minimum")))
   

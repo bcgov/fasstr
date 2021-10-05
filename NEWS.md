@@ -6,6 +6,7 @@ Updated: 05 Oct 2021
 #### Updates:
 
   * Removed check for a hydat.sqlite3 file. Stop error from tidyhydat catches error.
+  * Removed lubridate package dependency
   * Fixed ggplot2::guides deprecated arguments warning
 
 

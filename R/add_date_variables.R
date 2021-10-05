@@ -71,12 +71,12 @@ add_date_variables <- function(data,
   ## ---------------------------
   
   # Calculate each date variable
-  flow_data$CalendarYear  <- lubridate::year(flow_data$Date)
-  flow_data$Month  <- lubridate::month(flow_data$Date)
+  flow_data$CalendarYear  <- as.numeric(format(as.Date(flow_data$Date), format = "%Y"))
+  flow_data$Month  <- as.numeric(format(as.Date(flow_data$Date), format = "%m"))
   flow_data$MonthName <- month.abb[flow_data$Month]
   flow_data$MonthName <- factor(flow_data$MonthName, levels = month.abb[c(water_year_start:12, 1:water_year_start-1)])
   flow_data$WaterYear <- flow_data$CalendarYear
-  flow_data$DayofYear <- lubridate::yday(flow_data$Date)
+  flow_data$DayofYear <- as.numeric(format(as.Date(flow_data$Date), format = "%j"))
   
   
   ## ADD WATER YEAR VARIABLES (if selected)

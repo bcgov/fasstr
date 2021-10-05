@@ -42,19 +42,6 @@ test_that("add_date_variables actually adds proper columns",{
 
 # Function modifiers
 
-test_that("water years start on first day of selected months",{
-  skip_on_cran()
-  skip_on_travis()
-  stns <- "08NM003"
-  yr_str <- 3
-  data <- fill_missing_dates(station_number = stns, water_year_start = yr_str) %>% 
-    add_date_variables(water_year_start = yr_str) %>% 
-    dplyr::group_by(WaterYear) %>% 
-    dplyr::top_n(n = 1, dplyr::desc(Date))
-  lubridate::year(data$Date) <- 0
-  expect_true(all(data$Date == paste0("0000-",yr_str,"-01")))
-})
-
 test_that("first day of years start on first day of selected months",{
   skip_on_cran()
   skip_on_travis()
@@ -62,8 +49,7 @@ test_that("first day of years start on first day of selected months",{
   yr_str <- 4
   data <- fill_missing_dates(station_number = stns, water_year_start = yr_str) %>% 
     add_date_variables(water_year_start = yr_str) %>% 
-    dplyr::top_n(n = -1, DayofYear)
-  lubridate::year(data$Date) <- 0
-  expect_true(all(data$Date == paste0("0000-",yr_str,"-01")))
+    dplyr::slice_min(DayofYear)
+  expect_true(all(data$Date == as.Date(paste0(data$CalendarYear,"-0",yr_str,"-01"))))
 })
 

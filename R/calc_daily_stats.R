@@ -207,7 +207,7 @@ calc_daily_stats <- function(data,
   }
   
   # Filter for months
-  daily_stats$Month <- lubridate::month(daily_stats$AnalysisDate)
+  daily_stats$Month <- as.numeric(format(as.Date(daily_stats$AnalysisDate), format = "%m"))
   daily_stats <- dplyr::filter(daily_stats, Month %in% months)
   daily_stats <- dplyr::select(daily_stats, -Month)
   

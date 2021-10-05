@@ -101,13 +101,13 @@ fill_missing_dates <- function(data,
       # Override start/end dates if filling end years
       if (fill_end_years[1]) {
         
-        min_month <- lubridate::month(min(flow_data_stn$Date, na.rm = TRUE))
-        min_year <- lubridate::year(min(flow_data_stn$Date, na.rm = TRUE))
+        min_month <- as.numeric(format(as.Date(min(flow_data_stn$Date, na.rm = TRUE)), format = "%m"))
+        min_year <-  as.numeric(format(as.Date(min(flow_data_stn$Date, na.rm = TRUE)), format = "%Y"))
         start_date <- as.Date(paste(ifelse(min_month < water_year_start, min_year - 1, min_year),
                                     water_year_start, '01', sep = '-'), "%Y-%m-%d")
         
-        max_month <- lubridate::month(max(flow_data_stn$Date, na.rm = TRUE))
-        max_year <- lubridate::year(max(flow_data_stn$Date, na.rm = TRUE))
+        max_month <- as.numeric(format(as.Date(max(flow_data_stn$Date, na.rm = TRUE)), format = "%m"))
+        max_year <-  as.numeric(format(as.Date(max(flow_data_stn$Date, na.rm = TRUE)), format = "%Y"))
         end_date <- as.Date(paste(ifelse(max_month > water_year_start, max_year + 1, max_year),
                                   water_year_start, '01', sep = '-'), "%Y-%m-%d") - 1
         

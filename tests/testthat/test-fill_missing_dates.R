@@ -38,8 +38,10 @@ test_that("all dates are added between start and end years of original data",{
   stns <- "08NM003"
   data_missing <- tidyhydat::hy_daily_flows(stns)
   data_filled <- fill_missing_dates(station_number = stns)
-  expect_true(all(seq(as.Date(paste0(lubridate::year(min(data_missing$Date)),"-01-01")), 
-                              as.Date(paste0(lubridate::year(max(data_missing$Date)),"-12-31")),
+  expect_true(all(seq(as.Date(paste0(as.numeric(format(as.Date(min(data_missing$Date)), format = "%Y")),
+                                     "-01-01")), 
+                      as.Date(paste0(as.numeric(format(as.Date(max(data_missing$Date)), format = "%Y")),
+                                     "-12-31")),
                       by = "1 day") %in% data_filled$Date))
 })
 
@@ -63,6 +65,6 @@ test_that("record starts in the month specified by water_year_start",{
   stns <- "08NM003"
   data <- fill_missing_dates(station_number = stns,  
                              water_year_start = month_to_start_water_year)
-  expect_true(lubridate::month(min(data$Date)) == month_to_start_water_year)
+  expect_true(as.numeric(format(as.Date(min(data$Date)), format = "%m")) == month_to_start_water_year)
 })
 
