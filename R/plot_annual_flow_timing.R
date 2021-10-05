@@ -138,7 +138,7 @@ plot_annual_flow_timing <- function(data,
         ggplot2::xlab("Year") +
         #ggplot2::scale_color_brewer(palette = "Set1") +
         ggplot2::theme_bw() +
-        ggplot2::guides(colour = FALSE) +
+        ggplot2::guides(colour = 'none') +
         {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
         ggplot2::theme(legend.position = "right", 
                        legend.spacing = ggplot2::unit(0, "cm"),

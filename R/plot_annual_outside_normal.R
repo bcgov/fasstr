@@ -137,7 +137,7 @@ plot_annual_outside_normal <- function(data,
           ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
           ggplot2::ylab("Number of Days") +
           ggplot2::xlab("Year") +
-          ggplot2::guides(colour = FALSE) +
+          ggplot2::guides(colour = 'none') +
           ggplot2::theme_bw() +
           {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
           ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
