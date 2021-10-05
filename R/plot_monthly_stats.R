@@ -157,7 +157,7 @@ plot_monthly_stats <- function(data,
                                                             short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
                                                             long = ggplot2::unit(.2, "cm"))} +
             ggplot2::ylab(y_axis_title) +
-            ggplot2::guides(colour = FALSE) +
+            ggplot2::guides(colour = 'none') +
             ggplot2::theme_bw() +
             {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y, unique(.$Stat2))) } +
             {if (include_title & .y == "XXXXXXX") ggplot2::ggtitle(paste(unique(.$Stat2))) } +
