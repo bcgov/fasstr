@@ -38,6 +38,5 @@ Suggests:
     knitr,
     rmarkdown,
     testthat
-LazyData: true
 RoxygenNote: 7.1.2
 VignetteBuilder: knitr
