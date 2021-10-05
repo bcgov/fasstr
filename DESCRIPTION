@@ -8,11 +8,9 @@ Authors@R: c(person("Jon", "Goetz", email = "jon.goetz@gov.bc.ca", role = c("aut
              person("Province of British Columbia", role = "cph"))
 Description: The Flow Analysis Summary Statistics Tool for R, 'fasstr', provides various 
     functions to tidy and screen daily stream discharge data; calculate and visualize various summary statistics
-    and metrics; and compute annual trending (using 'zyp' package methods <https://CRAN.R-project.org/package=zyp>)
-    and volume frequency analyses (using methods similar to HEC-SSP (2019) 
-    <https://www.hec.usace.army.mil/software/hec-ssp/>). It features useful function arguments for filtering of and
-    handling dates, customizing data and metrics, and the ability to pull daily data directly from the Water Survey
-    of Canada hydrometric database (<https://collaboration.cmc.ec.gc.ca/cmc/hydrometrics/www/>).
+    and metrics; and compute annual trending and volume frequency analyses. It features useful function arguments 
+    for filtering of and handling dates, customizing data and metrics, and the ability to pull daily data directly 
+    from the Water Survey of Canada hydrometric database (<https://collaboration.cmc.ec.gc.ca/cmc/hydrometrics/www/>).
 Depends: R (>= 3.3.0)
 License: Apache License 2.0
 URL: https://bcgov.github.io/fasstr/,
@@ -41,5 +39,5 @@ Suggests:
     rmarkdown,
     testthat
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 VignetteBuilder: knitr
