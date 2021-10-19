@@ -64,15 +64,6 @@
 #'                             start_year = 1981,
 #'                             end_year = 2010,
 #'                             exclude_years = c(1991,1993:1995))
-#'                   
-#' # Calculate long-term monthly statistics for 7-day flows for July-September months only, 
-#' # with 25 and 75th percentiles
-#' calc_longterm_monthly_stats(station_number = "08NM116",
-#'                             roll_days = 7,
-#'                             months = 7:9,
-#'                             percentiles = c(25,75),
-#'                             ignore_missing = TRUE,
-#'                             include_annual = FALSE) # removes the Long-term numbers 
 #'                     
 #' # Calculate long-term monthly statistics and add custom stats for July-September
 #' calc_longterm_monthly_stats(station_number = "08NM116",

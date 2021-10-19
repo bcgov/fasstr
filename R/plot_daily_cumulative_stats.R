@@ -39,9 +39,6 @@
 #' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
 #' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Plot annual daily volume statistics
-#' plot_daily_cumulative_stats(station_number = "08NM116") 
-#' 
 #' # Plot annual daily yield statistics with default HYDAT basin area
 #' plot_daily_cumulative_stats(station_number = "08NM116",
 #'                             use_yield = TRUE) 

@@ -112,17 +112,12 @@ calc_monthly_stats(station_number = "08NM116",
                    start_year = 1980,
                    water_year_start = 10)
                   
-# Calculate statistics with custom years
+# Calculate statistics with custom years and percentiles
 calc_monthly_stats(station_number = "08NM116",
                    start_year = 1981,
                    end_year = 2010,
-                   exclude_years = c(1991,1993:1995))
-                  
-# Calculate statistics for 7-day flows, with 25 and 75th percentiles
-calc_monthly_stats(station_number = "08NM116",
-                   roll_days = 7,
-                   percentiles = c(25,75),
-                   ignore_missing = TRUE)
+                   exclude_years = c(1991,1993:1995),
+                   percentiles = c(25,75))
                    
 }
 }

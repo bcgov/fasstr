@@ -59,20 +59,12 @@
 #'                           start_year = 1980,
 #'                           water_year_start = 10)
 #'                   
-#' # Calculate long-term statistics with custom years
+#' # Calculate long-term statistics with custom years and percentiles
 #' calc_longterm_daily_stats(station_number = "08NM116",
 #'                           start_year = 1981,
 #'                           end_year = 2010,
-#'                           exclude_years = c(1991,1993:1995))
-#'                   
-#' # Calculate long-term statistics for 7-day flows for July-September months only, 
-#' # with 25 and 75th percentiles
-#' calc_longterm_daily_stats(station_number = "08NM116",
-#'                           roll_days = 7,
-#'                           months = 7:9,
-#'                           percentiles = c(25,75),
-#'                           ignore_missing = TRUE,
-#'                           include_longterm = FALSE) # removes the Long-term numbers 
+#'                           exclude_years = c(1991,1993:1995),
+#'                           percentiles = c(25,75))
 #'                     
 #' # Calculate long-term statistics and add custom stats for July-September
 #' calc_longterm_daily_stats(station_number = "08NM116",

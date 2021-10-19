@@ -126,12 +126,6 @@ plot_daily_stats(station_number = "08NM116",
                  start_year = 1980,
                  roll_days = 7,
                  months = 7:9)
-
-# Plot daily statistics without a log-scale Discharge axis
-plot_daily_stats(station_number = "08NM116",
-                 start_year = 1981,
-                 end_year = 2010,
-                 log_discharge = FALSE)
                  
 }
 }
