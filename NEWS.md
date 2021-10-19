@@ -1,14 +1,14 @@
 fasstr 0.3.3
 =========================
 
-Updated: 05 Oct 2021
+Updated: 19 Oct 2021
 
 #### Updates:
 
   * Removed check for a hydat.sqlite3 file. Stop error from tidyhydat catches error.
   * Removed lubridate package dependency
   * Fixed ggplot2::guides deprecated arguments warning
-
+  * Simplified some internal coding for efficiency
 
 
 fasstr 0.3.2
