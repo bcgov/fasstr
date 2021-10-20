@@ -23,7 +23,7 @@
 #' @param fill_end_years Logical value indicating whether to fill incomplete start and end years with rows of dates. 
 #'    If \code{FALSE} then only missing dates between the provided start and end dates will be filled. Default \code{TRUE}.
 #'  
-#' @return A tibble data frame of the source data with additional rows where mising dates existed.
+#' @return A tibble data frame of the source data with additional rows where missing dates existed.
 #'
 #' @examples
 #' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())

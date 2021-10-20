@@ -478,7 +478,7 @@ calc_monthly_stats(station_number = "08NM116",
                    start_year = 1974)
 ```
 
-The percentiles in the `plot_monthly_stats()` function are fully customizable like the `calc_` function. A plot for each different statistic (meana, medians, percentiles, etc.) is created to visualize the monthly patterns over the years.
+The percentiles in the `plot_monthly_stats()` function are fully customizable like the `calc_` function. A plot for each different statistic (means, medians, percentiles, etc.) is created to visualize the monthly patterns over the years.
 
 ```{r, fig.height = 4, fig.width = 7, comment=NA}
 plot_monthly_stats(station_number = "08NM116", 

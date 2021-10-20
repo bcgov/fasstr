@@ -153,7 +153,7 @@ Some functions have an argument called `complete_years` which can be used, when 
 
 #### Summary statistics example: long-term statistics
 
-To determine the long-term summary statistics of daily data for each month (mean, median, maximum, minimum, and some percentiles) you can use the `calc_longterm_daily_stats()` function. If the 'Mission Creek near East Kelowna' hydrometric station is of interest you can list the station number in the `station_number` argument to obtain the data (if `tidyhydat` and HYDAT are installed). Statistics over several months can also be calculated, if of interest. See the summer statistics (from July to Septmber) in this example.
+To determine the long-term summary statistics of daily data for each month (mean, median, maximum, minimum, and some percentiles) you can use the `calc_longterm_daily_stats()` function. If the 'Mission Creek near East Kelowna' hydrometric station is of interest you can list the station number in the `station_number` argument to obtain the data (if `tidyhydat` and HYDAT are installed). Statistics over several months can also be calculated, if of interest. See the summer statistics (from July to September) in this example.
 
 ```{r example1}
 calc_longterm_daily_stats(station_number = "08NM116", 

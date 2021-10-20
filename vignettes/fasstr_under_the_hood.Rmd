@@ -329,6 +329,6 @@ The following list contains the packages required to complete many of the `fasst
 - [`tidyhydat`](https://cran.r-project.org/package=tidyhydat) - used to extract data from a HYDAT database
 - [`tidyr`](https://cran.r-project.org/package=tidyr) - used for many tidy functions (gather, spread, etc)
 - [`openxlsx`](https://cran.r-project.org/package=openxlsx) - used to write data as Excel files in the write_ functions
-- [`zyp`](https://cran.r-project.org/package=zyp) - used in the trending funrction to calculate the trends
+- [`zyp`](https://cran.r-project.org/package=zyp) - used in the trending function to calculate the trends
 
 

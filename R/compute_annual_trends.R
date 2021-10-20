@@ -30,7 +30,7 @@
 #' 
 #' @inheritParams calc_all_annual_stats
 #' @param zyp_method Character string identifying the prewhitened trend method to use from \code{zyp}, either \code{'zhang'}
-#'     or \code{'yuepilon'}. \code{'zhang'} is recommended over \code{'yuepilon'} for hydrologic applications (Buerger 2017; 
+#'     or \code{'yuepilon'}. \code{'zhang'} is recommended over \code{'yuepilon'} for hydrologic applications (Bürger 2017; 
 #'     Zhang and Zwiers 2004). Required.
 #' @param include_plots Logical value indicating if annual trending plots should be included. Default \code{TRUE}.
 #' @param zyp_alpha Numeric value of the significance level (ex. \code{0.05}) of when to plot a trend line. Leave blank for no line.
@@ -42,7 +42,7 @@
 #' 
 #' @references References:
 #' \itemize{
-#'  \item{Bueger, G. 2017. On trend detection. Hydrological Processes 31, 4039–4042. https://doi.org/10.1002/hyp.11280.}
+#'  \item{Büger, G. 2017. On trend detection. Hydrological Processes 31, 4039–4042. https://doi.org/10.1002/hyp.11280.}
 #'  \item{Sen, P.K., 1968. Estimates of the Regression Coefficient Based on Kendall's Tau. Journal of the 
 #'        American Statistical Association Vol. 63, No. 324: 1379-1389.}
 #'  \item{Wang, X.L. and Swail, V.R., 2001. Changes in extreme wave heights in northern hemisphere oceans and 

@@ -49,7 +49,7 @@ which to extract daily streamflow data from a HYDAT database. Requires \code{tid
 Leave blank if using \code{data} argument.}
 
 \item{zyp_method}{Character string identifying the prewhitened trend method to use from \code{zyp}, either \code{'zhang'}
-or \code{'yuepilon'}. \code{'zhang'} is recommended over \code{'yuepilon'} for hydrologic applications (Buerger 2017; 
+or \code{'yuepilon'}. \code{'zhang'} is recommended over \code{'yuepilon'} for hydrologic applications (Bürger 2017; 
 Zhang and Zwiers 2004). Required.}
 
 \item{basin_area}{Upstream drainage basin area, in square kilometres, to apply to observations. Three options:
@@ -155,7 +155,7 @@ trends <- compute_annual_trends(station_number = "08NM116",
 \references{
 References:
 \itemize{
- \item{Bueger, G. 2017. On trend detection. Hydrological Processes 31, 4039–4042. https://doi.org/10.1002/hyp.11280.}
+ \item{Büger, G. 2017. On trend detection. Hydrological Processes 31, 4039–4042. https://doi.org/10.1002/hyp.11280.}
  \item{Sen, P.K., 1968. Estimates of the Regression Coefficient Based on Kendall's Tau. Journal of the 
        American Statistical Association Vol. 63, No. 324: 1379-1389.}
  \item{Wang, X.L. and Swail, V.R., 2001. Changes in extreme wave heights in northern hemisphere oceans and 

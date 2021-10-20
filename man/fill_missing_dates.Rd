@@ -40,7 +40,7 @@ analysis. Default \code{1}.}
 If \code{FALSE} then only missing dates between the provided start and end dates will be filled. Default \code{TRUE}.}
 }
 \value{
-A tibble data frame of the source data with additional rows where mising dates existed.
+A tibble data frame of the source data with additional rows where missing dates existed.
 }
 \description{
 Fills data gaps of missing dates of the data provided. Builds a continuous data set from the start date to the end date.
