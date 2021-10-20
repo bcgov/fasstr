@@ -160,14 +160,18 @@
 <h1 class="page-header" data-toc-text="0.3.3">
 <a href="#fasstr-033" class="anchor"></a>fasstr 0.3.3<small> Unreleased </small>
 </h1>
-<p>Updated: 05 Oct 2021</p>
+<p>Updated: 20 Oct 2021</p>
 <div id="updates" class="section level4">
 <h4 class="hasAnchor">
 <a href="#updates" class="anchor"></a>Updates:</h4>
 <ul>
-<li>Removed check for a hydat.sqlite3 file. Stop error from tidyhydat catches error.</li>
+<li>For trending, changed default/recommended method to ‘zhang’ over ‘yuelipon’ (<a href="https://github.com/pacificclimate/zyp/issues/6" class="uri">https://github.com/pacificclimate/zyp/issues/6</a>)</li>
+<li>Removed check for a hydat.sqlite3 file; tidyhydatstop error catches error</li>
 <li>Removed lubridate package dependency</li>
 <li>Fixed ggplot2::guides deprecated arguments warning</li>
+<li>Simplified some internal coding for efficiency</li>
+<li>Removed some function examples to reduce timing; examples of usage in vignettes</li>
+<li>Removed TravisCI, added Github Action R-CMD-check using usethis::use_github_action_check_standard()</li>
 </ul>
 </div>
 </div>

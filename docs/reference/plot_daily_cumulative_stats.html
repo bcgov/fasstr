@@ -284,9 +284,6 @@ analysis. Default <code>1</code>.</p></td>
     <pre class="examples"><div class='input'><span class='co'># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span>
 <span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span><span class='op'>(</span><span class='fu'>tidyhydat</span><span class='fu'>::</span><span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
 
-<span class='co'># Plot annual daily volume statistics</span>
-<span class='fu'>plot_daily_cumulative_stats</span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span><span class='op'>)</span> 
-
 <span class='co'># Plot annual daily yield statistics with default HYDAT basin area</span>
 <span class='fu'>plot_daily_cumulative_stats</span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span>,
                             use_yield <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> 
@@ -297,7 +294,7 @@ analysis. Default <code>1</code>.</p></td>
                             basin_area <span class='op'>=</span> <span class='fl'>800</span><span class='op'>)</span> 
                             
 <span class='op'>}</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; $Daily_Cumulative_Yield_Stats</div><div class='img'><img src='plot_daily_cumulative_stats-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div></pre>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; $Daily_Cumulative_Yield_Stats</div><div class='img'><img src='plot_daily_cumulative_stats-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

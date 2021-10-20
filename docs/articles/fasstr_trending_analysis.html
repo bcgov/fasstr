@@ -228,12 +228,12 @@
 <p>Example with default arguments:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
-                      zyp_method <span class="op">=</span> <span class="st">"yuepilon"</span>,
+                      zyp_method <span class="op">=</span> <span class="st">"zhang"</span>,
                       start_year <span class="op">=</span> <span class="fl">1973</span>, end_year <span class="op">=</span> <span class="fl">2013</span><span class="op">)</span></code></pre></div>
 <p>Example with custom arguments:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
-                      zyp_method <span class="op">=</span> <span class="st">"yuepilon"</span>,
+                      zyp_method <span class="op">=</span> <span class="st">"zhang"</span>,
                       start_year <span class="op">=</span> <span class="fl">1973</span>, end_year <span class="op">=</span> <span class="fl">2013</span>,
                       annual_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">90</span><span class="op">)</span>,
                       monthly_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">20</span><span class="op">)</span>,
@@ -355,7 +355,7 @@
 <p>To provide examples of the outputs, an analysis will be completed on a Mission Creek HYDAT station from 1973 to 2013. The argument <code>zyp_method</code> is described below in the Analysis Results section:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">trends_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
-                                         zyp_method <span class="op">=</span> <span class="st">"yuepilon"</span>,
+                                         zyp_method <span class="op">=</span> <span class="st">"zhang"</span>,
                                          start_year <span class="op">=</span> <span class="fl">1973</span>, end_year <span class="op">=</span> <span class="fl">2013</span><span class="op">)</span></code></pre></div>
 <p>The following is an example of the outputted <strong>Annual_Trends_Data</strong> tibble:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -385,7 +385,7 @@
 <div id="analysis-results" class="section level3">
 <h3 class="hasAnchor">
 <a href="#analysis-results" class="anchor"></a>Analysis Results</h3>
-<p>To complete a trends analysis, a variable to the <code>zyp_method</code> argument must be provided, either <code>"yuepilon"</code> or <code>"zhang"</code>, designated the two different approaches to analyzing data for trends. See the <code>zyp</code> documentation for more information on the differences between the two methods. After running the function, the results of the trending analysis will be outputted in the <strong>Annual_Trends_Results</strong> tibble data frame. See the <code>zyp</code> documentation for how to interpret the results. The results tibble contains the following columns:</p>
+<p>To complete a trends analysis, a variable to the <code>zyp_method</code> argument must be provided, either <code>"zhang"</code> or <code>"yuepilon"</code>, designating the two different approaches to analyzing data for trends. The <code>zhang</code> method is recommended for hydrologic applications over <code>yuepilon</code> (see <code>zyp</code> documentation for more information on the differences between the two methods). After running the function, the results of the trending analysis will be outputted in the <strong>Annual_Trends_Results</strong> tibble data frame. See the <code>zyp</code> documentation for how to interpret the results. The results tibble contains the following columns:</p>
 <table class="table">
 <colgroup>
 <col width="16%">
@@ -478,18 +478,18 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">trends_analysis</span><span class="op">$</span><span class="va">Annual_Trends_Results</span></code></pre></div>
 <pre><code># A tibble: 107 x 20
-   STATION_NUMBER Statistic      lbound    trend  trendp  ubound      tau    sig
-   &lt;chr&gt;          &lt;fct&gt;           &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;
- 1 08NM116        Annual_Maxi~ -0.368    5.71e-2  2.34   0.517    0.00513 0.972 
- 2 08NM116        Annual_Mean  -0.0608  -4.47e-3 -0.183  0.0476  -0.0718  0.522 
- 3 08NM116        Annual_Medi~ -0.0297  -7.45e-3 -0.305  0.0100  -0.138   0.213 
- 4 08NM116        Annual_Mini~ -0.00480 -2.97e-4 -0.0122 0.00450 -0.0487  0.666 
- 5 08NM116        Annual_P10   -0.0102  -4.19e-3 -0.172  0.00300 -0.105   0.345 
- 6 08NM116        Annual_P90   -0.211    2.05e-3  0.0839 0.218   -0.0308  0.789 
- 7 08NM116        Min_1_Day    -0.00480 -2.97e-4 -0.0122 0.00450 -0.0487  0.666 
- 8 08NM116        Min_1_Day_D~ -0.5      1.74e+0 71.3    6.55     0.285   0.0100
- 9 08NM116        Min_3_Day    -0.00460  3.45e-4  0.0142 0.00529 -0.0282  0.807 
-10 08NM116        Min_3_Day_D~ -1.65     7.57e-1 31.0    3        0.131   0.239 
+   STATION_NUMBER Statistic        lbound    trend  trendp  ubound     tau   sig
+   &lt;chr&gt;          &lt;fct&gt;             &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+ 1 08NM116        Annual_Maximum -0.368    5.71e-2  2.34   0.517    0.0403 0.719
+ 2 08NM116        Annual_Mean    -0.0742  -2.10e-2 -0.862  0.0385  -0.0718 0.522
+ 3 08NM116        Annual_Median  -0.0353  -1.25e-2 -0.512  0.00769 -0.141  0.204
+ 4 08NM116        Annual_Minimum -0.00667 -9.81e-4 -0.0402 0.00409 -0.0487 0.666
+ 5 08NM116        Annual_P10     -0.0175  -6.39e-3 -0.262  0.00570 -0.105  0.345
+ 6 08NM116        Annual_P90     -0.256   -3.03e-2 -1.24   0.199   -0.0333 0.771
+ 7 08NM116        Min_1_Day      -0.00667 -9.81e-4 -0.0402 0.00409 -0.0487 0.666
+ 8 08NM116        Min_1_Day_DoY  -0.5      1.74e+0 71.3    6.55     0.151  0.170
+ 9 08NM116        Min_3_Day      -0.00694 -1.22e-3 -0.0501 0.00534 -0.0282 0.807
+10 08NM116        Min_3_Day_DoY  -1.65     7.57e-1 31.0    3        0.0758 0.493
 # ... with 97 more rows, and 12 more variables: nruns &lt;dbl&gt;, autocor &lt;dbl&gt;,
 #   valid_frac &lt;dbl&gt;, linear &lt;dbl&gt;, intercept &lt;dbl&gt;, min_year &lt;dbl&gt;,
 #   max_year &lt;dbl&gt;, n_years &lt;int&gt;, mean &lt;dbl&gt;, median &lt;dbl&gt;, min &lt;dbl&gt;,

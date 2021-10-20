@@ -185,7 +185,7 @@
   <span class='va'>end_year</span>,
   <span class='va'>exclude_years</span>,
   ignore_missing <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  zyp_method <span class='op'>=</span> <span class='st'>"yuepilon"</span>,
+  zyp_method <span class='op'>=</span> <span class='st'>"zhang"</span>,
   <span class='va'>zyp_alpha</span>
 <span class='op'>)</span></pre>
 
@@ -266,7 +266,9 @@ time periods with no missing dates will be returned. Default <code>FALSE</code>.
     <tr>
       <th>zyp_method</th>
       <td><p>Character string identifying the prewhitened trend method to use from <code>'zyp'</code>, either <code>'zhang'</code> or
-<code>'yuepilon'</code>. Only required if analysis group 6 is included. Default <code>'yuepilon'</code>.</p></td>
+<code>'yuepilon'</code>. <code>'zhang'</code> is recommended over <code>'yuepilon'</code> for hydrologic applications (see 
+<code><a href='compute_annual_trends.html'>compute_annual_trends()</a></code>; Bürger 2017; Zhang and Zwiers 2004). Only required if analysis group 6 is included. 
+Default <code>'zhang'</code>.</p></td>
     </tr>
     <tr>
       <th>zyp_alpha</th>

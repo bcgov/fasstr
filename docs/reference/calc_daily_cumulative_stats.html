@@ -275,9 +275,6 @@ analysis. Default <code>1</code>.</p></td>
     <pre class="examples"><div class='input'><span class='co'># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span>
 <span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span><span class='op'>(</span><span class='fu'>tidyhydat</span><span class='fu'>::</span><span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
 
-<span class='co'># Calculate annual daily cumulative volume statistics</span>
-<span class='fu'>calc_daily_cumulative_stats</span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span><span class='op'>)</span> 
-
 <span class='co'># Calculate annual daily cumulative yield statistics </span>
 <span class='co'># with default HYDAT basin area</span>
 <span class='fu'>calc_daily_cumulative_stats</span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span>,
@@ -290,7 +287,7 @@ analysis. Default <code>1</code>.</p></td>
                             basin_area <span class='op'>=</span> <span class='fl'>800</span><span class='op'>)</span> 
                             
 <span class='op'>}</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 365 x 11</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span></div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 365 x 11</span>
 #&gt;    STATION_NUMBER Date   DayofYear  Mean Median Minimum Maximum     P5    P25
 #&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>          <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
 #&gt; <span style='color: #BCBCBC;'> 1</span> 08NM116        Jan-01         1 0.114 0.097<span style='text-decoration: underline;'>1</span>  0.035<span style='text-decoration: underline;'>4</span>   0.271 0.053<span style='text-decoration: underline;'>7</span> 0.074<span style='text-decoration: underline;'>0</span>

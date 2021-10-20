@@ -163,6 +163,11 @@
 <a href="#check-if-version-is-appropriate" class="anchor"></a>Check if version is appropriate</h2>
 <p><a href="http://shiny.andyteucher.ca/shinyapps/rver-deps/" class="uri">http://shiny.andyteucher.ca/shinyapps/rver-deps/</a></p>
 </div>
+<div id="continuous-integration" class="section level2">
+<h2 class="hasAnchor">
+<a href="#continuous-integration" class="anchor"></a>Continuous Integration</h2>
+<p>GitHub Actions using <code><a href="https://usethis.r-lib.org/reference/github_actions.html">usethis::use_github_action_check_standard()</a></code></p>
+</div>
 <div id="build-and-check-within-rdevtools" class="section level2">
 <h2 class="hasAnchor">
 <a href="#build-and-check-within-rdevtools" class="anchor"></a>Build and check within <code>R/devtools</code>
@@ -186,7 +191,7 @@ check(platform = 'macos-highsierra-release-cran')</a></code></pre>
 <h2 class="hasAnchor">
 <a href="#run-this-in-the-console" class="anchor"></a>Run this in the console</h2>
 <pre><code>R CMD build fasstr
-R CMD check fasstr_0.3.2.tar.gz --as-cran </code></pre>
+R CMD check fasstr_0.3.2.tar.gz --as-cran ## or whatever fasstr version number</code></pre>
 </div>
 <div id="documentation" class="section level2">
 <h2 class="hasAnchor">
