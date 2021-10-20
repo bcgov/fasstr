@@ -6,11 +6,12 @@ Updated: 20 Oct 2021
 #### Updates:
 
   * For trending, changed default/recommended method to 'zhang' over 'yuelipon' (https://github.com/pacificclimate/zyp/issues/6)
-  * Removed check for a hydat.sqlite3 file. Stop error from tidyhydat catches error
+  * Removed check for a hydat.sqlite3 file; tidyhydatstop error catches error
   * Removed lubridate package dependency
   * Fixed ggplot2::guides deprecated arguments warning
   * Simplified some internal coding for efficiency
-  * Removed some function examples to reduce timing. Lots of examples in vignettes
+  * Removed some function examples to reduce timing; examples of usage in vignettes
+  * Removed TravisCI, added Github Action R-CMD-check using usethis::use_github_action_check_standard()
 
 
 fasstr 0.3.2

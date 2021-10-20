@@ -9,8 +9,8 @@ vignette: >
 
 ```{r options, include=FALSE}
 knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")),
-warning = FALSE, 
-message = FALSE)
+                      warning = FALSE, 
+                      message = FALSE)
 ```
 
 ```{r, include=FALSE}

@@ -6,6 +6,9 @@ output: github_document
 
 ## Check if version is appropriate
 http://shiny.andyteucher.ca/shinyapps/rver-deps/
+
+## Continuous Integration
+GitHub Actions using `usethis::use_github_action_check_standard()`
   
 ## Build and check within `R/devtools`
 ```
@@ -28,7 +31,7 @@ check(platform = 'macos-highsierra-release-cran')
 ## Run this in the console
 ```
 R CMD build fasstr
-R CMD check fasstr_0.3.2.tar.gz --as-cran 
+R CMD check fasstr_0.3.2.tar.gz --as-cran ## or whatever fasstr version number
 ```
 
 ## Documentation

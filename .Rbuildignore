@@ -6,7 +6,6 @@
 ^\.Rproj\.user$
 ^README-.*\.png$
 ^testing$
-^\.travis\.yml$
 ^cran-comments.md$
 ^release_process.md$
 ^fasstr_cheatsheet.pdf$
@@ -19,3 +18,6 @@
 ^docs$
 ^index\.md$
 ^index\.Rmd$
+^doc$
+^Meta$
+^\.github$
