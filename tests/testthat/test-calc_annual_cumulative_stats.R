@@ -2,7 +2,7 @@ context("Calc annual cumulative stats")
 
 test_that("creates a dataframe with the proper columns", {
   skip_on_cran()
-  
+  skip_on_ci()
   data <- calc_annual_cumulative_stats(station_number = "08NM116", start_year = 1980)
   expect_true(is.data.frame(data) &
                 ncol(data) == 3 &
@@ -11,14 +11,14 @@ test_that("creates a dataframe with the proper columns", {
 
 test_that("outputs data for two stations", {
   skip_on_cran()
-  
+  skip_on_ci()
   data <- calc_annual_cumulative_stats(station_number = c("08NM116","08HB048"), start_year = 1980)
   expect_true(length(unique(data$STATION_NUMBER)) == 2)
 })
 
 test_that("creates a dataframe with seasons", {
   skip_on_cran()
-  
+  skip_on_ci()
   data <- calc_annual_cumulative_stats(station_number = "08NM116", start_year = 1980,
                                        include_seasons = TRUE)
   expect_true(is.data.frame(data) &
@@ -27,7 +27,7 @@ test_that("creates a dataframe with seasons", {
 
 test_that("it is calculated correctly", {
   skip_on_cran()
-  
+  skip_on_ci()
   
   data <- calc_annual_cumulative_stats(station_number = "08NM116", 
                                        start_year = 1980, end_year = 1980)
@@ -40,7 +40,7 @@ test_that("it is calculated correctly", {
 
 test_that("it is calculated correctly for yield (math and extracting basin_area)", {
   skip_on_cran()
-  
+  skip_on_ci()
   
   data <- calc_annual_cumulative_stats(station_number = "08NM116", 
                                        start_year = 1980, end_year = 1980,
@@ -53,7 +53,7 @@ test_that("it is calculated correctly for yield (math and extracting basin_area)
 
 test_that("transpose properly transposed the results", {
   skip_on_cran()
-  
+  skip_on_ci()
   data <- calc_annual_cumulative_stats(station_number = "08NM116", start_year = 1980,
                                        transpose = TRUE)
   expect_true(all(c("Total_Volume_m3") %in% data$Statistic))

@@ -2,7 +2,7 @@ context("Compute annual trends")
 
 test_that("creates a list with the proper objects", {
   skip_on_cran()
-  
+  skip_on_ci()
   data <- compute_annual_trends(station_number = "08NM116", start_year = 1980,
                                 zyp_method = "zhang")
   expect_true("list" %in% class(data) &
@@ -11,7 +11,7 @@ test_that("creates a list with the proper objects", {
 
 test_that("creates two dataframes of data", {
   skip_on_cran()
-  
+  skip_on_ci()
   data <- compute_annual_trends(station_number = "08NM116", start_year = 1980,
                                 zyp_method = "zhang",
                                 include_plots = FALSE)
@@ -20,7 +20,7 @@ test_that("creates two dataframes of data", {
 
 test_that("creates plots after the two data frames", {
   skip_on_cran()
-  
+  skip_on_ci()
   data <- compute_annual_trends(station_number = "08NM116", start_year = 1980,
                                 zyp_method = "zhang")
   expect_true("gg" %in% sapply(data[-(1:2)], class))
@@ -28,7 +28,7 @@ test_that("creates plots after the two data frames", {
 
 test_that("proper data is produced", {
   skip_on_cran()
-  
+  skip_on_ci()
   data <- compute_annual_trends(station_number = "08NM116", start_year = 1980,
                                 zyp_method = "zhang",
                                 include_plots = TRUE)

@@ -2,7 +2,7 @@ context("Calc flow percentile")
 
 test_that("`calc_flow_percentile()` works", {
   skip_on_cran()
-  
+  skip_on_ci()
   data <- calc_flow_percentile(station_number = "08NM116", start_year = 1980,
                                flow_value = 10)
   expect_true(is.data.frame(data) &
@@ -12,7 +12,7 @@ test_that("`calc_flow_percentile()` works", {
 
 test_that("outputs data for two stations", {
   skip_on_cran()
-  
+  skip_on_ci()
   data <- calc_flow_percentile(station_number = c("08NM116","08HB048"), start_year = 1980,
                                flow_value = 10)
   expect_true(length(unique(data$STATION_NUMBER)) &
@@ -22,7 +22,7 @@ test_that("outputs data for two stations", {
 
 test_that("it is calculated correctly", {
   skip_on_cran()
-  
+  skip_on_ci()
   
   flow_data <- add_date_variables(station_number = "08NM116")
   flow_data <- dplyr::filter(flow_data, WaterYear %in% 1980:1990)

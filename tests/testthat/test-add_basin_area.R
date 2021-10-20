@@ -4,6 +4,7 @@ context("Add basin area")
 
 test_that("dataframe can be provided and using different column names",{
   skip_on_cran()
+  skip_on_ci()
   flowdata <- tidyhydat::hy_daily_flows("08NM116") %>% 
     dplyr::rename(Dates = Date, Flows = Value, Stations = STATION_NUMBER)
   flowdata <- add_basin_area(flowdata, groups = Stations)
@@ -13,6 +14,7 @@ test_that("dataframe can be provided and using different column names",{
 
 test_that("station_number can be provided",{
   skip_on_cran()
+  skip_on_ci()
   stns <- "08NM003"
   stations_data <- add_basin_area(station_number = stns)
   expect_true(stns %in% unique(stations_data$STATION_NUMBER) &
@@ -21,6 +23,7 @@ test_that("station_number can be provided",{
 
 test_that("multiple station_numbers can be provided",{
   skip_on_cran()
+  skip_on_ci()
   stns <- c("08NM003","08NM116")
   stations_data <- add_basin_area(station_number = stns)
   expect_true(all(unique(stations_data$STATION_NUMBER) %in% stns) &
@@ -31,6 +34,7 @@ test_that("multiple station_numbers can be provided",{
 
 test_that("add_basin_area actually adds a column called Basin_Area_sqkm",{
   skip_on_cran()
+  skip_on_ci()
   stns <- "08NM003"
   data <- add_basin_area(station_number = stns)
   expect_true("Basin_Area_sqkm" %in% names(data))
@@ -40,6 +44,7 @@ test_that("add_basin_area actually adds a column called Basin_Area_sqkm",{
 
 test_that("setting basin_area to a value overrides the HYDAT value",{
   skip_on_cran()
+  skip_on_ci()
   stns <- "08NM116"
   area <- 1000
   data <- add_basin_area(station_number = stns, basin_area = area)
@@ -48,6 +53,7 @@ test_that("setting basin_area to a value overrides the HYDAT value",{
 
 test_that("setting basin_area list overrides all basin areas",{
   skip_on_cran()
+  skip_on_ci()
   stns <- c("08NM116", "08NM003")
   area <- c("08NM116" = 1000, "08NM003" = 10)
   data <- add_basin_area(station_number = stns, basin_area = area) %>% 
@@ -60,6 +66,7 @@ test_that("setting basin_area list overrides all basin areas",{
 
 test_that("setting basin_area list with NA overrides basin areas",{
   skip_on_cran()
+  skip_on_ci()
   stns <- c("08NM116", "08NM003")
   area <- c("08NM116" = 1000, "08NM003" = NA)
   data <- add_basin_area(station_number = stns, basin_area = area) %>% 
@@ -71,6 +78,7 @@ test_that("setting basin_area list with NA overrides basin areas",{
 
 test_that("setting basin_area list grabs the HYDAT area if missing",{
   skip_on_cran()
+  skip_on_ci()
   stns <- c("08NM116", "08NM003")
   area <- c("08NM003" = 10)
   data <- suppressWarnings(add_basin_area(station_number = stns, basin_area = area)) %>% 

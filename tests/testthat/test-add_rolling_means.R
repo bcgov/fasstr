@@ -4,7 +4,7 @@ context("Add rolling means")
 
 test_that("dataframe can be provided and using different column names",{
   skip_on_cran()
-  
+  skip_on_ci()
   flowdata <- tidyhydat::hy_daily_flows("08NM116") %>% 
     dplyr::rename(Dates = Date, Flows = Value, Stations = STATION_NUMBER)
   flowdata <- add_rolling_means(flowdata, dates = Dates, values = Flows, groups = Stations)
@@ -14,7 +14,7 @@ test_that("dataframe can be provided and using different column names",{
 
 test_that("station_number can be provided",{
   skip_on_cran()
-  
+  skip_on_ci()
   stns <- "08NM003"
   stations_data <- add_rolling_means(station_number = stns)
   expect_true(stns %in% unique(stations_data$STATION_NUMBER) &
@@ -23,7 +23,7 @@ test_that("station_number can be provided",{
 
 test_that("multiple station_numbers can be provided",{
   skip_on_cran()
-  
+  skip_on_ci()
   stns <- c("08NM003","08NM116")
   stations_data <- add_rolling_means(station_number = stns)
   expect_true(all(unique(stations_data$STATION_NUMBER) %in% stns) &
@@ -34,7 +34,7 @@ test_that("multiple station_numbers can be provided",{
 
 test_that("add_rolling_means actually adds columns",{
   skip_on_cran()
-  
+  skip_on_ci()
   stns <- "08NM003"
   n_days <- c(1,3)
   data <- add_rolling_means(station_number = stns, roll_days = n_days)
@@ -43,7 +43,7 @@ test_that("add_rolling_means actually adds columns",{
 
 test_that("add_rolling_means restart if missing data",{
   skip_on_cran()
-  
+  skip_on_ci()
   stns <- "08HB048"
   n_days <- 3
   data <- tidyhydat::hy_daily_flows(stns) %>% 
@@ -60,7 +60,7 @@ test_that("add_rolling_means restart if missing data",{
 
 test_that("add_rolling_means alight right is correct",{
   skip_on_cran()
-  
+  skip_on_ci()
   stns <- "08HB048"
   n_days <- 3
   data <- add_rolling_means(station_number = stns, roll_days = n_days, roll_align = "right")[1:3,]
@@ -69,7 +69,7 @@ test_that("add_rolling_means alight right is correct",{
 
 test_that("add_rolling_means alight left is correct",{
   skip_on_cran()
-  
+  skip_on_ci()
   stns <- "08HB048"
   n_days <- 3
   data <- add_rolling_means(station_number = stns, roll_days = n_days, roll_align = "left")[1:3,]
@@ -78,7 +78,7 @@ test_that("add_rolling_means alight left is correct",{
 
 test_that("add_rolling_means alight centre is correct",{
   skip_on_cran()
-  
+  skip_on_ci()
   stns <- "08HB048"
   n_days <- 3
   data <- add_rolling_means(station_number = stns, roll_days = n_days, roll_align = "center")[1:3,]

@@ -2,7 +2,7 @@ context("Calc annual flow timing")
 
 test_that("creates a dataframe with the proper columns", {
   skip_on_cran()
-  
+  skip_on_ci()
   data <- calc_annual_flow_timing(station_number = "08NM116", start_year = 1980)
   expect_true(is.data.frame(data) &
                 ncol(data) == 10 &
@@ -12,14 +12,14 @@ test_that("creates a dataframe with the proper columns", {
 
 test_that("outputs data for two stations", {
   skip_on_cran()
-  
+  skip_on_ci()
   data <- calc_annual_flow_timing(station_number = c("08NM116","08HB048"), start_year = 1980)
   expect_true(length(unique(data$STATION_NUMBER)) == 2)
 })
 
 test_that("creates a dataframe with custom columns", {
   skip_on_cran()
-  
+  skip_on_ci()
   data <- calc_annual_flow_timing(station_number = "08NM116", start_year = 1980,
                                   percent_total = 51)
   expect_true(all(c("DoY_51pct_TotalQ","Date_51pct_TotalQ") %in% colnames(data)))
@@ -27,7 +27,7 @@ test_that("creates a dataframe with custom columns", {
 
 test_that("it is calculated correctly", {
   skip_on_cran()
-  
+  skip_on_ci()
   percent <- 51
   data <- calc_annual_flow_timing(station_number = "08NM116", start_year = 1980, end_year = 1980,
                                   percent_total = percent)
@@ -43,7 +43,7 @@ test_that("it is calculated correctly", {
 
 test_that("transpose properly transposed the results", {
   skip_on_cran()
-  
+  skip_on_ci()
   data <- calc_annual_flow_timing(station_number = "08NM116", start_year = 1980,
                                   transpose = TRUE)
   expect_true(all(c("DoY_25pct_TotalQ") %in% data$Statistic))

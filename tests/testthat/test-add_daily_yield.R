@@ -4,7 +4,7 @@ context("Add daily yield")
 
 test_that("dataframe can be provided and using different column names",{
   skip_on_cran()
-  
+  skip_on_ci()
   flowdata <- tidyhydat::hy_daily_flows("08NM116") %>% 
     dplyr::rename(Flows = Value)
   flowdata <- add_daily_yield(flowdata, values = Flows)
@@ -14,7 +14,7 @@ test_that("dataframe can be provided and using different column names",{
 
 test_that("station_number can be provided",{
   skip_on_cran()
-  
+  skip_on_ci()
   stns <- "08NM003"
   stations_data <- add_daily_yield(station_number = stns)
   expect_true(stns %in% unique(stations_data$STATION_NUMBER) &
@@ -23,7 +23,7 @@ test_that("station_number can be provided",{
 
 test_that("multiple station_numbers can be provided",{
   skip_on_cran()
-  
+  skip_on_ci()
   stns <- c("08NM003","08NM116")
   stations_data <- add_daily_yield(station_number = stns)
   expect_true(all(unique(stations_data$STATION_NUMBER) %in% stns) &
@@ -34,7 +34,7 @@ test_that("multiple station_numbers can be provided",{
 
 test_that("add_daily_yield actually adds a column called Yield_mm",{
   skip_on_cran()
-  
+  skip_on_ci()
   stns <- "08NM003"
   data_col <- add_daily_yield(station_number = stns)
   expect_true("Yield_mm" %in% names(data_col))
@@ -45,7 +45,7 @@ test_that("add_daily_yield actually adds a column called Yield_mm",{
 
 test_that("setting basin_area to a value overrides the HYDAT value",{
   skip_on_cran()
-  
+  skip_on_ci()
   stns <- "08NM116"
   area <- 1000
   data <- add_daily_yield(station_number = stns, basin_area = area) %>% 
@@ -58,7 +58,7 @@ test_that("setting basin_area to a value overrides the HYDAT value",{
 
 test_that("setting basin_area list overrides all basin areas",{
   skip_on_cran()
-  
+  skip_on_ci()
   stns <- c("08NM116", "08NM003")
   area <- c("08NM116" = 1000, "08NM003" = 10)
   data <- add_daily_yield(station_number = stns, basin_area = area) %>% 

@@ -2,7 +2,7 @@ context("Screen flow data")
 
 test_that("creates a dataframe with the proper columns", {
   skip_on_cran()
-
+  skip_on_ci()
   data <- screen_flow_data(station_number = "08NM116")
   expect_true(is.data.frame(data) &
                 ncol(data) == 22 &
@@ -11,14 +11,14 @@ test_that("creates a dataframe with the proper columns", {
 
 test_that("outputs data for two stations", {
   skip_on_cran()
-
+  skip_on_ci()
   data <- screen_flow_data(station_number = c("08NM116","08HB048"))
   expect_true(length(unique(data$STATION_NUMBER)) == 2)
 })
 
 test_that("data is filtered by years properly", {
   skip_on_cran()
-
+  skip_on_ci()
   data <- screen_flow_data(station_number = "08NM116",
                            start_year = 1981,
                            end_year = 2010)
@@ -28,7 +28,7 @@ test_that("data is filtered by years properly", {
 
 test_that("data is summarized by water years properly", {
   skip_on_cran()
-
+  skip_on_ci()
   flow_data <- add_date_variables(station_number = "08NM116",
                                   water_year_start = 10)
   
@@ -50,7 +50,7 @@ test_that("data is summarized by water years properly", {
 
 test_that("missing dates are calculated properly", {
   skip_on_cran()
-
+  skip_on_ci()
   flow_data <- fill_missing_dates(station_number = "08NM116")
   flow_data <- add_date_variables(flow_data)
   test_data <- dplyr::summarise(dplyr::group_by(flow_data, WaterYear, MonthName),
@@ -64,7 +64,7 @@ test_that("missing dates are calculated properly", {
 
 test_that("data is filtered by months properly", {
   skip_on_cran()
-
+  skip_on_ci()
   flow_data <- add_date_variables(station_number = "08NM116")
   
   test_data <- dplyr::filter(flow_data, 
@@ -88,7 +88,7 @@ test_that("data is filtered by months properly", {
 
 test_that("transpose properly transposed the results", {
   skip_on_cran()
-
+  skip_on_ci()
   data <- screen_flow_data(station_number = "08NM116",
                            transpose = TRUE)
   expect_true(all(c("n_days","n_Q","n_missing_Q","Minimum","Jan_missing_Q") %in% data$Statistic))

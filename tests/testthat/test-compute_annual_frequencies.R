@@ -2,7 +2,7 @@ context("Compute annual frequencies")
 
 test_that("creates a list with the proper objects", {
   skip_on_cran()
-  
+  skip_on_ci()
   data <- suppressMessages(suppressWarnings(
     compute_annual_frequencies(station_number = "08NM116", start_year = 1980)))
   expect_true("list" %in% class(data) &
@@ -11,7 +11,7 @@ test_that("creates a list with the proper objects", {
 
 test_that("creates proper object classes", {
   skip_on_cran()
-  
+  skip_on_ci()
   data <- suppressMessages(suppressWarnings(
     compute_annual_frequencies(station_number = "08NM116", start_year = 1980)))
   expect_true("data.frame" %in% class(data$Freq_Analysis_Data))
