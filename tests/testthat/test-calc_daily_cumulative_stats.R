@@ -2,7 +2,7 @@ context("Calc daily cumulative stats")
 
 test_that("creates a dataframe with the proper columns", {
   skip_on_cran()
-  skip_on_travis()
+  
   data <- calc_daily_cumulative_stats(station_number = "08NM116", start_year = 1980)
   expect_true(is.data.frame(data) &
                 ncol(data) == 11 &
@@ -11,14 +11,14 @@ test_that("creates a dataframe with the proper columns", {
 
 test_that("outputs data for two stations", {
   skip_on_cran()
-  skip_on_travis()
+  
   data <- calc_daily_cumulative_stats(station_number = c("08NM116","08HB048"), start_year = 1980)
   expect_true(length(unique(data$STATION_NUMBER)) == 2)
 })
 
 test_that("creates a dataframe with custom percentiles", {
   skip_on_cran()
-  skip_on_travis()
+  
   data <- calc_daily_cumulative_stats(station_number = "08NM116", start_year = 1980,
                                       percentiles = c(25,75))
   expect_true(is.data.frame(data) &
@@ -28,7 +28,7 @@ test_that("creates a dataframe with custom percentiles", {
 
 test_that("it is calculated correctly", {
   skip_on_cran()
-  skip_on_travis()
+  
   
   flow_data <- add_date_variables(station_number = "08NM116")
   flow_data <- dplyr::filter(flow_data, WaterYear %in% 1980:1990)
@@ -52,7 +52,7 @@ test_that("it is calculated correctly", {
 
 test_that("it is calculated correctly for yield (math and extracting basin_area)", {
   skip_on_cran()
-  skip_on_travis()
+  
   
   flow_data <- add_date_variables(station_number = "08NM116")
   flow_data <- dplyr::filter(flow_data, WaterYear %in% 1980:1990)

@@ -2,7 +2,7 @@ context("Calc longterm mean")
 
 test_that("`calc_longterm_mean()` works", {
   skip_on_cran()
-  skip_on_travis()
+  
   data <- calc_longterm_mean(station_number = "08NM116", start_year = 1980)
   expect_true(is.data.frame(data) &
                 ncol(data) == 2 &
@@ -11,7 +11,7 @@ test_that("`calc_longterm_mean()` works", {
 
 test_that("outputs data for two stations", {
   skip_on_cran()
-  skip_on_travis()
+  
   data <- calc_longterm_mean(station_number = c("08NM116","08HB048"), start_year = 1980)
   expect_true(length(unique(data$STATION_NUMBER)) &
                 ncol(data) == 2 &
@@ -20,7 +20,7 @@ test_that("outputs data for two stations", {
 
 test_that("percent mad is added correctly", {
   skip_on_cran()
-  skip_on_travis()
+  
   data <- calc_longterm_mean(station_number = "08NM116", start_year = 1980, 
                             percent_MAD = 25)
   expect_true(length(unique(data$STATION_NUMBER)) &
@@ -30,7 +30,7 @@ test_that("percent mad is added correctly", {
 
 test_that("it is calculated correctly", {
   skip_on_cran()
-  skip_on_travis()
+  
   
   flow_data <- add_date_variables(station_number = "08NM116")
   flow_data <- dplyr::filter(flow_data, WaterYear %in% 1980:1990)

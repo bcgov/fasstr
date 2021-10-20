@@ -4,7 +4,7 @@ context("Add cumulative yield")
 
 test_that("dataframe can be provided and using different column names",{
   skip_on_cran()
-  skip_on_travis()
+  
   flowdata <- tidyhydat::hy_daily_flows("08NM116") %>% 
     dplyr::rename(Dates = Date, Flows = Value, Stations = STATION_NUMBER)
   flowdata <- add_cumulative_yield(flowdata, dates = Dates, values = Flows, groups = Stations)
@@ -14,7 +14,7 @@ test_that("dataframe can be provided and using different column names",{
 
 test_that("station_number can be provided",{
   skip_on_cran()
-  skip_on_travis()
+  
   stns <- "08NM003"
   stations_data <- add_cumulative_yield(station_number = stns)
   expect_true(stns %in% unique(stations_data$STATION_NUMBER) &
@@ -23,7 +23,7 @@ test_that("station_number can be provided",{
 
 test_that("multiple station_numbers can be provided",{
   skip_on_cran()
-  skip_on_travis()
+  
   stns <- c("08NM003","08NM116")
   stations_data <- add_cumulative_yield(station_number = stns)
   expect_true(all(unique(stations_data$STATION_NUMBER) %in% stns) &
@@ -34,7 +34,7 @@ test_that("multiple station_numbers can be provided",{
 
 test_that("add_cumulative_yield actually adds a column called Cumul_Yield_mm",{
   skip_on_cran()
-  skip_on_travis()
+  
   stns <- "08NM003"
   cumu_col <- add_cumulative_yield(station_number = stns, water_year_start = 8)
   expect_true("Cumul_Yield_mm" %in% names(cumu_col))
@@ -42,7 +42,7 @@ test_that("add_cumulative_yield actually adds a column called Cumul_Yield_mm",{
 
 test_that("add_cumulative_yield only fills years with complete data, otherwise none",{
   skip_on_cran()
-  skip_on_travis()
+  
   stns <- "08NM003"
   data <- add_cumulative_yield(station_number = stns) %>% 
     fill_missing_dates() %>% 
@@ -56,7 +56,7 @@ test_that("add_cumulative_yield only fills years with complete data, otherwise n
 
 test_that("the total cumulative value at the end of each year is the total volume",{
   skip_on_cran()
-  skip_on_travis()
+  
   stns <- "08NM116"
   max_data <- add_cumulative_yield(station_number = stns) %>% 
     add_date_variables() %>% 
@@ -75,7 +75,7 @@ test_that("the total cumulative value at the end of each year is the total volum
 
 test_that("modifying water year changes outputs",{
   skip_on_cran()
-  skip_on_travis()
+  
   stns <- "08NM003"
   water_year_true <- add_cumulative_yield(station_number = stns, water_year_start = 8)
   water_year_false <- add_cumulative_yield(station_number = stns)
@@ -84,7 +84,7 @@ test_that("modifying water year changes outputs",{
 
 test_that("record starts in the month specified by water_year_start",{
   skip_on_cran()
-  skip_on_travis()
+  
   month_to_start_water_year <- 5
   stns <- "08NM003"
   water_year_true <- add_cumulative_yield(station_number = stns,  
@@ -96,7 +96,7 @@ test_that("record starts in the month specified by water_year_start",{
 
 test_that("setting basin_area makes proper yield",{
   skip_on_cran()
-  skip_on_travis()
+  
   stns <- "08NM116"
   area <- 1000
   custom_data <- add_cumulative_yield(station_number = stns, basin_area = area) %>% 

@@ -5,8 +5,7 @@
 
 [![img](https://img.shields.io/badge/Lifecycle-Stable-97ca00)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Travis build
-status](https://travis-ci.org/bcgov/fasstr.svg?branch=master)](https://travis-ci.org/bcgov/fasstr)
+[![R-CMD-check](https://github.com/bcgov/fasstr/workflows/R-CMD-check/badge.svg)](https://github.com/bcgov/fasstr/actions)
 
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/fasstr)](https://cran.r-project.org/package=fasstr)
 [![CRAN
@@ -33,29 +32,29 @@ guide](https://bcgov.github.io/fasstr/)
 
 This package provides functions for streamflow data analysis, including:
 
-  - data tidying (to prepare data for analyses; `add_*` and `fill_*`
+-   data tidying (to prepare data for analyses; `add_*` and `fill_*`
     functions),
-  - data screening (to identify data range, outliers and missing data;
+-   data screening (to identify data range, outliers and missing data;
     `screen_*` functions),
-  - calculating summary statistics (long-term, annual, monthly and daily
+-   calculating summary statistics (long-term, annual, monthly and daily
     statistics; `calc_*`functions),
-  - computing analyses (volume frequency analyses and annual trending;
+-   computing analyses (volume frequency analyses and annual trending;
     `compute_*` functions), and,
-  - visualizing (data plotting the various statistics; `plot_*`
+-   visualizing (data plotting the various statistics; `plot_*`
     functions).
 
 Useful features of functions include:
 
-  - the integration of the `tidyhydat` package to pull streamflow data
+-   the integration of the `tidyhydat` package to pull streamflow data
     from a Water Survey of Canada
     [HYDAT](https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html)
     database for analyses;
-  - arguments for filtering of years and months in analyses and
+-   arguments for filtering of years and months in analyses and
     plotting;
-  - choosing the start month of your water year;
-  - selecting for rolling day averages (e.g. 7-day rolling average);
+-   choosing the start month of your water year;
+-   selecting for rolling day averages (e.g. 7-day rolling average);
     and,
-  - choosing how missing dates are handled, amongst others.
+-   choosing how missing dates are handled, amongst others.
 
 This package is maintained by the [Water Protection and Sustainability
 Branch of the British Columbia Ministry of Environment and Climate
@@ -96,17 +95,17 @@ There are several vignettes and a cheatsheet to provide more information
 on the usage of `fasstr` functions and how to customize various argument
 options.
 
-  - [Getting
+-   [Getting
     Started](https://bcgov.github.io/fasstr/articles/fasstr.html)
-  - [Users
+-   [Users
     Guide](https://bcgov.github.io/fasstr/articles/fasstr_users_guide.html)
-  - [Computing an Annual Trends
+-   [Computing an Annual Trends
     Analysis](https://bcgov.github.io/fasstr/articles/fasstr_trending_analysis.html)
-  - [Computing a Volume frequency
+-   [Computing a Volume frequency
     Analysis](https://bcgov.github.io/fasstr/articles/fasstr_frequency_analysis.html)
-  - [Computing a Full fasstr
+-   [Computing a Full fasstr
     Analysis](https://bcgov.github.io/fasstr/articles/fasstr_full_analysis.html)
-  - [Internal fasstr
+-   [Internal fasstr
     Workflows](https://bcgov.github.io/fasstr/articles/fasstr_under_the_hood.html)
 
 #### Cheatsheet
@@ -244,12 +243,12 @@ functions require an upstream drainage basin area (in sq. km) using the
 will be `NA`. To apply a basin area (10 sqkm for example) to all daily
 observations, set the argument as `basin_area = 10`. If there are
 multiple stations or groups to apply multiple basin areas (using the
-`groups` argument), set them individually using this option: `basin_area
-= c("08NM116" = 795, "08NM242" = 22)`. If a STATION\_NUMBER column
-exists with HYDAT station numbers, the function will automatically use
-the basin areas provided in HYDAT, if available, so `basin_area` is not
-required. For your own analyses, you can add basin areas to your data
-set using the `add_basin_area()` function.
+`groups` argument), set them individually using this option:
+`basin_area = c("08NM116" = 795,  "08NM242" = 22)`. If a STATION\_NUMBER
+column exists with HYDAT station numbers, the function will
+automatically use the basin areas provided in HYDAT, if available, so
+`basin_area` is not required. For your own analyses, you can add basin
+areas to your data set using the `add_basin_area()` function.
 
 ##### Handling Missing Dates
 
@@ -409,20 +408,18 @@ to abide by its terms.
 
 ### License
 
-``` 
-    Copyright 2019 Province of British Columbia
+        Copyright 2019 Province of British Columbia
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at 
+        Licensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at 
 
-       http://www.apache.org/licenses/LICENSE-2.0
+           http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-```
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
 
------
+------------------------------------------------------------------------

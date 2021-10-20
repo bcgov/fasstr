@@ -2,7 +2,7 @@ context("Calc longterm percentile")
 
 test_that("`calc_longterm_percentile()` works", {
   skip_on_cran()
-  skip_on_travis()
+  
   data <- calc_longterm_percentile(station_number = "08NM116", start_year = 1980,
                                    percentiles = c(5,25))
   expect_true(is.data.frame(data) &
@@ -12,7 +12,7 @@ test_that("`calc_longterm_percentile()` works", {
 
 test_that("outputs data for two stations", {
   skip_on_cran()
-  skip_on_travis()
+  
   data <- calc_longterm_percentile(station_number = c("08NM116","08HB048"), start_year = 1980,
                                    percentiles = c(5,25))
   expect_true(length(unique(data$STATION_NUMBER)) &
@@ -23,7 +23,7 @@ test_that("outputs data for two stations", {
 
 test_that("it is calculated correctly", {
   skip_on_cran()
-  skip_on_travis()
+  
   
   flow_data <- add_date_variables(station_number = "08NM116")
   flow_data <- dplyr::filter(flow_data, WaterYear %in% 1980:1990)

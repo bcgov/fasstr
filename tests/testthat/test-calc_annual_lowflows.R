@@ -2,7 +2,7 @@ context("Calc annual lowflows")
 
 test_that("creates a dataframe with the proper columns", {
   skip_on_cran()
-  skip_on_travis()
+  
   data <- calc_annual_lowflows(station_number = "08NM116", start_year = 1980)
   expect_true(is.data.frame(data) &
                 ncol(data) == 14 &
@@ -11,14 +11,14 @@ test_that("creates a dataframe with the proper columns", {
 
 test_that("outputs data for two stations", {
   skip_on_cran()
-  skip_on_travis()
+  
   data <- calc_annual_lowflows(station_number = c("08NM116","08HB048"), start_year = 1980)
   expect_true(length(unique(data$STATION_NUMBER)) == 2)
 })
 
 test_that("creates a dataframe with seasons", {
   skip_on_cran()
-  skip_on_travis()
+  
   data <- calc_annual_lowflows(station_number = "08NM116", start_year = 1980,
                                roll_days = 5)
   expect_true(is.data.frame(data) &
@@ -28,7 +28,7 @@ test_that("creates a dataframe with seasons", {
 
 test_that("it is calculated correctly", {
   skip_on_cran()
-  skip_on_travis()
+  
   
   data <- calc_annual_lowflows(station_number = "08NM116", 
                                start_year = 1980, end_year = 1980)
@@ -44,7 +44,7 @@ test_that("it is calculated correctly", {
 
 test_that("transpose properly transposed the results", {
   skip_on_cran()
-  skip_on_travis()
+  
   data <- calc_annual_lowflows(station_number = "08NM116", start_year = 1980,
                                transpose = TRUE)
   expect_true(all(c("Min_1_Day","Min_1_Day_DoY") %in% data$Statistic))

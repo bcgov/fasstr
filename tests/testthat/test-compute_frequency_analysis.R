@@ -2,7 +2,7 @@ context("Compute frequency analysis")
 
 test_that("creates a list with the proper objects", {
   skip_on_cran()
-  skip_on_travis()
+  
   
   # Calculate some values to use for a frequency analysis 
   # (requires years, values for those years, and the name of the measure/metric)
@@ -26,7 +26,7 @@ test_that("creates a list with the proper objects", {
 
 test_that("creates proper object classes", {
   skip_on_cran()
-  skip_on_travis()
+  
   
   # Calculate some values to use for a frequency analysis 
   # (requires years, values for those years, and the name of the measure/metric)

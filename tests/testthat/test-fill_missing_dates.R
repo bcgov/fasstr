@@ -4,7 +4,7 @@ context("Fill missing dates")
 
 test_that("dataframe can be provided and using different column names",{
   skip_on_cran()
-  skip_on_travis()
+  
   flowdata <- tidyhydat::hy_daily_flows("08NM116") %>% 
     dplyr::rename(Dates = Date, Flows = Value, Stations = STATION_NUMBER)
   flowdata <- fill_missing_dates(flowdata, dates = Dates, values = Flows, groups = Stations)
@@ -14,7 +14,7 @@ test_that("dataframe can be provided and using different column names",{
 
 test_that("station_number can be provided",{
   skip_on_cran()
-  skip_on_travis()
+  
   stns <- "08NM003"
   stations_data <- fill_missing_dates(station_number = stns)
   expect_true(stns %in% unique(stations_data$STATION_NUMBER) &
@@ -23,7 +23,7 @@ test_that("station_number can be provided",{
 
 test_that("multiple station_numbers can be provided",{
   skip_on_cran()
-  skip_on_travis()
+  
   stns <- c("08NM003","08NM116")
   stations_data <- fill_missing_dates(station_number = stns)
   expect_true(all(unique(stations_data$STATION_NUMBER) %in% stns) &
@@ -34,7 +34,7 @@ test_that("multiple station_numbers can be provided",{
 
 test_that("all dates are added between start and end years of original data",{
   skip_on_cran()
-  skip_on_travis()
+  
   stns <- "08NM003"
   data_missing <- tidyhydat::hy_daily_flows(stns)
   data_filled <- fill_missing_dates(station_number = stns)
@@ -47,7 +47,7 @@ test_that("all dates are added between start and end years of original data",{
 
 test_that("gaps of missing dates are filled with NA",{
   skip_on_cran()
-  skip_on_travis()
+  
   stns <- "08NM003"
   data_missing <- tidyhydat::hy_daily_flows(stns)
   data_filled <- fill_missing_dates(station_number = stns)
@@ -60,7 +60,7 @@ test_that("gaps of missing dates are filled with NA",{
 
 test_that("record starts in the month specified by water_year_start",{
   skip_on_cran()
-  skip_on_travis()
+  
   month_to_start_water_year <- 3
   stns <- "08NM003"
   data <- fill_missing_dates(station_number = stns,  

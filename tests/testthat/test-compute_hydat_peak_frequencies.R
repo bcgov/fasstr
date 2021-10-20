@@ -2,7 +2,7 @@ context("Compute hydat peak frequencies")
 
 test_that("creates a list with the proper objects", {
   skip_on_cran()
-  skip_on_travis()
+  
   data <- suppressMessages(suppressWarnings(
     compute_hydat_peak_frequencies(station_number = "08NM116", 
                                          start_year = 1980, use_max = TRUE)))
@@ -12,7 +12,7 @@ test_that("creates a list with the proper objects", {
 
 test_that("creates proper object classes", {
   skip_on_cran()
-  skip_on_travis()
+  
   data <- suppressMessages(suppressWarnings(
     compute_hydat_peak_frequencies(station_number = "08NM116", 
                                          start_year = 1980, use_max = TRUE)))
