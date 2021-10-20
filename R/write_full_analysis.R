@@ -94,7 +94,7 @@ write_full_analysis <- function(data,
                                 end_year,
                                 exclude_years,
                                 ignore_missing = FALSE,
-                                zyp_method = 'yuepilon',
+                                zyp_method = 'zhang',
                                 zyp_alpha,
                                 file_name,
                                 plot_filetype = 'pdf'){

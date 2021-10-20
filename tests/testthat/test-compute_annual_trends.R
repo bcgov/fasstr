@@ -4,7 +4,7 @@ test_that("creates a list with the proper objects", {
   skip_on_cran()
   skip_on_travis()
   data <- compute_annual_trends(station_number = "08NM116", start_year = 1980,
-                                zyp_method = "yuepilon")
+                                zyp_method = "zhang")
   expect_true("list" %in% class(data) &
                 all(c("Annual_Trends_Data","Annual_Trends_Results","Annual_Maximum") %in% names(data)))
 })
@@ -13,7 +13,7 @@ test_that("creates two dataframes of data", {
   skip_on_cran()
   skip_on_travis()
   data <- compute_annual_trends(station_number = "08NM116", start_year = 1980,
-                                zyp_method = "yuepilon",
+                                zyp_method = "zhang",
                                 include_plots = FALSE)
   expect_true("data.frame" %in% sapply(data, class))
 })
@@ -22,7 +22,7 @@ test_that("creates plots after the two data frames", {
   skip_on_cran()
   skip_on_travis()
   data <- compute_annual_trends(station_number = "08NM116", start_year = 1980,
-                                zyp_method = "yuepilon")
+                                zyp_method = "zhang")
   expect_true("gg" %in% sapply(data[-(1:2)], class))
 })
 
@@ -30,7 +30,7 @@ test_that("proper data is produced", {
   skip_on_cran()
   skip_on_travis()
   data <- compute_annual_trends(station_number = "08NM116", start_year = 1980,
-                                zyp_method = "yuepilon",
+                                zyp_method = "zhang",
                                 include_plots = TRUE)
   data_data <- data$Annual_Trends_Data
   data_results <- data$Annual_Trends_Results

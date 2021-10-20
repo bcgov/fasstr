@@ -74,7 +74,7 @@ Example with default arguments:
 
 ```{r, eval=FALSE}
 compute_annual_trends(station_number = "08NM116",
-                      zyp_method = "yuepilon",
+                      zyp_method = "zhang",
                       start_year = 1973, end_year = 2013)
 ```
 
@@ -82,7 +82,7 @@ Example with custom arguments:
 
 ```{r, eval=FALSE}
 compute_annual_trends(station_number = "08NM116",
-                      zyp_method = "yuepilon",
+                      zyp_method = "zhang",
                       start_year = 1973, end_year = 2013,
                       annual_percentiles = c(10,90),
                       monthly_percentiles = c(10,20),
@@ -99,7 +99,7 @@ This annual data is provided in the **Annual_Trends_Data** tibble objects.  The 
 
 ```{r, comment=NA, echo=FALSE}
 trends <- compute_annual_trends(station_number = "08NM116",
-                                zyp_method = "yuepilon",
+                                zyp_method = "zhang",
                                 start_year = 1973, end_year = 2013)
 
 data <- as.data.frame(trends[[1]])[,2:5]
@@ -114,7 +114,7 @@ To provide examples of the outputs, an analysis will be completed on a Mission C
 
 ```{r, echo=TRUE, include=TRUE}
 trends_analysis <- compute_annual_trends(station_number = "08NM116",
-                                         zyp_method = "yuepilon",
+                                         zyp_method = "zhang",
                                          start_year = 1973, end_year = 2013)
 ```
 
@@ -126,7 +126,7 @@ trends_analysis$Annual_Trends_Data
 
 ### Analysis Results
 
-To complete a trends analysis, a variable to the `zyp_method` argument must be provided, either `"yuepilon"` or `"zhang"`, designated the two different approaches to analyzing data for trends.  See the `zyp` documentation for more information on the differences between the two methods. After running the function, the results of the trending analysis will be outputted in the **Annual_Trends_Results** tibble data frame. See the `zyp` documentation for how to interpret the results. The results tibble contains the following columns:
+To complete a trends analysis, a variable to the `zyp_method` argument must be provided, either `"zhang"` or `"yuepilon"`, designating the two different approaches to analyzing data for trends.  The `zhang` method is recommended for hydrologic applications over `yuepilon` (see `zyp` documentation for more information on the differences between the two methods). After running the function, the results of the trending analysis will be outputted in the **Annual_Trends_Results** tibble data frame. See the `zyp` documentation for how to interpret the results. The results tibble contains the following columns:
 
 Column Name   | Description
 --------------|---------------------------------------------------------------------
@@ -165,7 +165,7 @@ The following plots demonstrate examples of where the `zyp_alpha` value is set t
 
 ```{r, echo = FALSE, include=FALSE}
 trends <- compute_annual_trends(station_number = "08NM116",
-                                zyp_method = "yuepilon", zyp_alpha = 0.05,
+                                zyp_method = "zhang", zyp_alpha = 0.05,
                                 start_year = 1973, end_year = 2013)
 ```
 

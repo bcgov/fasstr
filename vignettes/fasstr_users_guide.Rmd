@@ -752,7 +752,7 @@ There are several functions that provide more in-depth analyses. These functions
 
 ### Annual Trending Analysis
 
-The `compute_annual_trends()` function calculates prewhitened non-parametric annual trends on streamflow data using the [`zyp`](https://CRAN.R-project.org/package=zyp) package. The function calculates various annual metrics using the `calc_all_annual_stats()` function and then calculates and plots the trending data. The magnitude of trends is first computed using the Theil-Sen approach. Depending on the selected method, either `"zhang"` or `"yuepilon"`, the trends are adjusted for autocorrelation and then a Mann-Kendall test for trend is applied to the series. See the [`zyp`](https://CRAN.R-project.org/package=zyp) package and the [trending vignette](https://bcgov.github.io/fasstr/articles/fasstr_trending_analysis.html) for more information.
+The `compute_annual_trends()` function calculates prewhitened non-parametric annual trends on streamflow data using the [`zyp`](https://CRAN.R-project.org/package=zyp) package. The function calculates various annual metrics using the `calc_all_annual_stats()` function and then calculates and plots the trending data. The magnitude of trends is first computed using the Theil-Sen approach. Depending on the selected method, either `"zhang"` or `"yuepilon"`, the trends are adjusted for autocorrelation and then a Mann-Kendall test for trend is applied to the series. The `zhang` method is recommended for hydrologic applications over `yuepilon`. See the [`zyp`](https://CRAN.R-project.org/package=zyp) package and the [trending vignette](https://bcgov.github.io/fasstr/articles/fasstr_trending_analysis.html) for more information.
 
 The `compute_annual_trends()` function outputs several objects in a list:
 

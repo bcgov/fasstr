@@ -1,14 +1,16 @@
 fasstr 0.3.3
 =========================
 
-Updated: 19 Oct 2021
+Updated: 20 Oct 2021
 
 #### Updates:
 
-  * Removed check for a hydat.sqlite3 file. Stop error from tidyhydat catches error.
+  * For trending, changed default/recommended method to 'zhang' over 'yuelipon' (https://github.com/pacificclimate/zyp/issues/6)
+  * Removed check for a hydat.sqlite3 file. Stop error from tidyhydat catches error
   * Removed lubridate package dependency
   * Fixed ggplot2::guides deprecated arguments warning
   * Simplified some internal coding for efficiency
+  * Removed some function examples to reduce timing. Lots of examples in vignettes
 
 
 fasstr 0.3.2

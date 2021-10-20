@@ -404,7 +404,8 @@ missing_complete_yr_warning <- function(x) {
 
 zyp_method_checks <- function(zyp_method) {
   if (is.na(zyp_method) | !zyp_method %in% c("yuepilon", "zhang") )   
-    stop('zyp_trending argument must be either "yuepilon" or "zhang"', call. = FALSE)
+    stop('zyp_trending argument must be either "zhang" or "yuepilon". "zhang" is recommended for hydrologic applications over "yuepilon".', 
+         call. = FALSE)
 }
 
 zyp_alpha_checks <- function(zyp_alpha){

@@ -31,7 +31,9 @@
 #'  \item{7: Low-flow Frequencies}
 #'  }
 #' @param zyp_method Character string identifying the prewhitened trend method to use from \code{'zyp'}, either \code{'zhang'} or
-#'    \code{'yuepilon'}. Only required if analysis group 6 is included. Default \code{'yuepilon'}.
+#'    \code{'yuepilon'}. \code{'zhang'} is recommended over \code{'yuepilon'} for hydrologic applications (see 
+#'    \code{compute_annual_trends()}; Buerger 2017; Zhang and Zwiers 2004). Only required if analysis group 6 is included. 
+#'    Default \code{'zhang'}.
 #' 
 #' @return A list of lists of tibble data frames and ggplot2 objects from various fasstr functions
 #'    organized by the analysis groups as listed above.
@@ -101,7 +103,7 @@ compute_full_analysis <- function(data,
                                   end_year,
                                   exclude_years,
                                   ignore_missing = FALSE,
-                                  zyp_method = 'yuepilon',
+                                  zyp_method = 'zhang',
                                   zyp_alpha){
   
   

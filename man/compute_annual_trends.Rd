@@ -49,7 +49,8 @@ which to extract daily streamflow data from a HYDAT database. Requires \code{tid
 Leave blank if using \code{data} argument.}
 
 \item{zyp_method}{Character string identifying the prewhitened trend method to use from \code{zyp}, either \code{'zhang'}
-or \code{'yuepilon'}. Required.}
+or \code{'yuepilon'}. \code{'zhang'} is recommended over \code{'yuepilon'} for hydrologic applications (Buerger 2017; 
+Zhang and Zwiers 2004). Required.}
 
 \item{basin_area}{Upstream drainage basin area, in square kilometres, to apply to observations. Three options:
 
@@ -133,35 +134,39 @@ Calculates prewhitened nonlinear trends on annual streamflow data. Uses the
 # Compute trends statistics using a data frame and data argument with defaults
 flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
 trends <- compute_annual_trends(data = flow_data,
-                                zyp_method = "yuepilon")
+                                zyp_method = "zhang")
 
 # Compute trends statistics using station_number with defaults
 trends <- compute_annual_trends(station_number = "08NM116",
-                                zyp_method = "yuepilon")
+                                zyp_method = "zhang")
                       
 # Compute trends statistics and plot a trend line if the significance is less than 0.05
 trends <- compute_annual_trends(station_number = "08NM116",
-                                zyp_method = "yuepilon",
+                                zyp_method = "zhang",
                                 zyp_alpha = 0.05)
                       
 # Compute trends statistics and do not plot the results
 trends <- compute_annual_trends(station_number = "08NM116",
-                                zyp_method = "yuepilon",
+                                zyp_method = "zhang",
                                 include_plots = FALSE)
 
 }                
 }
 \references{
-References from zyp package:
+References:
 \itemize{
+ \item{Bueger, G. 2017. On trend detection. Hydrological Processes 31, 4039–4042. https://doi.org/10.1002/hyp.11280.}
+ \item{Sen, P.K., 1968. Estimates of the Regression Coefficient Based on Kendall's Tau. Journal of the 
+       American Statistical Association Vol. 63, No. 324: 1379-1389.}
  \item{Wang, X.L. and Swail, V.R., 2001. Changes in extreme wave heights in northern hemisphere oceans and 
        related atmospheric circulation regimes. Journal of Climate, 14: 2204-2221.}
  \item{Yue, S., P. Pilon, B. Phinney and G. Cavadias, 2002. The influence of autocorrelation on the ability
        to detect trend in hydrological series. Hydrological Processes, 16: 1807-1829.}
  \item{Zhang, X., Vincent, L.A., Hogg, W.D. and Niitsoo, A., 2000. Temperature and Precipitation Trends in
        Canada during the 20th Century. Atmosphere-Ocean 38(3): 395-429.}
- \item{Sen, P.K., 1968. Estimates of the Regression Coefficient Based on Kendall's Tau. Journal of the 
-       American Statistical Association Vol. 63, No. 324: 1379-1389.}
+ \item{Zhang, X., Zwiers, F.W., 2004. Comment on “Applicability of prewhitening to eliminate the influence of serial 
+       correlation on the Mann-Kendall test” by Sheng Yue and Chun Yuan Wang. Water Resources Research 40. 
+       https://doi.org/10.1029/2003WR002073.}
        }
 }
 \seealso{

@@ -17,7 +17,7 @@ write_full_analysis(
   end_year,
   exclude_years,
   ignore_missing = FALSE,
-  zyp_method = "yuepilon",
+  zyp_method = "zhang",
   zyp_alpha,
   file_name,
   plot_filetype = "pdf"
@@ -76,7 +76,9 @@ analysis. Default \code{1}.}
 time periods with no missing dates will be returned. Default \code{FALSE}.}
 
 \item{zyp_method}{Character string identifying the prewhitened trend method to use from \code{'zyp'}, either \code{'zhang'} or
-\code{'yuepilon'}. Only required if analysis group 6 is included. Default \code{'yuepilon'}.}
+\code{'yuepilon'}. \code{'zhang'} is recommended over \code{'yuepilon'} for hydrologic applications (see 
+\code{compute_annual_trends()}; Buerger 2017; Zhang and Zwiers 2004). Only required if analysis group 6 is included. 
+Default \code{'zhang'}.}
 
 \item{zyp_alpha}{Numeric value of the significance level (ex. \code{0.05}) of when to plot a trend line. Leave blank for no line.}
 

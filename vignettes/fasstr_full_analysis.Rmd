@@ -491,7 +491,7 @@ plot_daily_cumulative_stats(station_number = "08NM116", add_year = 1990, use_yie
 **Annual_Trends_Data**
 
 ```{r,  echo=FALSE, comment=NA}
-trends <- compute_annual_trends(station_number = "08NM116", zyp_method = "yuepilon", zyp_alpha = 0.05,
+trends <- compute_annual_trends(station_number = "08NM116", zyp_method = "zhang", zyp_alpha = 0.05,
                                 start_year = 1990, end_year = 2001)
 head(as.data.frame(trends[[1]]))
 ```
