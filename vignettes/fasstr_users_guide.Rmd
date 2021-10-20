@@ -56,11 +56,10 @@ remotes::install_github("bcgov/fasstr")
 
 Several other packages will be installed with `fasstr`. These include [`tidyhydat`](https://CRAN.R-project.org/package=tidyhydat) for downloading Water Survey of Canada hydrometric data, [`zyp`](https://CRAN.R-project.org/package=zyp) for trending, [`ggplot2`](https://CRAN.R-project.org/package=ggplot2) for creating plots, and [`tidyr`](https://CRAN.R-project.org/package=tidyr) and [`dplyr`](https://CRAN.R-project.org/package=dplyr) for data wrangling and summarizing, amongst others.
 
-To call `fasstr` functions you can either load the package using the `library()` function or access a specific function using a double-colon (e.g. `fasstr::calc_daily_stats()`). `fasstr` exports the pipe, ` %>%`, so it can be used for tidy workflows. For this vignette, functions from the `dplyr` package will also be used.
+To call `fasstr` functions you can either load the package using the `library()` function or access a specific function using a double-colon (e.g. `fasstr::calc_daily_stats()`). `fasstr` exports the pipe, ` %>%`, so it can be used for tidy workflows.
 
 ```{r, echo=TRUE}
 library(fasstr)
-library(dplyr)
 ```
 
 ### Downloading HYDAT
@@ -170,7 +169,6 @@ The functions are set up to easily incorporate the use of the pipe operator:
 
 ```{r exampletidy, comment=NA}
 fill_missing_dates(station_number = "08HA011") %>% 
-  dplyr::select(Date, Value) %>%  # keeps just the Date and Value columns
   add_date_variables() %>% 
   add_rolling_means(roll_days = 7)
 ```

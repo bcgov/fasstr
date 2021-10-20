@@ -15,7 +15,6 @@ message = FALSE)
 
 ```{r, include=FALSE}
 library(fasstr)
-library(dplyr)
 ```
 
 `fasstr`, the Flow Analysis Summary Statistics Tool for R, is a set of [R](https://www.r-project.org/) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.
@@ -154,7 +153,7 @@ head(as.data.frame(fill_missing_dates(station_number = "08NM116") %>%
                      add_date_variables() %>%
                      add_rolling_means() %>%
                      add_basin_area() %>% 
-                     filter(WaterYear >= 1990, WaterYear <= 2001) 
+                     dplyr::filter(WaterYear >= 1990, WaterYear <= 2001) 
 ))
 ```
 
