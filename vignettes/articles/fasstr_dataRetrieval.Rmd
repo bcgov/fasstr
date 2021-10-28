@@ -1,0 +1,110 @@
+---
+title: "Using USGS dataRetrieval with fasstr"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using USGS dataRetrieval with fasstr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r options, include=FALSE}
+knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")),
+                      warning = FALSE, 
+                      message = FALSE)
+```
+
+`fasstr`, the Flow Analysis Summary Statistics Tool for R, is a set of [R](https://www.r-project.org/) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses.
+
+This vignette explores how to obtain and integrate U.S. Geological Survey (USGS) streamflow data (available through the [National Water Information System (NWIS)](https://waterdata.usgs.gov/nwis)) using the [`dataRetrieval` R package](https://cran.r-project.org/package=dataRetrieval) with the various `fasstr` functions.
+
+### dataRetrieval
+
+`dataRetrieval` an R package with a collection of functions to help retrieve hydrologic and water quality data hosted on USGS and U.S. Environmental Protection Agency (EPA) web services. USGS hydrologic data are pulled from <https://waterservices.usgs.gov/> and <https://waterdata.usgs.gov/nwis>. Water quality data are obtained from the Water Quality Portal <https://www.waterqualitydata.us/>. More information on using `dataRetrieval` can be found in the [vignette](https://cran.r-project.org/web/packages/dataRetrieval/vignettes/dataRetrieval.html).
+
+This package is another useful tool for hydrologists, especially for those looking to use USGS streamflow hydrometric station data with `fasstr` or other streamflow packages and analyses. You can search for stations on the NWIS website <https://waterdata.usgs.gov/nwis/rt>. Unlike the `tidyhydat` package to obtain  Environment and Climate Change Canada's (ECCC) HYDAT historical data, `dataRetrieval` pulls all data from the NWIS web services and does not require downloading and storing a database.
+
+As USGS stations collect more than just streamflow, a parameter code is required for many of the functions to choose the appropriate data type. The parameter code for daily mean discharge data is "00060". The units of this discharge parameter are in US customary cubic feet per second (cfs). While using US customary units is not an issue for many `fasstr` functions, as some plots titles or column headers can simply be renamed, there are some functions that do metric unit conversions, so some adaptations will be required to utilize other `fasstr` functions (see sections below).
+
+Here is a quick workflow demo showing how to get hydrometric station information, and daily and annual peak data using `dataRetrieval`, adapted from the [vignette](https://cran.r-project.org/web/packages/dataRetrieval/vignettes/dataRetrieval.html):
+
+```{r, eval=FALSE}
+library(dataRetrieval)
+
+# Hoko River Near Sekiu, WA (12043300)
+site_number <- "12043300" 
+
+# Get site information (ie. name, coordinates, drainage basin area, etc.)
+site_info <- readNWISsite(site_number)
+
+# Get daily discharge data
+# Requires parameter code for discharge (00060), in cubic feet per second (cfs)
+daily_data <- readNWISdv(siteNumbers = site_number,
+                         parameterCd = "00060", 
+                         startDate = "1980-01-01",
+                         endDate = "2019-12-31")
+
+# Get annual instantaneous peak discharge data (based on water years (Oct-Sep))
+peak_data <- readNWISpeak(siteNumbers = site_number)
+
+```
+
+
+### Converting to metric and tidyhydat/fasstr structure
+
+For metric analyses, simplest way is to convert the data to metric and the tidyhydat format that works with fasstr.
+
+-   get data and show
+-   show what tidy looks like
+-   convert to tidy (tidyverse and not)
+-   convert cfs
+-   convert sq miles
+
+
+Get data: (show what it looks like)
+
+```{r, eval=FALSE}
+daily_data <- readNWISdv(siteNumbers = site_number,
+                         parameterCd = "00060")
+
+head(daily_data)
+```
+
+Show what tidyhydat/fasstr data looks like.
+
+
+
+Can also apply original names, but converted to metric to functions
+```{r, eval=FALSE}
+# Get cfs data
+usgs_data <- readNWISdv(siteNumbers = "12043300",
+                         parameterCd = "00060")
+
+# Convert cfs to cms
+usgs_data$X_00060_00003 <- usgs_data$X_00060_00003 * 0.028317
+
+# Set `values` to the appropriate column name "X_00060_00003"
+plot_flow_data(data = usgs_data,
+               values = "X_00060_00003")
+```
+
+### Working in US customary units
+
+-   use usgs columns names example
+-   rename to value for ease
+-   Wrangling: convert dataRetrieval to tidy fasstr
+
+#### Examples
+
+-   basic, no basin_area
+-   Simple calcs and plots (no conversions), screen, plot, plot_means, daily, low flow frequency, flow duration, trending?, custom peak frequency
+
+#### Frequency Examples
+
+#### Basin Area Examples
+
+-   area-based runoff/yield and cumulative examples
+-   basin area tricks
+
+USE WASHINGTON EXAMPLES - COAST AND INTERIOR
+
+12048000 DUNGENESS RIVER NEAR SEQUIM, WA medium coastal, very mixed regime 12045500 ELWHA RIVER AT MCDONALD BR NEAR PORT ANGELES, WA large coastal, mixed 12447390 ANDREWS CREEK NEAR MAZAMA, WA small nival 12404500 KETTLE RIVER NEAR LAURIER, WA large nival 12442500 SIMILKAMEEN RIVER NEAR NIGHTHAWK, WA nival 12043300 HOKO RIVER NEAR SEKIU, WA small coastal, pluvial 12212050 FISHTRAP CREEK AT FRONT STREET AT LYNDEN, WA pluvial - Abbotsford
