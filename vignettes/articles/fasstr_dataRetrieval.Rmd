@@ -17,19 +17,26 @@ knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")),
 
 This vignette explores how to obtain and integrate U.S. Geological Survey (USGS) streamflow data (available through the [National Water Information System (NWIS)](https://waterdata.usgs.gov/nwis)) using the [`dataRetrieval` R package](https://cran.r-project.org/package=dataRetrieval) with the various `fasstr` functions.
 
+This vignette will use the following packages:
+
+```{r}
+library(dataRetrieval)
+library(tidyhydat)
+library(fasstr)
+library(dplyr)
+```
+
 ### dataRetrieval
 
-`dataRetrieval` an R package with a collection of functions to help retrieve hydrologic and water quality data hosted on USGS and U.S. Environmental Protection Agency (EPA) web services. USGS hydrologic data are pulled from <https://waterservices.usgs.gov/> and <https://waterdata.usgs.gov/nwis>. Water quality data are obtained from the Water Quality Portal <https://www.waterqualitydata.us/>. More information on using `dataRetrieval` can be found in the [vignette](https://cran.r-project.org/web/packages/dataRetrieval/vignettes/dataRetrieval.html).
+`dataRetrieval` an R package with a collection of functions to retrieve hydrologic and water quality data hosted on USGS and U.S. Environmental Protection Agency (EPA) web services. USGS hydrologic data are pulled from <https://waterservices.usgs.gov/> and <https://waterdata.usgs.gov/nwis>. Water quality data are obtained from the Water Quality Portal <https://www.waterqualitydata.us/>. More information on using `dataRetrieval` can be found in the [vignette](https://cran.r-project.org/web/packages/dataRetrieval/vignettes/dataRetrieval.html).
 
-This package is another useful tool for hydrologists, especially for those looking to use USGS streamflow hydrometric station data with `fasstr` or other streamflow packages and analyses. You can search for stations on the NWIS website <https://waterdata.usgs.gov/nwis/rt>. Unlike the `tidyhydat` package to obtain  Environment and Climate Change Canada's (ECCC) HYDAT historical data, `dataRetrieval` pulls all data from the NWIS web services and does not require downloading and storing a database.
+This package is another useful tool for hydrologists, especially for those looking to use USGS streamflow hydrometric station data with `fasstr` or other streamflow packages and analyses. You can search for stations on the NWIS website <https://waterdata.usgs.gov/nwis/rt>. Unlike the `tidyhydat` package to obtain  Environment and Climate Change Canada's (ECCC) HYDAT historical discharge data, `dataRetrieval` pulls all data from the NWIS web services and does not require downloading and storing a database.
 
-As USGS stations collect more than just streamflow, a parameter code is required for many of the functions to choose the appropriate data type. The parameter code for daily mean discharge data is "00060". The units of this discharge parameter are in US customary cubic feet per second (cfs). While using US customary units is not an issue for many `fasstr` functions, as some plots titles or column headers can simply be renamed, there are some functions that do metric unit conversions, so some adaptations will be required to utilize other `fasstr` functions (see sections below).
+As USGS stations collect more than just streamflow, a parameter code is required for many of the functions to choose the appropriate data type. The parameter code for daily mean discharge data is "00060". The units of this discharge parameter are in US customary cubic feet per second (cfs). While using US customary units is not an issue for many `fasstr` functions, as some plots titles or column headers can simply be renamed, there are some functions that do metric unit conversions so some adaptations will be required (see sections below).
 
 Here is a quick workflow demo showing how to get hydrometric station information, and daily and annual peak data using `dataRetrieval`, adapted from the [vignette](https://cran.r-project.org/web/packages/dataRetrieval/vignettes/dataRetrieval.html):
 
 ```{r, eval=FALSE}
-library(dataRetrieval)
-
 # Hoko River Near Sekiu, WA (12043300)
 site_number <- "12043300" 
 
@@ -38,10 +45,10 @@ site_info <- readNWISsite(site_number)
 
 # Get daily discharge data
 # Requires parameter code for discharge (00060), in cubic feet per second (cfs)
-daily_data <- readNWISdv(siteNumbers = site_number,
-                         parameterCd = "00060", 
-                         startDate = "1980-01-01",
-                         endDate = "2019-12-31")
+usgs_data <- readNWISdv(siteNumbers = site_number,
+                        parameterCd = "00060", 
+                        startDate = "1980-01-01",
+                        endDate = "2019-12-31")
 
 # Get annual instantaneous peak discharge data (based on water years (Oct-Sep))
 peak_data <- readNWISpeak(siteNumbers = site_number)
@@ -51,43 +58,186 @@ peak_data <- readNWISpeak(siteNumbers = site_number)
 
 ### Converting to metric and tidyhydat/fasstr structure
 
-For metric analyses, simplest way is to convert the data to metric and the tidyhydat format that works with fasstr.
+For metric discharge analyses using USGS data, discharge values can easily be converted to cms from cfs, and for ease with use of fasstr functions, column names be renamed to match those with the default HYDAT data structure (ie. 'STATION_NUMBER', 'Date', and 'Value'). 
 
--   get data and show
--   show what tidy looks like
--   convert to tidy (tidyverse and not)
--   convert cfs
--   convert sq miles
+The default dataRetrieval structure is as follows:
 
-
-Get data: (show what it looks like)
-
-```{r, eval=FALSE}
-daily_data <- readNWISdv(siteNumbers = site_number,
-                         parameterCd = "00060")
-
-head(daily_data)
+```{r, eval=TRUE}
+usgs_data <- readNWISdv(siteNumbers = "12043300", parameterCd = "00060")
+head(usgs_data)
 ```
 
-Show what tidyhydat/fasstr data looks like.
+If you desire to keep the USGS data column names, just the convert the discharge units and send to fasstr functions using the 'values' argument. Date column names are the same in both NWIS and HYDAT data. Both base R and pipeline examples are as follow:
 
-
-
-Can also apply original names, but converted to metric to functions
 ```{r, eval=FALSE}
 # Get cfs data
 usgs_data <- readNWISdv(siteNumbers = "12043300",
-                         parameterCd = "00060")
+                        parameterCd = "00060")
 
 # Convert cfs to cms
 usgs_data$X_00060_00003 <- usgs_data$X_00060_00003 * 0.028317
 
-# Set `values` to the appropriate column name "X_00060_00003"
+# Set `values` and 'groups' (if multiple stations) to the appropriate column names
 plot_flow_data(data = usgs_data,
-               values = "X_00060_00003")
+               values = X_00060_00003,
+               groups = site_no)
+
+# Same process within a pipeline
+readNWISdv(siteNumbers = "12043300", 
+           parameterCd = "00060") %>% 
+  mutate(Value = Value * 0.028317) %>% 
+  plot_flow_data(values = X_00060_00003,
+                 groups = site_no)
 ```
 
+The USGS data can also be easily converted into HYDAT formatting to send to fasstr functions with ease. Renaming  'site_no' to 'STATION_NUMBER' is not necessary if one station is used, but is useful if data contains multiple stations. Using base R:
+
+```{r, eval=FALSE}
+# Get the data
+usgs_data <- readNWISdv(siteNumbers = "12043300", parameterCd = "00060")
+
+# Rename columns
+names(usgs_data)[names(usgs_data) == 'site_no'] <- 'STATION_NUMBER'
+names(usgs_data)[names(usgs_data) == 'X_00060_00003'] <- 'Value'
+
+# Convert cfs to cms
+usgs_data$Value <- usgs_data$Value * 0.028317
+
+# Use a fasstr function
+calc_annual_peaks(usgs_data)
+```
+
+Alternatively, renaming columns and unit conversions using dplyr and the pipeline:
+
+```{r, eval=FALSE}
+readNWISdv(siteNumbers = "12043300", 
+           parameterCd = "00060") %>% 
+  rename(STATION_NUMBER = site_no, 
+         Value = X_00060_00003) %>% 
+  mutate(Value = Value * 0.028317) %>% 
+  calc_annual_peaks()
+```
+
+Functions can also be created if conversions will be frequently occur within workflows. The first example is a function to convert data already downloaded using dataRetrieval's `readNWISdv()` function:
+
+```{r, eval=FALSE}
+# Create function to convert to metric and HYDAT structure
+usgs_to_hydat <- function(data){
+  names(data)[names(data) == 'site_no'] <- 'STATION_NUMBER'
+  names(data)[names(data) == 'X_00060_00003'] <- 'Value'
+  data$Value <- data$Value * 0.028317
+  return(data)
+}
+
+# Get data, convert, and send to fasstr function (base and pipeline)
+usgs_data <- readNWISdv("12043300")
+usgs_data <- usgs_to_hydat(usgs_data)
+calc_annual_stats(usgs_data)
+
+readNWISdv("12043300") %>% 
+  usgs_to_hydat() %>% 
+  calc_annual_stats()
+```
+
+This second function integrates `readNWISdv()` with the first function that will both download and convert the data for fasstr functions by supplying USGS site numbers:
+
+```{r, eval=FALSE}
+# Create function to download USGS data and convert to metric and HYDAT structure
+readNWISdv_hydat <- function(siteNumbers){
+  data <- readNWISdv(siteNumbers = siteNumbers, parameterCd = "00060")
+  names(data)[names(data) == 'site_no'] <- 'STATION_NUMBER'
+  names(data)[names(data) == 'X_00060_00003'] <- 'Value'
+  data$Value <- data$Value * 0.028317
+  return(data)
+}
+
+# Get data and send to fasstr function (base and pipeline)
+usgs_data <- readNWISdv_hydat("12043300")
+calc_annual_stats(usgs_data)
+
+readNWISdv_hydat("12043300") %>% 
+  calc_annual_stats()
+```
+
+Some functions will also require a drainage basin area to calculate discharge as area-based runoff yield (in depth units) statistics. The USGS upstream drainage basin area can be found in the site information using the dataRetrieval `readNWISsite()` function and converted from square miles to square kilometres:
+
+```{r, eval=FALSE}
+# Get station information
+site_info <- readNWISsite("12043300")
+
+# Get the drainage area and convert to sq. km
+basin_area_USGS <- site_info$drain_area_va * 2.58999
+
+# Get data and apply to fasstr function
+readNWISdv(siteNumbers = "12043300", 
+           parameterCd = "00060") %>% 
+  rename(Value = X_00060_00003) %>% 
+  mutate(Value = Value * 0.028317) %>% 
+  plot_daily_cumulative_stats(basin_area = basin_area_USGS, 
+                              use_yield = TRUE)
+```
+
+
 ### Working in US customary units
+
+in usgs data and water years (water year designated by the calendar year it ends in, ie. 2010 for water year 2009-2010)
+
+using default names. good for one off, but applying to mulitple fucntions easier to change to Value and STATION)NUMBER
+
+```{r, eval=FALSE}
+# Download and format USGS data
+usgs_data <- readNWISdv(siteNumbers = "12043300", 
+                        parameterCd = "00060")
+
+calc_longterm_mean(data = usgs_data, 
+                   values = X_00060_00003,
+                   water_year_start = 10, 
+                   complete_years = TRUE)
+```
+
+
+```{r, eval=FALSE}
+# Download and format USGS data
+usgs_data <- readNWISdv(siteNumbers = "12043300", 
+                        parameterCd = "00060") %>% 
+  rename(Value = X_00060_00003)
+
+# Fill in some data gaps and add some columns
+usgs_data <- usgs_data %>% 
+  fill_missing_dates(water_year_start = 10) %>% 
+  add_date_variables(water_year_start = 10) %>% 
+  add_rolling_means(roll_days = 7)
+
+# Send to various fasstr functions
+screen_flow_data(usgs_data, 
+                 water_year_start = 10)
+
+calc_longterm_daily_stats(usgs_data, 
+                          water_year_start = 10,
+                          complete_years = TRUE)
+
+calc_longterm_mean(usgs_data, 
+                   water_year_start = 10, 
+                   complete_years = TRUE)
+
+calc_annual_lowflows(usgs_data, 
+                     water_year_start = 10)
+```
+
+
+Using multiple stations
+```{r, eval=FALSE}
+# Download data from two stations
+usgs_data <- readNWISdv(siteNumbers = c("12043300","12048000"), 
+                        parameterCd = "00060") %>% 
+  rename(Value = X_00060_00003,
+         STATION_NUMBER = site_no)
+
+# Send to fasstr
+calc_longterm_daily_stats(usgs_data, complete_years = TRUE)
+```
+
+
 
 -   use usgs columns names example
 -   rename to value for ease
