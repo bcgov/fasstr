@@ -21,7 +21,7 @@ This vignette explores how to obtain and integrate U.S. Geological Survey (USGS)
 
 This vignette will use the following packages:
 
-```{r}
+```{r, eval=TRUE}
 library(fasstr)
 library(dataRetrieval) # for getting USGS NWIS data
 library(tidyhydat) # for getting ECCC HYDAT data
@@ -485,8 +485,10 @@ calc_annual_lowflows(usgs_data,
                      roll_days = c(7,30),
                      water_year_start = 10)
 
-# plot annual half days
-
+# Plot the timing of half flows
+plot_annual_flow_timing(usgs_data,
+                        percent_total = 50,
+                        water_year_start = 10, mon)
 
 
 
