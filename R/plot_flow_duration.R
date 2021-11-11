@@ -164,6 +164,13 @@ plot_flow_duration <- function(data,
                     "Apr" = "forestgreen", "May" = "limegreen", "Jun" = "gold", "Jul" = "orange",
                     "Aug" = "red", "Sep" = "darkred", "Oct" = "orchid", "Nov" = "purple3",
                     "Dec" = "midnightblue", "Long-term" = "black")
+  
+  colour_list <- colour_list[c(months, 13)]
+  
+  if (!include_longterm) {
+    colour_list <- colour_list[names(colour_list) != "Long-term"]
+  }
+  
   if (!is.null(custom_months)) { 
     colour_list[[ custom_months_label ]] <- "grey60"
   }
