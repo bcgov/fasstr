@@ -1,3 +1,17 @@
+fasstr 0.3.4
+=========================
+
+Updated: 11 Nov 2021
+
+#### Updates:
+
+  * corrected 'months' argument in calc_ and plot_annual_outside_normal() to properly filter
+  * added 'months' argument to
+    * add_cumulative_yield() and add_cumulative_volume()
+    * calc_ and plot_annual_flow_timing()
+    * calc_all_annual_stats() - won't calc seasonal totals if not all months
+    * compute_annual_trends() - won't calc seasonal totals if not all months
+  
 fasstr 0.3.3
 =========================
 

@@ -29,6 +29,8 @@
 #'  }
 #' 
 #' @inheritParams calc_all_annual_stats
+#' @param months Numeric vector of months to include in analysis (e.g. \code{6:8} for Jun-Aug). Leave blank to summarize 
+#'    all months (default \code{1:12}). If not all months, seasonal total yield and volumetric flows will not be included.
 #' @param zyp_method Character string identifying the prewhitened trend method to use from \code{zyp}, either \code{'zhang'}
 #'     or \code{'yuepilon'}. \code{'zhang'} is recommended over \code{'yuepilon'} for hydrologic applications (Bürger 2017; 
 #'     Zhang and Zwiers 2004). Required.
@@ -99,6 +101,7 @@ compute_annual_trends <- function(data,
                                   start_year,
                                   end_year,
                                   exclude_years,
+                                  months = 1:12,
                                   annual_percentiles = c(10,90),
                                   monthly_percentiles = c(10,20),
                                   stats_days = 1,
@@ -171,6 +174,7 @@ compute_annual_trends <- function(data,
                                        start_year = start_year,
                                        end_year = end_year,
                                        exclude_years = exclude_years,
+                                       months = months,
                                        annual_percentiles = annual_percentiles,
                                        monthly_percentiles = monthly_percentiles,
                                        stats_days = stats_days,

@@ -30,6 +30,8 @@
 #' @inheritParams calc_annual_stats
 #' @inheritParams calc_annual_cumulative_stats
 #' @inheritParams calc_annual_outside_normal
+#' @param months Numeric vector of months to include in analysis (e.g. \code{6:8} for Jun-Aug). Leave blank to summarize 
+#'    all months (default \code{1:12}). If not all months, seasonal total yield and volumetric flows will not be included.
 #' @param annual_percentiles Numeric vector of percentiles to calculate annually. Set to \code{NA} if none required. Used for
 #'    \code{calc_annual_stats()} function. Default \code{c(10,90)}.
 #' @param monthly_percentiles Numeric vector of percentiles to calculate monthly for each year. Set to \code{NA} if none required. 
@@ -97,6 +99,7 @@ calc_all_annual_stats <- function(data,
                                   start_year,
                                   end_year,
                                   exclude_years,
+                                  months = 1:12,
                                   annual_percentiles = c(10,90),
                                   monthly_percentiles = c(10,20),
                                   stats_days = 1,
@@ -143,6 +146,7 @@ calc_all_annual_stats <- function(data,
   timing_pct_checks(timing_percent)
   normal_percentiles_checks(normal_percentiles)
   sort(normal_percentiles)
+  months_checks(months)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -175,6 +179,7 @@ calc_all_annual_stats <- function(data,
                                                      start_year = start_year,
                                                      end_year = end_year,
                                                      exclude_years = exclude_years, 
+                                                     months = months,
                                                      ignore_missing = ignore_missing))
   
   # Gather to name all columns with CY or WY for calendar or water year
@@ -190,9 +195,9 @@ calc_all_annual_stats <- function(data,
                                                          start_year = start_year,
                                                          end_year = end_year,
                                                          exclude_years = exclude_years,
+                                                         months = months,
                                                          ignore_missing = ignore_missing))
   lowflow_stats <- dplyr::select(lowflow_stats, -dplyr::contains("Date"))
-  
   
   totalQ_stats <- suppressWarnings(calc_annual_cumulative_stats(data = flow_data,
                                                                 use_yield = FALSE,
@@ -201,7 +206,8 @@ calc_all_annual_stats <- function(data,
                                                                 start_year = start_year,
                                                                 end_year = end_year,
                                                                 exclude_years = exclude_years,
-                                                                include_seasons = TRUE))
+                                                                months = months,
+                                                                include_seasons = all(1:12 %in% months)))
   
   totalyield_stats <- suppressWarnings(calc_annual_cumulative_stats(data = flow_data,
                                                                     use_yield = TRUE,
@@ -210,7 +216,8 @@ calc_all_annual_stats <- function(data,
                                                                     start_year = start_year,
                                                                     end_year = end_year,
                                                                     exclude_years = exclude_years,
-                                                                    include_seasons = TRUE))
+                                                                    months = months,
+                                                                    include_seasons = all(1:12 %in% months)))
   
   
   timing_stats <- suppressWarnings(calc_annual_flow_timing(data = flow_data,
@@ -218,7 +225,8 @@ calc_all_annual_stats <- function(data,
                                                            water_year_start = water_year_start,
                                                            start_year = start_year,
                                                            end_year = end_year,
-                                                           exclude_years = exclude_years))
+                                                           exclude_years = exclude_years,
+                                                           months = months))
   timing_stats <- dplyr::select(timing_stats, STATION_NUMBER, Year, dplyr::contains("DoY"))
   
   
@@ -230,6 +238,7 @@ calc_all_annual_stats <- function(data,
                                                      start_year = start_year,
                                                      end_year = end_year,
                                                      exclude_years = exclude_years,
+                                                     months = months,
                                                      spread = TRUE,
                                                      ignore_missing = ignore_missing))
   
@@ -241,7 +250,8 @@ calc_all_annual_stats <- function(data,
                                                                water_year_start = water_year_start,
                                                                start_year = start_year,
                                                                end_year = end_year,
-                                                               exclude_years = exclude_years))
+                                                               exclude_years = exclude_years,
+                                                               months = months))
   
   ## COMBINE ALL STATS
   ## -----------------
