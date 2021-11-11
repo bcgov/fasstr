@@ -19,7 +19,9 @@
 #' @inheritParams calc_annual_cumulative_stats
 #' @inheritParams calc_daily_stats
 #' @param percentiles Numeric vector of percentiles to calculate. Set to \code{NA} if none required. Default \code{c(5,25,75,95)}.
-#'    
+#' @param months Numeric vector of months to add cumulative flows (e.g. \code{6:8} for Jun-Aug). Leave blank to accumulate 
+#'    all months (default \code{1:12}). Need to be consecutive months for given year/water year to work properly.
+#'      
 #' @return A tibble data frame with the following columns, default units in cubic metres, or millimetres if use_yield and basin_area provided:
 #'   \item{Month}{month (MMM-DD) of cumulative statistics}
 #'   \item{Mean}{monthly mean of all cumulative flows for a given month of the year}
@@ -67,6 +69,7 @@ calc_monthly_cumulative_stats <- function(data,
                                           start_year,
                                           end_year,
                                           exclude_years, 
+                                          months = 1:12,
                                           transpose = FALSE){
   
 
@@ -96,6 +99,7 @@ calc_monthly_cumulative_stats <- function(data,
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   transpose_checks(transpose)
+  months_checks(months)
 
   
   
@@ -133,21 +137,25 @@ calc_monthly_cumulative_stats <- function(data,
   # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
                              water_year_start = water_year_start)
+
   
   # Add cumulative flows
   if (use_yield){
     flow_data <- suppressWarnings(add_cumulative_yield(data = flow_data, 
                                                        water_year_start = water_year_start, 
-                                                       basin_area = basin_area))
+                                                       basin_area = basin_area,
+                                                       months = months))
     names(flow_data)[names(flow_data) == "Cumul_Yield_mm"] <- paste("Cumul_Total")
   } else {
-    flow_data <- add_cumulative_volume(data = flow_data, water_year_start = water_year_start)
+    flow_data <- add_cumulative_volume(data = flow_data, water_year_start = water_year_start,
+                                       months = months)
     names(flow_data)[names(flow_data) == "Cumul_Volume_m3"] <- paste("Cumul_Total")
   }
   
   # Filter for the selected and excluded years and leap year values (last day)
   flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
   flow_data <- dplyr::filter(flow_data, !(WaterYear %in% exclude_years))
+  flow_data <- dplyr::filter(flow_data, Month %in% months)
   
   # Stop if all data is NA
   #no_values_error(flow_data$Cumul_Total)

@@ -67,6 +67,7 @@ plot_monthly_cumulative_stats <- function(data,
                                           start_year,
                                           end_year,
                                           exclude_years,
+                                          months = 1:12,
                                           log_discharge = FALSE,
                                           include_title = FALSE,
                                           add_year){
@@ -126,7 +127,8 @@ plot_monthly_cumulative_stats <- function(data,
                                                  water_year_start = water_year_start,
                                                  start_year = start_year,
                                                  end_year = end_year,
-                                                 exclude_years = exclude_years)
+                                                 exclude_years = exclude_years,
+                                                 months = months)
   
   
   ## ADD YEAR IF SELECTED
