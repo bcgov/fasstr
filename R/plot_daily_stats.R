@@ -240,6 +240,9 @@ plot_daily_stats <- function(data,
   y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (cubic metres)", #expression(Volume~(m^3))
                          ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)", 
                                 "Discharge (cms)")) #expression(Discharge~(m^3/s))
+  daily_stats <- fill_missing_dates(daily_stats, water_year_start = water_year_start)
+  daily_stats <- add_date_variables(daily_stats, water_year_start = water_year_start)
+  daily_stats <- dplyr::select(daily_stats, -c("CalendarYear", "Month", "MonthName", "WaterYear"))
   
   # Create the daily stats plots
   daily_plots <- dplyr::group_by(daily_stats, STATION_NUMBER)
@@ -247,15 +250,15 @@ plot_daily_stats <- function(data,
   daily_plots <- dplyr::mutate(
     daily_plots,
     plot = purrr::map2(
-      data, STATION_NUMBER, 
-      ~ggplot2::ggplot(data = ., ggplot2::aes(x = AnalysisDate)) +
-        {if(include_extremes) ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maximum"), na.rm = TRUE)} +
-        {if(is.numeric(outer_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(outer_percentiles)), 
-                                                                                    ymax = paste0("P",max(outer_percentiles)), 
-                                                                                    fill = paste0("'",outer_name,"'")), na.rm = TRUE)} +
-        {if(is.numeric(inner_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(inner_percentiles)), 
-                                                                                    ymax = paste0("P",max(inner_percentiles)), 
-                                                                                    fill = paste0("'",inner_name,"'")), na.rm = TRUE)} +
+      data, STATION_NUMBER,
+      ~ggplot2::ggplot(data = ., ggplot2::aes(x = Date)) +
+        {if(include_extremes) ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maximum"), na.rm = FALSE)} +
+        {if(is.numeric(outer_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(outer_percentiles)),
+                                                                                    ymax = paste0("P",max(outer_percentiles)),
+                                                                                    fill = paste0("'",outer_name,"'")), na.rm = FALSE)} +
+        {if(is.numeric(inner_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(inner_percentiles)),
+                                                                                    ymax = paste0("P",max(inner_percentiles)),
+                                                                                    fill = paste0("'",inner_name,"'")), na.rm = FALSE)} +
         ggplot2::geom_line(ggplot2::aes(y = Median, colour = "Median"), size = .5, na.rm = TRUE) +
         ggplot2::geom_line(ggplot2::aes(y = Mean, colour = "Mean"), size = .5, na.rm = TRUE) +
         {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8))}+
@@ -264,12 +267,14 @@ plot_daily_stats <- function(data,
                                                         short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
                                                         long = ggplot2::unit(.2, "cm"))} +
         ggplot2::scale_x_date(date_labels = "%b", date_breaks = "1 month",
-                              limits = as.Date(c(NA, as.character(max(daily_stats$AnalysisDate)))), expand = c(0,0)) +
+                              limits = as.Date(c(as.character(min(daily_stats$AnalysisDate, na.rm = TRUE)), 
+                                                 as.character(max(daily_stats$AnalysisDate, na.rm = TRUE)))), 
+                              expand = c(0,0)) +
         ggplot2::xlab("Day of Year")+
         ggplot2::ylab(y_axis_title)+
         ggplot2::theme_bw()+
-        ggplot2::labs(color = 'Daily Statistics') +  
-        {if (include_title & .y != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nDaily Statistics')) } +    
+        ggplot2::labs(color = 'Daily Statistics') +
+        {if (include_title & .y != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nDaily Statistics')) } +
         ggplot2::theme(axis.text = ggplot2::element_text(size = 10, colour = "grey25"),
                        axis.title = ggplot2::element_text(size = 12, colour = "grey25"),
                        axis.ticks = ggplot2::element_line(size = .1, colour = "grey25"),

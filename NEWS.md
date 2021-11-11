@@ -3,8 +3,14 @@ fasstr 0.3.4
 
 Updated: 11 Nov 2021
 
+#### TO DO:
+  * added 'months' argument to: fix gap between empty months
+    * plot_longterm_daily_stats()
+    * plot_longterm_monthly_stats()
+
 #### Updates:
 
+  * removed connecting ribbons where data gaps in plot_daily_stats()
   * fixed bug: removed unnecessary legend items from plot_flow_duration()
   * fixed bug: corrected 'months' argument in calc_ and plot_annual_outside_normal() to properly filter
   * added 'months' argument to
