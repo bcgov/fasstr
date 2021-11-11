@@ -388,7 +388,7 @@ To be consistent with many USGS streamflow analyses, these examples will use Wat
 
 ### Examples: tidying functions
 
-There are several functions that are used to prepare your flow data set for your own analysis. These functions begin with `add_` or `fill_` and add columns or rows, respectively, to your flow data frame. See the documentation for more info on the functions. The following example shows how to apply the tidying functions to USGS data in a cotinuous pipeline and using water years. Note how the basin area correction is applied in the two `_cumulative_` functions and columns are renamed to match the appropriate units where necessary.
+There are several functions that are used to prepare your flow data set for your own analysis by adding columns of various date variables, adding rolling means, and adding cumulative discharges, amongst others. These functions begin with `add_` or `fill_` and add columns or rows, respectively, to your data frame of daily flow values. See the documentation for more info on the functions. The following example shows how to apply the tidying functions in a continuous pipeline and using water years. Note how the basin area correction is applied in the two `_cumulative_` functions and columns are renamed to match the appropriate units where necessary.
 
 ```{r, eval=FALSE}
 usgs_data %>% 
@@ -398,45 +398,108 @@ usgs_data %>%
               seasons_length = 3) %>% 
   add_rolling_means() %>% 
   add_daily_volume() %>% 
-    rename(Volume_cuft = Volume_m3) %>% 
+  rename(Volume_cuft = Volume_m3) %>% 
   add_cumulative_volume(water_year_start = 10) %>% 
-    rename(Cumul_Volume_cuft = Cumul_Volume_m3) %>% 
+  rename(Cumul_Volume_cuft = Cumul_Volume_m3) %>% 
   add_daily_yield(basin_area = usgs_basin_area * 2323.2) %>% 
-    rename(Yield_inch = Yield_mm) %>%  
+  rename(Yield_inch = Yield_mm) %>%  
   add_cumulative_yield(water_year_start = 10, 
                        basin_area = usgs_basin_area * 2323.2) %>% 
-    rename(Cumul_Yield_inch = Cumul_Yield_mm)
+  rename(Cumul_Yield_inch = Cumul_Yield_mm)
+```
+
+### Examples: flow data screening
+
+It may be useful to explore the data quality and availability before using the data for analysis or for interest. Some of the screening functions can help you screen for outliers and missing data. Note the renaming of axis labels in the plot examples to the necessary units with one or multiple station plots.
+
+```{r, eval=FALSE}
+# Get the number of missing dates and some basic summary statistics (calculated regardless 
+# of missing dates)
+screen_flow_data(usgs_data, 
+                 water_year_start = 10)
+
+# Plot the missing dates
+plot_missing_dates(usgs_data, 
+                   water_year_start = 10)
+
+# Plot the data, extract the plot, and rename the axis
+plot_flow_data(usgs_data)[[1]]+
+  ylab("Discharge, cfs")
+
+# Alternatively, plot the data, and rename the axis label by modifying the ggplot code
+usgs_daily_plot <- plot_flow_data(usgs_data)
+usgs_daily_plot$Daily_Flows$labels$y <- "Discharge, cfs"
+usgs_daily_plot
+
+######################
+##################
+plot_flow_data(usgs_data_multiple, 
+               one_plot = TRUE)[[1]]+
+  ylab("Discharge, cfs")
+
+usgs_daily_multiple <- plot_flow_data(usgs_data_multiple)
+usgs_daily_multiple$`12043300_Daily_Flows`$labels$y <- "Discharge, cfs"
+usgs_daily_multiple$`12048000_Daily_Flows`$labels$y <- "Discharge, cfs"
+usgs_daily_multiple
 ```
 
 ### Examples: summary statistics tables and plots
 
-Screening, calc_ and plot. Some require renaming of names
+The majority of the `fasstr` functions produce statistics over a certain time period, either long-term, annually, monthly, or daily. These statistics are produced using the `calc_*` functions and can be visualized using their corresponding `plot_*` functions. Most of the `calc_` functions do not require any changes to column names, unless they require as drainage basin area, where the multiplier fix will be applied. Most of the plots will require renaming axes as noted.
+
 
 ```{r, eval=FALSE}
-screen_flow_data(usgs_data, 
-                 water_year_start = 10)
-
-plot_missing_dates(usgs_data, 
-                   water_year_start = 10)
-
+# Calculate long-term and long-term monthly summary statistics based on daily data
+# using only years with complete data
 calc_longterm_daily_stats(usgs_data, 
                           water_year_start = 10,
                           complete_years = TRUE)
 
+# Calculate the long-term mean annual discharge (MAD) using only years with complete 
+# data and calculate 5%, 10%, and 20% MADs
 calc_longterm_mean(usgs_data, 
                    water_year_start = 10, 
                    complete_years = TRUE,
                    percent_MAD = c(5,10,20))
 
-calc_annual_lowflows(usgs_data, 
-                     water_year_start = 10)
-
+# Plot flow duration curves for each month and combining summer months, using only 
+# complete years, and renaming the axis title
 plot_flow_duration(usgs_data, 
                    water_year_start = 10, 
                    complete_years = TRUE,
                    custom_months = 7:9,
-                   custom_months_label = "Summer")
+                   custom_months_label = "Summer")[[1]]+
+  ylab("Discharge, cubic feet per second")
 
+# Plot annual summary statistics, including annual 10th and 90th percentiles, starting
+# in 1996 and making the axis logarithmic, and renaming the axis title
+plot_annual_stats(usgs_data, 
+                  water_year_start = 10,
+                  percentiles = c(10,90),
+                  start_year = 1996,
+                  log_discharge = TRUE)[[1]]+
+  ylab("Discharge, cubic feet per second")
+
+# Calculate annual 7- and 30-day low flows
+calc_annual_lowflows(usgs_data, 
+                     roll_days = c(7,30),
+                     water_year_start = 10)
+
+# plot annual half days
+
+
+
+
+
+# calc monthly
+
+# calc daiyl
+
+# plot daily
+
+# plot daily cumulative
+
+# plot cumualtive in cubic feet to acre feet conversion? changing the ylabels
 
 ```
 
@@ -454,18 +517,21 @@ lowflow_frequency$Freq_Plot$labels$y <- "Discharge, cubic feet per second"
 
 # Compute annual daily peak flows frequencies with default arguments
 highflow_frequency <- compute_annual_frequencies(usgs_data,
-                                                water_year_start = 10,
-                                                use_max = TRUE,
-                                                roll_days = 1)
+                                                 water_year_start = 10,
+                                                 use_max = TRUE,
+                                                 roll_days = 1)
 # Change the y-axis of the plot to US units (changing the object itself)
 highflow_frequency$Freq_Plot$labels$y <- "Discharge, cubic feet per second"
 highflow_frequency$Freq_Plot
 
+
+
+
 # Compute summer low flow frequencies with default arguments
 lowflow_7day <- compute_annual_frequencies(usgs_data,
-                                                water_year_start = 10,
-                                                months = 7:9,
-                                                roll_days = 7)
+                                           water_year_start = 10,
+                                           months = 7:9,
+                                           roll_days = 7)
 # Extract the plot and change the y-axis title to US units (doesn't change the original)
 lowflow_plot <- lowflow_7day$Freq_Plot +
   ylab("Discharge, cubic feet per second")
@@ -575,25 +641,13 @@ trends <- fasstr_trends_to_US_units(trends)
 ```
 
 
+## To Do
 
+Ask usgs 
 
-
-
-
-
-
-
-
-
-
--   Simple calcs and plots (no conversions), screen, plot, plot_means, daily, low flow frequency, flow duration, trending?, custom peak frequency
-
-
-
-
-
-
-- cumulative yield units, toooo large, acre feet? what units
+- is acre-feet used often? any demos needed, especially for total volumes? cumulative yield units, toooo large, acre feet? what units
+- other analyses?
+- review vignette
 
 USE WASHINGTON EXAMPLES - COAST AND INTERIOR
 
