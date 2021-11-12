@@ -3,18 +3,14 @@ fasstr 0.3.4
 
 Updated: 11 Nov 2021
 
-#### TO DO:
-  * added 'months' argument to: fix gap between empty months
-    * plot_longterm_daily_stats()
-    * plot_longterm_monthly_stats()
-
 #### Updates:
 
-  * removed connecting ribbons where data gaps in plot_daily_stats()
   * fixed bug: removed unnecessary legend items from plot_flow_duration()
   * fixed bug: corrected 'months' argument in calc_ and plot_annual_outside_normal() to properly filter
   * added 'months' argument to
     * add_cumulative_yield() and add_cumulative_volume()
+    * plot_longterm_daily_stats() - no ribbons where data gaps
+    * plot_longterm_monthly_stats() - no ribbons where data gaps
     * calc_ and plot_daily_cumulative_stats()
     * calc_ and plot_monthly_cumulative_stats()
     * calc_ and plot_annual_flow_timing()
