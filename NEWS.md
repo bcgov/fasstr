@@ -7,15 +7,15 @@ Updated: 11 Nov 2021
 
   * fixed bug: removed unnecessary legend items from plot_flow_duration()
   * fixed bug: corrected 'months' argument in calc_ and plot_annual_outside_normal() to properly filter
-  * added 'months' argument to
-    * add_cumulative_yield() and add_cumulative_volume()
+  * added 'months' argument:
+    * add_cumulative_yield() and add_cumulative_volume() - will accumulate flows just in selected months
     * plot_longterm_daily_stats() - no ribbons where data gaps
     * plot_longterm_monthly_stats() - no ribbons where data gaps
-    * calc_ and plot_daily_cumulative_stats()
-    * calc_ and plot_monthly_cumulative_stats()
-    * calc_ and plot_annual_flow_timing()
-    * calc_all_annual_stats() - won't calc seasonal totals if not all months
-    * compute_annual_trends() - won't calc seasonal totals if not all months
+    * calc_ and plot_daily_cumulative_stats() - will accumulate flows just in selected months
+    * calc_ and plot_monthly_cumulative_stats() - will accumulate flows just in selected months
+    * calc_ and plot_annual_flow_timing() - will use timing from just selected months
+    * calc_all_annual_stats() - will only use months select, won't calc seasonal totals if not all months
+    * compute_annual_trends() - will only use months select, won't calc seasonal totals if not all months
   
 fasstr 0.3.3
 =========================
