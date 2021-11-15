@@ -431,12 +431,13 @@ usgs_daily_plot <- plot_flow_data(usgs_data)
 usgs_daily_plot$Daily_Flows$labels$y <- "Discharge, cfs"
 usgs_daily_plot
 
-######################
-##################
+# Plotting daily flows of multiple stations on one plot, extracting and renaming axis
 plot_flow_data(usgs_data_multiple, 
                one_plot = TRUE)[[1]]+
   ylab("Discharge, cfs")
 
+# Plotting daily flows of multiple stations on different plots, and
+# renaming axes of existing ggplot2 objects
 usgs_daily_multiple <- plot_flow_data(usgs_data_multiple)
 usgs_daily_multiple$`12043300_Daily_Flows`$labels$y <- "Discharge, cfs"
 usgs_daily_multiple$`12048000_Daily_Flows`$labels$y <- "Discharge, cfs"
@@ -485,30 +486,50 @@ calc_annual_lowflows(usgs_data,
                      roll_days = c(7,30),
                      water_year_start = 10)
 
-# Plot the timing of half flows
+# Plot the winter-spring (Jan-July) center of volume dates
 plot_annual_flow_timing(usgs_data,
                         percent_total = 50,
-                        water_year_start = 10, mon)
+                        water_year_start = 10,
+                        months = 1:7)
 
+# Plot annual means, starting in 1996
+plot_annual_means(usgs_data,
+                  water_year_start = 10,
+                  start_year = 1996)
 
+# Calculate monthly summary statistics, including 25 and 27 percentiles
+calc_monthly_stats(usgs_data,
+                   percentiles = c(25,75),
+                   water_year_start = 10)
 
+# Calculate daily summary statistics, including 25 and 27 percentiles
+calc_daily_stats(usgs_data,
+                 percentiles = c(25,75),
+                 water_year_start = 10)
 
-# calc monthly
+# Plot an annual hydrograph (daily summary statistics) using only data 
+# from complete years and add 2020 daily data
+plot_daily_stats(usgs_data,
+                 complete_years = TRUE,
+                 add_year = 2020)
 
-# calc daiyl
-
-# plot daily
-
-# plot daily cumulative
-
-# plot cumualtive in cubic feet to acre feet conversion? changing the ylabels
-
+# Plot an annual cumulative runoff hydrograph (daily summary statistics) and adding
+# 2020 daily data, using the basin area and correction factor, and renaming the axis
+plot_daily_cumulative_stats(usgs_data,
+                            add_year = 2020,
+                            use_yield = TRUE,
+                            basin_area = usgs_basin_area * 2323.2)[[1]]+
+  ylab("Cumulative Runoff, inches")
 ```
 
 
 ### Examples: frequency analyses
 
-annual frequencies
+There are several functions that perform various volume frequency analyses. Frequency analyses are used to determine probabilities of events of certain sizes (typically annual high or low flows). The analyses produce plots of event series and computed quantiles fitted from either Log-Pearson Type III or Weibull probability distributions. See the [frequency analysis vignette](https://bcgov.github.io/fasstr/articles/fasstr_frequency_analysis.html) for more information. With the two options for probability distributions (logPIII and weibull), the user should have understanding or investigate the appropriateness of fit for the data provided and probability distributions. The 'fitdistrplus' R package fitting parameters can be found the in the fasstr "Freq_Fitting" output and can be explored (see 'fitdistrplus' documentation for more information).
+
+These functions do analyses on the data provided, without requiring metric conversions. As such, the only fix required to format results in US units is changing the y-axis on the plot object from "Discharge (cms)" to desired units. Here are some examples that could be applied using USGS data. See documentation for default arguments (i.e. `?compute_annual_frequencies`).
+
+Compute annual low flows (1,3,7,and 30-day) frequencies with default arguments:
 
 ```{r, eval=FALSE}
 # Compute annual low flows frequencies with default arguments
@@ -526,9 +547,17 @@ highflow_frequency <- compute_annual_frequencies(usgs_data,
 highflow_frequency$Freq_Plot$labels$y <- "Discharge, cubic feet per second"
 highflow_frequency$Freq_Plot
 
+# View the fitting parameters (shape, scale, location, loglikehood, AIC and BIC etc.)
+# of the 7-day low flows
+summary(lowflow_frequency$Freq_Fitting$`7-Day`)
 
+# Plot the fitting distributions of the 7-day low flows
+plot(lowflow_frequency$Freq_Fitting$`7-Day`)
+```
 
+Compute summer 7-day low flow frequencies with default arguments:
 
+```{r, eval=FALSE}
 # Compute summer low flow frequencies with default arguments
 lowflow_7day <- compute_annual_frequencies(usgs_data,
                                            water_year_start = 10,
@@ -539,9 +568,7 @@ lowflow_plot <- lowflow_7day$Freq_Plot +
   ylab("Discharge, cubic feet per second")
 ```
 
-freq_quantile
-
-custom frequencies
+Compute a frequency analysis on annual instantaneous peak data from NWIS using the custom frequency analysis function:
 
 ```{r, eval=FALSE}
 # dataRetrieval function to get annual instantaneous peak data, grouped by water years
@@ -563,11 +590,25 @@ flood_frequency <- readNWISpeak("12043300") %>%
   compute_frequency_analysis(use_max = TRUE)
 ```
 
-### Examples: annual trending
-
-trending example applyig the basin area correction, note of units
+Compute a single frequency quantile with default arguments. With this function only the desired quantile is returned. Use this function if you know the fitting distributions are suitable for the data set.
 
 ```{r, eval=FALSE}
+# Compute the summer 7Q10 with default arguments
+compute_frequency_quantile(usgs_data,
+                           roll_days = 7, 
+                           return_period = 10,
+                           months = 7:9)
+```
+### Examples: annual trending
+
+The `compute_annual_trends()` function calculates prewhitened non-parametric Mann-Kendall annual trends on streamflow data using the [`zyp`](https://CRAN.R-project.org/package=zyp) package. The function calculates various annual metrics using the `calc_all_annual_stats()` function and then calculates and plots the trending data. The `zhang` prewhitening method is recommended for hydrologic applications over `yuepilon`. See the [`zyp`](https://CRAN.R-project.org/package=zyp) package and the [trending vignette](https://bcgov.github.io/fasstr/articles/fasstr_trending_analysis.html) for more information.
+
+For the trending function, many of the metrics and results are simply statistics on the raw data and so will not require any conversions. However, like other fasstr functions that calculate volumetric and runoff totals (using a basin area), some fixes will be required to use a basin area (see above) and to rename data, columns, and plot axes. Data and axes with names ending with units of volume or yield will require renaming. The following code is examples of how to run the trending function and modify it and the outputs for US units.
+
+```{r, eval=FALSE}
+# Calculate annual metrics and trend the data using the Mann-Kendall methods, 
+# using 'zhang' prewhitening methods, plotting a trend line on plots if α < 0.05,
+# and applying the basin area correction to get inches depth for yield units.
 trends <- compute_annual_trends(usgs_data, 
                                 zyp_method = "zhang", 
                                 zyp_alpha = 0.05,
@@ -575,7 +616,7 @@ trends <- compute_annual_trends(usgs_data,
                                 water_year_start = 10)
 ```
 
-However, while values will be accurate, labels will not be for some. If want to use results, then here are some ways to convert the labels:
+While exported values will be accurate, some data, columns, and axes will needed to be renamed from metric to US units. If want to use results from above, then here are some ways to convert names in the output from `compute_annual_trends`:
 
 ```{r, eval=FALSE}
 # Rename plot names
@@ -604,9 +645,10 @@ for (i in names(trends[3:length(trends)])){
 }
 ```
 
-A function can also be written if relabeling will frequently occur within workflows. With this example, you apply the results of `compute_annual_trends()` directly to this wrapper function and it will rename all appropriate labels and titles within the results.
+A function can also be written if relabeling will frequently occur within workflows. With this example, you apply the output of `compute_annual_trends()` directly to this wrapper function and it will rename all appropriate labels and titles within the results.
 
 ```{r, eval=FALSE}
+# Create wrapper function
 fasstr_trends_to_US_units <- function(trends){
   
   # Rename plot names
@@ -637,19 +679,21 @@ fasstr_trends_to_US_units <- function(trends){
   return(trends)
 }
 
-# Apply the wrapper function
+# Run the wrapper function
 trends <- fasstr_trends_to_US_units(trends)
-
 ```
 
 
 ## To Do
+
+plot cumualtive in cubic feet to acre feet conversion? changing the ylabels?
 
 Ask usgs 
 
 - is acre-feet used often? any demos needed, especially for total volumes? cumulative yield units, toooo large, acre feet? what units
 - other analyses?
 - review vignette
+
 
 USE WASHINGTON EXAMPLES - COAST AND INTERIOR
 
