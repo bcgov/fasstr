@@ -156,8 +156,10 @@ navbar:
       href: articles/fasstr_frequency_analysis.html
     - text: Computing a Full Analysis
       href: articles/fasstr_full_analysis.html
-    # - text: --------
-    # - text: Exploration
+    - text: --------
+    - text: Exploration
+    - text: Using USGS dataRetrieval data with fasstr
+      href: articles/articles/fasstr_dataRetrieval.html
     # - text: Fun with fasstr
     #   href: articles/articles/fun_with_fasstr.html
     # - text: R and Hydrology
