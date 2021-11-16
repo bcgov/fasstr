@@ -75,12 +75,15 @@ head(usgs_data)
 To keep the NWIS data column names for fasstr functions, just remember to convert the discharge units and then send to fasstr functions using the 'values' argument. Date column names are the same in both NWIS and HYDAT data. Here is an example of this situation using base R:
 
 ```{r, eval=FALSE}
+# Conversion factor from cfs to cms
+cfs_to_cms <- 0.028317
+
 # Get cfs data
 usgs_data <- readNWISdv(siteNumbers = "12043300",
                         parameterCd = "00060")
 
 # Convert cfs to cms
-usgs_data$X_00060_00003 <- usgs_data$X_00060_00003 * 0.028317
+usgs_data$X_00060_00003 <- usgs_data$X_00060_00003 * cfs_to_cms
 
 # Set `values` and 'groups' (if multiple stations) to the appropriate column names
 plot_flow_data(data = usgs_data,
@@ -91,17 +94,20 @@ plot_flow_data(data = usgs_data,
 and using dplyr and pipelines:
 
 ```{r, eval=FALSE}
+# Conversion factor from cfs to cms
+cfs_to_cms <- 0.028317
+
 # One station
 usgs_data <- readNWISdv(siteNumbers = "12043300", 
                         parameterCd = "00060") %>% 
-  mutate(X_00060_00003 = X_00060_00003 * 0.028317)
+  mutate(X_00060_00003 = X_00060_00003 * cfs_to_cms)
 plot_flow_data(data = usgs_data,
                values = X_00060_00003)
 
 # Multiple stations
 usgs_data <- readNWISdv(siteNumbers = c("12043300", "12048000"),
                         parameterCd = "00060") %>% 
-  mutate(X_00060_00003 = X_00060_00003 * 0.028317)
+  mutate(X_00060_00003 = X_00060_00003 * cfs_to_cms)
 plot_flow_data(data = usgs_data,
                values = X_00060_00003,
                groups = site_no)
@@ -115,12 +121,15 @@ NWIS column names can also be changed to match those with tidyhydat and fasstr's
 # Get the data
 usgs_data <- readNWISdv(siteNumbers = "12043300", parameterCd = "00060")
 
+# Conversion factor from cfs to cms
+cfs_to_cms <- 0.028317
+
 # Rename columns
 names(usgs_data)[names(usgs_data) == 'site_no'] <- 'STATION_NUMBER'
 names(usgs_data)[names(usgs_data) == 'X_00060_00003'] <- 'Value'
 
 # Convert cfs to cms
-usgs_data$Value <- usgs_data$Value * 0.028317
+usgs_data$Value <- usgs_data$Value * cfs_to_cms
 
 # Use a fasstr function
 calc_annual_peaks(usgs_data)
@@ -129,18 +138,21 @@ calc_annual_peaks(usgs_data)
 and using dplyr and pipelines:
 
 ```{r, eval=FALSE}
+# Conversion factor from cfs to cms
+cfs_to_cms <- 0.028317
+
 # One station
 usgs_data <- readNWISdv(siteNumbers = "12043300", 
                         parameterCd = "00060") %>% 
   rename(Value = X_00060_00003) %>% 
-  mutate(Value = Value * 0.028317)
+  mutate(Value = Value * cfs_to_cms)
 
 # Multiple stations
 usgs_data <- readNWISdv(siteNumbers = c("12043300", "12048000"), 
                         parameterCd = "00060") %>% 
   rename(STATION_NUMBER = site_no, 
          Value = X_00060_00003) %>% 
-  mutate(Value = Value * 0.028317)
+  mutate(Value = Value * cfs_to_cms)
 
 # Use a fasstr function
 calc_annual_peaks(usgs_data)
@@ -152,17 +164,22 @@ calc_annual_peaks(usgs_data)
 Some fasstr functions require a drainage basin area to calculate discharge as area-based runoff yield statistics (in depth units, commonly millimetres in Canada). The NWIS upstream drainage basin area can be found in the site information using the dataRetrieval `readNWISsite()` function and then converted from square miles to square kilometres (2.58999 sqkm per sqmile):
 
 ```{r, eval=FALSE}
+# Conversion factor from cfs to cms
+cfs_to_cms <- 0.028317
+# Conversion factor from sq. miles to sq. km
+sqmile_to_sqkm <- 2.58999
+
 # Get station information
 site_info <- readNWISsite("12043300")
 
 # Get the drainage area and convert to sq. km
-basin_area_NWIS <- site_info$drain_area_va * 2.58999
+basin_area_NWIS <- site_info$drain_area_va * sqmile_to_sqkm
 
 # Get data and apply to fasstr function
 readNWISdv(siteNumbers = "12043300", 
            parameterCd = "00060") %>% 
   rename(Value = X_00060_00003) %>% 
-  mutate(Value = Value * 0.028317) %>% 
+  mutate(Value = Value * cfs_to_cms) %>% 
   plot_daily_cumulative_stats(basin_area = basin_area_NWIS, 
                               use_yield = TRUE)
 ```
@@ -170,10 +187,15 @@ readNWISdv(siteNumbers = "12043300",
 Here is one way of providing multiple basin areas for multiple stations:
 
 ```{r, eval=FALSE}
+# Conversion factor from cfs to cms
+cfs_to_cms <- 0.028317
+# Conversion factor from sq. miles to sq. km
+sqmile_to_sqkm <- 2.58999
+
 # Get station information
 site_info <- readNWISsite(c("12043300", "12048000")) %>% 
   select(site_no, drain_area_va) %>% 
-  mutate(Basin_Area_sqkm = drain_area_va * 2.58999)
+  mutate(Basin_Area_sqkm = drain_area_va * sqmile_to_sqkm)
 
 # Create named vector of areas to send to basin area
 areas <- setNames(site_info$Basin_Area_sqkm, site_info$site_no)
@@ -183,7 +205,7 @@ readNWISdv(siteNumbers = c("12043300", "12048000"),
            parameterCd = "00060") %>% 
   rename(Value = X_00060_00003, 
          STATION_NUMBER = site_no) %>% 
-  mutate(Value = Value * 0.028317) %>% 
+  mutate(Value = Value * cfs_to_cms) %>% 
   plot_daily_cumulative_stats(use_yield = TRUE,
                               basin_area = areas)
 ```
@@ -682,19 +704,3 @@ fasstr_trends_to_US_units <- function(trends){
 # Run the wrapper function
 trends <- fasstr_trends_to_US_units(trends)
 ```
-
-
-## To Do
-
-plot cumualtive in cubic feet to acre feet conversion? changing the ylabels?
-
-Ask usgs 
-
-- is acre-feet used often? any demos needed, especially for total volumes? cumulative yield units, toooo large, acre feet? what units
-- other analyses?
-- review vignette
-
-
-USE WASHINGTON EXAMPLES - COAST AND INTERIOR
-
-12048000 DUNGENESS RIVER NEAR SEQUIM, WA medium coastal, very mixed regime 12045500 ELWHA RIVER AT MCDONALD BR NEAR PORT ANGELES, WA large coastal, mixed 12447390 ANDREWS CREEK NEAR MAZAMA, WA small nival 12404500 KETTLE RIVER NEAR LAURIER, WA large nival 12442500 SIMILKAMEEN RIVER NEAR NIGHTHAWK, WA nival 12043300 HOKO RIVER NEAR SEKIU, WA small coastal, pluvial 12212050 FISHTRAP CREEK AT FRONT STREET AT LYNDEN, WA pluvial - Abbotsford
