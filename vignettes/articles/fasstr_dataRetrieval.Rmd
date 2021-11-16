@@ -33,7 +33,7 @@ library(ggplot2) # for modifying fasstr plots
 
 `dataRetrieval` is an R package with a collection of functions to retrieve hydrologic and water quality data hosted on USGS and U.S. Environmental Protection Agency (EPA) web services. USGS hydrologic data are pulled from <https://waterservices.usgs.gov/> and <https://waterdata.usgs.gov/nwis>. Water quality data are obtained from the Water Quality Portal <https://www.waterqualitydata.us/>. More information on using `dataRetrieval` can be found in the [vignette](https://cran.r-project.org/web/packages/dataRetrieval/vignettes/dataRetrieval.html).
 
-This package is another useful tool for hydrologists, especially for those looking to use USGS streamflow hydrometric station data with `fasstr` or other streamflow packages and analyses. You can search for stations on the NWIS website <https://waterdata.usgs.gov/nwis/rt>. Unlike the `tidyhydat` package to obtain  Environment and Climate Change Canada's (ECCC) HYDAT historical discharge data, `dataRetrieval` pulls all data from the NWIS web services and does not require downloading and storing a database.
+This package is another useful tool for hydrologists, especially for those looking to use USGS streamflow hydrometric station data with `fasstr` or other streamflow packages and analyses. You can search for stations on the NWIS website <https://waterdata.usgs.gov/nwis/rt>. Unlike the `tidyhydat` package to obtain Environment and Climate Change Canada's (ECCC) HYDAT historical discharge data, `dataRetrieval` pulls all data from the NWIS web services and does not require downloading and storing a database.
 
 As USGS stations collect more than just streamflow, a parameter code is required for many of the functions to choose the appropriate data type. The parameter code for daily mean discharge data is "00060". The units of this discharge parameter are in US customary cubic feet per second (cfs). While using US customary units is not an issue for many `fasstr` functions, as units do not matter for many analyses or plots titles and column headers can simply be renamed, there are some functions that use internal metric unit conversions so some adaptations will be required (see sections below).
 
@@ -57,7 +57,6 @@ usgs_data <- readNWISdv(siteNumbers = site_number,
 peak_data <- readNWISpeak(siteNumbers = site_number)
 
 ```
-
 
 ## Converting to metric and fasstr default columns
 
@@ -157,7 +156,6 @@ usgs_data <- readNWISdv(siteNumbers = c("12043300", "12048000"),
 # Use a fasstr function
 calc_annual_peaks(usgs_data)
 ```
-
 
 ### Getting and converting drainage basin areas
 
@@ -281,7 +279,6 @@ readNWISdv_hydat <- function(siteNumbers){
 usgs_data <- readNWISdv_hydat("12043300")
 ```
 
-
 ## Working in US customary units
 
 units customary provided by NWIS - cfs and sq miles
@@ -292,7 +289,7 @@ in NWIS data from the USGS and water years (water year designated by the calenda
 
 ### Keeping NWIS column names
 
-NWIS data column names can easily be used with fasstr functions, with setting `values = X_00060_00003` or `values = 'X_00060_00003'` in fasstr functions to identify the flow values column. If there are multiple stations in a data frame, the stations can be grouped separately by identifying them using `groups = site_no` or `groups = 'site_no'` in fasstr functions. Date column names are the same in both NWIS and HYDAT data. 
+NWIS data column names can easily be used with fasstr functions, with setting `values = X_00060_00003` or `values = 'X_00060_00003'` to identify the flow values column. If there are multiple stations in a data frame, the stations can be grouped separately by identifying them using `groups = site_no` or `groups = 'site_no'`. Date column names are the same in both NWIS and HYDAT data.
 
 ```{r, eval=FALSE}
 # One station
@@ -343,12 +340,11 @@ usgs_data <- readNWISdv(siteNumbers = c("12043300", "12048000"),
          Value = X_00060_00003)
 ```
 
-
 ### Use of drainage basin areas
 
 Some fasstr functions use require drainage basin areas to calculate discharge as area-based runoff yield statistics (in depth units). Since fasstr internally converts discharge using metric conversions, this makes conversions of US customary cubic feet per second and square miles to inches depth not as simple. Luckily, if your discharge units are in cubic feet per second and basin ares in square miles, a simple workaround can be applied to get inches depth: multiply the basin area by 2323.2. This number is derived from three unit conversions that magically provide the proper conversion:
 
-```{r}
+```{r, eval=TRUE}
 # sqkm/sqmiles / (inches/mm * cms/cfs)
 2.58999 / (0.0393701 * 0.028316846592)
 ```
@@ -360,6 +356,9 @@ So if using any functions that result in yield values (typically 'yield' or 'cum
 area_sqmile <- dataRetrieval::readNWISsite(siteNumbers = "12043300") %>% 
   pull(drain_area_va)
 
+# Drainage basin area conversion for fasstr
+area_adjust <- 2323.2
+
 # Get NWIS data
 usgs_data <- readNWISdv(siteNumbers = "12043300", 
                         parameterCd = "00060") %>% 
@@ -367,19 +366,19 @@ usgs_data <- readNWISdv(siteNumbers = "12043300",
 
 # Add daily yield in inches, with 2323.2 basin area multiplier
 add_daily_yield(data = usgs_data,
-                basin_area = area_sqmile * 2323.2) %>% 
+                basin_area = area_sqmile * area_adjust) %>% 
   rename(Yield_inch = Yield_mm)
 
 # Calculate total annual inches, with multiplier
 calc_annual_cumulative_stats(data = usgs_data, 
                              use_yield = TRUE,
-                             basin_area = area_sqmile * 2323.2) %>% 
+                             basin_area = area_sqmile * area_adjust) %>% 
   rename(Total_Yield_inch = Total_Yield_mm)
 
 # Plot daily cumulative discharge, with multiplier
 plot_daily_cumulative_stats(data = usgs_data, 
                             use_yield = TRUE,
-                            basin_area = area_sqmile * 2323.2) %>% 
+                            basin_area = area_sqmile * area_adjust) %>% 
   magrittr::extract2(1) + # extracts plot from list
   ggplot2::ylab("Runoff, inch")
 ```
@@ -468,8 +467,7 @@ usgs_daily_multiple
 
 ### Examples: summary statistics tables and plots
 
-The majority of the `fasstr` functions produce statistics over a certain time period, either long-term, annually, monthly, or daily. These statistics are produced using the `calc_*` functions and can be visualized using their corresponding `plot_*` functions. Most of the `calc_` functions do not require any changes to column names, unless they require as drainage basin area, where the multiplier fix will be applied. Most of the plots will require renaming axes as noted.
-
+The majority of the `fasstr` functions produce statistics over a certain time period, either long-term, annually, monthly, or daily. These statistics are produced using the `calc_*` functions and many can be visualized using corresponding `plot_*` functions. Most of the `calc_` functions do not require any changes to column names, unless they require as drainage basin area, where the multiplier fix will be applied. Most of the plots will require renaming axes as noted.
 
 ```{r, eval=FALSE}
 # Calculate long-term and long-term monthly summary statistics based on daily data
@@ -524,13 +522,13 @@ calc_monthly_stats(usgs_data,
                    percentiles = c(25,75),
                    water_year_start = 10)
 
-# Calculate daily summary statistics, including 25 and 27 percentiles
+# Calculate daily summary statistics, including 25th and 75th percentiles
 calc_daily_stats(usgs_data,
                  percentiles = c(25,75),
                  water_year_start = 10)
 
 # Plot an annual hydrograph (daily summary statistics) using only data 
-# from complete years and add 2020 daily data
+# from complete years and add 2020 daily data for comparison
 plot_daily_stats(usgs_data,
                  complete_years = TRUE,
                  add_year = 2020)
@@ -544,10 +542,9 @@ plot_daily_cumulative_stats(usgs_data,
   ylab("Cumulative Runoff, inches")
 ```
 
-
 ### Examples: frequency analyses
 
-There are several functions that perform various volume frequency analyses. Frequency analyses are used to determine probabilities of events of certain sizes (typically annual high or low flows). The analyses produce plots of event series and computed quantiles fitted from either Log-Pearson Type III or Weibull probability distributions. See the [frequency analysis vignette](https://bcgov.github.io/fasstr/articles/fasstr_frequency_analysis.html) for more information. With the two options for probability distributions (logPIII and weibull), the user should have understanding or investigate the appropriateness of fit for the data provided and probability distributions. The 'fitdistrplus' R package fitting parameters can be found the in the fasstr "Freq_Fitting" output and can be explored (see 'fitdistrplus' documentation for more information).
+There are several functions that perform various volume frequency analyses. Frequency analyses are used to determine probabilities of events of certain sizes (typically annual high or low flows). The analyses produce plots of event series and computed quantiles fitted from either Log-Pearson Type III or Weibull probability distributions. See the [frequency analysis vignette](https://bcgov.github.io/fasstr/articles/fasstr_frequency_analysis.html) for more information. With the two options for probability distributions (logPIII and weibull), the user should have understanding or investigate the appropriateness of fit for the data provided and probability distributions. The `fitdistrplus` R package fitting parameters can be found the in the fasstr 'Freq_Fitting' output and can be explored (see `fitdistrplus` documentation for more information).
 
 These functions do analyses on the data provided, without requiring metric conversions. As such, the only fix required to format results in US units is changing the y-axis on the plot object from "Discharge (cms)" to desired units. Here are some examples that could be applied using USGS data. See documentation for default arguments (i.e. `?compute_annual_frequencies`).
 
@@ -560,6 +557,17 @@ lowflow_frequency <- compute_annual_frequencies(usgs_data,
 # Change the y-axis of the plot to US units (changing the object itself)
 lowflow_frequency$Freq_Plot$labels$y <- "Discharge, cubic feet per second"
 
+# View the fitting parameters (shape, scale, location, loglikehood, AIC and BIC etc.)
+# of the 7-day low flows
+summary(lowflow_frequency$Freq_Fitting$`7-Day`)
+
+# Plot the fitting distributions of the 7-day low flows
+plot(lowflow_frequency$Freq_Fitting$`7-Day`)
+```
+
+Compute annual 1-day maximum frequencies with default arguments:
+
+```{r, eval=FALSE}
 # Compute annual daily peak flows frequencies with default arguments
 highflow_frequency <- compute_annual_frequencies(usgs_data,
                                                  water_year_start = 10,
@@ -568,13 +576,6 @@ highflow_frequency <- compute_annual_frequencies(usgs_data,
 # Change the y-axis of the plot to US units (changing the object itself)
 highflow_frequency$Freq_Plot$labels$y <- "Discharge, cubic feet per second"
 highflow_frequency$Freq_Plot
-
-# View the fitting parameters (shape, scale, location, loglikehood, AIC and BIC etc.)
-# of the 7-day low flows
-summary(lowflow_frequency$Freq_Fitting$`7-Day`)
-
-# Plot the fitting distributions of the 7-day low flows
-plot(lowflow_frequency$Freq_Fitting$`7-Day`)
 ```
 
 Compute summer 7-day low flow frequencies with default arguments:
@@ -610,6 +611,7 @@ flood_frequency <- readNWISpeak("12043300") %>%
   select(Year = peak_dt, Value = peak_va) %>% 
   mutate(Measure = "Inst. Peaks") %>% 
   compute_frequency_analysis(use_max = TRUE)
+flood_frequency$Freq_Plot$labels$y <- "Discharge, cubic feet per second"
 ```
 
 Compute a single frequency quantile with default arguments. With this function only the desired quantile is returned. Use this function if you know the fitting distributions are suitable for the data set.
@@ -621,6 +623,7 @@ compute_frequency_quantile(usgs_data,
                            return_period = 10,
                            months = 7:9)
 ```
+
 ### Examples: annual trending
 
 The `compute_annual_trends()` function calculates prewhitened non-parametric Mann-Kendall annual trends on streamflow data using the [`zyp`](https://CRAN.R-project.org/package=zyp) package. The function calculates various annual metrics using the `calc_all_annual_stats()` function and then calculates and plots the trending data. The `zhang` prewhitening method is recommended for hydrologic applications over `yuepilon`. See the [`zyp`](https://CRAN.R-project.org/package=zyp) package and the [trending vignette](https://bcgov.github.io/fasstr/articles/fasstr_trending_analysis.html) for more information.
@@ -704,3 +707,8 @@ fasstr_trends_to_US_units <- function(trends){
 # Run the wrapper function
 trends <- fasstr_trends_to_US_units(trends)
 ```
+
+# To do:
+
+- US introduction
+- couple more multiple station examples
