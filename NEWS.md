@@ -6,6 +6,7 @@ Updated: 16 Nov 2021
 #### Updates:
 
   * added 'months' argument to following functions (covers all screen_, calc_, plot_, and compute_ functions now):
+    * plot_flow_data() - will plot only data from selected months
     * add_cumulative_yield() and add_cumulative_volume() - will accumulate flows just in selected months
     * plot_longterm_daily_stats() - no ribbons where data gaps
     * plot_longterm_monthly_stats() - no ribbons where data gaps
