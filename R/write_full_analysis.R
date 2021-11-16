@@ -93,6 +93,7 @@ write_full_analysis <- function(data,
                                 start_year,
                                 end_year,
                                 exclude_years,
+                                months = 1:12,
                                 ignore_missing = FALSE,
                                 zyp_method = 'zhang',
                                 zyp_alpha,
@@ -128,6 +129,7 @@ write_full_analysis <- function(data,
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   ignore_missing_checks(ignore_missing)
+  months_checks(months)
   
   if (missing(file_name))     stop("A file name is required with the file_name argument to write all results.", call. = FALSE)
   
@@ -196,6 +198,23 @@ write_full_analysis <- function(data,
     message("** warning: selected data contains dates with missing values; some NAs in tables and gaps in plots may be produced")
   }
   
+  # Create function for condensing consecutive numbers
+  conseq_fn <- function(s){
+    dif <- s[seq(length(s))][-1] - s[seq(length(s)-1)]
+    new <- !c(0, dif == 1)
+    cs <- cumsum(new)
+    res <- vector(mode="list", max(cs))
+    for(i in seq(res)){
+      s.i <- s[which(cs == i)]    
+      if(length(s.i) > 2){
+        res[[i]] <- paste(min(s.i), max(s.i), sep=":")
+      } else {
+        res[[i]] <- as.character(s.i)
+      }
+    }  
+    paste0(ifelse(length(s)==1,paste(s),paste0("c(", paste(unlist(res), collapse=","), ")")))
+  }
+  
   
   # Create list of all objects
   
@@ -215,6 +234,7 @@ write_full_analysis <- function(data,
                           start_year = start_year,
                           end_year = end_year,
                           exclude_years = exclude_years,
+                          months = months,
                           ignore_missing = ignore_missing,
                           zyp_method = zyp_method,
                           zyp_alpha = zyp_alpha)
@@ -301,13 +321,14 @@ write_full_analysis <- function(data,
                               fn_wys,
                               fn_startend,
                               fn_exclude,
+                              ifelse(all(1:12 %in% months), 
+                                     paste(""), 
+                                     paste0(", months = ", conseq_fn(months))),
                               fn_missing,
                               ifelse(6 %in% analyses, fn_zyp, ""),
-                              paste0(", analyses = ", 
-                                     ifelse(all(1:7 %in% analyses), paste("1:7"),
-                                            ifelse(length(analyses) == 1, 
-                                                   paste(analyses),
-                                                   paste0("c(",paste(analyses, collapse = ","),")")))),
+                              ifelse(all(1:7 %in% analyses), 
+                                     paste(", analyses = c(1:7)"), 
+                                     paste0(", analyses = ", conseq_fn(analyses))),
                               ")")
   
   # Add fasstr functions to table
@@ -699,7 +720,7 @@ write_full_analysis <- function(data,
                                   fn_wys,
                                   fn_startend,
                                   fn_exclude,
-                                  ", include_seasons = TRUE)")
+                                  ifelse(all(1:12 %in% months),", include_seasons = TRUE)",")"))
     annual_yield_function <- paste0("calc_annual_cumulative_stats(",
                                     fn_data,
                                     fn_wys,
@@ -707,13 +728,13 @@ write_full_analysis <- function(data,
                                     fn_exclude,
                                     ", use_yield = TRUE",
                                     fn_area,
-                                    ", include_seasons = TRUE)")
+                                    ifelse(all(1:12 %in% months),", include_seasons = TRUE)",")"))
     annual_vol_plot_function <- paste0("plot_annual_cumulative_stats(",
                                        fn_data,
                                        fn_wys,
                                        fn_startend,
                                        fn_exclude,
-                                       ", include_seasons = TRUE)")
+                                       ifelse(all(1:12 %in% months),", include_seasons = TRUE)",")"))
     annual_yield_plot_function <- paste0("plot_annual_cumulative_stats(",
                                          fn_data,
                                          fn_wys,
@@ -721,7 +742,7 @@ write_full_analysis <- function(data,
                                          fn_exclude,
                                          ", use_yield = TRUE",
                                          fn_area,
-                                         ", include_seasons = TRUE)")
+                                         ifelse(all(1:12 %in% months),", include_seasons = TRUE)",")"))
     
     # Add data tables
     ann_cumul_out <- dplyr::left_join(results$Annual$Annual_Cumul_Volume_Stats_m3, 
@@ -749,49 +770,53 @@ write_full_analysis <- function(data,
              comment = annual_vol_plot_function)
     add_plot(wb = output_excel,
              sheet = ann_cumul_sheet,
-             plot = results$Annual$Annual_Cumul_Volume_Stats_m3_Plot[[2]],
-             title = paste0("Seasonal (Two Seasons) Total Volumetric Flows (", start_year, "-", end_year, ")"),
-             col = ncol(ann_cumul_out) + 2,
-             row = 14,
-             height = 3.5,
-             width = 6,
-             comment = annual_vol_plot_function)
-    add_plot(wb = output_excel,
-             sheet = ann_cumul_sheet,
-             plot = results$Annual$Annual_Cumul_Volume_Stats_m3_Plot[[3]],
-             title = paste0("Seasonal (Four Seasons) Total Volumetric Flows (", start_year, "-", end_year, ")"),
-             col = ncol(ann_cumul_out) + 2,
-             row = 33,
-             height = 5,
-             width = 6,
-             comment = annual_vol_plot_function)
-    add_plot(wb = output_excel,
-             sheet = ann_cumul_sheet,
              plot = results$Annual$Annual_Cumul_Yield_Stats_mm_Plot[[1]],
              title = paste0("Annual Total Yield Runoff (", start_year, "-", end_year, ")"),
-             col = ncol(ann_cumul_out) + 2 + 10,
-             row = 2,
+             col = ncol(ann_cumul_out) + 2 + ifelse(all(1:12 %in% months),8,0),
+             row = ifelse(all(1:12 %in% months),2,14),
              height = 2,
              width = 6,
              comment = annual_yield_plot_function)
-    add_plot(wb = output_excel,
-             sheet = ann_cumul_sheet,
-             plot = results$Annual$Annual_Cumul_Yield_Stats_mm_Plot[[2]],
-             title = paste0("Seasonal (Two Seasons) Total Yield Runoff (", start_year, "-", end_year, ")"),
-             col = ncol(ann_cumul_out) + 2 + 10,
-             row = 14,
-             height = 3.5,
-             width = 6,
-             comment = annual_yield_plot_function)
-    add_plot(wb = output_excel,
-             sheet = ann_cumul_sheet,
-             plot = results$Annual$Annual_Cumul_Yield_Stats_mm_Plot[[3]],
-             title = paste0("Seasonal (Four Seasons) Total Yield Runoff (", start_year, "-", end_year, ")"),
-             col = ncol(ann_cumul_out) + 2 + 10,
-             row = 33,
-             height = 5,
-             width = 6,
-             comment = annual_yield_plot_function)
+    if (all(1:12 %in% months)) {
+      add_plot(wb = output_excel,
+               sheet = ann_cumul_sheet,
+               plot = results$Annual$Annual_Cumul_Volume_Stats_m3_Plot[[2]],
+               title = paste0("Seasonal (Two Seasons) Total Volumetric Flows (", start_year, "-", end_year, ")"),
+               col = ncol(ann_cumul_out) + 2,
+               row = 14,
+               height = 3.5,
+               width = 6,
+               comment = annual_vol_plot_function)
+      add_plot(wb = output_excel,
+               sheet = ann_cumul_sheet,
+               plot = results$Annual$Annual_Cumul_Volume_Stats_m3_Plot[[3]],
+               title = paste0("Seasonal (Four Seasons) Total Volumetric Flows (", start_year, "-", end_year, ")"),
+               col = ncol(ann_cumul_out) + 2,
+               row = 33,
+               height = 5,
+               width = 6,
+               comment = annual_vol_plot_function)
+      add_plot(wb = output_excel,
+               sheet = ann_cumul_sheet,
+               plot = results$Annual$Annual_Cumul_Yield_Stats_mm_Plot[[2]],
+               title = paste0("Seasonal (Two Seasons) Total Yield Runoff (", start_year, "-", end_year, ")"),
+               col = ncol(ann_cumul_out) + 2 + 8,
+               row = 14,
+               height = 3.5,
+               width = 6,
+               comment = annual_yield_plot_function)
+      add_plot(wb = output_excel,
+               sheet = ann_cumul_sheet,
+               plot = results$Annual$Annual_Cumul_Yield_Stats_mm_Plot[[3]],
+               title = paste0("Seasonal (Four Seasons) Total Yield Runoff (", start_year, "-", end_year, ")"),
+               col = ncol(ann_cumul_out) + 2 + 8,
+               row = 33,
+               height = 5,
+               width = 6,
+               comment = annual_yield_plot_function)
+    }
+
+
     
     # Add worksheet
     ann_oth_sheet <- "Annual Stats Other"
