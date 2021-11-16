@@ -11,9 +11,11 @@ Updated: 16 Nov 2021
     * plot_longterm_monthly_stats() - no ribbons where data gaps
     * calc_ and plot_daily_cumulative_stats() - will accumulate flows just in selected months
     * calc_ and plot_monthly_cumulative_stats() - will accumulate flows just in selected months
+    * calc_ and plot_annual_cumulative_stats() - will only use months select, won't calc seasonal totals if not all months
     * calc_ and plot_annual_flow_timing() - will use timing from just selected months
     * calc_all_annual_stats() - will only use months select, won't calc seasonal totals if not all months
     * compute_annual_trends() - will only use months select, won't calc seasonal totals if not all months
+    * compute_full_analysis() - will only use months select, won't calc seasonal totals if not all months
     
 #### Minor Updates:
 
