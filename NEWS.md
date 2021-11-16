@@ -3,9 +3,9 @@ fasstr 0.4.0
 
 Updated: 16 Nov 2021
 
-#### Major Updates:
+#### Updates:
 
-  * added 'months' argument:
+  * added 'months' argument to following functions (covers all screen_, calc_, plot_, and compute_ functions now):
     * add_cumulative_yield() and add_cumulative_volume() - will accumulate flows just in selected months
     * plot_longterm_daily_stats() - no ribbons where data gaps
     * plot_longterm_monthly_stats() - no ribbons where data gaps
@@ -15,10 +15,7 @@ Updated: 16 Nov 2021
     * calc_ and plot_annual_flow_timing() - will use timing from just selected months
     * calc_all_annual_stats() - will only use months select, won't calc seasonal totals if not all months
     * compute_annual_trends() - will only use months select, won't calc seasonal totals if not all months
-    * compute_full_analysis() - will only use months select, won't calc seasonal totals if not all months
-    
-#### Minor Updates:
-
+    * compute_ and write_full_analysis() - will only use months select, won't calc seasonal totals if not all months
   * fixed bug: removed unnecessary legend items from plot_flow_duration()
   * fixed bug: corrected 'months' argument in calc_ and plot_annual_outside_normal() to properly filter
   
