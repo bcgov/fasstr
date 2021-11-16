@@ -62,7 +62,7 @@ analysis. Default \code{1}.}
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 
 \item{months}{Numeric vector of months to include in analysis (e.g. \code{6:8} for Jun-Aug). Leave blank to summarize 
-all months (default \code{1:12}).}
+all months (default \code{1:12}). If not all months, seasonal total yield and volumetric flows will not be included.}
 
 \item{include_seasons}{Logical value indication whether to include seasonal yields or volumetric discharges. Default \code{TRUE}.}
 

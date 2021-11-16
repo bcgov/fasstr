@@ -19,6 +19,8 @@
 #'    
 #' @inheritParams calc_annual_cumulative_stats
 #' @inheritParams plot_annual_stats
+#' @param months Numeric vector of months to include in analysis (e.g. \code{6:8} for Jun-Aug). Leave blank to summarize 
+#'    all months (default \code{1:12}). If not all months, seasonal total yield and volumetric flows will not be included.
 #'    
 #' @return A list of ggplot2 objects with the following for each station provided:
 #'   \item{Annual_Total_Volume}{annual total volumetric discharge, in cubic metres}
@@ -60,6 +62,7 @@ plot_annual_cumulative_stats <- function(data,
                                          start_year,
                                          end_year,
                                          exclude_years, 
+                                         months = 1:12, 
                                          include_seasons = FALSE,
                                          log_discharge = FALSE,
                                          include_title = FALSE){
@@ -90,7 +93,11 @@ plot_annual_cumulative_stats <- function(data,
   }
   
   log_discharge_checks(log_discharge) 
-  include_title_checks(include_title)    
+  include_title_checks(include_title)   
+  
+  if (include_seasons & !all(1:12 %in% months)) {
+    warning("Since not all months are selected, seasonal totals will not be included.", call. = FALSE)
+  }
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
@@ -115,8 +122,9 @@ plot_annual_cumulative_stats <- function(data,
                                                    water_year_start = water_year_start,
                                                    start_year = start_year,
                                                    end_year = end_year,
-                                                   exclude_years = exclude_years, 
-                                                   include_seasons = include_seasons)
+                                                   exclude_years = exclude_years,
+                                                   months = months, 
+                                                   include_seasons = include_seasons & all(1:12 %in% months))
   
   
   # Extract each annual/seasonal datasets
@@ -125,7 +133,7 @@ plot_annual_cumulative_stats <- function(data,
   annual_data <- dplyr::mutate(annual_data, Statistic = substr(Statistic, 1, 6))
   
   # Calc seasonal data if specified
-  if(include_seasons) {
+  if(include_seasons & all(1:12 %in% months)) {
     
     # Two Seasons
     seasons2_data <- cumulative_stats[,c(1,2,4,5)]
@@ -176,7 +184,7 @@ plot_annual_cumulative_stats <- function(data,
   
   
   # If include seasons, then add them to the list of plots
-  if (include_seasons) {
+  if (include_seasons & all(1:12 %in% months)) {
     
     # Plot 2-seasons
     s2_plots <- dplyr::group_by(seasons2_data, STATION_NUMBER)

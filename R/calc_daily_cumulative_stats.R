@@ -199,7 +199,14 @@ calc_daily_cumulative_stats <- function(data,
 
   # Final formatting
   daily_stats <- dplyr::rename(daily_stats, DayofYear = DayofYear, Date = AnalysisDate)
+  # Remove extra days based on leap years
+  daily_stats$Month <- as.numeric(format(daily_stats$Date,"%m"))
+  daily_stats <- dplyr::filter(daily_stats, Month %in% months)
+     daily_stats <- dplyr::select(daily_stats, -Month)
+
   daily_stats$Date <- format(as.Date(daily_stats$Date), format = "%b-%d")
+
+
   col_order <- daily_stats$Date
 
 
@@ -228,5 +235,5 @@ calc_daily_cumulative_stats <- function(data,
 
 
   dplyr::as_tibble(daily_stats)
-  
+
 }
