@@ -68,7 +68,7 @@ Argument             | Corresponding Function     |  Default
 `timing_percent`       | `calc_annual_flow_timing()` | `c(25,33.3,50,75)`
 `normal_percentiles`   | `calc_annual_outside_normal()` | `c(25,75)`
 
-With fasstr version 0.3.4, the `months` argument is now included in the trending function to specify which months of the year to include for trending. For example, selecting `months = 7:9` means that all annual and monthly statistics will be calculated just from July through September to be tested for trends. This gives the user more flexibility to trend more statistics. Since selecting months may complicate seasonal totals, seasonal yields and seasonal volumes are not included in the results if not all 12 months are selected.
+With fasstr version 0.4.0, the `months` argument is now included in the trending function to specify which months of the year to include for trending. For example, selecting `months = 7:9` means that all annual and monthly statistics will be calculated just from July through September to be tested for trends. This gives the user more flexibility to trend more statistics. Since selecting months may complicate seasonal totals, seasonal yields and seasonal volumes are not included in the results if not all 12 months are selected.
 
 #### Examples
 

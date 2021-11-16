@@ -1,12 +1,10 @@
-fasstr 0.3.4
+fasstr 0.4.0
 =========================
 
-Updated: 11 Nov 2021
+Updated: 16 Nov 2021
 
-#### Updates:
+#### Major Updates:
 
-  * fixed bug: removed unnecessary legend items from plot_flow_duration()
-  * fixed bug: corrected 'months' argument in calc_ and plot_annual_outside_normal() to properly filter
   * added 'months' argument:
     * add_cumulative_yield() and add_cumulative_volume() - will accumulate flows just in selected months
     * plot_longterm_daily_stats() - no ribbons where data gaps
@@ -16,6 +14,11 @@ Updated: 11 Nov 2021
     * calc_ and plot_annual_flow_timing() - will use timing from just selected months
     * calc_all_annual_stats() - will only use months select, won't calc seasonal totals if not all months
     * compute_annual_trends() - will only use months select, won't calc seasonal totals if not all months
+    
+#### Minor Updates:
+
+  * fixed bug: removed unnecessary legend items from plot_flow_duration()
+  * fixed bug: corrected 'months' argument in calc_ and plot_annual_outside_normal() to properly filter
   
 fasstr 0.3.3
 =========================

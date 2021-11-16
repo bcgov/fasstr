@@ -879,7 +879,7 @@ calc_annual_flow_timing(station_number = "08NM116")
 
 #### Selecting for months
 
-Most functions allow you to specify select months used in your analysis, using the `months` argument. By providing a vector of months (1 through 12) only those months will be used in an analysis. For example, using the `months` argument with the `calc_annual_stats()` function will calculate the annual statistics for only those months listed. So, if summer statistics are required you supply `months = 6:8` to the function. Leaving this arguments blank will include all months in the data set for the analysis. As of fasstr 0.3.4, the `months` argument is now included in all `calc_`, `plot_`, and `compute_` functions to allow for selecting of specific months in all analyses, including `calc_all_annual_stats()` and `compute_annual_trends()`.
+Most functions allow you to specify select months used in your analysis, using the `months` argument. By providing a vector of months (1 through 12) only those months will be used in an analysis. For example, using the `months` argument with the `calc_annual_stats()` function will calculate the annual statistics for only those months listed. So, if summer statistics are required you supply `months = 6:8` to the function. Leaving this arguments blank will include all months in the data set for the analysis. As of fasstr 0.4.0, the `months` argument is now included in all `calc_`, `plot_`, and `compute_` functions to allow for selecting of specific months in all analyses, including `calc_all_annual_stats()` and `compute_annual_trends()`.
 
 Example of filtering for months June through August:
 
