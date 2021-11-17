@@ -148,9 +148,9 @@ plot_longterm_daily_stats <- function(data,
   longterm_stats_months <- dplyr::filter(longterm_stats, Month != "Long-term")
   
   # remove NA's from start and end for plotting
-  longterm_stats_months <- longterm_stats_months[cumsum(complete.cases(longterm_stats_months)) != 0, ]
-  longterm_stats_months <- dplyr::arrange(longterm_stats_months, desc(Month))
-  longterm_stats_months <- longterm_stats_months[cumsum(complete.cases(longterm_stats_months)) != 0, ]
+  longterm_stats_months <- longterm_stats_months[cumsum(stats::complete.cases(longterm_stats_months)) != 0, ]
+  longterm_stats_months <- dplyr::arrange(longterm_stats_months, dplyr::desc(Month))
+  longterm_stats_months <- longterm_stats_months[cumsum(stats::complete.cases(longterm_stats_months)) != 0, ]
   longterm_stats_months <- dplyr::arrange(longterm_stats_months, Month)
   
   longterm_stats_longterm <- dplyr::filter(longterm_stats, Month == "Long-term")
