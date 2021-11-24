@@ -1,7 +1,7 @@
 fasstr 0.4.0
 =========================
 
-Updated: 16 Nov 2021
+Updated: 24 Nov 2021
 
 #### Updates:
 
@@ -17,6 +17,7 @@ Updated: 16 Nov 2021
     * calc_all_annual_stats() - will only use months select, won't calc seasonal totals if not all months
     * compute_annual_trends() - will only use months select, won't calc seasonal totals if not all months
     * compute_ and write_full_analysis() - will only use months select, won't calc seasonal totals if not all months
+  * fixed bug: multiple custom groups/STATION_NUMBER's appropriately match to data when using a named vector
   * fixed bug: removed unnecessary legend items from plot_flow_duration()
   * fixed bug: corrected 'months' argument in calc_ and plot_annual_outside_normal() to properly filter
   
