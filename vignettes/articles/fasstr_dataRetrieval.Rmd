@@ -715,7 +715,3 @@ compute_frequency_quantile(usgs_data,
                            return_period = 10,
                            months = 7:9)
 ```
-
-## To Do:
-
-- check plot daily cumualtive multuple stations

@@ -5,6 +5,7 @@ Updated: 24 Nov 2021
 
 #### Updates:
 
+  * New vignette for GitHub Page: Using USGS dataRetrieval R package with fasstr
   * added 'months' argument to following functions (covers all screen_, calc_, plot_, and compute_ functions now):
     * plot_flow_data() - will plot only data from selected months
     * add_cumulative_yield() and add_cumulative_volume() - will accumulate flows just in selected months

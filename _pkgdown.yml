@@ -123,10 +123,10 @@ articles:
     - fasstr_trending_analysis
     - fasstr_frequency_analysis
     - fasstr_full_analysis
-  # - title: Exploration
-  #   desc: Exploring fasstr and R in hydrology
-  #   contents:
-  #   - articles/fun_with_fasstr
+  - title: Exploration
+    desc: Exploring fasstr and R in hydrology
+    contents:
+    - articles/fasstr_dataRetrieval
   #   - articles/general_hydrology
   - title: Under the Hood
     desc: Internal fasstr workings
