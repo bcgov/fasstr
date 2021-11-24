@@ -18,6 +18,7 @@ Updated: 24 Nov 2021
     * compute_annual_trends() - will only use months select, won't calc seasonal totals if not all months
     * compute_ and write_full_analysis() - will only use months select, won't calc seasonal totals if not all months
   * fixed bug: multiple custom groups/STATION_NUMBER's appropriately match to data when using a named vector
+  * fixed bug: plot_daily_cumulative_stats() now plots accurate custom years
   * fixed bug: removed unnecessary legend items from plot_flow_duration()
   * fixed bug: corrected 'months' argument in calc_ and plot_annual_outside_normal() to properly filter
   
