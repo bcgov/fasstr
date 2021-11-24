@@ -198,24 +198,17 @@ site_info <- readNWISsite(c("12043300", "12048000")) %>%
 
 # Create named vector of areas to send to basin area
 areas <- setNames(site_info$Basin_Area_sqkm, site_info$site_no)
-############
-###########
-###########
+
 # Get data and apply to fasstr function
-t <- readNWISdv(siteNumbers = c("12043300", "12048000"), 
-                parameterCd = "00060") %>% 
+readNWISdv(siteNumbers = c("12043300", "12048000"), 
+           parameterCd = "00060") %>% 
   rename(Value = X_00060_00003, 
          STATION_NUMBER = site_no) %>% 
   mutate(Value = Value * cfs_to_cms) %>% 
   plot_daily_cumulative_stats(use_yield = TRUE,
                               basin_area = areas,
-                              add_year = 2001)
-t2 <- readNWISdv(siteNumbers = c("12043300", "12048000"), 
-                 parameterCd = "00060") %>% 
-  rename(Value = X_00060_00003, 
-         STATION_NUMBER = site_no) %>% 
-  mutate(Value = Value * cfs_to_cms)  %>% 
-  add_cumulative_yield(basin_area = areas)
+                              add_year = 2000)
+
 ```
 
 ### Handy formatting functions
