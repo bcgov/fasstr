@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -72,6 +72,11 @@
     </li>
     <li>
       <a href="../articles/fasstr_full_analysis.html">Computing a Full Analysis</a>
+    </li>
+    <li class="divider">
+    <li class="dropdown-header">Exploration</li>
+    <li>
+      <a href="../articles/articles/fasstr_dataRetrieval.html">Using USGS dataRetrieval data with fasstr</a>
     </li>
     <li class="divider">
     <li class="dropdown-header">Under the Hood</li>
@@ -127,7 +132,7 @@
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p>Determining trends in streamflow data can provide information on potential changes in hydrological processes over time. The annual trending analysis with <code>fasstr</code> allows for customization of both the inputs and outputs. This function takes 107 annual streamflow metrics (calculated using various annual <code>fasstr</code> functions) and calculates prewhitened, non-parametric trends using the <a href="https://CRAN.R-project.org/package=zyp"><code>zyp</code></a> R package. See the <code>zyp</code> <a href="https://CRAN.R-project.org/package=zyp/zyp.pdf">documentation</a> for more information on the methods.</p>
+<p>Determining trends in streamflow data can provide information on potential changes in hydrological processes over time. The annual trending analysis with <code>fasstr</code> allows for customization of both the inputs and outputs. This function takes up to 107 annual streamflow metrics (calculated using various annual <code>fasstr</code> functions) and calculates prewhitened, non-parametric trends using the Mann-Kendall test performed using the <a href="https://CRAN.R-project.org/package=zyp"><code>zyp</code></a> R package. See the <code>zyp</code> <a href="https://CRAN.R-project.org/package=zyp/zyp.pdf">documentation</a> for more information on the methods.</p>
 <p>Each annual metric/time-series is analyzed for trends using trend-free prewhitening to remove lag-1 correlation (may artificially detect a significant trend). The slope of each metric over time is then estimated using the Theil-Sen approach. If the estimated slope is different from zero, then the data are detrended by the slope and the AR(1) 1s calculated for the detrended time series. The residuals and the trend are combined and then tested for significance using the Mann-Kendall trend test.</p>
 <p>The trending function results in a list containing two tibble data frame outputs and, if selected, plot for each metric trended.</p>
 <ol style="list-style-type: decimal">
@@ -222,6 +227,7 @@
 </tr>
 </tbody>
 </table>
+<p>With fasstr version 0.4.0, the <code>months</code> argument is now included in the trending function to specify which months of the year to include for trending. For example, selecting <code>months = 7:9</code> means that all annual and monthly statistics will be calculated just from July through September to be tested for trends. This gives the user more flexibility to trend more statistics. Since selecting months may complicate seasonal totals, seasonal yields and seasonal volumes are not included in the results if not all 12 months are selected.</p>
 <div id="examples" class="section level4">
 <h4 class="hasAnchor">
 <a href="#examples" class="anchor"></a>Examples</h4>
@@ -243,6 +249,12 @@
                       lowflow_align <span class="op">=</span> <span class="st">"right"</span>,
                       timing_percent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">33</span>,<span class="fl">50</span>,<span class="fl">75</span><span class="op">)</span>,
                       normal_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">75</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>Example with custom months arguments that will trend data only from May through September:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
+                      zyp_method <span class="op">=</span> <span class="st">"zhang"</span>,
+                      start_year <span class="op">=</span> <span class="fl">1973</span>, end_year <span class="op">=</span> <span class="fl">2013</span>,
+                      months <span class="op">=</span> <span class="fl">5</span><span class="op">:</span><span class="fl">9</span><span class="op">)</span></code></pre></div>
 <p>This annual data is provided in the <strong>Annual_Trends_Data</strong> tibble objects. The following is an example of the output, including all the annual metrics and a first few years of data used for the <code>zyp</code> trends analysis:</p>
 <pre><code>              Statistic          1973          1974          1975
 1        Annual_Maximum        37.700        66.000        48.700
@@ -353,12 +365,12 @@
 106             Dec_P10         1.020         0.609         1.050
 107             Dec_P20         1.210         0.637         1.120</code></pre>
 <p>To provide examples of the outputs, an analysis will be completed on a Mission Creek HYDAT station from 1973 to 2013. The argument <code>zyp_method</code> is described below in the Analysis Results section:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">trends_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
                                          zyp_method <span class="op">=</span> <span class="st">"zhang"</span>,
                                          start_year <span class="op">=</span> <span class="fl">1973</span>, end_year <span class="op">=</span> <span class="fl">2013</span><span class="op">)</span></code></pre></div>
 <p>The following is an example of the outputted <strong>Annual_Trends_Data</strong> tibble:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">trends_analysis</span><span class="op">$</span><span class="va">Annual_Trends_Data</span></code></pre></div>
 <pre><code># A tibble: 107 x 43
    STATION_NUMBER Statistic  `1973`  `1974` `1975` `1976`  `1977` `1978`  `1979`
@@ -475,7 +487,7 @@
 </tbody>
 </table>
 <p>The following is an example of the outputted <strong>Annual_Trends_Results</strong> tibble from the Mission Creek HYDAT station from 1973 to 2013:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">trends_analysis</span><span class="op">$</span><span class="va">Annual_Trends_Results</span></code></pre></div>
 <pre><code># A tibble: 107 x 20
    STATION_NUMBER Statistic        lbound    trend  trendp  ubound     tau   sig
@@ -500,8 +512,8 @@
 <a href="#annual-trends-plots" class="anchor"></a>Annual Trends Plots</h3>
 <p>To provide the ability to visualize the trends, a time-series plot for each metric is provided when <code>include_plots = TRUE</code> (default; set it to <code>FALSE</code> to produce no plots). Each plot will show the annual value for all years and if a numerical <code>zyp_alpha</code> value, a significance level indicating the trend exists, is provided (typically <code>0.05</code>) then a trend line of the calculated Sen’s Slope will also be plotted through the data. To plot no slopes, set <code>zyp_alpha = NA</code> (default) and to plot the lines regardless of significance, set <code>zyp_alpha = 1</code>. The metric name along with the significance level will be included as the title of the plot.</p>
 <p>The following plots demonstrate examples of where the <code>zyp_alpha</code> value is set to 0.05 and Sen’s Slopes trends are not and are significant, respectively.</p>
-<p><img src="fasstr_trending_analysis_files/figure-html/unnamed-chunk-9-1.png" width="672"></p>
 <p><img src="fasstr_trending_analysis_files/figure-html/unnamed-chunk-10-1.png" width="672"></p>
+<p><img src="fasstr_trending_analysis_files/figure-html/unnamed-chunk-11-1.png" width="672"></p>
 </div>
 </div>
   </div>

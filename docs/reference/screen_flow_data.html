@@ -74,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -115,6 +115,11 @@
     </li>
     <li>
       <a href="../articles/fasstr_full_analysis.html">Computing a Full Analysis</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Exploration</li>
+    <li>
+      <a href="../articles/articles/fasstr_dataRetrieval.html">Using USGS dataRetrieval data with fasstr</a>
     </li>
     <li class="divider"></li>
     <li class="dropdown-header">Under the Hood</li>
@@ -278,7 +283,7 @@ all months (default <code>1:12</code>).</p></td>
     <pre class="examples"><div class='input'><span class='co'># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span>
 <span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.exists</a></span><span class='op'>(</span><span class='fu'>tidyhydat</span><span class='fu'>::</span><span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html'>hy_downloaded_db</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
 
-<span class='co'># Calculate screening statistics usinga data frame and data argument with defaults</span>
+<span class='co'># Calculate screening statistics using data frame and data argument with defaults</span>
 <span class='va'>flow_data</span> <span class='op'>&lt;-</span> <span class='fu'>tidyhydat</span><span class='fu'>::</span><span class='fu'><a href='https://docs.ropensci.org/tidyhydat/reference/hy_daily_flows.html'>hy_daily_flows</a></span><span class='op'>(</span>station_number <span class='op'>=</span> <span class='st'>"08NM116"</span><span class='op'>)</span>
 <span class='fu'>screen_flow_data</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>flow_data</span><span class='op'>)</span>
 

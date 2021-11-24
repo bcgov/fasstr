@@ -75,7 +75,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -116,6 +116,11 @@
     </li>
     <li>
       <a href="../articles/fasstr_full_analysis.html">Computing a Full Analysis</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Exploration</li>
+    <li>
+      <a href="../articles/articles/fasstr_dataRetrieval.html">Using USGS dataRetrieval data with fasstr</a>
     </li>
     <li class="divider"></li>
     <li class="dropdown-header">Under the Hood</li>
@@ -180,6 +185,7 @@
   <span class='va'>start_year</span>,
   <span class='va'>end_year</span>,
   <span class='va'>exclude_years</span>,
+  months <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>12</span>,
   include_seasons <span class='op'>=</span> <span class='cn'>FALSE</span>,
   log_discharge <span class='op'>=</span> <span class='cn'>FALSE</span>,
   include_title <span class='op'>=</span> <span class='cn'>FALSE</span>
@@ -245,6 +251,11 @@ analysis. Default <code>1</code>.</p></td>
     <tr>
       <th>exclude_years</th>
       <td><p>Numeric vector of years to exclude from analysis. Leave blank to include all years.</p></td>
+    </tr>
+    <tr>
+      <th>months</th>
+      <td><p>Numeric vector of months to include in analysis (e.g. <code>6:8</code> for Jun-Aug). Leave blank to summarize 
+all months (default <code>1:12</code>). If not all months, seasonal total yield and volumetric flows will not be included.</p></td>
     </tr>
     <tr>
       <th>include_seasons</th>

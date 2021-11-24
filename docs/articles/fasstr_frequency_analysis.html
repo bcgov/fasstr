@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -72,6 +72,11 @@
     </li>
     <li>
       <a href="../articles/fasstr_full_analysis.html">Computing a Full Analysis</a>
+    </li>
+    <li class="divider">
+    <li class="dropdown-header">Exploration</li>
+    <li>
+      <a href="../articles/articles/fasstr_dataRetrieval.html">Using USGS dataRetrieval data with fasstr</a>
     </li>
     <li class="divider">
     <li class="dropdown-header">Under the Hood</li>
@@ -302,7 +307,7 @@
 <div id="fitting-data-to-probability-distributions" class="section level4">
 <h4 class="hasAnchor">
 <a href="#fitting-data-to-probability-distributions" class="anchor"></a>Fitting Data to Probability Distributions</h4>
-<p>Computing frequency quantiles in <code>fasstr</code> requires choosing a probability distribution to fit the data, either Log-Pearson Type III, <code>"PIII"</code> (default), or Weibull, <code>"weibull"</code>, distributions with the <code>fit_dist</code> argument. When using the <code>"PIII"</code> distribution, data provided is log-transformed (base 10) before being fit to a Pearson Type III distribution. The method of fitting data to distributions is selected using the <code>fit_distr_method</code> argument with either <code>"MLE"</code> for ‘maximum likelihood estimation’ or <code>"MOM"</code> (default) for ‘method of moments’. For the <code>"PIII"</code> distribution, the data will be fit using <code>"MOM"</code> or <code>"MLE"</code>, while <code>"weibull"</code> can only use <code>"MOM"</code>. Internally, these arguments are passed on to the <code><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html">fitdistrplus::fitdist</a></code> function from the <a href="https://CRAN.R-project.org/package=fitdistrplus">‘fitdistrplus’</a> package (see for more information). Fitting results from the <code><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html">fitdistrplus::fitdist</a></code> function are returned in the <strong>Freq_Fitting</strong> object in the list and contain information regarding the fitting process, including the parameter estimates (e.g. shape, location, and scale), AIC statistics, Q-Q and density plots, amongst other statistics. As per the <code><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html">fitdistrplus::fitdist</a></code> documentation, there are several ways to view the <code>fitdist</code> object, three of these including using the generic <code><a href="https://rdrr.io/r/base/print.html">print()</a></code>, <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> and <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> functions. See the following examples for how to view some of the fitting information.</p>
+<p>Computing frequency quantiles in <code>fasstr</code> requires choosing a probability distribution to fit the data, either Log-Pearson Type III, <code>"PIII"</code> (default), or Weibull, <code>"weibull"</code>, distributions with the <code>fit_dist</code> argument. When using the <code>"PIII"</code> distribution, data provided is log-transformed (base 10) before being fit to a Pearson Type III distribution. The method of fitting data to distributions is selected using the <code>fit_distr_method</code> argument with either <code>"MLE"</code> for ‘maximum likelihood estimation’ or <code>"MOM"</code> (default) for ‘method of moments’. For the <code>"PIII"</code> distribution, the data will be fit using <code>"MOM"</code> or <code>"MLE"</code>, while <code>"weibull"</code> can only use <code>"MOM"</code>. Internally, these arguments are passed on to the <code><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html">fitdistrplus::fitdist</a></code> function from the <a href="https://CRAN.R-project.org/package=fitdistrplus">‘fitdistrplus’</a> package (see for more information). Fitting results from the <code><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html">fitdistrplus::fitdist</a></code> function are returned in the <strong>Freq_Fitting</strong> object in the list and contain information regarding the fitting process, including the parameter estimates (e.g. shape, location, and scale), AIC statistics, Q-Q and density plots, amongst other statistics. As per the <code><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html">fitdistrplus::fitdist</a></code> documentation, there are several ways to view the <code>fitdist</code> object, three of these including using the generic <code><a href="https://rdrr.io/r/base/print.html">print()</a></code>, <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> and <code><a href="https://docs.ropensci.org/tidyhydat/reference/plot.html">plot()</a></code> functions. See the following examples for how to view some of the fitting information.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></code></pre></div>
 <pre><code>Fitting of the distribution ' PIII ' by matching moments 
@@ -321,7 +326,7 @@ location  0.58975205
 scale    -0.03836902
 Loglikelihood:  9.973448   AIC:  -13.9469   BIC:  -9.743303 </code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></code></pre></div>
 <p><img src="fasstr_frequency_analysis_files/figure-html/unnamed-chunk-10-1.png" width="672"></p>
 <p>When <code>plot_curve</code> argument is set to <code>TRUE</code> (default) the computed frequency curves are plotted against the events data in the <strong>Freq_Plot</strong> object:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
