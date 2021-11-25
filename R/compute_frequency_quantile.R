@@ -59,7 +59,8 @@ compute_frequency_quantile <- function(data,
                                        end_year,
                                        exclude_years,
                                        months = 1:12,
-                                       ignore_missing = FALSE){
+                                       ignore_missing = FALSE,
+                                       allowed_missing = ifelse(ignore_missing,100,0)){
   
   
   # replicate the frequency analysis of the HEC-SSP program
@@ -139,7 +140,8 @@ compute_frequency_quantile <- function(data,
                                       end_year = end_year,
                                       exclude_years = exclude_years,
                                       months = months,
-                                      ignore_missing = ignore_missing)$Freq_Fitted_Quantiles[1,4]
+                                      ignore_missing = ignore_missing,
+                                      allowed_missing = allowed_missing)$Freq_Fitted_Quantiles[1,4]
   
   as.numeric(quant)
   

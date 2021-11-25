@@ -86,7 +86,8 @@ compute_annual_frequencies <- function(data,
                                        end_year,
                                        exclude_years,
                                        months = 1:12,
-                                       ignore_missing = FALSE){
+                                       ignore_missing = FALSE,
+                                       allowed_missing = ifelse(ignore_missing,100,0)){
   
   # replicate the frequency analysis of the HEC-SSP program
   # refer to Chapter 7 of the user manual
@@ -116,6 +117,7 @@ compute_annual_frequencies <- function(data,
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)
   ignore_missing_checks(ignore_missing)
+  allowed_missing_checks(allowed_missing, ignore_missing)
   
   
   if (!is.logical(use_log))        
@@ -167,7 +169,7 @@ compute_annual_frequencies <- function(data,
   # Fill missing dates, add date variables, and add WaterYear
   flow_data <- analysis_prep(data = flow_data, 
                              water_year_start = water_year_start)
-
+  
   
   # Loop through each roll_days and add customized names of rolling means to flow_data
   for (day in roll_days) {
@@ -180,12 +182,12 @@ compute_annual_frequencies <- function(data,
     flow_data <- merge(flow_data, flow_data_temp, by = "Date", all = TRUE)
   }
   
-
-    # Filter for the selected year
+  
+  # Filter for the selected year
   flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
   flow_data <- dplyr::filter(flow_data, !(WaterYear %in% exclude_years))
   flow_data <- dplyr::filter(flow_data, Month %in% months)
-
+  
   # Calculate the min or max of the rolling means for each year
   flow_data <- dplyr::select(flow_data, -Date, -Value, -CalendarYear, -Month, -MonthName, -DayofYear)
   
@@ -194,17 +196,17 @@ compute_annual_frequencies <- function(data,
   
   Q_stat <- dplyr::summarise(dplyr::group_by(flow_data, WaterYear, Measure),
                              Value = ifelse(use_max,
-                                            max(Value, na.rm = ignore_missing),
-                                            min(Value, na.rm = ignore_missing)))
+                                            max(Value, na.rm = allowed_narm(Value, allowed_missing)),
+                                            min(Value, na.rm = allowed_narm(Value, allowed_missing))))
   Q_stat <- dplyr::rename(Q_stat, Year = WaterYear)
   
   # remove any Inf Values
   Q_stat$Value[is.infinite(Q_stat$Value)] <- NA
-
-    # Data checks
+  
+  # Data checks
   if (nrow(Q_stat) < 3) stop(paste0("Need at least 3 years of observations for analysis. There are only ", 
-                                        nrow(Q_stat), 
-                                        " years available."), call. = FALSE)
+                                    nrow(Q_stat), 
+                                    " years available."), call. = FALSE)
   
   
   ## COMPUTE THE ANALYSIS
@@ -222,7 +224,7 @@ compute_annual_frequencies <- function(data,
                                          fit_distr_method = fit_distr_method,
                                          fit_quantiles = fit_quantiles,
                                          plot_curve = plot_curve)
-    
+  
   return(analysis)
   
 }

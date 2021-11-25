@@ -802,13 +802,21 @@ Most functions will automatically (`ignore_missing = FALSE`) not calculate a sta
 calc_annual_stats(station_number = "08NM116")
 ```
 
-If you want to calculate the statistics regardless of missing dates, use the `ignore_missing = TRUE` argument. Otherwise you may need to filter for complete data years (see the `screen_flow_data()` function).
+If you want to calculate the statistics regardless of the number of missing dates per time period, use the `ignore_missing = TRUE` argument.
 
 ```{r, eval=FALSE}
 calc_annual_stats(station_number = "08NM116", 
                   ignore_missing = TRUE)
 ```
 
+Starting with fasstr 0.4.0, to allow a certain percentage of missing dates per period and still calculate a statistic, the argument `allow_missing` (and `allow_missing_annual` and `allow_missing_monthly` in come cases) will override the `ignore_missing` argument in certain functions. A numeric value between 0 and 100 indicating the percentage of missing dates allowed to be included is provided to the argument to calculate a statistic (0 to 100 percent). For example, if 3-4 days of missing dates are permitted per year to calculate annual means, percentiles or extremes, then 1% of days can be applied as `allowed_missing = 1`.
+
+To maintain usage of `ignore_missing`, if `ignore_missing = FALSE` then it defaults to `0` (zero missing dates allowed), and if `ignore_missing = TRUE` then it defaults to `100` (any missing dates allowed). This argument is included only in functions that calculate annual or monthly means, percentiles, minimums, and maximums including various `calc_annual_*` and `plot_annual_*` functions, `calc_monthly_stats()`, `plot_monthly_stats()`, and most `compute_*` functions. See function documentation to see if included. The following example allows the data to have 25%, or ~91 days, of missing dates, to calculate annual statistics:
+
+```{r, eval=FALSE}
+calc_annual_stats(station_number = "08NM116", 
+                  allowed_missing = 25)
+```
 
 ### Dates Filtering
 

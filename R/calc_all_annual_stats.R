@@ -49,6 +49,16 @@
 #'    observations. Default \code{'right'}. Used for \code{calc_lowflow_stats()} function.
 #' @param timing_percent Numeric vector of percents of annual total flows to determine dates. Used for \code{calc_annual_flow_timing()}
 #'    function. Default \code{c(25,33.3,50,75)}.
+#' @param allowed_missing_annual Numeric value between 0 and 100 indicating the \strong{percentage} of missing dates allowed to be
+#'    included to calculate an annual statistic (0 to 100 percent). If \code{'ignore_missing = FALSE'} then it defaults to \code{0} 
+#'    (zero missing dates allowed), if \code{'ignore_missing = TRUE'} then it defaults to \code{100} (any missing dates allowed); 
+#'    consistent with \code{ignore_missing} usage. Supersedes \code{ignore_missing} when used. Only for annual means, percentiles,
+#'    minimums, and maximums.
+#' @param allowed_missing_monthly Numeric value between 0 and 100 indicating the \strong{percentage} of missing dates allowed to be
+#'    included to calculate a monthly statistic (0 to 100 percent). If \code{'ignore_missing = FALSE'} then it defaults to \code{0} 
+#'    (zero missing dates allowed), if \code{'ignore_missing = TRUE'} then it defaults to \code{100} (any missing dates allowed); 
+#'    consistent with \code{ignore_missing} usage. Supersedes \code{ignore_missing} when used.Only for monthly means, percentiles,
+#'    minimums, and maximums.
 #' 
 #' @return A tibble data frame with column "Year" and then 107 (default) variables from the fasstr annual functions.
 #'    See listed functions above for default variables. Transposing data creates a column of "Statistics" and subsequent
@@ -109,7 +119,9 @@ calc_all_annual_stats <- function(data,
                                   timing_percent = c(25,33,50,75),
                                   normal_percentiles = c(25,75),
                                   transpose = FALSE,
-                                  ignore_missing = FALSE){
+                                  ignore_missing = FALSE,
+                                  allowed_missing_annual = ifelse(ignore_missing,100,0),
+                                  allowed_missing_monthly = ifelse(ignore_missing,100,0)){
   
   
   
@@ -147,6 +159,8 @@ calc_all_annual_stats <- function(data,
   normal_percentiles_checks(normal_percentiles)
   sort(normal_percentiles)
   months_checks(months)
+  allowed_missing_checks(allowed_missing_annual, ignore_missing)
+  allowed_missing_checks(allowed_missing_monthly, ignore_missing)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -180,7 +194,8 @@ calc_all_annual_stats <- function(data,
                                                      end_year = end_year,
                                                      exclude_years = exclude_years, 
                                                      months = months,
-                                                     ignore_missing = ignore_missing))
+                                                     ignore_missing = ignore_missing,
+                                                     allowed_missing = allowed_missing_annual))
   
   # Gather to name all columns with CY or WY for calendar or water year
   annual_stats <- tidyr::gather(annual_stats, Stat, Value, 3:ncol(annual_stats))
@@ -196,7 +211,8 @@ calc_all_annual_stats <- function(data,
                                                          end_year = end_year,
                                                          exclude_years = exclude_years,
                                                          months = months,
-                                                         ignore_missing = ignore_missing))
+                                                         ignore_missing = ignore_missing,
+                                                         allowed_missing = allowed_missing_annual))
   lowflow_stats <- dplyr::select(lowflow_stats, -dplyr::contains("Date"))
   
   totalQ_stats <- suppressWarnings(calc_annual_cumulative_stats(data = flow_data,
@@ -240,7 +256,8 @@ calc_all_annual_stats <- function(data,
                                                      exclude_years = exclude_years,
                                                      months = months,
                                                      spread = TRUE,
-                                                     ignore_missing = ignore_missing))
+                                                     ignore_missing = ignore_missing,
+                                                     allowed_missing = allowed_missing_monthly))
   
   
   normals_stats <- suppressWarnings(calc_annual_outside_normal(data = flow_data,

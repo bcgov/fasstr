@@ -25,7 +25,9 @@ calc_all_annual_stats(
   timing_percent = c(25, 33, 50, 75),
   normal_percentiles = c(25, 75),
   transpose = FALSE,
-  ignore_missing = FALSE
+  ignore_missing = FALSE,
+  allowed_missing_annual = ifelse(ignore_missing, 100, 0),
+  allowed_missing_monthly = ifelse(ignore_missing, 100, 0)
 )
 }
 \arguments{
@@ -100,6 +102,18 @@ normal range. Default \code{c(25,75)}.}
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from
 time periods with no missing dates will be returned. Default \code{FALSE}.}
+
+\item{allowed_missing_annual}{Numeric value between 0 and 100 indicating the \strong{percentage} of missing dates allowed to be
+included to calculate an annual statistic (0 to 100 percent). If \code{'ignore_missing = FALSE'} then it defaults to \code{0} 
+(zero missing dates allowed), if \code{'ignore_missing = TRUE'} then it defaults to \code{100} (any missing dates allowed); 
+consistent with \code{ignore_missing} usage. Supersedes \code{ignore_missing} when used. Only for annual means, percentiles,
+minimums, and maximums.}
+
+\item{allowed_missing_monthly}{Numeric value between 0 and 100 indicating the \strong{percentage} of missing dates allowed to be
+included to calculate a monthly statistic (0 to 100 percent). If \code{'ignore_missing = FALSE'} then it defaults to \code{0} 
+(zero missing dates allowed), if \code{'ignore_missing = TRUE'} then it defaults to \code{100} (any missing dates allowed); 
+consistent with \code{ignore_missing} usage. Supersedes \code{ignore_missing} when used.Only for monthly means, percentiles,
+minimums, and maximums.}
 }
 \value{
 A tibble data frame with column "Year" and then 107 (default) variables from the fasstr annual functions.

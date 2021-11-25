@@ -183,7 +183,8 @@
   <span class='va'>exclude_years</span>,
   months <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>12</span>,
   transpose <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  ignore_missing <span class='op'>=</span> <span class='cn'>FALSE</span>
+  ignore_missing <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  allowed_missing <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>ignore_missing</span>, <span class='fl'>100</span>, <span class='fl'>0</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -258,6 +259,13 @@ all months (default <code>1:12</code>).</p></td>
       <td><p>Logical value indicating whether dates with missing values should be included in the calculation. If
 <code>TRUE</code> then a statistic will be calculated regardless of missing dates. If <code>FALSE</code> then only those statistics from
 time periods with no missing dates will be returned. Default <code>FALSE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>allowed_missing</th>
+      <td><p>Numeric value between 0 and 100 indicating the <strong>percentage</strong> of missing dates allowed to be
+included to calculate a statistic (0 to 100 percent). If <code>'ignore_missing = FALSE'</code> then it defaults to <code>0</code> (zero missing dates allowed),
+if <code>'ignore_missing = TRUE'</code> then it defaults to <code>100</code> (any missing dates allowed); consistent with 
+<code>ignore_missing</code> usage. Supersedes <code>ignore_missing</code> when used.</p></td>
     </tr>
     </table>
 

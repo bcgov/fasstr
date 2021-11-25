@@ -44,7 +44,11 @@
 #' @param ignore_missing Logical value indicating whether dates with missing values should be included in the calculation. If
 #'    \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from
 #'    time periods with no missing dates will be returned. Default \code{FALSE}.
-#' 
+#' @param allowed_missing Numeric value between 0 and 100 indicating the \strong{percentage} of missing dates allowed to be
+#'    included to calculate a statistic (0 to 100 percent). If \code{'ignore_missing = FALSE'} then it defaults to \code{0} (zero missing dates allowed),
+#'    if \code{'ignore_missing = TRUE'} then it defaults to \code{100} (any missing dates allowed); consistent with 
+#'    \code{ignore_missing} usage. Supersedes \code{ignore_missing} when used.
+#'    
 #' @return A tibble data frame with the following columns:
 #'   \item{Year}{calendar or water year selected}
 #'   \item{Mean}{annual mean of all daily flows for a given year}
@@ -108,7 +112,8 @@ calc_annual_stats <- function(data,
                               exclude_years, 
                               months = 1:12,
                               transpose = FALSE,
-                              ignore_missing = FALSE){
+                              ignore_missing = FALSE,
+                              allowed_missing = ifelse(ignore_missing,100,0)){
   
   
   ## ARGUMENT CHECKS
@@ -137,6 +142,7 @@ calc_annual_stats <- function(data,
   months_checks(months)
   transpose_checks(transpose)
   ignore_missing_checks(ignore_missing)
+  allowed_missing_checks(allowed_missing, ignore_missing)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -182,10 +188,10 @@ calc_annual_stats <- function(data,
   # Calculate basic stats
   annual_stats <-   suppressWarnings(
     dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
-                     Mean = mean(RollingValue, na.rm = ignore_missing),
-                     Median = stats::median(RollingValue, na.rm = ignore_missing),
-                     Maximum = max (RollingValue, na.rm = ignore_missing),
-                     Minimum = min (RollingValue, na.rm = ignore_missing)))
+                     Mean = mean(RollingValue, na.rm = allowed_narm(RollingValue, allowed_missing)),
+                     Median = stats::median(RollingValue, na.rm = allowed_narm(RollingValue, allowed_missing)),
+                     Maximum = max (RollingValue, na.rm = allowed_narm(RollingValue, allowed_missing)),
+                     Minimum = min (RollingValue, na.rm = allowed_narm(RollingValue, allowed_missing))))
   annual_stats <- dplyr::ungroup(annual_stats)
   
   #Remove Nans and Infs

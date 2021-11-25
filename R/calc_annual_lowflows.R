@@ -70,9 +70,10 @@ calc_annual_lowflows <- function(data,
                                  exclude_years, 
                                  months = 1:12,
                                  transpose = FALSE,
-                                 ignore_missing = FALSE){
+                                 ignore_missing = FALSE,
+                                 allowed_missing = ifelse(ignore_missing,100,0)){
   
-
+  
   ## ARGUMENT CHECKS
   ## ---------------
   
@@ -98,6 +99,7 @@ calc_annual_lowflows <- function(data,
   months_checks(months)
   transpose_checks(transpose)
   ignore_missing_checks(ignore_missing)
+  allowed_missing_checks(allowed_missing, ignore_missing)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -148,7 +150,7 @@ calc_annual_lowflows <- function(data,
     
     # Calculate the mins and dates
     lowflow_stats_temp <- dplyr::summarize(dplyr::group_by(flow_data_temp, STATION_NUMBER, WaterYear),
-                                           MIN_VALUE = min(RollingValue, na.rm = ignore_missing),	     
+                                           MIN_VALUE = min(RollingValue, na.rm = allowed_narm(RollingValue, allowed_missing)),	     
                                            MIN_DAY = ifelse(is.na(MIN_VALUE), NA, DayofYear[which(RollingValue == MIN_VALUE)]),
                                            MIN_DATE= ifelse(is.na(MIN_VALUE), NA, Date[which(RollingValue == MIN_VALUE)]))
     class(lowflow_stats_temp$MIN_DATE) <- "Date" # fixes ifelse and date issue
@@ -163,7 +165,7 @@ calc_annual_lowflows <- function(data,
   # Filter for start and end years and make excluded years data NA
   lowflow_stats <- subset(lowflow_stats, Year >= start_year & Year <= end_year)
   lowflow_stats[lowflow_stats$Year %in% exclude_years, -(1:2)] <- NA
-
+  
   
   # If transpose if selected, switch columns and rows
   if (transpose) {

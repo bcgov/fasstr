@@ -82,7 +82,8 @@ calc_monthly_stats <- function(data,
                                months = 1:12,
                                transpose = FALSE,
                                spread = FALSE,
-                               ignore_missing = FALSE){
+                               ignore_missing = FALSE,
+                               allowed_missing = ifelse(ignore_missing,100,0)){
   
   
   ## ARGUMENT CHECKS
@@ -109,6 +110,7 @@ calc_monthly_stats <- function(data,
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)
   ignore_missing_checks(ignore_missing)
+  allowed_missing_checks(allowed_missing, ignore_missing)
   transpose_checks(transpose)
   spread_checks(spread)
   if(transpose & spread) stop("Both spread and transpose arguments cannot be TRUE.", call. = FALSE)
@@ -156,10 +158,10 @@ calc_monthly_stats <- function(data,
   
   # Calculate basic stats
   monthly_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear, MonthName),
-                                    Mean = mean(RollingValue, na.rm = ignore_missing),  
-                                    Median = stats::median(RollingValue, na.rm = ignore_missing), 
-                                    Maximum = suppressWarnings(max(RollingValue, na.rm = ignore_missing)),    
-                                    Minimum = suppressWarnings(min(RollingValue, na.rm = ignore_missing)))
+                                    Mean = mean(RollingValue, na.rm = allowed_narm(RollingValue, allowed_missing)),  
+                                    Median = stats::median(RollingValue, na.rm = allowed_narm(RollingValue, allowed_missing)), 
+                                    Maximum = suppressWarnings(max(RollingValue, na.rm = allowed_narm(RollingValue, allowed_missing))),    
+                                    Minimum = suppressWarnings(min(RollingValue, na.rm = allowed_narm(RollingValue, allowed_missing))))
   monthly_stats <- dplyr::ungroup(monthly_stats)
   
   # Calculate annual percentiles

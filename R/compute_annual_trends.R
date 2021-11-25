@@ -111,6 +111,8 @@ compute_annual_trends <- function(data,
                                   timing_percent = c(25,33,50,75),
                                   normal_percentiles = c(25,75),
                                   ignore_missing = FALSE,
+                                  allowed_missing_annual = ifelse(ignore_missing,100,0),
+                                  allowed_missing_monthly = ifelse(ignore_missing,100,0),
                                   include_plots = TRUE,
                                   zyp_alpha){       
   
@@ -184,7 +186,9 @@ compute_annual_trends <- function(data,
                                        timing_percent = timing_percent,
                                        normal_percentiles = normal_percentiles,
                                        transpose = TRUE,
-                                       ignore_missing = ignore_missing)
+                                       ignore_missing = ignore_missing,
+                                       allowed_missing_annual = allowed_missing_annual,
+                                       allowed_missing_monthly = allowed_missing_monthly)
   
   # Compute some summary stats on the input data
   colnames(trends_data)[2] <- "Statistic"

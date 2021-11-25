@@ -95,6 +95,8 @@ write_full_analysis <- function(data,
                                 exclude_years,
                                 months = 1:12,
                                 ignore_missing = FALSE,
+                                allowed_missing_annual = ifelse(ignore_missing,100,0),
+                                allowed_missing_monthly = ifelse(ignore_missing,100,0),
                                 zyp_method = 'zhang',
                                 zyp_alpha,
                                 file_name,
@@ -129,6 +131,8 @@ write_full_analysis <- function(data,
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   ignore_missing_checks(ignore_missing)
+  allowed_missing_checks(allowed_missing_annual, ignore_missing)
+  allowed_missing_checks(allowed_missing_monthly, ignore_missing)
   months_checks(months)
   
   if (missing(file_name))     stop("A file name is required with the file_name argument to write all results.", call. = FALSE)
@@ -236,6 +240,8 @@ write_full_analysis <- function(data,
                           exclude_years = exclude_years,
                           months = months,
                           ignore_missing = ignore_missing,
+                          allowed_missing_annual = allowed_missing_annual,
+                          allowed_missing_monthly = allowed_missing_monthly,
                           zyp_method = zyp_method,
                           zyp_alpha = zyp_alpha)
   )
@@ -831,8 +837,8 @@ write_full_analysis <- function(data,
                width = 6,
                comment = annual_yield_plot_function)
     }
-
-
+    
+    
     
     # Add worksheet
     ann_oth_sheet <- "Annual Stats Other"
