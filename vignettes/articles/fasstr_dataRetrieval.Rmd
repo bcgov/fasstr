@@ -284,7 +284,7 @@ usgs_data <- readNWISdv_hydat("12043300")
 
 ## Working in US customary units
 
-For analyses using US customary units from USGS NWIS data from `dataRetrieval`, most `fasstr` functions will work with little to no issues. Most functions take the provided data (i.e. flows in cfs) and provide means, medians, percentiles, etc. For data frame outputs, it can be assumed that if there are no units in column names that units are the same as the data provided. Axes labeled 'Discharge (cms)' on plots can simply be renamed to match the units by extracting the plot object from its listed object (using double square brackets `[[1]]`, or `magrittr::extract2(1)` in a pipeline) and using `ggplot2` functions (eg. `+ ylab('Discharge, cubic feet per second')`). If units are expressed in Volume_m3 it can be interpreted as cubic feet volume and renamed as such. However, if column names or plots titles are labeled as Yield_mm, there will there be additional conversion steps (see section below) required to get the appropriate inches depth.
+For analyses using US customary units from USGS NWIS data from `dataRetrieval`, most `fasstr` functions will work with little to no issues. Most functions take the provided data (i.e. flows in cfs or acre-feet) and provide means, medians, percentiles, etc. For data frame outputs, it can be assumed that if there are no units in column names that units are the same as the data provided. Axes labeled 'Discharge (cms)' on plots can simply be renamed to match the units by extracting the plot object from its listed object (using double square brackets `[[1]]`, or `magrittr::extract2(1)` in a pipeline) and using `ggplot2` functions (eg. `+ ylab('Discharge, cubic feet per second')` or `+ ylab('Discharge, acre-feet')`). If units are expressed in Volume_m3 it can be interpreted as cubic feet volume and renamed as such. However, if column names or plots titles are labeled as Yield_mm, there will there be additional conversion steps (see section below) required to get the appropriate inches depth. If data is in cfs but some volumetric results are desired to be in acre-feet, then some modifications will also be required.
 
 ### Keeping NWIS column names
 
@@ -383,6 +383,54 @@ plot_daily_cumulative_stats(data = usgs_data,
   magrittr::extract2(1) + # extracts plot from list
   ggplot2::ylab("Runoff, inch")
 ```
+
+### Use of acre-feet data and results
+
+Like data in cfs units, if data from `dataRetrieval` is converted to acre-feet per day units, most functions should work appropriately (if no units in column headers or plot axis titles in cms (and simply be renamed)).
+
+```{r, eval=FALSE}
+# cfs to acre-feet per day
+cfs_to_acft <- 1.983459
+
+# Get NWIS data, rename to Value, and convert cfs to acre-feet
+usgs_data <- readNWISdv(siteNumbers = "12043300", 
+                        parameterCd = "00060") %>% 
+  rename(Value = X_00060_00003) %>% 
+  mutate(Value = Value * cfs_to_acft)
+
+# Plot the acre-feet units, extract the plot (using [[1]]), 
+# and rename the y-axis to appropriate units
+plot_daily_stats(usgs_data, complete_years = TRUE)[[1]]+
+  ylab("Discharge, acre-feet per day")
+```
+
+As some `fasstr` functions report numbers in volumetric discharge and derive values from 'per seconds' units (i.e. cms or cfs) the original values are multiplied by 86400 seconds to obtain the daily volumes. Since acre-feet are typically in acre-feet per day, and not seconds, an easy conversion from acre-feet per day to acre-feet per second (divide by `86400`) will allow the user to get cumulative acre-feet.
+
+```{r, eval=FALSE}
+# cfs to acre-feet per second
+cfs_to_acftsec <- 1.983459 / 86400
+
+# Get NWIS data, rename to Value, and convert cfs to 
+# acre-feet per second
+usgs_data <- readNWISdv(siteNumbers = "12043300", 
+                        parameterCd = "00060") %>% 
+  rename(Value = X_00060_00003) %>% 
+  mutate(Value = Value * cfs_to_acftsec)
+
+# Plot the daily cumulative stats for all years with 2000 data,
+# extract the plot and rename the y-axis
+plot_daily_cumulative_stats(usgs_data, 
+                            add_year = 2000)[[1]]+
+  ylab("Cumulative Discharge, acre-feet")
+
+# Calculate annual and seasonal cumulative flows and
+# rename the column headers
+stats <- calc_annual_cumulative_stats(usgs_data, 
+                             include_seasons = TRUE)
+names(stats) <- gsub('_m3', '_acft', names(stats))
+```
+
+Using acre-feet per second data will not work for some functions that ideally work best with data in cfs or cms units and include volumetric totals like `calc_all_annual_stats()`, `compute_annual_trends()`, or `compute_full_analysis()`. However, results in total volumetric cubic-feet can simply be converted to acre-feet per day by multiplying the cubic-feet per day results by `0.00002295689`.
 
 ### Examples: data wrangling
 

@@ -372,7 +372,7 @@
 <div id="working-in-us-customary-units" class="section level2">
 <h2 class="hasAnchor">
 <a href="#working-in-us-customary-units" class="anchor"></a>Working in US customary units</h2>
-<p>For analyses using US customary units from USGS NWIS data from <code>dataRetrieval</code>, most <code>fasstr</code> functions will work with little to no issues. Most functions take the provided data (i.e. flows in cfs) and provide means, medians, percentiles, etc. For data frame outputs, it can be assumed that if there are no units in column names that units are the same as the data provided. Axes labeled ‘Discharge (cms)’ on plots can simply be renamed to match the units by extracting the plot object from its listed object (using double square brackets <code>[[1]]</code>, or <code><a href="https://magrittr.tidyverse.org/reference/aliases.html">magrittr::extract2(1)</a></code> in a pipeline) and using <code>ggplot2</code> functions (eg. <code>+ ylab('Discharge, cubic feet per second')</code>). If units are expressed in Volume_m3 it can be interpreted as cubic feet volume and renamed as such. However, if column names or plots titles are labeled as Yield_mm, there will there be additional conversion steps (see section below) required to get the appropriate inches depth.</p>
+<p>For analyses using US customary units from USGS NWIS data from <code>dataRetrieval</code>, most <code>fasstr</code> functions will work with little to no issues. Most functions take the provided data (i.e. flows in cfs or acre-feet) and provide means, medians, percentiles, etc. For data frame outputs, it can be assumed that if there are no units in column names that units are the same as the data provided. Axes labeled ‘Discharge (cms)’ on plots can simply be renamed to match the units by extracting the plot object from its listed object (using double square brackets <code>[[1]]</code>, or <code><a href="https://magrittr.tidyverse.org/reference/aliases.html">magrittr::extract2(1)</a></code> in a pipeline) and using <code>ggplot2</code> functions (eg. <code>+ ylab('Discharge, cubic feet per second')</code> or <code>+ ylab('Discharge, acre-feet')</code>). If units are expressed in Volume_m3 it can be interpreted as cubic feet volume and renamed as such. However, if column names or plots titles are labeled as Yield_mm, there will there be additional conversion steps (see section below) required to get the appropriate inches depth. If data is in cfs but some volumetric results are desired to be in acre-feet, then some modifications will also be required.</p>
 <div id="keeping-nwis-column-names-1" class="section level3">
 <h3 class="hasAnchor">
 <a href="#keeping-nwis-column-names-1" class="anchor"></a>Keeping NWIS column names</h3>
@@ -463,11 +463,54 @@
   <span class="fu">magrittr</span><span class="fu">::</span><span class="fu"><a href="https://magrittr.tidyverse.org/reference/aliases.html">extract2</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="co"># extracts plot from list</span>
   <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Runoff, inch"</span><span class="op">)</span></code></pre></div>
 </div>
+<div id="use-of-acre-feet-data-and-results" class="section level3">
+<h3 class="hasAnchor">
+<a href="#use-of-acre-feet-data-and-results" class="anchor"></a>Use of acre-feet data and results</h3>
+<p>Like data in cfs units, if data from <code>dataRetrieval</code> is converted to acre-feet per day units, most functions should work appropriately (if no units in column headers or plot axis titles in cms (and simply be renamed)).</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># cfs to acre-feet per day</span>
+<span class="va">cfs_to_acft</span> <span class="op">&lt;-</span> <span class="fl">1.983459</span>
+
+<span class="co"># Get NWIS data, rename to Value, and convert cfs to acre-feet</span>
+<span class="va">usgs_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISdv.html">readNWISdv</a></span><span class="op">(</span>siteNumbers <span class="op">=</span> <span class="st">"12043300"</span>, 
+                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">X_00060_00003</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">Value</span> <span class="op">*</span> <span class="va">cfs_to_acft</span><span class="op">)</span>
+
+<span class="co"># Plot the acre-feet units, extract the plot (using [[1]]), </span>
+<span class="co"># and rename the y-axis to appropriate units</span>
+<span class="fu"><a href="../../reference/plot_daily_stats.html">plot_daily_stats</a></span><span class="op">(</span><span class="va">usgs_data</span>, complete_years <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Discharge, acre-feet per day"</span><span class="op">)</span></code></pre></div>
+<p>As some <code>fasstr</code> functions report numbers in volumetric discharge and derive values from ‘per seconds’ units (i.e. cms or cfs) the original values are multiplied by 86400 seconds to obtain the daily volumes. Since acre-feet are typically in acre-feet per day, and not seconds, an easy conversion from acre-feet per day to acre-feet per second (divide by <code>86400</code>) will allow the user to get cumulative acre-feet.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># cfs to acre-feet per second</span>
+<span class="va">cfs_to_acftsec</span> <span class="op">&lt;-</span> <span class="fl">1.983459</span> <span class="op">/</span> <span class="fl">86400</span>
+
+<span class="co"># Get NWIS data, rename to Value, and convert cfs to </span>
+<span class="co"># acre-feet per second</span>
+<span class="va">usgs_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISdv.html">readNWISdv</a></span><span class="op">(</span>siteNumbers <span class="op">=</span> <span class="st">"12043300"</span>, 
+                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">X_00060_00003</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">Value</span> <span class="op">*</span> <span class="va">cfs_to_acftsec</span><span class="op">)</span>
+
+<span class="co"># Plot the daily cumulative stats for all years with 2000 data,</span>
+<span class="co"># extract the plot and rename the y-axis</span>
+<span class="fu"><a href="../../reference/plot_daily_cumulative_stats.html">plot_daily_cumulative_stats</a></span><span class="op">(</span><span class="va">usgs_data</span>, 
+                            add_year <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Cumulative Discharge, acre-feet"</span><span class="op">)</span>
+
+<span class="co"># Calculate annual and seasonal cumulative flows and</span>
+<span class="co"># rename the column headers</span>
+<span class="va">stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/calc_annual_cumulative_stats.html">calc_annual_cumulative_stats</a></span><span class="op">(</span><span class="va">usgs_data</span>, 
+                             include_seasons <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">stats</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">'_m3'</span>, <span class="st">'_acft'</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">stats</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>Using acre-feet per second data will not work for some functions that ideally work best with data in cfs or cms units and include volumetric totals like <code><a href="../../reference/calc_all_annual_stats.html">calc_all_annual_stats()</a></code>, <code><a href="../../reference/compute_annual_trends.html">compute_annual_trends()</a></code>, or <code><a href="../../reference/compute_full_analysis.html">compute_full_analysis()</a></code>. However, results in total volumetric cubic-feet can simply be converted to acre-feet per day by multiplying the cubic-feet per day results by <code>0.00002295689</code>.</p>
+</div>
 <div id="examples-data-wrangling" class="section level3">
 <h3 class="hasAnchor">
 <a href="#examples-data-wrangling" class="anchor"></a>Examples: data wrangling</h3>
 <p>For the rest of the vignette examples, we will set up data frames of daily stream discharge from <code>dataRetrieval</code> called <code>usgs_data</code> and <code>usgs_data_multiple</code>, and rename the columns to match the <code>fasstr</code> defaults (i.e. STATION_NUMBER, Date, and Value). We will also extract a basin area for the <code>usgs_data</code> data set.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Get daily data for examples</span>
 <span class="va">usgs_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISdv.html">readNWISdv</a></span><span class="op">(</span>siteNumbers <span class="op">=</span> <span class="st">"12043300"</span>, 
                         parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
@@ -489,7 +532,7 @@
 <h3 class="hasAnchor">
 <a href="#examples-tidying-functions" class="anchor"></a>Examples: tidying functions</h3>
 <p>There are several functions that are used to prepare your flow data set for your own analyses by adding columns of various date variables, adding rolling means, and adding cumulative discharges, amongst others. These functions begin with <code>add_</code> or <code>fill_</code> and add columns or rows, respectively, to your data frame of daily flow values. See the documentation for more info on the functions. The following example shows how to apply the tidying functions in a continuous pipeline and using water years. Note how the basin area correction is applied in the two <code>_cumulative_</code> functions and columns are renamed to match the appropriate units where necessary.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">usgs_data</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="../../reference/fill_missing_dates.html">fill_missing_dates</a></span><span class="op">(</span>water_year_start <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="../../reference/add_date_variables.html">add_date_variables</a></span><span class="op">(</span>water_year_start <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span> 
@@ -510,7 +553,7 @@
 <h3 class="hasAnchor">
 <a href="#examples-flow-data-screening" class="anchor"></a>Examples: flow data screening</h3>
 <p>It may be useful to explore data availability and quality before using the data for analysis. Some of the screening functions can help you screen for outliers and missing data. Note the renaming of axis labels in the plot examples to the necessary units with one or multiple station plots.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Get the number of missing dates and some basic summary statistics (calculated regardless </span>
 <span class="co"># of missing dates)</span>
 <span class="fu"><a href="../../reference/screen_flow_data.html">screen_flow_data</a></span><span class="op">(</span><span class="va">usgs_data</span>, 
@@ -545,7 +588,7 @@
 <h3 class="hasAnchor">
 <a href="#examples-summary-statistics-tables-and-plots" class="anchor"></a>Examples: summary statistics tables and plots</h3>
 <p>The majority of the <code>fasstr</code> functions produce statistics over a certain time period, either long-term, annually, monthly, or daily. These statistics are produced using the <code>calc_</code> functions and many can be visualized using corresponding <code>plot_</code> functions. Most of the <code>calc_</code> functions do not require any changes to column names, unless they require as drainage basin area, where the multiplier fix will be applied. Most of the plots will require renaming axes as noted.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Calculate long-term and long-term monthly summary statistics based on daily data</span>
 <span class="co"># using only years with complete data</span>
 <span class="fu"><a href="../../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span><span class="va">usgs_data</span>, 
@@ -626,7 +669,7 @@
 <a href="#examples-annual-trending" class="anchor"></a>Examples: annual trending</h3>
 <p>The <code><a href="../../reference/compute_annual_trends.html">compute_annual_trends()</a></code> function trends annual streamflow metrics using prewhitened non-parametric Mann-Kendall tests using the <a href="https://CRAN.R-project.org/package=zyp"><code>zyp</code></a> package. The function calculates various annual metrics using the <code><a href="../../reference/calc_all_annual_stats.html">calc_all_annual_stats()</a></code> <code>fasstr</code> function and then calculates and plots the trending data. The <code>zhang</code> prewhitening method is recommended for hydrologic applications over <code>yuepilon</code>. See the <a href="https://CRAN.R-project.org/package=zyp"><code>zyp</code></a> package and the <a href="https://bcgov.github.io/fasstr/articles/fasstr_trending_analysis.html">trending vignette</a> for more information.</p>
 <p>For the trending function, many of the metrics and results are simply statistics on the raw data and so will not require any conversions. However, like other <code>fasstr</code> functions that calculate volumetric and runoff totals (using a basin area), some fixes will be required to use a basin area (see above) and to rename data, columns, and plot axes. Data and axes with names ending with units of volume or yield will require renaming. The following code is examples of how to run the trending function and modify it and the outputs for US units.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Calculate annual metrics and trend the data using the Mann-Kendall methods, </span>
 <span class="co"># using 'zhang' prewhitening methods, plotting a trend line on plots if α &lt; 0.05,</span>
 <span class="co"># and applying the basin area correction to get inches depth for yield units.</span>
@@ -636,7 +679,7 @@
                                 basin_area <span class="op">=</span> <span class="va">usgs_basin_area</span> <span class="op">*</span> <span class="fl">2323.2</span>,
                                 water_year_start <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
 <p>While exported values will be accurate, some data, columns, and axes will needed to be renamed from metric to US units. If want to use results from above, then here are some ways to convert names in the output from <code>compute_annual_trends</code>:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Rename plot names</span>
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">trends</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">'_m3'</span>, <span class="st">'_cuft'</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">trends</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">trends</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">'_mm'</span>, <span class="st">'_inch'</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">trends</span><span class="op">)</span><span class="op">)</span>
@@ -662,7 +705,7 @@
   <span class="op">}</span>
 <span class="op">}</span></code></pre></div>
 <p>A function can also be written if relabeling will frequently occur within workflows. With this example, you apply the output of <code><a href="../../reference/compute_annual_trends.html">compute_annual_trends()</a></code> directly to this wrapper function and it will rename all appropriate labels and titles within the results.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Create wrapper function</span>
 <span class="va">fasstr_trends_to_US_units</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">trends</span><span class="op">)</span><span class="op">{</span>
   
@@ -703,7 +746,7 @@
 <p>There are several functions that perform various volume frequency analyses. Frequency analyses are used to determine probabilities of events of certain sizes (typically high or low flows). The analyses produce plots of event series and computed quantiles fitted from either Log-Pearson Type III or Weibull probability distributions. See the <a href="https://bcgov.github.io/fasstr/articles/fasstr_frequency_analysis.html">frequency analysis vignette</a> for more information. With the two options for probability distributions (logPIII and weibull), the user should have understanding or investigate the appropriateness of fit for the data provided with the probability distributions. The <code>fitdistrplus</code> R package fitting parameters can be found the in the <code>fasstr</code> ‘Freq_Fitting’ output and can be explored further (see <code>fitdistrplus</code> documentation for more information).</p>
 <p>These functions do analyses on the data provided without requiring metric conversions. As such, the only fix required to format results in US units is changing the y-axis on the plot object from “Discharge (cms)” to desired units. Here are some examples that could be applied using USGS data. See documentation for default arguments (i.e. <code><a href="../../reference/compute_annual_frequencies.html">?compute_annual_frequencies</a></code>).</p>
 <p>Compute annual low flows (1,3,7,and 30-day) frequencies with default arguments:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Compute annual low flows frequencies with default arguments</span>
 <span class="va">lowflow_frequency</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span><span class="op">(</span><span class="va">usgs_data</span>,
                                                 water_year_start <span class="op">=</span> <span class="fl">10</span>,
@@ -720,7 +763,7 @@
 <span class="co"># Plot the fitting distributions of the 7-day low flows</span>
 <span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">lowflow_frequency</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></code></pre></div>
 <p>Compute annual 1-day maximum frequencies with default arguments:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Compute annual daily peak flows frequencies with default arguments</span>
 <span class="va">highflow_frequency</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span><span class="op">(</span><span class="va">usgs_data</span>,
                                                  water_year_start <span class="op">=</span> <span class="fl">10</span>,
@@ -730,7 +773,7 @@
 <span class="va">highflow_frequency</span><span class="op">$</span><span class="va">Freq_Plot</span><span class="op">$</span><span class="va">labels</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="st">"Discharge, cubic feet per second"</span>
 <span class="va">highflow_frequency</span><span class="op">$</span><span class="va">Freq_Plot</span></code></pre></div>
 <p>Compute summer 7-day low flow frequencies with default arguments:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Compute summer low flow frequencies with default arguments</span>
 <span class="va">lowflow_7day</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span><span class="op">(</span><span class="va">usgs_data</span>,
                                            water_year_start <span class="op">=</span> <span class="fl">10</span>,
@@ -740,7 +783,7 @@
 <span class="va">lowflow_plot</span> <span class="op">&lt;-</span> <span class="va">lowflow_7day</span><span class="op">$</span><span class="va">Freq_Plot</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Discharge, cubic feet per second"</span><span class="op">)</span></code></pre></div>
 <p>Compute a frequency analysis on annual instantaneous peak data from NWIS using the custom frequency analysis function:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># dataRetrieval function to get annual instantaneous peak data, grouped by water years</span>
 <span class="va">usgs_peaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISpeak.html">readNWISpeak</a></span><span class="op">(</span><span class="st">"12043300"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Measure <span class="op">=</span> <span class="st">"Inst. Peaks"</span><span class="op">)</span>
@@ -760,7 +803,7 @@
   <span class="fu"><a href="../../reference/compute_frequency_analysis.html">compute_frequency_analysis</a></span><span class="op">(</span>use_max <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="va">flood_frequency</span><span class="op">$</span><span class="va">Freq_Plot</span><span class="op">$</span><span class="va">labels</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="st">"Discharge, cubic feet per second"</span></code></pre></div>
 <p>Compute a single frequency quantile with default arguments. With this function only the desired quantile is returned. Use this function if you know the fitting distributions are suitable for the data set.</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Compute the summer 7Q10 with default arguments</span>
 <span class="fu"><a href="../../reference/compute_frequency_quantile.html">compute_frequency_quantile</a></span><span class="op">(</span><span class="va">usgs_data</span>,
                            roll_days <span class="op">=</span> <span class="fl">7</span>, 
