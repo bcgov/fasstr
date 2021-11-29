@@ -5,13 +5,13 @@ Updated: 25 Nov 2021
 
 #### Updates:
 
-  * added flexible 'allowed_missing' argument to applicable function, that allows users to choose the percentage of missing
+  * added flexible 'allowed_missing' argument to applicable functions, that allows users to choose the percentage of missing
     dates, rather than binary ignore_missing. ignore_missing argument still functions as it should (to maintain historical and
-    future use), and is only superseded when allowed_missing argument is utilized. Applied to functions that make logical sense
-    (annual and monthly functions) and are appropriate for calculations, i.e. basin summary statistics (means, percentiles,
-    minimums, maximums). Also allowed_missing_annual and allowed_missing_monthly for some functions that have both annual 
-    and monthly statistics and may have different allowances; only applied to summary statistics. The new argument is applied
-    to the following functions:
+    future use), and is only superseded when allowed_missing argument is utilized. This argument is currently applied to functions 
+    that make most logical sense (annual and monthly functions) and are appropriate for calculations, i.e. basin summary statistics
+    (means, percentiles, minimums, maximums). Versions of this, allowed_missing_annual and allowed_missing_monthly, exists for some
+    functions that have both annual and monthly statistics and may have different allowances; only applied to summary statistics.
+    The new argument is applied to the following functions:
     * allowed_missing argument: calc_annual_lowflows(), calc_annual_peaks(), calc_annual_stats(), calc_monthly_stats(), 
       compute_annual_frequencies(), compute_frequency_quantile(), plot_annual_stats(), plot_annual_lowflows(), 
       plot_annual_means(), plot_monthly_stats() 
