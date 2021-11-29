@@ -393,7 +393,8 @@ missing_values_warning_noNA <- function(x) {
 
 missing_values_warning <- function(x) {
   if (anyNA(x)) 
-    warning("One or more calculations included missing values and NA's were produced. Filter data for complete years or months, or use to ignore_missing = TRUE to ignore missing values.", call. = FALSE)
+    warning(paste0("One or more calculations included missing values and NA's were produced. If desired, filter data for complete years or months,",
+                   " or use to 'ignore_missing' or 'allowed_missing' arguments (if applicable) to ignore or allow some missing values."), call. = FALSE)
 }
 
 # For annual timing, normals
@@ -404,7 +405,7 @@ missing_complete_yr_warning <- function(x) {
 
 zyp_method_checks <- function(zyp_method) {
   if (is.na(zyp_method) | !zyp_method %in% c("yuepilon", "zhang") )   
-    stop('zyp_trending argument must be either "zhang" or "yuepilon". "zhang" is recommended for hydrologic applications over "yuepilon".', 
+    stop('zyp_trending argument must be either "zhang" or "yuepilon". "zhang" is recommended for hydrologic applications.', 
          call. = FALSE)
 }
 
