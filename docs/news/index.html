@@ -165,12 +165,17 @@
 <h1 class="page-header" data-toc-text="0.4.0">
 <a href="#fasstr-040" class="anchor"></a>fasstr 0.4.0<small> Unreleased </small>
 </h1>
-<p>Updated: 24 Nov 2021</p>
+<p>Updated: 25 Nov 2021</p>
 <div id="updates" class="section level4">
 <h4 class="hasAnchor">
 <a href="#updates" class="anchor"></a>Updates:</h4>
 <ul>
-<li>New vignette for GitHub Page: Using USGS dataRetrieval R package with fasstr</li>
+<li>added flexible ‘allowed_missing’ argument to applicable functions, that allows users to choose the percentage of missing dates, rather than binary ignore_missing. ignore_missing argument still functions as it should (to maintain historical and future use), and is only superseded when allowed_missing argument is utilized. This argument is currently applied to functions that make most logical sense (annual and monthly functions) and are appropriate for calculations, i.e. basin summary statistics (means, percentiles, minimums, maximums). Versions of this, allowed_missing_annual and allowed_missing_monthly, exists for some functions that have both annual and monthly statistics and may have different allowances; only applied to summary statistics. The new argument is applied to the following functions:
+<ul>
+<li>allowed_missing argument: calc_annual_lowflows(), calc_annual_peaks(), calc_annual_stats(), calc_monthly_stats(), compute_annual_frequencies(), compute_frequency_quantile(), plot_annual_stats(), plot_annual_lowflows(), plot_annual_means(), plot_monthly_stats()</li>
+<li>allowed_missing_annual and allowed_missing_monthly: calc_all_annual_stats(), compute_annual_trends(), compute_full_analysis(), write_full_analysis()</li>
+</ul>
+</li>
 <li>added ‘months’ argument to following functions (covers all screen_, calc_, plot_, and compute_ functions now):
 <ul>
 <li>plot_flow_data() - will plot only data from selected months</li>
@@ -186,6 +191,8 @@
 <li>compute_ and write_full_analysis() - will only use months select, won’t calc seasonal totals if not all months</li>
 </ul>
 </li>
+<li>Updated ‘Users Guide’ vignette and Cheat Sheet with new argument updates</li>
+<li>New vignette for GitHub Page: Using USGS dataRetrieval R package with fasstr</li>
 <li>fixed bug: multiple custom groups/STATION_NUMBER’s appropriately match to data when using a named vector</li>
 <li>fixed bug: plot_daily_cumulative_stats() now plots accurate custom years</li>
 <li>fixed bug: removed unnecessary legend items from plot_flow_duration()</li>

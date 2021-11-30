@@ -308,7 +308,8 @@ calc_all_annual_stats <- function(data,
   
   if ( anyNA(missing_test[,3:ncol(missing_test)]) & 
        !all(is.na(dplyr::select(missing_test, dplyr::contains("Yield"))))) 
-    warning("One or more calculations included missing values and NA's were produced. Filter data for complete years or months, or use to ignore_missing = TRUE to ignore missing values.", call. = FALSE)
+    warning(paste0("One or more calculations included missing values and NA's were produced. If desired, filter data for complete years or months,",
+                   " or use the 'ignore_missing' or 'allowed_missing_annual' and `allowed_missing_monthly` arguments."), call. = FALSE)
   
   
   

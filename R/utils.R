@@ -394,7 +394,7 @@ missing_values_warning_noNA <- function(x) {
 missing_values_warning <- function(x) {
   if (anyNA(x)) 
     warning(paste0("One or more calculations included missing values and NA's were produced. If desired, filter data for complete years or months,",
-                   " or use to 'ignore_missing' or 'allowed_missing' arguments (if applicable) to ignore or allow some missing values."), call. = FALSE)
+                   " or use the 'ignore_missing' or 'allowed_missing' arguments (if applicable) to ignore or allow some missing values."), call. = FALSE)
 }
 
 # For annual timing, normals
