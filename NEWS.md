@@ -1,7 +1,7 @@
 fasstr 0.4.0
 =========================
 
-Updated: 25 Nov 2021
+Updated: 26 Nov 2021
 
 #### Updates:
 
@@ -37,6 +37,7 @@ Updated: 25 Nov 2021
   * fixed bug: plot_daily_cumulative_stats() now plots accurate custom years
   * fixed bug: removed unnecessary legend items from plot_flow_duration()
   * fixed bug: corrected 'months' argument in calc_ and plot_annual_outside_normal() to properly filter
+  * fixed bug: removed unnecessary NA warning in plot_longterm_daily and plot_longterm_monthly_stats
   
 fasstr 0.3.3
 =========================

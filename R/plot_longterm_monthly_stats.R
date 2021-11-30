@@ -127,8 +127,11 @@ plot_longterm_monthly_stats <- function(data,
   
   ## CALC STATS
   ## ----------
-  longterm_stats_all <- calc_longterm_daily_stats(data = flow_data,
-                                                  water_year_start = water_year_start)
+  longterm_stats_all <- suppressWarnings(
+    calc_longterm_daily_stats(data = flow_data,
+                              water_year_start = water_year_start,
+                              start_year = start_year,
+                              end_year = end_year))
   longterm_stats_all <- longterm_stats_all[,1:2]
   
   longterm_stats <- calc_longterm_monthly_stats(data = flow_data,

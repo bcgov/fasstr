@@ -123,8 +123,11 @@ plot_longterm_daily_stats <- function(data,
   
   ## CALC STATS
   ## ----------
-  longterm_stats_all <- calc_longterm_daily_stats(data = flow_data,
-                                              water_year_start = water_year_start)
+  longterm_stats_all <- suppressWarnings(
+    calc_longterm_daily_stats(data = flow_data,
+                              water_year_start = water_year_start,
+                              start_year = start_year,
+                              end_year = end_year))
   longterm_stats_all <- longterm_stats_all[,1:2]
   
   longterm_stats <- calc_longterm_daily_stats(data = flow_data,
@@ -143,7 +146,7 @@ plot_longterm_daily_stats <- function(data,
   
   ## PLOT STATS
   ## ----------
-
+  
   # Make longterm mean and median their own columns
   longterm_stats_months <- dplyr::filter(longterm_stats, Month != "Long-term")
   
@@ -156,19 +159,19 @@ plot_longterm_daily_stats <- function(data,
   longterm_stats_longterm <- dplyr::filter(longterm_stats, Month == "Long-term")
   longterm_stats_longterm <- dplyr::select(longterm_stats_longterm, STATION_NUMBER, "LT_Mean" = Mean, "LT_Med" = Median)
   longterm_stats <- dplyr::left_join(longterm_stats_months, longterm_stats_longterm, by = "STATION_NUMBER")
-
+  
   ## ADD YEAR IF SELECTED
   ## --------------------
-
+  
   if(!is.null(add_year)){
-
+    
     # data for testing if year is in flow_data
     flow_data_year <- add_date_variables(data = flow_data, water_year_start = water_year_start)
     flow_data_year <- dplyr::filter(flow_data_year, WaterYear %in% start_year:end_year)
-
+    
     # if year is in data and not excluded, calculate those values
     if (add_year %in% min(flow_data_year$WaterYear):max(flow_data_year$WaterYear) & !(add_year %in% exclude_years)) {
-
+      
       year_data <- suppressWarnings(calc_monthly_stats(data = flow_data,
                                                        roll_days = roll_days,
                                                        roll_align = roll_align,
@@ -180,18 +183,18 @@ plot_longterm_daily_stats <- function(data,
       year_data <- dplyr::filter(year_data, Year == add_year)
       year_data <- dplyr::mutate(year_data, Month = factor(Month, levels = c(month.abb, "Long-term")))
       year_data <- dplyr::select(year_data, STATION_NUMBER, Month, Year_mean = Mean)
-
+      
       # Warning if all daily values are NA from the add_year
       for (stn in unique(year_data$STATION_NUMBER)) {
         year_test <- dplyr::filter(year_data, STATION_NUMBER == stn)
-
+        
         if(all(is.na(year_test$Year_mean))) {
           warning("Monthly data does not exist for the year listed in add_year and was not plotted.", call. = FALSE)
           add_year <- NULL
         }
       }
-
-
+      
+      
       if(!all(is.na(year_data$Year_mean))) {
         longterm_stats <- dplyr::left_join(longterm_stats, year_data, by = c("STATION_NUMBER", "Month"))
       }
@@ -200,44 +203,44 @@ plot_longterm_daily_stats <- function(data,
       add_year <- NULL
     }
   }
-
-
+  
+  
   if (all(sapply(longterm_stats[3:ncol(longterm_stats)], function(x)all(is.na(x))))) {
     longterm_stats[is.na(longterm_stats)] <- 1
   }
-
+  
   # Create manual colour and fill options
-
+  
   fill_manual_list <- c()
   if (include_extremes) {
     fill_manual_list <- c(fill_manual_list, "lightblue2")
     names(fill_manual_list) <- c(names(fill_manual_list), "Minimum-Maximum")
   }
-
+  
   if (is.numeric(outer_percentiles)) {
     fill_manual_list <- c(fill_manual_list, "lightblue3")
     outer_name <- paste0(min(outer_percentiles),"-",max(outer_percentiles), " Percentiles")
     names(fill_manual_list) <- c(names(fill_manual_list)[1:(length(fill_manual_list)-1)], outer_name)
   }
-
+  
   if (is.numeric(inner_percentiles)) {
     fill_manual_list <- c(fill_manual_list, "lightblue4")
     inner_name <- paste0(min(inner_percentiles),"-",max(inner_percentiles), " Percentiles")
     names(fill_manual_list) <- c(names(fill_manual_list)[1:(length(fill_manual_list)-1)], inner_name)
   }
-
+  
   colour_manual_list <- c("Mean" = "paleturquoise", "Median" = "dodgerblue4")
   colour_manual_labels <- c("Mean", "Median")
   if (is.numeric(add_year)) {
     colour_manual_list <- c(colour_manual_list, "yr.colour" = "red")
     colour_manual_labels <- c(colour_manual_labels, paste0(add_year, " Mean"))
   }
-
+  
   # Create axis label based on input columns
   y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (cubic metres)", #expression(Volume~(m^3))
                          ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)",
                                 "Discharge (cms)")) #expression(Discharge~(m^3/s))
-
+  
   # Plot
   lt_plots <- dplyr::group_by(longterm_stats, STATION_NUMBER)
   lt_plots <- tidyr::nest(lt_plots)
@@ -282,8 +285,8 @@ plot_longterm_daily_stats <- function(data,
         {if (is.numeric(add_year)) ggplot2::geom_point(ggplot2::aes(y = Year_mean), size = 2, na.rm = TRUE, colour = "red") } +
         ggplot2::guides(colour = ggplot2::guide_legend(order = 1), fill = ggplot2::guide_legend(order = 2, title = NULL))
     ))
-
-
+  
+  
   # Create a list of named plots extracted from the tibble
   plots <- lt_plots$plot
   if (nrow(lt_plots) == 1) {
@@ -291,7 +294,7 @@ plot_longterm_daily_stats <- function(data,
   } else {
     names(plots) <- paste0(lt_plots$STATION_NUMBER, "_Long-term_Daily_Statistics")
   }
-
+  
   plots
   
 } 
