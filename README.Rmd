@@ -145,7 +145,7 @@ Yield runoff statistics (in millimetres) calculated in the some of the functions
 
 ##### Handling Missing Dates
 
-With the use of the `ignore_missing` argument in most functions, you can decide how to handle dates with missing flow values in calculations. When you set `ignore_missing = TRUE` a statistic will be calculated for a given year, all years, or month regardless of if there are missing flow values. When `ignore_missing = FALSE` the returned value for the period will be `NA` if there are missing values.
+With the use of the `ignore_missing` argument in most functions, you can decide how to handle dates with missing flow values in calculations. When you set `ignore_missing = TRUE` a statistic will be calculated for a given year, all years, or month regardless of if there are missing flow values. When `ignore_missing = FALSE` the returned value for the period will be `NA` if there are missing values. To allow some missing dates and still calculate statistics, some functions also including the `allowed_missing` argument where you provide a percentage (0 to 100) of missing days per time period.
 
 Some functions have an argument called `complete_years` which can be used, when set to `TRUE`, to filter out years that have partial data sets (for seasonal or other reasons) and only years with full data are used to calculate statistics.
 
