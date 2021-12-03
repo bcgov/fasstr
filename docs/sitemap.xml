@@ -13,12 +13,6 @@
     <loc>https://bcgov.github.io/fasstr/articles/articles/general_hydrology.html</loc>
   </url>
   <url>
-    <loc>https://bcgov.github.io/fasstr/articles/articles/use_with_other_hydrology_pacakages.html</loc>
-  </url>
-  <url>
-    <loc>https://bcgov.github.io/fasstr/articles/articles/use_with_tidyverse.html</loc>
-  </url>
-  <url>
     <loc>https://bcgov.github.io/fasstr/articles/fasstr.html</loc>
   </url>
   <url>
@@ -137,9 +131,6 @@
   </url>
   <url>
     <loc>https://bcgov.github.io/fasstr/reference/calc_monthly_stats.html</loc>
-  </url>
-  <url>
-    <loc>https://bcgov.github.io/fasstr/reference/check_flow_data.html</loc>
   </url>
   <url>
     <loc>https://bcgov.github.io/fasstr/reference/compute_annual_frequencies.html</loc>

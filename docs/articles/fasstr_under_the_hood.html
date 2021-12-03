@@ -96,7 +96,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/bcgov/fasstr/raw/master/fasstr_cheatsheet.pdf" class="external-link">
+  <a href="https://github.com/bcgov/fasstr/raw/main/fasstr_cheatsheet.pdf" class="external-link">
     <span class="fa fa-file-download"></span>
      
     Download Cheatsheet
@@ -133,7 +133,7 @@
     
     
 <p><code>fasstr</code>, the Flow Analysis Summary Statistics Tool for R, is a set of <a href="https://www.r-project.org/" class="external-link">R</a> functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.</p>
-<p>This vignette guide contains a look at the steps and internal functions used within the various <code>fasstr</code> functions. It includes descriptions of the function and steps on data importing, tidying and wrangling, filtering, analyzing, and plotting. It also describes some of the functions in the internal <a href="https://github.com/bcgov/fasstr/blob/master/R/utils.R" class="external-link">utils.R file</a> and the packages required to use the <code>fasstr</code> package.</p>
+<p>This vignette guide contains a look at the steps and internal functions used within the various <code>fasstr</code> functions. It includes descriptions of the function and steps on data importing, tidying and wrangling, filtering, analyzing, and plotting. It also describes some of the functions in the internal <a href="https://github.com/bcgov/fasstr/blob/main/R/utils.R" class="external-link">utils.R file</a> and the packages required to use the <code>fasstr</code> package.</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -152,7 +152,7 @@
 <div class="section level2">
 <h2 id="data-importing-and-checking">1. Data Importing and Checking<a class="anchor" aria-label="anchor" href="#data-importing-and-checking"></a>
 </h2>
-<p>The <code>fasstr</code> functions primarily require daily mean streamflow data in cubic metres per second. As such, columns of dates and values are required. Many <code>fasstr</code> functions can analyze multiple stations (using grouping functions) so a column to group data by (typically station numbers) can be provided. Other types of data can be used (climate, water level, etc), but plots and some conversions are based on the units of discharge. As there are two ways to provide daily data to the <code>fasstr</code> functions, the <code>data</code> and the <code>station_number</code> arguments, there are several internal functions stored in the <a href="https://github.com/bcgov/fasstr/blob/master/R/utils.R" class="external-link">utils.R file</a> that checks the data and formats the columns to ensure the data is prepared for the analysis. The following describes the steps to ensure data is consistently set up for analysis.</p>
+<p>The <code>fasstr</code> functions primarily require daily mean streamflow data in cubic metres per second. As such, columns of dates and values are required. Many <code>fasstr</code> functions can analyze multiple stations (using grouping functions) so a column to group data by (typically station numbers) can be provided. Other types of data can be used (climate, water level, etc), but plots and some conversions are based on the units of discharge. As there are two ways to provide daily data to the <code>fasstr</code> functions, the <code>data</code> and the <code>station_number</code> arguments, there are several internal functions stored in the <a href="https://github.com/bcgov/fasstr/blob/main/R/utils.R" class="external-link">utils.R file</a> that checks the data and formats the columns to ensure the data is prepared for the analysis. The following describes the steps to ensure data is consistently set up for analysis.</p>
 <p>The first step is to import daily data. The internal <code>flowdata_import()</code> function provides checks on the <code>data</code> and <code>station_number</code> arguments, and either extracts daily data from HYDAT (returns an error if the number isn’t in HYDAT) using the <code>tidyhydat</code> package, or makes sure that <code>data</code> is in fact a data frame.</p>
 <p>At this point in a <code>fasstr</code> function, all the column names of the data are saved as in a vector and any grouping (tidy grouping) is removed. The column names are saved as they may be changed in the following steps and the original names will be returned at the end of the analysis. Any grouping is removed to allow for the appropriate grouping of the analysis. For the tidying functions (<code>add_</code> and <code>fill_</code>) any grouping will be returned.</p>
 <p>The next step is to ensure the column names of dates, values, and groups are consistent as ‘Date’, ‘Value’, and ‘STATION_NUMBER’ (to match the HYDAT outputs), respectively, for the analysis. This is required as grouping and summarizing functions in the following steps use these specific column names, and provided data may not use the same names. The facilitate the column renaming and checking, there are several internal functions in the utils.R. For each of the three columns there is a function that checks if it exists, the proper formatting, and renames the columns to the appropriate name. These functions are <code>format_dates_col()</code>, <code>format_values_col()</code>, and <code>format_groups_col()</code>. If no grouping is provided, a fake ‘STATION_NUMBER’ of ‘XXXXXXX’ is provided (and removed at the end of the <code>fasstr</code> function). As all three columns are required for many <code>fasstr</code> functions, there is a <code>formal_all_cols()</code> that uses all three functions, with an option to remove all other columns.</p>
@@ -383,7 +383,7 @@ $`08NM240_Annual_Statistics`</code></pre>
 <div class="section level2">
 <h2 id="internal-functions-utils-r-file">5. Internal Functions (utils.R file)<a class="anchor" aria-label="anchor" href="#internal-functions-utils-r-file"></a>
 </h2>
-<p>Within the package there is an R file called <a href="https://github.com/bcgov/fasstr/blob/master/R/utils.R" class="external-link">utils.R</a> that contains a list of functions that are used repeatedly throughout the various <code>fasstr</code> functions to minimize repetition. These functions are used internally and are not exported from the package.</p>
+<p>Within the package there is an R file called <a href="https://github.com/bcgov/fasstr/blob/main/R/utils.R" class="external-link">utils.R</a> that contains a list of functions that are used repeatedly throughout the various <code>fasstr</code> functions to minimize repetition. These functions are used internally and are not exported from the package.</p>
 <p>At the top of the file are several data formatting and wrangling functions:</p>
 <ul>
 <li>

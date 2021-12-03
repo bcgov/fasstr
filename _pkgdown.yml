@@ -173,7 +173,7 @@ navbar:
   right:
     - icon: fa-file-download
       text: Download Cheatsheet
-      href: https://github.com/bcgov/fasstr/raw/master/fasstr_cheatsheet.pdf
+      href: https://github.com/bcgov/fasstr/raw/main/fasstr_cheatsheet.pdf
     - icon: fa-github fa-lg
       text: GitHub
       href: https://github.com/bcgov/fasstr

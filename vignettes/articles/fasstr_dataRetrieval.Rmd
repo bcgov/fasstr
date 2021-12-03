@@ -4,7 +4,7 @@ output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{Using USGS dataRetrieval R package with fasstr}
+  %\VignetteIndexEntry{Water knows no borders: using USGS dataRetrieval R package with fasstr}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

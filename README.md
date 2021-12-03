@@ -110,7 +110,7 @@ options.
 
 #### Cheatsheet
 
-<a href="https://github.com/bcgov/fasstr/raw/master/fasstr_cheatsheet.pdf"><img src="man/figures/fasstr_cheatsheet.png" width="630" height="252"/></a>
+<a href="https://github.com/bcgov/fasstr/raw/main/fasstr_cheatsheet.pdf"><img src="man/figures/fasstr_cheatsheet.png" width="630" height="252"/></a>
 
 #### Data Input
 
