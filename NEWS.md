@@ -1,7 +1,7 @@
 fasstr 0.4.0
 =========================
 
-Updated: 1 Dec 2021
+Updated: 3 Dec 2021
 
 #### Updates:
 
@@ -38,6 +38,7 @@ Updated: 1 Dec 2021
   * fixed bug: removed unnecessary legend items from plot_flow_duration()
   * fixed bug: corrected 'months' argument in calc_ and plot_annual_outside_normal() to properly filter
   * fixed bug: removed unnecessary NA warning in plot_longterm_daily and plot_longterm_monthly_stats
+  * renamed GitHub branches from 'master' to 'main' and updated web links
   
 fasstr 0.3.3
 =========================

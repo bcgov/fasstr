@@ -1,6 +1,12 @@
 fasstr 0.4.0
 =========================
 
+## Resubmission
+
+2021-12-03
+
+* corrected invalid links and updated corresponding documentation from initial submission
+
 ## Submission 
 
 2021-12-01
