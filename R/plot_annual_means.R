@@ -52,6 +52,7 @@ plot_annual_means <- function(data,
                               exclude_years,
                               months = 1:12,
                               ignore_missing = FALSE,
+                              allowed_missing = ifelse(ignore_missing,100,0),
                               include_title = FALSE){ 
   
   ## ARGUMENT CHECKS
@@ -74,8 +75,8 @@ plot_annual_means <- function(data,
   }
   
   include_title_checks(include_title)
-
-    
+  
+  
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
   
@@ -101,7 +102,8 @@ plot_annual_means <- function(data,
                                     end_year = end_year,
                                     exclude_years = exclude_years, 
                                     months = months,
-                                    ignore_missing = ignore_missing)
+                                    ignore_missing = ignore_missing,
+                                    allowed_missing = allowed_missing)
   
   annual_stats <- dplyr::select(annual_stats, STATION_NUMBER, Year, Mean)
   
@@ -120,25 +122,26 @@ plot_annual_means <- function(data,
   # Create plots for each STATION_NUMBER in a tibble (see: http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/)
   tidy_plots <- dplyr::group_by(annual_stats, STATION_NUMBER)
   tidy_plots <- tidyr::nest(tidy_plots)
-  tidy_plots <- dplyr::mutate(tidy_plots,
+  tidy_plots <- dplyr::mutate(
+    tidy_plots,
     plot = purrr::map2(data, STATION_NUMBER,
-     ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = MAD_diff)) +
-       ggplot2::geom_bar(stat = "identity", fill = "cornflowerblue", na.rm = TRUE) +
-       ggplot2::geom_hline(yintercept = 0, size = 0.1) +
-       ggplot2::scale_y_continuous(labels = function(x) round(x + unique(.$LTMAD),3),
-                                   breaks = scales::pretty_breaks(n = 10)) +
-       ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
-       {if(length(unique(annual_stats$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(annual_stats$Year))}+
-       ggplot2::ylab("Mean Annual Discharge (cms)") + #expression(Mean~Annual~Discharge~(m^3/s))
-       {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
-       ggplot2::theme_bw() +
-       ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                      panel.grid = ggplot2::element_line(size = .2),
-                      axis.title = ggplot2::element_text(size = 12),
-                      axis.text = ggplot2::element_text(size = 10),
-                      plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
+                       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = MAD_diff)) +
+                         ggplot2::geom_bar(stat = "identity", fill = "cornflowerblue", na.rm = TRUE) +
+                         ggplot2::geom_hline(yintercept = 0, size = 0.1) +
+                         ggplot2::scale_y_continuous(labels = function(x) round(x + unique(.$LTMAD),3),
+                                                     breaks = scales::pretty_breaks(n = 10)) +
+                         ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
+                         {if(length(unique(annual_stats$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(annual_stats$Year))}+
+                         ggplot2::ylab("Mean Annual Discharge (cms)") + #expression(Mean~Annual~Discharge~(m^3/s))
+                         {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
+                         ggplot2::theme_bw() +
+                         ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                                        panel.grid = ggplot2::element_line(size = .2),
+                                        axis.title = ggplot2::element_text(size = 12),
+                                        axis.text = ggplot2::element_text(size = 10),
+                                        plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
     ))
-
+  
   # Create a list of named plots extracted from the tibble
   plots <- tidy_plots$plot
   if (nrow(tidy_plots) == 1) {
@@ -146,8 +149,8 @@ plot_annual_means <- function(data,
   } else {
     names(plots) <- paste0(tidy_plots$STATION_NUMBER, "_Annual_Means")
   }
-
+  
   plots
-
+  
 }
 

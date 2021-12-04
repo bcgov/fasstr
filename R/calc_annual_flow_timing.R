@@ -67,6 +67,7 @@ calc_annual_flow_timing <- function(data,
                                     start_year,
                                     end_year,
                                     exclude_years,
+                                    months = 1:12,
                                     transpose = FALSE){
   
   
@@ -92,6 +93,7 @@ calc_annual_flow_timing <- function(data,
   percent_total_checks(percent_total)
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
+  months_checks(months)
   transpose_checks(transpose)
   
   
@@ -121,7 +123,10 @@ calc_annual_flow_timing <- function(data,
   # Fill missing dates, add date variables, and add WaterYear and DOY
   flow_data <- analysis_prep(data = flow_data, 
                              water_year_start = water_year_start)
-  flow_data <- add_cumulative_volume(flow_data, water_year_start = water_year_start)
+  flow_data <- dplyr::filter(flow_data, Month %in% months)
+  
+  flow_data <- add_cumulative_volume(flow_data, water_year_start = water_year_start,
+                                     months = months)
   
   # Filter for the selected year (remove excluded years after)
   flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)

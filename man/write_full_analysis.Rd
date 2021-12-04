@@ -16,7 +16,10 @@ write_full_analysis(
   start_year,
   end_year,
   exclude_years,
+  months = 1:12,
   ignore_missing = FALSE,
+  allowed_missing_annual = ifelse(ignore_missing, 100, 0),
+  allowed_missing_monthly = ifelse(ignore_missing, 100, 0),
   zyp_method = "zhang",
   zyp_alpha,
   file_name,
@@ -71,9 +74,24 @@ analysis. Default \code{1}.}
 
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
 
+\item{months}{Numeric vector of months to include in analysis (e.g. \code{6:8} for Jun-Aug). Leave blank to summarize 
+all months (default \code{1:12}). If not all months, seasonal total yield and volumetric flows will not be included.}
+
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from
 time periods with no missing dates will be returned. Default \code{FALSE}.}
+
+\item{allowed_missing_annual}{Numeric value between 0 and 100 indicating the \strong{percentage} of missing dates allowed to be
+included to calculate an annual statistic (0 to 100 percent). If \code{'ignore_missing = FALSE'} then it defaults to \code{0} 
+(zero missing dates allowed), if \code{'ignore_missing = TRUE'} then it defaults to \code{100} (any missing dates allowed); 
+consistent with \code{ignore_missing} usage. Supersedes \code{ignore_missing} when used. Only for annual means, percentiles,
+minimums, and maximums.}
+
+\item{allowed_missing_monthly}{Numeric value between 0 and 100 indicating the \strong{percentage} of missing dates allowed to be
+included to calculate a monthly statistic (0 to 100 percent). If \code{'ignore_missing = FALSE'} then it defaults to \code{0} 
+(zero missing dates allowed), if \code{'ignore_missing = TRUE'} then it defaults to \code{100} (any missing dates allowed); 
+consistent with \code{ignore_missing} usage. Supersedes \code{ignore_missing} when used.Only for monthly means, percentiles,
+minimums, and maximums.}
 
 \item{zyp_method}{Character string identifying the prewhitened trend method to use from \code{'zyp'}, either \code{'zhang'} or
 \code{'yuepilon'}. \code{'zhang'} is recommended over \code{'yuepilon'} for hydrologic applications (see 

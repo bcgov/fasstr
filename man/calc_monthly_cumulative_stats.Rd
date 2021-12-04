@@ -17,6 +17,7 @@ calc_monthly_cumulative_stats(
   start_year,
   end_year,
   exclude_years,
+  months = 1:12,
   transpose = FALSE
 )
 }
@@ -61,6 +62,9 @@ analysis. Default \code{1}.}
 \item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
 
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
+
+\item{months}{Numeric vector of months to add cumulative flows (e.g. \code{6:8} for Jun-Aug). Leave blank to accumulate 
+all months (default \code{1:12}). Need to be consecutive months for given year/water year to work properly.}
 
 \item{transpose}{Logical value indicating whether to transpose rows and columns of results. Default \code{FALSE}.}
 }

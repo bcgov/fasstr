@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -60,7 +62,8 @@
       <a href="../articles/index.html">All Articles</a>
     </li>
     <li class="divider">
-    <li class="dropdown-header">Tutorials</li>
+    </li>
+<li class="dropdown-header">Tutorials</li>
     <li>
       <a href="../articles/fasstr_users_guide.html">General Usage</a>
     </li>
@@ -74,7 +77,14 @@
       <a href="../articles/fasstr_full_analysis.html">Computing a Full Analysis</a>
     </li>
     <li class="divider">
-    <li class="dropdown-header">Under the Hood</li>
+    </li>
+<li class="dropdown-header">Exploration</li>
+    <li>
+      <a href="../articles/articles/fasstr_dataRetrieval.html">Using USGS dataRetrieval data with fasstr</a>
+    </li>
+    <li class="divider">
+    </li>
+<li class="dropdown-header">Under the Hood</li>
     <li>
       <a href="../articles/fasstr_under_the_hood.html">Internal Workflows</a>
     </li>
@@ -86,14 +96,14 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/bcgov/fasstr/raw/master/fasstr_cheatsheet.pdf">
+  <a href="https://github.com/bcgov/fasstr/raw/main/fasstr_cheatsheet.pdf" class="external-link">
     <span class="fa fa-file-download"></span>
      
     Download Cheatsheet
   </a>
 </li>
 <li>
-  <a href="https://github.com/bcgov/fasstr">
+  <a href="https://github.com/bcgov/fasstr" class="external-link">
     <span class="fa fa-github fa-lg"></span>
      
     GitHub
@@ -109,23 +119,23 @@
 
       
 
-      </header><script src="fasstr_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Get Started with fasstr</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/bcgov/fasstr/blob/master/vignettes/fasstr.Rmd"><code>vignettes/fasstr.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bcgov/fasstr/blob/HEAD/vignettes/fasstr.Rmd" class="external-link"><code>vignettes/fasstr.Rmd</code></a></small>
       <div class="hidden name"><code>fasstr.Rmd</code></div>
 
     </div>
 
     
     
-<p><code>fasstr</code>, the Flow Analysis Summary Statistics Tool for R, is a set of <a href="https://www.r-project.org/">R</a> functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.</p>
-<div id="features" class="section level2">
-<h2 class="hasAnchor">
-<a href="#features" class="anchor"></a>Features</h2>
+<p><code>fasstr</code>, the Flow Analysis Summary Statistics Tool for R, is a set of <a href="https://www.r-project.org/" class="external-link">R</a> functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.</p>
+<div class="section level2">
+<h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
+</h2>
 <p>This package provides functions for streamflow data analysis, including:</p>
 <ul>
 <li>data tidying (to prepare data for analyses; <code>add_*</code> and <code>fill_*</code> functions),</li>
@@ -136,32 +146,32 @@
 </ul>
 <p>Useful features of functions include:</p>
 <ul>
-<li>the integration of the <code>tidyhydat</code> package to pull streamflow data from a Water Survey of Canada <a href="https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html">HYDAT</a> database for analyses;</li>
+<li>the integration of the <code>tidyhydat</code> package to pull streamflow data from a Water Survey of Canada <a href="https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html" class="external-link">HYDAT</a> database for analyses;</li>
 <li>arguments for filtering of years and months in analyses and plotting;</li>
 <li>choosing the start month of your water year;</li>
 <li>selecting for rolling day averages (e.g. 7-day rolling average); and,</li>
 <li>choosing how missing dates are handled, amongst others.</li>
 </ul>
-<p>This package is maintained by the <a href="https://www2.gov.bc.ca/gov/content/environment/air-land-water/water">Water Protection and Sustainability Branch of the British Columbia Ministry of Environment and Climate Change Strategy</a>.</p>
+<p>This package is maintained by the <a href="https://www2.gov.bc.ca/gov/content/environment/air-land-water/water" class="external-link">Water Protection and Sustainability Branch of the British Columbia Ministry of Environment and Climate Change Strategy</a>.</p>
 </div>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install <code>fasstr</code> directly from <a href="https://cran.r-project.org/package=fasstr">CRAN</a>:</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>You can install <code>fasstr</code> directly from <a href="https://cran.r-project.org/package=fasstr" class="external-link">CRAN</a>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"fasstr"</span><span class="op">)</span></code></pre></div>
-<p>To install the development version from <a href="https://github.com/bcgov/fasstr">GitHub</a>, use the <a href="https://cran.r-project.org/package=remotes"><code>remotes</code></a> package then the <code>fasstr</code> package:</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"fasstr"</span><span class="op">)</span></code></pre></div>
+<p>To install the development version from <a href="https://github.com/bcgov/fasstr" class="external-link">GitHub</a>, use the <a href="https://cran.r-project.org/package=remotes" class="external-link"><code>remotes</code></a> package then the <code>fasstr</code> package:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"bcgov/fasstr"</span><span class="op">)</span></code></pre></div>
-<p>Several other packages will be installed with <code>fasstr</code>. These include <a href="https://CRAN.R-project.org/package=tidyhydat"><code>tidyhydat</code></a> for downloading Water Survey of Canada hydrometric data, <a href="https://CRAN.R-project.org/package=zyp"><code>zyp</code></a> for trending, <a href="https://CRAN.R-project.org/package=ggplot2"><code>ggplot2</code></a> for creating plots, and <a href="https://CRAN.R-project.org/package=tidyr"><code>tidyr</code></a> and <a href="https://CRAN.R-project.org/package=dplyr"><code>dplyr</code></a> for data wrangling and summarizing, amongst others.</p>
-<p>To use the <code>station_number</code> argument and pull data directly from a <a href="https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html">Water Survey of Canada HYDAT database</a> into <code>fasstr</code> functions, download a HYDAT file using the following code:</p>
+<code class="sourceCode R"><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"bcgov/fasstr"</span><span class="op">)</span></code></pre></div>
+<p>Several other packages will be installed with <code>fasstr</code>. These include <a href="https://CRAN.R-project.org/package=tidyhydat" class="external-link"><code>tidyhydat</code></a> for downloading Water Survey of Canada hydrometric data, <a href="https://CRAN.R-project.org/package=zyp" class="external-link"><code>zyp</code></a> for trending, <a href="https://CRAN.R-project.org/package=ggplot2" class="external-link"><code>ggplot2</code></a> for creating plots, and <a href="https://CRAN.R-project.org/package=tidyr" class="external-link"><code>tidyr</code></a> and <a href="https://CRAN.R-project.org/package=dplyr" class="external-link"><code>dplyr</code></a> for data wrangling and summarizing, amongst others.</p>
+<p>To use the <code>station_number</code> argument and pull data directly from a <a href="https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html" class="external-link">Water Survey of Canada HYDAT database</a> into <code>fasstr</code> functions, download a HYDAT file using the following code:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/download_hydat.html">download_hydat</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/download_hydat.html" class="external-link">download_hydat</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="using-fasstr" class="section level2">
-<h2 class="hasAnchor">
-<a href="#using-fasstr" class="anchor"></a>Using fasstr</h2>
+<div class="section level2">
+<h2 id="using-fasstr">Using fasstr<a class="anchor" aria-label="anchor" href="#using-fasstr"></a>
+</h2>
 <p>There are several vignettes to provide more information on the usage of <code>fasstr</code> functions and how to customize them with various argument options.</p>
 <ul>
 <li><a href="https://bcgov.github.io/fasstr/articles/fasstr.html">Get Started with fasstr</a></li>
@@ -171,102 +181,102 @@
 <li><a href="https://bcgov.github.io/fasstr/articles/fasstr_full_analysis.html">Computing a Full fasstr Analysis</a></li>
 <li><a href="https://bcgov.github.io/fasstr/articles/fasstr_under_the_hood.html">fasstr Internal Workflows</a></li>
 </ul>
-<div id="data-input" class="section level3">
-<h3 class="hasAnchor">
-<a href="#data-input" class="anchor"></a>Data Input</h3>
+<div class="section level3">
+<h3 id="data-input">Data Input<a class="anchor" aria-label="anchor" href="#data-input"></a>
+</h3>
 <p>All functions in <code>fasstr</code> require a daily mean streamflow data set from one or more hydrometric stations. Long-term and continuous data sets are preferred for most analyses, but seasonal and partial data can be used. Other daily time series data, like temperature, precipitation or water levels, may also be used, but with certain caution as some calculations/conversions are based on units of streamflow (cubic metres per second). Data is provided to each function using the either the <code>data</code> argument as a data frame of flow values, or the <code>station_number</code> argument as a list of Water Survey of Canada HYDAT station numbers.</p>
 <p>When using the <code>data</code> option, a data frame of daily data containing columns of dates (YYYY-MM-DD in date format), values (mean daily discharge in cubic metres per second in numeric format), and, optionally, grouping identifiers (character string of station names or numbers) is called. By default the functions will look for columns identified as ‘Date’, ‘Value’, and ‘STATION_NUMBER’, respectively, to be compatible with the ‘tidyhydat’ defaults, but columns of different names can be identified using the <code>dates</code>, <code>values</code>, <code>groups</code> column arguments (ex. <code>values = Yield_mm</code>). The following is an example of an appropriate data frame (STATION_NUMBER not required):</p>
-<pre><code>##   STATION_NUMBER       Date Value
-## 1        08NM116 1949-04-01  1.13
-## 2        08NM116 1949-04-02  1.53
-## 3        08NM116 1949-04-03  2.07
-## 4        08NM116 1949-04-04  2.07
-## 5        08NM116 1949-04-05  2.21
-## 6        08NM116 1949-04-06  2.21</code></pre>
+<pre><code><span class="co">##   STATION_NUMBER       Date Value</span>
+<span class="co">## 1        08NM116 1949-04-01  1.13</span>
+<span class="co">## 2        08NM116 1949-04-02  1.53</span>
+<span class="co">## 3        08NM116 1949-04-03  2.07</span>
+<span class="co">## 4        08NM116 1949-04-04  2.07</span>
+<span class="co">## 5        08NM116 1949-04-05  2.21</span>
+<span class="co">## 6        08NM116 1949-04-06  2.21</span></code></pre>
 <p>Alternatively, you can directly pull a flow data set directly from a HYDAT database (if installed) by providing a list of station numbers in the <code>station_number</code> argument (ex. <code>station_number = "08NM116"</code> or <code>station_number = c("08NM116", "08NM242")</code>) while leaving the data arguments blank. A data frame of daily streamflow data for all stations listed will be extracted using <code>tidyhydat</code> and then <code>fasstr</code> calculations will produce results of the functions.</p>
 <p>This package allows for multiple stations (or other groupings) to be analyzed in many of the functions provided identifiers are provided using the <code>groups</code> column argument (defaults to STATION_NUMBER). If grouping column doesn’t exist or is improperly named, then all values listed in the <code>values</code> column will be summarized.</p>
 </div>
-<div id="function-types" class="section level3">
-<h3 class="hasAnchor">
-<a href="#function-types" class="anchor"></a>Function Types</h3>
-<div id="tidying" class="section level4">
-<h4 class="hasAnchor">
-<a href="#tidying" class="anchor"></a>Tidying</h4>
+<div class="section level3">
+<h3 id="function-types">Function Types<a class="anchor" aria-label="anchor" href="#function-types"></a>
+</h3>
+<div class="section level4">
+<h4 id="tidying">Tidying<a class="anchor" aria-label="anchor" href="#tidying"></a>
+</h4>
 <p>These functions, start with either <code>add_*</code> or <code>fill_*</code>, add columns and rows, respectively, to streamflow data frames to help set up your data for further analysis. Examples include adding rolling means, adding date variables (WaterYear, Month, DayofYear, etc.), adding basin areas, adding columns of volumetric discharge and water yield, and filling dates with missing flow values with <code>NA</code>.</p>
 </div>
-<div id="analysis" class="section level4">
-<h4 class="hasAnchor">
-<a href="#analysis" class="anchor"></a>Analysis</h4>
+<div class="section level4">
+<h4 id="analysis">Analysis<a class="anchor" aria-label="anchor" href="#analysis"></a>
+</h4>
 <p>The analysis functions summarize your discharge values into various statistics. <code>screen_*</code> functions summarize annual data for outliers and missing dates. <code>calc_*</code> functions calculate daily, monthly, annual, and long-term statistics (e.g. mean, median, maximum, minimum, percentiles, amongst others) of daily, rolling days, and cumulative flow data. <code>compute_*</code> functions also analyze data but produce more in-depth analyses, like frequency and trending analysis, and may produce multiple plots and tables as a result. All tables are in tibble data frame formats. Can use <code><a href="../reference/write_flow_data.html">write_flow_data()</a></code> or <code><a href="../reference/write_results.html">write_results()</a></code> to customize saving tibbles to a local drive.</p>
 </div>
-<div id="visualization" class="section level4">
-<h4 class="hasAnchor">
-<a href="#visualization" class="anchor"></a>Visualization</h4>
+<div class="section level4">
+<h4 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a>
+</h4>
 <p>The visualization functions, which begin with <code>plot_*</code>, plot the various summary statistics and analyses as a way to visualize the data. While most plotting function statistics can be customized, some come pre-set with statistics that cannot be changed. Plots can be further modified by the user using the <code>ggplot2</code> package and its functions. All plots functions produce lists of plots (even if just one produced). Can use <code><a href="../reference/write_plots.html">write_plots()</a></code> to customize saving the lists of plots to a local drive (within folders or PDF documents).</p>
 </div>
 </div>
-<div id="function-options" class="section level3">
-<h3 class="hasAnchor">
-<a href="#function-options" class="anchor"></a>Function Options</h3>
-<div id="daily-rolling-means" class="section level4">
-<h4 class="hasAnchor">
-<a href="#daily-rolling-means" class="anchor"></a>Daily Rolling Means</h4>
+<div class="section level3">
+<h3 id="function-options">Function Options<a class="anchor" aria-label="anchor" href="#function-options"></a>
+</h3>
+<div class="section level4">
+<h4 id="daily-rolling-means">Daily Rolling Means<a class="anchor" aria-label="anchor" href="#daily-rolling-means"></a>
+</h4>
 <p>If certain n-day rolling mean statistics are desired to be analyzed (e.g. 3- or 7-day rolling means) some functions provide the ability to select for that as function arguments (e.g. <code>rolling_days = 7</code> and <code>rolling_align = "right"</code>). The rolling day align is the placement of the date amongst the n-day means, where “right” averages the day-of and previous n-1 days, “centre” date is in the middle of the averages, and “left” averages the day-of and the following n-1 days. For your own analyses you can add rolling means to your data set using the <code><a href="../reference/add_rolling_means.html">add_rolling_means()</a></code> function.</p>
 </div>
-<div id="year-and-month-filtering" class="section level4">
-<h4 class="hasAnchor">
-<a href="#year-and-month-filtering" class="anchor"></a>Year and Month Filtering</h4>
+<div class="section level4">
+<h4 id="year-and-month-filtering">Year and Month Filtering<a class="anchor" aria-label="anchor" href="#year-and-month-filtering"></a>
+</h4>
 <p>To customize your analyses for specific time periods, you can designate the start and end years of your analysis using the <code>start_year</code> and <code>end_year</code> arguments and remove any unwanted years (for partial data sets for example) by listing them in the <code>excluded_years</code> argument (e.g. <code>excluded_years = c(1990, 1992:1994)</code>). Alternatively, some functions have an argument called <code>complete_years</code> that summarizes data from just those years which have complete flow records. Some functions will also allow you to select the months of a year to analyze, using the <code>months</code> argument, as opposed to all months (if you want just summer low-flows, for example). Leaving these arguments blank will result in the summary/analysis of all years and months of the provided data set.</p>
 <p>To group analyses by water, or hydrologic, years instead of calendar years, if desired, you can set <code>water_year_start</code> within most functions to another month than 1 (for January). A water year can be defined as a 12-month period that comprises a complete hydrologic cycle (wet seasons can typically cross calendar year), typically starting with the month with minimum flows (the start of a new water recharge cycle). If another start month is desired, you can choose it using the <code>water_year_start</code> argument (numeric month). The water year identifier is designated by the year it ends in (e.g. a water year from Oct 1, 1999 to Sep 30, 2000 is designated as 2000). Start, end and excluded years will be based on the specified water year.</p>
 <p>For your own analyses, you can add date variables to your data set using the <code><a href="../reference/add_date_variables.html">add_date_variables()</a></code> or <code><a href="../reference/add_seasons.html">add_seasons()</a></code> functions.</p>
 </div>
-<div id="drainage-basin-area" class="section level4">
-<h4 class="hasAnchor">
-<a href="#drainage-basin-area" class="anchor"></a>Drainage Basin Area</h4>
+<div class="section level4">
+<h4 id="drainage-basin-area">Drainage Basin Area<a class="anchor" aria-label="anchor" href="#drainage-basin-area"></a>
+</h4>
 <p>Water yield statistics (in millimetres) calculated in the some of the functions require an upstream drainage basin area (in sq. km) using the <code>basin_area</code> argument. If no basin areas are supplied, all yield results will be <code>NA</code>. To apply a basin area (10 sqkm for example) to all daily observations, set the argument as <code>basin_area = 10</code>. If there are multiple stations or groups to apply multiple basin areas (using the <code>groups</code> argument), set them individually using this option: <code>basin_area = c("08NM116" = 795,  "08NM242" = 22)</code>. If a STATION_NUMBER column exists with HYDAT station numbers, the function will automatically use the basin areas provided in HYDAT, if available, so <code>basin_area</code> is not required. For your own analyses, you can add basin areas to your data set using the <code><a href="../reference/add_basin_area.html">add_basin_area()</a></code> function.</p>
 </div>
-<div id="handling-missing-dates" class="section level4">
-<h4 class="hasAnchor">
-<a href="#handling-missing-dates" class="anchor"></a>Handling Missing Dates</h4>
-<p>With the use of the <code>ignore_missing</code> argument in most functions, you can decide how to handle dates with missing flow values in calculations. When you set <code>ignore_missing = TRUE</code> a statistic will be calculated for a given year, all years, or month regardless of if there are missing flow values. When <code>ignore_missing = FALSE</code> the returned value for the period will be <code>NA</code> if there are missing values.</p>
+<div class="section level4">
+<h4 id="handling-missing-dates">Handling Missing Dates<a class="anchor" aria-label="anchor" href="#handling-missing-dates"></a>
+</h4>
+<p>With the use of the <code>ignore_missing</code> argument in most functions, you can decide how to handle dates with missing flow values in calculations. When you set <code>ignore_missing = TRUE</code> a statistic will be calculated for a given year, all years, or month regardless of if there are missing flow values. When <code>ignore_missing = FALSE</code> the returned value for the period will be <code>NA</code> if there are missing values. To allow some missing dates and still calculate statistics, some functions also including the <code>allowed_missing</code> argument where you provide a percentage (0 to 100) of missing days per time period.</p>
 <p>Some functions have an argument called <code>complete_years</code> which can be used, when set to <code>TRUE</code>, to filter out years that have partial data sets (for seasonal or other reasons) and only years with full data are used to calculate statistics.</p>
 </div>
 </div>
 </div>
-<div id="examples" class="section level2">
-<h2 class="hasAnchor">
-<a href="#examples" class="anchor"></a>Examples</h2>
-<div id="summary-statistics-example-long-term-statistics" class="section level3">
-<h3 class="hasAnchor">
-<a href="#summary-statistics-example-long-term-statistics" class="anchor"></a>Summary statistics example: long-term statistics</h3>
-<p>To determine the long-term summary statistics of daily data for each month (mean, median, maximum, minimum, and some percentiles) you can use the <code><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats()</a></code> function. If the ‘Mission Creek near East Kelowna’ hydrometric station is of interest you can list the station number in the <code>station_number</code> argument to obtain the data (if <code>tidyhydat</code> and HYDAT are installed). Statistics over several months can also be calculated, if of interest. See the summer statistics (from July to Septmber) in this example.</p>
+<div class="section level2">
+<h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
+</h2>
+<div class="section level3">
+<h3 id="summary-statistics-example-long-term-statistics">Summary statistics example: long-term statistics<a class="anchor" aria-label="anchor" href="#summary-statistics-example-long-term-statistics"></a>
+</h3>
+<p>To determine the long-term summary statistics of daily data for each month (mean, median, maximum, minimum, and some percentiles) you can use the <code><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats()</a></code> function. If the ‘Mission Creek near East Kelowna’ hydrometric station is of interest you can list the station number in the <code>station_number</code> argument to obtain the data (if <code>tidyhydat</code> and HYDAT are installed). Statistics over several months can also be calculated, if of interest. See the summer statistics (from July to September) in this example.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
                           start_year <span class="op">=</span> <span class="fl">1981</span>, 
                           end_year <span class="op">=</span> <span class="fl">2010</span>,
                           custom_months <span class="op">=</span> <span class="fl">7</span><span class="op">:</span><span class="fl">9</span>, 
                           custom_months_label <span class="op">=</span> <span class="st">"Summer"</span><span class="op">)</span></code></pre></div>
-<pre><code>## # A tibble: 14 x 8
-##    STATION_NUMBER Month      Mean Median Maximum Minimum   P10   P90
-##    &lt;chr&gt;          &lt;fct&gt;     &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 08NM116        Jan        1.22  1        9.5    0.160 0.540  1.85
-##  2 08NM116        Feb        1.16  0.970    4.41   0.140 0.474  1.99
-##  3 08NM116        Mar        1.85  1.40     9.86   0.380 0.705  3.80
-##  4 08NM116        Apr        8.32  6.26    37.9    0.505 1.63  17.5 
-##  5 08NM116        May       23.6  20.8     74.4    3.83  9.33  41.2 
-##  6 08NM116        Jun       21.5  19.5     84.5    0.450 6.10  38.9 
-##  7 08NM116        Jul        6.48  3.90    54.5    0.332 1.02  15   
-##  8 08NM116        Aug        2.13  1.57    13.3    0.427 0.775  4.29
-##  9 08NM116        Sep        2.19  1.58    14.6    0.364 0.735  4.35
-## 10 08NM116        Oct        2.10  1.60    15.2    0.267 0.794  3.98
-## 11 08NM116        Nov        2.04  1.73    11.7    0.260 0.560  3.90
-## 12 08NM116        Dec        1.30  1.05     7.30   0.342 0.5    2.33
-## 13 08NM116        Long-term  6.17  1.89    84.5    0.140 0.680 19.3 
-## 14 08NM116        Summer     3.61  1.98    54.5    0.332 0.799  7.64</code></pre>
+<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 14 x 8</span></span>
+<span class="co">##    STATION_NUMBER Month      Mean Median Maximum Minimum   P10   P90</span>
+<span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">## <span style="color: #BCBCBC;"> 1</span> 08NM116        Jan        1.22  1        9.5    0.160 0.540  1.85</span>
+<span class="co">## <span style="color: #BCBCBC;"> 2</span> 08NM116        Feb        1.16  0.970    4.41   0.140 0.474  1.99</span>
+<span class="co">## <span style="color: #BCBCBC;"> 3</span> 08NM116        Mar        1.85  1.40     9.86   0.380 0.705  3.80</span>
+<span class="co">## <span style="color: #BCBCBC;"> 4</span> 08NM116        Apr        8.32  6.26    37.9    0.505 1.63  17.5 </span>
+<span class="co">## <span style="color: #BCBCBC;"> 5</span> 08NM116        May       23.6  20.8     74.4    3.83  9.33  41.2 </span>
+<span class="co">## <span style="color: #BCBCBC;"> 6</span> 08NM116        Jun       21.5  19.5     84.5    0.450 6.10  38.9 </span>
+<span class="co">## <span style="color: #BCBCBC;"> 7</span> 08NM116        Jul        6.48  3.90    54.5    0.332 1.02  15   </span>
+<span class="co">## <span style="color: #BCBCBC;"> 8</span> 08NM116        Aug        2.13  1.57    13.3    0.427 0.775  4.29</span>
+<span class="co">## <span style="color: #BCBCBC;"> 9</span> 08NM116        Sep        2.19  1.58    14.6    0.364 0.735  4.35</span>
+<span class="co">## <span style="color: #BCBCBC;">10</span> 08NM116        Oct        2.10  1.60    15.2    0.267 0.794  3.98</span>
+<span class="co">## <span style="color: #BCBCBC;">11</span> 08NM116        Nov        2.04  1.73    11.7    0.260 0.560  3.90</span>
+<span class="co">## <span style="color: #BCBCBC;">12</span> 08NM116        Dec        1.30  1.05     7.30   0.342 0.5    2.33</span>
+<span class="co">## <span style="color: #BCBCBC;">13</span> 08NM116        Long-term  6.17  1.89    84.5    0.140 0.680 19.3 </span>
+<span class="co">## <span style="color: #BCBCBC;">14</span> 08NM116        Summer     3.61  1.98    54.5    0.332 0.799  7.64</span></code></pre>
 </div>
-<div id="plotting-example-daily-summary-statistics" class="section level3">
-<h3 class="hasAnchor">
-<a href="#plotting-example-daily-summary-statistics" class="anchor"></a>Plotting example: daily summary statistics</h3>
+<div class="section level3">
+<h3 id="plotting-example-daily-summary-statistics">Plotting example: daily summary statistics<a class="anchor" aria-label="anchor" href="#plotting-example-daily-summary-statistics"></a>
+</h3>
 <p>To visualize the daily streamflow patterns on an annual basis, the <code><a href="../reference/plot_daily_stats.html">plot_daily_stats()</a></code> function will plot out various summary statistics for each day of the year. Data can also be filtered for certain years of interest (a 1981-2010 normals period for this example) using the <code>start_year</code> and <code>end_year</code> arguments. We can also compare individual years against the statistics using <code>add_year</code> argument like below.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_daily_stats.html">plot_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
@@ -274,23 +284,23 @@
                  end_year <span class="op">=</span> <span class="fl">2010</span>,
                  log_discharge <span class="op">=</span> <span class="cn">TRUE</span>,
                  add_year <span class="op">=</span> <span class="fl">1991</span><span class="op">)</span></code></pre></div>
-<pre><code>## $Daily_Statistics</code></pre>
+<pre><code><span class="co">## $Daily_Statistics</span></code></pre>
 <p><img src="fasstr_files/figure-html/plot1-1.png" width="960"></p>
 </div>
-<div id="plotting-example-flow-duration-curves" class="section level3">
-<h3 class="hasAnchor">
-<a href="#plotting-example-flow-duration-curves" class="anchor"></a>Plotting example: flow duration curves</h3>
+<div class="section level3">
+<h3 id="plotting-example-flow-duration-curves">Plotting example: flow duration curves<a class="anchor" aria-label="anchor" href="#plotting-example-flow-duration-curves"></a>
+</h3>
 <p>Flow duration curves can be produced using the <code><a href="../reference/plot_flow_duration.html">plot_flow_duration()</a></code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_flow_duration.html">plot_flow_duration</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
                    start_year <span class="op">=</span> <span class="fl">1981</span>,
                    end_year <span class="op">=</span> <span class="fl">2010</span><span class="op">)</span></code></pre></div>
-<pre><code>## $Flow_Duration</code></pre>
+<pre><code><span class="co">## $Flow_Duration</span></code></pre>
 <p><img src="fasstr_files/figure-html/plot2-1.png" width="672"></p>
 </div>
-<div id="analysis-example-low-flow-frequency-analysis" class="section level3">
-<h3 class="hasAnchor">
-<a href="#analysis-example-low-flow-frequency-analysis" class="anchor"></a>Analysis example: low-flow frequency analysis</h3>
+<div class="section level3">
+<h3 id="analysis-example-low-flow-frequency-analysis">Analysis example: low-flow frequency analysis<a class="anchor" aria-label="anchor" href="#analysis-example-low-flow-frequency-analysis"></a>
+</h3>
 <p>This package also provides a function, <code><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies()</a></code>, to complete a volume frequency analysis by fitting annual minimums or maximums to Log-Pearson Type III or Weibull probability distributions. See the volume frequency analyses documentation for more information. For this example, the 7-day low-flow quantiles are calculated for the Mission Creek hydrometric station using the Log-Pearson Type III distribution and method of moments fitting method (both default). With this, several low-flow indicators can be determined (i.e. 7Q5, 7Q10).</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">freq_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
@@ -300,26 +310,26 @@
                                            fit_distr <span class="op">=</span> <span class="st">"PIII"</span>,
                                            fit_distr_method <span class="op">=</span> <span class="st">"MOM"</span><span class="op">)</span>
 <span class="va">freq_results</span><span class="op">$</span><span class="va">Freq_Fitted_Quantiles</span></code></pre></div>
-<pre><code>## # A tibble: 11 x 4
-##    Distribution Probability `Return Period` `7-Day`
-##    &lt;chr&gt;              &lt;dbl&gt;           &lt;dbl&gt;   &lt;dbl&gt;
-##  1 PIII               0.01           100      0.193
-##  2 PIII               0.05            20      0.277
-##  3 PIII               0.1             10      0.332
-##  4 PIII               0.2              5      0.408
-##  5 PIII               0.5              2      0.588
-##  6 PIII               0.8              1.25   0.812
-##  7 PIII               0.9              1.11   0.946
-##  8 PIII               0.95             1.05   1.07 
-##  9 PIII               0.975            1.03   1.17 
-## 10 PIII               0.98             1.02   1.21 
-## 11 PIII               0.99             1.01   1.31</code></pre>
+<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 11 x 4</span></span>
+<span class="co">##    Distribution Probability `Return Period` `7-Day`</span>
+<span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">## <span style="color: #BCBCBC;"> 1</span> PIII               0.01           100      0.193</span>
+<span class="co">## <span style="color: #BCBCBC;"> 2</span> PIII               0.05            20      0.277</span>
+<span class="co">## <span style="color: #BCBCBC;"> 3</span> PIII               0.1             10      0.332</span>
+<span class="co">## <span style="color: #BCBCBC;"> 4</span> PIII               0.2              5      0.408</span>
+<span class="co">## <span style="color: #BCBCBC;"> 5</span> PIII               0.5              2      0.588</span>
+<span class="co">## <span style="color: #BCBCBC;"> 6</span> PIII               0.8              1.25   0.812</span>
+<span class="co">## <span style="color: #BCBCBC;"> 7</span> PIII               0.9              1.11   0.946</span>
+<span class="co">## <span style="color: #BCBCBC;"> 8</span> PIII               0.95             1.05   1.07 </span>
+<span class="co">## <span style="color: #BCBCBC;"> 9</span> PIII               0.975            1.03   1.17 </span>
+<span class="co">## <span style="color: #BCBCBC;">10</span> PIII               0.98             1.02   1.21 </span>
+<span class="co">## <span style="color: #BCBCBC;">11</span> PIII               0.99             1.01   1.31</span></code></pre>
 <p>The probability of observed extreme events can also be plotted (using selected plotting position) along with the computed quantiles curve for comparison.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">freq_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
                                            start_year <span class="op">=</span> <span class="fl">1981</span>,
                                            end_year <span class="op">=</span> <span class="fl">2010</span>,
-                                           roll_days <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">7</span>,<span class="fl">30</span><span class="op">)</span><span class="op">)</span>
+                                           roll_days <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">7</span>,<span class="fl">30</span><span class="op">)</span><span class="op">)</span>
 <span class="va">freq_results</span><span class="op">$</span><span class="va">Freq_Plot</span></code></pre></div>
 <p><img src="fasstr_files/figure-html/plot3-1.png" width="672"></p>
 </div>
@@ -337,11 +347,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Jon Goetz, Carl James Schwarz.</p>
+  <p></p>
+<p>Developed by Jon Goetz, Carl James Schwarz.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
 </div>
 
       </footer>
@@ -349,6 +361,8 @@
 
   
 
+
+  
 
   </body>
 </html>

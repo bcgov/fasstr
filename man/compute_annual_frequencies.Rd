@@ -15,7 +15,7 @@ compute_annual_frequencies(
   use_log = FALSE,
   prob_plot_position = c("weibull", "median", "hazen"),
   prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5, 0.2, 0.1, 0.02, 0.01, 0.001,
-    1e-04),
+    0.0001),
   fit_distr = c("PIII", "weibull"),
   fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
   fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1, 0.05, 0.01),
@@ -25,7 +25,8 @@ compute_annual_frequencies(
   end_year,
   exclude_years,
   months = 1:12,
-  ignore_missing = FALSE
+  ignore_missing = FALSE,
+  allowed_missing = ifelse(ignore_missing, 100, 0)
 )
 }
 \arguments{
@@ -87,6 +88,11 @@ all months (default \code{1:12}).}
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from
 time periods with no missing dates will be returned. Default \code{FALSE}.}
+
+\item{allowed_missing}{Numeric value between 0 and 100 indicating the \strong{percentage} of missing dates allowed to be
+included to calculate a statistic (0 to 100 percent). If \code{'ignore_missing = FALSE'} then it defaults to \code{0} (zero missing dates allowed),
+if \code{'ignore_missing = TRUE'} then it defaults to \code{100} (any missing dates allowed); consistent with 
+\code{ignore_missing} usage. Supersedes \code{ignore_missing} when used.}
 }
 \value{
 A list with the following elements:

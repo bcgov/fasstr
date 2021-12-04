@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -60,7 +62,8 @@
       <a href="../articles/index.html">All Articles</a>
     </li>
     <li class="divider">
-    <li class="dropdown-header">Tutorials</li>
+    </li>
+<li class="dropdown-header">Tutorials</li>
     <li>
       <a href="../articles/fasstr_users_guide.html">General Usage</a>
     </li>
@@ -74,7 +77,14 @@
       <a href="../articles/fasstr_full_analysis.html">Computing a Full Analysis</a>
     </li>
     <li class="divider">
-    <li class="dropdown-header">Under the Hood</li>
+    </li>
+<li class="dropdown-header">Exploration</li>
+    <li>
+      <a href="../articles/articles/fasstr_dataRetrieval.html">Using USGS dataRetrieval data with fasstr</a>
+    </li>
+    <li class="divider">
+    </li>
+<li class="dropdown-header">Under the Hood</li>
     <li>
       <a href="../articles/fasstr_under_the_hood.html">Internal Workflows</a>
     </li>
@@ -86,14 +96,14 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/bcgov/fasstr/raw/master/fasstr_cheatsheet.pdf">
+  <a href="https://github.com/bcgov/fasstr/raw/main/fasstr_cheatsheet.pdf" class="external-link">
     <span class="fa fa-file-download"></span>
      
     Download Cheatsheet
   </a>
 </li>
 <li>
-  <a href="https://github.com/bcgov/fasstr">
+  <a href="https://github.com/bcgov/fasstr" class="external-link">
     <span class="fa fa-github fa-lg"></span>
      
     GitHub
@@ -109,24 +119,24 @@
 
       
 
-      </header><script src="fasstr_frequency_analysis_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Computing Frequency Analyses with fasstr</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/bcgov/fasstr/blob/master/vignettes/fasstr_frequency_analysis.Rmd"><code>vignettes/fasstr_frequency_analysis.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bcgov/fasstr/blob/HEAD/vignettes/fasstr_frequency_analysis.Rmd" class="external-link"><code>vignettes/fasstr_frequency_analysis.Rmd</code></a></small>
       <div class="hidden name"><code>fasstr_frequency_analysis.Rmd</code></div>
 
     </div>
 
     
     
-<p><code>fasstr</code>, the Flow Analysis Summary Statistics Tool for R, is a set of <a href="https://www.r-project.org/">R</a> functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.</p>
+<p><code>fasstr</code>, the Flow Analysis Summary Statistics Tool for R, is a set of <a href="https://www.r-project.org/" class="external-link">R</a> functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.</p>
 <p>This vignette is a guide on the various volume frequency analysis functions found in <code>fasstr</code> to plot frequency data and determine frequency quantile statistics using the Log-Pearson Type III or Weibull distributions. In this vignette you’ll learn what functions to use for specific analyses, arguments to customize analyses, and what results and outputs are produced.</p>
-<div id="overview" class="section level2">
-<h2 class="hasAnchor">
-<a href="#overview" class="anchor"></a>Overview</h2>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
 <p>Computing a frequency analysis with <code>fasstr</code> allows for options and customization of both the inputs and outputs. These functions plot probabilities of flow data using chosen plotting options and calculates frequency quantiles (ex. 7Q10) based on fitting data to either Log-Pearson Type III or Weibull distributions. There are four functions within <code>fasstr</code> that conduct frequency analyses:</p>
 <ol style="list-style-type: decimal">
 <li>
@@ -152,12 +162,12 @@
 <strong>Freq_Fitted_Quantiles</strong> - the computed fitted quantiles based on the selected fitting options and selected quantile probabilities.</li>
 </ol>
 </div>
-<div id="functions-and-data-inputs" class="section level2">
-<h2 class="hasAnchor">
-<a href="#functions-and-data-inputs" class="anchor"></a>Functions and Data Inputs</h2>
-<div id="annual-daily-minimumsmaximums" class="section level4">
-<h4 class="hasAnchor">
-<a href="#annual-daily-minimumsmaximums" class="anchor"></a>Annual Daily Minimums/Maximums</h4>
+<div class="section level2">
+<h2 id="functions-and-data-inputs">Functions and Data Inputs<a class="anchor" aria-label="anchor" href="#functions-and-data-inputs"></a>
+</h2>
+<div class="section level4">
+<h4 id="annual-daily-minimumsmaximums">Annual Daily Minimums/Maximums<a class="anchor" aria-label="anchor" href="#annual-daily-minimumsmaximums"></a>
+</h4>
 <ul>
 <li><strong><code><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies()</a></code></strong></li>
 <li><strong><code><a href="../reference/compute_frequency_quantile.html">compute_frequency_quantile()</a></code></strong></li>
@@ -165,17 +175,17 @@
 <p>To determine frequencies of annual daily minimum or daily maximum flows, or of any duration days, from a daily streamflow data set, the <code><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies()</a></code> and <code><a href="../reference/compute_frequency_quantile.html">compute_frequency_quantile()</a></code> functions will take daily data, either from HYDAT using the <code>station_number</code> argument or your own data frame of data using the <code>data</code> argument to complete an analysis. As with most <code>fasstr</code> functions, options for rolling days, missing values, and date filtering can be completed using the function arguments (roll_days, water_year_start, etc).</p>
 <p>The <code><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies()</a></code> function will produce all five outputs from the analysis, as listed above, including the plotting data, plot, and computed quantiles. If just the quantile is desired, and assuming your data fits the selected distributions, the <code><a href="../reference/compute_frequency_quantile.html">compute_frequency_quantile()</a></code> function can be used. By supplying the desired duration (<code>roll_days</code> argument) and the desired return period (<code>return_period</code> argument) a single numeric quantile value will be returned from the data.</p>
 </div>
-<div id="annual-peak-minimumsmaximums-from-hydat" class="section level4">
-<h4 class="hasAnchor">
-<a href="#annual-peak-minimumsmaximums-from-hydat" class="anchor"></a>Annual Peak Minimums/Maximums from HYDAT</h4>
+<div class="section level4">
+<h4 id="annual-peak-minimumsmaximums-from-hydat">Annual Peak Minimums/Maximums from HYDAT<a class="anchor" aria-label="anchor" href="#annual-peak-minimumsmaximums-from-hydat"></a>
+</h4>
 <ul>
 <li><strong><code>compute_HYDAT_peak_frequencies()</code></strong></li>
 </ul>
 <p>To determine frequencies of annual instantaneous minimum or maximum flows from stations from HYDAT, the <code>compute_HYDAT_peak_frequencies()</code> function will extract the data, if available, and complete the analysis. As this data is extracted from HYDAT by listing the station using the <code>station_number</code> argument and no pre-filtering is completed on the data, the <code>data</code> argument and many of the filtering arguments are not available for this function. If you have a data frame of your own instantaneous maximums or minimums, a custom analysis can be completed using the <code><a href="../reference/compute_frequency_analysis.html">compute_frequency_analysis()</a></code> function as described below.</p>
 </div>
-<div id="custom-data" class="section level4">
-<h4 class="hasAnchor">
-<a href="#custom-data" class="anchor"></a>Custom Data</h4>
+<div class="section level4">
+<h4 id="custom-data">Custom Data<a class="anchor" aria-label="anchor" href="#custom-data"></a>
+</h4>
 <ul>
 <li><strong><code><a href="../reference/compute_frequency_analysis.html">compute_frequency_analysis()</a></code></strong></li>
 </ul>
@@ -194,23 +204,23 @@
                                   start_year <span class="op">=</span> <span class="fl">1980</span>, 
                                   end_year <span class="op">=</span> <span class="fl">2000</span>,
                                   roll_days <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>
-<span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">low_flows</span>, <span class="va">Year</span>, Value <span class="op">=</span> <span class="va">Min_7_Day</span><span class="op">)</span>
-<span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">low_flows</span>, Measure <span class="op">=</span> <span class="st">"7-Day"</span><span class="op">)</span>
+<span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">low_flows</span>, <span class="va">Year</span>, Value <span class="op">=</span> <span class="va">Min_7_Day</span><span class="op">)</span>
+<span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">low_flows</span>, Measure <span class="op">=</span> <span class="st">"7-Day"</span><span class="op">)</span>
 <span class="va">low_flows</span></code></pre></div>
-<pre><code># A tibble: 21 x 3
+<pre><code> [38;5;246m# A tibble: 21 x 3 [39m
     Year Value Measure
-   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  
- 1  1980 0.655 7-Day  
- 2  1981 0.885 7-Day  
- 3  1982 1.05  7-Day  
- 4  1983 0.634 7-Day  
- 5  1984 0.784 7-Day  
- 6  1985 0.589 7-Day  
- 7  1986 0.719 7-Day  
- 8  1987 0.355 7-Day  
- 9  1988 0.186 7-Day  
-10  1989 0.577 7-Day  
-# ... with 11 more rows</code></pre>
+    [3m [38;5;246m&lt;dbl&gt; [39m [23m  [3m [38;5;246m&lt;dbl&gt; [39m [23m  [3m [38;5;246m&lt;chr&gt; [39m [23m  
+ [38;5;250m 1 [39m   [4m1 [24m980 0.655 7-Day  
+ [38;5;250m 2 [39m   [4m1 [24m981 0.885 7-Day  
+ [38;5;250m 3 [39m   [4m1 [24m982 1.05  7-Day  
+ [38;5;250m 4 [39m   [4m1 [24m983 0.634 7-Day  
+ [38;5;250m 5 [39m   [4m1 [24m984 0.784 7-Day  
+ [38;5;250m 6 [39m   [4m1 [24m985 0.589 7-Day  
+ [38;5;250m 7 [39m   [4m1 [24m986 0.719 7-Day  
+ [38;5;250m 8 [39m   [4m1 [24m987 0.355 7-Day  
+ [38;5;250m 9 [39m   [4m1 [24m988 0.186 7-Day  
+ [38;5;250m10 [39m   [4m1 [24m989 0.577 7-Day  
+ [38;5;246m# ... with 11 more rows [39m</code></pre>
 <p>This data can then be applied to the <code><a href="../reference/compute_frequency_analysis.html">compute_frequency_analysis()</a></code> function. This example has the default column names in the data and this do not need to be listed, but are shown for demonstration.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/compute_frequency_analysis.html">compute_frequency_analysis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">low_flows</span>,
@@ -219,12 +229,12 @@
                            measures <span class="op">=</span> <span class="va">Measure</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
-<div id="usage-options-and-outputs" class="section level2">
-<h2 class="hasAnchor">
-<a href="#usage-options-and-outputs" class="anchor"></a>Usage, Options, and Outputs</h2>
-<div id="analysis-data" class="section level3">
-<h3 class="hasAnchor">
-<a href="#analysis-data" class="anchor"></a>Analysis Data</h3>
+<div class="section level2">
+<h2 id="usage-options-and-outputs">Usage, Options, and Outputs<a class="anchor" aria-label="anchor" href="#usage-options-and-outputs"></a>
+</h2>
+<div class="section level3">
+<h3 id="analysis-data">Analysis Data<a class="anchor" aria-label="anchor" href="#analysis-data"></a>
+</h3>
 <p>The returned <strong>Freq_Analysis_Data</strong> object provides the raw data used in the frequency analyses. Based on the selected frequency function used, this tibble will contain the respective data; the provided values with the custom analysis, the computed extremes with the annual analysis, and the HYDAT extreme peaks from HYDAT in the peak analysis. See each functions’ documentation for more information. This tibble object provides the analysis data as the annual and HYDAT peak data are calculated or extracted from HYDAT.</p>
 <p>To provide examples of the outputs, an annual analysis will be completed on a Mission Creek HYDAT station (the <code>plot_curve</code> argument is set to <code>FALSE</code> for the start of this example):</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -236,24 +246,24 @@
 <p>The following is an example of the returned <strong>Freq_Analysis_Data</strong> tibble:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Analysis_Data</span></code></pre></div>
-<pre><code># A tibble: 30 x 3
+<pre><code> [38;5;246m# A tibble: 30 x 3 [39m
     Year Measure Value
-   &lt;dbl&gt; &lt;fct&gt;   &lt;dbl&gt;
- 1  1981 7-Day   0.885
- 2  1982 7-Day   1.05 
- 3  1983 7-Day   0.634
- 4  1984 7-Day   0.784
- 5  1985 7-Day   0.589
- 6  1986 7-Day   0.719
- 7  1987 7-Day   0.355
- 8  1988 7-Day   0.186
- 9  1989 7-Day   0.577
-10  1990 7-Day   0.958
-# ... with 20 more rows</code></pre>
+    [3m [38;5;246m&lt;dbl&gt; [39m [23m  [3m [38;5;246m&lt;fct&gt; [39m [23m    [3m [38;5;246m&lt;dbl&gt; [39m [23m
+ [38;5;250m 1 [39m   [4m1 [24m981 7-Day   0.885
+ [38;5;250m 2 [39m   [4m1 [24m982 7-Day   1.05 
+ [38;5;250m 3 [39m   [4m1 [24m983 7-Day   0.634
+ [38;5;250m 4 [39m   [4m1 [24m984 7-Day   0.784
+ [38;5;250m 5 [39m   [4m1 [24m985 7-Day   0.589
+ [38;5;250m 6 [39m   [4m1 [24m986 7-Day   0.719
+ [38;5;250m 7 [39m   [4m1 [24m987 7-Day   0.355
+ [38;5;250m 8 [39m   [4m1 [24m988 7-Day   0.186
+ [38;5;250m 9 [39m   [4m1 [24m989 7-Day   0.577
+ [38;5;250m10 [39m   [4m1 [24m990 7-Day   0.958
+ [38;5;246m# ... with 20 more rows [39m</code></pre>
 </div>
-<div id="frequency-plotting" class="section level3">
-<h3 class="hasAnchor">
-<a href="#frequency-plotting" class="anchor"></a>Frequency Plotting</h3>
+<div class="section level3">
+<h3 id="frequency-plotting">Frequency Plotting<a class="anchor" aria-label="anchor" href="#frequency-plotting"></a>
+</h3>
 <p>Based on the analysis data in the <strong>Freq_Analysis_Data</strong> object, the data is ranked, by default for low-flow frequencies, from low to high with the lowest flow value ranked at 1. To complete high-flow analyses and rank the data from high to low, set the <code>use_max</code> argument to <code>TRUE</code>. The probabilities of each event are then determined using the following generalize plotting equation:</p>
 <ul>
 <li>P = (m - A) / (n + 1 - A - B)</li>
@@ -268,28 +278,28 @@
 <p>With these options set, the data used for plotting is returned in the <strong>Freq_Plot_Data</strong> tibble object. The events are sorted by measure, and ranked by the event value, and provides the probability and the return period for each event, used for plotting. See the following for an example of this output:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Plot_Data</span></code></pre></div>
-<pre><code># A tibble: 30 x 5
+<pre><code> [38;5;246m# A tibble: 30 x 5 [39m
     Year Measure Value Probability `Return Period`
-   &lt;dbl&gt; &lt;fct&gt;   &lt;dbl&gt;       &lt;dbl&gt;           &lt;dbl&gt;
- 1  1988 7-Day   0.186      0.0323           31   
- 2  1993 7-Day   0.298      0.0645           15.5 
- 3  2002 7-Day   0.331      0.0968           10.3 
- 4  1987 7-Day   0.355      0.129             7.75
- 5  2003 7-Day   0.363      0.161             6.2 
- 6  2010 7-Day   0.454      0.194             5.17
- 7  2007 7-Day   0.454      0.226             4.43
- 8  2008 7-Day   0.463      0.258             3.88
- 9  1994 7-Day   0.465      0.290             3.44
-10  2009 7-Day   0.502      0.323             3.1 
-# ... with 20 more rows</code></pre>
+    [3m [38;5;246m&lt;dbl&gt; [39m [23m  [3m [38;5;246m&lt;fct&gt; [39m [23m    [3m [38;5;246m&lt;dbl&gt; [39m [23m        [3m [38;5;246m&lt;dbl&gt; [39m [23m            [3m [38;5;246m&lt;dbl&gt; [39m [23m
+ [38;5;250m 1 [39m   [4m1 [24m988 7-Day   0.186      0.032 [4m3 [24m           31   
+ [38;5;250m 2 [39m   [4m1 [24m993 7-Day   0.298      0.064 [4m5 [24m           15.5 
+ [38;5;250m 3 [39m   [4m2 [24m002 7-Day   0.331      0.096 [4m8 [24m           10.3 
+ [38;5;250m 4 [39m   [4m1 [24m987 7-Day   0.355      0.129             7.75
+ [38;5;250m 5 [39m   [4m2 [24m003 7-Day   0.363      0.161             6.2 
+ [38;5;250m 6 [39m   [4m2 [24m010 7-Day   0.454      0.194             5.17
+ [38;5;250m 7 [39m   [4m2 [24m007 7-Day   0.454      0.226             4.43
+ [38;5;250m 8 [39m   [4m2 [24m008 7-Day   0.463      0.258             3.88
+ [38;5;250m 9 [39m   [4m1 [24m994 7-Day   0.465      0.290             3.44
+ [38;5;250m10 [39m   [4m2 [24m009 7-Day   0.502      0.323             3.1 
+ [38;5;246m# ... with 20 more rows [39m</code></pre>
 <p>This data is then used for plotting and returned in the <strong>Freq_Plot</strong> <code>ggplot2</code> object. See the example below. To change the probabilities/vertical lines shown on the x-axis, change the values using the <code>prob_scale_points</code> argument to list the breaks.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Plot</span></code></pre></div>
 <p><img src="fasstr_frequency_analysis_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
 </div>
-<div id="distribution-fitting-and-computing-frequency-quantiles" class="section level3">
-<h3 class="hasAnchor">
-<a href="#distribution-fitting-and-computing-frequency-quantiles" class="anchor"></a>Distribution Fitting and Computing Frequency Quantiles</h3>
+<div class="section level3">
+<h3 id="distribution-fitting-and-computing-frequency-quantiles">Distribution Fitting and Computing Frequency Quantiles<a class="anchor" aria-label="anchor" href="#distribution-fitting-and-computing-frequency-quantiles"></a>
+</h3>
 <p>The <code>fasstr</code> functions also compute frequency quantiles, like commonly used 7Q5, 7Q10, 5Q30, etc. Calculating frequency quantiles requires fitting historical event data (annual minimums, maximums or others) to a probability distribution (i.e. Log-Pearson Type III or Weibull in <code>fasstr</code>). The flow quantiles are then extracted from the distribution for given probabilities (and equivalent return periods). In the <code>fasstr</code> frequency analysis functions, this is done so by choosing a probability distribution and method of fitting to fit the data (may require data exploration for determining most appropriate distribution). Results from this fitting are found in 3 objects:</p>
 <ul>
 <li>
@@ -299,12 +309,12 @@
 <li>
 <strong>Freq_Fitted_Quantiles</strong> - the computed fitted quantiles based on the selected fitting options and selected quantile probabilities.</li>
 </ul>
-<div id="fitting-data-to-probability-distributions" class="section level4">
-<h4 class="hasAnchor">
-<a href="#fitting-data-to-probability-distributions" class="anchor"></a>Fitting Data to Probability Distributions</h4>
-<p>Computing frequency quantiles in <code>fasstr</code> requires choosing a probability distribution to fit the data, either Log-Pearson Type III, <code>"PIII"</code> (default), or Weibull, <code>"weibull"</code>, distributions with the <code>fit_dist</code> argument. When using the <code>"PIII"</code> distribution, data provided is log-transformed (base 10) before being fit to a Pearson Type III distribution. The method of fitting data to distributions is selected using the <code>fit_distr_method</code> argument with either <code>"MLE"</code> for ‘maximum likelihood estimation’ or <code>"MOM"</code> (default) for ‘method of moments’. For the <code>"PIII"</code> distribution, the data will be fit using <code>"MOM"</code> or <code>"MLE"</code>, while <code>"weibull"</code> can only use <code>"MOM"</code>. Internally, these arguments are passed on to the <code><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html">fitdistrplus::fitdist</a></code> function from the <a href="https://CRAN.R-project.org/package=fitdistrplus">‘fitdistrplus’</a> package (see for more information). Fitting results from the <code><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html">fitdistrplus::fitdist</a></code> function are returned in the <strong>Freq_Fitting</strong> object in the list and contain information regarding the fitting process, including the parameter estimates (e.g. shape, location, and scale), AIC statistics, Q-Q and density plots, amongst other statistics. As per the <code><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html">fitdistrplus::fitdist</a></code> documentation, there are several ways to view the <code>fitdist</code> object, three of these including using the generic <code><a href="https://rdrr.io/r/base/print.html">print()</a></code>, <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> and <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> functions. See the following examples for how to view some of the fitting information.</p>
+<div class="section level4">
+<h4 id="fitting-data-to-probability-distributions">Fitting Data to Probability Distributions<a class="anchor" aria-label="anchor" href="#fitting-data-to-probability-distributions"></a>
+</h4>
+<p>Computing frequency quantiles in <code>fasstr</code> requires choosing a probability distribution to fit the data, either Log-Pearson Type III, <code>"PIII"</code> (default), or Weibull, <code>"weibull"</code>, distributions with the <code>fit_dist</code> argument. When using the <code>"PIII"</code> distribution, data provided is log-transformed (base 10) before being fit to a Pearson Type III distribution. The method of fitting data to distributions is selected using the <code>fit_distr_method</code> argument with either <code>"MLE"</code> for ‘maximum likelihood estimation’ or <code>"MOM"</code> (default) for ‘method of moments’. For the <code>"PIII"</code> distribution, the data will be fit using <code>"MOM"</code> or <code>"MLE"</code>, while <code>"weibull"</code> can only use <code>"MOM"</code>. Internally, these arguments are passed on to the <code><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html" class="external-link">fitdistrplus::fitdist</a></code> function from the <a href="https://CRAN.R-project.org/package=fitdistrplus" class="external-link">‘fitdistrplus’</a> package (see for more information). Fitting results from the <code><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html" class="external-link">fitdistrplus::fitdist</a></code> function are returned in the <strong>Freq_Fitting</strong> object in the list and contain information regarding the fitting process, including the parameter estimates (e.g. shape, location, and scale), AIC statistics, Q-Q and density plots, amongst other statistics. As per the <code><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html" class="external-link">fitdistrplus::fitdist</a></code> documentation, there are several ways to view the <code>fitdist</code> object, three of these including using the generic <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> and <code><a href="https://docs.ropensci.org/tidyhydat/reference/plot.html" class="external-link">plot()</a></code> functions. See the following examples for how to view some of the fitting information.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></code></pre></div>
 <pre><code>Fitting of the distribution ' PIII ' by matching moments 
 Parameters:
             estimate
@@ -312,7 +322,7 @@ shape    21.71135693
 location  0.58975205
 scale    -0.03836902</code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></code></pre></div>
 <pre><code>Fitting of the distribution ' PIII ' by matching moments 
 Parameters : 
             estimate
@@ -321,7 +331,7 @@ location  0.58975205
 scale    -0.03836902
 Loglikelihood:  9.973448   AIC:  -13.9469   BIC:  -9.743303 </code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></code></pre></div>
 <p><img src="fasstr_frequency_analysis_files/figure-html/unnamed-chunk-10-1.png" width="672"></p>
 <p>When <code>plot_curve</code> argument is set to <code>TRUE</code> (default) the computed frequency curves are plotted against the events data in the <strong>Freq_Plot</strong> object:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -331,31 +341,31 @@ Loglikelihood:  9.973448   AIC:  -13.9469   BIC:  -9.743303 </code></pre>
 <span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Plot</span></code></pre></div>
 <p><img src="fasstr_frequency_analysis_files/figure-html/unnamed-chunk-11-1.png" width="672"></p>
 </div>
-<div id="fitted-quantiles" class="section level4">
-<h4 class="hasAnchor">
-<a href="#fitted-quantiles" class="anchor"></a>Fitted Quantiles</h4>
+<div class="section level4">
+<h4 id="fitted-quantiles">Fitted Quantiles<a class="anchor" aria-label="anchor" href="#fitted-quantiles"></a>
+</h4>
 <p>Based on the fitted distribution, flow events with specific probabilities/return periods (quantiles) can be extracted from the computed curves. The desired quantiles are selected by listing the probabilities in the <code>fit_quantiles</code> argument (defaults to <code>c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),</code>). The results are returned in the <strong>Freq_Fitted_Quantiles</strong> tibble in the list. In the example below of the quantiles, the 7Q5 value would be the 7-day flow value with a 5-year return period, so 0.409 cms in this example.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitted_Quantiles</span></code></pre></div>
-<pre><code># A tibble: 11 x 4
+<pre><code> [38;5;246m# A tibble: 11 x 4 [39m
    Distribution Probability `Return Period` `7-Day`
-   &lt;chr&gt;              &lt;dbl&gt;           &lt;dbl&gt;   &lt;dbl&gt;
- 1 PIII               0.01           100      0.194
- 2 PIII               0.05            20      0.280
- 3 PIII               0.1             10      0.334
- 4 PIII               0.2              5      0.409
- 5 PIII               0.5              2      0.578
- 6 PIII               0.8              1.25   0.772
- 7 PIII               0.9              1.11   0.881
- 8 PIII               0.95             1.05   0.972
- 9 PIII               0.975            1.03   1.05 
-10 PIII               0.98             1.02   1.08 
-11 PIII               0.99             1.01   1.14 </code></pre>
+    [3m [38;5;246m&lt;chr&gt; [39m [23m               [3m [38;5;246m&lt;dbl&gt; [39m [23m            [3m [38;5;246m&lt;dbl&gt; [39m [23m    [3m [38;5;246m&lt;dbl&gt; [39m [23m
+ [38;5;250m 1 [39m PIII               0.01           100      0.194
+ [38;5;250m 2 [39m PIII               0.05            20      0.280
+ [38;5;250m 3 [39m PIII               0.1             10      0.334
+ [38;5;250m 4 [39m PIII               0.2              5      0.409
+ [38;5;250m 5 [39m PIII               0.5              2      0.578
+ [38;5;250m 6 [39m PIII               0.8              1.25   0.772
+ [38;5;250m 7 [39m PIII               0.9              1.11   0.881
+ [38;5;250m 8 [39m PIII               0.95             1.05   0.972
+ [38;5;250m 9 [39m PIII               0.975            1.03   1.05 
+ [38;5;250m10 [39m PIII               0.98             1.02   1.08 
+ [38;5;250m11 [39m PIII               0.99             1.01   1.14 </code></pre>
 </div>
-<div id="notes-on-use-of-the-log-pearson-type-iii-distribution" class="section level4">
-<h4 class="hasAnchor">
-<a href="#notes-on-use-of-the-log-pearson-type-iii-distribution" class="anchor"></a>Notes on use of the Log-Pearson Type III Distribution</h4>
-<p>As noted, when using the <code>"PIII"</code> distribution in <code>fasstr</code>, the provided data is log-transformed (log base 10 using <code><a href="https://rdrr.io/r/base/Log.html">log10()</a></code>) before being fit to a Pearson Type III distribution. These log-transformed values are what are seen as the ‘Data’ and ‘quantiles’ axes when plotting the <strong>Freq_Fitting</strong> <code>fitdist</code> objects (as seen above). The resulting quantiles are then transformed back to the original scale when computing the final quantiles returned in the <strong>Fitted_Quantiles</strong> object and the plotted computed curves in the <strong>Freq_Plot</strong> object. To use the natural log (using <code><a href="https://rdrr.io/r/base/Log.html">log()</a></code>) instead of the base 10 log, set <code>use_log = TRUE</code>. Since the log of zero or negative numbers cannot be computed, data provided with these values (e.g. data with minimums of zero flow) will not be accepted into the functions.</p>
+<div class="section level4">
+<h4 id="notes-on-use-of-the-log-pearson-type-iii-distribution">Notes on use of the Log-Pearson Type III Distribution<a class="anchor" aria-label="anchor" href="#notes-on-use-of-the-log-pearson-type-iii-distribution"></a>
+</h4>
+<p>As noted, when using the <code>"PIII"</code> distribution in <code>fasstr</code>, the provided data is log-transformed (log base 10 using <code><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10()</a></code>) before being fit to a Pearson Type III distribution. These log-transformed values are what are seen as the ‘Data’ and ‘quantiles’ axes when plotting the <strong>Freq_Fitting</strong> <code>fitdist</code> objects (as seen above). The resulting quantiles are then transformed back to the original scale when computing the final quantiles returned in the <strong>Fitted_Quantiles</strong> object and the plotted computed curves in the <strong>Freq_Plot</strong> object. To use the natural log (using <code><a href="https://rdrr.io/r/base/Log.html" class="external-link">log()</a></code>) instead of the base 10 log, set <code>use_log = TRUE</code>. Since the log of zero or negative numbers cannot be computed, data provided with these values (e.g. data with minimums of zero flow) will not be accepted into the functions.</p>
 </div>
 </div>
 </div>
@@ -372,11 +382,13 @@ Loglikelihood:  9.973448   AIC:  -13.9469   BIC:  -9.743303 </code></pre>
 
 
       <footer><div class="copyright">
-  <p>Developed by Jon Goetz, Carl James Schwarz.</p>
+  <p></p>
+<p>Developed by Jon Goetz, Carl James Schwarz.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
 </div>
 
       </footer>
@@ -384,6 +396,8 @@ Loglikelihood:  9.973448   AIC:  -13.9469   BIC:  -9.743303 </code></pre>
 
   
 
+
+  
 
   </body>
 </html>

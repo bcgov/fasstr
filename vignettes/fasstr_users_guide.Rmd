@@ -8,11 +8,11 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-  
+
 ```{r options, include=FALSE}
 knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")),
-# warning = FALSE, 
-message = FALSE)
+                      # warning = FALSE, 
+                      message = FALSE)
 ```
 
 
@@ -20,7 +20,7 @@ message = FALSE)
 
 This vignette documents the usage of the many functions and arguments provided in `fasstr`. This vignette is a high-level adjunct to the details found in the various function documentations (see `help(package = "fasstr")` for documentation). You’ll learn how to install the package and a HYDAT database, input data into `fasstr` functions, add relevant columns and rows to daily data, screen data for outliers and missing dates, calculate and visualize various summary statistics, trend annual flows, and complete volume frequency analyses.
 
-A quick reference PDF cheat sheet is also available for `fasstr` usage of functions and arguments. It can be downloaded [here](https://github.com/bcgov/fasstr/raw/master/fasstr_cheatsheet.pdf).
+A quick reference PDF cheat sheet is also available for `fasstr` usage of functions and arguments. It can be downloaded [here](https://github.com/bcgov/fasstr/raw/main/fasstr_cheatsheet.pdf).
 
 This guide contains the following sections to help understand the usage of the `fasstr` functions and arguments:
 
@@ -235,8 +235,8 @@ Where the alignment of the rolling mean is compared to the date is important to 
 - `roll_align = "right"` - the date will have the mean of that date's flow value and the previous n-1 days
 - `roll_align = "left"` - the date will have the mean of that date's flow value and the next n-1 days
 - `roll_align = "center"` 
-    - odd numbered `roll_days` - date will have the mean of that date's flow value and half of n-1 days before and half of n-1 days after
-    - even numbered `roll_days` - date will have the mean of that date's flow and half of n days after, and the remaining before ((n/2)-1 days before the date) (i.e. the first of the middle two dates)
+- odd numbered `roll_days` - date will have the mean of that date's flow value and half of n-1 days before and half of n-1 days after
+- even numbered `roll_days` - date will have the mean of that date's flow and half of n days after, and the remaining before ((n/2)-1 days before the date) (i.e. the first of the middle two dates)
 
 Odd roll_days example (column headers have alignment direction added):
 
@@ -802,13 +802,21 @@ Most functions will automatically (`ignore_missing = FALSE`) not calculate a sta
 calc_annual_stats(station_number = "08NM116")
 ```
 
-If you want to calculate the statistics regardless of missing dates, use the `ignore_missing = TRUE` argument. Otherwise you may need to filter for complete data years (see the `screen_flow_data()` function).
+If you want to calculate the statistics regardless of the number of missing dates per time period, use the `ignore_missing = TRUE` argument.
 
 ```{r, eval=FALSE}
 calc_annual_stats(station_number = "08NM116", 
                   ignore_missing = TRUE)
 ```
 
+Starting with fasstr 0.4.0, to allow a certain percentage of missing dates per period and still calculate a statistic, the argument `allow_missing` (and `allow_missing_annual` and `allow_missing_monthly` in come cases) will override the `ignore_missing` argument in certain functions. A numeric value between 0 and 100 indicating the percentage of missing dates allowed to be included is provided to the argument to calculate a statistic (0 to 100 percent). For example, if 3-4 days of missing dates are permitted per year to calculate annual means, percentiles or extremes, then 1% of days can be applied as `allowed_missing = 1`.
+
+To maintain usage of `ignore_missing`, if `ignore_missing = FALSE` then it defaults to `0` (zero missing dates allowed), and if `ignore_missing = TRUE` then it defaults to `100` (any missing dates allowed). This argument is included only in functions that calculate annual or monthly means, percentiles, minimums, and maximums including various `calc_annual_*` and `plot_annual_*` functions, `calc_monthly_stats()`, `plot_monthly_stats()`, and most `compute_*` functions. See function documentation to see if included. The following example allows the data to have 25%, or ~91 days, of missing dates, to calculate annual statistics:
+
+```{r, eval=FALSE}
+calc_annual_stats(station_number = "08NM116", 
+                  allowed_missing = 25)
+```
 
 ### Dates Filtering
 
@@ -879,7 +887,7 @@ calc_annual_flow_timing(station_number = "08NM116")
 
 #### Selecting for months
 
-Some functions allow you to specify select months used in your analysis, using the `months` argument. By providing a vector of months (1 through 12) only those months will be used in an analysis. For example, using the `months` argument with the `calc_annual_stats()` function will calculate the annual statistics for only those months listed. So, if summer statistics are required you supply `months = 6:8` to the function. Leaving this arguments blank will include all months in the data set for the analysis.
+Most functions allow you to specify select months used in your analysis, using the `months` argument. By providing a vector of months (1 through 12) only those months will be used in an analysis. For example, using the `months` argument with the `calc_annual_stats()` function will calculate the annual statistics for only those months listed. So, if summer statistics are required you supply `months = 6:8` to the function. Leaving this arguments blank will include all months in the data set for the analysis. As of fasstr 0.4.0, the `months` argument is now included in all `calc_`, `plot_`, and `compute_` functions to allow for selecting of specific months in all analyses, including `calc_all_annual_stats()` and `compute_annual_trends()`.
 
 Example of filtering for months June through August:
 
@@ -890,9 +898,18 @@ calc_annual_stats(station_number = "08NM116",
                   months = 6:8)
 ```
 
+Example of flow timing / center of volume in winter/spring months:
+
+```{r, eval=FALSE}
+calc_flow_timing(station_number = "08NM116", 
+                 start_year = 1980, 
+                 end_year = 2010,
+                 months = 1:7)
+```
+
 A few functions, including the `calc_longterm_daily_stats()`, `plot_longterm_daily_stats()`, and `plot_flow_duration()` functions will allow you to add a customized time period to your data frame or plot. Using the `custom_months` argument you can list a vector of months (numeric 1:12). By default, the data will be labelled as "Custom-Months" but can be customized by providing a character string to the `custom_months_label` argument.
 
-Example of custom months and labelling:
+Example of custom months and labeling:
 
 ```{r, eval=FALSE}
 calc_longterm_daily_stats(station_number = "08NM116", 

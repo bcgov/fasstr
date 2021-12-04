@@ -123,10 +123,10 @@ articles:
     - fasstr_trending_analysis
     - fasstr_frequency_analysis
     - fasstr_full_analysis
-  # - title: Exploration
-  #   desc: Exploring fasstr and R in hydrology
-  #   contents:
-  #   - articles/fun_with_fasstr
+  - title: Exploration
+    desc: Exploring fasstr and R in hydrology
+    contents:
+    - articles/fasstr_dataRetrieval
   #   - articles/general_hydrology
   - title: Under the Hood
     desc: Internal fasstr workings
@@ -156,8 +156,10 @@ navbar:
       href: articles/fasstr_frequency_analysis.html
     - text: Computing a Full Analysis
       href: articles/fasstr_full_analysis.html
-    # - text: --------
-    # - text: Exploration
+    - text: --------
+    - text: Exploration
+    - text: Using USGS dataRetrieval data with fasstr
+      href: articles/articles/fasstr_dataRetrieval.html
     # - text: Fun with fasstr
     #   href: articles/articles/fun_with_fasstr.html
     # - text: R and Hydrology
@@ -171,7 +173,7 @@ navbar:
   right:
     - icon: fa-file-download
       text: Download Cheatsheet
-      href: https://github.com/bcgov/fasstr/raw/master/fasstr_cheatsheet.pdf
+      href: https://github.com/bcgov/fasstr/raw/main/fasstr_cheatsheet.pdf
     - icon: fa-github fa-lg
       text: GitHub
       href: https://github.com/bcgov/fasstr

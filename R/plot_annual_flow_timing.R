@@ -62,6 +62,7 @@ plot_annual_flow_timing <- function(data,
                                     start_year,
                                     end_year,
                                     exclude_years,
+                                    months = 1:12,
                                     include_title = FALSE){ 
   
   ## ARGUMENT CHECKS 
@@ -85,6 +86,7 @@ plot_annual_flow_timing <- function(data,
   }
 
   include_title_checks(include_title)
+
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
@@ -111,7 +113,8 @@ plot_annual_flow_timing <- function(data,
                                           water_year_start = water_year_start,
                                           start_year = start_year,
                                           end_year = end_year,
-                                          exclude_years = exclude_years)
+                                          exclude_years = exclude_years,
+                                          months = months)
   
   timing_stats <- dplyr::select(timing_stats, STATION_NUMBER, Year, dplyr::contains("TotalQ"), -dplyr::contains("Date"))
   timing_stats <- tidyr::gather(timing_stats, Statistic, Value, -STATION_NUMBER, -Year)

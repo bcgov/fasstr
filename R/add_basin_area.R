@@ -90,9 +90,10 @@ add_basin_area <- function(data,
     
     # Create a dataframe with a column of stations
     basin_stations <- data.frame(STATION_NUMBER = unique(flow_data$STATION_NUMBER), stringsAsFactors = FALSE)
+    basin_stations$STATION_NUMBER <- toupper(basin_stations$STATION_NUMBER)
     
     # Extract the basin areas and merge with the stations
-    basin_HYDAT <- suppressMessages(tidyhydat::hy_stations(station_number = toupper(basin_stations$STATION_NUMBER)))
+    basin_HYDAT <- suppressMessages(tidyhydat::hy_stations(station_number = basin_stations$STATION_NUMBER))
     basin_HYDAT <- dplyr::select(basin_HYDAT, STATION_NUMBER, Basin_Area_sqkm = DRAINAGE_AREA_GROSS)
     basin_area_table <- dplyr::right_join(basin_HYDAT, basin_stations, by = "STATION_NUMBER")
   }
@@ -114,28 +115,29 @@ add_basin_area <- function(data,
     } else {
       
       # Warning if number of station.groups dont match the number of supplied basin areas
-      if(length(basin_area) != length(unique(flow_data$STATION_NUMBER)) | !all(toupper(names(basin_area)) %in% unique(flow_data$STATION_NUMBER))) 
+      if(length(basin_area) != length(unique(flow_data$STATION_NUMBER)) | !all(names(basin_area) %in% unique(flow_data$STATION_NUMBER))) 
         warning("The supplied groups/stations and basin_area values do not match the groups/stations of STATION_NUMBERS in the flow data. Only those that match will be applied.", call. = FALSE)
       #if(!all(names(basin_area) %in% unique(flow_data$STATION_NUMBER))) warning("All STATION_NUMBERS listed in basin_area do not match those in the flow data. Only those that match will be applied.")
       
       # Create a dataframe with a column of stations
-      basin_stations <- data.frame(STATION_NUMBER = toupper(unique(flow_data$STATION_NUMBER)), stringsAsFactors = FALSE)
+      basin_stations <- data.frame(STATION_NUMBER = unique(flow_data$STATION_NUMBER), 
+                                   STATION_Upper = toupper(unique(flow_data$STATION_NUMBER)), stringsAsFactors = FALSE)
       
       # Extract the basin areas and merge with the stations
-      basin_HYDAT <- suppressMessages(tidyhydat::hy_stations(station_number = toupper(basin_stations$STATION_NUMBER)))
+      basin_HYDAT <- suppressMessages(tidyhydat::hy_stations(station_number = basin_stations$STATION_Upper))
       basin_HYDAT <- dplyr::select(basin_HYDAT, STATION_NUMBER, Basin_Area_sqkm = DRAINAGE_AREA_GROSS)
       basin_area_table <- dplyr::right_join(basin_HYDAT, basin_stations, by = "STATION_NUMBER")
       
       # Make a dataframe and apply basin areas to all groups/stations
-      basin_area_table2 <- data.frame(STATION_NUMBER = toupper(names(basin_area)), Basin_Area_sqkm2 = basin_area, stringsAsFactors = FALSE)
+      basin_area_table2 <- data.frame(STATION_NUMBER = names(basin_area),
+                                      STATION_Upper = toupper(names(basin_area)),
+                                      Basin_Area_sqkm2 = unname(basin_area), stringsAsFactors = FALSE)
       basin_area_table <- suppressMessages(dplyr::left_join(basin_area_table, basin_area_table2))
-      
+      # If the station number is listed in basin_area, get it, if not and is from HYDAT, get it. if no hydat, then NA
       basin_area_table <- dplyr::mutate(basin_area_table,
-                                         Basin_Area_sqkm = ifelse(STATION_NUMBER %in% toupper(names(basin_area)), Basin_Area_sqkm2, Basin_Area_sqkm))
-      basin_area_table <- dplyr::select(basin_area_table, -Basin_Area_sqkm2)
-                                        
-      
-      
+                                        Basin_Area_sqkm = ifelse(STATION_NUMBER %in% names(basin_area), 
+                                                                 Basin_Area_sqkm2, Basin_Area_sqkm))
+      basin_area_table <- dplyr::select(basin_area_table, -Basin_Area_sqkm2, -STATION_Upper)
     }
   }
   
@@ -161,7 +163,7 @@ add_basin_area <- function(data,
   ## Reformat to original names and groups
   ## -------------------------------------
   
-    # Return the original names of the columns
+  # Return the original names of the columns
   names(flow_data)[names(flow_data) == "STATION_NUMBER"] <- as.character(substitute(groups))
   
   # Return columns to original order plus new column

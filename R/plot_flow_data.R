@@ -20,6 +20,8 @@
 #' @inheritParams plot_annual_stats
 #' @param start_date Date (YYYY-MM-DD) of first date to consider for plotting. Leave blank if all years are required.
 #' @param end_date  Date (YYYY-MM-DD) of last date to consider for plotting. Leave blank if all years are required.
+#' @param months  Numeric vector of months to include in plotting (e.g. \code{6:8} for Jun-Aug). Leave blank to plot 
+#'    all months (default \code{1:12})
 #' @param log_discharge Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.
 #' @param plot_by_year Logical value to indicate whether to plot each year of data individually. Default \code{FALSE}.
 #' @param one_plot Logical value to indicate whether to plot all groups/stations on one plot. Default \code{FALSE}.
@@ -68,6 +70,7 @@ plot_flow_data <- function(data,
                            start_year,
                            end_year,
                            exclude_years,
+                           months = 1:12,
                            start_date,
                            end_date,
                            log_discharge = FALSE,
@@ -106,6 +109,7 @@ plot_flow_data <- function(data,
   years_checks(start_year, end_year, exclude_years = NULL)
   log_discharge_checks(log_discharge)
   include_title_checks(include_title)
+  months_checks(months)
   
   if (class(try(as.Date(start_date))) == "try-error") stop("start_date must be a date formatted YYYY-MM-DD.", call. = FALSE)
   if (class(try(as.Date(end_date))) == "try-error")   stop("end_date must be a date formatted YYYY-MM-DD.", call. = FALSE)
@@ -153,9 +157,10 @@ plot_flow_data <- function(data,
   # Filter for specific dates, if selected
   flow_data <- dplyr::filter(flow_data, Date >= start_date)
   flow_data <- dplyr::filter(flow_data, Date <= end_date)
-  
+
   # Remove selected excluded years
   flow_data <- dplyr::mutate(flow_data, Value = replace(Value, WaterYear %in% exclude_years, NA))
+  flow_data <- dplyr::mutate(flow_data, Value = replace(Value, !Month %in% months, NA))
   
   if (anyNA(flow_data$Value)) 
     warning(paste0("Did not plot ", sum(is.na(flow_data$Value)),

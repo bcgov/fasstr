@@ -16,6 +16,7 @@ plot_longterm_monthly_stats(
   start_year,
   end_year,
   exclude_years,
+  months = 1:12,
   complete_years = FALSE,
   ignore_missing = FALSE,
   include_extremes = TRUE,
@@ -59,6 +60,9 @@ analysis. Default \code{1}.}
 \item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
 
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
+
+\item{months}{Numeric vector of months to include in analysis (e.g. \code{6:8} for Jun-Aug). Leave blank to summarize 
+all months (default \code{1:12}).}
 
 \item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 

@@ -94,7 +94,8 @@
           "Annual_Mean",
           "miss_plots",
           "MAX_VALUE",
-          "Return_P")
+          "Return_P",
+          "STATION_Upper")
       )
     invisible()
   }

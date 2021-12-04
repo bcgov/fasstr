@@ -16,6 +16,7 @@ plot_annual_cumulative_stats(
   start_year,
   end_year,
   exclude_years,
+  months = 1:12,
   include_seasons = FALSE,
   log_discharge = FALSE,
   include_title = FALSE
@@ -60,6 +61,9 @@ analysis. Default \code{1}.}
 \item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
 
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
+
+\item{months}{Numeric vector of months to include in analysis (e.g. \code{6:8} for Jun-Aug). Leave blank to summarize 
+all months (default \code{1:12}). If not all months, seasonal total yield and volumetric flows will not be included.}
 
 \item{include_seasons}{Logical value indication whether to include seasonal yields or volumetric discharges. Default \code{TRUE}.}
 

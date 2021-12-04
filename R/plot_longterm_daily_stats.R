@@ -69,6 +69,7 @@ plot_longterm_daily_stats <- function(data,
                                       start_year,
                                       end_year,
                                       exclude_years,
+                                      months = 1:12,
                                       complete_years = FALSE,
                                       ignore_missing = FALSE,
                                       include_extremes = TRUE,
@@ -122,6 +123,12 @@ plot_longterm_daily_stats <- function(data,
   
   ## CALC STATS
   ## ----------
+  longterm_stats_all <- suppressWarnings(
+    calc_longterm_daily_stats(data = flow_data,
+                              water_year_start = water_year_start,
+                              start_year = start_year,
+                              end_year = end_year))
+  longterm_stats_all <- longterm_stats_all[,1:2]
   
   longterm_stats <- calc_longterm_daily_stats(data = flow_data,
                                               percentiles = c(inner_percentiles, outer_percentiles),
@@ -132,15 +139,23 @@ plot_longterm_daily_stats <- function(data,
                                               end_year = end_year,
                                               exclude_years = exclude_years,
                                               complete_years = complete_years,
-                                              ignore_missing = ignore_missing)
-  
-  
+                                              ignore_missing = ignore_missing,
+                                              months = months)
+  longterm_stats <- dplyr::left_join(longterm_stats_all, longterm_stats, 
+                                     by = c("STATION_NUMBER", "Month"))
   
   ## PLOT STATS
   ## ----------
   
   # Make longterm mean and median their own columns
   longterm_stats_months <- dplyr::filter(longterm_stats, Month != "Long-term")
+  
+  # remove NA's from start and end for plotting
+  longterm_stats_months <- longterm_stats_months[cumsum(stats::complete.cases(longterm_stats_months)) != 0, ]
+  longterm_stats_months <- dplyr::arrange(longterm_stats_months, dplyr::desc(Month))
+  longterm_stats_months <- longterm_stats_months[cumsum(stats::complete.cases(longterm_stats_months)) != 0, ]
+  longterm_stats_months <- dplyr::arrange(longterm_stats_months, Month)
+  
   longterm_stats_longterm <- dplyr::filter(longterm_stats, Month == "Long-term")
   longterm_stats_longterm <- dplyr::select(longterm_stats_longterm, STATION_NUMBER, "LT_Mean" = Mean, "LT_Med" = Median)
   longterm_stats <- dplyr::left_join(longterm_stats_months, longterm_stats_longterm, by = "STATION_NUMBER")
@@ -187,7 +202,7 @@ plot_longterm_daily_stats <- function(data,
       warning("Monthly data does not exist for the year listed in add_year and was not plotted.", call. = FALSE)
       add_year <- NULL
     }
-  } 
+  }
   
   
   if (all(sapply(longterm_stats[3:ncol(longterm_stats)], function(x)all(is.na(x))))) {
@@ -223,7 +238,7 @@ plot_longterm_daily_stats <- function(data,
   
   # Create axis label based on input columns
   y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (cubic metres)", #expression(Volume~(m^3))
-                         ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)", 
+                         ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)",
                                 "Discharge (cms)")) #expression(Discharge~(m^3/s))
   
   # Plot
@@ -232,15 +247,15 @@ plot_longterm_daily_stats <- function(data,
   lt_plots <- dplyr::mutate(
     lt_plots,
     plot = purrr::map2(
-      data, STATION_NUMBER, 
+      data, STATION_NUMBER,
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Month, group = 1)) +
-        {if(include_extremes) ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maximum"), na.rm = TRUE)} +
-        {if(is.numeric(outer_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(outer_percentiles)), 
-                                                                                    ymax = paste0("P",max(outer_percentiles)), 
-                                                                                    fill = paste0("'",outer_name,"'")), na.rm = TRUE)} +
-        {if(is.numeric(inner_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(inner_percentiles)), 
-                                                                                    ymax = paste0("P",max(inner_percentiles)), 
-                                                                                    fill = paste0("'",inner_name,"'")), na.rm = TRUE)} +
+        {if(include_extremes) ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maximum"), na.rm = FALSE)} +
+        {if(is.numeric(outer_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(outer_percentiles)),
+                                                                                    ymax = paste0("P",max(outer_percentiles)),
+                                                                                    fill = paste0("'",outer_name,"'")), na.rm = FALSE)} +
+        {if(is.numeric(inner_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(inner_percentiles)),
+                                                                                    ymax = paste0("P",max(inner_percentiles)),
+                                                                                    fill = paste0("'",inner_name,"'")), na.rm = FALSE)} +
         ggplot2::geom_line(ggplot2::aes(y = Mean, color = "Mean"), size = .9, na.rm = TRUE) +
         ggplot2::geom_line(ggplot2::aes(y = Median, color = "Median"), size = .9, na.rm = TRUE) +
         ggplot2::geom_point(ggplot2::aes(y = Mean), size = 2, na.rm = TRUE, colour  = "paleturquoise") +
@@ -253,8 +268,8 @@ plot_longterm_daily_stats <- function(data,
         ggplot2::ylab(y_axis_title) +
         ggplot2::xlab(NULL) +
         ggplot2::theme_bw()+
-        ggplot2::labs(colour = 'Daily Statistics') +  
-        {if (include_title & unique(.y) != "XXXXXXX") ggplot2::labs(colour = paste0(.y,'\n \nDaily Statistics')) } +    
+        ggplot2::labs(colour = 'Daily Statistics') +
+        {if (include_title & unique(.y) != "XXXXXXX") ggplot2::labs(colour = paste0(.y,'\n \nDaily Statistics')) } +
         ggplot2::theme(legend.position = "right",
                        legend.justification = "top",
                        legend.text = ggplot2::element_text(size = 9),

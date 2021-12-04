@@ -11,7 +11,8 @@ add_cumulative_yield(
   groups = STATION_NUMBER,
   station_number,
   basin_area,
-  water_year_start = 1
+  water_year_start = 1,
+  months = 1:12
 )
 }
 \arguments{
@@ -44,6 +45,9 @@ Leave blank if using \code{data} argument.}
 
 \item{water_year_start}{Numeric value indicating the month (\code{1} through \code{12}) of the start of water year for
 analysis. Default \code{1}.}
+
+\item{months}{Numeric vector of months to add cumulative flows (e.g. \code{6:8} for Jun-Aug). Leave blank to accumulate 
+all months (default \code{1:12}).}
 }
 \value{
 A tibble data frame of the source data with an additional column:

@@ -1,0 +1,765 @@
+---
+title: "Water knows no borders: using USGS dataRetrieval R package with fasstr"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Water knows no borders: using USGS dataRetrieval R package with fasstr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r options, include=FALSE}
+knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")),
+                      warning = FALSE, 
+                      message = FALSE)
+```
+
+`fasstr`, the Flow Analysis Summary Statistics Tool for R, is a set of [R](https://www.r-project.org/) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses.
+
+This vignette explores how to obtain and integrate U.S. Geological Survey (USGS) streamflow data, available through the [National Water Information System (NWIS)](https://waterdata.usgs.gov/nwis) using the [`dataRetrieval` R package](https://cran.r-project.org/package=dataRetrieval), with the various `fasstr` functions.
+
+This vignette will use the following packages:
+
+```{r, eval=TRUE}
+library(fasstr)
+library(dataRetrieval) # for getting USGS NWIS data
+library(tidyhydat) # for getting ECCC HYDAT data
+library(dplyr) # for data wrangling and pipelines
+library(ggplot2) # for modifying fasstr plots
+```
+
+## dataRetrieval Package
+
+`dataRetrieval` is an R package with a collection of functions to retrieve hydrologic and water quality data hosted on USGS and U.S. Environmental Protection Agency (EPA) web services. USGS hydrologic data are pulled from <https://waterservices.usgs.gov/> and <https://waterdata.usgs.gov/nwis>. Water quality data are obtained from the Water Quality Portal <https://www.waterqualitydata.us/>. More information on using `dataRetrieval` can be found in the [vignette](https://cran.r-project.org/web/packages/dataRetrieval/vignettes/dataRetrieval.html).
+
+This package is another useful tool for hydrologists, especially for those looking to use USGS streamflow hydrometric station data with `fasstr` or other streamflow packages and analyses. You can search for stations on the NWIS website <https://waterdata.usgs.gov/nwis/rt>. Unlike the `tidyhydat` package to obtain Environment and Climate Change Canada's (ECCC) HYDAT historical discharge data, `dataRetrieval` pulls all data from the NWIS web services and does not require downloading and storing a database.
+
+As USGS stations collect more than just streamflow, a parameter code is required for many of the functions to choose the appropriate data type. The parameter code for daily mean discharge data is "00060". The units of this discharge parameter are in US customary cubic feet per second (cfs). While using US customary units is not an issue for many `fasstr` functions, as units do not matter for many analyses or plots titles and column headers can simply be renamed, there are some functions that use internal metric unit conversions so some adaptations will be required (see sections below).
+
+Here is a quick workflow demo showing how to get hydrometric station information, and daily and annual peak data using `dataRetrieval`, adapted from the [vignette](https://cran.r-project.org/web/packages/dataRetrieval/vignettes/dataRetrieval.html):
+
+```{r, eval=FALSE}
+# Hoko River Near Sekiu, WA (12043300)
+site_number <- "12043300" 
+
+# Get site information (i.e. name, coordinates, drainage basin area, etc.)
+site_info <- readNWISsite(site_number)
+
+# Get daily discharge data
+# Requires parameter code for discharge (00060), in cubic feet per second (cfs)
+usgs_data <- readNWISdv(siteNumbers = site_number,
+                        parameterCd = "00060", 
+                        startDate = "1980-01-01",
+                        endDate = "2019-12-31")
+
+# Get annual instantaneous peak discharge data (based on water years (Oct-Sep))
+peak_data <- readNWISpeak(siteNumbers = site_number)
+
+```
+
+## Converting to metric and fasstr default columns
+
+For metric discharge analyses using NWIS data from the USGS, discharge values can easily be converted to cms from cfs (0.028317 cms per cfs) for use in `fasstr`.
+
+The default `dataRetrieval` NWIS data column formats are as follows:
+
+```{r, eval=TRUE}
+usgs_data <- readNWISdv(siteNumbers = "12043300", parameterCd = "00060")
+head(usgs_data)
+```
+
+### Keeping NWIS column names
+
+To keep the NWIS data column names for `fasstr` functions, just remember to convert the discharge units and then send to `fasstr` functions using the 'values' argument. Date column names are the same in both NWIS and HYDAT data. Here is an example of this situation using base R:
+
+```{r, eval=FALSE}
+# Conversion factor from cfs to cms
+cfs_to_cms <- 0.028317
+
+# Get cfs data
+usgs_data <- readNWISdv(siteNumbers = "12043300",
+                        parameterCd = "00060")
+
+# Convert cfs to cms
+usgs_data$X_00060_00003 <- usgs_data$X_00060_00003 * cfs_to_cms
+
+# Set `values` and 'groups' (if multiple stations) to the appropriate column names
+plot_flow_data(data = usgs_data,
+               values = X_00060_00003,
+               groups = site_no)
+```
+
+and using `dplyr` and pipelines:
+
+```{r, eval=FALSE}
+# Conversion factor from cfs to cms
+cfs_to_cms <- 0.028317
+
+# One station
+usgs_data <- readNWISdv(siteNumbers = "12043300", 
+                        parameterCd = "00060") %>% 
+  mutate(X_00060_00003 = X_00060_00003 * cfs_to_cms)
+plot_flow_data(data = usgs_data,
+               values = X_00060_00003)
+
+# Multiple stations
+usgs_data <- readNWISdv(siteNumbers = c("12043300", "12048000"),
+                        parameterCd = "00060") %>% 
+  mutate(X_00060_00003 = X_00060_00003 * cfs_to_cms)
+plot_flow_data(data = usgs_data,
+               values = X_00060_00003,
+               groups = site_no)
+```
+
+### Renaming NWIS column names
+
+NWIS column names can also be changed to match those with `tidyhydat` and `fasstr`'s defaults data column names (i.e. 'STATION_NUMBER', 'Date', and 'Value') to work easily with `fasstr`. Renaming 'site_no' to 'STATION_NUMBER' is not necessary if one station is used, but is useful if data contains multiple stations. Here is an example of this situation using base R:
+
+```{r, eval=FALSE}
+# Get the data
+usgs_data <- readNWISdv(siteNumbers = "12043300", parameterCd = "00060")
+
+# Conversion factor from cfs to cms
+cfs_to_cms <- 0.028317
+
+# Rename columns
+names(usgs_data)[names(usgs_data) == 'site_no'] <- 'STATION_NUMBER'
+names(usgs_data)[names(usgs_data) == 'X_00060_00003'] <- 'Value'
+
+# Convert cfs to cms
+usgs_data$Value <- usgs_data$Value * cfs_to_cms
+
+# Use a fasstr function
+calc_annual_peaks(usgs_data)
+```
+
+and using `dplyr` and pipelines:
+
+```{r, eval=FALSE}
+# Conversion factor from cfs to cms
+cfs_to_cms <- 0.028317
+
+# One station
+usgs_data <- readNWISdv(siteNumbers = "12043300", 
+                        parameterCd = "00060") %>% 
+  rename(Value = X_00060_00003) %>% 
+  mutate(Value = Value * cfs_to_cms)
+
+# Multiple stations
+usgs_data <- readNWISdv(siteNumbers = c("12043300", "12048000"), 
+                        parameterCd = "00060") %>% 
+  rename(STATION_NUMBER = site_no, 
+         Value = X_00060_00003) %>% 
+  mutate(Value = Value * cfs_to_cms)
+
+# Use a fasstr function
+calc_annual_peaks(usgs_data)
+```
+
+### Getting and converting drainage basin areas
+
+Some `fasstr` functions require an upstream drainage basin area to calculate discharge as area-based runoff yield statistics (in depth units, commonly millimetres in Canada). NWIS upstream drainage basin areas (in square miles) can be found in the site information using the `dataRetrieval::readNWISsite()` function and then can be converted to square kilometres (2.58999 sqkm per sqmile):
+
+```{r, eval=FALSE}
+# Conversion factor from cfs to cms
+cfs_to_cms <- 0.028317
+# Conversion factor from sq. miles to sq. km
+sqmile_to_sqkm <- 2.58999
+
+# Get station information
+site_info <- readNWISsite("12043300")
+
+# Get the drainage area and convert to sq. km
+basin_area_NWIS <- site_info$drain_area_va * sqmile_to_sqkm
+
+# Get data and apply to fasstr function
+readNWISdv(siteNumbers = "12043300", 
+           parameterCd = "00060") %>% 
+  rename(Value = X_00060_00003) %>% 
+  mutate(Value = Value * cfs_to_cms) %>% 
+  plot_daily_cumulative_stats(basin_area = basin_area_NWIS, 
+                              use_yield = TRUE,
+                              add_year = 2000)
+```
+
+Here is one way of providing multiple basin areas for multiple stations:
+
+```{r, eval=FALSE}
+# Conversion factor from cfs to cms
+cfs_to_cms <- 0.028317
+# Conversion factor from sq. miles to sq. km
+sqmile_to_sqkm <- 2.58999
+
+# Get station information
+site_info <- readNWISsite(c("12043300", "12048000")) %>% 
+  select(site_no, drain_area_va) %>% 
+  mutate(Basin_Area_sqkm = drain_area_va * sqmile_to_sqkm)
+
+# Create named vector of areas to send to basin area
+areas <- setNames(site_info$Basin_Area_sqkm, site_info$site_no)
+
+# Get data and apply to fasstr function
+readNWISdv(siteNumbers = c("12043300", "12048000"), 
+           parameterCd = "00060") %>% 
+  rename(Value = X_00060_00003, 
+         STATION_NUMBER = site_no) %>% 
+  mutate(Value = Value * cfs_to_cms) %>% 
+  plot_daily_cumulative_stats(use_yield = TRUE,
+                              basin_area = areas,
+                              add_year = 2000)
+
+```
+
+### Handy formatting functions
+
+Functions can also be created if conversions will frequently occur within workflows. The first example here converts and formats data already downloaded using `dataRetrieval`'s `readNWISdv()` function for `fasstr`:
+
+```{r, eval=FALSE}
+# Create function to convert to metric and HYDAT structure
+usgs_to_hydat <- function(data){
+  names(data)[names(data) == 'site_no'] <- 'STATION_NUMBER'
+  names(data)[names(data) == 'X_00060_00003'] <- 'Value'
+  data$Value <- data$Value * 0.028317
+  return(data)
+}
+
+# Get data, convert, and send to fasstr function:
+# in base R
+usgs_data <- readNWISdv("12043300", parameterCd = "00060")
+usgs_data <- usgs_to_hydat(usgs_data)
+calc_annual_stats(usgs_data)
+
+# and in a pipeline
+readNWISdv("12043300", parameterCd = "00060") %>% 
+  usgs_to_hydat() %>% 
+  calc_annual_stats()
+```
+
+This second function integrates `readNWISdv()` with the first function that will both download and convert the data for `fasstr` functions by supplying NWIS site numbers:
+
+```{r, eval=FALSE}
+# Create function to download NWIS data and convert to metric and HYDAT structure
+readNWISdv_hydat <- function(siteNumbers){
+  data <- readNWISdv(siteNumbers = siteNumbers, parameterCd = "00060")
+  names(data)[names(data) == 'site_no'] <- 'STATION_NUMBER'
+  names(data)[names(data) == 'X_00060_00003'] <- 'Value'
+  data$Value <- data$Value * 0.028317
+  return(data)
+}
+
+# Get data, convert, and send to fasstr function:
+# in base R
+usgs_data <- readNWISdv_hydat("12043300")
+calc_annual_stats(usgs_data)
+
+# and in a pipeline
+readNWISdv_hydat("12043300") %>% 
+  calc_annual_stats()
+```
+
+This third function is the same as the second, but adds a column of drainage basin areas, in square kilometres, extracted and converted from NWIS:
+
+```{r, eval=FALSE}
+# Create function to download NWIS data and convert to metric and HYDAT structure
+readNWISdv_hydat <- function(siteNumbers){
+  data <- readNWISdv(siteNumbers = siteNumbers, parameterCd = "00060")
+  names(data)[names(data) == 'site_no'] <- 'STATION_NUMBER'
+  names(data)[names(data) == 'X_00060_00003'] <- 'Value'
+  data$Value <- data$Value * 0.028317
+  
+  basin_area <- readNWISsite(siteNumbers = siteNumbers)
+  basin_area$Basin_Area_sqkm <- basin_area$drain_area_va * 2.58999
+  basin_area <- data.frame(STATION_NUMBER = basin_area$site_no,
+                           Basin_Area_sqkm = basin_area$Basin_Area_sqkm)
+  
+  data <- merge(data, basin_area, by = "STATION_NUMBER")
+  
+  return(data)
+}
+
+# Get data and convert data:
+usgs_data <- readNWISdv_hydat("12043300")
+```
+
+## Working in US customary units
+
+For analyses using US customary units from USGS NWIS data from `dataRetrieval`, most `fasstr` functions will work with little to no issues. Most functions take the provided data (i.e. flows in cfs or acre-feet) and provide means, medians, percentiles, etc. For data frame outputs, it can be assumed that if there are no units in column names that units are the same as the data provided. Axes labeled 'Discharge (cms)' on plots can simply be renamed to match the units by extracting the plot object from its listed object (using double square brackets `[[1]]`, or `magrittr::extract2(1)` in a pipeline) and using `ggplot2` functions (eg. `+ ylab('Discharge, cubic feet per second')` or `+ ylab('Discharge, acre-feet')`). If units are expressed in Volume_m3 it can be interpreted as cubic feet volume and renamed as such. However, if column names or plots titles are labeled as Yield_mm, there will there be additional conversion steps (see section below) required to get the appropriate inches depth. If data is in cfs but some volumetric results are desired to be in acre-feet, then some modifications will also be required.
+
+### Keeping NWIS column names
+
+NWIS data column names from `dataRetrieval` can easily be used with `fasstr` functions, with setting `values = X_00060_00003` or `values = 'X_00060_00003'` to identify the flow values column in `fasstr` functions. If there are multiple stations in a data frame, the stations can be grouped separately by identifying them using `groups = site_no` or `groups = 'site_no'`. Date column names are the same in both NWIS and HYDAT data.
+
+```{r, eval=FALSE}
+# One station
+usgs_data <- readNWISdv(siteNumbers = "12043300", 
+                        parameterCd = "00060")
+plot_flow_data(data = usgs_data,
+               values = X_00060_00003)
+
+# Multiple stations
+usgs_data_multiple <- readNWISdv(siteNumbers = c("12043300", "12048000"),
+                                 parameterCd = "00060")
+plot_flow_data(data = usgs_data_multiple,
+               values = X_00060_00003,
+               groups = site_no)
+
+# Calculate stats using water years
+calc_longterm_mean(data = usgs_data, 
+                   values = X_00060_00003,
+                   water_year_start = 10, 
+                   complete_years = TRUE)
+```
+
+### Renaming NWIS column names
+
+NWIS column names can also be changed to match those with `tidyhydat` and `fasstr`'s defaults data column names (i.e. 'STATION_NUMBER', 'Date', and 'Value') to work easily with `fasstr`. Using original names is good for quick function use, but renaming to the HYDAT convention makes using multiple `fasstr` functions easier. Renaming 'site_no' to 'STATION_NUMBER' is not necessary if one station is used, but is useful if data contains multiple stations. Here is an example of this situation using base R:
+
+```{r, eval=FALSE}
+# Get the data
+usgs_data <- readNWISdv(siteNumbers = "12043300", parameterCd = "00060")
+
+# Rename columns
+names(usgs_data)[names(usgs_data) == 'site_no'] <- 'STATION_NUMBER'
+names(usgs_data)[names(usgs_data) == 'X_00060_00003'] <- 'Value'
+```
+
+and using `dplyr` and pipelines:
+
+```{r, eval=FALSE}
+# One station
+usgs_data <- readNWISdv(siteNumbers = "12043300", 
+                        parameterCd = "00060") %>% 
+  rename(Value = X_00060_00003)
+
+# Multiple stations
+usgs_data <- readNWISdv(siteNumbers = c("12043300", "12048000"), 
+                        parameterCd = "00060") %>% 
+  rename(STATION_NUMBER = site_no, 
+         Value = X_00060_00003)
+```
+
+### Use of drainage basin areas
+
+Some `fasstr` functions use require drainage basin areas to calculate discharge as area-based runoff yield statistics (in depth units). Since `fasstr` internally converts discharge using metric conversions, this makes conversions of US customary cubic feet per second and square miles to inches depth not as simple. Luckily, if your discharge units are in cubic feet per second and basin ares in square miles, a simple workaround can be applied to get inches depth: multiply the basin area by 2323.2. This number is derived from three US/metric unit conversions that magically provide the proper conversion:
+
+```{r, eval=TRUE}
+# sqkm/sqmiles / (inches/mm * cms/cfs)
+2.58999 / (0.0393701 * 0.028316846592)
+```
+
+So if using any functions that result in yield values (typically 'yield' or 'cumulative' functions that with columns or axes with yield names when using `use_yield = TRUE`), then the multiplier needs to be applied to square mile basin areas. NWIS upstream drainage basin areas can be found in the site information using the `dataRetrieval` `readNWISsite()` function. The following is an example of how to use the workaround, with appropriate renaming of columns or plot axes:
+
+```{r, eval=FALSE}
+# Get a NWIS basin area
+area_sqmile <- dataRetrieval::readNWISsite(siteNumbers = "12043300") %>% 
+  pull(drain_area_va)
+
+# Drainage basin area conversion for fasstr
+area_adjust <- 2323.2
+
+# Get NWIS data
+usgs_data <- readNWISdv(siteNumbers = "12043300", 
+                        parameterCd = "00060") %>% 
+  rename(Value = X_00060_00003)
+
+# Add daily yield in inches, with 2323.2 basin area multiplier
+add_daily_yield(data = usgs_data,
+                basin_area = area_sqmile * area_adjust) %>% 
+  rename(Yield_inch = Yield_mm)
+
+# Calculate total annual inches, with multiplier
+calc_annual_cumulative_stats(data = usgs_data, 
+                             use_yield = TRUE,
+                             basin_area = area_sqmile * area_adjust,
+                             water_year_start = 10) %>% 
+  rename(Total_Yield_inch = Total_Yield_mm)
+
+# Plot daily cumulative discharge, with multiplier
+plot_daily_cumulative_stats(data = usgs_data, 
+                            use_yield = TRUE,
+                            basin_area = area_sqmile * area_adjust,
+                            water_year_start = 10) %>% 
+  magrittr::extract2(1) + # extracts plot from list
+  ggplot2::ylab("Runoff, inch")
+```
+
+### Use of acre-feet data and results
+
+Like data in cfs units, if data from `dataRetrieval` is converted to acre-feet per day units, most functions should work appropriately (if no units in column headers or plot axis titles in cms (and simply be renamed)).
+
+```{r, eval=FALSE}
+# cfs to acre-feet per day
+cfs_to_acft <- 1.983459
+
+# Get NWIS data, rename to Value, and convert cfs to acre-feet
+usgs_data <- readNWISdv(siteNumbers = "12043300", 
+                        parameterCd = "00060") %>% 
+  rename(Value = X_00060_00003) %>% 
+  mutate(Value = Value * cfs_to_acft)
+
+# Plot the acre-feet units, extract the plot (using [[1]]), 
+# and rename the y-axis to appropriate units
+plot_daily_stats(usgs_data, complete_years = TRUE)[[1]]+
+  ylab("Discharge, acre-feet per day")
+```
+
+As some `fasstr` functions report numbers in volumetric discharge and derive values from 'per seconds' units (i.e. cms or cfs) the original values are multiplied by 86400 seconds to obtain the daily volumes. Since acre-feet are typically in acre-feet per day, and not seconds, an easy conversion from acre-feet per day to acre-feet per second (divide by `86400`) will allow the user to get cumulative acre-feet.
+
+```{r, eval=FALSE}
+# cfs to acre-feet per second
+cfs_to_acftsec <- 1.983459 / 86400
+
+# Get NWIS data, rename to Value, and convert cfs to 
+# acre-feet per second
+usgs_data <- readNWISdv(siteNumbers = "12043300", 
+                        parameterCd = "00060") %>% 
+  rename(Value = X_00060_00003) %>% 
+  mutate(Value = Value * cfs_to_acftsec)
+
+# Plot the daily cumulative stats for all years with 2000 data,
+# extract the plot and rename the y-axis
+plot_daily_cumulative_stats(usgs_data, 
+                            add_year = 2000)[[1]]+
+  ylab("Cumulative Discharge, acre-feet")
+
+# Calculate annual and seasonal cumulative flows and
+# rename the column headers
+stats <- calc_annual_cumulative_stats(usgs_data, 
+                             include_seasons = TRUE)
+names(stats) <- gsub('_m3', '_acft', names(stats))
+```
+
+Using acre-feet per second data will not work for some functions that ideally work best with data in cfs or cms units and include volumetric totals like `calc_all_annual_stats()`, `compute_annual_trends()`, or `compute_full_analysis()`. However, results in total volumetric cubic-feet can simply be converted to acre-feet per day by multiplying the cubic-feet per day results by `0.00002295689`.
+
+### Examples: data wrangling
+
+For the rest of the vignette examples, we will set up data frames of daily stream discharge from `dataRetrieval` called `usgs_data` and `usgs_data_multiple`, and rename the columns to match the `fasstr` defaults (i.e. STATION_NUMBER, Date, and Value). We will also extract a basin area for the `usgs_data` data set.
+
+```{r, eval=FALSE}
+# Get daily data for examples
+usgs_data <- readNWISdv(siteNumbers = "12043300", 
+                        parameterCd = "00060") %>% 
+  rename(Value = X_00060_00003,
+         STATION_NUMBER = site_no)
+
+# Get drainage basin area for examples
+usgs_basin_area <- readNWISsite(siteNumbers = "12043300") %>% 
+  pull(drain_area_va)
+
+# Get daily data for examples with multiple stations
+usgs_data_multiple <- readNWISdv(siteNumbers = c("12043300", "12048000"), 
+                                 parameterCd = "00060") %>% 
+  rename(Value = X_00060_00003,
+         STATION_NUMBER = site_no)
+```
+
+To be consistent with many USGS streamflow analyses, these examples will use Water Years (from Oct-Sep) instead of Calendar Years by setting `water_year_start = 10` in the necessary functions. With `fasstr` a water year is identified by the calendar year in which it ends. For example, a water year from October 2019 to September 2020 will be identified as 2020.
+
+### Examples: tidying functions
+
+There are several functions that are used to prepare your flow data set for your own analyses by adding columns of various date variables, adding rolling means, and adding cumulative discharges, amongst others. These functions begin with `add_` or `fill_` and add columns or rows, respectively, to your data frame of daily flow values. See the documentation for more info on the functions. The following example shows how to apply the tidying functions in a continuous pipeline and using water years. Note how the basin area correction is applied in the two `_cumulative_` functions and columns are renamed to match the appropriate units where necessary.
+
+```{r, eval=FALSE}
+usgs_data %>% 
+  fill_missing_dates(water_year_start = 10) %>% 
+  add_date_variables(water_year_start = 10) %>% 
+  add_seasons(water_year_start = 10,
+              seasons_length = 3) %>% 
+  add_rolling_means() %>% 
+  add_daily_volume() %>% 
+  rename(Volume_cuft = Volume_m3) %>% 
+  add_cumulative_volume(water_year_start = 10) %>% 
+  rename(Cumul_Volume_cuft = Cumul_Volume_m3) %>% 
+  add_daily_yield(basin_area = usgs_basin_area * 2323.2) %>% 
+  rename(Yield_inch = Yield_mm) %>%  
+  add_cumulative_yield(water_year_start = 10, 
+                       basin_area = usgs_basin_area * 2323.2) %>% 
+  rename(Cumul_Yield_inch = Cumul_Yield_mm)
+```
+
+### Examples: flow data screening
+
+It may be useful to explore data availability and quality before using the data for analysis. Some of the screening functions can help you screen for outliers and missing data. Note the renaming of axis labels in the plot examples to the necessary units with one or multiple station plots.
+
+```{r, eval=FALSE}
+# Get the number of missing dates and some basic summary statistics (calculated regardless 
+# of missing dates)
+screen_flow_data(usgs_data, 
+                 water_year_start = 10)
+
+# Plot the missing dates
+plot_missing_dates(usgs_data, 
+                   water_year_start = 10)
+
+# Plot the data, extract the plot, and rename the axis
+plot_flow_data(usgs_data)[[1]]+
+  ylab("Discharge, cfs")
+
+# Alternatively, plot the data, and rename the axis label by modifying the ggplot code
+usgs_daily_plot <- plot_flow_data(usgs_data)
+usgs_daily_plot$Daily_Flows$labels$y <- "Discharge, cfs"
+usgs_daily_plot
+
+# Plotting daily flows of multiple stations on one plot, extracting and renaming axis
+plot_flow_data(usgs_data_multiple, 
+               one_plot = TRUE)[[1]]+
+  ylab("Discharge, cfs")
+
+# Plotting daily flows of multiple stations on different plots, and
+# renaming axes of existing ggplot2 objects
+usgs_daily_multiple <- plot_flow_data(usgs_data_multiple)
+usgs_daily_multiple$`12043300_Daily_Flows`$labels$y <- "Discharge, cfs"
+usgs_daily_multiple$`12048000_Daily_Flows`$labels$y <- "Discharge, cfs"
+usgs_daily_multiple
+```
+
+### Examples: summary statistics tables and plots
+
+The majority of the `fasstr` functions produce statistics over a certain time period, either long-term, annually, monthly, or daily. These statistics are produced using the `calc_` functions and many can be visualized using corresponding `plot_` functions. Most of the `calc_` functions do not require any changes to column names, unless they require as drainage basin area, where the multiplier fix will be applied. Most of the plots will require renaming axes as noted.
+
+```{r, eval=FALSE}
+# Calculate long-term and long-term monthly summary statistics based on daily data
+# using only years with complete data
+calc_longterm_daily_stats(usgs_data, 
+                          water_year_start = 10,
+                          complete_years = TRUE)
+
+# Calculate the long-term mean annual discharge (MAD) using only years with complete 
+# data and calculate 5%, 10%, and 20% MADs, for multiple stations
+calc_longterm_mean(usgs_data_multiple, 
+                   water_year_start = 10, 
+                   complete_years = TRUE,
+                   percent_MAD = c(5,10,20))
+
+# Plot flow duration curves for each month and combining summer months, using only 
+# complete years, and renaming the axis title
+plot_flow_duration(usgs_data, 
+                   water_year_start = 10, 
+                   complete_years = TRUE,
+                   custom_months = 7:9,
+                   custom_months_label = "Summer")[[1]]+
+  ylab("Discharge, cubic feet per second")
+
+# Plot annual summary statistics, including annual 10th and 90th percentiles, starting
+# in 1996 and making the axis logarithmic, and renaming the axis title
+plot_annual_stats(usgs_data, 
+                  water_year_start = 10,
+                  percentiles = c(10,90),
+                  start_year = 1996,
+                  log_discharge = TRUE)[[1]]+
+  ylab("Discharge, cubic feet per second")
+
+# Calculate annual 7- and 30-day low flows
+calc_annual_lowflows(usgs_data, 
+                     roll_days = c(7,30),
+                     water_year_start = 10)
+
+# Plot the winter-spring (Jan-July) center of volume dates for
+# multiple stations
+plot_annual_flow_timing(usgs_data_multiple,
+                        percent_total = 50,
+                        water_year_start = 10,
+                        months = 1:7)
+
+# Plot annual means, starting in 1996
+plot_annual_means(usgs_data,
+                  water_year_start = 10,
+                  start_year = 1996)
+
+# Calculate monthly summary statistics, including 25 and 27 percentiles
+calc_monthly_stats(usgs_data,
+                   percentiles = c(25,75),
+                   water_year_start = 10)
+
+# Calculate daily summary statistics, including 25th and 75th percentiles
+calc_daily_stats(usgs_data,
+                 percentiles = c(25,75),
+                 water_year_start = 10,
+                 complete_years = TRUE)
+
+# Plot an annual hydrograph (daily summary statistics) using only data 
+# from complete years and add 2020 daily data for comparison, for multiple stations
+plot_daily_stats(usgs_data_multiple,
+                 complete_years = TRUE,
+                 add_year = 2020,
+                 water_year_start = 10)
+
+# Plot an annual cumulative runoff hydrograph (daily summary statistics) and adding
+# 2020 daily data, using the basin area and correction factor, and renaming the axis
+plot_daily_cumulative_stats(usgs_data,
+                            add_year = 2020,
+                            use_yield = TRUE,
+                            basin_area = usgs_basin_area * 2323.2,
+                            water_year_start = 10)[[1]]+
+  ylab("Cumulative Runoff, inches")
+```
+
+### Examples: annual trending
+
+The `compute_annual_trends()` function trends annual streamflow metrics using prewhitened non-parametric Mann-Kendall tests using the [`zyp`](https://CRAN.R-project.org/package=zyp) package. The function calculates various annual metrics using the `calc_all_annual_stats()` `fasstr` function and then calculates and plots the trending data. The `zhang` prewhitening method is recommended for hydrologic applications over `yuepilon`. See the [`zyp`](https://CRAN.R-project.org/package=zyp) package and the [trending vignette](https://bcgov.github.io/fasstr/articles/fasstr_trending_analysis.html) for more information.
+
+For the trending function, many of the metrics and results are simply statistics on the raw data and so will not require any conversions. However, like other `fasstr` functions that calculate volumetric and runoff totals (using a basin area), some fixes will be required to use a basin area (see above) and to rename data, columns, and plot axes. Data and axes with names ending with units of volume or yield will require renaming. The following code is examples of how to run the trending function and modify it and the outputs for US units.
+
+```{r, eval=FALSE}
+# Calculate annual metrics and trend the data using the Mann-Kendall methods, 
+# using 'zhang' prewhitening methods, plotting a trend line on plots if α < 0.05,
+# and applying the basin area correction to get inches depth for yield units.
+trends <- compute_annual_trends(usgs_data, 
+                                zyp_method = "zhang", 
+                                zyp_alpha = 0.05,
+                                basin_area = usgs_basin_area * 2323.2,
+                                water_year_start = 10)
+```
+
+While exported values will be accurate, some data, columns, and axes will needed to be renamed from metric to US units. If want to use results from above, then here are some ways to convert names in the output from `compute_annual_trends`:
+
+```{r, eval=FALSE}
+# Rename plot names
+names(trends) <- gsub('_m3', '_cuft', names(trends))
+names(trends) <- gsub('_mm', '_inch', names(trends))
+
+# Rename the Statistics in Data and Results
+trends$Annual_Trends_Data$Statistic <- gsub('_m3', '_cuft', trends$Annual_Trends_Data$Statistic)
+trends$Annual_Trends_Data$Statistic <- gsub('_mm', '_inch', trends$Annual_Trends_Data$Statistic)
+trends$Annual_Trends_Results$Statistic <- gsub('_m3', '_cuft', trends$Annual_Trends_Results$Statistic)
+trends$Annual_Trends_Results$Statistic <- gsub('_mm', '_inch', trends$Annual_Trends_Results$Statistic)
+
+# Rename y-axes and titles in plots
+for (i in names(trends[3:length(trends)])){
+  if (all(trends[[i]]$labels$y == "Discharge (cms)")){
+    trends[[i]]$labels$y <- gsub('cms', 'cfs', trends[[i]]$labels$y)
+  }
+  if (all(trends[[i]]$labels$y == "Yield (mm)")){
+    trends[[i]]$labels$y <- gsub('mm', 'inch', trends[[i]]$labels$y)
+    trends[[i]]$labels$title <- gsub('_mm', '_inch', trends[[i]]$labels$title)
+  }
+  if (all(trends[[i]]$labels$y == "Volume (cubic metres)")){
+    trends[[i]]$labels$y <- gsub('metres', 'feet', trends[[i]]$labels$y)
+    trends[[i]]$labels$title <- gsub('_m3', '_cuft', trends[[i]]$labels$title)
+  }
+}
+```
+
+A function can also be written if relabeling will frequently occur within workflows. With this example, you apply the output of `compute_annual_trends()` directly to this wrapper function and it will rename all appropriate labels and titles within the results.
+
+```{r, eval=FALSE}
+# Create wrapper function
+fasstr_trends_to_US_units <- function(trends){
+  
+  # Rename plot names
+  names(trends) <- gsub('_m3', '_cuft', names(trends))
+  names(trends) <- gsub('_mm', '_inch', names(trends))
+  
+  # Rename the Statistics in Data and Results
+  trends$Annual_Trends_Data$Statistic <- gsub('_m3', '_cuft', trends$Annual_Trends_Data$Statistic)
+  trends$Annual_Trends_Data$Statistic <- gsub('_mm', '_inch', trends$Annual_Trends_Data$Statistic)
+  trends$Annual_Trends_Results$Statistic <- gsub('_m3', '_cuft', trends$Annual_Trends_Results$Statistic)
+  trends$Annual_Trends_Results$Statistic <- gsub('_mm', '_inch', trends$Annual_Trends_Results$Statistic)
+  
+  # Rename y-axes and titles in plots
+  for (i in names(trends[3:length(trends)])){
+    if (all(trends[[i]]$labels$y == "Discharge (cms)")){
+      trends[[i]]$labels$y <- gsub('cms', 'cfs', trends[[i]]$labels$y)
+    }
+    if (all(trends[[i]]$labels$y == "Yield (mm)")){
+      trends[[i]]$labels$y <- gsub('mm', 'inch', trends[[i]]$labels$y)
+      trends[[i]]$labels$title <- gsub('_mm', '_inch', trends[[i]]$labels$title)
+    }
+    if (all(trends[[i]]$labels$y == "Volume (cubic metres)")){
+      trends[[i]]$labels$y <- gsub('metres', 'feet', trends[[i]]$labels$y)
+      trends[[i]]$labels$title <- gsub('_m3', '_cuft', trends[[i]]$labels$title)
+    }
+  }
+  
+  return(trends)
+}
+
+# Run the wrapper function
+trends <- fasstr_trends_to_US_units(trends)
+```
+
+### Examples: frequency analyses
+
+There are several functions that perform various volume frequency analyses. Frequency analyses are used to determine probabilities of events of certain sizes (typically high or low flows). The analyses produce plots of event series and computed quantiles fitted from either Log-Pearson Type III or Weibull probability distributions. See the [frequency analysis vignette](https://bcgov.github.io/fasstr/articles/fasstr_frequency_analysis.html) for more information. With the two options for probability distributions (logPIII and weibull), the user should have understanding or investigate the appropriateness of fit for the data provided with the probability distributions. The `fitdistrplus` R package fitting parameters can be found the in the `fasstr` 'Freq_Fitting' output and can be explored further (see `fitdistrplus` documentation for more information).
+
+These functions do analyses on the data provided without requiring metric conversions. As such, the only fix required to format results in US units is changing the y-axis on the plot object from "Discharge (cms)" to desired units. Here are some examples that could be applied using USGS data. See documentation for default arguments (i.e. `?compute_annual_frequencies`).
+
+Compute annual low flows (1,3,7,and 30-day) frequencies with default arguments:
+
+```{r, eval=FALSE}
+# Compute annual low flows frequencies with default arguments
+lowflow_frequency <- compute_annual_frequencies(usgs_data,
+                                                water_year_start = 10,
+                                                prob_plot_position = "weibull", # plot positions using (i)/(n+1)
+                                                fit_distr = "PIII", # log-Pearson Type III
+                                                fit_distr_method = "MOM") # method of moments
+# Change the y-axis of the plot to US units (changing the object itself)
+lowflow_frequency$Freq_Plot$labels$y <- "Discharge, cubic feet per second"
+
+# View the fitting parameters (shape, scale, location, loglikehood, AIC and BIC etc.)
+# of the 7-day low flows
+summary(lowflow_frequency$Freq_Fitting$`7-Day`)
+
+# Plot the fitting distributions of the 7-day low flows
+plot(lowflow_frequency$Freq_Fitting$`7-Day`)
+```
+
+Compute annual 1-day maximum frequencies with default arguments:
+
+```{r, eval=FALSE}
+# Compute annual daily peak flows frequencies with default arguments
+highflow_frequency <- compute_annual_frequencies(usgs_data,
+                                                 water_year_start = 10,
+                                                 use_max = TRUE,
+                                                 roll_days = 1)
+# Change the y-axis of the plot to US units (changing the object itself)
+highflow_frequency$Freq_Plot$labels$y <- "Discharge, cubic feet per second"
+highflow_frequency$Freq_Plot
+```
+
+Compute summer 7-day low flow frequencies with default arguments:
+
+```{r, eval=FALSE}
+# Compute summer low flow frequencies with default arguments
+lowflow_7day <- compute_annual_frequencies(usgs_data,
+                                           water_year_start = 10,
+                                           months = 7:9,
+                                           roll_days = 7)
+# Extract the plot and change the y-axis title to US units (doesn't change the original)
+lowflow_plot <- lowflow_7day$Freq_Plot +
+  ylab("Discharge, cubic feet per second")
+```
+
+Compute a frequency analysis on annual instantaneous peak data from NWIS using the custom frequency analysis function:
+
+```{r, eval=FALSE}
+# dataRetrieval function to get annual instantaneous peak data, grouped by water years
+usgs_peaks <- readNWISpeak("12043300") %>% 
+  mutate(Measure = "Inst. Peaks")
+
+# Use the default column names for events and values for the custom analysis 
+# and default arguments (log-PIII etc.)
+flood_frequency <- compute_frequency_analysis(data = usgs_peaks,
+                                              events = peak_dt,
+                                              values = peak_va,
+                                              measures = Measure,
+                                              use_max = TRUE)
+
+# Can also do the analysis with renaming parameters to match fasstr function, within a pipeline
+flood_frequency <- readNWISpeak("12043300") %>% 
+  select(Year = peak_dt, Value = peak_va) %>% 
+  mutate(Measure = "Inst. Peaks") %>% 
+  compute_frequency_analysis(use_max = TRUE)
+flood_frequency$Freq_Plot$labels$y <- "Discharge, cubic feet per second"
+```
+
+Compute a single frequency quantile with default arguments. With this function only the desired quantile is returned. Use this function if you know the fitting distributions are suitable for the data set.
+
+```{r, eval=FALSE}
+# Compute the summer 7Q10 with default arguments
+compute_frequency_quantile(usgs_data,
+                           roll_days = 7, 
+                           return_period = 10,
+                           months = 7:9)
+```

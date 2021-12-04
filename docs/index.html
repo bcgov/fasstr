@@ -23,6 +23,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -35,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -64,7 +66,8 @@
       <a href="articles/index.html">All Articles</a>
     </li>
     <li class="divider">
-    <li class="dropdown-header">Tutorials</li>
+    </li>
+<li class="dropdown-header">Tutorials</li>
     <li>
       <a href="articles/fasstr_users_guide.html">General Usage</a>
     </li>
@@ -78,7 +81,14 @@
       <a href="articles/fasstr_full_analysis.html">Computing a Full Analysis</a>
     </li>
     <li class="divider">
-    <li class="dropdown-header">Under the Hood</li>
+    </li>
+<li class="dropdown-header">Exploration</li>
+    <li>
+      <a href="articles/articles/fasstr_dataRetrieval.html">Using USGS dataRetrieval data with fasstr</a>
+    </li>
+    <li class="divider">
+    </li>
+<li class="dropdown-header">Under the Hood</li>
     <li>
       <a href="articles/fasstr_under_the_hood.html">Internal Workflows</a>
     </li>
@@ -90,14 +100,14 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/bcgov/fasstr/raw/master/fasstr_cheatsheet.pdf">
+  <a href="https://github.com/bcgov/fasstr/raw/main/fasstr_cheatsheet.pdf" class="external-link">
     <span class="fa fa-file-download"></span>
      
     Download Cheatsheet
   </a>
 </li>
 <li>
-  <a href="https://github.com/bcgov/fasstr">
+  <a href="https://github.com/bcgov/fasstr" class="external-link">
     <span class="fa fa-github fa-lg"></span>
      
     GitHub
@@ -115,14 +125,13 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="fasstr-" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#fasstr-" class="anchor"></a>fasstr <img src="reference/figures/fasstr.png" align="right">
+<div class="section level1">
+<div class="page-header"><h1 id="fasstr-">fasstr <img src="reference/figures/fasstr.png" align="right"><a class="anchor" aria-label="anchor" href="#fasstr-"></a>
 </h1></div>
 <!-- badges: start -->
 
-<p><a href="https://cran.r-project.org/package=fasstr"><img src="https://www.r-pkg.org/badges/version/fasstr" alt="CRAN_Status_Badge"></a> <a href="https://CRAN.R-project.org/package=fasstr"><img src="https://cranlogs.r-pkg.org/badges/fasstr?color=brightgreen" alt="CRAN Downloads"></a> <a href="https://CRAN.R-project.org/web/checks/check_results_fasstr.html"><img src="https://cranchecks.info/badges/worst/fasstr" alt="cran checks"></a> <!-- badges: end --></p>
-<p>The Flow Analysis Summary Statistics Tool for R (<code>fasstr</code>) is a set of <a href="http://www.r-project.org">R</a> functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses.</p>
+<p><a href="https://cran.r-project.org/package=fasstr" class="external-link"><img src="https://www.r-pkg.org/badges/version/fasstr" alt="CRAN_Status_Badge"></a> <a href="https://CRAN.R-project.org/package=fasstr" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/fasstr?color=brightgreen" alt="CRAN Downloads"></a> <a href="https://CRAN.R-project.org/web/checks/check_results_fasstr.html" class="external-link"><img src="https://cranchecks.info/badges/worst/fasstr" alt="cran checks"></a> <!-- badges: end --></p>
+<p>The Flow Analysis Summary Statistics Tool for R (<code>fasstr</code>) is a set of <a href="http://www.r-project.org" class="external-link">R</a> functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes annual trends and frequency analyses.</p>
 <p>This package provides functions for streamflow data analysis, including:</p>
 <ul>
 <li>data tidying (to prepare data for analyses; <code>add_*</code> and <code>fill_*</code> functions),</li>
@@ -133,30 +142,30 @@
 </ul>
 <p>Useful features of functions include:</p>
 <ul>
-<li>the integration of the <code>tidyhydat</code> package to pull streamflow data from a Water Survey of Canada <a href="https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html">HYDAT</a> database for analyses;</li>
+<li>the integration of the <code>tidyhydat</code> package to pull streamflow data from a Water Survey of Canada <a href="https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html" class="external-link">HYDAT</a> database for analyses;</li>
 <li>arguments for filtering of years and months in analyses and plotting;</li>
 <li>choosing the start month of your water year;</li>
 <li>selecting for rolling day averages (e.g. 7-day rolling average); and,</li>
 <li>choosing how missing dates are handled, amongst others.</li>
 </ul>
-<p>This package is maintained by the <a href="https://www2.gov.bc.ca/gov/content/environment/air-land-water/water">Water Protection and Sustainability Branch of the British Columbia Ministry of Environment and Climate Change Strategy</a>.</p>
-<div id="installation" class="section level3">
-<h3 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h3>
-<p>You can install <code>fasstr</code> directly from <a href="https://cran.r-project.org/package=fasstr">CRAN</a>:</p>
+<p>This package is maintained by the <a href="https://www2.gov.bc.ca/gov/content/environment/air-land-water/water" class="external-link">Water Protection and Sustainability Branch of the British Columbia Ministry of Environment and Climate Change Strategy</a>.</p>
+<div class="section level3">
+<h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h3>
+<p>You can install <code>fasstr</code> directly from <a href="https://cran.r-project.org/package=fasstr" class="external-link">CRAN</a>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"fasstr"</span><span class="op">)</span></code></pre></div>
-<p>To install the development version from <a href="https://github.com/bcgov/fasstr">GitHub</a>, use the <a href="https://cran.r-project.org/package=remotes"><code>remotes</code></a> package then the <code>fasstr</code> package:</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"fasstr"</span><span class="op">)</span></code></pre></div>
+<p>To install the development version from <a href="https://github.com/bcgov/fasstr" class="external-link">GitHub</a>, use the <a href="https://cran.r-project.org/package=remotes" class="external-link"><code>remotes</code></a> package then the <code>fasstr</code> package:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"bcgov/fasstr"</span><span class="op">)</span></code></pre></div>
-<p>To use the <code>station_number</code> argument and pull data directly from a <a href="https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html">Water Survey of Canada HYDAT database</a> into <code>fasstr</code> functions, download a HYDAT file using the following code:</p>
+<code class="sourceCode R"><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"bcgov/fasstr"</span><span class="op">)</span></code></pre></div>
+<p>To use the <code>station_number</code> argument and pull data directly from a <a href="https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html" class="external-link">Water Survey of Canada HYDAT database</a> into <code>fasstr</code> functions, download a HYDAT file using the following code:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/download_hydat.html">download_hydat</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/download_hydat.html" class="external-link">download_hydat</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="using-fasstr" class="section level3">
-<h3 class="hasAnchor">
-<a href="#using-fasstr" class="anchor"></a>Using fasstr</h3>
+<div class="section level3">
+<h3 id="using-fasstr">Using fasstr<a class="anchor" aria-label="anchor" href="#using-fasstr"></a>
+</h3>
 <p>There are several vignettes and a cheatsheet to provide more information on the usage of <code>fasstr</code> functions and how to customize various argument options.</p>
 <ul>
 <li><a href="https://bcgov.github.io/fasstr/articles/fasstr.html">Getting Started</a></li>
@@ -166,26 +175,26 @@
 <li><a href="https://bcgov.github.io/fasstr/articles/fasstr_full_analysis.html">Computing a Full fasstr Analysis</a></li>
 <li><a href="https://bcgov.github.io/fasstr/articles/fasstr_under_the_hood.html">Internal fasstr Workflows</a></li>
 </ul>
-<div id="cheatsheet" class="section level4">
-<h4 class="hasAnchor">
-<a href="#cheatsheet" class="anchor"></a>Cheatsheet</h4>
-<p><a href="https://github.com/bcgov/fasstr/raw/master/fasstr_cheatsheet.pdf"><img src="reference/figures/fasstr_cheatsheet.png" width="630" height="252"></a></p>
+<div class="section level4">
+<h4 id="cheatsheet">Cheatsheet<a class="anchor" aria-label="anchor" href="#cheatsheet"></a>
+</h4>
+<p><a href="https://github.com/bcgov/fasstr/raw/main/fasstr_cheatsheet.pdf" class="external-link"><img src="reference/figures/fasstr_cheatsheet.png" width="630" height="252"></a></p>
 </div>
 </div>
-<div id="getting-help-or-reporting-an-issue" class="section level3">
-<h3 class="hasAnchor">
-<a href="#getting-help-or-reporting-an-issue" class="anchor"></a>Getting Help or Reporting an Issue</h3>
-<p>To report bugs/issues/feature requests, please file an <a href="https://github.com/bcgov/fasstr/issues/">issue</a>.</p>
+<div class="section level3">
+<h3 id="getting-help-or-reporting-an-issue">Getting Help or Reporting an Issue<a class="anchor" aria-label="anchor" href="#getting-help-or-reporting-an-issue"></a>
+</h3>
+<p>To report bugs/issues/feature requests, please file an <a href="https://github.com/bcgov/fasstr/issues/" class="external-link">issue</a>.</p>
 </div>
-<div id="how-to-contribute" class="section level3">
-<h3 class="hasAnchor">
-<a href="#how-to-contribute" class="anchor"></a>How to Contribute</h3>
+<div class="section level3">
+<h3 id="how-to-contribute">How to Contribute<a class="anchor" aria-label="anchor" href="#how-to-contribute"></a>
+</h3>
 <p>If you would like to contribute to the package, please see our <a href="CONTRIBUTING.html">CONTRIBUTING</a> guidelines.</p>
 <p>Please note that this project is released with a <a href="CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</p>
 </div>
-<div id="license" class="section level3">
-<h3 class="hasAnchor">
-<a href="#license" class="anchor"></a>License</h3>
+<div class="section level3">
+<h3 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
+</h3>
 <div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Copyright <span class="dv">2019</span> Province of British Columbia</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>Licensed under the Apache License, Version <span class="fl">2.0</span> (the <span class="st">"License"</span>);</span>
@@ -205,59 +214,68 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=fasstr">https://​cloud.r-project.org/​package=fasstr</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/bcgov/fasstr/">https://​github.com/​bcgov/​fasstr/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/bcgov/fasstr/issues">https://​github.com/​bcgov/​fasstr/​issues</a>
-</li>
-<li>Browse other CRAN Task View Hydrology packages at <br><a href="https://CRAN.R-project.org/view=Hydrology">https://​CRAN.R-project.org/​view=Hydrology</a>
-</li>
+<li><a href="https://cloud.r-project.org/package=fasstr" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/bcgov/fasstr/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/bcgov/fasstr/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://CRAN.R-project.org/view=Hydrology" class="external-link">Browse other CRAN Task View Hydrology packages</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
 <li><small>Apache License 2.0</small></li>
 </ul>
 </div>
+
 <div class="community">
-<h2>Community</h2>
+<h2 data-toc-skip>Community</h2>
 <ul class="list-unstyled">
 <li><a href="CONTRIBUTING.html">Contributing guide</a></li>
 <li><a href="CODE_OF_CONDUCT.html">Code of conduct</a></li>
 </ul>
 </div>
-<div class="developers">
-<h2>Developers</h2>
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li>Jon Goetz <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-4993-1119" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li>Carl James Schwarz <br><small class="roles"> Author </small>  </li>
-<li><a href="authors.html">All authors...</a></li>
+<li><a href="authors.html#citation">Citing fasstr</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md"><img src="https://img.shields.io/badge/Lifecycle-Stable-97ca00" alt="img"></a></li>
-<li><a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License"></a></li>
-<li><a href="https://github.com/bcgov/fasstr/actions"><img src="https://github.com/bcgov/fasstr/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li>Jon Goetz <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-4993-1119" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Carl James Schwarz <br><small class="roles"> Author </small>  </li>
+<li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md" class="external-link"><img src="https://img.shields.io/badge/Lifecycle-Stable-97ca00" alt="img"></a></li>
+<li><a href="https://opensource.org/licenses/Apache-2.0" class="external-link"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License"></a></li>
+<li><a href="https://github.com/bcgov/fasstr/actions" class="external-link"><img src="https://github.com/bcgov/fasstr/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+</ul>
 </div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Jon Goetz, Carl James Schwarz.</p>
+  <p></p>
+<p>Developed by Jon Goetz, Carl James Schwarz.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
 </div>
 
       </footer>
@@ -265,6 +283,8 @@
 
   
 
+
+  
 
   </body>
 </html>

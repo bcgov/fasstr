@@ -393,7 +393,8 @@ missing_values_warning_noNA <- function(x) {
 
 missing_values_warning <- function(x) {
   if (anyNA(x)) 
-    warning("One or more calculations included missing values and NA's were produced. Filter data for complete years or months, or use to ignore_missing = TRUE to ignore missing values.", call. = FALSE)
+    warning(paste0("One or more calculations included missing values and NA's were produced. If desired, filter data for complete years or months,",
+                   " or use the 'ignore_missing' or 'allowed_missing' arguments (if applicable) to ignore or allow some missing values."), call. = FALSE)
 }
 
 # For annual timing, normals
@@ -404,7 +405,7 @@ missing_complete_yr_warning <- function(x) {
 
 zyp_method_checks <- function(zyp_method) {
   if (is.na(zyp_method) | !zyp_method %in% c("yuepilon", "zhang") )   
-    stop('zyp_trending argument must be either "zhang" or "yuepilon". "zhang" is recommended for hydrologic applications over "yuepilon".', 
+    stop('zyp_trending argument must be either "zhang" or "yuepilon". "zhang" is recommended for hydrologic applications.', 
          call. = FALSE)
 }
 
@@ -433,6 +434,27 @@ ptile_ribbons_checks <- function(inner_percentiles, outer_percentiles){
     if (!all(is.na(outer_percentiles)) & (!all(outer_percentiles > 0 & outer_percentiles < 100)) )  
       stop("outer_percentiles must be >0 and <100)", call. = FALSE)
   }
+}
+
+# new argument allows existing ignore_missing to work the same, with added usage of percentage missing
+allowed_missing_checks <- function(allowed_missing, ignore_missing) {
+  if (length(allowed_missing) > 1)        
+    stop(paste0("Only one '", allowed_missing, "' value can be listed."), call. = FALSE)
+  if (!dplyr::between(allowed_missing, 0 ,100))  
+    stop(paste0("'", allowed_missing, "' value must be a number between 0 and 100."), call. = FALSE)
+  if (!is.numeric(allowed_missing))                   
+    stop(paste0("'", allowed_missing, "' value must be a number between 0 and 100."), call. = FALSE)
+  if (ignore_missing & allowed_missing == 0) {
+    ignore_missing <- FALSE
+    ## remove this notes?
+    warning(paste0("With 'ignore_missing = TRUE' and '", allowed_missing," = 0', '",
+                   allowed_missing, "' supercedes 'ignore_missing' and values will",
+                   " return NA if any missing data."), call. = FALSE)
+  }
+}
+# ignore_missing replacement: if percent of NA is greater than allowed, dont calc, otherwise do so
+allowed_narm <- function(value, allowed_missing){
+  ifelse(sum(is.na(value)/length(value))*100 >= allowed_missing, FALSE, TRUE)
 }
 
 no_values_error <- function(values) {

@@ -29,6 +29,8 @@
 #'  }
 #' 
 #' @inheritParams calc_all_annual_stats
+#' @param months Numeric vector of months to include in analysis (e.g. \code{6:8} for Jun-Aug). Leave blank to summarize 
+#'    all months (default \code{1:12}). If not all months, seasonal total yield and volumetric flows will not be included.
 #' @param zyp_method Character string identifying the prewhitened trend method to use from \code{zyp}, either \code{'zhang'}
 #'     or \code{'yuepilon'}. \code{'zhang'} is recommended over \code{'yuepilon'} for hydrologic applications (Bürger 2017; 
 #'     Zhang and Zwiers 2004). Required.
@@ -99,6 +101,7 @@ compute_annual_trends <- function(data,
                                   start_year,
                                   end_year,
                                   exclude_years,
+                                  months = 1:12,
                                   annual_percentiles = c(10,90),
                                   monthly_percentiles = c(10,20),
                                   stats_days = 1,
@@ -108,6 +111,8 @@ compute_annual_trends <- function(data,
                                   timing_percent = c(25,33,50,75),
                                   normal_percentiles = c(25,75),
                                   ignore_missing = FALSE,
+                                  allowed_missing_annual = ifelse(ignore_missing,100,0),
+                                  allowed_missing_monthly = ifelse(ignore_missing,100,0),
                                   include_plots = TRUE,
                                   zyp_alpha){       
   
@@ -171,6 +176,7 @@ compute_annual_trends <- function(data,
                                        start_year = start_year,
                                        end_year = end_year,
                                        exclude_years = exclude_years,
+                                       months = months,
                                        annual_percentiles = annual_percentiles,
                                        monthly_percentiles = monthly_percentiles,
                                        stats_days = stats_days,
@@ -180,7 +186,9 @@ compute_annual_trends <- function(data,
                                        timing_percent = timing_percent,
                                        normal_percentiles = normal_percentiles,
                                        transpose = TRUE,
-                                       ignore_missing = ignore_missing)
+                                       ignore_missing = ignore_missing,
+                                       allowed_missing_annual = allowed_missing_annual,
+                                       allowed_missing_monthly = allowed_missing_monthly)
   
   # Compute some summary stats on the input data
   colnames(trends_data)[2] <- "Statistic"

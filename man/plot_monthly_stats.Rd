@@ -19,6 +19,7 @@ plot_monthly_stats(
   exclude_years,
   months = 1:12,
   ignore_missing = FALSE,
+  allowed_missing = ifelse(ignore_missing, 100, 0),
   log_discharge = FALSE,
   include_title = FALSE
 )
@@ -65,6 +66,11 @@ all months (default \code{1:12}).}
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from
 time periods with no missing dates will be returned. Default \code{FALSE}.}
+
+\item{allowed_missing}{Numeric value between 0 and 100 indicating the \strong{percentage} of missing dates allowed to be
+included to calculate a statistic (0 to 100 percent). If \code{'ignore_missing = FALSE'} then it defaults to \code{0} (zero missing dates allowed),
+if \code{'ignore_missing = TRUE'} then it defaults to \code{100} (any missing dates allowed); consistent with 
+\code{ignore_missing} usage. Supersedes \code{ignore_missing} when used.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
 

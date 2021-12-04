@@ -20,6 +20,8 @@
 #'
 #' @inheritParams calc_annual_stats
 #' @inheritParams add_basin_area
+#' @param months Numeric vector of months to include in analysis (e.g. \code{6:8} for Jun-Aug). Leave blank to summarize 
+#'    all months (default \code{1:12}). If not all months, seasonal total yield and volumetric flows will not be included.
 #' @param use_yield Logical value indicating whether to calculate area-based water yield, in mm, instead of volumetric discharge. 
 #'     Default \code{FALSE}.
 #' @param include_seasons Logical value indication whether to include seasonal yields or volumetric discharges. Default \code{TRUE}.
@@ -96,6 +98,9 @@ calc_annual_cumulative_stats <- function(data,
     basin_area <- NA
   }
   
+  if (include_seasons & !all(1:12 %in% months)) {
+    warning("Since not all months are selected, seasonal totals will not be included.", call. = FALSE)
+  }
 
   use_yield_checks(use_yield)
   water_year_checks(water_year_start)
@@ -180,7 +185,7 @@ calc_annual_cumulative_stats <- function(data,
   
   # Calculate seasonal stats
   
-  if(include_seasons) {
+  if(include_seasons & all(1:12 %in% months)) {
     
     # Calculate two-seasons stats
     seasons2_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear, Seasons2),

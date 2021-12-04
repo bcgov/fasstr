@@ -124,6 +124,7 @@ calc_annual_outside_normal <- function(data,
   # Filter the data for the start and end years
   flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
   flow_data <- dplyr::mutate(flow_data, Value = replace(Value, WaterYear %in% exclude_years, NA))
+  flow_data <- dplyr::filter(flow_data, Month %in% months)
   
   # Stop if all data is NA
   no_values_error(flow_data$RollingValue)

@@ -67,7 +67,8 @@ calc_annual_peaks <- function(data,
                               exclude_years, 
                               months = 1:12,
                               transpose = FALSE,
-                              ignore_missing = FALSE){
+                              ignore_missing = FALSE,
+                              allowed_missing = ifelse(ignore_missing,100,0)){
   
   
   ## ARGUMENT CHECKS
@@ -95,6 +96,7 @@ calc_annual_peaks <- function(data,
   months_checks(months)
   transpose_checks(transpose)
   ignore_missing_checks(ignore_missing)
+  allowed_missing_checks(allowed_missing, ignore_missing)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -145,10 +147,10 @@ calc_annual_peaks <- function(data,
   
   # Calculate the mins and dates
   peak_stats_temp <- dplyr::summarize(dplyr::group_by(flow_data_temp, STATION_NUMBER, WaterYear),
-                                      MIN_VALUE = min(RollingValue, na.rm = ignore_missing),	     
+                                      MIN_VALUE = min(RollingValue, na.rm = allowed_narm(RollingValue, allowed_missing)),	     
                                       MIN_DAY = ifelse(is.na(MIN_VALUE), NA, DayofYear[which(RollingValue == MIN_VALUE)]),
                                       MIN_DATE = ifelse(is.na(MIN_VALUE), NA, Date[which(RollingValue == MIN_VALUE)]),
-                                      MAX_VALUE = max(RollingValue, na.rm = ignore_missing),	     
+                                      MAX_VALUE = max(RollingValue, na.rm = allowed_narm(RollingValue, allowed_missing)),	     
                                       MAX_DAY = ifelse(is.na(MAX_VALUE), NA, DayofYear[which(RollingValue == MAX_VALUE)]),
                                       MAX_DATE = ifelse(is.na(MAX_VALUE), NA, Date[which(RollingValue == MAX_VALUE)]))
   class(peak_stats_temp$MIN_DATE) <- "Date" # fixes ifelse and date issue

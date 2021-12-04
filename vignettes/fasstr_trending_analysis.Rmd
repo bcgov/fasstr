@@ -24,7 +24,7 @@ This vignette documents the usage of the `compute_annual_trends()` function in `
 
 ## Overview
 
-Determining trends in streamflow data can provide information on potential changes in hydrological processes over time. The annual trending analysis with `fasstr` allows for customization of both the inputs and outputs. This function takes 107 annual streamflow metrics (calculated using various annual `fasstr` functions) and calculates prewhitened, non-parametric trends using the [`zyp`](https://CRAN.R-project.org/package=zyp) R package. See the `zyp` [documentation](https://CRAN.R-project.org/package=zyp/zyp.pdf) for more information on the methods.
+Determining trends in streamflow data can provide information on potential changes in hydrological processes over time. The annual trending analysis with `fasstr` allows for customization of both the inputs and outputs. This function takes up to 107 annual streamflow metrics (calculated using various annual `fasstr` functions) and calculates prewhitened, non-parametric trends using the Mann-Kendall test performed using the [`zyp`](https://CRAN.R-project.org/package=zyp) R package. See the `zyp` [documentation](https://CRAN.R-project.org/package=zyp/zyp.pdf) for more information on the methods.
 
 Each annual metric/time-series is analyzed for trends using trend-free prewhitening to remove lag-1 correlation (may artificially detect a significant trend). The slope of each metric over time is then estimated using the Theil-Sen approach. If the estimated slope is different from zero, then the data are detrended by the slope and the AR(1) 1s calculated for the detrended time series. The residuals and the trend are combined and then tested for significance using the Mann-Kendall trend test.
 
@@ -55,7 +55,7 @@ This function is provided to calculate trends on a multitude of annual metrics, 
 - `calc_annual_outside_normal()` - calculate annual days above and below normal
 - `calc_monthly_stats()` - calculate annual monthly summary statistics
 
-While each of the different metrics have default variables for their arguments, many of them can be customized.  The following table shows which arguments are used for which statistics and what the defaults are.  See the documentation for more information.
+While each of the different metrics have default variables for their arguments, many of them can be customized. The following table shows which arguments are used for which statistics and what the defaults are.  See the documentation for more information.
 
 Argument             | Corresponding Function     |  Default
 ---------------------|----------------------|----------------------------------------------
@@ -67,6 +67,8 @@ Argument             | Corresponding Function     |  Default
 `lowflow_align`        | `calc_annual_lowflows()` | `"right"`
 `timing_percent`       | `calc_annual_flow_timing()` | `c(25,33.3,50,75)`
 `normal_percentiles`   | `calc_annual_outside_normal()` | `c(25,75)`
+
+With fasstr version 0.4.0, the `months` argument is now included in the trending function to specify which months of the year to include for trending. For example, selecting `months = 7:9` means that all annual and monthly statistics will be calculated just from July through September to be tested for trends. This gives the user more flexibility to trend more statistics. Since selecting months may complicate seasonal totals, seasonal yields and seasonal volumes are not included in the results if not all 12 months are selected.
 
 #### Examples
 
@@ -94,6 +96,14 @@ compute_annual_trends(station_number = "08NM116",
                       normal_percentiles = c(25,75))
 ```
 
+Example with custom months arguments that will trend data only from May through September:
+
+```{r, eval=FALSE}
+compute_annual_trends(station_number = "08NM116",
+                      zyp_method = "zhang",
+                      start_year = 1973, end_year = 2013,
+                      months = 5:9)
+```
 
 This annual data is provided in the **Annual_Trends_Data** tibble objects.  The following is an example of the output, including all the annual metrics and a first few years of data used for the `zyp` trends analysis:
 

@@ -67,6 +67,7 @@ plot_monthly_cumulative_stats <- function(data,
                                           start_year,
                                           end_year,
                                           exclude_years,
+                                          months = 1:12,
                                           log_discharge = FALSE,
                                           include_title = FALSE,
                                           add_year){
@@ -126,7 +127,8 @@ plot_monthly_cumulative_stats <- function(data,
                                                  water_year_start = water_year_start,
                                                  start_year = start_year,
                                                  end_year = end_year,
-                                                 exclude_years = exclude_years)
+                                                 exclude_years = exclude_years,
+                                                 months = months)
   
   
   ## ADD YEAR IF SELECTED
@@ -139,10 +141,12 @@ plot_monthly_cumulative_stats <- function(data,
     
     # Add cumulative flows
     if (use_yield){
-      year_data <- add_cumulative_yield(data = year_data, water_year_start = water_year_start, basin_area = basin_area)
+      year_data <- add_cumulative_yield(data = year_data, water_year_start = water_year_start, basin_area = basin_area,
+                                        months = months)
       year_data$Cumul_Flow <- year_data$Cumul_Yield_mm
     } else {
-      year_data <- add_cumulative_volume(data = year_data, water_year_start = water_year_start)
+      year_data <- add_cumulative_volume(data = year_data, water_year_start = water_year_start,
+                                         months = months)
       year_data$Cumul_Flow <- year_data$Cumul_Volume_m3
     }
     

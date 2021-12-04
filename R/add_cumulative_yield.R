@@ -19,7 +19,9 @@
 #'
 #' @inheritParams calc_annual_stats
 #' @inheritParams add_basin_area
-#' 
+#' @param months Numeric vector of months to add cumulative flows (e.g. \code{6:8} for Jun-Aug). Leave blank to accumulate 
+#'    all months (default \code{1:12}).
+#'    
 #' @return A tibble data frame of the source data with an additional column:
 #'   \item{Cumul_Yield_mm}{cumulative yield flows for each day for each year, in units of millimetres}
 #'
@@ -46,7 +48,8 @@ add_cumulative_yield <- function(data,
                                  groups = STATION_NUMBER,
                                  station_number,
                                  basin_area,
-                                 water_year_start = 1){
+                                 water_year_start = 1,
+                                 months = 1:12){
   
   
   
@@ -63,6 +66,7 @@ add_cumulative_yield <- function(data,
   }
   
   water_year_checks(water_year_start)
+  months_checks(months)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -96,7 +100,8 @@ add_cumulative_yield <- function(data,
   # Fill missing dates, add date variables, and add AnalysisYear
   flow_data_temp <- analysis_prep(data = flow_data, 
                                   water_year_start = water_year_start)
-  
+  flow_data_temp <- dplyr::filter(flow_data_temp,
+                                  Month %in% months)
   
   ## ADD VOLUME COLUMN
   ## -----------------

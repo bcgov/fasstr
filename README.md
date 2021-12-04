@@ -110,7 +110,7 @@ options.
 
 #### Cheatsheet
 
-<a href="https://github.com/bcgov/fasstr/raw/master/fasstr_cheatsheet.pdf"><img src="man/figures/fasstr_cheatsheet.png" width="630" height="252"/></a>
+<a href="https://github.com/bcgov/fasstr/raw/main/fasstr_cheatsheet.pdf"><img src="man/figures/fasstr_cheatsheet.png" width="630" height="252"/></a>
 
 #### Data Input
 
@@ -257,7 +257,10 @@ decide how to handle dates with missing flow values in calculations.
 When you set `ignore_missing = TRUE` a statistic will be calculated for
 a given year, all years, or month regardless of if there are missing
 flow values. When `ignore_missing = FALSE` the returned value for the
-period will be `NA` if there are missing values.
+period will be `NA` if there are missing values. To allow some missing
+dates and still calculate statistics, some functions also including the
+`allowed_missing` argument where you provide a percentage (0 to 100) of
+missing days per time period.
 
 Some functions have an argument called `complete_years` which can be
 used, when set to `TRUE`, to filter out years that have partial data
@@ -275,7 +278,7 @@ East Kelowna’ hydrometric station is of interest you can list the
 station number in the `station_number` argument to obtain the data (if
 `tidyhydat` and HYDAT are installed). Statistics over several months can
 also be calculated, if of interest. See the summer statistics (from July
-to Septmber) in this example.
+to September) in this example.
 
 ``` r
 calc_longterm_daily_stats(station_number = "08NM116", 

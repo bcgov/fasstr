@@ -15,7 +15,7 @@ library(fasstr)
 
 `fasstr`, the Flow Analysis Summary Statistics Tool for R, is a set of [R](https://www.r-project.org/) functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.
 
-This vignette guide contains a look at the steps and internal functions used within the various `fasstr` functions. It includes descriptions of the function and steps on data importing, tidying and wrangling, filtering, analyzing, and plotting. It also describes some of the functions in the internal [utils.R file](https://github.com/bcgov/fasstr/blob/master/R/utils.R) and the packages required to use the `fasstr` package.
+This vignette guide contains a look at the steps and internal functions used within the various `fasstr` functions. It includes descriptions of the function and steps on data importing, tidying and wrangling, filtering, analyzing, and plotting. It also describes some of the functions in the internal [utils.R file](https://github.com/bcgov/fasstr/blob/main/R/utils.R) and the packages required to use the `fasstr` package.
 
 
 ## Introduction
@@ -37,7 +37,7 @@ This vignette is broken into the following sections that describe some of the wo
 
 ## 1. Data Importing and Checking
 
-The `fasstr` functions primarily require daily mean streamflow data in cubic metres per second. As such, columns of dates and values are required. Many `fasstr` functions can analyze multiple stations (using grouping functions) so a column to group data by (typically station numbers) can be provided. Other types of data can be used (climate, water level, etc), but plots and some conversions are based on the units of discharge. As there are two ways to provide daily data to the `fasstr` functions, the `data` and the `station_number` arguments, there are several internal functions stored in the [utils.R file](https://github.com/bcgov/fasstr/blob/master/R/utils.R) that checks the data and formats the columns to ensure the data is prepared for the analysis. The following describes the steps to ensure data is consistently set up for analysis.
+The `fasstr` functions primarily require daily mean streamflow data in cubic metres per second. As such, columns of dates and values are required. Many `fasstr` functions can analyze multiple stations (using grouping functions) so a column to group data by (typically station numbers) can be provided. Other types of data can be used (climate, water level, etc), but plots and some conversions are based on the units of discharge. As there are two ways to provide daily data to the `fasstr` functions, the `data` and the `station_number` arguments, there are several internal functions stored in the [utils.R file](https://github.com/bcgov/fasstr/blob/main/R/utils.R) that checks the data and formats the columns to ensure the data is prepared for the analysis. The following describes the steps to ensure data is consistently set up for analysis.
 
 The first step is to import daily data. The internal `flowdata_import()` function provides checks on the `data` and `station_number` arguments, and either extracts daily data from HYDAT (returns an error if the number isn't in HYDAT) using the `tidyhydat` package, or makes sure that `data` is in fact a data frame.
 
@@ -297,7 +297,7 @@ plots
 
 ## 5. Internal Functions (utils.R file)
 
-Within the package there is an R file called [utils.R](https://github.com/bcgov/fasstr/blob/master/R/utils.R) that contains a list of functions that are used repeatedly throughout the various `fasstr` functions to minimize repetition. These functions are used internally and are not exported from the package.
+Within the package there is an R file called [utils.R](https://github.com/bcgov/fasstr/blob/main/R/utils.R) that contains a list of functions that are used repeatedly throughout the various `fasstr` functions to minimize repetition. These functions are used internally and are not exported from the package.
 
 At the top of the file are several data formatting and wrangling functions:
 

@@ -1,3 +1,45 @@
+fasstr 0.4.0
+=========================
+
+Updated: 3 Dec 2021
+
+#### Updates:
+
+  * added flexible 'allowed_missing' argument to applicable functions, that allows users to choose the percentage of missing
+    dates, rather than binary ignore_missing. ignore_missing argument still functions as it should (to maintain historical and
+    future use), and is only superseded when allowed_missing argument is utilized. This argument is currently applied to functions 
+    that make most logical sense (annual and monthly functions) and are appropriate for calculations, i.e. basin summary statistics
+    (means, percentiles, minimums, maximums). Versions of this, allowed_missing_annual and allowed_missing_monthly, exists for some
+    functions that have both annual and monthly statistics and may have different allowances; only applied to summary statistics.
+    The new argument is applied to the following functions:
+    * allowed_missing argument: calc_annual_lowflows(), calc_annual_peaks(), calc_annual_stats(), calc_monthly_stats(), 
+      compute_annual_frequencies(), compute_frequency_quantile(), plot_annual_stats(), plot_annual_lowflows(), 
+      plot_annual_means(), plot_monthly_stats() 
+    * allowed_missing_annual and allowed_missing_monthly: calc_all_annual_stats(), compute_annual_trends(),
+      compute_full_analysis(), write_full_analysis()
+    
+  * added 'months' argument to following functions (covers all screen_, calc_, plot_, and compute_ functions now):
+    * plot_flow_data() - will plot only data from selected months
+    * add_cumulative_yield() and add_cumulative_volume() - will accumulate flows just in selected months
+    * plot_longterm_daily_stats() - no ribbons where data gaps
+    * plot_longterm_monthly_stats() - no ribbons where data gaps
+    * calc_ and plot_daily_cumulative_stats() - will accumulate flows just in selected months
+    * calc_ and plot_monthly_cumulative_stats() - will accumulate flows just in selected months
+    * calc_ and plot_annual_cumulative_stats() - will only use months select, won't calc seasonal totals if not all months
+    * calc_ and plot_annual_flow_timing() - will use timing from just selected months
+    * calc_all_annual_stats() - will only use months select, won't calc seasonal totals if not all months
+    * compute_annual_trends() - will only use months select, won't calc seasonal totals if not all months
+    * compute_ and write_full_analysis() - will only use months select, won't calc seasonal totals if not all months
+    
+  * Updated 'Users Guide' vignette and Cheat Sheet with new argument updates
+  * New vignette for GitHub Page: Using USGS dataRetrieval R package with fasstr
+  * fixed bug: multiple custom groups/STATION_NUMBER's appropriately match to data when using a named vector
+  * fixed bug: plot_daily_cumulative_stats() now plots accurate custom years
+  * fixed bug: removed unnecessary legend items from plot_flow_duration()
+  * fixed bug: corrected 'months' argument in calc_ and plot_annual_outside_normal() to properly filter
+  * fixed bug: removed unnecessary NA warning in plot_longterm_daily and plot_longterm_monthly_stats
+  * renamed GitHub branches from 'master' to 'main' and updated web links
+  
 fasstr 0.3.3
 =========================
 
