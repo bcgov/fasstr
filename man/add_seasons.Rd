@@ -14,10 +14,10 @@ add_seasons(
 }
 \arguments{
 \item{data}{Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
-Leave blank if using \code{station_number} argument.}
+Leave blank or set to \code{NULL} if using \code{station_number} argument.}
 
 \item{dates}{Name of column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
-'Date' (default). Leave blank if using \code{station_number} argument.}
+'Date' (default). Leave blank or set to \code{NULL} if using \code{station_number} argument.}
 
 \item{station_number}{Character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.

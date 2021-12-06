@@ -10,7 +10,7 @@ compute_hydat_peak_frequencies(
   use_log = FALSE,
   prob_plot_position = c("weibull", "median", "hazen"),
   prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5, 0.2, 0.1, 0.02, 0.01, 0.001,
-    0.0001),
+    1e-04),
   fit_distr = c("PIII", "weibull"),
   fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
   fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1, 0.05, 0.01),
@@ -47,11 +47,13 @@ moments) or \code{'MLE'} (maximum likelihood estimation). Selected as \code{'MOM
 \item{fit_quantiles}{Numeric vector of quantiles to be estimated from the fitted distribution. 
 Default \code{c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)}.}
 
-\item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
+\item{start_year}{Numeric value of the first year to consider for analysis. Leave blank or set well before start date (i.e.
+\code{1800}) to use from the first year of the source data.}
 
-\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
+\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank or set well after end date (i.e.
+\code{2100}) to use up to the last year of the source data.}
 
-\item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
+\item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank or set to \code{NULL} to include all years.}
 
 \item{plot_curve}{Logical value to indicate plotting the computed curve on the probability plot. Default \code{TRUE}.}
 }

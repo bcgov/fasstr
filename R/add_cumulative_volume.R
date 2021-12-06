@@ -17,8 +17,8 @@
 #'    The cumulative flows restart every year and are only calculated in years with complete data.
 #'
 #' @inheritParams calc_annual_stats
-#' @param months Numeric vector of months to add cumulative flows (e.g. \code{6:8} for Jun-Aug). Leave blank to accumulate 
-#'    all months (default \code{1:12}).
+#' @param months Numeric vector of months to add cumulative flows (e.g. \code{6:8} for Jun-Aug). Default accumulates 
+#'    to full years using all months (\code{1:12}).
 #'    
 #' @return A tibble data frame of the source data with an additional column:
 #'   \item{Cumul_Volume_m3}{cumulative volumetric flows for each day for each year, in units of cubic metres}

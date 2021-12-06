@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
       </span>
     </div>
 
@@ -115,7 +115,7 @@
   use_log <span class="op">=</span> <span class="cn">FALSE</span>,
   prob_plot_position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"weibull"</span>, <span class="st">"median"</span>, <span class="st">"hazen"</span><span class="op">)</span>,
   prob_scale_points <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.9999</span>, <span class="fl">0.999</span>, <span class="fl">0.99</span>, <span class="fl">0.9</span>, <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>, <span class="fl">0.02</span>, <span class="fl">0.01</span>, <span class="fl">0.001</span>,
-    <span class="fl">0.0001</span><span class="op">)</span>,
+    <span class="fl">1e-04</span><span class="op">)</span>,
   fit_distr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PIII"</span>, <span class="st">"weibull"</span><span class="op">)</span>,
   fit_distr_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">fit_distr</span> <span class="op">==</span> <span class="st">"PIII"</span>, <span class="st">"MOM"</span>, <span class="st">"MLE"</span><span class="op">)</span>,
   fit_quantiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.975</span>, <span class="fl">0.99</span>, <span class="fl">0.98</span>, <span class="fl">0.95</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span>, <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>, <span class="fl">0.05</span>, <span class="fl">0.01</span><span class="op">)</span>,
@@ -154,11 +154,13 @@ moments) or <code>'MLE'</code> (maximum likelihood estimation). Selected as <cod
 <dd><p>Numeric vector of quantiles to be estimated from the fitted distribution. 
 Default <code>c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)</code>.</p></dd>
 <dt>start_year</dt>
-<dd><p>Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.</p></dd>
+<dd><p>Numeric value of the first year to consider for analysis. Leave blank or set well before start date (i.e.
+<code>1800</code>) to use from the first year of the source data.</p></dd>
 <dt>end_year</dt>
-<dd><p>Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.</p></dd>
+<dd><p>Numeric value of the last year to consider for analysis. Leave blank or set well after end date (i.e.
+<code>2100</code>) to use up to the last year of the source data.</p></dd>
 <dt>exclude_years</dt>
-<dd><p>Numeric vector of years to exclude from analysis. Leave blank to include all years.</p></dd>
+<dd><p>Numeric vector of years to exclude from analysis. Leave blank or set to <code>NULL</code> to include all years.</p></dd>
 <dt>plot_curve</dt>
 <dd><p>Logical value to indicate plotting the computed curve on the probability plot. Default <code>TRUE</code>.</p></dd>
 </dl></div>

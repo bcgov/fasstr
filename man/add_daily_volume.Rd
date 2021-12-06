@@ -8,7 +8,7 @@ add_daily_volume(data, values = Value, station_number)
 }
 \arguments{
 \item{data}{Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
-Leave blank if using \code{station_number} argument.}
+Leave blank or set to \code{NULL} if using \code{station_number} argument.}
 
 \item{values}{Name of column in \code{data} that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}

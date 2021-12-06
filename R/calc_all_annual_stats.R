@@ -30,8 +30,9 @@
 #' @inheritParams calc_annual_stats
 #' @inheritParams calc_annual_cumulative_stats
 #' @inheritParams calc_annual_outside_normal
-#' @param months Numeric vector of months to include in analysis (e.g. \code{6:8} for Jun-Aug). Leave blank to summarize 
-#'    all months (default \code{1:12}). If not all months, seasonal total yield and volumetric flows will not be included.
+#' @param months Numeric vector of months to include in analysis. For example, \code{3} for March, \code{6:8} for Jun-Aug or 
+#'    \code{c(10:12,1)} for first four months (Oct-Jan) when \code{water_year_start = 10} (Oct). Default summarizes all 
+#'    months (\code{1:12}). If not \code{1:12}, seasonal total yield and volumetric flows will not be included.
 #' @param annual_percentiles Numeric vector of percentiles to calculate annually. Set to \code{NA} if none required. Used for
 #'    \code{calc_annual_stats()} function. Default \code{c(10,90)}.
 #' @param monthly_percentiles Numeric vector of percentiles to calculate monthly for each year. Set to \code{NA} if none required. 

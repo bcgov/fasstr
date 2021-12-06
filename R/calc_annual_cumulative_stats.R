@@ -20,8 +20,8 @@
 #'
 #' @inheritParams calc_annual_stats
 #' @inheritParams add_basin_area
-#' @param months Numeric vector of months to include in analysis (e.g. \code{6:8} for Jun-Aug). Leave blank to summarize 
-#'    all months (default \code{1:12}). If not all months, seasonal total yield and volumetric flows will not be included.
+#' @param months Numeric vector of months to include in analysis (e.g. \code{6:8} for Jun-Aug). Default summarizes all 
+#'    months (\code{1:12}). If not all months, seasonal total yield and volumetric flows will not be included.
 #' @param use_yield Logical value indicating whether to calculate area-based water yield, in mm, instead of volumetric discharge. 
 #'     Default \code{FALSE}.
 #' @param include_seasons Logical value indication whether to include seasonal yields or volumetric discharges. Default \code{TRUE}.

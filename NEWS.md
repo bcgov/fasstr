@@ -1,3 +1,12 @@
+fasstr 0.4.1
+=========================
+
+Updated: 6 Dec 2021
+
+#### Updates:
+
+  * Updated documentation - more clear 'months' and other param descriptions
+
 fasstr 0.4.0
 =========================
 

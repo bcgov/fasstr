@@ -20,7 +20,8 @@
 #'
 #' @inheritParams calc_longterm_monthly_stats
 #' @inheritParams plot_annual_stats
-#' @param add_year Numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.
+#' @param add_year Numeric value indicating a year of daily flows to add to the daily statistics plot.  Leave blank
+#'    or set to \code{NULL} for no years.
 #' @param include_extremes Logical value to indicate plotting a ribbon with the range of daily minimum and maximum flows. 
 #'    Default \code{TRUE}.
 #' @param inner_percentiles Numeric vector of two percentile values indicating the lower and upper limits of the 

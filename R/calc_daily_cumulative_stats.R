@@ -18,8 +18,9 @@
 #'
 #' @inheritParams calc_daily_stats
 #' @inheritParams calc_annual_cumulative_stats
-#' @param months Numeric vector of months to add cumulative flows (e.g. \code{6:8} for Jun-Aug). Leave blank to accumulate 
-#'    all months (default \code{1:12}). Need to be consecutive months for given year/water year to work properly.
+#' @param months Numeric vector of months to include in analysis. For example, \code{3} for March, \code{6:8} for Jun-Aug or 
+#'    \code{c(10:12,1)} for first four months (Oct-Jan) when \code{water_year_start = 10} (Oct). Default summarizes all 
+#'    months (\code{1:12}). Need to be consecutive months for given year/water year to work properly.
 #'    
 #' @return A data frame with the following columns, default units in cubic metres, millimetres if use_yield and basin_area provided:
 #'   \item{Date}{date (MMM-DD) of daily cumulative statistics}

@@ -29,10 +29,10 @@ plot_longterm_monthly_stats(
 }
 \arguments{
 \item{data}{Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
-Leave blank if using \code{station_number} argument.}
+Leave blank or set to \code{NULL} if using \code{station_number} argument.}
 
 \item{dates}{Name of column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
-'Date' (default). Leave blank if using \code{station_number} argument.}
+'Date' (default). Leave blank or set to \code{NULL} if using \code{station_number} argument.}
 
 \item{values}{Name of column in \code{data} that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
@@ -55,14 +55,17 @@ Default \code{'right'}.}
 \item{water_year_start}{Numeric value indicating the month (\code{1} through \code{12}) of the start of water year for
 analysis. Default \code{1}.}
 
-\item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
+\item{start_year}{Numeric value of the first year to consider for analysis. Leave blank or set well before start date (i.e.
+\code{1800}) to use from the first year of the source data.}
 
-\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
+\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank or set well after end date (i.e.
+\code{2100}) to use up to the last year of the source data.}
 
-\item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
+\item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank or set to \code{NULL} to include all years.}
 
-\item{months}{Numeric vector of months to include in analysis (e.g. \code{6:8} for Jun-Aug). Leave blank to summarize 
-all months (default \code{1:12}).}
+\item{months}{Numeric vector of months to include in analysis. For example, \code{3} for March, \code{6:8} for Jun-Aug or 
+\code{c(10:12,1)} for first four months (Oct-Jan) when \code{water_year_start = 10} (Oct). Default summarizes all 
+months (\code{1:12}).}
 
 \item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 
@@ -79,7 +82,8 @@ inner percentiles ribbon for plotting. Default \code{c(25,75)}, set to \code{NUL
 \item{outer_percentiles}{Numeric vector of two percentile values indicating the lower and upper limits of the 
 outer percentiles ribbon for plotting. Default \code{c(5,95)}, set to \code{NULL} for no outer ribbon.}
 
-\item{add_year}{Numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.}
+\item{add_year}{Numeric value indicating a year of daily flows to add to the daily statistics plot.  Leave blank
+or set to \code{NULL} for no years.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
 
