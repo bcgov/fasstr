@@ -94,6 +94,7 @@ plot_annual_cumulative_stats <- function(data,
   }
   
   log_discharge_checks(log_discharge) 
+  log_ticks_checks(log_ticks, log_discharge)
   include_title_checks(include_title)   
   
   if (include_seasons & !all(1:12 %in% months)) {

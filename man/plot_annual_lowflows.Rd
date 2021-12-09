@@ -19,7 +19,6 @@ plot_annual_lowflows(
   months = 1:12,
   ignore_missing = FALSE,
   allowed_missing = ifelse(ignore_missing, 100, 0),
-  log_discharge = FALSE,
   include_title = FALSE
 )
 }
@@ -71,8 +70,6 @@ time periods with no missing dates will be returned. Default \code{FALSE}.}
 included to calculate a statistic (0 to 100 percent). If \code{'ignore_missing = FALSE'} then it defaults to \code{0} (zero missing dates allowed),
 if \code{'ignore_missing = TRUE'} then it defaults to \code{100} (any missing dates allowed); consistent with 
 \code{ignore_missing} usage. Supersedes \code{ignore_missing} when used.}
-
-\item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 }

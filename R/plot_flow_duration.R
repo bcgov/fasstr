@@ -75,6 +75,7 @@ plot_flow_duration <- function(data,
                                months = 1:12,
                                include_longterm = TRUE,
                                log_discharge = TRUE,
+                               log_ticks = ifelse(log_discharge, TRUE, FALSE),
                                include_title = FALSE){
   
   
@@ -105,6 +106,7 @@ plot_flow_duration <- function(data,
   }
   
   log_discharge_checks(log_discharge)
+  log_ticks_checks(log_ticks, log_discharge)
   custom_months_checks(custom_months, custom_months_label)
   include_title_checks(include_title)
   include_longterm_checks(include_longterm)
@@ -199,8 +201,8 @@ plot_flow_duration <- function(data,
       ggplot2::ylab(y_axis_title) +
       ggplot2::xlab("% Time flow equalled or exceeded") +
       ggplot2::scale_color_manual(values = colour_list) +
-      ggplot2:: annotation_logticks(sides = "l", base = 10, colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"),
-                                    mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))+
+      {if (log_discharge & log_ticks) ggplot2:: annotation_logticks(sides = "l", base = 10, colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"),
+                                    mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))}+
       ggplot2::labs(color = 'Period') +
       {if (include_title & unique(.y) != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nPeriod')) } +
       ggplot2::theme_bw() +

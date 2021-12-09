@@ -24,6 +24,7 @@ plot_longterm_daily_stats(
   outer_percentiles = c(5, 95),
   add_year,
   log_discharge = TRUE,
+  log_ticks = ifelse(log_discharge, TRUE, FALSE),
   include_title = FALSE
 )
 }
@@ -86,6 +87,9 @@ outer percentiles ribbon for plotting. Default \code{c(5,95)}, set to \code{NULL
 or set to \code{NULL} for no years.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
+
+\item{log_ticks}{Logical value to indicate plotting logarithmic scale ticks when \code{log_discharge = TRUE}. Ticks will not
+appear when \code{log_discharge = FALSE}. Default to \code{TRUE} when \code{log_discharge = TRUE}.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 }

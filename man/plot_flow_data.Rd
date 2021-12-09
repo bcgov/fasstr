@@ -20,6 +20,7 @@ plot_flow_data(
   start_date,
   end_date,
   log_discharge = FALSE,
+  log_ticks = ifelse(log_discharge, TRUE, FALSE),
   plot_by_year = FALSE,
   one_plot = FALSE,
   include_title = FALSE
@@ -70,6 +71,9 @@ months (\code{1:12}).}
 \item{end_date}{Date (YYYY-MM-DD) of last date to consider for plotting. Leave blank if all years are required.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.}
+
+\item{log_ticks}{Logical value to indicate plotting logarithmic scale ticks when using a log-scale discharge axis.
+Default to \code{FALSE} when \code{log_discharge = FALSE} and \code{TRUE} when \code{log_discharge = TRUE}.}
 
 \item{plot_by_year}{Logical value to indicate whether to plot each year of data individually. Default \code{FALSE}.}
 

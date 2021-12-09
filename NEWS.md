@@ -1,11 +1,15 @@
 fasstr 0.4.1
 =========================
 
-Updated: 6 Dec 2021
+Updated: 9 Dec 2021
 
 #### Updates:
 
-  * Updated documentation - more clear 'months' and other param descriptions
+  * Updated documentation - 'months' and other param descriptions
+  * plot_flow_duration() - removed annotation ticks when not in log-scale
+  * added 'log_ticks' argument to customize adding annotation_ticks or not when log scale
+  * removed 'log_discharge' from plot_annual_lowflows()
+    
 
 fasstr 0.4.0
 =========================

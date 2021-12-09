@@ -23,6 +23,7 @@ plot_flow_duration(
   months = 1:12,
   include_longterm = TRUE,
   log_discharge = TRUE,
+  log_ticks = ifelse(log_discharge, TRUE, FALSE),
   include_title = FALSE
 )
 }
@@ -80,6 +81,9 @@ time periods with no missing dates will be returned. Default \code{FALSE}.}
 \item{include_longterm}{Logical value indicating whether to include long-term curve of all data. Default \code{TRUE}.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
+
+\item{log_ticks}{Logical value to indicate plotting logarithmic scale ticks when \code{log_discharge = TRUE}. Ticks will not
+appear when \code{log_discharge = FALSE}. Default to \code{TRUE} when \code{log_discharge = TRUE}.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 }

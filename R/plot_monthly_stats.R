@@ -68,6 +68,7 @@ plot_monthly_stats <- function(data,
                                ignore_missing = FALSE,
                                allowed_missing = ifelse(ignore_missing,100,0),
                                log_discharge = FALSE,
+                               log_ticks = ifelse(log_discharge, TRUE, FALSE),
                                include_title = FALSE){
   
   
@@ -94,7 +95,8 @@ plot_monthly_stats <- function(data,
     percentiles <- NA
   }
   
-  log_discharge_checks(log_discharge) 
+  log_discharge_checks(log_discharge)
+  log_ticks_checks(log_ticks, log_discharge)
   include_title_checks(include_title)
   
   
@@ -156,9 +158,10 @@ plot_monthly_stats <- function(data,
                          {if(length(unique(monthly_data$Year)) < 6) ggplot2::scale_x_continuous(breaks = unique(monthly_data$Year))}+
                          {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 6))} +
                          {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
-                         {if(log_discharge) ggplot2::annotation_logticks(base = 10, "left", colour = "grey25", size = 0.3,
-                                                                         short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
-                                                                         long = ggplot2::unit(.2, "cm"))} +
+                         {if(log_discharge & log_ticks) ggplot2::annotation_logticks(
+                           base = 10, "left", colour = "grey25", size = 0.3,
+                           short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
+                           long = ggplot2::unit(.2, "cm"))} +
                          ggplot2::ylab(y_axis_title) +
                          ggplot2::guides(colour = 'none') +
                          ggplot2::theme_bw() +

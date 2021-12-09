@@ -82,6 +82,7 @@ plot_longterm_monthly_stats <- function(data,
                                         outer_percentiles = c(5,95),
                                         add_year,
                                         log_discharge = TRUE,
+                                        log_ticks = ifelse(log_discharge, TRUE, FALSE),
                                         include_title = FALSE){
   
   ## ARGUMENT CHECKS
@@ -107,6 +108,7 @@ plot_longterm_monthly_stats <- function(data,
   }
   
   log_discharge_checks(log_discharge)
+  log_ticks_checks(log_ticks, log_discharge)
   include_title_checks(include_title)  
   ptile_ribbons_checks(inner_percentiles, outer_percentiles)
   
@@ -269,7 +271,7 @@ plot_longterm_monthly_stats <- function(data,
         ggplot2::geom_point(ggplot2::aes(y = Median), size = 2, na.rm = TRUE, colour = "dodgerblue4") +
         {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8))}+
         {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
-        {if(log_discharge) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(0.07, "cm"),
+        {if(log_discharge & log_ticks) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(0.07, "cm"),
                                                         mid = ggplot2::unit(0.15, "cm"), long = ggplot2::unit(0.2, "cm"))} +
         ggplot2::scale_x_discrete(expand = c(0.01,0.01)) +
         ggplot2::ylab(y_axis_title) +

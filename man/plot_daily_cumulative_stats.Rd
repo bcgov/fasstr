@@ -18,6 +18,7 @@ plot_daily_cumulative_stats(
   exclude_years,
   months = 1:12,
   log_discharge = FALSE,
+  log_ticks = ifelse(log_discharge, TRUE, FALSE),
   include_title = FALSE,
   add_year
 )
@@ -69,6 +70,9 @@ analysis. Default \code{1}.}
 months (\code{1:12}). Need to be consecutive months for given year/water year to work properly.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
+
+\item{log_ticks}{Logical value to indicate plotting logarithmic scale ticks when \code{log_discharge = TRUE}. Ticks will not
+appear when \code{log_discharge = FALSE}. Default to \code{TRUE} when \code{log_discharge = TRUE}.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 

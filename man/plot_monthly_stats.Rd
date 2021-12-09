@@ -21,6 +21,7 @@ plot_monthly_stats(
   ignore_missing = FALSE,
   allowed_missing = ifelse(ignore_missing, 100, 0),
   log_discharge = FALSE,
+  log_ticks = ifelse(log_discharge, TRUE, FALSE),
   include_title = FALSE
 )
 }
@@ -76,6 +77,9 @@ if \code{'ignore_missing = TRUE'} then it defaults to \code{100} (any missing da
 \code{ignore_missing} usage. Supersedes \code{ignore_missing} when used.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
+
+\item{log_ticks}{Logical value to indicate plotting logarithmic scale ticks when \code{log_discharge = TRUE}. Ticks will not
+appear when \code{log_discharge = FALSE}. Default to \code{TRUE} when \code{log_discharge = TRUE}.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 }
