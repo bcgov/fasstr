@@ -123,6 +123,7 @@
   <span class="va">start_date</span>,
   <span class="va">end_date</span>,
   log_discharge <span class="op">=</span> <span class="cn">FALSE</span>,
+  log_ticks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">log_discharge</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>,
   plot_by_year <span class="op">=</span> <span class="cn">FALSE</span>,
   one_plot <span class="op">=</span> <span class="cn">FALSE</span>,
   include_title <span class="op">=</span> <span class="cn">FALSE</span>
@@ -175,6 +176,9 @@ months (<code>1:12</code>).</p></dd>
 <dd><p>Date (YYYY-MM-DD) of last date to consider for plotting. Leave blank if all years are required.</p></dd>
 <dt>log_discharge</dt>
 <dd><p>Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default <code>TRUE</code>.</p></dd>
+<dt>log_ticks</dt>
+<dd><p>Logical value to indicate plotting logarithmic scale ticks when using a log-scale discharge axis.
+Default to <code>FALSE</code> when <code>log_discharge = FALSE</code> and <code>TRUE</code> when <code>log_discharge = TRUE</code>.</p></dd>
 <dt>plot_by_year</dt>
 <dd><p>Logical value to indicate whether to plot each year of data individually. Default <code>FALSE</code>.</p></dd>
 <dt>one_plot</dt>

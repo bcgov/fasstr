@@ -100,10 +100,14 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.4.1" id="fasstr-041">fasstr 0.4.1<a class="anchor" aria-label="anchor" href="#fasstr-041"></a></h2>
-<p>Updated: 6 Dec 2021</p>
+<p>Updated: 10 Dec 2021</p>
 <div class="section level5">
 <h5 id="updates-0-4-1">Updates:<a class="anchor" aria-label="anchor" href="#updates-0-4-1"></a></h5>
-<ul><li>Updated documentation - more clear ‘months’ and other param descriptions</li>
+<ul><li>Fixed major bug: Seasons identifiers were mislabeled when water_year_start &gt; 1 for add_seasons() and various functions use seasonal cumulative totals</li>
+<li>Updated documentation - ‘months’ and other param descriptions</li>
+<li>plot_flow_duration() - removed annotation ticks when not in log-scale</li>
+<li>added ‘log_ticks’ argument to customize adding annotation_ticks or not when log scale</li>
+<li>removed ‘log_discharge’ from plot_annual_lowflows()</li>
 </ul></div>
 </div>
     <div class="section level2">

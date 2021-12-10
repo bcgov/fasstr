@@ -122,7 +122,6 @@
   months <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span>,
   ignore_missing <span class="op">=</span> <span class="cn">FALSE</span>,
   allowed_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">ignore_missing</span>, <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span>,
-  log_discharge <span class="op">=</span> <span class="cn">FALSE</span>,
   include_title <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div></div>
 
@@ -176,8 +175,6 @@ time periods with no missing dates will be returned. Default <code>FALSE</code>.
 included to calculate a statistic (0 to 100 percent). If <code>'ignore_missing = FALSE'</code> then it defaults to <code>0</code> (zero missing dates allowed),
 if <code>'ignore_missing = TRUE'</code> then it defaults to <code>100</code> (any missing dates allowed); consistent with 
 <code>ignore_missing</code> usage. Supersedes <code>ignore_missing</code> when used.</p></dd>
-<dt>log_discharge</dt>
-<dd><p>Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default <code>FALSE</code>.</p></dd>
 <dt>include_title</dt>
 <dd><p>Logical value to indicate adding the group/station number to the plot, if provided. Default <code>FALSE</code>.</p></dd>
 </dl></div>

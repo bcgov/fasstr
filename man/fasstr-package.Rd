@@ -46,6 +46,7 @@ Authors:
 
 Other contributors:
 \itemize{
+  \item Sam Albers \email{sam.albers@gov.bc.ca} (\href{https://orcid.org/0000-0002-9270-7884}{ORCID}) [contributor]
   \item Robin Pike \email{robin.g.pike@gov.bc.ca} [contributor]
   \item Province of British Columbia [copyright holder]
 }

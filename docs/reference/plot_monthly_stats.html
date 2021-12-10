@@ -124,6 +124,7 @@
   ignore_missing <span class="op">=</span> <span class="cn">FALSE</span>,
   allowed_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">ignore_missing</span>, <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span>,
   log_discharge <span class="op">=</span> <span class="cn">FALSE</span>,
+  log_ticks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">log_discharge</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>,
   include_title <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div></div>
 
@@ -181,6 +182,9 @@ if <code>'ignore_missing = TRUE'</code> then it defaults to <code>100</code> (an
 <code>ignore_missing</code> usage. Supersedes <code>ignore_missing</code> when used.</p></dd>
 <dt>log_discharge</dt>
 <dd><p>Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default <code>FALSE</code>.</p></dd>
+<dt>log_ticks</dt>
+<dd><p>Logical value to indicate plotting logarithmic scale ticks when <code>log_discharge = TRUE</code>. Ticks will not
+appear when <code>log_discharge = FALSE</code>. Default to <code>TRUE</code> when <code>log_discharge = TRUE</code>.</p></dd>
 <dt>include_title</dt>
 <dd><p>Logical value to indicate adding the group/station number to the plot, if provided. Default <code>FALSE</code>.</p></dd>
 </dl></div>
