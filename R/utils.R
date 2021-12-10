@@ -215,7 +215,7 @@ filter_complete_yrs <- function(complete_years, flow_data) {
 
 add_water_months <- function(data, water_year_start){
   
-  if (water_year_start > 1) {
+  if (water_year_start == 1) {
     data <- dplyr::mutate(data,
                           AnalysisMonth = Month)
   } else {
