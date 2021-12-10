@@ -18,7 +18,6 @@ plot_annual_cumulative_stats(
   exclude_years,
   months = 1:12,
   include_seasons = FALSE,
-  log_discharge = FALSE,
   include_title = FALSE
 )
 }
@@ -69,8 +68,6 @@ analysis. Default \code{1}.}
 months (\code{1:12}). If not all months, seasonal total yield and volumetric flows will not be included.}
 
 \item{include_seasons}{Logical value indication whether to include seasonal yields or volumetric discharges. Default \code{TRUE}.}
-
-\item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 }
