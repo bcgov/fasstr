@@ -23,15 +23,16 @@ plot_flow_duration(
   months = 1:12,
   include_longterm = TRUE,
   log_discharge = TRUE,
+  log_ticks = ifelse(log_discharge, TRUE, FALSE),
   include_title = FALSE
 )
 }
 \arguments{
 \item{data}{Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
-Leave blank if using \code{station_number} argument.}
+Leave blank or set to \code{NULL} if using \code{station_number} argument.}
 
 \item{dates}{Name of column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
-'Date' (default). Leave blank if using \code{station_number} argument.}
+'Date' (default). Leave blank or set to \code{NULL} if using \code{station_number} argument.}
 
 \item{values}{Name of column in \code{data} that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
@@ -54,11 +55,13 @@ Default \code{'right'}.}
 \item{water_year_start}{Numeric value indicating the month (\code{1} through \code{12}) of the start of water year for
 analysis. Default \code{1}.}
 
-\item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
+\item{start_year}{Numeric value of the first year to consider for analysis. Leave blank or set well before start date (i.e.
+\code{1800}) to use from the first year of the source data.}
 
-\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
+\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank or set well after end date (i.e.
+\code{2100}) to use up to the last year of the source data.}
 
-\item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
+\item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank or set to \code{NULL} to include all years.}
 
 \item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 
@@ -78,6 +81,9 @@ time periods with no missing dates will be returned. Default \code{FALSE}.}
 \item{include_longterm}{Logical value indicating whether to include long-term curve of all data. Default \code{TRUE}.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
+
+\item{log_ticks}{Logical value to indicate plotting logarithmic scale ticks when \code{log_discharge = TRUE}. Ticks will not
+appear when \code{log_discharge = FALSE}. Default to \code{TRUE} when \code{log_discharge = TRUE}.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 }

@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
       </span>
     </div>
 
@@ -126,10 +126,10 @@
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
-Leave blank if using <code>station_number</code> argument.</p></dd>
+Leave blank or set to <code>NULL</code> if using <code>station_number</code> argument.</p></dd>
 <dt>dates</dt>
 <dd><p>Name of column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
-'Date' (default). Leave blank if using <code>station_number</code> argument.</p></dd>
+'Date' (default). Leave blank or set to <code>NULL</code> if using <code>station_number</code> argument.</p></dd>
 <dt>values</dt>
 <dd><p>Name of column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using <code>station_number</code> argument.</p></dd>
@@ -152,12 +152,15 @@ Default <code>'right'</code>.</p></dd>
 <dd><p>Numeric value indicating the month (<code>1</code> through <code>12</code>) of the start of water year for
 analysis. Default <code>1</code>.</p></dd>
 <dt>start_year</dt>
-<dd><p>Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.</p></dd>
+<dd><p>Numeric value of the first year to consider for analysis. Leave blank or set well before start date (i.e.
+<code>1800</code>) to use from the first year of the source data.</p></dd>
 <dt>end_year</dt>
-<dd><p>Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.</p></dd>
+<dd><p>Numeric value of the last year to consider for analysis. Leave blank or set well after end date (i.e.
+<code>2100</code>) to use up to the last year of the source data.</p></dd>
 <dt>months</dt>
-<dd><p>Numeric vector of months to include in analysis (e.g. <code>6:8</code> for Jun-Aug). Leave blank to summarize 
-all months (default <code>1:12</code>).</p></dd>
+<dd><p>Numeric vector of months to include in analysis. For example, <code>3</code> for March, <code>6:8</code> for Jun-Aug or 
+<code>c(10:12,1)</code> for first four months (Oct-Jan) when <code>water_year_start = 10</code> (Oct). Default summarizes all 
+months (<code>1:12</code>).</p></dd>
 <dt>transpose</dt>
 <dd><p>Logical value indicating whether to transpose rows and columns of results. Default <code>FALSE</code>.</p></dd>
 </dl></div>

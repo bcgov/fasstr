@@ -19,8 +19,9 @@
 #' @inheritParams calc_annual_cumulative_stats
 #' @inheritParams calc_daily_stats
 #' @param percentiles Numeric vector of percentiles to calculate. Set to \code{NA} if none required. Default \code{c(5,25,75,95)}.
-#' @param months Numeric vector of months to add cumulative flows (e.g. \code{6:8} for Jun-Aug). Leave blank to accumulate 
-#'    all months (default \code{1:12}). Need to be consecutive months for given year/water year to work properly.
+#' @param months Numeric vector of months to include in analysis. For example, \code{3} for March, \code{6:8} for Jun-Aug or 
+#'    \code{c(10:12,1)} for first four months (Oct-Jan) when \code{water_year_start = 10} (Oct). Default summarizes all 
+#'    months (\code{1:12}). Need to be consecutive months for given year/water year to work properly.
 #'      
 #' @return A tibble data frame with the following columns, default units in cubic metres, or millimetres if use_yield and basin_area provided:
 #'   \item{Month}{month (MMM-DD) of cumulative statistics}

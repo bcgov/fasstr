@@ -19,6 +19,8 @@
 #'
 #' @inheritParams calc_annual_stats
 #' @param log_discharge Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.
+#' @param log_ticks Logical value to indicate plotting logarithmic scale ticks when \code{log_discharge = TRUE}. Ticks will not
+#'    appear when \code{log_discharge = FALSE}. Default to \code{TRUE} when \code{log_discharge = TRUE}.
 #' @param include_title Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.
 #' @param percentiles Numeric vector of percentiles to calculate. Set to \code{NA} if none required. Default \code{NA}.
 #' 
@@ -80,6 +82,7 @@ plot_annual_stats <- function(data,
                               ignore_missing = FALSE,
                               allowed_missing = ifelse(ignore_missing,100,0),
                               log_discharge = FALSE,
+                              log_ticks = ifelse(log_discharge, TRUE, FALSE),
                               include_title = FALSE){ 
   
   ## ARGUMENT CHECKS
@@ -105,6 +108,7 @@ plot_annual_stats <- function(data,
   }
   
   log_discharge_checks(log_discharge) 
+  log_ticks_checks(log_ticks, log_discharge)
   include_title_checks(include_title)
   
   
@@ -163,8 +167,9 @@ plot_annual_stats <- function(data,
                          {if(log_discharge) ggplot2::expand_limits(y = c(min(.$Value, na.rm = T) * .95, max(.$Value, na.rm = T) * 1.05))} +
                          {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0), breaks = scales::pretty_breaks(n = 7))} +
                          {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 7, base = 10))} +
-                         {if(log_discharge) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"), 
-                                                                         mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))} +
+                         {if(log_discharge & log_ticks) ggplot2::annotation_logticks(
+                           base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"), 
+                           mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))} +
                          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
                          {if(length(unique(annual_stats_plot$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(annual_stats_plot$Year))}+
                          ggplot2::expand_limits(y = 0) +

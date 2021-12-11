@@ -19,8 +19,9 @@
 #'    
 #' @inheritParams calc_annual_cumulative_stats
 #' @inheritParams plot_annual_stats
-#' @param months Numeric vector of months to include in analysis (e.g. \code{6:8} for Jun-Aug). Leave blank to summarize 
-#'    all months (default \code{1:12}). If not all months, seasonal total yield and volumetric flows will not be included.
+#' @param months Numeric vector of months to include in analysis. For example, \code{3} for March, \code{6:8} for Jun-Aug or 
+#'    \code{c(10:12,1)} for first four months (Oct-Jan) when \code{water_year_start = 10} (Oct). Default summarizes all 
+#'    months (\code{1:12}). If not all months, seasonal total yield and volumetric flows will not be included.
 #'    
 #' @return A list of ggplot2 objects with the following for each station provided:
 #'   \item{Annual_Total_Volume}{annual total volumetric discharge, in cubic metres}
@@ -64,7 +65,6 @@ plot_annual_cumulative_stats <- function(data,
                                          exclude_years, 
                                          months = 1:12, 
                                          include_seasons = FALSE,
-                                         log_discharge = FALSE,
                                          include_title = FALSE){
   
   
@@ -92,7 +92,6 @@ plot_annual_cumulative_stats <- function(data,
     basin_area <- NA
   }
   
-  log_discharge_checks(log_discharge) 
   include_title_checks(include_title)   
   
   if (include_seasons & !all(1:12 %in% months)) {

@@ -1,3 +1,16 @@
+fasstr 0.4.1
+=========================
+
+Updated: 10 Dec 2021
+
+#### Updates:
+
+  * Fixed major bug: Seasons identifiers were mislabeled when water_year_start > 1 for add_seasons() and various       functions use seasonal cumulative totals
+  * Updated documentation - 'months' and other param descriptions
+  * plot_flow_duration() - removed annotation ticks when not in log-scale
+  * added 'log_ticks' argument to customize adding annotation_ticks or not when log scale
+  * removed 'log_discharge' from plot_annual_lowflows()
+
 fasstr 0.4.0
 =========================
 

@@ -37,6 +37,7 @@ R CMD check fasstr_0.3.2.tar.gz --as-cran ## or whatever fasstr version number
 ## Documentation
 - Update NEWS
 - Update cran-comments
+- Update /docs for Github Page
 
 ## Actually release it
 ```

@@ -215,7 +215,7 @@ filter_complete_yrs <- function(complete_years, flow_data) {
 
 add_water_months <- function(data, water_year_start){
   
-  if (water_year_start > 1) {
+  if (water_year_start == 1) {
     data <- dplyr::mutate(data,
                           AnalysisMonth = Month)
   } else {
@@ -317,6 +317,12 @@ log_discharge_checks <- function(log_discharge) {
   if (length(log_discharge) > 1)   stop("Only one log_discharge logical value can be listed.", call. = FALSE)
   if (!is.logical(log_discharge))  stop("log_discharge argument must be logical (TRUE/FALSE).", call. = FALSE)
 }
+log_ticks_checks <- function(log_ticks, log_discharge) {
+  if (length(log_ticks) > 1)   stop("Only one log_ticks logical value can be listed.", call. = FALSE)
+  if (!is.logical(log_ticks))  stop("log_ticks argument must be logical (TRUE/FALSE).", call. = FALSE)
+  if (!log_discharge & log_ticks) warning("logarithmic scale ticks will not be plotted on linear discharge.", call. = FALSE)
+}
+
 
 include_title_checks <- function(include_title) {
   if (length(include_title) > 1)   stop("Only one include_title logical value can be listed.", call. = FALSE)

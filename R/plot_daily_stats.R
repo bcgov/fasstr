@@ -20,7 +20,8 @@
 #'
 #' @inheritParams calc_daily_stats
 #' @inheritParams plot_annual_stats
-#' @param add_year Numeric value indicating a year of daily flows to add to the daily statistics plot. Leave blank for no years.
+#' @param add_year Numeric value indicating a year of daily flows to add to the daily statistics plot.  Leave blank
+#'    or set to \code{NULL} for no years.
 #' @param include_extremes Logical value to indicate plotting a ribbon with the range of daily minimum and maximum flows. 
 #'    Default \code{TRUE}.
 #' @param inner_percentiles Numeric vector of two percentile values indicating the lower and upper limits of the 
@@ -87,6 +88,7 @@ plot_daily_stats <- function(data,
                              outer_percentiles = c(5,95),
                              add_year,
                              log_discharge = TRUE,
+                             log_ticks = ifelse(log_discharge, TRUE, FALSE),
                              include_title = FALSE){
   
   
@@ -114,6 +116,7 @@ plot_daily_stats <- function(data,
   }
   
   log_discharge_checks(log_discharge) 
+  log_ticks_checks(log_ticks, log_discharge)
   add_year_checks(add_year)
   include_title_checks(include_title)
   ptile_ribbons_checks(inner_percentiles, outer_percentiles)
@@ -263,7 +266,7 @@ plot_daily_stats <- function(data,
         ggplot2::geom_line(ggplot2::aes(y = Mean, colour = "Mean"), size = .5, na.rm = TRUE) +
         {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8))}+
         {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
-        {if(log_discharge) ggplot2::annotation_logticks(base= 10, "left", colour = "grey25", size = 0.3,
+        {if(log_discharge & log_ticks) ggplot2::annotation_logticks(base= 10, "left", colour = "grey25", size = 0.3,
                                                         short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
                                                         long = ggplot2::unit(.2, "cm"))} +
         ggplot2::scale_x_date(date_labels = "%b", date_breaks = "1 month",

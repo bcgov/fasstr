@@ -17,10 +17,14 @@
 #'    file types. Writing as Excel file type uses the \code{writexl} package.
 #'
 #' @inheritParams calc_annual_stats
-#' @param start_year Numeric value of the first year of data to write. Leave blank to use the first year of the source data.
-#' @param end_year Numeric value of the last year of data to write. Leave blank to use the last year of the source data.
-#' @param start_date Date (YYYY-MM-DD) of first date of data to write. Leave blank if all dates required.
-#' @param end_date  Date (YYYY-MM-DD) of last date of data to write. Leave blank if all dates required.
+#' @param start_year Numeric value of the first year of data to write. Leave blank or set well before start date (i.e.
+#'    \code{1800}) to use from the first year of the source data.
+#' @param end_year Numeric value of the last year of data to write. Leave blank or set well after end date (i.e.
+#'    \code{2100}) to use up to the last year of the source data.
+#' @param start_date Date (YYYY-MM-DD) of first date of data to write. Leave blank or set well before start date (i.e.
+#'    \code{1800-01-01}) if all dates required.
+#' @param end_date  Date (YYYY-MM-DD) of last date of data to write. Leave blank or set well after end date (i.e.
+#'    \code{2100-12-31}) if all dates required.
 #' @param file_name Character string naming the output file. If none provided, a default file name (with .xlsx) is provided (see 
 #'    "Successfully created" message when using function for file name).
 #' @param fill_missing Logical value indicating whether to fill dates with missing flow data with NA. Default \code{FALSE}.

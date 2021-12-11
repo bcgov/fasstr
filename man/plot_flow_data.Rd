@@ -20,6 +20,7 @@ plot_flow_data(
   start_date,
   end_date,
   log_discharge = FALSE,
+  log_ticks = ifelse(log_discharge, TRUE, FALSE),
   plot_by_year = FALSE,
   one_plot = FALSE,
   include_title = FALSE
@@ -27,10 +28,10 @@ plot_flow_data(
 }
 \arguments{
 \item{data}{Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
-Leave blank if using \code{station_number} argument.}
+Leave blank or set to \code{NULL} if using \code{station_number} argument.}
 
 \item{dates}{Name of column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
-'Date' (default). Leave blank if using \code{station_number} argument.}
+'Date' (default). Leave blank or set to \code{NULL} if using \code{station_number} argument.}
 
 \item{values}{Name of column in \code{data} that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using \code{station_number} argument.}
@@ -53,20 +54,26 @@ Default \code{'right'}.}
 \item{water_year_start}{Numeric value indicating the month (\code{1} through \code{12}) of the start of water year for
 analysis. Default \code{1}.}
 
-\item{start_year}{Numeric value of the first year to consider for analysis. Leave blank to use the first year of the source data.}
+\item{start_year}{Numeric value of the first year to consider for analysis. Leave blank or set well before start date (i.e.
+\code{1800}) to use from the first year of the source data.}
 
-\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank to use the last year of the source data.}
+\item{end_year}{Numeric value of the last year to consider for analysis. Leave blank or set well after end date (i.e.
+\code{2100}) to use up to the last year of the source data.}
 
-\item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank to include all years.}
+\item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank or set to \code{NULL} to include all years.}
 
-\item{months}{Numeric vector of months to include in plotting (e.g. \code{6:8} for Jun-Aug). Leave blank to plot 
-all months (default \code{1:12})}
+\item{months}{Numeric vector of months to include in plotting For example, \code{3} for March, \code{6:8} for Jun-Aug or 
+\code{c(10:12,1)} for first four months (Oct-Jan) when \code{water_year_start = 10} (Oct). Default plots all 
+months (\code{1:12}).}
 
 \item{start_date}{Date (YYYY-MM-DD) of first date to consider for plotting. Leave blank if all years are required.}
 
 \item{end_date}{Date (YYYY-MM-DD) of last date to consider for plotting. Leave blank if all years are required.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.}
+
+\item{log_ticks}{Logical value to indicate plotting logarithmic scale ticks when using a log-scale discharge axis.
+Default to \code{FALSE} when \code{log_discharge = FALSE} and \code{TRUE} when \code{log_discharge = TRUE}.}
 
 \item{plot_by_year}{Logical value to indicate whether to plot each year of data individually. Default \code{FALSE}.}
 

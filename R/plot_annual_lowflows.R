@@ -57,7 +57,6 @@ plot_annual_lowflows <- function(data,
                                  months = 1:12,
                                  ignore_missing = FALSE,
                                  allowed_missing = ifelse(ignore_missing,100,0),
-                                 log_discharge = FALSE,
                                  include_title = FALSE){
   
   
@@ -82,7 +81,6 @@ plot_annual_lowflows <- function(data,
     exclude_years <- NULL
   }
   
-  log_discharge_checks(log_discharge) 
   include_title_checks(include_title)
   
   

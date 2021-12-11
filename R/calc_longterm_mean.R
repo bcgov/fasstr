@@ -18,7 +18,7 @@
 #' @inheritParams calc_daily_stats
 #' @inheritParams calc_monthly_stats
 #' @param percent_MAD Numeric vector of percents of long-term mean annual discharge to add to the table (ex. \code{20} for 20 percent 
-#'    MAD or \code{c(5,10,20)} for multiple portions of MAD). Leave blank for no values to be calculated.
+#'    MAD or \code{c(5,10,20)} for multiple portions of MAD). Leave blank or set to NA for no values to be calculated.
 #'
 #' @return A tibble data frame of numeric values of a long-term mean (and percent of long-term mean if selected) of selected years
 #'    and months.

@@ -22,7 +22,7 @@
 #' @inheritParams calc_annual_stats
 #' @inheritParams compute_frequency_analysis
 #' @param data A data frame of daily data that contains columns of dates and flow values. Groupings and the \code{groups} argument
-#'    are not used for this function (i.e. station numbers). Leave blank if using \code{station_number} argument.
+#'    are not used for this function (i.e. station numbers). Leave blank or set to \code{NULL} if using \code{station_number} argument.
 #' 
 #' @return A list with the following elements:
 #'   \item{Freq_Analysis_Data}{Data frame with computed annual summary statistics used in analysis.}

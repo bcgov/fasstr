@@ -16,10 +16,10 @@ fill_missing_dates(
 }
 \arguments{
 \item{data}{Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
-Leave blank if using \code{station_number} argument.}
+Leave blank or set to \code{NULL} if using \code{station_number} argument.}
 
 \item{dates}{Name of column in \code{data} that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
-'Date' (default). Leave blank if using \code{station_number} argument.}
+'Date' (default). Leave blank or set to \code{NULL} if using \code{station_number} argument.}
 
 \item{values}{Name of column in \code{data} that contains numeric flow values, in units of cubic metres per second. Not required as
 of fasstr 0.3.3 as all other columns are filled with \code{NA}.}

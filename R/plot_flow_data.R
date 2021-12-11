@@ -20,9 +20,12 @@
 #' @inheritParams plot_annual_stats
 #' @param start_date Date (YYYY-MM-DD) of first date to consider for plotting. Leave blank if all years are required.
 #' @param end_date  Date (YYYY-MM-DD) of last date to consider for plotting. Leave blank if all years are required.
-#' @param months  Numeric vector of months to include in plotting (e.g. \code{6:8} for Jun-Aug). Leave blank to plot 
-#'    all months (default \code{1:12})
+#' @param months  Numeric vector of months to include in plotting For example, \code{3} for March, \code{6:8} for Jun-Aug or 
+#'    \code{c(10:12,1)} for first four months (Oct-Jan) when \code{water_year_start = 10} (Oct). Default plots all 
+#'    months (\code{1:12}).
 #' @param log_discharge Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{TRUE}.
+#' @param log_ticks Logical value to indicate plotting logarithmic scale ticks when using a log-scale discharge axis.
+#'    Default to \code{FALSE} when \code{log_discharge = FALSE} and \code{TRUE} when \code{log_discharge = TRUE}.
 #' @param plot_by_year Logical value to indicate whether to plot each year of data individually. Default \code{FALSE}.
 #' @param one_plot Logical value to indicate whether to plot all groups/stations on one plot. Default \code{FALSE}.
 #' 
@@ -74,6 +77,7 @@ plot_flow_data <- function(data,
                            start_date,
                            end_date,
                            log_discharge = FALSE,
+                           log_ticks = ifelse(log_discharge, TRUE, FALSE),
                            plot_by_year = FALSE,
                            one_plot = FALSE,
                            include_title = FALSE){
@@ -108,6 +112,7 @@ plot_flow_data <- function(data,
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years = NULL)
   log_discharge_checks(log_discharge)
+  log_ticks_checks(log_ticks, log_discharge)
   include_title_checks(include_title)
   months_checks(months)
   
@@ -222,7 +227,7 @@ plot_flow_data <- function(data,
       {if(plot_by_year) ggplot2::facet_wrap(~WaterYear, scales = "free_x")} +
       {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 8), expand = c(0, 0))} +
       {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
-      {if(log_discharge) ggplot2::annotation_logticks(base= 10, "left", colour = "grey25", size = 0.3,
+      {if(log_discharge & log_ticks) ggplot2::annotation_logticks(base= 10, "left", colour = "grey25", size = 0.3,
                                                       short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
                                                       long = ggplot2::unit(.2, "cm"))} +
       {if(plot_by_year) ggplot2::scale_x_date(date_labels = "%b", expand = c(0,0))} +
