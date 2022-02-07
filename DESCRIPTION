@@ -1,6 +1,6 @@
 Package: fasstr
 Title: Analyze, Summarize, and Visualize Daily Streamflow Data
-Version: 0.4.1
+Version: 0.4.2
 Authors@R: c(person("Jon", "Goetz", email = "jon.goetz@gov.bc.ca", role = c("aut", "cre"),
              comment = c(ORCID = "0000-0002-4993-1119")), 
              person("Carl James", "Schwarz", email = "cschwarz.stat.sfu.ca@gmail.com", role = "aut"),

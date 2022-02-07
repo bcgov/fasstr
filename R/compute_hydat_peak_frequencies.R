@@ -110,11 +110,6 @@ compute_hydat_peak_frequencies <- function(station_number,
   if (fit_distr[1] != "PIII" & fit_distr_method[1] == "MOM") 
     stop('MOM only can be used with PIII distribution.', call. = FALSE)
   
-  
-  
-  if (!file.exists(file.path(tidyhydat::hy_dir(),"HYDAT.sqlite3")))
-    stop("A HYDAT database has not been downloaded yet using the tidyhydat::download_hydat() function. 
-       Download HYDAT before using station_number argument.", call. = FALSE)
   if (is.null(station_number))       stop("A station_number must be provided.", call. = FALSE)
   if (length(station_number) != 1)   stop("Only one station_number can be provided for this function.", call. = FALSE)
   if (!all(station_number %in% dplyr::pull(suppressMessages(tidyhydat::hy_stations()[1])))) 

@@ -1,3 +1,13 @@
+fasstr 0.4.2
+=========================
+
+Updated: 07 Feb 2022
+
+### Updates:
+
+  * Removed HYDAT.sqlite file check in compute_HYDAT_peak_frequencies() - leaves check to tidyhydat
+
+
 fasstr 0.4.1
 =========================
 
