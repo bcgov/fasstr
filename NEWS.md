@@ -1,12 +1,15 @@
 fasstr 0.4.2
 =========================
 
-Updated: 07 Feb 2022
+Updated: 01 Mar 2022
 
 ### Updates:
 
+  * New default plot_missing_data() plot in tile format. Can change to original bar plot using plot_type = "bar".
+  * plot_data_screening() now changes the geom_point style based on if data is complete or has missing data (plot_availability argument)
+  * plot_data_screening() now allows choice of annual summary statistics (include_stats argument)
   * Removed HYDAT.sqlite file check in compute_HYDAT_peak_frequencies() - leaves check to tidyhydat
-
+  
 
 fasstr 0.4.1
 =========================

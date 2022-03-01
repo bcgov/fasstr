@@ -16,7 +16,8 @@ plot_missing_dates(
   start_year,
   end_year,
   months = 1:12,
-  include_title = FALSE
+  include_title = FALSE,
+  plot_type = "tile"
 )
 }
 \arguments{
@@ -58,13 +59,16 @@ analysis. Default \code{1}.}
 months (\code{1:12}).}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
+
+\item{plot_type}{Type of missing data plot, either \code{"tile"} or \code{"bar"} styles. Default \code{"tile"}. 
+Use \code{"bar"} for previous version of plot.}
 }
 \value{
 A list of ggplot2 objects with the following for each station provided:
-  \item{Missing_Dates}{a plot that contains the number of missing dates for each year and month}
+  \item{Missing_Dates}{a plot that contains the data availability for each year and month}
 }
 \description{
-Plots the number of missing data for each month of each year. Calculates statistics from all values, unless specified.
+Plots the data availability for each month of each year. Calculates statistics from all values, unless specified.
     Data calculated using \code{screen_flow_data()} function. Returns a list of plots.
 }
 \examples{

@@ -95,7 +95,9 @@
           "miss_plots",
           "MAX_VALUE",
           "Return_P",
-          "STATION_Upper")
+          "STATION_Upper",
+          "Missing",
+          "Days")
       )
     invisible()
   }
