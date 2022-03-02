@@ -122,7 +122,7 @@ plot_annual_stats2 <- function(data,
   ## CALC STATS
   ## ----------
   
-  annual_stats <- calc_annual_stats(data = flow_data,
+  annual_stats_plot <- calc_annual_stats(data = flow_data,
                                     percentiles = c(inner_percentiles, outer_percentiles),
                                     roll_days = roll_days,
                                     roll_align = roll_align,
@@ -133,11 +133,7 @@ plot_annual_stats2 <- function(data,
                                     months = months,
                                     ignore_missing = ignore_missing,
                                     allowed_missing = allowed_missing)
-  annual_stats_plot <- annual_stats
-  # annual_stats_plot <- tidyr::gather(annual_stats, Statistic, Value, -Year, -STATION_NUMBER)
-  # annual_stats_plot <- dplyr::mutate(annual_stats_plot, 
-  #                                    Statistic = factor(Statistic, levels = colnames(annual_stats[-(1:2)])))
-  
+
   ## PLOT STATS
   ## ----------
   
