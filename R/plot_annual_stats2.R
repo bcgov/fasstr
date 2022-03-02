@@ -11,13 +11,14 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 
-#' @title Plot annual summary statistics 
+#' @title Plot annual summary statistics (as ribbons)
 #'
-#' @description Plots means, medians, maximums, minimums, and percentiles for each year from all years of a daily streamflow 
+#' @description Plots means, medians, maximums, minimums, and percentiles as ribbons for each year from all years of a daily streamflow 
 #'    data set. Calculates statistics from all values, unless specified. Data calculated using \code{calc_annual_stats()} function.
 #'    Returns a list of plots.
 #'
 #' @inheritParams plot_annual_stats
+#' @inheritParams plot_daily_stats
 #' @param log_discharge Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.
 #' @param log_ticks Logical value to indicate plotting logarithmic scale ticks when \code{log_discharge = TRUE}. Ticks will not
 #'    appear when \code{log_discharge = FALSE}. Default to \code{TRUE} when \code{log_discharge = TRUE}.
@@ -48,19 +49,11 @@
 #' 
 #' # Plot annual statistics regardless if there is missing data for a given year
 #' plot_annual_stats2(station_number = "08NM116",
-#'                   ignore_missing = TRUE)
+#'                    ignore_missing = TRUE)
 #'                   
 #' # Plot annual statistics for water years starting in October
 #' plot_annual_stats2(station_number = "08NM116",
-#'                   water_year_start = 10)
-#'                   
-#' # Plot annual statistics with custom years and percentiles
-#' plot_annual_stats2(station_number = "08NM116",
-#'                   start_year = 1981,
-#'                   end_year = 2010,
-#'                   exclude_years = c(1991,1993:1995),
-#'                   percentiles = c(25,75))
-#' 
+#'                    water_year_start = 10) 
 #'                   
 #' }
 #' @export
@@ -232,4 +225,3 @@ plot_annual_stats2 <- function(data,
   plots
   
 }
-

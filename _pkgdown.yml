@@ -50,6 +50,7 @@ reference:
   - plot_monthly_stats
   - calc_annual_stats
   - plot_annual_stats
+  - plot_annual_stats2
   - plot_annual_means
   - calc_longterm_daily_stats
   - plot_longterm_daily_stats

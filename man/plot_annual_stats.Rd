@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_annual_stats.R
 \name{plot_annual_stats}
 \alias{plot_annual_stats}
-\title{Plot annual summary statistics}
+\title{Plot annual summary statistics (as lines)}
 \usage{
 plot_annual_stats(
   data,

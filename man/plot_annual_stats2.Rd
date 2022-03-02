@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_annual_stats2.R
 \name{plot_annual_stats2}
 \alias{plot_annual_stats2}
-\title{Plot annual summary statistics}
+\title{Plot annual summary statistics (as ribbons)}
 \usage{
 plot_annual_stats2(
   data,
@@ -76,6 +76,15 @@ included to calculate a statistic (0 to 100 percent). If \code{'ignore_missing =
 if \code{'ignore_missing = TRUE'} then it defaults to \code{100} (any missing dates allowed); consistent with 
 \code{ignore_missing} usage. Supersedes \code{ignore_missing} when used.}
 
+\item{include_extremes}{Logical value to indicate plotting a ribbon with the range of daily minimum and maximum flows. 
+Default \code{TRUE}.}
+
+\item{inner_percentiles}{Numeric vector of two percentile values indicating the lower and upper limits of the 
+inner percentiles ribbon for plotting. Default \code{c(25,75)}, set to \code{NULL} for no inner ribbon.}
+
+\item{outer_percentiles}{Numeric vector of two percentile values indicating the lower and upper limits of the 
+outer percentiles ribbon for plotting. Default \code{c(5,95)}, set to \code{NULL} for no outer ribbon.}
+
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
 
 \item{log_ticks}{Logical value to indicate plotting logarithmic scale ticks when \code{log_discharge = TRUE}. Ticks will not
@@ -94,7 +103,7 @@ A list of ggplot2 objects for with the following plots (percentile plots optiona
   \item{Minimum-Maximum}{a ribbon showing the range of data between the annual minimum and maximums}
 }
 \description{
-Plots means, medians, maximums, minimums, and percentiles for each year from all years of a daily streamflow 
+Plots means, medians, maximums, minimums, and percentiles as ribbons for each year from all years of a daily streamflow 
    data set. Calculates statistics from all values, unless specified. Data calculated using \code{calc_annual_stats()} function.
    Returns a list of plots.
 }
@@ -111,19 +120,11 @@ plot_annual_stats2(station_number = "08NM116")
 
 # Plot annual statistics regardless if there is missing data for a given year
 plot_annual_stats2(station_number = "08NM116",
-                  ignore_missing = TRUE)
+                   ignore_missing = TRUE)
                   
 # Plot annual statistics for water years starting in October
 plot_annual_stats2(station_number = "08NM116",
-                  water_year_start = 10)
-                  
-# Plot annual statistics with custom years and percentiles
-plot_annual_stats2(station_number = "08NM116",
-                  start_year = 1981,
-                  end_year = 2010,
-                  exclude_years = c(1991,1993:1995),
-                  percentiles = c(25,75))
-
+                   water_year_start = 10) 
                   
 }
 }

@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 
-#' @title Plot annual summary statistics
+#' @title Plot annual summary statistics (as lines)
 #'
 #' @description Plots means, medians, maximums, minimums, and percentiles for each year from all years of a daily streamflow 
 #'    data set. Calculates statistics from all values, unless specified. Data calculated using \code{calc_annual_stats()} function.
