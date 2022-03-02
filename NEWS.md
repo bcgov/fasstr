@@ -5,6 +5,7 @@ Updated: 01 Mar 2022
 
 ### Updates:
 
+  * New plot_annual_stats2() function plotting annual stats in ribbons (similar to plot_daily_stats)
   * New default plot_missing_data() plot in tile format. Can change to original bar plot using plot_type = "bar".
   * plot_data_screening() now changes the geom_point style based on if data is complete or has missing data (plot_availability argument)
   * plot_data_screening() now allows choice of annual summary statistics (include_stats argument)
