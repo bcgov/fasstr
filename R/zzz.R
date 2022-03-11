@@ -97,7 +97,14 @@
           "Return_P",
           "STATION_Upper",
           "Missing",
-          "Days")
+          "Days",
+          "Symbol",
+          "complete_years",
+          "n",
+          "n_days",
+          "No_Symbol",
+          "Count",
+          "symb_in_data")
       )
     invisible()
   }

@@ -112,7 +112,6 @@ format_values_col <- function(data,
 
 ## Check for groups and proper formatting
 ## --------------------------------------
-
 format_groups_col <- function(data,
                               groups = "STATION_NUMBER"){
   
@@ -137,6 +136,25 @@ format_groups_col <- function(data,
   data
 }
 
+## Check for symbols and proper formatting
+## --------------------------------------
+format_symbols_col <- function(data,
+                               symbols = "Symbol"){
+  
+  # Check if column exists
+  if (!symbols %in% names(data)) 
+    stop("Symbols not found in data frame.", call. = FALSE)
+  
+  # Rename values to "STATION_NUMBER" (and change original if required so no duplication)
+  if ("Symbol" %in% colnames(data) & symbols != "Symbol") {
+    names(data)[names(data) == "Symbol"] <- "Symbol_orig"
+  }
+  
+  names(data)[names(data) == symbols] <- "Symbol"
+  
+  data
+}
+
 ## Check for dates, values, and groups proper formatting
 ## -----------------------------------------------------
 
@@ -144,16 +162,25 @@ format_all_cols <- function(data,
                             dates = "Date",
                             values = "Value",
                             groups = "STATION_NUMBER",
-                            rm_other_cols = FALSE){
+                            symbols = "Symbol",
+                            rm_other_cols = FALSE,
+                            keep_symbols = FALSE){
   
   # Check format all columns
   data <- format_dates_col(data, dates = dates)
   data <- format_values_col(data, values = values)
   data <- format_groups_col(data, groups = groups)
+  if (keep_symbols) {
+    data <- format_symbols_col(data, symbols = symbols)
+  }
   
   # Remove all other columns if TRUE
-  if (rm_other_cols) {
+  if (rm_other_cols & !keep_symbols) {
     data <- dplyr::select(data, STATION_NUMBER, Date, Value)
+  }
+  
+  if (rm_other_cols & keep_symbols) {
+    data <- dplyr::select(data, STATION_NUMBER, Date, Value, Symbol)
   }
   
   data
@@ -466,5 +493,6 @@ allowed_narm <- function(value, allowed_missing){
 no_values_error <- function(values) {
   if (all(is.na(values))) stop("All daily values are NA, select or filter data for years with data.", call. = FALSE)
 }
+
 
 

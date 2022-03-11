@@ -1,15 +1,18 @@
-fasstr 0.4.2
+fasstr 0.5.0
 =========================
 
-Updated: 02 Mar 2022
+Updated: 11 Mar 2022
 
 ### Updates:
 
-  * New plot_annual_stats2() function plotting annual stats in ribbons (similar to plot_daily_stats)
-  * (beta testing) New plot_monthly_stats2() function plotting faceted monthly stats in ribbons (similar to plot_daily_stats)
+  * New function: plot_annual_stats2() for plotting annual stats in ribbons (similar to plot_daily_stats)
+  * (beta testing) New function: plot_monthly_stats2() for plotting faceted monthly stats in ribbons (similar to plot_daily_stats)
   * New default plot_missing_data() plot in tile format. Can change to original bar plot using plot_type = "bar".
   * plot_data_screening() now changes the geom_point style based on if data is complete or has missing data (plot_availability argument)
   * plot_data_screening() now allows choice of annual summary statistics (include_stats argument)
+  * screen_flow_data() now add columns of counts of symbol categories provided by symbol column (HYDAT Symbol column). Can remove columns by using include_symbols = FALSE.
+  * New function: plot_flow_data_symbols() plots daily data with coloured points designating symbol categories from symbols column
+  * New function: plot_annual_symbols() plots counts or percent of days with symbol categories from symbols column
   * Removed HYDAT.sqlite file check in compute_HYDAT_peak_frequencies() - leaves check to tidyhydat
   
 
@@ -20,7 +23,7 @@ Updated: 10 Dec 2021
 
 #### Updates:
 
-  * Fixed major bug: Seasons identifiers were mislabeled when water_year_start > 1 for add_seasons() and various       functions use seasonal cumulative totals
+  * Fixed major bug: Seasons identifiers were mislabeled when water_year_start > 1 for add_seasons() and various functions use seasonal cumulative totals
   * Updated documentation - 'months' and other param descriptions
   * plot_flow_duration() - removed annotation ticks when not in log-scale
   * added 'log_ticks' argument to customize adding annotation_ticks or not when log scale
