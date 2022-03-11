@@ -9,6 +9,7 @@ screen_flow_data(
   dates = Date,
   values = Value,
   groups = STATION_NUMBER,
+  symbols = "Symbol",
   station_number,
   roll_days = 1,
   roll_align = "right",
@@ -16,7 +17,8 @@ screen_flow_data(
   start_year,
   end_year,
   months = 1:12,
-  transpose = FALSE
+  transpose = FALSE,
+  include_symbols = TRUE
 )
 }
 \arguments{
@@ -33,6 +35,9 @@ Only required if values column name is not 'Value' (default). Leave blank if usi
 if groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if 
 present. Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using \code{station_number} 
 argument.}
+
+\item{symbols}{Name of column in \code{data} that contains symbols. Only required if symbols column name is not 
+'Symbol' (default). Leave blank or set to \code{NULL} if using \code{station_number} argument.}
 
 \item{station_number}{Character string vector of seven digit Water Survey of Canada station numbers (e.g. \code{"08NM116"}) of
 which to extract daily streamflow data from a HYDAT database. Requires \code{tidyhydat} package and a HYDAT database.
@@ -58,6 +63,8 @@ analysis. Default \code{1}.}
 months (\code{1:12}).}
 
 \item{transpose}{Logical value indicating whether to transpose rows and columns of results. Default \code{FALSE}.}
+
+\item{include_symbols}{Logical. Include columns of counts of symbol categories from the symbols column.}
 }
 \value{
 A tibble data frame with the following columns:
@@ -65,7 +72,8 @@ A tibble data frame with the following columns:
   \item{n_days}{number of days per year}
   \item{n_Q}{number of days per year with flow data}
   \item{n_missing_Q}{number of days per year with no flow data}
-  \item{Minimum}{annual minimum of all daily flows for a given year}
+  \item{No_Symbol}{number of days with no symbol category, if include_symbol=TRUE}
+  \item{x_Symbol}{number of days with a specific symbol category (x) from symbols column, if include_symbol=TRUE}
   \item{Maximum}{annual maximum of all daily flows for a given year}
   \item{Mean}{annual mean of all daily flows for a given year}
   \item{Median}{annual median of all daily flows for a given year}
@@ -87,8 +95,8 @@ A tibble data frame with the following columns:
 }
 \description{
 Calculates means, medians, maximums, minimums, standard deviations of annual flows and data availability and missing 
-   data statistics for each year and month of each year. Calculates the statistics from all daily discharge values from all years, 
-   unless specified. Returns a tibble with statistics.
+   data statistics, and symbol counts (if column exists) for each year and month of each year. Calculates the statistics from all 
+   daily discharge values from all years, unless specified. Returns a tibble with statistics.
 }
 \examples{
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())

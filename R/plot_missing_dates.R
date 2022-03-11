@@ -109,7 +109,8 @@ plot_missing_dates <- function(data,
                                    water_year_start = water_year_start,
                                    start_year = start_year,
                                    end_year = end_year,
-                                   months = months)
+                                   months = months,
+                                   include_symbols = FALSE)
   
   if (plot_type == "bar") {
     

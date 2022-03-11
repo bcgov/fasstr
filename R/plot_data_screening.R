@@ -122,7 +122,8 @@ plot_data_screening <- function(data,
                                    water_year_start = water_year_start,
                                    start_year = start_year,
                                    end_year = end_year,
-                                   months = months)
+                                   months = months,
+                                   include_symbols = FALSE)
   
   flow_summary <- dplyr::select(flow_summary, STATION_NUMBER, Year, Minimum, Maximum, Mean, Median, "Standard Deviation" = StandardDeviation, n_missing_Q)
   flow_summary <- dplyr::mutate(flow_summary, n_missing_Q = ifelse(n_missing_Q == 0, "Complete", "Missing Values"))
