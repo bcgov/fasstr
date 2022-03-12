@@ -351,9 +351,11 @@ fill_missing_dates(station_number = "08NM116") %>%
 If you are looking at some data for the first time, it may be useful to explore the data quality and availability. The following functions will help to explore the data:
 
 - `plot_flow_data()` - plot daily mean streamflow
+- `plot_flow_data_symbols()` - plot daily mean streamflow with their symbols
 - `screen_flow_data()` - calculate annual summary and identify missing data
 - `plot_data_screening()` - plot annual summary statistics for data screening
 - `plot_missing_dates()` - plot annual and monthly missing dates
+- `plot_annual_symbols()` - plot annual counts of symbols
 
 To view the entire daily flow data set to view for gaps and outliers, or changes in flow over time, the `plot_flow_data()` function will plot all daily data in the data frame. The plot can be filtered by years and dates.
 
