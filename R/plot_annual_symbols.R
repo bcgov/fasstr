@@ -82,27 +82,30 @@ plot_annual_symbols <- function(data,
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
-  
+
   # Check if data is provided and import it
   flow_data <- flowdata_import(data = data, station_number = station_number)
+  flow_data$Symbols_fasstr <- dplyr::pull(flow_data[as.character(substitute(symbols))])
   
   symbol_data <- screen_flow_data(data = flow_data,
+                                  symbols = "Symbols_fasstr",
                                   water_year_start = water_year_start,
                                   start_year = start_year,
                                   end_year = end_year,
                                   months = months,
                                   include_symbols = TRUE)
   
+  
   symbol_data <- symbol_data[,1:which(names(symbol_data)=="Minimum")-1]
   symbol_data <- tidyr::pivot_longer(symbol_data, cols = 5:ncol(symbol_data), names_to = "Symbol", values_to = "Count")
   symbol_data <- dplyr::ungroup(symbol_data)
-  symbol_data <- dplyr::mutate(symbol_data, 
-                               Percent = Count / n_days,
+  symbol_data <- dplyr::mutate(symbol_data,
+                               Percent = Count / n_days * 100,
                                Symbol = sub("\\_.*", "", Symbol),
                                Symbol = dplyr::case_when(Symbol == "n" ~ "Missing",
                                                          Symbol == "No" ~ "No Symbol",
                                                          TRUE ~ Symbol))
-
+  
   y_title <- ifelse(!plot_percent, paste0("Number of Days"), paste0("Percent of Days"))
   
   # Plot the data

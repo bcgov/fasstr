@@ -104,7 +104,8 @@
           "n_days",
           "No_Symbol",
           "Count",
-          "symb_in_data")
+          "symb_in_data",
+          "Missing_Symbol")
       )
     invisible()
   }

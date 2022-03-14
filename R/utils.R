@@ -43,9 +43,7 @@ flowdata_import <- function(data = NULL, station_number = NULL){
   if ("Parameter" %in% names(data)) {
     data$Parameter <- as.character(data$Parameter)
   }
-  if ("Symbol" %in% names(data)) {
-    data$Symbol <- as.character(data$Symbol)
-  }
+
   
   data
   
