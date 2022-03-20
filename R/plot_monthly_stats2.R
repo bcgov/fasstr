@@ -184,7 +184,7 @@ plot_monthly_stats2 <- function(data,
         {if(log_discharge) ggplot2::annotation_logticks(base= 10, "left", colour = "grey25", size = 0.3,
                                                         short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
                                                         long = ggplot2::unit(.2, "cm")) }+
-        ggplot2::xlab("Year")+
+        ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
         ggplot2::ylab("Discharge (cms)")+
         ggplot2::theme_bw()+
         ggplot2::labs(color = 'Monthly Statistics') +

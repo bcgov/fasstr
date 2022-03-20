@@ -130,24 +130,25 @@ plot_missing_dates <- function(data,
     
     miss_plots <- dplyr::group_by(missing_plotdata, STATION_NUMBER)
     miss_plots <- tidyr::nest(miss_plots)
-    miss_plots <- dplyr::mutate(miss_plots,
-                                plot = purrr::map2(data, STATION_NUMBER,
-                                                   ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value)) +
-                                                     ggplot2::geom_bar(colour = "cornflowerblue", fill = "cornflowerblue", na.rm = TRUE, stat = "identity") +
-                                                     ggplot2::facet_wrap(~Month, ncol = 3, scales = "fixed", strip.position = "top") +
-                                                     ggplot2::ylab("Missing Days") +
-                                                     ggplot2::xlab("Year") +
-                                                     ggplot2::theme_bw() +
-                                                     ggplot2::scale_y_continuous(limits = c(0, 32)) +
-                                                     {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
-                                                     ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                                                                    panel.grid = ggplot2::element_line(size = .2),
-                                                                    axis.title = ggplot2::element_text(size = 12),
-                                                                    axis.text = ggplot2::element_text(size = 10),
-                                                                    plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
-                                                                    strip.background = ggplot2::element_blank(),
-                                                                    strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
-                                ))
+    miss_plots <- dplyr::mutate(
+      miss_plots,
+      plot = purrr::map2(data, STATION_NUMBER,
+                         ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value)) +
+                           ggplot2::geom_bar(colour = "cornflowerblue", fill = "cornflowerblue", na.rm = TRUE, stat = "identity") +
+                           ggplot2::facet_wrap(~Month, ncol = 3, scales = "fixed", strip.position = "top") +
+                           ggplot2::ylab("Missing Days") +
+                           ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
+                           ggplot2::theme_bw() +
+                           ggplot2::scale_y_continuous(limits = c(0, 32)) +
+                           {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
+                           ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                                          panel.grid = ggplot2::element_line(size = .2),
+                                          axis.title = ggplot2::element_text(size = 12),
+                                          axis.text = ggplot2::element_text(size = 10),
+                                          plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
+                                          strip.background = ggplot2::element_blank(),
+                                          strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
+      ))
   } else if (plot_type == "tile") {
     
     missing_plotdata <- dplyr::select(flow_summary, c(1:2,11:ncol(flow_summary))) 

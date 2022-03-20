@@ -161,7 +161,7 @@ plot_annual_cumulative_stats <- function(data,
         ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
         ggplot2::ylab(expression(Volume~(m^3))) +
         {if (use_yield) ggplot2::ylab("Yield (mm)")} +
-        ggplot2::xlab("Year")+
+        ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
         ggplot2::scale_color_brewer(palette = "Set1") +
         ggplot2::theme_bw() +
         ggplot2::guides(colour = 'none') +

@@ -174,7 +174,7 @@ plot_annual_stats <- function(data,
                          {if(length(unique(annual_stats_plot$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(annual_stats_plot$Year))}+
                          ggplot2::expand_limits(y = 0) +
                          ggplot2::ylab(y_axis_title)+
-                         ggplot2::xlab("Year") +
+                         ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
                          # ggplot2::scale_color_brewer(palette = "Set1") +
                          ggplot2::theme_bw() +
                          ggplot2::labs(color = 'Annual Statistics') +    

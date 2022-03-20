@@ -260,7 +260,7 @@ compute_annual_trends <- function(data,
           # ggplot2::geom_line(alpha = 0.3, na.rm = TRUE) +
           ggplot2::ggtitle(paste0(stat," (sig. = ", round(trends_results_stat$sig, 3), ")")) +
           #{if(length(unique(trends_results$STATION_NUMBER)) > 1) ggplot2::ggtitle(paste0(stn, ": ", stat,"   (Sig. = ", round(trends_results_stat$sig, 3), ")"))} +
-          ggplot2::xlab("Year") +
+          ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
           ggplot2::ylab(trends_data_stat$Units) +
           ggplot2::theme_bw() +
           ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 12)) +

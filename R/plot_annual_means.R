@@ -134,6 +134,7 @@ plot_annual_means <- function(data,
                          {if(length(unique(annual_stats$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(annual_stats$Year))}+
                          ggplot2::ylab("Mean Annual Discharge (cms)") + #expression(Mean~Annual~Discharge~(m^3/s))
                          {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
+                         ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
                          ggplot2::theme_bw() +
                          ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                                         panel.grid = ggplot2::element_line(size = .2),

@@ -120,6 +120,7 @@ plot_annual_symbols <- function(data,
         {if (plot_percent) ggplot2::geom_bar(mapping = ggplot2::aes(y = Percent), position = "stack", stat = "identity", width=1, colour = "black") }+
         ggplot2::ylab(y_title)+
         {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(.y) } +
+        ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
         ggplot2::theme_bw()+
         ggplot2::scale_y_continuous(expand = c(0,0))+
         ggplot2::scale_x_continuous(expand = c(0,0))+

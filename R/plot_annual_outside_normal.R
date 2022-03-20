@@ -136,7 +136,7 @@ plot_annual_outside_normal <- function(data,
           {if(length(unique(normal_data$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(normal_data$Year))}+
           ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
           ggplot2::ylab("Number of Days") +
-          ggplot2::xlab("Year") +
+          ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
           ggplot2::guides(colour = 'none') +
           ggplot2::theme_bw() +
           {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +

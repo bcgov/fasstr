@@ -156,7 +156,7 @@ plot_data_screening <- function(data,
                                        name = "Data Availability") } + 
            ggplot2::expand_limits(y = 0) +
            ggplot2::ylab(y_axis_title) +
-           ggplot2::xlab("Year") +
+           ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
            ggplot2::theme_bw() +
            {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
            ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
