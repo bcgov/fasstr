@@ -83,7 +83,7 @@ plot_missing_dates <- function(data,
   plot_type <- plot_type[1]
   if (!any(c("tile", "bar") %in% plot_type)) 
     stop("plot_type must be one of 'tile' or 'bar' plots.", call. = FALSE)
-
+  
   include_title_checks(include_title)  
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -153,22 +153,24 @@ plot_missing_dates <- function(data,
     missing_plotdata <- dplyr::select(flow_summary, c(1:2,11:ncol(flow_summary))) 
     missing_plotdata <- tidyr::pivot_longer(missing_plotdata, -(1:2), names_to = "Month", values_to = "Missing")
     missing_plotdata <- dplyr::mutate(missing_plotdata, 
-                               Month = factor(substr(Month, 1, 3), levels = rev(month.abb)),
-                               Days = lubridate::days_in_month(paste(Year, match(Month, month.abb),1, sep = "-")),
-                               Percent_Missing = Missing / Days *100)
+                                      Month = factor(substr(Month, 1, 3), levels = rev(month.abb[c(water_year_start:12, 1:water_year_start-1)])),
+                                      Days = lubridate::days_in_month(paste(Year, match(Month, month.abb),1, sep = "-")),
+                                      Percent_Missing = Missing / Days *100)
     
     miss_plots <- dplyr::group_by(missing_plotdata, STATION_NUMBER)
     miss_plots <- tidyr::nest(miss_plots)
-    miss_plots <- dplyr::mutate(miss_plots,
-                                plot = purrr::map2(data, STATION_NUMBER,
-                                                   ~ggplot2::ggplot(data = ., ggplot2::aes(x=Year, y= Month))+
-      ggplot2::geom_tile(ggplot2::aes(fill = Percent_Missing), colour = "black")+
-      ggplot2::scale_x_continuous(expand = c(0,0))+
-      ggplot2::scale_y_discrete(expand = c(0,0), limits = rev(levels(month.abb)))+
-      ggplot2::scale_fill_viridis_c(direction = -1, name = "Missing\nDays (%)")+
-      ggplot2::ylab("Month")+
-      ggplot2::theme(axis.title.y = ggplot2::element_blank())
-    ))
+    miss_plots <- dplyr::mutate(
+      miss_plots,
+      plot = purrr::map2(data, STATION_NUMBER,
+                         ~ggplot2::ggplot(data = ., ggplot2::aes(x=Year, y= Month))+
+                           ggplot2::geom_tile(ggplot2::aes(fill = Percent_Missing), colour = "black")+
+                           ggplot2::scale_x_continuous(expand = c(0,0))+
+                           ggplot2::scale_y_discrete(expand = c(0,0), limits = rev(levels(month.abb)))+
+                           ggplot2::scale_fill_viridis_c(direction = -1, name = "Missing\nDays (%)")+
+                           ggplot2::ylab("Month")+
+                           ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
+                           ggplot2::theme(axis.title.y = ggplot2::element_blank())
+      ))
   }
   # Create a list of named plots extracted from the tibble
   plots <- miss_plots$plot
