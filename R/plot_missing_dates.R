@@ -151,6 +151,8 @@ plot_missing_dates <- function(data,
       ))
   } else if (plot_type == "tile") {
     
+    message("plot_missing_dates() plot changed with fasstr 0.5.0. For original bar plot set plot_type = 'bar'.")
+    
     missing_plotdata <- dplyr::select(flow_summary, c(1:2,11:ncol(flow_summary))) 
     missing_plotdata <- tidyr::pivot_longer(missing_plotdata, -(1:2), names_to = "Month", values_to = "Missing")
     missing_plotdata <- dplyr::mutate(missing_plotdata, 

@@ -26,6 +26,7 @@ check_for_cran()
 check_on_windows()
 check(platform = 'macos-highsierra-release')
 check(platform = 'macos-highsierra-release-cran')
+check(platform = 'macos-m1-bigsur-release')
 ```
 
 ## Run this in the console

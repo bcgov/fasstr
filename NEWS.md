@@ -1,7 +1,7 @@
 fasstr 0.5.0
 =========================
 
-Updated: 11 Mar 2022
+Updated: 25 Mar 2022
 
 ### Updates:
 
@@ -12,8 +12,9 @@ Updated: 11 Mar 2022
   * plot_data_screening() now allows choice of annual summary statistics (include_stats argument)
   * screen_flow_data() now add columns of counts of symbol categories provided by symbol column (HYDAT Symbol column). Can remove columns by using include_symbols = FALSE.
   * New function: plot_flow_data_symbols() plots daily data with coloured points designating symbol categories from symbols column
-  * New function: plot_annual_symbols() plots counts or percent of days with symbol categories from symbols column
+  * New function: plot_annual_symbols() plots symbols by day of year or annual counts or percent of days with symbols from symbols column
   * Removed HYDAT.sqlite file check in compute_HYDAT_peak_frequencies() - leaves check to tidyhydat
+  * "Year" axes now labeled "Water Year" if water_year_start != 1
   
 
 fasstr 0.4.1
