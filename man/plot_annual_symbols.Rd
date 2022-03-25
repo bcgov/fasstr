@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_annual_symbols.R
 \name{plot_annual_symbols}
 \alias{plot_annual_symbols}
-\title{Plot daily streamflow data with their symbols}
+\title{Plot daily streamflow data symbols by year}
 \usage{
 plot_annual_symbols(
   data,
@@ -16,7 +16,7 @@ plot_annual_symbols(
   end_year,
   months = 1:12,
   include_title = FALSE,
-  plot_percent = FALSE
+  plot_type = "dayofyear"
 )
 }
 \arguments{
@@ -56,17 +56,19 @@ months (\code{1:12}).}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 
-\item{plot_percent}{Logical.}
+\item{plot_type}{Character. One of \code{c('dayofyear','count','percent'}. With 'dayofyear' plot (default), the day of year for
+each year of data are coloured by symbols or missing dates are colours for each flow day of year. For 'count' and
+'percent' plots, the total count or percent of all symbols or missing dates per year are displayed.}
 }
 \value{
 A list of ggplot2 objects with the following for each station provided:
-  \item{Annual_Symbols}{a plot that contains the data availability for each year and month}
+  \item{Annual_Symbols}{a plot that contains data symbols and missing dates}
 }
 \description{
-Plots data symbols for a daily data set. A column of symbols is required, default \code{symbols = 'Symbol'}. 
-    For HYDAT data, symbols include: 'E' Estimate, 'A' Partial Day, 'C' Ice Conditions, 'D' Dry, and 'R' Revised. 
-    Other symbols or categories may be used to colour points of plot.
-    Returns a list of plots.
+Plots data symbols for a daily data set by year, either by day of year, total days, or percent of year (see
+    \code{plot_type} argument. A column of symbols is required, default \code{symbols = 'Symbol'}. For HYDAT data, symbols
+    include: 'E' Estimate, 'A' Partial Day, 'B' Ice Conditions, 'D' Dry, and 'R' Revised. Other symbols or categories may be 
+    used to colour points of plot. Returns a list of plots.
 }
 \examples{
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
@@ -79,9 +81,9 @@ plot_annual_symbols(data = flow_data)
 # Plot annual symbol counts using station_number argument with defaults
 plot_annual_symbols(station_number = "08NM116")
 
-# Plot annual symbol percentages using station_number argument with defaults
+# Plot annual symbol percentages using station_number argument and plot by annual counts
 plot_annual_symbols(station_number = "08NM116",
-                    plot_percent = TRUE)
+                    plot_type = "count")
                   
 }
 }

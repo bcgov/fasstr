@@ -14,7 +14,7 @@
 #' @title Plot daily streamflow data with their symbols
 #'
 #' @description Plots data symbols for a daily data set. A column of symbols is required, default \code{symbols = 'Symbol'}. 
-#'     For HYDAT data, symbols include: 'E' Estimate, 'A' Partial Day, 'C' Ice Conditions, 'D' Dry, and 'R' Revised. 
+#'     For HYDAT data, symbols include: 'E' Estimate, 'A' Partial Day, 'B' Ice Conditions, 'D' Dry, and 'R' Revised. 
 #'     Other symbols or categories may be used to colour points of plot.
 #'     Returns a list of plots.
 #'
