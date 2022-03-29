@@ -150,6 +150,8 @@ format_symbols_col <- function(data,
   
   names(data)[names(data) == symbols] <- "Symbol"
   
+  data$Symbol[data$Symbol == ""] <- NA 
+  
   data
 }
 
