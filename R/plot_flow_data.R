@@ -173,9 +173,9 @@ plot_flow_data <- function(data,
             call. = FALSE)
   
   # Create axis label based on input columns
-  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (cubic metres)", #expression(Volume~(m^3))
-                         ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)", 
-                                "Discharge (cms)")) #expression(Discharge~(m^3/s))
+  y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Daily Volume (cubic metres)", #expression(Volume~(m^3))
+                         ifelse(as.character(substitute(values)) == "Yield_mm", "Daily Yield (mm)", 
+                                "Daily Discharge (cms)")) #expression(Discharge~(m^3/s))
   
   # Plot each individual station on their own
   if (!one_plot) {

@@ -139,7 +139,7 @@ sym_plots <- dplyr::mutate(
     ~ggplot2::ggplot(data = ., ggplot2::aes(x = Date, y = Value)) +
       ggplot2::geom_line(colour = "dodgerblue4", size = 0.2, na.rm = TRUE) +
       ggplot2::geom_point(ggplot2::aes(color = Symbol), size = 1.5)+
-      ggplot2::ylab("Discharge (cms)") +
+      ggplot2::ylab("Daily Discharge (cms)") +
       {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 8), expand = c(0, 0))} +
       {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
       {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(.$Value) * 1.05))} +
