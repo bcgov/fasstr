@@ -144,19 +144,7 @@ plot_annual_symbols <- function(data,
     
   } else {
     
-    if (water_year_start == 1)         {origin_date <- as.Date("1899-12-31")
-    } else if (water_year_start == 2)  {origin_date <- as.Date("1899-01-31")
-    } else if (water_year_start == 3)  {origin_date <- as.Date("1899-02-28")
-    } else if (water_year_start == 4)  {origin_date <- as.Date("1899-03-31")
-    } else if (water_year_start == 5)  {origin_date <- as.Date("1899-04-30")
-    } else if (water_year_start == 6)  {origin_date <- as.Date("1899-05-31")
-    } else if (water_year_start == 7)  {origin_date <- as.Date("1899-06-30")
-    } else if (water_year_start == 8)  {origin_date <- as.Date("1899-07-31")
-    } else if (water_year_start == 9)  {origin_date <- as.Date("1899-08-31")
-    } else if (water_year_start == 10) {origin_date <- as.Date("1899-09-30")
-    } else if (water_year_start == 11) {origin_date <- as.Date("1899-10-31")
-    } else if (water_year_start == 12) {origin_date <- as.Date("1899-11-30")
-    }
+    origin_date <- get_origin_date(water_year_start)
     
     symbol_data <- format_all_cols(data = flow_data,
                                    dates = as.character(substitute(dates)),
