@@ -249,7 +249,6 @@ plot_longterm_monthly_stats <- function(data,
   y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (cubic metres)", #expression(Volume~(m^3))
                          ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)", 
                                 "Discharge (cms)")) #expression(Discharge~(m^3/s))
-  
   # Plot
   lt_plots <- dplyr::group_by(longterm_stats, STATION_NUMBER)
   lt_plots <- tidyr::nest(lt_plots)
@@ -269,10 +268,12 @@ plot_longterm_monthly_stats <- function(data,
         ggplot2::geom_line(ggplot2::aes(y = Median, color = "Median"), size = .9, na.rm = TRUE) +
         ggplot2::geom_point(ggplot2::aes(y = Mean), size = 2, na.rm = TRUE, colour  = "paleturquoise") +
         ggplot2::geom_point(ggplot2::aes(y = Median), size = 2, na.rm = TRUE, colour = "dodgerblue4") +
-        {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8))}+
-        {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
+        {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8),
+                                                        labels = scales::label_number(scale_cut = scales::cut_short_scale()))}+
+        {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10),
+                                                  labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +
         {if(log_discharge & log_ticks) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(0.07, "cm"),
-                                                        mid = ggplot2::unit(0.15, "cm"), long = ggplot2::unit(0.2, "cm"))} +
+                                                                    mid = ggplot2::unit(0.15, "cm"), long = ggplot2::unit(0.2, "cm"))} +
         ggplot2::scale_x_discrete(expand = c(0.01,0.01)) +
         ggplot2::ylab(y_axis_title) +
         ggplot2::xlab(NULL) +

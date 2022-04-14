@@ -123,17 +123,17 @@ plot_annual_stats2 <- function(data,
   ## ----------
   
   annual_stats_plot <- calc_annual_stats(data = flow_data,
-                                    percentiles = c(inner_percentiles, outer_percentiles),
-                                    roll_days = roll_days,
-                                    roll_align = roll_align,
-                                    water_year_start = water_year_start,
-                                    start_year = start_year,
-                                    end_year = end_year,
-                                    exclude_years = exclude_years, 
-                                    months = months,
-                                    ignore_missing = ignore_missing,
-                                    allowed_missing = allowed_missing)
-
+                                         percentiles = c(inner_percentiles, outer_percentiles),
+                                         roll_days = roll_days,
+                                         roll_align = roll_align,
+                                         water_year_start = water_year_start,
+                                         start_year = start_year,
+                                         end_year = end_year,
+                                         exclude_years = exclude_years, 
+                                         months = months,
+                                         ignore_missing = ignore_missing,
+                                         allowed_missing = allowed_missing)
+  
   ## PLOT STATS
   ## ----------
   
@@ -180,8 +180,10 @@ plot_annual_stats2 <- function(data,
         ggplot2::geom_line(ggplot2::aes(y = Median, colour = "Median"), size = 1, na.rm = TRUE) +
         ggplot2::geom_line(ggplot2::aes(y = Mean, colour = "Mean"), size = 1, na.rm = TRUE) +
         ggplot2::scale_x_continuous(expand = c(0,0))+
-        {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8))}+
-        {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10)) }+
+        {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0), breaks = scales::pretty_breaks(n = 8),
+                                                        labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +
+        {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10),
+                                                  labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +
         {if(log_discharge) ggplot2::annotation_logticks(base= 10, "left", colour = "grey25", size = 0.3,
                                                         short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
                                                         long = ggplot2::unit(.2, "cm")) }+

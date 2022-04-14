@@ -152,41 +152,44 @@ plot_annual_stats <- function(data,
   y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (cubic metres)", #expression(Volume~(m^3))
                          ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)", 
                                 "Discharge (cms)")) #expression(Discharge~(m^3/s))
-  
+
   # Create plots for each STATION_NUMBER in a tibble (see: http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/)
   tidy_plots <- dplyr::group_by(annual_stats_plot, STATION_NUMBER)
   tidy_plots <- tidyr::nest(tidy_plots)
   tidy_plots <- dplyr::mutate(
     tidy_plots,
-    plot = purrr::map2(data, STATION_NUMBER, 
-                       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
-                         ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
-                         ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
-                         ggplot2::geom_point(na.rm = TRUE) +
-                         {if(!log_discharge) ggplot2::expand_limits(y = c(0, suppressWarnings(max(.$Value, na.rm = T)) * 1.05))}+
-                         {if(log_discharge) ggplot2::expand_limits(y = c(min(.$Value, na.rm = T) * .95, max(.$Value, na.rm = T) * 1.05))} +
-                         {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0), breaks = scales::pretty_breaks(n = 7))} +
-                         {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 7, base = 10))} +
-                         {if(log_discharge & log_ticks) ggplot2::annotation_logticks(
-                           base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"), 
-                           mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))} +
-                         ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
-                         {if(length(unique(annual_stats_plot$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(annual_stats_plot$Year))}+
-                         ggplot2::expand_limits(y = 0) +
-                         ggplot2::ylab(y_axis_title)+
-                         ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
-                         # ggplot2::scale_color_brewer(palette = "Set1") +
-                         ggplot2::theme_bw() +
-                         ggplot2::labs(color = 'Annual Statistics') +    
-                         {if (include_title & .y != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nAnnual Statistics')) }+    
-                         ggplot2::theme(legend.position = "right", 
-                                        legend.spacing = ggplot2::unit(0, "cm"),
-                                        legend.justification = "top",
-                                        legend.text = ggplot2::element_text(size = 9),
-                                        panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                                        panel.grid = ggplot2::element_line(size = .2),
-                                        axis.title = ggplot2::element_text(size = 12),
-                                        axis.text = ggplot2::element_text(size = 10))
+    plot = purrr::map2(
+      data, STATION_NUMBER, 
+      ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
+        ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
+        ggplot2::geom_point(na.rm = TRUE) +
+        {if(!log_discharge) ggplot2::expand_limits(y = c(0, suppressWarnings(max(.$Value, na.rm = T)) * 1.05))}+
+        {if(log_discharge) ggplot2::expand_limits(y = c(min(.$Value, na.rm = T) * .95, max(.$Value, na.rm = T) * 1.05))} +
+        {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0), breaks = scales::pretty_breaks(n = 8),
+                                                        labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +
+        {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10),
+                                                  labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +
+        {if(log_discharge & log_ticks) ggplot2::annotation_logticks(
+          base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"), 
+          mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))} +
+        ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
+        {if(length(unique(annual_stats_plot$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(annual_stats_plot$Year))}+
+        ggplot2::expand_limits(y = 0) +
+        ggplot2::ylab(y_axis_title)+
+        ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
+        # ggplot2::scale_color_brewer(palette = "Set1") +
+        ggplot2::theme_bw() +
+        ggplot2::labs(color = 'Annual Statistics') +    
+        {if (include_title & .y != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nAnnual Statistics')) }+    
+        ggplot2::theme(legend.position = "right", 
+                       legend.spacing = ggplot2::unit(0, "cm"),
+                       legend.justification = "top",
+                       legend.text = ggplot2::element_text(size = 9),
+                       panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                       panel.grid = ggplot2::element_line(size = .2),
+                       axis.title = ggplot2::element_text(size = 12),
+                       axis.text = ggplot2::element_text(size = 10))
     ))
   
   

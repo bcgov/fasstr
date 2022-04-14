@@ -264,7 +264,8 @@ compute_annual_trends <- function(data,
           ggplot2::ylab(trends_data_stat$Units) +
           ggplot2::theme_bw() +
           ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 12)) +
-          ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
+          ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
+                                      labels = scales::label_number(scale_cut = scales::cut_short_scale())) +
           ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                          panel.grid = ggplot2::element_line(size = .2),
                          axis.title = ggplot2::element_text(size = 12),

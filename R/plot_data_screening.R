@@ -150,7 +150,8 @@ plot_data_screening <- function(data,
            ggplot2::facet_wrap(~Statistic, ncol = 2, scales = "free_y", strip.position = "top") +
            ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
            {if(length(unique(flow_summary$Year)) < 5) ggplot2::scale_x_continuous(breaks = unique(flow_summary$Year))}+
-           ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
+           ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
+                                       labels = scales::label_number(scale_cut = scales::cut_short_scale())) +
            {if (plot_availability) ggplot2::scale_shape_manual(values = c(19,21),
                                        labels = c("Complete Data", "Missing Values"),
                                        name = "Data Availability") } + 

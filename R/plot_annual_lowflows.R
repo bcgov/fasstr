@@ -184,7 +184,8 @@ plot_annual_lowflows <- function(data,
                          ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "top")+
                          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
                          {if(length(unique(lowflow_values$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(lowflow_values$Year))}+
-                         ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
+                         ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
+                                                     labels = scales::label_number(scale_cut = scales::cut_short_scale())) +
                          ggplot2::ylab(y_axis_title)+
                          ggplot2::xlab("Year")+
                          ggplot2::scale_color_brewer(palette = "Set1") +

@@ -264,11 +264,13 @@ plot_daily_stats <- function(data,
                                                                                     fill = paste0("'",inner_name,"'")), na.rm = FALSE)} +
         ggplot2::geom_line(ggplot2::aes(y = Median, colour = "Median"), size = .5, na.rm = TRUE) +
         ggplot2::geom_line(ggplot2::aes(y = Mean, colour = "Mean"), size = .5, na.rm = TRUE) +
-        {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8))}+
-        {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
+        {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8),
+                                                        labels = scales::label_number(scale_cut = scales::cut_short_scale()))}+
+        {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10),
+                                                  labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +
         {if(log_discharge & log_ticks) ggplot2::annotation_logticks(base= 10, "left", colour = "grey25", size = 0.3,
-                                                        short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
-                                                        long = ggplot2::unit(.2, "cm"))} +
+                                                                    short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
+                                                                    long = ggplot2::unit(.2, "cm"))} +
         ggplot2::scale_x_date(date_labels = "%b", date_breaks = "1 month",
                               limits = as.Date(c(as.character(min(daily_stats$AnalysisDate, na.rm = TRUE)), 
                                                  as.character(max(daily_stats$AnalysisDate, na.rm = TRUE)))), 

@@ -1,7 +1,7 @@
 fasstr 0.5.0
 =========================
 
-Updated: 25 Mar 2022
+Updated: 14 Apr 2022
 
 ### Updates:
 
@@ -15,6 +15,7 @@ Updated: 25 Mar 2022
   * New function: plot_annual_symbols() plots symbols by day of year or annual counts or percent of days with symbols from symbols column
   * Removed HYDAT.sqlite file check in compute_HYDAT_peak_frequencies() - leaves check to tidyhydat
   * "Year" axes now labeled "Water Year" if water_year_start != 1
+  * Changed y-axis labels on plots using scales::cut_short_scale() to remove exponents on large numbers
   
 
 fasstr 0.4.1

@@ -158,11 +158,11 @@ plot_flow_data <- function(data,
   
   # Filter for the selected year (remove excluded years after)
   flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
-
+  
   # Filter for specific dates, if selected
   flow_data <- dplyr::filter(flow_data, Date >= start_date)
   flow_data <- dplyr::filter(flow_data, Date <= end_date)
-
+  
   # Remove selected excluded years
   flow_data <- dplyr::mutate(flow_data, Value = replace(Value, WaterYear %in% exclude_years, NA))
   flow_data <- dplyr::mutate(flow_data, Value = replace(Value, !Month %in% months, NA))
@@ -181,31 +181,35 @@ plot_flow_data <- function(data,
   if (!one_plot) {
     flow_plots <- dplyr::group_by(flow_data, STATION_NUMBER)
     flow_plots <- tidyr::nest(flow_plots)
-    flow_plots <- dplyr::mutate(flow_plots,
-                                plot = purrr::map2(data, STATION_NUMBER, 
-          ~ggplot2::ggplot(data = ., ggplot2::aes(x = Date, y = Value)) +
-            ggplot2::geom_line(colour = "dodgerblue4", na.rm = TRUE) +
-            ggplot2::ylab(y_axis_title) +
-            {if(plot_by_year) ggplot2::facet_wrap(~WaterYear, scales = "free_x")} +
-            {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 8), expand = c(0, 0))} +
-            {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
-            {if(plot_by_year) ggplot2::scale_x_date(date_labels = "%b", expand = c(0,0))} +
-            {if(!plot_by_year) ggplot2::scale_x_date(breaks = scales::pretty_breaks(n = 12))} +
-            {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(.$Value) * 1.05))} +
-            {if(log_discharge) ggplot2::expand_limits(y = c(min(.$Value) * .95, max(.$Value) * 1.05))} +
-            {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(.y) } +    
-            ggplot2::theme_bw() +
-            ggplot2::labs(color = 'Station') +    
-            ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                           legend.position = "right", 
-                           legend.spacing = ggplot2::unit(0, "cm"),
-                           legend.justification = "top",
-                           legend.text = ggplot2::element_text(size = 9),
-                           panel.grid = ggplot2::element_line(size = .2),
-                           axis.title = ggplot2::element_text(size = 12),
-                           axis.text = ggplot2::element_text(size = 10),
-                           plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
-                                ))
+    flow_plots <- dplyr::mutate(
+      flow_plots,
+      plot = purrr::map2(
+        data, STATION_NUMBER, 
+        ~ggplot2::ggplot(data = ., ggplot2::aes(x = Date, y = Value)) +
+          ggplot2::geom_line(colour = "dodgerblue4", na.rm = TRUE) +
+          ggplot2::ylab(y_axis_title) +
+          {if(plot_by_year) ggplot2::facet_wrap(~WaterYear, scales = "free_x")} +
+          {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8),
+                                                          labels = scales::label_number(scale_cut = scales::cut_short_scale()))}+
+          {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10),
+                                                    labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +
+          {if(plot_by_year) ggplot2::scale_x_date(date_labels = "%b", expand = c(0,0))} +
+          {if(!plot_by_year) ggplot2::scale_x_date(breaks = scales::pretty_breaks(n = 12))} +
+          {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(.$Value) * 1.05))} +
+          {if(log_discharge) ggplot2::expand_limits(y = c(min(.$Value) * .95, max(.$Value) * 1.05))} +
+          {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(.y) } +    
+          ggplot2::theme_bw() +
+          ggplot2::labs(color = 'Station') +    
+          ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                         legend.position = "right", 
+                         legend.spacing = ggplot2::unit(0, "cm"),
+                         legend.justification = "top",
+                         legend.text = ggplot2::element_text(size = 9),
+                         panel.grid = ggplot2::element_line(size = .2),
+                         axis.title = ggplot2::element_text(size = 12),
+                         axis.text = ggplot2::element_text(size = 10),
+                         plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
+      ))
     
     # Create a list of named plots extracted from the tibble
     plots <- flow_plots$plot
@@ -217,7 +221,7 @@ plot_flow_data <- function(data,
     
     
     
-  # Plot all stations together
+    # Plot all stations together
   } else {
     plots <- list()
     
@@ -228,8 +232,8 @@ plot_flow_data <- function(data,
       {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 8), expand = c(0, 0))} +
       {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
       {if(log_discharge & log_ticks) ggplot2::annotation_logticks(base= 10, "left", colour = "grey25", size = 0.3,
-                                                      short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
-                                                      long = ggplot2::unit(.2, "cm"))} +
+                                                                  short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
+                                                                  long = ggplot2::unit(.2, "cm"))} +
       {if(plot_by_year) ggplot2::scale_x_date(date_labels = "%b", expand = c(0,0))} +
       {if(!plot_by_year) ggplot2::scale_x_date(breaks = scales::pretty_breaks(n = 12))} +
       {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(flow_data$Value) * 1.05))} +

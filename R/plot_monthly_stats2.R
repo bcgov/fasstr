@@ -139,6 +139,7 @@ plot_monthly_stats2 <- function(data,
   y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (cubic metres)", #expression(Volume~(m^3))
                          ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)", 
                                 "Discharge (cms)")) #expression(Discharge~(m^3/s))
+  
   fill_manual_list <- c()
   if (include_extremes) {
     fill_manual_list <- c(fill_manual_list, "lightblue2")
@@ -179,8 +180,10 @@ plot_monthly_stats2 <- function(data,
         ggplot2::geom_line(ggplot2::aes(y = Mean, colour = "Mean"), size = 1, na.rm = TRUE) +
         ggplot2::facet_wrap(~Month, scales = "fixed", strip.position = "top") +
         ggplot2::scale_x_continuous(expand = c(0,0))+
-        {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8))}+
-        {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10)) }+
+        {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0), breaks = scales::pretty_breaks(n = 8),
+                                                        labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +
+        {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10),
+                                                  labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +  
         {if(log_discharge) ggplot2::annotation_logticks(base= 10, "left", colour = "grey25", size = 0.3,
                                                         short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
                                                         long = ggplot2::unit(.2, "cm")) }+
