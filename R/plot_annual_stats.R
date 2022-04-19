@@ -107,9 +107,9 @@ plot_annual_stats <- function(data,
     end_year <- 9999
   }
   
-  log_discharge_checks(log_discharge) 
+  logical_arg_check(log_discharge) 
   log_ticks_checks(log_ticks, log_discharge)
-  include_title_checks(include_title)
+  logical_arg_check(include_title)
   
   
   ## FLOW DATA CHECKS AND FORMATTING

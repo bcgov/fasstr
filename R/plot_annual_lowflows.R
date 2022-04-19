@@ -81,7 +81,7 @@ plot_annual_lowflows <- function(data,
     exclude_years <- NULL
   }
   
-  include_title_checks(include_title)
+  logical_arg_check(include_title)
   
   
   ## FLOW DATA CHECKS AND FORMATTING

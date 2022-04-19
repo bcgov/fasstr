@@ -109,10 +109,10 @@ calc_monthly_stats <- function(data,
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)
-  ignore_missing_checks(ignore_missing)
+  logical_arg_check(ignore_missing)
   allowed_missing_checks(allowed_missing, ignore_missing)
-  transpose_checks(transpose)
-  spread_checks(spread)
+  logical_arg_check(transpose)
+  logical_arg_check(spread)
   if(transpose & spread) stop("Both spread and transpose arguments cannot be TRUE.", call. = FALSE)
   
   

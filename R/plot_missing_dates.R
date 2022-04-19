@@ -84,7 +84,7 @@ plot_missing_dates <- function(data,
   if (!any(c("tile", "bar") %in% plot_type)) 
     stop("plot_type must be one of 'tile' or 'bar' plots.", call. = FALSE)
   
-  include_title_checks(include_title)  
+  logical_arg_check(include_title)  
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------

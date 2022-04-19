@@ -105,11 +105,11 @@ plot_flow_duration <- function(data,
     custom_months_label <- "Custom-Months"
   }
   
-  log_discharge_checks(log_discharge)
+  logical_arg_check(log_discharge)
   log_ticks_checks(log_ticks, log_discharge)
   custom_months_checks(custom_months, custom_months_label)
-  include_title_checks(include_title)
-  include_longterm_checks(include_longterm)
+  logical_arg_check(include_title)
+  logical_arg_check(include_longterm)
   
   
   

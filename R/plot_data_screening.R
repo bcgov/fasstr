@@ -97,7 +97,7 @@ plot_data_screening <- function(data,
       stop("include_stats must be one or all of c('Mean', 'Median', 'Minimum', 'Maximum', 'Standard Deviation').", call. = FALSE)
   include_stats <- include_stats[include_stats %in% c("Mean", "Median", "Minimum", "Maximum", "Standard Deviation")]
 
-  include_title_checks(include_title)
+  logical_arg_check(include_title)
     
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------

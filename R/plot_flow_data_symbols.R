@@ -80,11 +80,11 @@ plot_flow_data_symbols <- function(data,
   if (missing(end_date)) {
     end_date <- "3000-12-31"
   }
-  include_title_checks(include_title)
+
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years = NULL)
-  log_discharge_checks(log_discharge)
-  include_title_checks(include_title)
+  logical_arg_check(log_discharge)
+  logical_arg_check(include_title)
   months_checks(months)
   
   if (class(try(as.Date(start_date))) == "try-error") stop("start_date must be a date formatted YYYY-MM-DD.", call. = FALSE)

@@ -111,9 +111,9 @@ plot_flow_data <- function(data,
   rolling_days_checks(roll_days, roll_align)
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years = NULL)
-  log_discharge_checks(log_discharge)
+  logical_arg_check(log_discharge)
   log_ticks_checks(log_ticks, log_discharge)
-  include_title_checks(include_title)
+  logical_arg_check(include_title)
   months_checks(months)
   
   if (class(try(as.Date(start_date))) == "try-error") stop("start_date must be a date formatted YYYY-MM-DD.", call. = FALSE)

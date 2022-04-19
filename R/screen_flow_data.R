@@ -107,7 +107,7 @@ screen_flow_data <- function(data,
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years = NULL)
   months_checks(months = months)
-  transpose_checks(transpose)
+  logical_arg_check(transpose)
   
   if (length(include_symbols) > 1)        stop("Only one include_symbols logical value can be listed.", call. = FALSE)
   if (!is.logical(include_symbols))       stop("include_symbols argument must be logical (TRUE/FALSE).", call. = FALSE)

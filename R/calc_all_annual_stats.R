@@ -150,8 +150,8 @@ calc_all_annual_stats <- function(data,
   
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
-  transpose_checks(transpose)
-  ignore_missing_checks(ignore_missing)
+  logical_arg_check(transpose)
+  logical_arg_check(ignore_missing)
   ann_percentiles_checks(annual_percentiles)
   mon_percentiles_checks(monthly_percentiles)
   stats_days_checks(stats_days, stats_align)

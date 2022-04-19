@@ -102,11 +102,11 @@ calc_annual_cumulative_stats <- function(data,
     warning("Since not all months are selected, seasonal totals will not be included.", call. = FALSE)
   }
 
-  use_yield_checks(use_yield)
+  logical_arg_check(use_yield)
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
-  transpose_checks(transpose)
-  include_seasons_checks(include_seasons)
+  logical_arg_check(transpose)
+  logical_arg_check(include_seasons)
   months_checks(months)
   
   

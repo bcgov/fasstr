@@ -94,7 +94,7 @@ calc_annual_flow_timing <- function(data,
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)
-  transpose_checks(transpose)
+  logical_arg_check(transpose)
   
   
   ## FLOW DATA CHECKS AND FORMATTING

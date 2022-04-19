@@ -92,7 +92,7 @@ plot_annual_cumulative_stats <- function(data,
     basin_area <- NA
   }
   
-  include_title_checks(include_title)   
+  logical_arg_check(include_title)   
   
   if (include_seasons & !all(1:12 %in% months)) {
     warning("Since not all months are selected, seasonal totals will not be included.", call. = FALSE)

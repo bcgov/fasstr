@@ -95,10 +95,10 @@ plot_daily_cumulative_stats <- function(data,
     exclude_years <- NULL
   }
   
-  log_discharge_checks(log_discharge) 
+  logical_arg_check(log_discharge) 
   log_ticks_checks(log_ticks, log_discharge)
   add_year_checks(add_year)
-  include_title_checks(include_title)  
+  logical_arg_check(include_title)  
   
   
   ## FLOW DATA CHECKS AND FORMATTING

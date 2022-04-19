@@ -86,7 +86,7 @@ calc_annual_outside_normal <- function(data,
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)
-  transpose_checks(transpose)
+  logical_arg_check(transpose)
   normal_percentiles_checks(normal_percentiles)
   sort(normal_percentiles)
     

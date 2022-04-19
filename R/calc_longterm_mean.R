@@ -82,8 +82,8 @@ calc_longterm_mean <- function(data,
   rolling_days_checks(roll_days, roll_align)
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
-  complete_yrs_checks(complete_years)
-  transpose_checks(transpose)
+  logical_arg_check(complete_years)
+  logical_arg_check(transpose)
   
   if(!all(is.na(percent_MAD)) & all(percent_MAD <= 0))  
     stop("Numbers in percent_MAD argument must > 0.", call. = FALSE)

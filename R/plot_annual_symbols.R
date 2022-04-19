@@ -73,10 +73,10 @@ plot_annual_symbols <- function(data,
   if (missing(end_year)) {
     end_year <- 9999
   }
-  include_title_checks(include_title)
+  
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years = NULL)
-  include_title_checks(include_title)
+  logical_arg_check(include_title)
   months_checks(months)
   
   if (length(plot_type) > 1)        stop("Only one plot_type logical value can be listed.", call. = FALSE)

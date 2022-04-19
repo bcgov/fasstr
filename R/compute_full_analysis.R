@@ -138,7 +138,7 @@ compute_full_analysis <- function(data,
   
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
-  ignore_missing_checks(ignore_missing)
+  logical_arg_check(ignore_missing)
   allowed_missing_checks(allowed_missing_annual, ignore_missing)
   allowed_missing_checks(allowed_missing_monthly, ignore_missing)
   months_checks(months)

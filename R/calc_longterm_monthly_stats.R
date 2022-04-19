@@ -126,11 +126,11 @@ calc_longterm_monthly_stats <- function(data,
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months = months)
-  transpose_checks(transpose)
-  ignore_missing_checks(ignore_missing)
-  complete_yrs_checks(complete_years)
+  logical_arg_check(transpose)
+  logical_arg_check(ignore_missing)
+  logical_arg_check(complete_years)
   custom_months_checks(custom_months, custom_months_label)
-  include_longterm_checks(include_annual)
+  logical_arg_check(include_annual)
   
   
   ## FLOW DATA CHECKS AND FORMATTING

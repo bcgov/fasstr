@@ -49,11 +49,7 @@ flowdata_import <- function(data = NULL, station_number = NULL){
   
 }
 
-
-
 ## Check for dates and proper formatting
-## -------------------------------------
-
 format_dates_col <- function(data,
                              dates = "Date"){
   
@@ -84,10 +80,7 @@ format_dates_col <- function(data,
   data
 }
 
-
 ## Check for values and proper formatting
-## --------------------------------------
-
 format_values_col <- function(data,
                               values = "Value"){
   
@@ -107,9 +100,7 @@ format_values_col <- function(data,
   data
 }
 
-
 ## Check for groups and proper formatting
-## --------------------------------------
 format_groups_col <- function(data,
                               groups = "STATION_NUMBER"){
   
@@ -135,7 +126,6 @@ format_groups_col <- function(data,
 }
 
 ## Check for symbols and proper formatting
-## --------------------------------------
 format_symbols_col <- function(data,
                                symbols = "Symbol"){
   
@@ -156,8 +146,6 @@ format_symbols_col <- function(data,
 }
 
 ## Check for dates, values, and groups proper formatting
-## -----------------------------------------------------
-
 format_all_cols <- function(data,
                             dates = "Date",
                             values = "Value",
@@ -186,13 +174,8 @@ format_all_cols <- function(data,
   data
 }
 
-
-
-
 ## Fill missing dates, add date variables and add AnalysisYear, DoY, and/or Date
 ## Used in prep for analyses
-## -----------------------------------------------------------------------------
-
 analysis_prep <- function(data,
                           water_year_start,
                           date = FALSE){
@@ -222,6 +205,7 @@ analysis_prep <- function(data,
   data
 }
 
+# Get the origin date for plotting days of years
 get_origin_date <- function(water_year_start){
   if (water_year_start == 1)         {origin_date <- as.Date("1899-12-31")
   } else if (water_year_start == 2)  {origin_date <- as.Date("1899-01-31")
@@ -239,9 +223,8 @@ get_origin_date <- function(water_year_start){
   origin_date
 }
 
-
+# Filter data for complete years (require fill_missing and add_dates and Value = RollingValue beforehand)
 filter_complete_yrs <- function(complete_years, flow_data) {
-  
   if (complete_years){
     comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
                                    complete_yr = ifelse(sum(!is.na(RollingValue)) == length(WaterYear), TRUE, FALSE))
@@ -249,14 +232,10 @@ filter_complete_yrs <- function(complete_years, flow_data) {
     flow_data <- dplyr::filter(flow_data, complete_yr == "TRUE")
     flow_data <- dplyr::select(flow_data, -complete_yr)
   }
-  
   flow_data
 }
 
-
-
 ## add water year months (reorders the months to the start of the water year)
-
 add_water_months <- function(data, water_year_start){
   
   if (water_year_start == 1) {
@@ -268,12 +247,17 @@ add_water_months <- function(data, water_year_start){
                                                  Month - water_year_start + 13,
                                                  Month - water_year_start + 1))
   }
-  
   data
 }
 
 ## Various check functions
 
+# General logical argument check
+logical_arg_check <- function(logical_arg) {
+  if (length(logical_arg) > 1)        stop(paste0("Only one ", as.character(substitute(logical_arg)),
+                                                  " logical value can be listed."), call. = FALSE)
+  if (!is.logical(logical_arg))       stop(as.character(substitute(logical_arg)), " argument must be logical (TRUE/FALSE).", call. = FALSE)
+}
 
 one_station_number_stop <- function(station_number) {
   if (length(station_number) > 1) stop("Multiple station_numbers were provided, only one can be listed for this function.", call. = FALSE)
@@ -293,12 +277,6 @@ rolling_days_checks <- function(roll_days, roll_align , multiple = FALSE) {
   if (!roll_align %in% c("right", "left", "center"))  stop("roll_align argument must be 'right', 'left', or 'center'.", call. = FALSE)
 }
 
-# rolling_days_multiple_checks <- function(roll_days, roll_align) {
-#   if (!is.numeric(roll_days))                         stop("roll_days argument must be numeric.", call. = FALSE)
-#   if (!all(roll_days %in% c(1:180)))                  stop("roll_days argument must be integers > 0 and <= 180).", call. = FALSE)
-#   if (!roll_align %in% c("right", "left", "center"))  stop("roll_align argument must be 'right', 'left', or 'center'.", call. = FALSE)
-# }
-
 water_year_checks <- function(water_year_start) {
   if (!is.numeric(water_year_start))   stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec).", call. = FALSE)
   if (length(water_year_start) > 1)      stop("water_year_start argument must be a number between 1 and 12 (Jan-Dec).", call. = FALSE)
@@ -314,11 +292,6 @@ years_checks <- function(start_year, end_year, exclude_years) {
   
   if (!is.null(exclude_years) & !is.numeric(exclude_years)) stop("List of exclude_years must be numeric - ex. 1999 or c(1999,2000).", call. = FALSE)
   if (!all(exclude_years %in% c(0:9999)))                   stop("Years listed in exclude_years must be integers.", call. = FALSE)
-}
-
-complete_yrs_checks <- function(complete_years) {
-  if (length(complete_years) > 1)        stop("Only one complete_years logical value can be listed.", call. = FALSE)
-  if (!is.logical(complete_years))       stop("complete_years argument must be logical (TRUE/FALSE).", call. = FALSE)
 }
 
 months_checks <- function(months) {
@@ -337,50 +310,15 @@ custom_months_checks <- function(custom_months, custom_months_label) {
 
 percentiles_checks <- function(percentiles) {
   if (!all(is.na(percentiles))){
-    if (!is.numeric(percentiles))                   stop("percentiles argument must be numeric.", call. = FALSE)
-    if (!all(percentiles > 0 & percentiles < 100))  stop("percentiles must be > 0 and < 100.", call. = FALSE)
+    if (!is.numeric(percentiles))                     stop("percentiles argument must be numeric.", call. = FALSE)
+    if (!all(percentiles >= 0 & percentiles <= 100))  stop("percentiles must be >= 0 and <= 100.", call. = FALSE)
   }
 }
 
-transpose_checks <- function(transpose) {
-  if (length(transpose) > 1)        stop("Only one transpose logical value can be listed.", call. = FALSE)
-  if (!is.logical(transpose))       stop("transpose argument must be logical (TRUE/FALSE).", call. = FALSE)
-}
-
-spread_checks <- function(spread) {
-  if (length(spread) > 1)        stop("Only one spread logical value can be listed.", call. = FALSE)
-  if (!is.logical(spread))       stop("spread argument must be logical (TRUE/FALSE).", call. = FALSE)
-}
-
-ignore_missing_checks <- function(ignore_missing) {
-  if (length(ignore_missing) > 1)   stop("Only one ignore_missing logical value can be listed.", call. = FALSE)
-  if (!is.logical(ignore_missing))  stop("ignore_missing argument must be logical (TRUE/FALSE).", call. = FALSE)
-}
-
-log_discharge_checks <- function(log_discharge) {
-  if (length(log_discharge) > 1)   stop("Only one log_discharge logical value can be listed.", call. = FALSE)
-  if (!is.logical(log_discharge))  stop("log_discharge argument must be logical (TRUE/FALSE).", call. = FALSE)
-}
 log_ticks_checks <- function(log_ticks, log_discharge) {
   if (length(log_ticks) > 1)   stop("Only one log_ticks logical value can be listed.", call. = FALSE)
   if (!is.logical(log_ticks))  stop("log_ticks argument must be logical (TRUE/FALSE).", call. = FALSE)
   if (!log_discharge & log_ticks) warning("logarithmic scale ticks will not be plotted on linear discharge.", call. = FALSE)
-}
-
-
-include_title_checks <- function(include_title) {
-  if (length(include_title) > 1)   stop("Only one include_title logical value can be listed.", call. = FALSE)
-  if (!is.logical(include_title))  stop("include_title argument must be logical (TRUE/FALSE).", call. = FALSE)
-}
-
-use_yield_checks <- function(use_yield) {
-  if (length(use_yield) > 1)   stop("Only one use_yield logical value can be listed.", call. = FALSE)
-  if (!is.logical(use_yield))  stop("use_yield argument must be logical (TRUE/FALSE).", call. = FALSE)
-}
-
-include_seasons_checks <- function(include_seasons) {
-  if (length(include_seasons) > 1)   stop("Only one include_seasons logical value can be listed.", call. = FALSE)
-  if (!is.logical(include_seasons))  stop("include_seasons argument must be logical (TRUE/FALSE).", call. = FALSE)
 }
 
 percent_total_checks <- function(percent_total) {
@@ -427,7 +365,6 @@ timing_pct_checks <- function(timing_percent) {
   if (!all(timing_percent > 0 & timing_percent < 100)) stop("timing_percent must be > 0 and < 100).", call. = FALSE)
 }
 
-
 add_year_checks <- function(add_year) {
   if(!is.null(add_year)){
     if(length(add_year) != 1)  stop("Only one add_year numeric value can be provided.", call. = FALSE)
@@ -466,11 +403,6 @@ zyp_alpha_checks <- function(zyp_alpha){
     stop("timing_percent must be >= 0 and <= 1)", call. = FALSE)
 }
 
-include_longterm_checks <- function(include_longterm){
-  if (length(include_longterm) > 1)   stop("Only one include_longterm logical value can be listed.", call. = FALSE)
-  if (!is.logical(include_longterm))  stop("include_longterm argument must be logical (TRUE/FALSE).", call. = FALSE)
-}
-
 ptile_ribbons_checks <- function(inner_percentiles, outer_percentiles){
   if(!is.null(inner_percentiles)) {
     if (!is.numeric(inner_percentiles) )                stop("inner_percentiles must be two numeric values.", call. = FALSE)
@@ -502,6 +434,7 @@ allowed_missing_checks <- function(allowed_missing, ignore_missing) {
                    " return NA if any missing data."), call. = FALSE)
   }
 }
+
 # ignore_missing replacement: if percent of NA is greater than allowed, dont calc, otherwise do so
 allowed_narm <- function(value, allowed_missing){
   ifelse(sum(is.na(value)/length(value))*100 >= allowed_missing, FALSE, TRUE)
