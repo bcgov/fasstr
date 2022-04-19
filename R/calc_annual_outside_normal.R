@@ -87,7 +87,7 @@ calc_annual_outside_normal <- function(data,
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)
   logical_arg_check(transpose)
-  normal_percentiles_checks(normal_percentiles)
+  numeric_range_checks(normal_percentiles)
   sort(normal_percentiles)
     
   

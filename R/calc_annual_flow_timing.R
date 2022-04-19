@@ -90,7 +90,7 @@ calc_annual_flow_timing <- function(data,
     exclude_years <- NULL
   }
 
-  percent_total_checks(percent_total)
+  numeric_range_checks(percent_total)
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)

@@ -86,7 +86,7 @@ calc_longterm_percentile <- function(data,
   logical_arg_check(transpose)
   
   if (all(is.na(percentiles))) stop("percentiles argument is required.", call. = FALSE)
-  percentiles_checks(percentiles)
+  numeric_range_checks(percentiles)
   
   
   

@@ -98,7 +98,7 @@ plot_annual_outside_normal_year <- function(data,
   logical_arg_check(include_title)
   logical_arg_check(plot_flow_line)
   logical_arg_check(plot_normal_percentiles)
-  normal_percentiles_checks(normal_percentiles)
+  numeric_range_checks(normal_percentiles)
   sort(normal_percentiles)
   
   

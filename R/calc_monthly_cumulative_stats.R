@@ -96,7 +96,7 @@ calc_monthly_cumulative_stats <- function(data,
     basin_area <- NA
   }
   
-  percentiles_checks(percentiles)
+  numeric_range_checks(percentiles)
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   logical_arg_check(transpose)

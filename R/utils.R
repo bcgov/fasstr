@@ -278,9 +278,10 @@ add_water_months <- function(data, water_year_start){
 
 # General logical argument check
 logical_arg_check <- function(logical_arg) {
-  if (length(logical_arg) > 1)        stop(paste0("Only one ", as.character(substitute(logical_arg)),
-                                                  " logical value can be listed."), call. = FALSE)
-  if (!is.logical(logical_arg))       stop(as.character(substitute(logical_arg)), " argument must be logical (TRUE/FALSE).", call. = FALSE)
+  if (length(logical_arg) > 1)        
+    stop(paste0("Only one ", as.character(substitute(logical_arg)), " logical value can be listed."), call. = FALSE)
+  if (!is.logical(logical_arg))       
+    stop(as.character(substitute(logical_arg)), " argument must be logical (TRUE/FALSE).", call. = FALSE)
 }
 
 one_station_number_stop <- function(station_number) {
@@ -332,10 +333,12 @@ custom_months_checks <- function(custom_months, custom_months_label) {
     stop("custom_months_label argument must be a character string.", call. = FALSE)
 }
 
-percentiles_checks <- function(percentiles) {
+numeric_range_checks <- function(percentiles) {
   if (!all(is.na(percentiles))){
-    if (!is.numeric(percentiles))                     stop("percentiles argument must be numeric.", call. = FALSE)
-    if (!all(percentiles >= 0 & percentiles <= 100))  stop("percentiles must be >= 0 and <= 100.", call. = FALSE)
+    if (!is.numeric(percentiles))                   
+      stop(paste0(as.character(substitute(percentiles)), " argument must be numeric."), call. = FALSE)
+    if (!all(percentiles >= 0 & percentiles <= 100))  
+      stop(paste0(as.character(substitute(percentiles)), " must be >= 0 and <= 100."), call. = FALSE)
   }
 }
 
@@ -345,16 +348,11 @@ log_ticks_checks <- function(log_ticks, log_discharge) {
   if (!log_discharge & log_ticks) warning("logarithmic scale ticks will not be plotted on linear discharge.", call. = FALSE)
 }
 
-percent_total_checks <- function(percent_total) {
-  if (!is.numeric(percent_total))                    stop("percent_total must be numeric.", call. = FALSE)
-  if (!all(percent_total > 0 & percent_total < 100)) stop("percent_total must be > 0 and < 100).", call. = FALSE)
-}
-
 normal_percentiles_checks <- function(normal_percentiles) {
   if (!is.numeric(normal_percentiles) )                stop("normal_percentiles must be two numeric values.", call. = FALSE)
   if (length(normal_percentiles) != 2 )                stop("normal_percentiles must be two numeric values (ex. c(25,75)).", call. = FALSE)
-  if (!all(is.na(normal_percentiles)) & (!all(normal_percentiles > 0 & normal_percentiles < 100)) )  
-    stop("normal_percentiles must be >0 and <100)", call. = FALSE)
+  if (!all(is.na(normal_percentiles)) & (!all(normal_percentiles >= 0 & normal_percentiles <= 100)) )  
+    stop("normal_percentiles must be >= 0 and <= 100)", call. = FALSE)
 }
 
 lowflow_days_checks <- function(lowflow_days, lowflow_align) {
@@ -368,25 +366,6 @@ stats_days_checks <- function(stats_days, stats_align) {
   if (!is.numeric(stats_days))                         stop("stats_days argument must be numeric.", call. = FALSE)
   if (!all(stats_days %in% c(1:180)))                  stop("stats_days argument must be integers > 0 and <= 180).", call. = FALSE)
   if (!stats_align %in% c("right", "left", "center"))  stop("stats_align argument must be 'right', 'left', or 'center'.", call. = FALSE)
-}
-
-ann_percentiles_checks <- function(annual_percentiles) {
-  if (!all(is.na(annual_percentiles))){
-    if (!is.numeric(annual_percentiles))                          stop("annual_percentiles argument must be numeric.", call. = FALSE)
-    if (!all(annual_percentiles > 0 & annual_percentiles < 100))  stop("annual_percentiles must be > 0 and < 100.", call. = FALSE)
-  }
-}
-
-mon_percentiles_checks <- function(monthly_percentiles) {
-  if (!all(is.na(monthly_percentiles))){
-    if (!is.numeric(monthly_percentiles))                           stop("monthly_percentiles argument must be numeric.", call. = FALSE)
-    if (!all(monthly_percentiles > 0 & monthly_percentiles < 100))  stop("monthly_percentiles must be > 0 and < 100.", call. = FALSE)
-  }
-}
-
-timing_pct_checks <- function(timing_percent) {
-  if (!is.numeric(timing_percent))                     stop("timing_percent must be numeric.", call. = FALSE)
-  if (!all(timing_percent > 0 & timing_percent < 100)) stop("timing_percent must be > 0 and < 100).", call. = FALSE)
 }
 
 add_year_checks <- function(add_year) {

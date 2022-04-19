@@ -86,7 +86,7 @@ plot_annual_flow_timing_year <- function(data,
   logical_arg_check(include_title)
   logical_arg_check(plot_vlines)
   logical_arg_check(plot_normal_percentiles)
-  normal_percentiles_checks(normal_percentiles)
+  numeric_range_checks(normal_percentiles)
   sort(normal_percentiles)
   
   
