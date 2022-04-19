@@ -86,6 +86,7 @@ compute_annual_frequencies <- function(data,
                                        end_year,
                                        exclude_years,
                                        months = 1:12,
+                                       complete_years = FALSE,
                                        ignore_missing = FALSE,
                                        allowed_missing = ifelse(ignore_missing,100,0)){
   
@@ -118,6 +119,15 @@ compute_annual_frequencies <- function(data,
   months_checks(months)
   logical_arg_check(ignore_missing)
   allowed_missing_checks(allowed_missing, ignore_missing)
+  
+  logical_arg_check(complete_years)
+  if (complete_years) {
+    if (ignore_missing | allowed_missing > 0) {
+      ignore_missing <- FALSE
+      allowed_missing <- 0
+      message("complete_years argument overrides ignore_missing and allowed_missing arguments.")
+    }
+  }
   
   
   if (!is.logical(use_log))        

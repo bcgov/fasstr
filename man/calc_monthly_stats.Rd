@@ -20,6 +20,7 @@ calc_monthly_stats(
   months = 1:12,
   transpose = FALSE,
   spread = FALSE,
+  complete_years = FALSE,
   ignore_missing = FALSE,
   allowed_missing = ifelse(ignore_missing, 100, 0)
 )
@@ -69,6 +70,8 @@ months (\code{1:12}).}
 \item{transpose}{Logical value indicating if each month statistic should be individual rows. Default \code{FALSE}.}
 
 \item{spread}{Logical value indicating if each month statistic should be the column name. Default \code{FALSE}.}
+
+\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from

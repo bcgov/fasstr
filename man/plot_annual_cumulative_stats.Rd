@@ -18,7 +18,8 @@ plot_annual_cumulative_stats(
   exclude_years,
   months = 1:12,
   include_seasons = FALSE,
-  include_title = FALSE
+  include_title = FALSE,
+  complete_years = FALSE
 )
 }
 \arguments{
@@ -70,6 +71,8 @@ months (\code{1:12}). If not all months, seasonal total yield and volumetric flo
 \item{include_seasons}{Logical value indication whether to include seasonal yields or volumetric discharges. Default \code{TRUE}.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
+
+\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 }
 \value{
 A list of ggplot2 objects with the following for each station provided:

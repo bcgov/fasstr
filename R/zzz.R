@@ -105,7 +105,10 @@
           "No_Symbol",
           "Count",
           "symb_in_data",
-          "Missing_Symbol")
+          "Missing_Symbol",
+          "Percent",
+          "Value2",
+          "Normal")
       )
     invisible()
   }

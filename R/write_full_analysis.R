@@ -95,6 +95,7 @@ write_full_analysis <- function(data,
                                 exclude_years,
                                 months = 1:12,
                                 ignore_missing = FALSE,
+                                complete_years = FALSE,
                                 allowed_missing_annual = ifelse(ignore_missing,100,0),
                                 allowed_missing_monthly = ifelse(ignore_missing,100,0),
                                 zyp_method = 'zhang',
@@ -134,6 +135,17 @@ write_full_analysis <- function(data,
   allowed_missing_checks(allowed_missing_annual, ignore_missing)
   allowed_missing_checks(allowed_missing_monthly, ignore_missing)
   months_checks(months)
+  
+  logical_arg_check(complete_years)
+  if (complete_years) {
+    if (ignore_missing | allowed_missing_annual > 0 | allowed_missing_monthly > 0) {
+      ignore_missing <- FALSE
+      allowed_missing_annual <- 0
+      allowed_missing_monthly <- 0
+      message("complete_years argument overrides ignore_missing and allowed_missing_* arguments.")
+    }
+  }
+  
   
   if (missing(file_name))     stop("A file name is required with the file_name argument to write all results.", call. = FALSE)
   
@@ -240,6 +252,7 @@ write_full_analysis <- function(data,
                           exclude_years = exclude_years,
                           months = months,
                           ignore_missing = ignore_missing,
+                          complete_years = complete_years,
                           allowed_missing_annual = allowed_missing_annual,
                           allowed_missing_monthly = allowed_missing_monthly,
                           zyp_method = zyp_method,
@@ -1029,6 +1042,7 @@ write_full_analysis <- function(data,
                                                          exclude_years = exclude_years,
                                                          water_year_start = water_year_start,
                                                          ignore_missing = ignore_missing,
+                                                         complete_years = complete_years,
                                                          spread = TRUE))
     mon_stats_out <- mon_stats_out[,!colnames(mon_stats_out) %in% "STATION_NUMBER"]
     add_table(wb = output_excel,
@@ -1532,7 +1546,8 @@ write_full_analysis <- function(data,
       calc_annual_lowflows(data = flow_data_raw,
                            start_year = start_year, end_year = end_year, exclude_years = exclude_years,
                            water_year_start = water_year_start,
-                           ignore_missing = ignore_missing)
+                           ignore_missing = ignore_missing,
+                           complete_years = complete_years)
     )
     data_check <- dplyr::select(data_check, Min_1_Day, Min_3_Day, Min_7_Day, Min_30_Day)
     

@@ -18,6 +18,7 @@ write_full_analysis(
   exclude_years,
   months = 1:12,
   ignore_missing = FALSE,
+  complete_years = FALSE,
   allowed_missing_annual = ifelse(ignore_missing, 100, 0),
   allowed_missing_monthly = ifelse(ignore_missing, 100, 0),
   zyp_method = "zhang",
@@ -83,6 +84,8 @@ months (\code{1:12}). If not all months, seasonal total yield and volumetric flo
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from
 time periods with no missing dates will be returned. Default \code{FALSE}.}
+
+\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 
 \item{allowed_missing_annual}{Numeric value between 0 and 100 indicating the \strong{percentage} of missing dates allowed to be
 included to calculate an annual statistic (0 to 100 percent). If \code{'ignore_missing = FALSE'} then it defaults to \code{0} 

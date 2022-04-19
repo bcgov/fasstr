@@ -25,6 +25,7 @@ compute_annual_trends(
   lowflow_align = "right",
   timing_percent = c(25, 33, 50, 75),
   normal_percentiles = c(25, 75),
+  complete_years = FALSE,
   ignore_missing = FALSE,
   allowed_missing_annual = ifelse(ignore_missing, 100, 0),
   allowed_missing_monthly = ifelse(ignore_missing, 100, 0),
@@ -105,6 +106,8 @@ function. Default \code{c(25,33.3,50,75)}.}
 
 \item{normal_percentiles}{Numeric vector of two values, lower and upper percentiles, respectively indicating the limits of the 
 normal range. Default \code{c(25,75)}.}
+
+\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from

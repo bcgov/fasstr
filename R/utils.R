@@ -224,13 +224,37 @@ get_origin_date <- function(water_year_start){
 }
 
 # Filter data for complete years (require fill_missing and add_dates and Value = RollingValue beforehand)
-filter_complete_yrs <- function(complete_years, flow_data) {
+filter_complete_yrs <- function(complete_years, flow_data, keep_all = FALSE) {
   if (complete_years){
     comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
                                    complete_yr = ifelse(sum(!is.na(RollingValue)) == length(WaterYear), TRUE, FALSE))
     flow_data <- merge(flow_data, comp_years, by = c("STATION_NUMBER", "WaterYear"))
-    flow_data <- dplyr::filter(flow_data, complete_yr == "TRUE")
+    if (!keep_all) {
+      flow_data <- dplyr::filter(flow_data, complete_yr == "TRUE")
+    } else {
+      flow_data <- dplyr::mutate(flow_data,
+                                 RollingValue = ifelse(complete_yr, RollingValue, NA))
+    }
     flow_data <- dplyr::select(flow_data, -complete_yr)
+    
+  }
+  flow_data
+}
+
+# Filter data for complete years (require fill_missing and add_dates and Value = RollingValue beforehand)
+filter_complete_yrs_val <- function(complete_years, flow_data, keep_all = FALSE) {
+  if (complete_years){
+    comp_years <- dplyr::summarise(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear),
+                                   complete_yr = ifelse(sum(!is.na(Value)) == length(WaterYear), TRUE, FALSE))
+    flow_data <- merge(flow_data, comp_years, by = c("STATION_NUMBER", "WaterYear"))
+    if (!keep_all) {
+      flow_data <- dplyr::filter(flow_data, complete_yr == "TRUE")
+    } else {
+      flow_data <- dplyr::mutate(flow_data,
+                                 Value = ifelse(complete_yr, Value, NA))
+    }
+    flow_data <- dplyr::select(flow_data, -complete_yr)
+    
   }
   flow_data
 }

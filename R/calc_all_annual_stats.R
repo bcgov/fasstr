@@ -120,6 +120,7 @@ calc_all_annual_stats <- function(data,
                                   timing_percent = c(25,33,50,75),
                                   normal_percentiles = c(25,75),
                                   transpose = FALSE,
+                                  complete_years = FALSE,
                                   ignore_missing = FALSE,
                                   allowed_missing_annual = ifelse(ignore_missing,100,0),
                                   allowed_missing_monthly = ifelse(ignore_missing,100,0)){
@@ -163,7 +164,8 @@ calc_all_annual_stats <- function(data,
   allowed_missing_checks(allowed_missing_annual, ignore_missing)
   allowed_missing_checks(allowed_missing_monthly, ignore_missing)
   
-  
+  logical_arg_check(complete_years)
+
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
   
@@ -195,6 +197,7 @@ calc_all_annual_stats <- function(data,
                                                      end_year = end_year,
                                                      exclude_years = exclude_years, 
                                                      months = months,
+                                                     complete_years = complete_years,
                                                      ignore_missing = ignore_missing,
                                                      allowed_missing = allowed_missing_annual))
   
@@ -212,6 +215,7 @@ calc_all_annual_stats <- function(data,
                                                          end_year = end_year,
                                                          exclude_years = exclude_years,
                                                          months = months,
+                                                         complete_years = complete_years,
                                                          ignore_missing = ignore_missing,
                                                          allowed_missing = allowed_missing_annual))
   lowflow_stats <- dplyr::select(lowflow_stats, -dplyr::contains("Date"))
@@ -224,7 +228,8 @@ calc_all_annual_stats <- function(data,
                                                                 end_year = end_year,
                                                                 exclude_years = exclude_years,
                                                                 months = months,
-                                                                include_seasons = all(1:12 %in% months)))
+                                                                include_seasons = all(1:12 %in% months),
+                                                                complete_years = complete_years))
   
   totalyield_stats <- suppressWarnings(calc_annual_cumulative_stats(data = flow_data,
                                                                     use_yield = TRUE,
@@ -234,7 +239,8 @@ calc_all_annual_stats <- function(data,
                                                                     end_year = end_year,
                                                                     exclude_years = exclude_years,
                                                                     months = months,
-                                                                    include_seasons = all(1:12 %in% months)))
+                                                                    include_seasons = all(1:12 %in% months),
+                                                                    complete_years = complete_years))
   
   
   timing_stats <- suppressWarnings(calc_annual_flow_timing(data = flow_data,
@@ -257,6 +263,7 @@ calc_all_annual_stats <- function(data,
                                                      exclude_years = exclude_years,
                                                      months = months,
                                                      spread = TRUE,
+                                                     complete_years = complete_years,
                                                      ignore_missing = ignore_missing,
                                                      allowed_missing = allowed_missing_monthly))
   

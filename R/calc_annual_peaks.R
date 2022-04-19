@@ -67,6 +67,7 @@ calc_annual_peaks <- function(data,
                               exclude_years, 
                               months = 1:12,
                               transpose = FALSE,
+                              complete_years = FALSE,
                               ignore_missing = FALSE,
                               allowed_missing = ifelse(ignore_missing,100,0)){
   
@@ -97,6 +98,15 @@ calc_annual_peaks <- function(data,
   logical_arg_check(transpose)
   logical_arg_check(ignore_missing)
   allowed_missing_checks(allowed_missing, ignore_missing)
+  
+  logical_arg_check(complete_years)
+  if (complete_years) {
+    if (ignore_missing | allowed_missing > 0) {
+      ignore_missing <- FALSE
+      allowed_missing <- 0
+      message("complete_years argument overrides ignore_missing and allowed_missing arguments.")
+    }
+  }
   
   
   ## FLOW DATA CHECKS AND FORMATTING

@@ -44,6 +44,7 @@
 #'    \code{c(10:12,1)} for first four months (Oct-Jan) when \code{water_year_start = 10} (Oct). Default summarizes all 
 #'    months (\code{1:12}).
 #' @param transpose Logical value indicating whether to transpose rows and columns of results. Default \code{FALSE}.
+#' @param complete_years Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}. 
 #' @param ignore_missing Logical value indicating whether dates with missing values should be included in the calculation. If
 #'    \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from
 #'    time periods with no missing dates will be returned. Default \code{FALSE}.
@@ -114,7 +115,8 @@ calc_annual_stats <- function(data,
                               end_year,
                               exclude_years, 
                               months = 1:12,
-                              transpose = FALSE,
+                              transpose = FALSE, 
+                              complete_years = FALSE,
                               ignore_missing = FALSE,
                               allowed_missing = ifelse(ignore_missing,100,0)){
   
@@ -147,6 +149,14 @@ calc_annual_stats <- function(data,
   logical_arg_check(ignore_missing)
   allowed_missing_checks(allowed_missing, ignore_missing)
   
+  logical_arg_check(complete_years)
+  if (complete_years) {
+    if (ignore_missing | allowed_missing > 0) {
+      ignore_missing <- FALSE
+      allowed_missing <- 0
+      message("complete_years argument overrides ignore_missing and allowed_missing arguments.")
+    }
+  }
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
@@ -184,6 +194,7 @@ calc_annual_stats <- function(data,
   
   # Stop if all data is NA
   no_values_error(flow_data$RollingValue)
+  
   
   ## CALCULATE STATISTICS
   ## --------------------

@@ -17,6 +17,7 @@ plot_annual_lowflows(
   end_year,
   exclude_years,
   months = 1:12,
+  complete_years = FALSE,
   ignore_missing = FALSE,
   allowed_missing = ifelse(ignore_missing, 100, 0),
   include_title = FALSE
@@ -61,6 +62,8 @@ analysis. Default \code{1}.}
 \item{months}{Numeric vector of months to include in analysis. For example, \code{3} for March, \code{6:8} for Jun-Aug or 
 \code{c(10:12,1)} for first four months (Oct-Jan) when \code{water_year_start = 10} (Oct). Default summarizes all 
 months (\code{1:12}).}
+
+\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from

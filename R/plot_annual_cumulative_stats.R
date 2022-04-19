@@ -65,7 +65,8 @@ plot_annual_cumulative_stats <- function(data,
                                          exclude_years, 
                                          months = 1:12, 
                                          include_seasons = FALSE,
-                                         include_title = FALSE){
+                                         include_title = FALSE,
+                                         complete_years = FALSE){
   
   
   
@@ -122,7 +123,8 @@ plot_annual_cumulative_stats <- function(data,
                                                    start_year = start_year,
                                                    end_year = end_year,
                                                    exclude_years = exclude_years,
-                                                   months = months, 
+                                                   months = months,
+                                                   complete_years = complete_years, 
                                                    include_seasons = include_seasons & all(1:12 %in% months))
   
   

@@ -51,6 +51,7 @@ plot_annual_means <- function(data,
                               end_year,
                               exclude_years,
                               months = 1:12,
+                              complete_years = FALSE,
                               ignore_missing = FALSE,
                               allowed_missing = ifelse(ignore_missing,100,0),
                               include_title = FALSE){ 
@@ -102,6 +103,7 @@ plot_annual_means <- function(data,
                                     end_year = end_year,
                                     exclude_years = exclude_years, 
                                     months = months,
+                                    complete_years = complete_years,
                                     ignore_missing = ignore_missing,
                                     allowed_missing = allowed_missing)
   
