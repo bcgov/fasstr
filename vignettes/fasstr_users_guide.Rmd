@@ -658,14 +658,14 @@ Beside the basic summary statistics, there are other useful statistics for inter
 - `calc_annual_flow_timing()` - calculate annual flow timing
 - `calc_annual_lowflows()` - calculate annual low flow values and dates
 - `calc_annual_peaks()` - calculate annual low and high flow values and dates
-- `calc_annual_outside_normal()` - calculate annual days above and below normal
+- `calc_annual_normal_days()` - calculate annual normal days and days above and below normal
 - `calc_all_annual_stats()` - calculate all `fasstr` annual statistics
 
 and their corresponding and other plotting functions:
 
 - `plot_annual_flow_timing()` - plot annual flow timing
 - `plot_annual_lowflows()` - plot annual low flow values and dates
-- `plot_annual_outside_normal()` - plot annual days above and below normal
+- `plot_annual_normal_days()` - plot annual normal days and days above and below normal
 - `plot_annual_means()` - plot annual means compared to the long-term mean
 
 #### Annual flow timing
@@ -700,30 +700,30 @@ plot_annual_lowflows(station_number = "08NM116",
                      start_year = 1974) 
 ```
 
-#### Annual peaks
+#### Annual high flows
 
-Similar to `calc_annual_lowflows()`, `calc_annual_peaks()` calculates the annual minimum and maximum values, the day of year, and dates of specified rolling mean days. 
+Similar to `calc_annual_lowflows()`, `calc_annual_highflows()` calculates the annual maximum values, the day of year, and dates of specified rolling mean days. 
 
 ```{r, comment=NA}
-calc_annual_peaks(station_number = "08NM116", 
-                  start_year = 1974)
+calc_annual_highflows(station_number = "08NM116", 
+                      start_year = 1974)
 ```
 
 
 #### Number of days per year outside of normal
 
-The `calc_annual_outside_normal()` calculates the number of days per year that are above and below "normal", "normal" typically defined as 25th and 75th percentiles. The normal limits can be determined using the `normal_percentiles` argument, listing the lower and upper normal ranges, respectively (e.g. `normal_percentiles = c(25, 75)`). The function calculates the lower and upper percentiles for each day of the year over all years and sums all days that are above or below the daily normal ranges for a given year. Rolling averages can also be used in this function using the `roll_days` argument.
+The `calc_annual_normal_days()` calculates the number of days per year that are normal and above and below "normal", "normal" typically defined as 25th and 75th percentiles. The normal limits can be determined using the `normal_percentiles` argument, listing the lower and upper normal ranges, respectively (e.g. `normal_percentiles = c(25, 75)`). The function calculates the lower and upper percentiles for each day of the year over all years and sums all days that are within and above or below the daily normal ranges for a given year. Rolling averages can also be used in this function using the `roll_days` argument.
 
 ```{r, comment=NA}
-calc_annual_outside_normal(station_number = "08NM116", 
-                           start_year = 1974)
+calc_annual_normal_days(station_number = "08NM116", 
+                        start_year = 1974)
 ```
 
-Each of the above, below, and total days outside of normal can be plotted using the `plot_annual_outside_normal()` function.
+Each of the above, below, and normal days can be plotted using the `plot_annual_normal_days()` function.
 
 ```{r, fig.height = 4.5, fig.width = 7, comment=NA}
-plot_annual_outside_normal(station_number = "08NM116", 
-                           start_year = 1974) 
+plot_annual_normal_days(station_number = "08NM116", 
+                        start_year = 1974) 
 ```
 
 #### Calculating all annual statistics
@@ -981,10 +981,10 @@ calc_annual_flow_timing(station_number = "08NM116",
 Example of plotting the number of days per years outside of the 10th and 90th percentiles (25th and 75th percentiles are default):
 
 ```{r, fig.height = 4.5, fig.width = 7, comment=NA}
-plot_annual_outside_normal(station_number = "08NM116", 
-                           start_year = 1980, 
-                           end_year = 2010,
-                           normal_percentiles = c(10,90))
+plot_annual_normal_days(station_number = "08NM116", 
+                        start_year = 1980, 
+                        end_year = 2010,
+                        normal_percentiles = c(10,90))
 ```
 
 #### Data frame options

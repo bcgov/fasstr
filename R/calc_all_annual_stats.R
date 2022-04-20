@@ -23,13 +23,13 @@
 #'  \item{\code{calc_annual_lowflows()}}
 #'  \item{\code{calc_annual_cumulative_stats()}}
 #'  \item{\code{calc_annual_flow_timing()}}
-#'  \item{\code{calc_annual_outside_normal()}}
+#'  \item{\code{calc_annual_normal_days()}}
 #'  \item{\code{calc_monthly_stats()}}
 #'  }
 #'    
 #' @inheritParams calc_annual_stats
 #' @inheritParams calc_annual_cumulative_stats
-#' @inheritParams calc_annual_outside_normal
+#' @inheritParams calc_annual_normal_days
 #' @param months Numeric vector of months to include in analysis. For example, \code{3} for March, \code{6:8} for Jun-Aug or 
 #'    \code{c(10:12,1)} for first four months (Oct-Jan) when \code{water_year_start = 10} (Oct). Default summarizes all 
 #'    months (\code{1:12}). If not \code{1:12}, seasonal total yield and volumetric flows will not be included.
@@ -41,7 +41,7 @@
 #'    Used for \code{calc_annual_stats()} and \code{calc_monthly_stats()} functions.
 #' @param stats_align Character string identifying the direction of the rolling mean on basic stats from the specified date, either by 
 #'    the first (\code{'left'}), last (\code{'right'}), or middle (\code{'center'}) day of the rolling n-day group of observations.
-#'    Default \code{'right'}. Used for \code{calc_annual_stats()}, \code{calc_monthly_stats()}, and \code{calc_annual_outside_normal()}
+#'    Default \code{'right'}. Used for \code{calc_annual_stats()}, \code{calc_monthly_stats()}, and \code{calc_annual_normal_days()}
 #'    functions.
 #' @param lowflow_days Numeric vector of the number of days to apply a rolling mean on low flow stats. Default \code{c(1,3,7,30)}.
 #'    Used for \code{calc_lowflow_stats()} function.
@@ -70,7 +70,7 @@
 #'          \code{\link{calc_annual_cumulative_stats}}, 
 #'          \code{\link{calc_annual_flow_timing}}, 
 #'          \code{\link{calc_monthly_stats}}, 
-#'          \code{\link{calc_annual_outside_normal}}
+#'          \code{\link{calc_annual_normal_days}}
 #'
 #' @examples
 #' \dontrun{
@@ -268,7 +268,7 @@ calc_all_annual_stats <- function(data,
                                                      allowed_missing = allowed_missing_monthly))
   
   
-  normals_stats <- suppressWarnings(calc_annual_outside_normal(data = flow_data,
+  normals_stats <- suppressWarnings(calc_annual_normal_days(data = flow_data,
                                                                normal_percentiles = normal_percentiles,
                                                                roll_days = stats_days,
                                                                roll_align = stats_align,

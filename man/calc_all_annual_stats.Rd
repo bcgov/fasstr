@@ -85,7 +85,7 @@ Used for \code{calc_annual_stats()} and \code{calc_monthly_stats()} functions.}
 
 \item{stats_align}{Character string identifying the direction of the rolling mean on basic stats from the specified date, either by 
 the first (\code{'left'}), last (\code{'right'}), or middle (\code{'center'}) day of the rolling n-day group of observations.
-Default \code{'right'}. Used for \code{calc_annual_stats()}, \code{calc_monthly_stats()}, and \code{calc_annual_outside_normal()}
+Default \code{'right'}. Used for \code{calc_annual_stats()}, \code{calc_monthly_stats()}, and \code{calc_annual_normal_days()}
 functions.}
 
 \item{lowflow_days}{Numeric vector of the number of days to apply a rolling mean on low flow stats. Default \code{c(1,3,7,30)}.
@@ -136,7 +136,7 @@ Calculates annual statistics from all annual \code{fasstr} functions from a dail
  \item{\code{calc_annual_lowflows()}}
  \item{\code{calc_annual_cumulative_stats()}}
  \item{\code{calc_annual_flow_timing()}}
- \item{\code{calc_annual_outside_normal()}}
+ \item{\code{calc_annual_normal_days()}}
  \item{\code{calc_monthly_stats()}}
  }
 }
@@ -172,5 +172,5 @@ calc_all_annual_stats(station_number = "08NM116",
          \code{\link{calc_annual_cumulative_stats}}, 
          \code{\link{calc_annual_flow_timing}}, 
          \code{\link{calc_monthly_stats}}, 
-         \code{\link{calc_annual_outside_normal}}
+         \code{\link{calc_annual_normal_days}}
 }

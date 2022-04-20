@@ -25,7 +25,7 @@
 #'  \item{\code{calc_annual_cumulative_stats()}}
 #'  \item{\code{calc_annual_flow_timing()}}
 #'  \item{\code{calc_monthly_stats()}}
-#'  \item{\code{calc_annual_outside_normal()}}
+#'  \item{\code{calc_annual_normal_days()}}
 #'  }
 #' 
 #' @inheritParams calc_all_annual_stats

@@ -19,7 +19,7 @@
 #'
 #' @inheritParams calc_annual_flow_timing
 #' @inheritParams plot_annual_stats
-#' @inheritParams plot_annual_outside_normal_year
+#' @inheritParams plot_annual_normal_days_year
 #' @param plot_vlines Logical value indicating whether to plot the vertical lines indicating dates of flow timing. Default \code{TRUE}.
 #'
 #' @return A list of ggplot2 objects with the following for each station provided:

@@ -53,8 +53,8 @@
 #'          \code{\link{plot_annual_cumulative_stats}},
 #'          \code{\link{calc_annual_flow_timing}},
 #'          \code{\link{plot_annual_flow_timing}},
-#'          \code{\link{calc_annual_outside_normal}},
-#'          \code{\link{plot_annual_outside_normal}},
+#'          \code{\link{calc_annual_normal_days}},
+#'          \code{\link{plot_annual_normal_days}},
 #'          \code{\link{calc_annual_lowflows}},
 #'          \code{\link{plot_annual_lowflows}},
 #'          \code{\link{plot_annual_means}},
@@ -369,10 +369,10 @@ compute_full_analysis <- function(data,
                                           months = months)
     
     # Annual days outside normal
-    ann_norm <- calc_annual_outside_normal(data = flow_data,
-                                           exclude_years = exclude_years,
-                                           water_year_start = water_year_start,
-                                           months = months)
+    ann_norm <- calc_annual_normal_days(data = flow_data,
+                                        exclude_years = exclude_years,
+                                        water_year_start = water_year_start,
+                                        months = months)
     
     # Annual lowflows
     ann_lowflow <- calc_annual_lowflows(data = flow_data_plus,
@@ -411,10 +411,10 @@ compute_full_analysis <- function(data,
                                                exclude_years = exclude_years,
                                                water_year_start = water_year_start,
                                                months = months)
-    ann_norm_plot <- plot_annual_outside_normal(data = flow_data,
-                                                exclude_years = exclude_years,
-                                                water_year_start = water_year_start,
-                                                months = months)
+    ann_norm_plot <- plot_annual_normal_days(data = flow_data,
+                                             exclude_years = exclude_years,
+                                             water_year_start = water_year_start,
+                                             months = months)
     ann_lowflow_plot <- plot_annual_lowflows(data = flow_data_plus,
                                              start_year = start_year,
                                              end_year = end_year,

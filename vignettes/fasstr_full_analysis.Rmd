@@ -103,8 +103,8 @@ Analyses                  |	Object                                    |	Type    
 3 - Annual	              |	Annual_Cumul_Yield_Stats_mm_Plot          | Multiple Plots    | `plot_annual_cumulative_stats(use_yield=TRUE)`
 3 - Annual	              |	Annual_Flow_Timing     	                  | Table             | `calc_annual_flow_timing()`
 3 - Annual	              |	Annual_Flow_Timing_Plot	                  | Plot              | `plot_annual_flow_timing()`
-3 - Annual	              |	Annual_Days_Outside_Normal     	          | Table             | `calc_annual_outside_normal()`
-3 - Annual	              |	Annual_Days_Outside_Normal_Plot        	  | Multiple Plots    | `plot_annual_outside_normal()`
+3 - Annual	              |	Annual_Days_Outside_Normal     	          | Table             | `calc_annual_normal_days()`
+3 - Annual	              |	Annual_Days_Outside_Normal_Plot        	  | Multiple Plots    | `plot_annual_normal_days()`
 3 - Annual	              |	Annual_Low_Flows     	                    | Table             | `calc_annual_lowflows()`
 3 - Annual	              |	Annual_Low_Flows_Plot                   	| Multiple Plots    | `plot_annual_lowflows()`
 3 - Annual	              |	Annual_Means    	                        | Plot              | `plot_annual_means()`
@@ -242,14 +242,14 @@ head(as.data.frame(calc_annual_cumulative_stats(station_number = "08NM116",
 **Annual_Days_Outside_Normal**
 
 ```{r,  echo=FALSE, comment=NA}
-head(as.data.frame(calc_annual_outside_normal(station_number = "08NM116",
+head(as.data.frame(calc_annual_normal_days(station_number = "08NM116",
                                               start_year = 1990, end_year = 2001)))
 ```
 
 **Annual_Days_Outside_Normal**
 
 ```{r,  echo=FALSE, fig.height = 4.5, fig.width = 7, comment=NA}
-plot_annual_outside_normal(station_number = "08NM116",
+plot_annual_normal_days(station_number = "08NM116",
                            start_year = 1990, end_year = 2001)[[1]]
 ```
 

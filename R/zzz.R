@@ -108,7 +108,8 @@
           "Missing_Symbol",
           "Percent",
           "Value2",
-          "Normal")
+          "Normal",
+          ".data")
       )
     invisible()
   }

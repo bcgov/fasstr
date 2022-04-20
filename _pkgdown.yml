@@ -81,8 +81,8 @@ reference:
   - calc_annual_lowflows
   - plot_annual_lowflows
   - calc_annual_peaks
-  - calc_annual_outside_normal
-  - plot_annual_outside_normal
+  - calc_annual_normal_days
+  - plot_annual_normal_days
   - calc_all_annual_stats
 
 - title: Annual Trending Analysis
