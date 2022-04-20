@@ -22,6 +22,8 @@
 #' @param months Numeric vector of months to include in analysis. For example, \code{3} for March, \code{6:8} for Jun-Aug or 
 #'    \code{c(10:12,1)} for first four months (Oct-Jan) when \code{water_year_start = 10} (Oct). Default summarizes all 
 #'    months (\code{1:12}). If not all months, seasonal total yield and volumetric flows will not be included.
+#' @param plot_type Type of plot, either \code{"bar"} or \code{"line"} styles. Default \code{"bar"}. 
+#'     Use \code{"line"} for previous version of plot.
 #'    
 #' @return A list of ggplot2 objects with the following for each station provided:
 #'   \item{Annual_Total_Volume}{annual total volumetric discharge, in cubic metres}
@@ -66,7 +68,8 @@ plot_annual_cumulative_stats <- function(data,
                                          months = 1:12, 
                                          include_seasons = FALSE,
                                          include_title = FALSE,
-                                         complete_years = FALSE){
+                                         complete_years = FALSE,
+                                         plot_type = "bar"){
   
   
   
@@ -95,6 +98,10 @@ plot_annual_cumulative_stats <- function(data,
   
   logical_arg_check(include_title)   
   
+  plot_type <- plot_type[1]
+  if (!any(c("bar", "line") %in% plot_type)) 
+    stop("plot_type must be one of 'bar' or 'line' plots.", call. = FALSE)
+  
   if (include_seasons & !all(1:12 %in% months)) {
     warning("Since not all months are selected, seasonal totals will not be included.", call. = FALSE)
   }
@@ -112,7 +119,7 @@ plot_annual_cumulative_stats <- function(data,
                                groups = as.character(substitute(groups)),
                                rm_other_cols = TRUE)
   
-
+  
   ## CALC STATS
   ## ----------
   
@@ -152,58 +159,22 @@ plot_annual_cumulative_stats <- function(data,
   ## PLOT STATS
   ## ----------
   
-  annual_plots <- dplyr::group_by(annual_data, STATION_NUMBER)
-  annual_plots <- tidyr::nest(annual_plots)
-  annual_plots <- dplyr::mutate(annual_plots,
-                              ann_plot = purrr::map2(data, STATION_NUMBER, 
-      ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, colour = Statistic)) +
-        ggplot2::geom_line(alpha = 0.5,na.rm = TRUE) +
-        ggplot2::geom_point(na.rm = TRUE)+
-        ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
-        ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
-                                    labels = scales::label_number(scale_cut = scales::cut_short_scale()))+
-        ggplot2::ylab(expression(Volume~(m^3))) +
-        {if (use_yield) ggplot2::ylab("Yield (mm)")} +
-        ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
-        ggplot2::scale_color_brewer(palette = "Set1") +
-        ggplot2::theme_bw() +
-        ggplot2::guides(colour = 'none') +
-        {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
-        ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                       panel.grid = ggplot2::element_line(size = .2),
-                       axis.title = ggplot2::element_text(size = 12),
-                       axis.text = ggplot2::element_text(size = 10),
-                       plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
-                              ))
-  
-  # Create a list of named plots extracted from the tibble
-  plots <- annual_plots$ann_plot
-  if (nrow(annual_plots) == 1) {
-    names(plots) <- paste0(ifelse(use_yield, "Total_Yield", "Total_Volume"))
-  } else {
-    names(plots) <- paste0(annual_plots$STATION_NUMBER, ifelse(use_yield, "_Total_Yield", "_Total_Volume"))
-  }
-  
-  
-  # If include seasons, then add them to the list of plots
-  if (include_seasons & all(1:12 %in% months)) {
-    
-    # Plot 2-seasons
-    s2_plots <- dplyr::group_by(seasons2_data, STATION_NUMBER)
-    s2_plots <- tidyr::nest(s2_plots)
-    s2_plots <- dplyr::mutate(s2_plots,
-                              s2_plot = purrr::map2(data, STATION_NUMBER, 
+  if (plot_type == "line") {
+    annual_plots <- dplyr::group_by(annual_data, STATION_NUMBER)
+    annual_plots <- tidyr::nest(annual_plots)
+    annual_plots <- dplyr::mutate(
+      annual_plots,
+      ann_plot = purrr::map2(
+        data, STATION_NUMBER, 
         ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, colour = Statistic)) +
-          ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
-          ggplot2::geom_point(na.rm = TRUE) +
-          ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "top") +
-          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
-          {if(length(unique(seasons2_data$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(seasons2_data$Year))}+
+          ggplot2::geom_line(alpha = 0.5,na.rm = TRUE) +
+          ggplot2::geom_point(na.rm = TRUE)+
+          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
           ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
                                       labels = scales::label_number(scale_cut = scales::cut_short_scale()))+
-          ggplot2::ylab("Volume (cubic metres)") +
+          ggplot2::ylab(expression(Volume~(m^3))) +
           {if (use_yield) ggplot2::ylab("Yield (mm)")} +
-          ggplot2::xlab("Year")+
+          ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
           ggplot2::scale_color_brewer(palette = "Set1") +
           ggplot2::theme_bw() +
           ggplot2::guides(colour = 'none') +
@@ -212,57 +183,221 @@ plot_annual_cumulative_stats <- function(data,
                          panel.grid = ggplot2::element_line(size = .2),
                          axis.title = ggplot2::element_text(size = 12),
                          axis.text = ggplot2::element_text(size = 10),
-                         plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
-                         strip.background = ggplot2::element_blank(),
-                         strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
-                              ))
+                         plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
+      ))
     
-    # Plot 4-seasons
-    s4_plots <- dplyr::group_by(seasons4_data, STATION_NUMBER)
-    s4_plots <- tidyr::nest(s4_plots)
-    s4_plots <- dplyr::mutate(s4_plots,
-                            s4_plot = purrr::map2(data, STATION_NUMBER,
-        ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, colour = Statistic)) +
-          ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
-          ggplot2::geom_point(na.rm = TRUE) +
-          ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "top") +
-          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
-          {if(length(unique(seasons4_data$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(seasons4_data$Year))}+
+    # Create a list of named plots extracted from the tibble
+    plots <- annual_plots$ann_plot
+    if (nrow(annual_plots) == 1) {
+      names(plots) <- paste0(ifelse(use_yield, "Total_Yield", "Total_Volume"))
+    } else {
+      names(plots) <- paste0(annual_plots$STATION_NUMBER, ifelse(use_yield, "_Total_Yield", "_Total_Volume"))
+    }
+    
+    
+    # If include seasons, then add them to the list of plots
+    if (include_seasons & all(1:12 %in% months)) {
+      
+      # Plot 2-seasons
+      s2_plots <- dplyr::group_by(seasons2_data, STATION_NUMBER)
+      s2_plots <- tidyr::nest(s2_plots)
+      s2_plots <- dplyr::mutate(
+        s2_plots,
+        s2_plot = purrr::map2(
+          data, STATION_NUMBER, 
+          ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, colour = Statistic)) +
+            ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
+            ggplot2::geom_point(na.rm = TRUE) +
+            ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "top") +
+            ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
+            {if(length(unique(seasons2_data$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(seasons2_data$Year))}+
+            ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
+                                        labels = scales::label_number(scale_cut = scales::cut_short_scale()))+
+            ggplot2::ylab("Volume (cubic metres)") +
+            {if (use_yield) ggplot2::ylab("Yield (mm)")} +
+            ggplot2::xlab("Year")+
+            ggplot2::scale_color_brewer(palette = "Set1") +
+            ggplot2::theme_bw() +
+            ggplot2::guides(colour = 'none') +
+            {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
+            ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                           panel.grid = ggplot2::element_line(size = .2),
+                           axis.title = ggplot2::element_text(size = 12),
+                           axis.text = ggplot2::element_text(size = 10),
+                           plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
+                           strip.background = ggplot2::element_blank(),
+                           strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
+        ))
+      
+      # Plot 4-seasons
+      s4_plots <- dplyr::group_by(seasons4_data, STATION_NUMBER)
+      s4_plots <- tidyr::nest(s4_plots)
+      s4_plots <- dplyr::mutate(
+        s4_plots,
+        s4_plot = purrr::map2(
+          data, STATION_NUMBER,
+          ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, colour = Statistic)) +
+            ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
+            ggplot2::geom_point(na.rm = TRUE) +
+            ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "top") +
+            ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
+            {if(length(unique(seasons4_data$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(seasons4_data$Year))}+
+            ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
+                                        labels = scales::label_number(scale_cut = scales::cut_short_scale()))+
+            ggplot2::ylab("Volume (cubic metres)") +
+            {if (use_yield) ggplot2::ylab("Yield (mm)")} +
+            ggplot2::xlab("Year")+
+            ggplot2::scale_color_brewer(palette = "Set1") +
+            ggplot2::theme_bw() +
+            ggplot2::guides(colour = 'none')+
+            {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
+            ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                           panel.grid = ggplot2::element_line(size = .2),
+                           axis.title = ggplot2::element_text(size = 12),
+                           axis.text = ggplot2::element_text(size = 10),
+                           plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
+                           strip.background = ggplot2::element_blank(),
+                           strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
+        ))
+      
+      # Create a list of named plots extracted from the tibble
+      s2_plots <- s2_plots$s2_plot
+      s4_plots <- s4_plots$s4_plot
+      
+      if (nrow(annual_plots) == 1) {
+        names(s2_plots) <- paste0(ifelse(use_yield, "Two_Seasons_Yield", "Two_Seasons_Volume"))
+        names(s4_plots) <- paste0(ifelse(use_yield, "Four_Seasons_Yield", "Four_Seasons_Volume"))
+      } else {
+        names(s2_plots) <- paste0(annual_plots$STATION_NUMBER, ifelse(use_yield, "_Two_Seasons_Yield", "_Two_Seasons_Volume"))
+        names(s4_plots) <- paste0(annual_plots$STATION_NUMBER, ifelse(use_yield, "_Four_Seasons_Yield", "_Four_Seasons_Volume"))
+      }
+      
+      # Add the seasonal plots to the plot list
+      plots <- c(plots, s2_plots, s4_plots)
+      
+    }
+    
+    ## PLOT AS BAR GRAPH
+  } else {
+    annual_plots <- dplyr::group_by(annual_data, STATION_NUMBER)
+    annual_plots <- tidyr::nest(annual_plots)
+    annual_plots <- dplyr::mutate(
+      annual_plots,
+      ann_plot = purrr::map2(
+        data, STATION_NUMBER, 
+        ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, fill = Statistic)) +
+          ggplot2::geom_bar(position = "stack", stat = "identity", na.rm = TRUE, width=1, colour = "black") +
+          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
           ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
-                                      labels = scales::label_number(scale_cut = scales::cut_short_scale()))+
-          ggplot2::ylab("Volume (m3)") +
+                                      labels = scales::label_number(scale_cut = scales::cut_short_scale()),
+                                      expand = ggplot2::expansion(mult = c(0, 0.05)))+
+          ggplot2::ylab("Volume (cubic metres)") +
           {if (use_yield) ggplot2::ylab("Yield (mm)")} +
-          ggplot2::xlab("Year")+
-          ggplot2::scale_color_brewer(palette = "Set1") +
+          ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
+          ggplot2::scale_fill_viridis_d(name = "Season") +
           ggplot2::theme_bw() +
-          ggplot2::guides(colour = 'none')+
+          ggplot2::guides(fill = 'none') +
           {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
           ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                          panel.grid = ggplot2::element_line(size = .2),
                          axis.title = ggplot2::element_text(size = 12),
                          axis.text = ggplot2::element_text(size = 10),
-                         plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
-                         strip.background = ggplot2::element_blank(),
-                         strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
-                            ))
+                         plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
+      ))
     
     # Create a list of named plots extracted from the tibble
-    s2_plots <- s2_plots$s2_plot
-    s4_plots <- s4_plots$s4_plot
-    
+    plots <- annual_plots$ann_plot
     if (nrow(annual_plots) == 1) {
-      names(s2_plots) <- paste0(ifelse(use_yield, "Two_Seasons_Yield", "Two_Seasons_Volume"))
-      names(s4_plots) <- paste0(ifelse(use_yield, "Four_Seasons_Yield", "Four_Seasons_Volume"))
+      names(plots) <- paste0(ifelse(use_yield, "Total_Yield", "Total_Volume"))
     } else {
-      names(s2_plots) <- paste0(annual_plots$STATION_NUMBER, ifelse(use_yield, "_Two_Seasons_Yield", "_Two_Seasons_Volume"))
-      names(s4_plots) <- paste0(annual_plots$STATION_NUMBER, ifelse(use_yield, "_Four_Seasons_Yield", "_Four_Seasons_Volume"))
+      names(plots) <- paste0(annual_plots$STATION_NUMBER, ifelse(use_yield, "_Total_Yield", "_Total_Volume"))
     }
     
-    # Add the seasonal plots to the plot list
-    plots <- c(plots, s2_plots, s4_plots)
     
+    # If include seasons, then add them to the list of plots
+    if (include_seasons & all(1:12 %in% months)) {
+      
+      # Plot 2-seasons
+      s2_plots <- dplyr::group_by(seasons2_data, STATION_NUMBER)
+      s2_plots <- tidyr::nest(s2_plots)
+      s2_plots <- dplyr::mutate(
+        s2_plots,
+        s2_plot = purrr::map2(
+          data, STATION_NUMBER, 
+          ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, fill = Statistic)) +
+            ggplot2::geom_bar(position = "stack", stat = "identity", na.rm = TRUE, width=1, colour = "black") +
+            ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
+            {if(length(unique(seasons2_data$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(seasons2_data$Year))}+
+            ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
+                                        labels = scales::label_number(scale_cut = scales::cut_short_scale()),
+                                        expand = ggplot2::expansion(mult = c(0, 0.05)))+
+            ggplot2::ylab("Volume (cubic metres)") +
+            {if (use_yield) ggplot2::ylab("Yield (mm)")} +
+            ggplot2::xlab("Year")+
+            ggplot2::scale_fill_viridis_d(name = "Season") +
+            ggplot2::theme_bw() +
+            ggplot2::guides(colour = 'none') +
+            {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
+            ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                           panel.grid = ggplot2::element_line(size = .2),
+                           axis.title = ggplot2::element_text(size = 12),
+                           axis.text = ggplot2::element_text(size = 10),
+                           plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
+                           strip.background = ggplot2::element_blank(),
+                           strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
+        ))
+      
+      # Plot 4-seasons
+      s4_plots <- dplyr::group_by(seasons4_data, STATION_NUMBER)
+      s4_plots <- tidyr::nest(s4_plots)
+      s4_plots <- dplyr::mutate(
+        s4_plots,
+        s4_plot = purrr::map2(
+          data, STATION_NUMBER,
+          ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, fill = Statistic)) +
+            ggplot2::geom_bar(position = "stack", stat = "identity", na.rm = TRUE, width=1, colour = "black") +
+            
+            ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
+            {if(length(unique(seasons4_data$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(seasons4_data$Year))}+
+            ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
+                                        labels = scales::label_number(scale_cut = scales::cut_short_scale()),
+                                        expand = ggplot2::expansion(mult = c(0, 0.05)))+
+            ggplot2::ylab("Volume (cubic metres)") +
+            {if (use_yield) ggplot2::ylab("Yield (mm)")} +
+            ggplot2::xlab("Year")+
+            ggplot2::scale_fill_viridis_d(name = "Season") +
+            ggplot2::theme_bw() +
+            ggplot2::guides(colour = 'none')+
+            {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
+            ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                           panel.grid = ggplot2::element_line(size = .2),
+                           axis.title = ggplot2::element_text(size = 12),
+                           axis.text = ggplot2::element_text(size = 10),
+                           plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
+                           strip.background = ggplot2::element_blank(),
+                           strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
+        ))
+      
+      # Create a list of named plots extracted from the tibble
+      s2_plots <- s2_plots$s2_plot
+      s4_plots <- s4_plots$s4_plot
+      
+      if (nrow(annual_plots) == 1) {
+        names(s2_plots) <- paste0(ifelse(use_yield, "Two_Seasons_Yield", "Two_Seasons_Volume"))
+        names(s4_plots) <- paste0(ifelse(use_yield, "Four_Seasons_Yield", "Four_Seasons_Volume"))
+      } else {
+        names(s2_plots) <- paste0(annual_plots$STATION_NUMBER, ifelse(use_yield, "_Two_Seasons_Yield", "_Two_Seasons_Volume"))
+        names(s4_plots) <- paste0(annual_plots$STATION_NUMBER, ifelse(use_yield, "_Four_Seasons_Yield", "_Four_Seasons_Volume"))
+      }
+      
+      # Add the seasonal plots to the plot list
+      plots <- c(plots, s2_plots, s4_plots)
+      
+    }
   }
-    
+  
+  
+  
   plots
- 
+  
 }
