@@ -12,8 +12,6 @@ plot_annual_flow_timing_year(
   station_number,
   percent_total = c(25, 33.3, 50, 75),
   year_to_plot = NA,
-  roll_days = 1,
-  roll_align = "right",
   water_year_start = 1,
   start_year,
   end_year,
@@ -49,12 +47,6 @@ Leave blank if using \code{data} argument.}
 \item{percent_total}{Numeric vector of percents of total annual flows to determine dates. Default \code{c(25,33.3,50,75)}.}
 
 \item{year_to_plot}{Numeric value indicating the year/water year to plot flow data with normal category colours. Default \code{NA}.}
-
-\item{roll_days}{Numeric value of the number of days to apply a rolling mean. Default \code{1}.}
-
-\item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
-(\code{'left'}), last (\code{'right'}), or middle (\code{'center'}) day of the rolling n-day group of observations. 
-Default \code{'right'}.}
 
 \item{water_year_start}{Numeric value indicating the month (\code{1} through \code{12}) of the start of water year for
 analysis. Default \code{1}.}
@@ -99,15 +91,6 @@ Plots an annual hydrograph for a specific year with the dates of flow timing of 
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
 if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Plot the year 2000 using a data frame and data argument with defaults
-flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
-plot_annual_flow_timing_year(data = flow_data,
-                             year_to_plot = 2000)
-                  
-# Plot the year 2000 using the station_number argument
-plot_annual_flow_timing_year(station_number = "08NM116",
-                             year_to_plot = 2000)
- 
 # Plot the year 2000 and change the flow timing percent totals        
 plot_annual_flow_timing_year(station_number = "08NM116",
                              percent_total = 50,

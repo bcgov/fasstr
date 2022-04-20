@@ -118,11 +118,11 @@ plot_annual_lowflows <- function(data,
   lowflow_doy <- dplyr::select(lowflow_stats, STATION_NUMBER, Year, dplyr::contains("DoY"))
   stat_levels <- names(lowflow_doy[-(1:2)])
   stat_levels <- substr(stat_levels, 5, nchar(as.character(stat_levels)))
-  stat_levels <- paste0(gsub("_Day_DoY", "", stat_levels), " Day Mininum")
+  stat_levels <- paste0(gsub("_Day_DoY", "", stat_levels), " Day Minimum")
   
   lowflow_doy <- tidyr::gather(lowflow_doy, Statistic, Value, -STATION_NUMBER, -Year)
   lowflow_doy <- dplyr::mutate(lowflow_doy, Statistic = substr(Statistic, 5, nchar(as.character(Statistic))))
-  lowflow_doy <- dplyr::mutate(lowflow_doy, Statistic = paste0(gsub("_Day_DoY", "", Statistic), " Day Mininum"))
+  lowflow_doy <- dplyr::mutate(lowflow_doy, Statistic = paste0(gsub("_Day_DoY", "", Statistic), " Day Minimum"))
   lowflow_doy <- dplyr::mutate(lowflow_doy, Statistic = as.factor(Statistic))
   levels(lowflow_doy$Statistic) <- stat_levels
   
@@ -134,7 +134,7 @@ plot_annual_lowflows <- function(data,
   
   lowflow_values <- tidyr::gather(lowflow_values, Statistic, Value, -STATION_NUMBER, -Year)
   lowflow_values <- dplyr::mutate(lowflow_values, Statistic = substr(Statistic, 5, nchar(Statistic)))
-  lowflow_values <- dplyr::mutate(lowflow_values, Statistic = paste0(gsub("_Day", "", Statistic), " Day Mininum"))
+  lowflow_values <- dplyr::mutate(lowflow_values, Statistic = paste0(gsub("_Day", "", Statistic), " Day Minimum"))
   lowflow_values <- dplyr::mutate(lowflow_values, Statistic = as.factor(Statistic))
   levels(lowflow_values$Statistic) <- stat_levels
   
@@ -160,9 +160,9 @@ plot_annual_lowflows <- function(data,
                          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
                          {if(length(unique(lowflow_doy$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(lowflow_doy$Year))}+
                          ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
-                         ggplot2::ylab("Day of Year")+
+                         ggplot2::ylab(ifelse(water_year_start == 1, "Day of Year", "Day of Water Year"))+
                          ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
-                         # ggplot2::scale_color_brewer(palette = "Set1") +
+                         ggplot2::scale_color_brewer(palette = "Set1") +
                          ggplot2::theme_bw() +
                          ggplot2::guides(colour = 'none')+
                          {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +

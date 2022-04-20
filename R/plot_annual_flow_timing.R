@@ -137,8 +137,8 @@ plot_annual_flow_timing <- function(data,
         {if(length(percent_total) > 1) ggplot2::facet_wrap(~Statistic, scales = "free_y", ncol = 1, strip.position = "top")} +
         ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
         {if(length(unique(timing_stats$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(timing_stats$Year))}+
-        ggplot2::ylab("Day of Year") +
-        ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
+        ggplot2::ylab(ifelse(water_year_start == 1, "Day of Year", "Day of Water Year"))+
+        ggplot2::xlab(ifelse(water_year_start == 1, "Year", "Water Year"))+
         #ggplot2::scale_color_brewer(palette = "Set1") +
         ggplot2::theme_bw() +
         ggplot2::guides(colour = 'none') +

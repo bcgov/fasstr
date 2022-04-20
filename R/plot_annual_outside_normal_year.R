@@ -93,6 +93,7 @@ plot_annual_outside_normal_year <- function(data,
     end_year <- 9999
   }
   
+  roll_days <- roll_days[1]
   logical_arg_check(log_discharge) 
   log_ticks_checks(log_ticks, log_discharge)
   logical_arg_check(include_title)
@@ -123,9 +124,12 @@ plot_annual_outside_normal_year <- function(data,
   ## ----------
   
   flow_data_year <- add_date_variables(flow_data, water_year_start = water_year_start)
-  flow_data_year <- dplyr::filter(flow_data_year, WaterYear ==  year_to_plot)
-  flow_data_year <- dplyr::select(flow_data_year, STATION_NUMBER, Flow_Date = Date, DayofYear, Value)
-  
+  flow_data_year <- add_rolling_means(flow_data_year, roll_days = roll_days, roll_align = roll_align)
+  flow_data_year <- dplyr::rename(flow_data_year, Orig_Value = Value)
+   names(flow_data_year)[names(flow_data_year) == paste0("Q", roll_days, "Day")] <- "Value"
+   flow_data_year <- dplyr::filter(flow_data_year, WaterYear ==  year_to_plot)
+   flow_data_year <- dplyr::select(flow_data_year, STATION_NUMBER, Flow_Date = Date, DayofYear, Value)
+
   daily_stats <- calc_daily_stats(data = flow_data,
                                   percentiles = normal_percentiles,
                                   roll_days = roll_days,
@@ -133,43 +137,43 @@ plot_annual_outside_normal_year <- function(data,
                                   water_year_start = water_year_start,
                                   start_year = start_year,
                                   end_year = end_year,
-                                  exclude_years = exclude_years, 
+                                  exclude_years = exclude_years,
                                   complete_years = TRUE,
                                   months = months)
-  
+
   names(daily_stats)[names(daily_stats) == paste0("P",min(normal_percentiles))] <- "MIN"
   names(daily_stats)[names(daily_stats) == paste0("P",max(normal_percentiles))] <- "MAX"
-  
+
   daily_stats <- dplyr::mutate(daily_stats, Date = as.Date(DayofYear, origin = origin_date))
   daily_stats <- dplyr::mutate(daily_stats, AnalysisDate = Date)
   daily_stats <- dplyr::left_join(daily_stats, flow_data_year, by = c("STATION_NUMBER", "DayofYear"))
-  daily_stats <- dplyr::mutate(daily_stats, 
+  daily_stats <- dplyr::mutate(daily_stats,
                                Normal = dplyr::case_when(Value < MIN ~ "Below Normal",
                                                          Value > MAX ~ "Above Normal",
                                                          TRUE ~ "Normal"),
                                Normal = factor(Normal, levels = c("Above Normal","Normal","Below Normal")))
-  
+
   if (all(sapply(daily_stats[4:ncol(daily_stats)], function(x)all(is.na(x))))) {
     daily_stats[is.na(daily_stats)] <- 1
   }
   ## PLOT STATS
   ## ----------
-  
-  
+
+
   # Create axis label based on input columns
   y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (cubic metres)", #expression(Volume~(m^3))
                          ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)",
                                 "Discharge (cms)")) #expression(Discharge~(m^3/s))
-  
+
   daily_stats <- fill_missing_dates(daily_stats, water_year_start = water_year_start)
   daily_stats <- add_date_variables(daily_stats, water_year_start = water_year_start)
   daily_stats <- dplyr::select(daily_stats, -c("CalendarYear", "Month", "MonthName", "WaterYear"))
-  
+
   colour_list <- c("Above Normal" = "#264b96",
                    "Normal" = "#27b376",
                    "Below Normal" = "#bf212f") #f9a73e
-  
-  
+
+
   # Create the daily stats plots
   daily_plots <- dplyr::group_by(daily_stats, STATION_NUMBER)
   daily_plots <- tidyr::nest(daily_plots)
@@ -180,8 +184,8 @@ plot_annual_outside_normal_year <- function(data,
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Date)) +
         {if(plot_normal_percentiles) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = "MIN", ymax = "MAX"),
                                                           alpha = 0.3, colour = "lightblue2", fill = "lightblue2", na.rm = FALSE) } +
-        {if(plot_flow_line) ggplot2::geom_line(ggplot2::aes(y = Value), , size = 0.1, colour = "#264b96") }+ 
-        ggplot2::geom_point(ggplot2::aes(y = Value, colour = Normal), size = 3) + 
+        {if(plot_flow_line) ggplot2::geom_line(ggplot2::aes(y = Value), , size = 0.1, colour = "#264b96") }+
+        ggplot2::geom_point(ggplot2::aes(y = Value, colour = Normal), size = 3) +
         {if(!log_discharge) ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.05)),
                                                         breaks = scales::pretty_breaks(n = 8),
                                                         labels = scales::label_number(scale_cut = scales::cut_short_scale()))}+
@@ -214,9 +218,9 @@ plot_annual_outside_normal_year <- function(data,
                        legend.spacing = ggplot2::unit(-0.4, "cm"),
                        legend.background = ggplot2::element_blank())
     ))
-  
-  
-  
+
+
+
   # Create a list of named plots extracted from the tibble
   plots <- daily_plots$plot
   if (nrow(daily_plots) == 1) {
@@ -224,7 +228,7 @@ plot_annual_outside_normal_year <- function(data,
   } else {
     names(plots) <- paste0(daily_plots$STATION_NUMBER, "_Annual_Normal_Days_Year")
   }
-  
+
   plots
   
 }

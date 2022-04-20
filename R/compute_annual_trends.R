@@ -246,7 +246,9 @@ compute_annual_trends <- function(data,
                                        Units= "Discharge (cms)",
                                        Units = replace(Units, grepl("Yield_mm", Statistic), "Yield (mm)"),
                                        Units = replace(Units, grepl("Volume_m3", Statistic), "Volume (cubic metres)"),
-                                       Units = replace(Units, grepl("DoY", Statistic), "Day of Year"),
+                                       Units = replace(Units, grepl("DoY", Statistic), ifelse(water_year_start == 1, 
+                                                                                              "Day of Year", 
+                                                                                              "Day of Water Year")),
                                        Units = replace(Units, grepl("Days", Statistic), "Number of Days"))
       
       
