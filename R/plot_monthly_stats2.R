@@ -128,10 +128,12 @@ plot_monthly_stats2 <- function(data,
                                      complete_years = complete_years,
                                      ignore_missing = ignore_missing,
                                      allowed_missing = allowed_missing)
-  monthly_data
   
-  # monthly_data <- tidyr::gather(monthly_data, Statistic, Value, -(1:3))
-  # monthly_data <- dplyr::mutate(monthly_data, Stat2 = Statistic)
+  if (complete_years) {
+    # Remove all leading NA years
+    monthly_data <- dplyr::filter(dplyr::group_by(monthly_data, STATION_NUMBER),
+                                  Year >= Year[min(which(!is.na(.data[[names(monthly_data)[4]]])))])
+  }
   
   # monthly_data
   ## PLOT STATS

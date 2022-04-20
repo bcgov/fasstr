@@ -114,6 +114,10 @@ plot_annual_highflows <- function(data,
                                           ignore_missing = ignore_missing,
                                           allowed_missing = allowed_missing)
   
+  # Remove all leading NA years
+  highflow_stats <- dplyr::filter(dplyr::group_by(highflow_stats, STATION_NUMBER),
+                                Year >= Year[min(which(!is.na(.data[[names(highflow_stats)[3]]])))])
+  
   # Gather data and plot the maximums day
   highflow_doy <- dplyr::select(highflow_stats, STATION_NUMBER, Year, dplyr::contains("DoY"))
   stat_levels <- names(highflow_doy[-(1:2)])

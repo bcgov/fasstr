@@ -143,6 +143,10 @@ plot_annual_stats <- function(data,
                                     ignore_missing = ignore_missing,
                                     allowed_missing = allowed_missing)
   
+  # Remove all leading NA years
+  annual_stats <- dplyr::filter(dplyr::group_by(annual_stats, STATION_NUMBER),
+                              Year >= Year[min(which(!is.na(.data[[names(annual_stats)[3]]])))])
+  
   annual_stats_plot <- tidyr::gather(annual_stats, Statistic, Value, -Year, -STATION_NUMBER)
   annual_stats_plot <- dplyr::mutate(annual_stats_plot, 
                                      Statistic = factor(Statistic, levels = colnames(annual_stats[-(1:2)])))

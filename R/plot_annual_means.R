@@ -107,6 +107,10 @@ plot_annual_means <- function(data,
                                     ignore_missing = ignore_missing,
                                     allowed_missing = allowed_missing)
   
+  # Remove all leading NA years
+  annual_stats <- dplyr::filter(dplyr::group_by(annual_stats, STATION_NUMBER),
+                                 Year >= Year[min(which(!is.na(.data[[names(annual_stats)[3]]])))])
+  
   annual_stats <- dplyr::select(annual_stats, STATION_NUMBER, Year, Mean)
   
   lt_mad <- dplyr::group_by(annual_stats, STATION_NUMBER)

@@ -134,6 +134,9 @@ plot_annual_cumulative_stats <- function(data,
                                                    complete_years = complete_years, 
                                                    include_seasons = include_seasons & all(1:12 %in% months))
   
+  # Remove all leading NA years
+  cumulative_stats <- dplyr::filter(dplyr::group_by(cumulative_stats, STATION_NUMBER),
+                              Year >= Year[min(which(!is.na(.data[[names(cumulative_stats)[3]]])))])
   
   # Extract each annual/seasonal datasets
   annual_data <- cumulative_stats[,1:3]

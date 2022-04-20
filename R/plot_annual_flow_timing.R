@@ -116,21 +116,24 @@ plot_annual_flow_timing <- function(data,
                                           exclude_years = exclude_years,
                                           months = months)
   
+  timing_stats <- dplyr::filter(dplyr::group_by(timing_stats, STATION_NUMBER),
+                                     Year >= Year[min(which(!is.na(.data[[names(timing_stats)[3]]])))])
+
   timing_stats <- dplyr::select(timing_stats, STATION_NUMBER, Year, dplyr::contains("TotalQ"), -dplyr::contains("Date"))
   timing_stats <- tidyr::gather(timing_stats, Statistic, Value, -STATION_NUMBER, -Year)
   timing_stats <- dplyr::mutate(timing_stats, Statistic = substr(Statistic, 5, nchar(Statistic)))
   timing_stats <- dplyr::mutate(timing_stats, Statistic = paste0(gsub("pct_TotalQ", "", Statistic), " Percent"))
-  
-  
-  
+
+
+
   ## PLOT STATS
   ## ----------
-  
+
   # Create plots for each STATION_NUMBER in a tibble (see: http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/)
   timing_plots <- dplyr::group_by(timing_stats, STATION_NUMBER)
   timing_plots <- tidyr::nest(timing_plots)
   timing_plots <- dplyr::mutate(timing_plots,
-                              plot = purrr::map2(data, STATION_NUMBER, 
+                              plot = purrr::map2(data, STATION_NUMBER,
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
         ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
         ggplot2::geom_point(na.rm = TRUE) +
@@ -143,7 +146,7 @@ plot_annual_flow_timing <- function(data,
         ggplot2::theme_bw() +
         ggplot2::guides(colour = 'none') +
         {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
-        ggplot2::theme(legend.position = "right", 
+        ggplot2::theme(legend.position = "right",
                        legend.spacing = ggplot2::unit(0, "cm"),
                        legend.justification = "top",
                        legend.text = ggplot2::element_text(size = 9),
@@ -155,7 +158,7 @@ plot_annual_flow_timing <- function(data,
                        strip.background = ggplot2::element_blank(),
                        strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
                               ))
-  
+
   # Create a list of named plots extracted from the tibble
   plots <- timing_plots$plot
   if (nrow(timing_plots) == 1) {
@@ -163,9 +166,9 @@ plot_annual_flow_timing <- function(data,
   } else {
     names(plots) <- paste0(timing_plots$STATION_NUMBER, "_Annual_Flow_Timing")
   }
-  
+
   plots
-      
+
   
 }
 
