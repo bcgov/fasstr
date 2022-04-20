@@ -20,7 +20,7 @@
 #'
 #' @inheritParams calc_annual_outside_normal
 #' @inheritParams plot_annual_stats
-#' 
+#'      
 #' @return A list of ggplot2 objects with the following for each station provided:
 #'   \item{Annual_Days_Outside_Normal}{a plot that contains the number of days outside normal}
 #'   Default plots on each object:  
@@ -61,6 +61,7 @@ plot_annual_outside_normal <- function(data,
                                        months = 1:12,
                                        include_title = FALSE){
   
+  message("plot_annual_outside_normal is deprecated. See plot_annual_normal_days().")
   
   
   ## ARGUMENT CHECKS
@@ -84,7 +85,6 @@ plot_annual_outside_normal <- function(data,
   
   logical_arg_check(include_title)
   
-  
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
   
@@ -104,30 +104,33 @@ plot_annual_outside_normal <- function(data,
   ## ----------
   
   normal_data <- calc_annual_outside_normal(data = flow_data,
-                                                    normal_percentiles = normal_percentiles,
-                                                    roll_days = roll_days,
-                                                    roll_align = roll_align,
-                                                    water_year_start = water_year_start,
-                                                    start_year = start_year,
-                                                    end_year = end_year,
-                                                    exclude_years = exclude_years, 
-                                                    months = months)
+                                            normal_percentiles = normal_percentiles,
+                                            roll_days = roll_days,
+                                            roll_align = roll_align,
+                                            water_year_start = water_year_start,
+                                            start_year = start_year,
+                                            end_year = end_year,
+                                            exclude_years = exclude_years, 
+                                            months = months)
   
+  # Remove all leading NA years
+  normal_data <- dplyr::filter(dplyr::group_by(normal_data, STATION_NUMBER),
+                               Year >= Year[min(which(!is.na(.data[[names(normal_data)[3]]])))])
 
-  normal_data <- tidyr::gather(normal_data, Statistic, Value, -STATION_NUMBER, -Year)
-  normal_data <- dplyr::mutate(normal_data, Statistic = substr(Statistic, 6, nchar(Statistic)))
-  normal_data <- dplyr::mutate(normal_data, Statistic = gsub("_", " ", Statistic))
-  
-  
-  
-  ## PLOT STATS
-  ## ----------
-  
-  # Create plots for each STATION_NUMBER in a tibble 
-  normal_plots <- dplyr::group_by(normal_data, STATION_NUMBER)
-  normal_plots <- tidyr::nest(normal_plots)
-  normal_plots <- dplyr::mutate(normal_plots,
-                                plot = purrr::map2(data, STATION_NUMBER, 
+    normal_data <- tidyr::gather(normal_data, Statistic, Value, -STATION_NUMBER, -Year)
+    normal_data <- dplyr::mutate(normal_data, Statistic = substr(Statistic, 6, nchar(Statistic)))
+    normal_data <- dplyr::mutate(normal_data, Statistic = gsub("_", " ", Statistic))
+    
+        ## PLOT STATS
+    ## ----------
+    
+    # Create plots for each STATION_NUMBER in a tibble 
+    normal_plots <- dplyr::group_by(normal_data, STATION_NUMBER)
+    normal_plots <- tidyr::nest(normal_plots)
+    normal_plots <- dplyr::mutate(
+      normal_plots,
+      plot = purrr::map2(
+        data, STATION_NUMBER, 
         ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
           ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
           ggplot2::geom_point(na.rm = TRUE) +
@@ -147,7 +150,9 @@ plot_annual_outside_normal <- function(data,
                          plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
                          strip.background = ggplot2::element_blank(),
                          strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
-                                ))
+      ))
+    
+  
   
   # Create a list of named plots extracted from the tibble
   plots <- normal_plots$plot
@@ -156,10 +161,8 @@ plot_annual_outside_normal <- function(data,
   } else {
     names(plots) <- paste0(normal_plots$STATION_NUMBER, "_Annual_Days_Outside_Normal")
   }
-  
+
   plots
-  
-  
-  
+
 }
 
