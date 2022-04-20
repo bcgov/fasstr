@@ -123,21 +123,17 @@ plot_annual_highflows <- function(data,
   highflow_doy <- tidyr::gather(highflow_doy, Statistic, Value, -STATION_NUMBER, -Year)
   highflow_doy <- dplyr::mutate(highflow_doy, Statistic = substr(Statistic, 5, nchar(as.character(Statistic))))
   highflow_doy <- dplyr::mutate(highflow_doy, Statistic = paste0(gsub("_Day_DoY", "", Statistic), " Day Maximum"))
-  highflow_doy <- dplyr::mutate(highflow_doy, Statistic = as.factor(Statistic))
-  levels(highflow_doy$Statistic) <- stat_levels
-  
-  
-  
-  # Gather data and plot the maximums values
+  highflow_doy <- dplyr::mutate(highflow_doy, Statistic = factor(Statistic, levels = stat_levels))
+
+    # Gather data and plot the maximums values
   highflow_values <- dplyr::select(highflow_stats, STATION_NUMBER, Year, dplyr::contains("Day"), 
                                   -dplyr::contains("DoY"), -dplyr::contains("Date"))
   
   highflow_values <- tidyr::gather(highflow_values, Statistic, Value, -STATION_NUMBER, -Year)
   highflow_values <- dplyr::mutate(highflow_values, Statistic = substr(Statistic, 5, nchar(Statistic)))
   highflow_values <- dplyr::mutate(highflow_values, Statistic = paste0(gsub("_Day", "", Statistic), " Day Maximum"))
-  highflow_values <- dplyr::mutate(highflow_values, Statistic = as.factor(Statistic))
-  levels(highflow_values$Statistic) <- stat_levels
-  
+  highflow_values <- dplyr::mutate(highflow_values, Statistic = factor(Statistic, levels = stat_levels))
+
   
   ## PLOT STATS
   ## ----------

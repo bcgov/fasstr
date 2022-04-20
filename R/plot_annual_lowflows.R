@@ -123,11 +123,8 @@ plot_annual_lowflows <- function(data,
   lowflow_doy <- tidyr::gather(lowflow_doy, Statistic, Value, -STATION_NUMBER, -Year)
   lowflow_doy <- dplyr::mutate(lowflow_doy, Statistic = substr(Statistic, 5, nchar(as.character(Statistic))))
   lowflow_doy <- dplyr::mutate(lowflow_doy, Statistic = paste0(gsub("_Day_DoY", "", Statistic), " Day Minimum"))
-  lowflow_doy <- dplyr::mutate(lowflow_doy, Statistic = as.factor(Statistic))
-  levels(lowflow_doy$Statistic) <- stat_levels
-  
-  
-  
+  lowflow_doy <- dplyr::mutate(lowflow_doy, Statistic = factor(Statistic, levels = stat_levels))
+
   # Gather data and plot the minimums values
   lowflow_values <- dplyr::select(lowflow_stats, STATION_NUMBER, Year, dplyr::contains("Day"), 
                                   -dplyr::contains("DoY"), -dplyr::contains("Date"))
@@ -135,10 +132,8 @@ plot_annual_lowflows <- function(data,
   lowflow_values <- tidyr::gather(lowflow_values, Statistic, Value, -STATION_NUMBER, -Year)
   lowflow_values <- dplyr::mutate(lowflow_values, Statistic = substr(Statistic, 5, nchar(Statistic)))
   lowflow_values <- dplyr::mutate(lowflow_values, Statistic = paste0(gsub("_Day", "", Statistic), " Day Minimum"))
-  lowflow_values <- dplyr::mutate(lowflow_values, Statistic = as.factor(Statistic))
-  levels(lowflow_values$Statistic) <- stat_levels
-  
-  
+  lowflow_values <- dplyr::mutate(lowflow_values, Statistic = factor(Statistic, levels = stat_levels))
+
   ## PLOT STATS
   ## ----------
   
