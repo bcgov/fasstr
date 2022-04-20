@@ -1,38 +1,44 @@
 fasstr 0.5.0
 =========================
 
-Updated: 19 Apr 2022
+Updated: 20 Apr 2022
 
 ### New functions:
 
+  * plot_flow_data_symbols() - plots daily data with coloured points designating symbol categories from symbols column
+  * plot_annual_symbols() - plots symbols by day of year or annual counts or percent of days with symbols from symbols column  
   * plot_annual_stats2() - plotting annual stats in ribbons (similar to plot_daily_stats)
   * plot_monthly_stats2() - plotting faceted monthly stats in ribbons (similar to plot_daily_stats)
-  * plot_flow_data_symbols() - plots daily data with coloured points designating symbol categories from symbols column
-  * plot_annual_symbols() - plots symbols by day of year or annual counts or percent of days with symbols from symbols column
   * plot_annual_flow_timing_year - plot annual timing of flows for a specific year
   * plot_annual_outside_normal_year - plot days above normal, below normal and normal for a specific year
+  * calc_annual_highflows() and plot_annual_highflow() - calcs/plots annual high flow data, similar to _annual_lowflow() functions
+  * plot_annual_peak() - plots the values and dates from annual mininums and maximums for each year, from calc_annual_peaks()
 
-### Modified functions:
+### Function updates:
 
   * plot_missing_data() - new default plot type in tile format. Can change to original bar plot using plot_type = "bar".
   * plot_data_screening() - now changes the geom_point style based on if data is complete or has missing data (plot_availability argument)
   * plot_data_screening() - now allows choice of annual summary statistics (include_stats argument)
   * screen_flow_data() - now add columns of counts of symbol categories provided by symbol column (HYDAT Symbol column). Can remove columns by using include_symbols = FALSE.
   
-### Other Updates
+### Other updates:
   
   * Can now choose 0 and 100 percentiles (was previously between 1 and 99)
   * Added 'complete_years' argument to several functions for cross-package consistency. Doesn't change functionality, but sets/overrides ignore_missing to FALSE and allowed_missing to 0.
-  * Fixed bug: complete_years function now applied to all functions in compute_ and write_full_analysis functions
   * Removed HYDAT.sqlite file check in compute_HYDAT_peak_frequencies() - leaves check to tidyhydat
   * "Year" axes now labeled "Water Year" if water_year_start != 1
+  * Some appropriate "Day of Year" axes now labeled "Day of Water Year" if water_year_start != 1
   * Changed y-axis labels on plots using scales::cut_short_scale() to remove exponents on large numbers
   
-### Internal Code
+### Bug fixes:
   
-  * all logical arguments now use a single check function
+  * complete_years function now applied to all functions in compute_ and write_full_analysis functions
+
+### Internal code:
+  
+  * cleaning up argument check functions (logical, numeric etc)
   * new origin_date internal function
-  * new filter_complete_yrs arg (keep_all) to keep all years of data, just setting NA if incomplete
+  * new filter_complete_yrs arg option (keep_all) to keep all years of data, just setting NA if incomplete
   
   
   
