@@ -114,11 +114,6 @@ Plots the long-term mean, median, maximum, minimum, and percentiles of annual mo
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
 if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Plot longterm monthly statistics using data argument with defaults
-flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
-plot_longterm_monthly_stats(data = flow_data,
-                            start_year = 1980)
-
 # Plot longterm monthly statistics using station_number argument with defaults
 plot_longterm_monthly_stats(station_number = "08NM116",
                             start_year = 1980)
@@ -127,7 +122,6 @@ plot_longterm_monthly_stats(station_number = "08NM116",
 plot_longterm_monthly_stats(station_number = "08NM116",
                             start_year = 1980,
                             add_year = 1985) 
-                              
                             
 }
 }

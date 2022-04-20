@@ -85,12 +85,6 @@
 #' calc_annual_stats(station_number = "08NM116",
 #'                   water_year_start = 10)
 #'                   
-#' # Calculate annual statistics filtered for custom years
-#' calc_annual_stats(station_number = "08NM116",
-#'                   start_year = 1981,
-#'                   end_year = 2010,
-#'                   exclude_years = c(1991,1993:1995))
-#'                   
 #' # Calculate annual statistics for 7-day flows for July-September 
 #' # months only, with 25 and 75th percentiles
 #' calc_annual_stats(station_number = "08NM116",
