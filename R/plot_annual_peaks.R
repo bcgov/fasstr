@@ -11,32 +11,32 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 
-#' @title Plot annual low flows and dates
+#' @title Plot annual high and low flows
 #'
-#' @description Plot annual n-day minimum values, and the day of year and date of occurrence of daily flow values from a daily 
-#'    streamflow data set. Calculates statistics from all values, unless specified. Data calculated from \code{calc_annual_lowflows()}
-#'    function. Returns a list of plots.
+#' @description Plots annual n-day minimum and maximum values and the day of year of occurrence of daily flow values
+#'    from a daily streamflow data set. Calculates statistics from all values, unless specified. Returns a tibble with statistics.
 #'
-#' @inheritParams calc_annual_lowflows
+#' @inheritParams calc_annual_peaks
 #' @inheritParams plot_annual_stats
 #'    
 #' @return A list of ggplot2 objects with the following for each station provided:
-#'   \item{Annual_Minimums}{ggplot2 object of annual minimums of selected n-day rolling means}
-#'   \item{Annual_Minimums_Days}{ggplot2 object of the day of years of annual minimums of selected n-day rolling means}
+#'   \item{Annual_Peak_Flows}{ggplot2 object of annual minimum and maximum flows of selected n-day rolling means}
+#'   \item{Annual_Peak_Flows_Dates}{ggplot2 object of the day of years of annual minimum and maximum flows of selected n-day rolling means}
 #'   
-#' @seealso \code{\link{calc_annual_lowflows}}
+#' @seealso \code{\link{calc_annual_peaks}}
 #' 
 #' @examples
 #' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
 #' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Plot annual 1, 3, 7, and 30-day (default) low flow statistics with default alignment
-#' plot_annual_lowflows(station_number = "08NM116") 
+#' # Plot annual 1-day (default) peak flow data with 
+#' # default alignment ('right')
+#' plot_annual_peaks(station_number = "08NM116") 
 #' 
-#' # Plot annual custom 3 and 7-day low flow statistics with "center" alignment
-#' plot_annual_lowflows(station_number = "08NM116",
-#'                      roll_days = c(3,7),
-#'                      roll_align = "center")
+#' # Plot custom 3-day peak flow data with 'center' alignment
+#' plot_annual_peaks(station_number = "08NM116",
+#'                   roll_days = 3,
+#'                   roll_align = "center")
 #'                      
 #' }
 #' @export
@@ -125,7 +125,7 @@ plot_annual_peaks <- function(data,
   
   peak_doy <- tidyr::gather(peak_doy, Statistic, Value, -STATION_NUMBER, -Year)
   peak_doy <- dplyr::mutate(peak_doy, Statistic = factor(gsub("_"," ", paste0(gsub("_Day_DoY", "", Statistic), " Day")),
-                                                         levels = stat_levels))
+                                                         levels = rev(stat_levels)))
   
   
   # Gather data and plot the minimums values
@@ -134,7 +134,7 @@ plot_annual_peaks <- function(data,
   
   peak_values <- tidyr::gather(peak_values, Statistic, Value, -STATION_NUMBER, -Year)
   peak_values <- dplyr::mutate(peak_values, Statistic = factor(gsub("_"," ", paste0(gsub("_Day", "", Statistic), " Day")),
-                                                               levels = stat_levels))
+                                                               levels = rev(stat_levels)))
 
 
   ## PLOT STATS
@@ -144,6 +144,12 @@ plot_annual_peaks <- function(data,
   y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (cubic metres)", #expression(Volume~(m^3))
                          ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)",
                                 "Discharge (cms)")) #expression(Discharge~(m^3/s))
+  
+  # high_col <- "dodgerblue2" #"#440154FF" #
+  # low_col <- "orange" #"#FDE725FF" #
+  
+  colour_list <- c("dodgerblue2",
+                   "orange")
 
   # Create plots for each STATION_NUMBER in a tibble (see: http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/)
   doy_plots <- dplyr::group_by(peak_doy, STATION_NUMBER)
@@ -151,19 +157,21 @@ plot_annual_peaks <- function(data,
   doy_plots <- dplyr::mutate(
     doy_plots,
     plot = purrr::map2(data, STATION_NUMBER,
-                       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
+                       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic, fill = Statistic)) +
                          ggplot2::geom_line(alpha = 0.5, na.rm = TRUE)+
-                         ggplot2::geom_point(na.rm = TRUE)+
+                         ggplot2::geom_point(na.rm = TRUE, shape = 21, colour = "black", size = 2) +
                          ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "top")+
                          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
                          {if(length(unique(peak_doy$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(peak_doy$Year))}+
                          ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
                          ggplot2::ylab(ifelse(water_year_start == 1, "Day of Year", "Day of Water Year"))+
                          ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
-                         ggplot2::scale_fill_brewer(palette = "Set1") +
-                         ggplot2::scale_colour_brewer(palette = "Set1") +
+                         #ggplot2::scale_color_viridis_d()+
+                         #ggplot2::scale_fill_viridis_d()+
+                         ggplot2::scale_color_manual(values = colour_list)+
+                         ggplot2::scale_fill_manual(values = colour_list)+
                          ggplot2::theme_bw() +
-                         ggplot2::guides(colour = 'none')+
+                         ggplot2::guides(colour = 'none', fill = "none")+
                          {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
                          ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                                         panel.grid = ggplot2::element_line(size = .2),
@@ -179,9 +187,9 @@ plot_annual_peaks <- function(data,
   flow_plots <- dplyr::mutate(
     flow_plots,
     plot = purrr::map2(data, STATION_NUMBER,
-                       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
+                       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic, fill = Statistic)) +
                          ggplot2::geom_line(alpha = 0.5, na.rm = TRUE)+
-                         ggplot2::geom_point(na.rm = TRUE)+
+                         ggplot2::geom_point(na.rm = TRUE, shape = 21, colour = "black", size = 2) +
                          ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "top", scales = "free_y")+
                          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
                          {if(length(unique(peak_values$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(peak_values$Year))}+
@@ -189,9 +197,12 @@ plot_annual_peaks <- function(data,
                                                      labels = scales::label_number(scale_cut = scales::cut_short_scale())) +
                          ggplot2::ylab(y_axis_title)+
                          ggplot2::xlab("Year")+
-                         ggplot2::scale_color_brewer(palette = "Set1") +
+                         #ggplot2::scale_color_viridis_d()+
+                         #ggplot2::scale_fill_viridis_d()+
+                         ggplot2::scale_color_manual(values = colour_list)+
+                         ggplot2::scale_fill_manual(values = colour_list)+
                          ggplot2::theme_bw() +
-                         ggplot2::guides(colour = 'none')+
+                         ggplot2::guides(colour = 'none', fill = "none")+
                          {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
                          ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                                         panel.grid = ggplot2::element_line(size = .2),

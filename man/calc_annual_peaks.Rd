@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_annual_peaks.R
 \name{calc_annual_peaks}
 \alias{calc_annual_peaks}
-\title{Calculate annual peak flows}
+\title{Calculate annual high and low flows}
 \usage{
 calc_annual_peaks(
   data,

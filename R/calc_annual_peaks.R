@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 
-#' @title Calculate annual peak flows
+#' @title Calculate annual high and low flows
 #'
 #' @description Calculates annual n-day minimum and maximum values, and the day of year and date of occurrence of daily flow values
 #'    from a daily streamflow data set. Calculates statistics from all values, unless specified. Returns a tibble with statistics.

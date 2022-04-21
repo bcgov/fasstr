@@ -1,7 +1,7 @@
 fasstr 0.5.0
 =========================
 
-Updated: 20 Apr 2022
+Updated: 21 Apr 2022
 
 ### New functions:
 
@@ -10,7 +10,8 @@ Updated: 20 Apr 2022
   * plot_annual_stats2() - plotting annual stats in ribbons (similar to plot_daily_stats)
   * plot_monthly_stats2() - plotting faceted monthly stats in ribbons (similar to plot_daily_stats)
   * calc_annual_highflows() and plot_annual_highflow() - calcs/plots annual high flow data, similar to _annual_lowflow() functions
-  * plot_annual_peak() - plots the values and dates from annual minimums and maximums for each year, from calc_annual_peaks()
+  * plot_annual_peaks() - plots the values and dates from annual minimums and maximums for each year, from calc_annual_peaks()
+    * plot_annual_peaks_year() - plots the values and dates from annual minimums and maximums fora given year
   * calc_annual_normal_days() and plot_annual_normal_days() - counts number of normal and above/below normal days - replaced deprecated _annual_outside_normal() functions
   * plot_annual_normal_days_year - plot days above normal, below normal and normal for a specific year
   * plot_annual_flow_timing_year - plot annual timing of flows for a specific year

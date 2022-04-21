@@ -109,7 +109,13 @@
           "Percent",
           "Value2",
           "Normal",
-          ".data")
+          ".data",
+          "Min_Doy",
+          "Min_Start",
+          "Min_End",
+          "Max_Doy",
+          "Max_Start",
+          "Max_End")
       )
     invisible()
   }
