@@ -134,17 +134,18 @@ plot_annual_flow_timing <- function(data,
   timing_plots <- tidyr::nest(timing_plots)
   timing_plots <- dplyr::mutate(timing_plots,
                               plot = purrr::map2(data, STATION_NUMBER,
-      ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
+      ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic, fill = Statistic)) +
         ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
-        ggplot2::geom_point(na.rm = TRUE) +
+        ggplot2::geom_point(na.rm = TRUE, shape = 21, colour = "black", size = 2) +
         {if(length(percent_total) > 1) ggplot2::facet_wrap(~Statistic, scales = "free_y", ncol = 1, strip.position = "top")} +
         ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
         {if(length(unique(timing_stats$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(timing_stats$Year))}+
         ggplot2::ylab(ifelse(water_year_start == 1, "Day of Year", "Day of Water Year"))+
         ggplot2::xlab(ifelse(water_year_start == 1, "Year", "Water Year"))+
-        #ggplot2::scale_color_brewer(palette = "Set1") +
+        ggplot2::scale_color_viridis_d()+
+        ggplot2::scale_fill_viridis_d()+
         ggplot2::theme_bw() +
-        ggplot2::guides(colour = 'none') +
+        ggplot2::guides(colour = 'none', fill = "none") +
         {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
         ggplot2::theme(legend.position = "right",
                        legend.spacing = ggplot2::unit(0, "cm"),
