@@ -9,9 +9,9 @@ Updated: 21 Apr 2022
   * plot_annual_symbols() - plots symbols by day of year or annual counts or percent of days with symbols from symbols column  
   * plot_annual_stats2() - plotting annual stats in ribbons (similar to plot_daily_stats)
   * plot_monthly_stats2() - plotting faceted monthly stats in ribbons (similar to plot_daily_stats)
-  * calc_annual_highflows() and plot_annual_highflow() - calcs/plots annual high flow data, similar to _annual_lowflow() functions
+  * calc_annual_highflows() and plot_annual_highflows() - calcs/plots annual high flow data, similar to _annual_lowflow() functions
   * plot_annual_peaks() - plots the values and dates from annual minimums and maximums for each year, from calc_annual_peaks()
-    * plot_annual_peaks_year() - plots the values and dates from annual minimums and maximums fora given year
+  * plot_annual_peaks_year() - plots the values and dates from annual minimums and maximums fora given year
   * calc_annual_normal_days() and plot_annual_normal_days() - counts number of normal and above/below normal days - replaced deprecated _annual_outside_normal() functions
   * plot_annual_normal_days_year - plot days above normal, below normal and normal for a specific year
   * plot_annual_flow_timing_year - plot annual timing of flows for a specific year
@@ -28,7 +28,6 @@ Updated: 21 Apr 2022
   
   * Can now choose 0 and 100 percentiles (was previously between 1 and 99)
   * Added 'complete_years' argument to several functions for cross-package consistency. Doesn't change functionality, but sets/overrides ignore_missing to FALSE and allowed_missing to 0.
-  * Removed HYDAT.sqlite file check in compute_HYDAT_peak_frequencies() - leaves check to tidyhydat
   * "Year" axes now labeled "Water Year" if water_year_start != 1
   * Some appropriate "Day of Year" axes now labeled "Day of Water Year" if water_year_start != 1
   * Changed y-axis labels on plots using scales::cut_short_scale() to remove exponents on large numbers
@@ -37,6 +36,7 @@ Updated: 21 Apr 2022
 ### Bug fixes:
   
   * complete_years function now applied to all functions in compute_ and write_full_analysis functions
+  * Removed HYDAT.sqlite file check in compute_HYDAT_peak_frequencies() - leaves check to tidyhydat
 
 ### Internal code:
   
