@@ -174,7 +174,7 @@ plot_monthly_stats <- function(data,
         ggplot2::ylab(y_axis_title) +
         ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
         ggplot2::guides(colour = 'none') +
-        ggplot2::theme_bw() +
+        ggplot2::theme_bw()+
         {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y, unique(.$Stat2))) } +
         {if (include_title & .y == "XXXXXXX") ggplot2::ggtitle(paste(unique(.$Stat2))) } +
         ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
@@ -187,7 +187,8 @@ plot_monthly_stats <- function(data,
         ggplot2::scale_colour_manual(values = c("Jan" = "dodgerblue3", "Feb" = "skyblue1", "Mar" = "turquoise",
                                                 "Apr" = "forestgreen", "May" = "limegreen", "Jun" = "gold",
                                                 "Jul" = "orange", "Aug" = "red", "Sep" = "darkred",
-                                                "Oct" = "orchid", "Nov" = "purple3", "Dec" = "midnightblue"))
+                                                "Oct" = "orchid", "Nov" = "purple3", "Dec" = "midnightblue")) +
+        ggplot2::scale_color_viridis_d()
     ))
 
 

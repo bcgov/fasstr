@@ -132,7 +132,7 @@ plot_annual_means <- function(data,
     tidy_plots,
     plot = purrr::map2(data, STATION_NUMBER,
                        ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = MAD_diff)) +
-                         ggplot2::geom_bar(stat = "identity", fill = "cornflowerblue", na.rm = TRUE) +
+                         ggplot2::geom_bar(stat = "identity", fill = "#2A788EFF", na.rm = TRUE, colour = "black", width = 1) +
                          ggplot2::geom_hline(yintercept = 0, size = 0.1) +
                          ggplot2::scale_y_continuous(labels = function(x) round(x + unique(.$LTMAD),3),
                                                      breaks = scales::pretty_breaks(n = 10)) +

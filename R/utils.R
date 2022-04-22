@@ -299,6 +299,7 @@ rolling_days_checks <- function(roll_days, roll_align , multiple = FALSE) {
   }
   if (!is.numeric(roll_days))                         stop("roll_days argument must be numeric.", call. = FALSE)
   if (!all(roll_days %in% c(1:180)))                  stop("roll_days argument must be integers > 0 and <= 180).", call. = FALSE)
+  roll_align <- ifelse(roll_align == "l", "left", ifelse(roll_align == "r", "right", ifelse(roll_align == "c", "center", ifelse(roll_align == "centre", "center", roll_align))))
   if (!roll_align %in% c("right", "left", "center"))  stop("roll_align argument must be 'right', 'left', or 'center'.", call. = FALSE)
 }
 

@@ -128,7 +128,7 @@ compute_frequency_analysis <- function(data,
   # Check the values and events columns
   if (!as.character(substitute(events)) %in% names(data)) 
     stop("Events column not found in data frame. Rename events column to 'Years' or identify the column using 'events' argument.", call. = FALSE)
-
+  
   if (!as.character(substitute(values)) %in% names(data)) 
     stop("Values not found in data frame. Rename values column to 'Value' or identify the column using 'values' argument.", call. = FALSE)
   names(data)[names(data) == as.character(substitute(values))] <- "Value"
@@ -139,7 +139,7 @@ compute_frequency_analysis <- function(data,
     stop("Measures not found in data frame. Rename measure column to 'Measure' or identify the column using 'measures' argument.", call. = FALSE)
   names(data)[names(data) == as.character(substitute(measures))] <- "Measure"
   
-
+  
   # Set the Q_stat dataframe
   Q_stat <-  data
   
@@ -212,20 +212,26 @@ compute_frequency_analysis <- function(data,
   
   plotdata2$Measure <- factor(plotdata2$Measure, levels = unique(plotdata2$Measure))
   
-  freqplot <- ggplot2::ggplot(data = plotdata2, ggplot2::aes(x = prob, y = Value, group = Measure, color = Measure),
+  freqplot <- ggplot2::ggplot(data = plotdata2, 
+                              ggplot2::aes(x = prob, y = Value, group = Measure, 
+                                           #fill = Measure,
+                                           color = Measure),
                               environment = environment())+
-    #ggplot2::ggtitle(paste(station_name, " Volume Frequency Analysis"))+
-    ggplot2::geom_point()+
+    ggplot2::geom_point(size = 2)+
+    #ggplot2::geom_point(size =2, shape = 21, colour="black")+
     ggplot2::xlab("Probability")+
     ggplot2::scale_x_continuous(trans = scales::probability_trans("norm", lower.tail = FALSE),
                                 breaks = prob_scale_points,
-                                sec.axis = ggplot2::dup_axis(name = 'Return Period',
-                                                             labels = function(x){ifelse(1/x < 2, round(1/x,2), round(1/x,0))}
-                                )
-    )+
-    ggplot2::scale_color_brewer(palette = "Set1") +
+                                sec.axis = ggplot2::dup_axis(
+                                  name = 'Return Period',
+                                  labels = function(x){ifelse(1/x < 2, round(1/x,2), round(1/x,0))}))+
+    #ggplot2::scale_color_brewer(palette = "Set1") +
+    ggplot2::scale_color_viridis_d(end = ifelse(length(unique(plotdata2$Measure)) <= 2, 0.6, 
+                                                ifelse(length(unique(plotdata2$Measure)) <= 3, 0.75, 0.94))) +
+   #ggplot2::scale_fill_viridis_d() +
     ggplot2::theme_bw() +
     ggplot2::labs(color = paste0('Events')) +    
+    #ggplot2::guides(fill = "none")+
     ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                    panel.grid = ggplot2::element_line(size = .2),
                    axis.title = ggplot2::element_text(size = 12),
@@ -349,8 +355,12 @@ compute_frequency_analysis <- function(data,
   
   
   if (plot_curve) {
+    
+    fitted_quantiles_plot$Measure <- factor(fitted_quantiles_plot$Measure, levels = unique(plotdata2$Measure))
+    
     freqplot <- freqplot +
-      ggplot2::geom_line(data = fitted_quantiles_plot, ggplot2::aes(x = prob, y = quantile, group = Measure, color = Measure)) +
+      ggplot2::geom_line(data = fitted_quantiles_plot, ggplot2::aes(x = prob, y = quantile, group = Measure, color = Measure),
+                         size = 1) +
       ggplot2::labs(color = paste0('Events and\nComputed Curve'))  
   }
   

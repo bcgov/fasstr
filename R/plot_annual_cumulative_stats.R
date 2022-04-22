@@ -297,7 +297,7 @@ plot_annual_cumulative_stats <- function(data,
           ggplot2::ylab("Volume (cubic metres)") +
           {if (use_yield) ggplot2::ylab("Yield (mm)")} +
           ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
-          ggplot2::scale_fill_viridis_d(name = "Season") +
+          ggplot2::scale_fill_viridis_d(name = "Season", begin = 0.5) +
           ggplot2::theme_bw() +
           ggplot2::guides(fill = 'none') +
           {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
@@ -337,7 +337,7 @@ plot_annual_cumulative_stats <- function(data,
             ggplot2::ylab("Volume (cubic metres)") +
             {if (use_yield) ggplot2::ylab("Yield (mm)")} +
             ggplot2::xlab("Year")+
-            ggplot2::scale_fill_viridis_d(name = "Season") +
+            ggplot2::scale_fill_viridis_d(name = "Season", begin = 0.3, end = 0.7) +
             ggplot2::theme_bw() +
             ggplot2::guides(colour = 'none') +
             {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
@@ -368,7 +368,7 @@ plot_annual_cumulative_stats <- function(data,
             ggplot2::ylab("Volume (cubic metres)") +
             {if (use_yield) ggplot2::ylab("Yield (mm)")} +
             ggplot2::xlab("Year")+
-            ggplot2::scale_fill_viridis_d(name = "Season") +
+            ggplot2::scale_fill_viridis_d(name = "Season", begin = 0.15) +
             ggplot2::theme_bw() +
             ggplot2::guides(colour = 'none')+
             {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
