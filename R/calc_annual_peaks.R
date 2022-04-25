@@ -17,6 +17,10 @@
 #'    from a daily streamflow data set. Calculates statistics from all values, unless specified. Returns a tibble with statistics.
 #'
 #' @inheritParams calc_annual_stats
+#' @param roll_days_low Numeric value of the number of days to apply a rolling mean for low flows.  Will override 'roll_days' argument. 
+#'     Default \code{NA}.
+#' @param roll_days_high Numeric value of the number of days to apply a rolling mean for high flows.  Will override 'roll_days' argument. 
+#'     Default \code{NA}.
 #'    
 #' @return A tibble data frame with the following columns:
 #'   \item{Year}{calendar or water year selected}
@@ -60,6 +64,8 @@ calc_annual_peaks <- function(data,
                               groups = STATION_NUMBER,
                               station_number,
                               roll_days = 1,
+                              roll_days_low = NA,
+                              roll_days_high = NA,
                               roll_align = "right",
                               water_year_start = 1,
                               start_year,
@@ -90,8 +96,16 @@ calc_annual_peaks <- function(data,
   if (missing(exclude_years)) {
     exclude_years <- NULL
   }
+  if (is.na(roll_days_low)) {
+    roll_days_low <- roll_days
+  }
+  if (is.na(roll_days_high)) {
+    roll_days_high <- roll_days
+  }
   
   rolling_days_checks(roll_days, roll_align, multiple = FALSE)
+  rolling_days_checks(roll_days_low, roll_align, multiple = FALSE)
+  rolling_days_checks(roll_days_high, roll_align, multiple = FALSE)
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)
@@ -149,28 +163,31 @@ calc_annual_peaks <- function(data,
   peak_stats <- dplyr::summarize(dplyr::group_by(flow_data, STATION_NUMBER, WaterYear))
   
   # Add specified rolling mean
-  flow_data_temp <- fasstr::add_rolling_means(data = flow_data, roll_days = roll_days, roll_align = roll_align)
-  names(flow_data_temp)[names(flow_data_temp) == paste0("Q", roll_days, "Day")] <- "RollingValue"
+  flow_data_temp <- fasstr::add_rolling_means(data = flow_data, roll_days = roll_days_low, roll_align = roll_align)
+  names(flow_data_temp)[names(flow_data_temp) == paste0("Q", roll_days_low, "Day")] <- "RollingValue_Low"
+  
+  flow_data_temp <- fasstr::add_rolling_means(data = flow_data_temp, roll_days = roll_days_high, roll_align = roll_align)
+  names(flow_data_temp)[names(flow_data_temp) == paste0("Q", roll_days_high, "Day")] <- "RollingValue_High"
   
   # Filter for selected months
   flow_data_temp <- dplyr::filter(flow_data_temp, Month %in% months)
   
   # Calculate the mins and dates
   peak_stats_temp <- dplyr::summarize(dplyr::group_by(flow_data_temp, STATION_NUMBER, WaterYear),
-                                      MIN_VALUE = min(RollingValue, na.rm = allowed_narm(RollingValue, allowed_missing)),	     
-                                      MIN_DAY = ifelse(is.na(MIN_VALUE), NA, DayofYear[which(RollingValue == MIN_VALUE)]),
-                                      MIN_DATE = ifelse(is.na(MIN_VALUE), NA, Date[which(RollingValue == MIN_VALUE)]),
-                                      MAX_VALUE = max(RollingValue, na.rm = allowed_narm(RollingValue, allowed_missing)),	     
-                                      MAX_DAY = ifelse(is.na(MAX_VALUE), NA, DayofYear[which(RollingValue == MAX_VALUE)]),
-                                      MAX_DATE = ifelse(is.na(MAX_VALUE), NA, Date[which(RollingValue == MAX_VALUE)]))
+                                      MIN_VALUE = min(RollingValue_Low, na.rm = allowed_narm(RollingValue_Low, allowed_missing)),	     
+                                      MIN_DAY = ifelse(is.na(MIN_VALUE), NA, DayofYear[which(RollingValue_Low == MIN_VALUE)]),
+                                      MIN_DATE = ifelse(is.na(MIN_VALUE), NA, Date[which(RollingValue_Low == MIN_VALUE)]),
+                                      MAX_VALUE = max(RollingValue_High, na.rm = allowed_narm(RollingValue_High, allowed_missing)),	     
+                                      MAX_DAY = ifelse(is.na(MAX_VALUE), NA, DayofYear[which(RollingValue_High == MAX_VALUE)]),
+                                      MAX_DATE = ifelse(is.na(MAX_VALUE), NA, Date[which(RollingValue_High == MAX_VALUE)]))
   class(peak_stats_temp$MIN_DATE) <- "Date" # fixes ifelse and date issue
   class(peak_stats_temp$MAX_DATE) <- "Date" # fixes ifelse and date issue
-  names(peak_stats_temp)[names(peak_stats_temp) == "MIN_VALUE"] <- paste0("Min_", roll_days, "_Day")
-  names(peak_stats_temp)[names(peak_stats_temp) == "MIN_DAY"] <- paste0("Min_", roll_days, "_Day_DoY")
-  names(peak_stats_temp)[names(peak_stats_temp) == "MIN_DATE"] <- paste0("Min_", roll_days, "_Day_Date")
-  names(peak_stats_temp)[names(peak_stats_temp) == "MAX_VALUE"] <- paste0("Max_", roll_days, "_Day")
-  names(peak_stats_temp)[names(peak_stats_temp) == "MAX_DAY"] <- paste0("Max_", roll_days, "_Day_DoY")
-  names(peak_stats_temp)[names(peak_stats_temp) == "MAX_DATE"] <- paste0("Max_", roll_days, "_Day_Date")
+  names(peak_stats_temp)[names(peak_stats_temp) == "MIN_VALUE"] <- paste0("Min_", roll_days_low, "_Day")
+  names(peak_stats_temp)[names(peak_stats_temp) == "MIN_DAY"] <- paste0("Min_", roll_days_low, "_Day_DoY")
+  names(peak_stats_temp)[names(peak_stats_temp) == "MIN_DATE"] <- paste0("Min_", roll_days_low, "_Day_Date")
+  names(peak_stats_temp)[names(peak_stats_temp) == "MAX_VALUE"] <- paste0("Max_", roll_days_high, "_Day")
+  names(peak_stats_temp)[names(peak_stats_temp) == "MAX_DAY"] <- paste0("Max_", roll_days_high, "_Day_DoY")
+  names(peak_stats_temp)[names(peak_stats_temp) == "MAX_DATE"] <- paste0("Max_", roll_days_high, "_Day_Date")
   
   peak_stats <- merge(peak_stats, peak_stats_temp, by = c("STATION_NUMBER", "WaterYear"), all = TRUE)
   

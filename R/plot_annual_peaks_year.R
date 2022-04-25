@@ -18,7 +18,7 @@
 #'    \code{plot_annual_peaks()} functions. Can remove either low or high flows using \code{plot_lowflow = FALSE()} or 
 #'    \code{plot_highflow = FALSE()}, respectively. Returns a list of plots.
 #'
-#' @inheritParams calc_annual_lowflows
+#' @inheritParams calc_annual_peaks
 #' @inheritParams plot_annual_stats
 #' @inheritParams plot_annual_normal_days_year
 #' @param plot_lowflow Logical value indicating whether to plot annual low flows. Default \code{TRUE}.
@@ -49,6 +49,8 @@ plot_annual_peaks_year <- function(data,
                                    station_number,
                                    year_to_plot = NA,
                                    roll_days = 1,
+                                   roll_days_low = NA,
+                                   roll_days_high = NA,
                                    roll_align = "right",
                                    water_year_start = 1,
                                    start_year,
@@ -83,6 +85,12 @@ plot_annual_peaks_year <- function(data,
   }
   if (missing(end_year)) {
     end_year <- 9999
+  }
+  if (is.na(roll_days_low)) {
+    roll_days_low <- roll_days
+  }
+  if (is.na(roll_days_high)) {
+    roll_days_high <- roll_days
   }
   
   logical_arg_check(log_discharge) 
@@ -142,6 +150,8 @@ plot_annual_peaks_year <- function(data,
                                  exclude_years = exclude_years, 
                                  months = months,
                                  roll_days = roll_days,
+                                 roll_days_low = roll_days_low,
+                                 roll_days_high = roll_days_high,
                                  roll_align = roll_align,
                                  complete_years = complete_years,
                                  ignore_missing = ignore_missing,
@@ -151,15 +161,15 @@ plot_annual_peaks_year <- function(data,
   ann_peaks_min <- dplyr::select(ann_peaks, STATION_NUMBER, Year, DayofYear = Min_Doy, dplyr::contains("Min"))
   ann_peaks_min <- dplyr::mutate(ann_peaks_min,
                                  Min_Start = dplyr::case_when(roll_align == "left" ~ DayofYear,
-                                                              roll_align == "right" ~ DayofYear - roll_days + 1,
-                                                              roll_align == "center" & roll_days %% 2 == 0 ~ DayofYear - (roll_days/2) + 1,
-                                                              roll_align == "center" & roll_days %% 2 != 0 ~ DayofYear - ((roll_days - 1)/2)),
+                                                              roll_align == "right" ~ DayofYear - roll_days_low + 1,
+                                                              roll_align == "center" & roll_days_low %% 2 == 0 ~ DayofYear - (roll_days_low/2) + 1,
+                                                              roll_align == "center" & roll_days_low %% 2 != 0 ~ DayofYear - ((roll_days_low - 1)/2)),
                                  Min_Start = ifelse(Min_Start < min(daily_stats$DayofYear), min(daily_stats$DayofYear), Min_Start),
                                  Min_Start = as.Date(Min_Start, origin = origin_date),
-                                 Min_End = dplyr::case_when(roll_align == "left" ~ DayofYear + roll_days - 1,
+                                 Min_End = dplyr::case_when(roll_align == "left" ~ DayofYear + roll_days_low - 1,
                                                             roll_align == "right" ~ DayofYear,
-                                                            roll_align == "center" & roll_days %% 2 == 0 ~ DayofYear + (roll_days/2),
-                                                            roll_align == "center" & roll_days %% 2 != 0 ~ DayofYear + ((roll_days - 1)/2)),
+                                                            roll_align == "center" & roll_days_low %% 2 == 0 ~ DayofYear + (roll_days_low/2),
+                                                            roll_align == "center" & roll_days_low %% 2 != 0 ~ DayofYear + ((roll_days_low - 1)/2)),
                                  Min_End = ifelse(Min_End > max(daily_stats$DayofYear), max(daily_stats$DayofYear), Min_End),
                                  Min_End = as.Date(Min_End, origin = origin_date))
   ann_peaks_min <- dplyr::filter(ann_peaks_min, Year == year_to_plot)
@@ -167,15 +177,15 @@ plot_annual_peaks_year <- function(data,
   ann_peaks_max <- dplyr::select(ann_peaks, STATION_NUMBER, Year, DayofYear = Max_Doy, dplyr::contains("Max"))
   ann_peaks_max <- dplyr::mutate(ann_peaks_max,
                                  Max_Start = dplyr::case_when(roll_align == "left" ~ DayofYear,
-                                                              roll_align == "right" ~ DayofYear - roll_days + 1,
-                                                              roll_align == "center" & roll_days %% 2 == 0 ~ DayofYear - (roll_days/2) + 1,
-                                                              roll_align == "center" & roll_days %% 2 != 0 ~ DayofYear - ((roll_days - 1)/2)),
+                                                              roll_align == "right" ~ DayofYear - roll_days_high + 1,
+                                                              roll_align == "center" & roll_days_high %% 2 == 0 ~ DayofYear - (roll_days_high/2) + 1,
+                                                              roll_align == "center" & roll_days_high %% 2 != 0 ~ DayofYear - ((roll_days_high - 1)/2)),
                                  Max_Start = ifelse(Max_Start < min(daily_stats$DayofYear), min(daily_stats$DayofYear), Max_Start),
                                  Max_Start = as.Date(Max_Start, origin = origin_date),
-                                 Max_End = dplyr::case_when(roll_align == "left" ~ DayofYear + roll_days - 1,
+                                 Max_End = dplyr::case_when(roll_align == "left" ~ DayofYear + roll_days_high - 1,
                                                             roll_align == "right" ~ DayofYear,
-                                                            roll_align == "center" & roll_days %% 2 == 0 ~ DayofYear + (roll_days/2),
-                                                            roll_align == "center" & roll_days %% 2 != 0 ~ DayofYear + ((roll_days - 1)/2)),
+                                                            roll_align == "center" & roll_days_high %% 2 == 0 ~ DayofYear + (roll_days_high/2),
+                                                            roll_align == "center" & roll_days_high %% 2 != 0 ~ DayofYear + ((roll_days_high - 1)/2)),
                                  Max_End = ifelse(Max_End > max(daily_stats$DayofYear), max(daily_stats$DayofYear), Max_End),
                                  Max_End = as.Date(Max_End, origin = origin_date))
   ann_peaks_max <- dplyr::filter(ann_peaks_max, Year == year_to_plot)
@@ -209,14 +219,14 @@ plot_annual_peaks_year <- function(data,
         {if(plot_normal_percentiles) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = "MIN", ymax = "MAX"),
                                                           alpha = 0.4, colour = "lightblue2", fill = "lightblue2", na.rm = FALSE) } +
         ggplot2::geom_line(ggplot2::aes(y = Value), size = 0.2, colour = "#264b96") +
-        {if(plot_lowflow & roll_days > 1) ggplot2::geom_rect(ggplot2::aes(xmin = Min_Start, xmax = Min_End, ymax =Inf, ymin=0), fill = low_col, alpha = 0.2) }+
-        {if(plot_highflow & roll_days > 1) ggplot2::geom_rect(ggplot2::aes(xmin = Max_Start, xmax = Max_End, ymax =Inf, ymin=0), fill = high_col, alpha = 0.2) }+
-        {if(plot_lowflow & roll_days > 1) ggplot2::geom_segment(ggplot2::aes(x = Min_Start, xend = Min_End, y = Min_Value, yend=Min_Value), colour = low_col, size = 1)}+
-        {if(plot_highflow & roll_days > 1) ggplot2::geom_segment(ggplot2::aes(x = Max_Start, xend = Max_End, y = Max_Value, yend=Max_Value), colour = high_col, size = 1)}+
+        {if(plot_lowflow & roll_days_low > 1) ggplot2::geom_rect(ggplot2::aes(xmin = Min_Start, xmax = Min_End, ymax =Inf, ymin=0), fill = low_col, alpha = 0.2) }+
+        {if(plot_highflow & roll_days_high > 1) ggplot2::geom_rect(ggplot2::aes(xmin = Max_Start, xmax = Max_End, ymax =Inf, ymin=0), fill = high_col, alpha = 0.2) }+
+        {if(plot_lowflow & roll_days_low > 1) ggplot2::geom_segment(ggplot2::aes(x = Min_Start, xend = Min_End, y = Min_Value, yend=Min_Value), colour = low_col, size = 1)}+
+        {if(plot_highflow & roll_days_high > 1) ggplot2::geom_segment(ggplot2::aes(x = Max_Start, xend = Max_End, y = Max_Value, yend=Max_Value), colour = high_col, size = 1)}+
         {if(plot_lowflow) ggplot2::geom_vline(data = dplyr::filter(., !is.na(Min_Value)), ggplot2::aes(xintercept = Min_Start), colour = low_col, size = 1)}+
-        {if(plot_lowflow & roll_days > 1) ggplot2::geom_vline(data = dplyr::filter(., !is.na(Min_Value)), ggplot2::aes(xintercept = Min_End), colour = low_col, size = 1)}+
+        {if(plot_lowflow & roll_days_low > 1) ggplot2::geom_vline(data = dplyr::filter(., !is.na(Min_Value)), ggplot2::aes(xintercept = Min_End), colour = low_col, size = 1)}+
         {if(plot_highflow) ggplot2::geom_vline(data = dplyr::filter(., !is.na(Max_Value)), ggplot2::aes(xintercept = Max_Start), colour = high_col, size = 1)}+
-        {if(plot_highflow & roll_days > 1) ggplot2::geom_vline(data = dplyr::filter(., !is.na(Max_Value)) ,ggplot2::aes(xintercept = Max_End), colour = high_col, size = 1)}+
+        {if(plot_highflow & roll_days_high > 1) ggplot2::geom_vline(data = dplyr::filter(., !is.na(Max_Value)) ,ggplot2::aes(xintercept = Max_End), colour = high_col, size = 1)}+
         {if(plot_lowflow) ggplot2::geom_point(ggplot2::aes(x= Date, y = Min_Value), size = 3.5, na.rm = TRUE, shape = 21, fill = low_col) }+
         {if(plot_highflow) ggplot2::geom_point(ggplot2::aes(x= Date, y = Max_Value), size = 3.5, na.rm = TRUE, shape = 21, fill = high_col) }+
         {if(!log_discharge) ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.05)),

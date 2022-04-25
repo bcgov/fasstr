@@ -115,7 +115,9 @@
           "Min_End",
           "Max_Doy",
           "Max_Start",
-          "Max_End")
+          "Max_End",
+          "RollingValue_High",
+          "RollingValue_Low")
       )
     invisible()
   }

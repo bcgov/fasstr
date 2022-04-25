@@ -12,6 +12,8 @@ plot_annual_peaks_year(
   station_number,
   year_to_plot = NA,
   roll_days = 1,
+  roll_days_low = NA,
+  roll_days_high = NA,
   roll_align = "right",
   water_year_start = 1,
   start_year,
@@ -52,6 +54,12 @@ Leave blank if using \code{data} argument.}
 \item{year_to_plot}{Numeric value indicating the year/water year to plot flow data with normal category colours. Default \code{NA}.}
 
 \item{roll_days}{Numeric value of the number of days to apply a rolling mean. Default \code{1}.}
+
+\item{roll_days_low}{Numeric value of the number of days to apply a rolling mean for low flows.  Will override 'roll_days' argument. 
+Default \code{NA}.}
+
+\item{roll_days_high}{Numeric value of the number of days to apply a rolling mean for high flows.  Will override 'roll_days' argument. 
+Default \code{NA}.}
 
 \item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
 (\code{'left'}), last (\code{'right'}), or middle (\code{'center'}) day of the rolling n-day group of observations. 

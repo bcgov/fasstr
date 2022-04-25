@@ -49,6 +49,8 @@ plot_annual_peaks <- function(data,
                               groups = STATION_NUMBER,
                               station_number,
                               roll_days = 1,
+                              roll_days_low = NA,
+                              roll_days_high = NA,
                               roll_align = "right",
                               water_year_start = 1,
                               start_year,
@@ -104,6 +106,8 @@ plot_annual_peaks <- function(data,
   
   peak_stats <- calc_annual_peaks(data = flow_data,
                                   roll_days = roll_days,
+                                  roll_days_low = roll_days_low,
+                                  roll_days_high = roll_days_high,
                                   roll_align = roll_align,
                                   water_year_start = water_year_start,
                                   start_year = start_year,
@@ -116,7 +120,7 @@ plot_annual_peaks <- function(data,
   
   # Remove all leading NA years
   peak_stats <- dplyr::filter(dplyr::group_by(peak_stats, STATION_NUMBER),
-                                Year >= Year[min(which(!is.na(.data[[names(peak_stats)[3]]])))])
+                              Year >= Year[min(which(!is.na(.data[[names(peak_stats)[3]]])))])
   
   # Gather data and plot the minimums day
   peak_doy <- dplyr::select(peak_stats, STATION_NUMBER, Year, dplyr::contains("DoY"))
@@ -135,11 +139,11 @@ plot_annual_peaks <- function(data,
   peak_values <- tidyr::gather(peak_values, Statistic, Value, -STATION_NUMBER, -Year)
   peak_values <- dplyr::mutate(peak_values, Statistic = factor(gsub("_"," ", paste0(gsub("_Day", "", Statistic), " Day")),
                                                                levels = rev(stat_levels)))
-
-
+  
+  
   ## PLOT STATS
   ## ----------
-
+  
   # Create axis label based on input columns
   y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (cubic metres)", #expression(Volume~(m^3))
                          ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)",
@@ -150,7 +154,7 @@ plot_annual_peaks <- function(data,
   
   colour_list <- c("dodgerblue2",
                    "orange")
-
+  
   # Create plots for each STATION_NUMBER in a tibble (see: http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/)
   doy_plots <- dplyr::group_by(peak_doy, STATION_NUMBER)
   doy_plots <- tidyr::nest(doy_plots)
@@ -181,7 +185,7 @@ plot_annual_peaks <- function(data,
                                         strip.background = ggplot2::element_blank(),
                                         strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
     ))
-
+  
   flow_plots <- dplyr::group_by(peak_values, STATION_NUMBER)
   flow_plots <- tidyr::nest(flow_plots)
   flow_plots <- dplyr::mutate(
@@ -212,12 +216,12 @@ plot_annual_peaks <- function(data,
                                         strip.background = ggplot2::element_blank(),
                                         strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
     ))
-
-
+  
+  
   # Create a list of named plots extracted from the tibble
   plots_1 <- flow_plots$plot
   plots_2 <- doy_plots$plot
-
+  
   if (nrow(flow_plots) == 1) {
     names(plots_1) <- "Annual_Peak_Flows"
     names(plots_2) <- "Annual_Peak_Flows_Dates"
@@ -225,14 +229,14 @@ plot_annual_peaks <- function(data,
     names(plots_1) <- paste0(flow_plots$STATION_NUMBER, "_Annual_Peak_Flows")
     names(plots_2) <- paste0(doy_plots$STATION_NUMBER, "_Annual_Peak_Flows_Dates")
   }
-
+  
   # Add the plots to the plot list
   plots <- c(plots_1, plots_2)
-
-
-
+  
+  
+  
   plots
-
+  
   
 }
 

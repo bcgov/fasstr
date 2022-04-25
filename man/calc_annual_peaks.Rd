@@ -11,6 +11,8 @@ calc_annual_peaks(
   groups = STATION_NUMBER,
   station_number,
   roll_days = 1,
+  roll_days_low = NA,
+  roll_days_high = NA,
   roll_align = "right",
   water_year_start = 1,
   start_year,
@@ -43,6 +45,12 @@ which to extract daily streamflow data from a HYDAT database. Requires \code{tid
 Leave blank if using \code{data} argument.}
 
 \item{roll_days}{Numeric value of the number of days to apply a rolling mean. Default \code{1}.}
+
+\item{roll_days_low}{Numeric value of the number of days to apply a rolling mean for low flows.  Will override 'roll_days' argument. 
+Default \code{NA}.}
+
+\item{roll_days_high}{Numeric value of the number of days to apply a rolling mean for high flows.  Will override 'roll_days' argument. 
+Default \code{NA}.}
 
 \item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
 (\code{'left'}), last (\code{'right'}), or middle (\code{'center'}) day of the rolling n-day group of observations. 
