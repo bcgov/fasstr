@@ -80,6 +80,8 @@ format_dates_col <- function(data,
   data
 }
 
+
+
 ## Check for values and proper formatting
 format_values_col <- function(data,
                               values = "Value"){
@@ -126,6 +128,7 @@ format_groups_col <- function(data,
 }
 
 ## Check for symbols and proper formatting
+
 format_symbols_col <- function(data,
                                symbols = "Symbol"){
   

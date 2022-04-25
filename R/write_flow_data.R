@@ -97,19 +97,13 @@ write_flow_data <- function(data,
   if (missing(file_name)) {
     file_name <- ""
   }
-
+  
   
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years = NULL)
   
-  if (class(try(as.Date(start_date))) == "try-error") stop("start_date must be a date formatted YYYY-MM-DD.", call. = FALSE)
-  if (class(try(as.Date(end_date))) == "try-error")   stop("end_date must be a date formatted YYYY-MM-DD.", call. = FALSE)
   if (start_date >= end_date)                         stop("start_date must be less than end_date.", call. = FALSE)
-  
   if (!is.logical(fill_missing))            stop("fill_missing argument must be logical (TRUE/FALSE).", call. = FALSE)
-  
-  
-  
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
@@ -140,7 +134,7 @@ write_flow_data <- function(data,
   
   flow_data <- add_date_variables(data = flow_data, water_year_start = water_year_start)
   
-
+  
   # Filter for the selected year (remove excluded years after)
   flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
   

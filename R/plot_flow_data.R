@@ -116,8 +116,6 @@ plot_flow_data <- function(data,
   logical_arg_check(include_title)
   months_checks(months)
   
-  if (class(try(as.Date(start_date))) == "try-error") stop("start_date must be a date formatted YYYY-MM-DD.", call. = FALSE)
-  if (class(try(as.Date(end_date))) == "try-error")   stop("end_date must be a date formatted YYYY-MM-DD.", call. = FALSE)
   if (start_date >= end_date)                         stop("start_date must be less than end_date.", call. = FALSE)
   
   if(!is.logical(plot_by_year))  stop("plot_by_year argument must be logical (TRUE/FALSE).")
