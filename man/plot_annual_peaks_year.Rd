@@ -20,6 +20,8 @@ plot_annual_peaks_year(
   end_year,
   exclude_years,
   months = 1:12,
+  months_low = NA,
+  months_high = NA,
   log_discharge = TRUE,
   log_ticks = FALSE,
   include_title = FALSE,
@@ -55,11 +57,11 @@ Leave blank if using \code{data} argument.}
 
 \item{roll_days}{Numeric value of the number of days to apply a rolling mean. Default \code{1}.}
 
-\item{roll_days_low}{Numeric value of the number of days to apply a rolling mean for low flows.  Will override 'roll_days' argument. 
-Default \code{NA}.}
+\item{roll_days_low}{Numeric value of the number of days to apply a rolling mean for low flows.  Will override 'roll_days' argument 
+for low flows. Default \code{NA}.}
 
-\item{roll_days_high}{Numeric value of the number of days to apply a rolling mean for high flows.  Will override 'roll_days' argument. 
-Default \code{NA}.}
+\item{roll_days_high}{Numeric value of the number of days to apply a rolling mean for high flows.  Will override 'roll_days' argument 
+for high flows. Default \code{NA}.}
 
 \item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
 (\code{'left'}), last (\code{'right'}), or middle (\code{'center'}) day of the rolling n-day group of observations. 
@@ -76,9 +78,15 @@ analysis. Default \code{1}.}
 
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank or set to \code{NULL} to include all years.}
 
-\item{months}{Numeric vector of months to include in analysis. For example, \code{3} for March, \code{6:8} for Jun-Aug or 
-\code{c(10:12,1)} for first four months (Oct-Jan) when \code{water_year_start = 10} (Oct). Default summarizes all 
-months (\code{1:12}).}
+\item{months}{Numeric vector of specific months to plot. For example, \code{3} for March, \code{6:8} for Jun-Aug.
+Will be overridden for low or high flow statistics if \code{months_low} or \code{months_high} set, but will still 
+define the date limits on the x-axis. Default plots all months (\code{1:12}).}
+
+\item{months_low}{Numeric vector of specified months for window of low flows (3 for March, 6:8 for Jun-Aug). Will override 'months' 
+argument for low flows. Default \code{NA}.}
+
+\item{months_high}{Numeric vector of specified months for window of high flows (3 for March, 6:8 for Jun-Aug). Will override 'months' 
+argument for high flows. Default \code{NA}.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
 

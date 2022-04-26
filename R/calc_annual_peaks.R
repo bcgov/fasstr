@@ -17,10 +17,14 @@
 #'    from a daily streamflow data set. Calculates statistics from all values, unless specified. Returns a tibble with statistics.
 #'
 #' @inheritParams calc_annual_stats
-#' @param roll_days_low Numeric value of the number of days to apply a rolling mean for low flows.  Will override 'roll_days' argument. 
-#'     Default \code{NA}.
-#' @param roll_days_high Numeric value of the number of days to apply a rolling mean for high flows.  Will override 'roll_days' argument. 
-#'     Default \code{NA}.
+#' @param roll_days_low Numeric value of the number of days to apply a rolling mean for low flows.  Will override 'roll_days' argument 
+#'     for low flows. Default \code{NA}.
+#' @param roll_days_high Numeric value of the number of days to apply a rolling mean for high flows.  Will override 'roll_days' argument 
+#'     for high flows. Default \code{NA}.
+#' @param months_low Numeric vector of specified months for window of low flows (3 for March, 6:8 for Jun-Aug). Will override 'months' 
+#'    argument for low flows. Default \code{NA}.
+#' @param months_high Numeric vector of specified months for window of high flows (3 for March, 6:8 for Jun-Aug). Will override 'months' 
+#'    argument for high flows. Default \code{NA}.
 #'    
 #' @return A tibble data frame with the following columns:
 #'   \item{Year}{calendar or water year selected}
@@ -72,6 +76,8 @@ calc_annual_peaks <- function(data,
                               end_year,
                               exclude_years, 
                               months = 1:12,
+                              months_low = NA,
+                              months_high = NA,
                               transpose = FALSE,
                               complete_years = FALSE,
                               ignore_missing = FALSE,
@@ -101,6 +107,12 @@ calc_annual_peaks <- function(data,
   }
   if (is.na(roll_days_high)) {
     roll_days_high <- roll_days
+  }
+  if (is.na(months_low[1])) {
+    months_low <- months
+  }
+  if (is.na(months_high[1])) {
+    months_high <- months
   }
   
   rolling_days_checks(roll_days, roll_align, multiple = FALSE)
@@ -170,16 +182,22 @@ calc_annual_peaks <- function(data,
   names(flow_data_temp)[names(flow_data_temp) == paste0("Q", roll_days_high, "Day")] <- "RollingValue_High"
   
   # Filter for selected months
-  flow_data_temp <- dplyr::filter(flow_data_temp, Month %in% months)
-  
+  peak_stats_temp_min <- dplyr::filter(flow_data_temp, Month %in% months_low)
   # Calculate the mins and dates
-  peak_stats_temp <- dplyr::summarize(dplyr::group_by(flow_data_temp, STATION_NUMBER, WaterYear),
-                                      MIN_VALUE = min(RollingValue_Low, na.rm = allowed_narm(RollingValue_Low, allowed_missing)),	     
-                                      MIN_DAY = ifelse(is.na(MIN_VALUE), NA, DayofYear[which(RollingValue_Low == MIN_VALUE)]),
-                                      MIN_DATE = ifelse(is.na(MIN_VALUE), NA, Date[which(RollingValue_Low == MIN_VALUE)]),
-                                      MAX_VALUE = max(RollingValue_High, na.rm = allowed_narm(RollingValue_High, allowed_missing)),	     
-                                      MAX_DAY = ifelse(is.na(MAX_VALUE), NA, DayofYear[which(RollingValue_High == MAX_VALUE)]),
-                                      MAX_DATE = ifelse(is.na(MAX_VALUE), NA, Date[which(RollingValue_High == MAX_VALUE)]))
+  peak_stats_temp_min <- dplyr::summarize(dplyr::group_by(peak_stats_temp_min, STATION_NUMBER, WaterYear),
+                                          MIN_VALUE = min(RollingValue_Low, na.rm = allowed_narm(RollingValue_Low, allowed_missing)),	     
+                                          MIN_DAY = ifelse(is.na(MIN_VALUE), NA, DayofYear[which(RollingValue_Low == MIN_VALUE)]),
+                                          MIN_DATE = ifelse(is.na(MIN_VALUE), NA, Date[which(RollingValue_Low == MIN_VALUE)]))
+  # Calculate the mins and dates
+  peak_stats_temp_max <- dplyr::filter(flow_data_temp, Month %in% months_high)
+  # Calculate the mins and dates
+  peak_stats_temp_max <- dplyr::summarize(dplyr::group_by(peak_stats_temp_max, STATION_NUMBER, WaterYear),
+                                          MAX_VALUE = max(RollingValue_High, na.rm = allowed_narm(RollingValue_High, allowed_missing)),	     
+                                          MAX_DAY = ifelse(is.na(MAX_VALUE), NA, DayofYear[which(RollingValue_High == MAX_VALUE)]),
+                                          MAX_DATE = ifelse(is.na(MAX_VALUE), NA, Date[which(RollingValue_High == MAX_VALUE)]))
+  peak_stats_temp <- dplyr::left_join(peak_stats_temp_min, peak_stats_temp_max, by = c("STATION_NUMBER", "WaterYear"))
+
+
   class(peak_stats_temp$MIN_DATE) <- "Date" # fixes ifelse and date issue
   class(peak_stats_temp$MAX_DATE) <- "Date" # fixes ifelse and date issue
   names(peak_stats_temp)[names(peak_stats_temp) == "MIN_VALUE"] <- paste0("Min_", roll_days_low, "_Day")
@@ -188,32 +206,32 @@ calc_annual_peaks <- function(data,
   names(peak_stats_temp)[names(peak_stats_temp) == "MAX_VALUE"] <- paste0("Max_", roll_days_high, "_Day")
   names(peak_stats_temp)[names(peak_stats_temp) == "MAX_DAY"] <- paste0("Max_", roll_days_high, "_Day_DoY")
   names(peak_stats_temp)[names(peak_stats_temp) == "MAX_DATE"] <- paste0("Max_", roll_days_high, "_Day_Date")
-  
+
   peak_stats <- merge(peak_stats, peak_stats_temp, by = c("STATION_NUMBER", "WaterYear"), all = TRUE)
-  
+
   peak_stats <-   dplyr::rename(peak_stats, Year = WaterYear)
-  
+
   # Filter for start and end years and make excluded years data NA
   peak_stats <- subset(peak_stats, Year >= start_year & Year <= end_year)
   peak_stats[peak_stats$Year %in% exclude_years, -(1:2)] <- NA
-  
-  
+
+
   # If transpose if selected, switch columns and rows
   if (transpose) {
-    
+
     # Remove the dates
     peak_stats <- dplyr::select(peak_stats, STATION_NUMBER, Year, dplyr::contains("Day"), -dplyr::contains("Date"))
-    
+
     # Get list of columns to order the Statistic column after transposing
     stat_levels <- names(peak_stats[-(1:2)])
     peak_stats <- tidyr::gather(peak_stats, Statistic, Value, -STATION_NUMBER, -Year)
     peak_stats <- tidyr::spread(peak_stats, Year, Value)
-    
+
     # Order the columns
     peak_stats$Statistic <- factor(peak_stats$Statistic, levels = stat_levels)
     peak_stats <- dplyr::arrange(peak_stats, STATION_NUMBER, Statistic)
   }
-  
+
   # Give warning if any NA values
   if (!transpose) {
     missing_test <- dplyr::filter(peak_stats, !(Year %in% exclude_years))
@@ -222,16 +240,16 @@ calc_annual_peaks <- function(data,
     missing_test <- dplyr::select(peak_stats, -dplyr::one_of(as.character(exclude_years)))
     missing_values_warning(missing_test[, 3:ncol(missing_test)])
   }
-  
-  
+
+
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
   if(as.character(substitute(groups)) %in% orig_cols) {
     names(peak_stats)[names(peak_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))
   } else {
     peak_stats <- dplyr::select(peak_stats, -STATION_NUMBER)
   }
-  
+
   dplyr::as_tibble(peak_stats)
-  
+
 }
 

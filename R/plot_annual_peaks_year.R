@@ -23,6 +23,9 @@
 #' @inheritParams plot_annual_normal_days_year
 #' @param plot_lowflow Logical value indicating whether to plot annual low flows. Default \code{TRUE}.
 #' @param plot_highflow Logical value indicating whether to plot annual high flows. Default \code{TRUE}.
+#' @param months Numeric vector of specific months to plot. For example, \code{3} for March, \code{6:8} for Jun-Aug.
+#'    Will be overridden for low or high flow statistics if \code{months_low} or \code{months_high} set, but will still 
+#'    define the date limits on the x-axis. Default plots all months (\code{1:12}).
 #'
 #' @return A list of ggplot2 objects with the following for each station provided:
 #'   \item{Annual_Peaks_Year}{a plot that contains the an annual hydrograph and identified low and high flow periods}
@@ -57,6 +60,8 @@ plot_annual_peaks_year <- function(data,
                                    end_year,
                                    exclude_years,
                                    months = 1:12,
+                                   months_low = NA,
+                                   months_high = NA,
                                    log_discharge = TRUE,
                                    log_ticks = FALSE,
                                    include_title = FALSE,
@@ -149,6 +154,8 @@ plot_annual_peaks_year <- function(data,
                                  end_year = end_year,
                                  exclude_years = exclude_years, 
                                  months = months,
+                                 months_low = months_low,
+                                 months_high = months_high,
                                  roll_days = roll_days,
                                  roll_days_low = roll_days_low,
                                  roll_days_high = roll_days_high,
