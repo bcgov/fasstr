@@ -218,11 +218,15 @@ plot_annual_peaks_year <- function(data,
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Date)) +
         {if(plot_normal_percentiles) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = "MIN", ymax = "MAX"),
                                                           alpha = 0.4, colour = "lightblue2", fill = "lightblue2", na.rm = FALSE) } +
-        ggplot2::geom_line(ggplot2::aes(y = Value), size = 0.2, colour = "#264b96") +
-        {if(plot_lowflow & roll_days_low > 1) ggplot2::geom_rect(ggplot2::aes(xmin = Min_Start, xmax = Min_End, ymax =Inf, ymin=0), fill = low_col, alpha = 0.2) }+
-        {if(plot_highflow & roll_days_high > 1) ggplot2::geom_rect(ggplot2::aes(xmin = Max_Start, xmax = Max_End, ymax =Inf, ymin=0), fill = high_col, alpha = 0.2) }+
-        {if(plot_lowflow & roll_days_low > 1) ggplot2::geom_segment(ggplot2::aes(x = Min_Start, xend = Min_End, y = Min_Value, yend=Min_Value), colour = low_col, size = 1)}+
-        {if(plot_highflow & roll_days_high > 1) ggplot2::geom_segment(ggplot2::aes(x = Max_Start, xend = Max_End, y = Max_Value, yend=Max_Value), colour = high_col, size = 1)}+
+        ggplot2::geom_line(ggplot2::aes(y = Value), size = 0.2, colour = "#264b96", na.rm = TRUE) +
+        {if(plot_lowflow & roll_days_low > 1) ggplot2::geom_rect(ggplot2::aes(xmin = Min_Start, xmax = Min_End, ymax =Inf, ymin=0), 
+                                                                 fill = low_col, alpha = 0.2, na.rm = TRUE) }+
+        {if(plot_highflow & roll_days_high > 1) ggplot2::geom_rect(ggplot2::aes(xmin = Max_Start, xmax = Max_End, ymax =Inf, ymin=0), 
+                                                                   fill = high_col, alpha = 0.2, na.rm = TRUE) }+
+        {if(plot_lowflow & roll_days_low > 1) ggplot2::geom_segment(ggplot2::aes(x = Min_Start, xend = Min_End, y = Min_Value, yend=Min_Value), 
+                                                                    colour = low_col, size = 1, na.rm = TRUE)}+
+        {if(plot_highflow & roll_days_high > 1) ggplot2::geom_segment(ggplot2::aes(x = Max_Start, xend = Max_End, y = Max_Value, yend=Max_Value), 
+                                                                      colour = high_col, size = 1, na.rm = TRUE)}+
         {if(plot_lowflow) ggplot2::geom_vline(data = dplyr::filter(., !is.na(Min_Value)), ggplot2::aes(xintercept = Min_Start), colour = low_col, size = 1)}+
         {if(plot_lowflow & roll_days_low > 1) ggplot2::geom_vline(data = dplyr::filter(., !is.na(Min_Value)), ggplot2::aes(xintercept = Min_End), colour = low_col, size = 1)}+
         {if(plot_highflow) ggplot2::geom_vline(data = dplyr::filter(., !is.na(Max_Value)), ggplot2::aes(xintercept = Max_Start), colour = high_col, size = 1)}+
