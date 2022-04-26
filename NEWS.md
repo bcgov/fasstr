@@ -1,7 +1,7 @@
 fasstr 0.5.0
 =========================
 
-Updated: 21 Apr 2022
+Updated: 26 Apr 2022
 
 ### New functions:
 
@@ -21,8 +21,9 @@ Updated: 21 Apr 2022
   * plot_missing_data() - new default plot type in tile format. Can change to original bar plot using plot_type = "bar".
   * plot_data_screening() - now changes the geom_point style based on if data is complete or has missing data (plot_availability argument) and now allows choice of annual summary statistics (include_stats argument)
   * screen_flow_data() - now add columns of counts of symbol categories provided by symbol column (HYDAT Symbol column). Can remove columns by using include_symbols = FALSE.
-    * plot_annual_cumulative_stats() - new default plot type in bar format. Can change to original line plot using plot_type = "line".
-    * calc_annual_outside_normal() and plot_annual_outside_normal() - deprecated, replaced with calc_annual_normal_days() and plot_annual_normal_days()
+  * calc_annual_peaks() - now includes custom roll_days and months arguments for both high and low flows.
+  * plot_annual_cumulative_stats() - new default plot type in bar format. Can change to original line plot using plot_type = "line".
+  * calc_annual_outside_normal() and plot_annual_outside_normal() - deprecated, replaced with calc_annual_normal_days() and plot_annual_normal_days()
   
 ### Other updates:
   
