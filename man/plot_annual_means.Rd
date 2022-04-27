@@ -21,7 +21,7 @@ plot_annual_means(
   ignore_missing = FALSE,
   allowed_missing = ifelse(ignore_missing, 100, 0),
   include_title = FALSE,
-  percentiles = c(10, 90)
+  percentiles_mad = c(10, 90)
 )
 }
 \arguments{
@@ -77,7 +77,7 @@ if \code{'ignore_missing = TRUE'} then it defaults to \code{100} (any missing da
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 
-\item{percentiles}{Numeric vector of percentiles of annual means to plot, up to two values. Set to \code{NA} if none required. 
+\item{percentiles_mad}{Numeric vector of percentiles of annual means to plot, up to two values. Set to \code{NA} if none required. 
 Default \code{c(10,90)}.}
 }
 \value{

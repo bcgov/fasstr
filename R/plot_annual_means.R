@@ -18,7 +18,7 @@
 #'
 #' @inheritParams calc_annual_stats
 #' @param include_title Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.
-#' @param percentiles Numeric vector of percentiles of annual means to plot, up to two values. Set to \code{NA} if none required. 
+#' @param percentiles_mad Numeric vector of percentiles of annual means to plot, up to two values. Set to \code{NA} if none required. 
 #'     Default \code{c(10,90)}.
 #'
 #' @return A list of ggplot2 objects for with the following plots for each station provided:
@@ -57,7 +57,7 @@ plot_annual_means <- function(data,
                               ignore_missing = FALSE,
                               allowed_missing = ifelse(ignore_missing,100,0),
                               include_title = FALSE,
-                              percentiles = c(10,90)){ 
+                              percentiles_mad = c(10,90)){ 
   
   ## ARGUMENT CHECKS
   ## ---------------
@@ -79,8 +79,8 @@ plot_annual_means <- function(data,
   }
   
   logical_arg_check(include_title)
-  percentiles <- sort(percentiles[1:2])
-  numeric_range_checks(percentiles)
+  percentiles_mad <- sort(percentiles_mad[1:2])
+  numeric_range_checks(percentiles_mad)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -121,8 +121,8 @@ plot_annual_means <- function(data,
   lt_mad <- dplyr::group_by(annual_stats, STATION_NUMBER)
   lt_mad <- dplyr::summarise(lt_mad, 
                              LTMAD = mean(Mean, na.rm = TRUE),
-                             Ptile1 = quantile(Mean, probs = percentiles[1]/100, na.rm=TRUE),
-                             Ptile2 = quantile(Mean, probs = percentiles[2]/100, na.rm=TRUE))
+                             Ptile1 = quantile(Mean, probs = percentiles_mad[1]/100, na.rm=TRUE),
+                             Ptile2 = quantile(Mean, probs = percentiles_mad[2]/100, na.rm=TRUE))
   
   annual_stats <- dplyr::left_join(annual_stats, lt_mad, by = "STATION_NUMBER")
   annual_stats <- dplyr::mutate(annual_stats, 
@@ -146,11 +146,11 @@ plot_annual_means <- function(data,
   #   names(cols) <- c(low_lab)
   # }
   
-  if (all(is.na(percentiles))) {
+  if (all(is.na(percentiles_mad))) {
     ptile_cols <- c("Long-term MAD" = 1)
   } else {
-    ptile_lab <- ifelse(any(is.na(percentiles)), paste0("MAD P",percentiles[!is.na(percentiles)]),
-                        paste0("MAD P", paste0(percentiles, collapse = " and ")))
+    ptile_lab <- ifelse(any(is.na(percentiles_mad)), paste0("MAD P",percentiles_mad[!is.na(percentiles_mad)]),
+                        paste0("MAD ", paste0("P",percentiles_mad, collapse = " and ")))
     ptile_cols <- c(1,2)
     names(ptile_cols) <- c("Long-term MAD",ptile_lab)
   }
