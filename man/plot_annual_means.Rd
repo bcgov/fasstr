@@ -20,7 +20,8 @@ plot_annual_means(
   complete_years = FALSE,
   ignore_missing = FALSE,
   allowed_missing = ifelse(ignore_missing, 100, 0),
-  include_title = FALSE
+  include_title = FALSE,
+  percentiles = c(10, 90)
 )
 }
 \arguments{
@@ -75,6 +76,9 @@ if \code{'ignore_missing = TRUE'} then it defaults to \code{100} (any missing da
 \code{ignore_missing} usage. Supersedes \code{ignore_missing} when used.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
+
+\item{percentiles}{Numeric vector of percentiles of annual means to plot, up to two values. Set to \code{NA} if none required. 
+Default \code{c(10,90)}.}
 }
 \value{
 A list of ggplot2 objects for with the following plots for each station provided:

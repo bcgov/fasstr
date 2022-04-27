@@ -18,6 +18,8 @@
 #'
 #' @inheritParams calc_annual_stats
 #' @param include_title Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.
+#' @param percentiles Numeric vector of percentiles of annual means to plot, up to two values. Set to \code{NA} if none required. 
+#'     Default \code{c(10,90)}.
 #'
 #' @return A list of ggplot2 objects for with the following plots for each station provided:
 #'   \item{Annual_Means}{a plot that contains annual means with the long-term mean as the x-axis intercept}
@@ -54,7 +56,8 @@ plot_annual_means <- function(data,
                               complete_years = FALSE,
                               ignore_missing = FALSE,
                               allowed_missing = ifelse(ignore_missing,100,0),
-                              include_title = FALSE){ 
+                              include_title = FALSE,
+                              percentiles = c(10,90)){ 
   
   ## ARGUMENT CHECKS
   ## ---------------
@@ -76,6 +79,8 @@ plot_annual_means <- function(data,
   }
   
   logical_arg_check(include_title)
+  percentiles <- sort(percentiles[1:2])
+  numeric_range_checks(percentiles)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -114,7 +119,10 @@ plot_annual_means <- function(data,
   annual_stats <- dplyr::select(annual_stats, STATION_NUMBER, Year, Mean)
   
   lt_mad <- dplyr::group_by(annual_stats, STATION_NUMBER)
-  lt_mad <- dplyr::summarise(lt_mad, LTMAD = mean(Mean, na.rm = TRUE))
+  lt_mad <- dplyr::summarise(lt_mad, 
+                             LTMAD = mean(Mean, na.rm = TRUE),
+                             Ptile1 = quantile(Mean, probs = percentiles[1]/100, na.rm=TRUE),
+                             Ptile2 = quantile(Mean, probs = percentiles[2]/100, na.rm=TRUE))
   
   annual_stats <- dplyr::left_join(annual_stats, lt_mad, by = "STATION_NUMBER")
   annual_stats <- dplyr::mutate(annual_stats, 
@@ -133,8 +141,9 @@ plot_annual_means <- function(data,
     plot = purrr::map2(data, STATION_NUMBER,
                        ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = MAD_diff)) +
                          ggplot2::geom_bar(stat = "identity", fill = "#2A788EFF", na.rm = TRUE, colour = "black", width = 1) +
-                         ggplot2::geom_hline(yintercept = 0, size = 0.1) +
-                         ggplot2::scale_y_continuous(labels = function(x) round(x + unique(.$LTMAD),3),
+                         ggplot2::geom_hline(yintercept = unique(.$Ptile1) - unique(.$LTMAD), size = 0.5, linetype = 2, alpha = 0.7, na.rm = TRUE) +
+                         ggplot2::geom_hline(yintercept = unique(.$Ptile2) - unique(.$LTMAD), size = 0.5, linetype = 2, alpha = 0.7, na.rm = TRUE) +
+                         ggplot2::geom_hline(yintercept = 0, size = 0.5) +                         ggplot2::scale_y_continuous(labels = function(x) round(x + unique(.$LTMAD),3),
                                                      breaks = scales::pretty_breaks(n = 10)) +
                          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
                          {if(length(unique(annual_stats$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(annual_stats$Year))}+
