@@ -163,11 +163,11 @@ plot_annual_means <- function(data,
     plot = purrr::map2(
       data, STATION_NUMBER,
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = MAD_diff)) +
+        {if(!all(is.na(percentiles_mad))) ggplot2::geom_hline(size = 0.5, alpha = 0.7, na.rm = TRUE,
+                            mapping = ggplot2::aes(yintercept = unique(Ptile1) - unique(LTMAD), linetype = ptile_lab)) }+
+            {if(!all(is.na(percentiles_mad))) ggplot2::geom_hline(size = 0.5, alpha = 0.7, na.rm = TRUE,
+                            mapping = ggplot2::aes(yintercept = unique(Ptile2) - unique(LTMAD), linetype = ptile_lab)) }+
         ggplot2::geom_bar(stat = "identity", mapping = ggplot2::aes(fill = "MAD Difference"), na.rm = TRUE, colour = "black", width = 1) +
-        ggplot2::geom_hline(size = 0.5, alpha = 0.7, na.rm = TRUE,
-                            mapping = ggplot2::aes(yintercept = unique(Ptile1) - unique(LTMAD), linetype = ptile_lab)) +
-        ggplot2::geom_hline(size = 0.5, alpha = 0.7, na.rm = TRUE,
-                            mapping = ggplot2::aes(yintercept = unique(Ptile2) - unique(LTMAD), linetype = ptile_lab)) +
         ggplot2::geom_hline(size = 0.5, mapping = ggplot2::aes(yintercept = 0, linetype = "Long-term MAD")) +                         
         ggplot2::scale_y_continuous(labels = function(x) round(x + unique(.$LTMAD),3),
                                     breaks = scales::pretty_breaks(n = 10)) +

@@ -1,7 +1,7 @@
 fasstr 0.5.0
 =========================
 
-Updated: 26 Apr 2022
+Updated: 27 Apr 2022
 
 ### New functions:
 
@@ -24,6 +24,7 @@ Updated: 26 Apr 2022
   * calc_annual_peaks() - now includes custom roll_days and months arguments for both high and low flows.
   * plot_annual_cumulative_stats() - new default plot type in bar format. Can change to original line plot using plot_type = "line".
   * calc_annual_outside_normal() and plot_annual_outside_normal() - deprecated, replaced with calc_annual_normal_days() and plot_annual_normal_days()
+  * plot_annual_means() - added 2 percentile (of annual means) lines to plot, added legend
   
 ### Other updates:
   
