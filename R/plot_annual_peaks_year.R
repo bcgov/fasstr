@@ -214,7 +214,19 @@ plot_annual_peaks_year <- function(data,
   
   high_col <- "dodgerblue2" #"#440154FF" #
   low_col <- "orange" #"#FDE725FF" #
-  
+  high_lab <- paste0(roll_days_high,"-day Maximum") #"#440154FF" #
+  low_lab <- paste0(roll_days_low,"-day Minimum") #"#440154FF" #
+  if (plot_lowflow & plot_highflow) {
+    cols <- c(low_col,high_col)
+    names(cols) <- c(low_lab, high_lab)
+  } else if (!plot_lowflow & plot_highflow) {
+    cols <- c(high_col)
+    names(cols) <- c(high_lab)
+  } else if (plot_lowflow & !plot_highflow) {
+    cols <- c(low_col)
+    names(cols) <- c(low_lab)
+  }
+
   # Create the daily stats plots
   timing_plots <- dplyr::group_by(ann_peaks, STATION_NUMBER)
   timing_plots <- tidyr::nest(timing_plots)
@@ -238,8 +250,8 @@ plot_annual_peaks_year <- function(data,
         {if(plot_lowflow & roll_days_low > 1) ggplot2::geom_vline(data = dplyr::filter(., !is.na(Min_Value)), ggplot2::aes(xintercept = Min_End), colour = low_col, size = 1)}+
         {if(plot_highflow) ggplot2::geom_vline(data = dplyr::filter(., !is.na(Max_Value)), ggplot2::aes(xintercept = Max_Start), colour = high_col, size = 1)}+
         {if(plot_highflow & roll_days_high > 1) ggplot2::geom_vline(data = dplyr::filter(., !is.na(Max_Value)) ,ggplot2::aes(xintercept = Max_End), colour = high_col, size = 1)}+
-        {if(plot_lowflow) ggplot2::geom_point(ggplot2::aes(x= Date, y = Min_Value), size = 3.5, na.rm = TRUE, shape = 21, fill = low_col) }+
-        {if(plot_highflow) ggplot2::geom_point(ggplot2::aes(x= Date, y = Max_Value), size = 3.5, na.rm = TRUE, shape = 21, fill = high_col) }+
+        {if(plot_lowflow) ggplot2::geom_point(ggplot2::aes(x= Date, y = Min_Value, fill = low_lab), size = 3.5, na.rm = TRUE, shape = 21) }+
+        {if(plot_highflow) ggplot2::geom_point(ggplot2::aes(x= Date, y = Max_Value, fill = high_lab), size = 3.5, na.rm = TRUE, shape = 21) }+
         {if(!log_discharge) ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.05)),
                                                         breaks = scales::pretty_breaks(n = 8),
                                                         labels = scales::label_number(scale_cut = scales::cut_short_scale()))}+
@@ -252,6 +264,9 @@ plot_annual_peaks_year <- function(data,
                               limits = as.Date(c(as.character(min(daily_stats$AnalysisDate, na.rm = TRUE)),
                                                  as.character(max(daily_stats$AnalysisDate, na.rm = TRUE)))),
                               expand = c(0,0)) +
+        ggplot2::scale_fill_manual(values = cols, name = paste0("Annual Peak\nfor ",
+                                                                ifelse(water_year_start == 1,"Year ","Water Year "),
+                                                                year_to_plot ))+
         ggplot2::xlab("Day of Year") +
         ggplot2::ylab(y_axis_title) +
         {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
