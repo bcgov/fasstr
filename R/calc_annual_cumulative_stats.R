@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Calculate annual (and seasonal) cumulative flows
+#' @title Calculate annual (and seasonal) total cumulative flows
 #' 
 #' @description Calculates annual and seasonal total flows, as volumetric discharge or water yields, from a daily streamflow data set.
 #'    For water year and seasonal data, the year is identified by the year in which the year or season ends. Two-seasons and 

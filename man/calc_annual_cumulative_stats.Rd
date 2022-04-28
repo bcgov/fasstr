@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_annual_cumulative_stats.R
 \name{calc_annual_cumulative_stats}
 \alias{calc_annual_cumulative_stats}
-\title{Calculate annual (and seasonal) cumulative flows}
+\title{Calculate annual (and seasonal) total cumulative flows}
 \usage{
 calc_annual_cumulative_stats(
   data,

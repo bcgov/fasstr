@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Plot annual (and seasonal) cumulative flows
+#' @title Plot annual (and seasonal) total cumulative flows
 #' 
 #' @description Plots annual and seasonal (if \code{include_seaons = TRUE}) total flows, volumetric discharge or water yields, from a 
 #'    daily streamflow data set. Calculates statistics from all values, unless specified. Data calculated from 
