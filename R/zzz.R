@@ -117,7 +117,9 @@
           "Max_Start",
           "Max_End",
           "RollingValue_High",
-          "RollingValue_Low")
+          "RollingValue_Low",
+          "n_na",
+          "data")
       )
     invisible()
   }

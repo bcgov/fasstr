@@ -46,6 +46,7 @@ Updated: 28 Apr 2022
   * cleaning up argument check functions (logical, numeric etc)
   * new origin_date internal function
   * new filter_complete_yrs arg option (keep_all) to keep all years of data, just setting NA if incomplete
+  * new complete_years fns to get lists of years and start/end/exclude years
   
   
   

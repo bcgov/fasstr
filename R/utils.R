@@ -262,6 +262,39 @@ filter_complete_yrs_val <- function(complete_years, flow_data, keep_all = FALSE)
   flow_data
 }
 
+# Fn to get lists of incomplete/complete years from data
+get_complete_years <- function(flow_data, water_year_start = 1, months = 1:12) {
+  data1 <- add_date_variables(flow_data, water_year_start = water_year_start)
+  all_data_years <- unique(data1$WaterYear)
+  data1 <- fill_missing_dates(data1, water_year_start = water_year_start)
+  data1 <- add_date_variables(data1, water_year_start = water_year_start)
+  data1 <- dplyr::filter(data1, Month %in% months)
+  data1 <- dplyr::summarise(dplyr::group_by(data1, WaterYear),
+                            n_na = sum(is.na(Value)), .groups = "keep")
+  complete_years <- dplyr::filter(data1, n_na == 0)
+  complete_years <- dplyr::pull(complete_years, WaterYear)
+  incomplete_years <- dplyr::filter(data1, n_na > 0)
+  incomplete_years <- dplyr::pull(incomplete_years, WaterYear)
+  
+  list(complete_years = complete_years,
+       incomplete_years = incomplete_years,
+       data_years = all_data_years)
+}
+
+complete_years_vars <- function(flow_data, water_year_start = 1, months = 1:12) {
+  cmplt_years <- get_complete_years(flow_data, water_year_start, months)
+  start_year <- min(cmplt_years$complete_years)
+  end_year <- max(cmplt_years$complete_years)
+  exclude_years <- cmplt_years$incomplete_years
+  exclude_years <- exclude_years[exclude_years %in% cmplt_years$data_years]
+  exclude_years <- exclude_years[exclude_years > start_year]
+  exclude_years <- exclude_years[exclude_years < end_year]
+  list(start_year = start_year,
+       end_year = end_year,
+       exclude_years = exclude_years,
+       complete_years = cmplt_years$complete_years)
+}
+
 ## add water year months (reorders the months to the start of the water year)
 add_water_months <- function(data, water_year_start){
   
