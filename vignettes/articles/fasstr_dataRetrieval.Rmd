@@ -131,7 +131,7 @@ names(usgs_data)[names(usgs_data) == 'X_00060_00003'] <- 'Value'
 usgs_data$Value <- usgs_data$Value * cfs_to_cms
 
 # Use a fasstr function
-calc_annual_peaks(usgs_data)
+calc_annual_extremes(usgs_data)
 ```
 
 and using `dplyr` and pipelines:
@@ -154,7 +154,7 @@ usgs_data <- readNWISdv(siteNumbers = c("12043300", "12048000"),
   mutate(Value = Value * cfs_to_cms)
 
 # Use a fasstr function
-calc_annual_peaks(usgs_data)
+calc_annual_extremes(usgs_data)
 ```
 
 ### Getting and converting drainage basin areas

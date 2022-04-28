@@ -80,7 +80,8 @@ reference:
   - plot_annual_flow_timing
   - calc_annual_lowflows
   - plot_annual_lowflows
-  - calc_annual_peaks
+  - calc_annual_extremes
+  - plot_annual_extremes
   - calc_annual_normal_days
   - plot_annual_normal_days
   - calc_all_annual_stats

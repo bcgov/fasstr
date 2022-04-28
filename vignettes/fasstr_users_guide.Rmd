@@ -657,7 +657,7 @@ Beside the basic summary statistics, there are other useful statistics for inter
 
 - `calc_annual_flow_timing()` - calculate annual flow timing
 - `calc_annual_lowflows()` - calculate annual low flow values and dates
-- `calc_annual_peaks()` - calculate annual low and high flow values and dates
+- `calc_annual_extremes()` - calculate annual low and high flow values and dates
 - `calc_annual_normal_days()` - calculate annual normal days and days above and below normal
 - `calc_all_annual_stats()` - calculate all `fasstr` annual statistics
 

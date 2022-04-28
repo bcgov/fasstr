@@ -1,7 +1,7 @@
 fasstr 0.5.0
 =========================
 
-Updated: 27 Apr 2022
+Updated: 28 Apr 2022
 
 ### New functions:
 
@@ -10,8 +10,9 @@ Updated: 27 Apr 2022
   * plot_annual_stats2() - plotting annual stats in ribbons (similar to plot_daily_stats)
   * plot_monthly_stats2() - plotting faceted monthly stats in ribbons (similar to plot_daily_stats)
   * calc_annual_highflows() and plot_annual_highflows() - calcs/plots annual high flow data, similar to _annual_lowflow() functions
-  * plot_annual_peaks() - plots the values and dates from annual minimums and maximums for each year, from calc_annual_peaks()
-  * plot_annual_peaks_year() - plots the values and dates from annual minimums and maximums fora given year
+  * calc_annual_extremes() - plots the values and dates from annual minimums and maximums for each year, replacing calc_annual_peaks()
+  * plot_annual_extremes() - plots the values and dates from annual minimums and maximums for each year, from calc_annual_extremes()
+  * plot_annual_extremes_year() - plots the values and dates from annual minimums and maximums fora given year
   * calc_annual_normal_days() and plot_annual_normal_days() - counts number of normal and above/below normal days - replaced deprecated _annual_outside_normal() functions
   * plot_annual_normal_days_year - plot days above normal, below normal and normal for a specific year
   * plot_annual_flow_timing_year - plot annual timing of flows for a specific year
@@ -21,10 +22,10 @@ Updated: 27 Apr 2022
   * plot_missing_data() - new default plot type in tile format. Can change to original bar plot using plot_type = "bar".
   * plot_data_screening() - now changes the geom_point style based on if data is complete or has missing data (plot_availability argument) and now allows choice of annual summary statistics (include_stats argument)
   * screen_flow_data() - now add columns of counts of symbol categories provided by symbol column (HYDAT Symbol column). Can remove columns by using include_symbols = FALSE.
-  * calc_annual_peaks() - now includes custom roll_days and months arguments for both high and low flows.
+  * plot_annual_means() - added 2 percentile (of annual means) lines to plot, added legend
+  * calc_annual_peaks() - deprecated, replaced with calc_annual_extremes()
   * plot_annual_cumulative_stats() - new default plot type in bar format. Can change to original line plot using plot_type = "line".
   * calc_annual_outside_normal() and plot_annual_outside_normal() - deprecated, replaced with calc_annual_normal_days() and plot_annual_normal_days()
-  * plot_annual_means() - added 2 percentile (of annual means) lines to plot, added legend
   
 ### Other updates:
   

@@ -48,21 +48,21 @@
 #' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
 #' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Calculate annual 1-day (default) peak flow data with 
+#' # Calculate annual 1-day (default) max/min flow data with 
 #' # default alignment ('right')
-#' calc_annual_peaks(station_number = "08NM116") 
+#' calc_annual_extremes(station_number = "08NM116") 
 #' 
-#' # Calculate custom 3-day peak flow data with 'center' alignment
-#' calc_annual_peaks(station_number = "08NM116",
-#'                   roll_days = 3,
-#'                   roll_align = "center")
+#' # Calculate custom 3-day max/min flow data with 'center' alignment
+#' calc_annual_extremes(station_number = "08NM116",
+#'                      roll_days = 3,
+#'                      roll_align = "center")
 #'                      
 #' }
 #' @export
 
 
 
-calc_annual_peaks <- function(data,
+calc_annual_extremes <- function(data,
                               dates = Date,
                               values = Value,
                               groups = STATION_NUMBER,
@@ -82,8 +82,6 @@ calc_annual_peaks <- function(data,
                               complete_years = FALSE,
                               ignore_missing = FALSE,
                               allowed_missing = ifelse(ignore_missing,100,0)){
-  
-  message("calc_annual_peaks() is deprecated. See calc_annual_peaks() for replacement.")
   
   
   ## ARGUMENT CHECKS

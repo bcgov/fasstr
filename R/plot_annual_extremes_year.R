@@ -14,11 +14,11 @@
 #'
 #' @description Plots an annual hydrograph for a specific year with the values and timing of annual n-day low and high flows.
 #'    The 'normal' range of percentiles also plotted for reference and are calculated from only years of complete data. 
-#'    Shows the values and dates of peaks for a specific year from the \code{calc_annual_peaks()} and
-#'    \code{plot_annual_peaks()} functions. Can remove either low or high flows using \code{plot_lowflow = FALSE()} or 
+#'    Shows the values and dates of max/mins for a specific year from the \code{calc_annual_extremes()} and
+#'    \code{plot_annual_extremes()} functions. Can remove either low or high flows using \code{plot_lowflow = FALSE()} or 
 #'    \code{plot_highflow = FALSE()}, respectively. Returns a list of plots.
 #'
-#' @inheritParams calc_annual_peaks
+#' @inheritParams calc_annual_extremes
 #' @inheritParams plot_annual_stats
 #' @inheritParams plot_annual_normal_days_year
 #' @param plot_lowflow Logical value indicating whether to plot annual low flows. Default \code{TRUE}.
@@ -28,24 +28,24 @@
 #'    define the date limits on the x-axis. Default plots all months (\code{1:12}).
 #'
 #' @return A list of ggplot2 objects with the following for each station provided:
-#'   \item{Annual_Peaks_Year}{a plot that contains the an annual hydrograph and identified low and high flow periods}
+#'   \item{Annual_Extremes_Year}{a plot that contains the an annual hydrograph and identified low and high flow periods}
 #'   
-#' @seealso \code{\link{calc_annual_peaks}}
-#' @seealso \code{\link{plot_annual_peaks}}
+#' @seealso \code{\link{calc_annual_extremes}}
+#' @seealso \code{\link{plot_annual_extremes}}
 #'   
 #' @examples
 #' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
 #' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Plot the year 2000 and change the flow timing percent totals        
-#' plot_annual_peaks_year(station_number = "08NM116",
-#'                        year_to_plot = 2000)
+#' # Plot the year 2000 with the annual maximum and minimums       
+#' plot_annual_extremes_year(station_number = "08NM116",
+#'                           year_to_plot = 2000)
 #'                  
 #' }
 #' @export
 
 
-plot_annual_peaks_year <- function(data,
+plot_annual_extremes_year <- function(data,
                                    dates = Date,
                                    values = Value,
                                    groups = STATION_NUMBER,
@@ -148,7 +148,7 @@ plot_annual_peaks_year <- function(data,
   daily_stats
   daily_stats <- dplyr::left_join(daily_stats, flow_data_year, by = c("STATION_NUMBER", "DayofYear"))
   
-  ann_peaks <- calc_annual_peaks(data = flow_data,
+  ann_peaks <- calc_annual_extremes(data = flow_data,
                                  water_year_start = water_year_start,
                                  start_year = start_year,
                                  end_year = end_year,
@@ -290,9 +290,9 @@ plot_annual_peaks_year <- function(data,
   # Create a list of named plots extracted from the tibble
   plots <- timing_plots$plot
   if (nrow(timing_plots) == 1) {
-    names(plots) <- "Annual_Peaks_Year"
+    names(plots) <- "Annual_Extremes_Year"
   } else {
-    names(plots) <- paste0(timing_plots$STATION_NUMBER, "_Annual_Peaks_Year")
+    names(plots) <- paste0(timing_plots$STATION_NUMBER, "_Annual_Extremes_Year")
   }
   
   plots
