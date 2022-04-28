@@ -263,7 +263,7 @@ filter_complete_yrs_val <- function(complete_years, flow_data, keep_all = FALSE)
 }
 
 # Fn to get lists of incomplete/complete years from data
-get_complete_years <- function(flow_data, water_year_start = 1, months = 1:12) {
+get_complete_years_lists <- function(flow_data, water_year_start = 1, months = 1:12) {
   data1 <- add_date_variables(flow_data, water_year_start = water_year_start)
   all_data_years <- unique(data1$WaterYear)
   data1 <- fill_missing_dates(data1, water_year_start = water_year_start)
@@ -281,8 +281,8 @@ get_complete_years <- function(flow_data, water_year_start = 1, months = 1:12) {
        data_years = all_data_years)
 }
 
-complete_years_vars <- function(flow_data, water_year_start = 1, months = 1:12) {
-  cmplt_years <- get_complete_years(flow_data, water_year_start, months)
+get_complete_years_vars <- function(flow_data, water_year_start = 1, months = 1:12) {
+  cmplt_years <- get_complete_years_lists(flow_data, water_year_start, months)
   start_year <- min(cmplt_years$complete_years)
   end_year <- max(cmplt_years$complete_years)
   exclude_years <- cmplt_years$incomplete_years
