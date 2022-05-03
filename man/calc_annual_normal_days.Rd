@@ -92,7 +92,8 @@ calc_annual_normal_days(station_number = "08NM116")
 
 # Calculate statistics with custom limits of normal
 calc_annual_normal_days(station_number = "08NM116",
-                        normal_percentiles = c(10,90))
+                        normal_percentiles = c(10,90),
+                        start_year = 1980)
                            
 }
 }

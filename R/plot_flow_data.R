@@ -48,14 +48,14 @@
 #'                end_year = 2010,
 #'                exclude_years = c(1991,1993:1995))
 #'                  
+#' # Plot data multiple groups on one plot
+#' plot_flow_data(station_number = c("08NM241", "08NM242"),
+#'                one_plot = TRUE) 
+#'                
 #' # Plot data between specific dates
 #' plot_flow_data(station_number = "08NM116",
 #'                start_date = "1990-01-01",
 #'                end_date = "1990-06-01")
-#' 
-#' # Plot data multiple groups on one plot
-#' plot_flow_data(station_number = c("08NM241", "08NM242"),
-#'                one_plot = TRUE) 
 #'                
 #' }
 #' @export
@@ -166,9 +166,8 @@ plot_flow_data <- function(data,
   flow_data <- dplyr::mutate(flow_data, Value = replace(Value, !Month %in% months, NA))
   
   if (anyNA(flow_data$Value)) 
-    warning(paste0("Did not plot ", sum(is.na(flow_data$Value)),
-                   " missing or excluded values between ", min(flow_data$Date), " and ", max(flow_data$Date),"."), 
-            call. = FALSE)
+    message(paste0("Note: Did not plot ", sum(is.na(flow_data$Value)),
+                   " missing or excluded values between ", min(flow_data$Date), " and ", max(flow_data$Date),"."))
   
   # Create axis label based on input columns
   y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Daily Volume (cubic metres)", #expression(Volume~(m^3))

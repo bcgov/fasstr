@@ -1,7 +1,7 @@
 fasstr 0.5.0
 =========================
 
-Updated: 28 Apr 2022
+Updated: 03 May 2022
 
 ### New functions:
 
@@ -14,8 +14,8 @@ Updated: 28 Apr 2022
   * plot_annual_extremes() - plots the values and dates from annual minimums and maximums for each year, from calc_annual_extremes()
   * plot_annual_extremes_year() - plots the values and dates from annual minimums and maximums fora given year
   * calc_annual_normal_days() and plot_annual_normal_days() - counts number of normal and above/below normal days - replaced deprecated _annual_outside_normal() functions
-  * plot_annual_normal_days_year - plot days above normal, below normal and normal for a specific year
-  * plot_annual_flow_timing_year - plot annual timing of flows for a specific year
+  * plot_annual_normal_days_year() - plot days above normal, below normal and normal for a specific year
+  * plot_annual_flow_timing_year() - plot annual timing of flows for a specific year
 
 ### Function updates:
 
@@ -29,6 +29,7 @@ Updated: 28 Apr 2022
   
 ### Other updates:
   
+  * Changed colour scales on many plots to the viridis palette
   * Can now choose 0 and 100 percentiles (was previously between 1 and 99)
   * Added 'complete_years' argument to several functions for cross-package consistency. Doesn't change functionality, but sets/overrides ignore_missing to FALSE and allowed_missing to 0.
   * "Year" axes now labeled "Water Year" if water_year_start != 1

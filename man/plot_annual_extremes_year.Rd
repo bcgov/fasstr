@@ -132,7 +132,9 @@ if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Plot the year 2000 with the annual maximum and minimums       
 plot_annual_extremes_year(station_number = "08NM116",
-                          year_to_plot = 2000)
+                          roll_days_high = 3,
+                          roll_days_low = 7,
+                          year_to_plot = 2001)
                  
 }
 }

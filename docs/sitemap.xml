@@ -91,10 +91,19 @@
     <loc>https://bcgov.github.io/fasstr/reference/calc_annual_cumulative_stats.html</loc>
   </url>
   <url>
+    <loc>https://bcgov.github.io/fasstr/reference/calc_annual_extremes.html</loc>
+  </url>
+  <url>
     <loc>https://bcgov.github.io/fasstr/reference/calc_annual_flow_timing.html</loc>
   </url>
   <url>
+    <loc>https://bcgov.github.io/fasstr/reference/calc_annual_highflows.html</loc>
+  </url>
+  <url>
     <loc>https://bcgov.github.io/fasstr/reference/calc_annual_lowflows.html</loc>
+  </url>
+  <url>
+    <loc>https://bcgov.github.io/fasstr/reference/calc_annual_normal_days.html</loc>
   </url>
   <url>
     <loc>https://bcgov.github.io/fasstr/reference/calc_annual_outside_normal.html</loc>
@@ -163,7 +172,19 @@
     <loc>https://bcgov.github.io/fasstr/reference/plot_annual_cumulative_stats.html</loc>
   </url>
   <url>
+    <loc>https://bcgov.github.io/fasstr/reference/plot_annual_extremes.html</loc>
+  </url>
+  <url>
+    <loc>https://bcgov.github.io/fasstr/reference/plot_annual_extremes_year.html</loc>
+  </url>
+  <url>
     <loc>https://bcgov.github.io/fasstr/reference/plot_annual_flow_timing.html</loc>
+  </url>
+  <url>
+    <loc>https://bcgov.github.io/fasstr/reference/plot_annual_flow_timing_year.html</loc>
+  </url>
+  <url>
+    <loc>https://bcgov.github.io/fasstr/reference/plot_annual_highflows.html</loc>
   </url>
   <url>
     <loc>https://bcgov.github.io/fasstr/reference/plot_annual_lowflows.html</loc>
@@ -172,10 +193,22 @@
     <loc>https://bcgov.github.io/fasstr/reference/plot_annual_means.html</loc>
   </url>
   <url>
+    <loc>https://bcgov.github.io/fasstr/reference/plot_annual_normal_days.html</loc>
+  </url>
+  <url>
+    <loc>https://bcgov.github.io/fasstr/reference/plot_annual_normal_days_year.html</loc>
+  </url>
+  <url>
     <loc>https://bcgov.github.io/fasstr/reference/plot_annual_outside_normal.html</loc>
   </url>
   <url>
     <loc>https://bcgov.github.io/fasstr/reference/plot_annual_stats.html</loc>
+  </url>
+  <url>
+    <loc>https://bcgov.github.io/fasstr/reference/plot_annual_stats2.html</loc>
+  </url>
+  <url>
+    <loc>https://bcgov.github.io/fasstr/reference/plot_annual_symbols.html</loc>
   </url>
   <url>
     <loc>https://bcgov.github.io/fasstr/reference/plot_daily_cumulative_stats.html</loc>
@@ -188,6 +221,9 @@
   </url>
   <url>
     <loc>https://bcgov.github.io/fasstr/reference/plot_flow_data.html</loc>
+  </url>
+  <url>
+    <loc>https://bcgov.github.io/fasstr/reference/plot_flow_data_symbols.html</loc>
   </url>
   <url>
     <loc>https://bcgov.github.io/fasstr/reference/plot_flow_duration.html</loc>
@@ -206,6 +242,9 @@
   </url>
   <url>
     <loc>https://bcgov.github.io/fasstr/reference/plot_monthly_stats.html</loc>
+  </url>
+  <url>
+    <loc>https://bcgov.github.io/fasstr/reference/plot_monthly_stats2.html</loc>
   </url>
   <url>
     <loc>https://bcgov.github.io/fasstr/reference/reexports.html</loc>

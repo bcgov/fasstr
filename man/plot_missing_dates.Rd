@@ -82,14 +82,14 @@ plot_missing_dates(data = flow_data)
 # Plot missing dates using station_number argument with defaults
 plot_missing_dates(station_number = "08NM116")
                   
-# Plot missing dates for water years starting in October
-plot_missing_dates(station_number = "08NM116",
-                   water_year_start = 9)
-                  
 # Plot missing dates for 7-day flows for July-September months only
 plot_missing_dates(station_number = "08NM116",
                    roll_days = 7,
                    months = 7:9)
+                   
+# Plot missing dates for water years starting in October
+plot_missing_dates(station_number = "08NM116",
+                   water_year_start = 10)
                    
 }
 }

@@ -1,5 +1,5 @@
-pandoc: 2.11.4
-pkgdown: 2.0.0
+pandoc: 2.17.1.1
+pkgdown: 2.0.3
 pkgdown_sha: ~
 articles:
   fasstr_dataRetrieval: fasstr_dataRetrieval.html
@@ -11,7 +11,7 @@ articles:
   fasstr_trending_analysis: fasstr_trending_analysis.html
   fasstr_under_the_hood: fasstr_under_the_hood.html
   fasstr_users_guide: fasstr_users_guide.html
-last_built: 2021-12-10T21:57Z
+last_built: 2022-05-03T18:44Z
 urls:
   reference: https://bcgov.github.io/fasstr/reference
   article: https://bcgov.github.io/fasstr/articles

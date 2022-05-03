@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -52,7 +52,7 @@
   <a href="../reference/index.html">Functions</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -132,17 +132,35 @@
 
     
     
-<p><code>fasstr</code>, the Flow Analysis Summary Statistics Tool for R, is a set of <a href="https://www.r-project.org/" class="external-link">R</a> functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.</p>
-<p>This vignette guide contains a look at the steps and internal functions used within the various <code>fasstr</code> functions. It includes descriptions of the function and steps on data importing, tidying and wrangling, filtering, analyzing, and plotting. It also describes some of the functions in the internal <a href="https://github.com/bcgov/fasstr/blob/main/R/utils.R" class="external-link">utils.R file</a> and the packages required to use the <code>fasstr</code> package.</p>
+<p><code>fasstr</code>, the Flow Analysis Summary Statistics Tool for R,
+is a set of <a href="https://www.r-project.org/" class="external-link">R</a> functions to
+tidy, summarize, analyze, trend, and visualize streamflow data. This
+package summarizes continuous daily mean streamflow data into various
+daily, monthly, annual, and long-term statistics, completes trending and
+frequency analyses, with outputs in both table and plot formats.</p>
+<p>This vignette guide contains a look at the steps and internal
+functions used within the various <code>fasstr</code> functions. It
+includes descriptions of the function and steps on data importing,
+tidying and wrangling, filtering, analyzing, and plotting. It also
+describes some of the functions in the internal <a href="https://github.com/bcgov/fasstr/blob/main/R/utils.R" class="external-link">utils.R
+file</a> and the packages required to use the <code>fasstr</code>
+package.</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p><code>fasstr</code> utilizes tidy coding to utilize many efficient and useful packages and functions; the tidyverse packages <code>tidy</code>, <code>dplyr</code>, <code>ggplot2</code> are used frequently, amongst others for specific functions. Because of this, <code>fasstr</code> also exports the pipe <code>%&gt;%</code> to assist in using <code>fasstr</code> in a tidy code routine.</p>
-<p>This vignette is broken into the following sections that describe some of the workflows involved in the <code>fasstr</code> functions:</p>
+<p><code>fasstr</code> utilizes tidy coding to utilize many efficient
+and useful packages and functions; the tidyverse packages
+<code>tidy</code>, <code>dplyr</code>, <code>ggplot2</code> are used
+frequently, amongst others for specific functions. Because of this,
+<code>fasstr</code> also exports the pipe <code>%&gt;%</code> to assist
+in using <code>fasstr</code> in a tidy code routine.</p>
+<p>This vignette is broken into the following sections that describe
+some of the workflows involved in the <code>fasstr</code> functions:</p>
 <ol style="list-style-type: decimal">
 <li>Data Importing and Checking</li>
 <li>Tidying Functions (<code>add_</code> and <code>fill_</code>)</li>
-<li>Analysis Functions (<code>calc_</code> and <code>compute_</code>)</li>
+<li>Analysis Functions (<code>calc_</code> and
+<code>compute_</code>)</li>
 <li>Plotting Functions (<code>plot_</code>)</li>
 <li>Internal Functions (utils.R file)</li>
 <li>Package Dependencies</li>
@@ -152,13 +170,60 @@
 <div class="section level2">
 <h2 id="data-importing-and-checking">1. Data Importing and Checking<a class="anchor" aria-label="anchor" href="#data-importing-and-checking"></a>
 </h2>
-<p>The <code>fasstr</code> functions primarily require daily mean streamflow data in cubic metres per second. As such, columns of dates and values are required. Many <code>fasstr</code> functions can analyze multiple stations (using grouping functions) so a column to group data by (typically station numbers) can be provided. Other types of data can be used (climate, water level, etc), but plots and some conversions are based on the units of discharge. As there are two ways to provide daily data to the <code>fasstr</code> functions, the <code>data</code> and the <code>station_number</code> arguments, there are several internal functions stored in the <a href="https://github.com/bcgov/fasstr/blob/main/R/utils.R" class="external-link">utils.R file</a> that checks the data and formats the columns to ensure the data is prepared for the analysis. The following describes the steps to ensure data is consistently set up for analysis.</p>
-<p>The first step is to import daily data. The internal <code>flowdata_import()</code> function provides checks on the <code>data</code> and <code>station_number</code> arguments, and either extracts daily data from HYDAT (returns an error if the number isn’t in HYDAT) using the <code>tidyhydat</code> package, or makes sure that <code>data</code> is in fact a data frame.</p>
-<p>At this point in a <code>fasstr</code> function, all the column names of the data are saved as in a vector and any grouping (tidy grouping) is removed. The column names are saved as they may be changed in the following steps and the original names will be returned at the end of the analysis. Any grouping is removed to allow for the appropriate grouping of the analysis. For the tidying functions (<code>add_</code> and <code>fill_</code>) any grouping will be returned.</p>
-<p>The next step is to ensure the column names of dates, values, and groups are consistent as ‘Date’, ‘Value’, and ‘STATION_NUMBER’ (to match the HYDAT outputs), respectively, for the analysis. This is required as grouping and summarizing functions in the following steps use these specific column names, and provided data may not use the same names. The facilitate the column renaming and checking, there are several internal functions in the utils.R. For each of the three columns there is a function that checks if it exists, the proper formatting, and renames the columns to the appropriate name. These functions are <code>format_dates_col()</code>, <code>format_values_col()</code>, and <code>format_groups_col()</code>. If no grouping is provided, a fake ‘STATION_NUMBER’ of ‘XXXXXXX’ is provided (and removed at the end of the <code>fasstr</code> function). As all three columns are required for many <code>fasstr</code> functions, there is a <code>formal_all_cols()</code> that uses all three functions, with an option to remove all other columns.</p>
-<p>At this point in a function there is now a data frame of data, usually called ‘flow_data’ that has three columns of ‘Date’, ‘Value’, and ‘STATION_NUMBER’, that is ready to be tidied for analysis.</p>
-<p>Note: some functions use different data sources than daily data. The <code>compute_HYDAT_peaks_frequencies()</code> does not permit the <code>data</code> argument and just extracts data from HYDAT (and sets it up appropriately) and the <code><a href="../reference/compute_frequency_analysis.html">compute_frequency_analysis()</a></code> function requires a unique dataset (see <code><a href="../reference/compute_frequency_analysis.html">?compute_frequency_analysis</a></code> for more information on the function).</p>
-<p>The following is an example of these first steps (from <code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code>):</p>
+<p>The <code>fasstr</code> functions primarily require daily mean
+streamflow data in cubic metres per second. As such, columns of dates
+and values are required. Many <code>fasstr</code> functions can analyze
+multiple stations (using grouping functions) so a column to group data
+by (typically station numbers) can be provided. Other types of data can
+be used (climate, water level, etc), but plots and some conversions are
+based on the units of discharge. As there are two ways to provide daily
+data to the <code>fasstr</code> functions, the <code>data</code> and the
+<code>station_number</code> arguments, there are several internal
+functions stored in the <a href="https://github.com/bcgov/fasstr/blob/main/R/utils.R" class="external-link">utils.R
+file</a> that checks the data and formats the columns to ensure the data
+is prepared for the analysis. The following describes the steps to
+ensure data is consistently set up for analysis.</p>
+<p>The first step is to import daily data. The internal
+<code>flowdata_import()</code> function provides checks on the
+<code>data</code> and <code>station_number</code> arguments, and either
+extracts daily data from HYDAT (returns an error if the number isn’t in
+HYDAT) using the <code>tidyhydat</code> package, or makes sure that
+<code>data</code> is in fact a data frame.</p>
+<p>At this point in a <code>fasstr</code> function, all the column names
+of the data are saved as in a vector and any grouping (tidy grouping) is
+removed. The column names are saved as they may be changed in the
+following steps and the original names will be returned at the end of
+the analysis. Any grouping is removed to allow for the appropriate
+grouping of the analysis. For the tidying functions (<code>add_</code>
+and <code>fill_</code>) any grouping will be returned.</p>
+<p>The next step is to ensure the column names of dates, values, and
+groups are consistent as ‘Date’, ‘Value’, and ‘STATION_NUMBER’ (to match
+the HYDAT outputs), respectively, for the analysis. This is required as
+grouping and summarizing functions in the following steps use these
+specific column names, and provided data may not use the same names. The
+facilitate the column renaming and checking, there are several internal
+functions in the utils.R. For each of the three columns there is a
+function that checks if it exists, the proper formatting, and renames
+the columns to the appropriate name. These functions are
+<code>format_dates_col()</code>, <code>format_values_col()</code>, and
+<code>format_groups_col()</code>. If no grouping is provided, a fake
+‘STATION_NUMBER’ of ‘XXXXXXX’ is provided (and removed at the end of the
+<code>fasstr</code> function). As all three columns are required for
+many <code>fasstr</code> functions, there is a
+<code>formal_all_cols()</code> that uses all three functions, with an
+option to remove all other columns.</p>
+<p>At this point in a function there is now a data frame of data,
+usually called ‘flow_data’ that has three columns of ‘Date’, ‘Value’,
+and ‘STATION_NUMBER’, that is ready to be tidied for analysis.</p>
+<p>Note: some functions use different data sources than daily data. The
+<code>compute_HYDAT_peaks_frequencies()</code> does not permit the
+<code>data</code> argument and just extracts data from HYDAT (and sets
+it up appropriately) and the <code><a href="../reference/compute_frequency_analysis.html">compute_frequency_analysis()</a></code>
+function requires a unique dataset (see
+<code><a href="../reference/compute_frequency_analysis.html">?compute_frequency_analysis</a></code> for more information on the
+function).</p>
+<p>The following is an example of these first steps (from
+<code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code>):</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Check if data is provided and import it</span>
 <span class="va">flow_data</span> <span class="op">&lt;-</span> <span class="fu">flowdata_import</span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, 
@@ -179,9 +244,17 @@
 <div class="section level2">
 <h2 id="tidying-functions-add_-and-fill_">2. Tidying Functions (<code>add_</code> and <code>fill_</code>)<a class="anchor" aria-label="anchor" href="#tidying-functions-add_-and-fill_"></a>
 </h2>
-<p>The <code>fasstr</code> tidying functions (start with <code>add_</code> or <code>fill_</code>) just add rows or columns of data so there are fewer steps than the other <code>fasstr</code> functions.</p>
-<p>After the data has been prepped with the appropriate columns, the columns are added with their equations or other functions, or dates are filled with NA if they are missing. Then if any of the column names were changed in the formatting, they are returned to their original names, and if there was a grouping beforehand, that grouping is returned.</p>
-<p>The following is an example of remaining steps of a tidying function (from <code><a href="../reference/add_daily_yield.html">add_daily_yield()</a></code>):</p>
+<p>The <code>fasstr</code> tidying functions (start with
+<code>add_</code> or <code>fill_</code>) just add rows or columns of
+data so there are fewer steps than the other <code>fasstr</code>
+functions.</p>
+<p>After the data has been prepped with the appropriate columns, the
+columns are added with their equations or other functions, or dates are
+filled with NA if they are missing. Then if any of the column names were
+changed in the formatting, they are returned to their original names,
+and if there was a grouping beforehand, that grouping is returned.</p>
+<p>The following is an example of remaining steps of a tidying function
+(from <code><a href="../reference/add_daily_yield.html">add_daily_yield()</a></code>):</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## SET UP BASIN AREA</span>
 <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="va">flow_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_basin_area.html">add_basin_area</a></span><span class="op">(</span><span class="va">flow_data</span>, basin_area <span class="op">=</span> <span class="va">basin_area</span><span class="op">)</span><span class="op">)</span>
@@ -209,16 +282,42 @@
 <hr>
 </div>
 <div class="section level2">
-<h2 id="analysis-functions-calc_-and-compute_">3. Analysis Functions (<code>calc_</code> and <code>compute_</code>)<a class="anchor" aria-label="anchor" href="#analysis-functions-calc_-and-compute_"></a>
+<h2 id="analysis-functions-calc_-and-compute_">3. Analysis Functions (<code>calc_</code> and
+<code>compute_</code>)<a class="anchor" aria-label="anchor" href="#analysis-functions-calc_-and-compute_"></a>
 </h2>
-<p>The <code>fasstr</code> analysis functions (start with <code>calc_</code> or <code>compute_</code> or <code>screen_</code>) require steps of tidying (adding appropriate columns), filtering, analyzing and any final data wrangling.</p>
+<p>The <code>fasstr</code> analysis functions (start with
+<code>calc_</code> or <code>compute_</code> or <code>screen_</code>)
+require steps of tidying (adding appropriate columns), filtering,
+analyzing and any final data wrangling.</p>
 <div class="section level4">
 <h4 id="data-tidying-and-preparing">Data Tidying and Preparing<a class="anchor" aria-label="anchor" href="#data-tidying-and-preparing"></a>
 </h4>
-<p>After the data has been prepped with the appropriate columns, additional columns of dates (years, months, days), rolling days, basin areas, yields or volumes may be added, depending on the analysis. Dates with no data are also filled with NA values so that complete years can be analyzed (and appropriate warnings made if NA’s are produced). To facilitate these steps there is an internal function in the utils.R file called <code>analysis_prep()</code>. This function will fill the missing dates and add columns of ‘CalendarYear’, ‘Month’, ‘MonthName’, ‘WaterYear’, and ‘DayofYear’ to the data frame. It also creates a column of ‘AnalysisDate’ if necessary, that extracts the dates and converts them into a single year for columns or plotting. This is to provide consistency to the analysis functions (as the Wateryear can change based on the <code>water_year_start</code> argument choice). Any other columns (rolling means, yield, etc.) are added as necessary using the necessary tidying functions.</p>
-<p>For some functions a ‘RollingValue’ column is created for the statistics calculations so that a roll_day value of other than 1 can be used. For this, the add_rolling_days() function creates an additional column based on the users selection and is renamed to ‘RollingValue’.</p>
-<p>At this point in a function the data frame of data, flow_data, has three columns of ‘Date’, ‘Value’ or ‘RollingValue’, and ‘STATION_NUMBER’, and any other date and necessary column required to be filtered for analysis.</p>
-<p>The following is an example of the tidying steps (from <code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code>):</p>
+<p>After the data has been prepped with the appropriate columns,
+additional columns of dates (years, months, days), rolling days, basin
+areas, yields or volumes may be added, depending on the analysis. Dates
+with no data are also filled with NA values so that complete years can
+be analyzed (and appropriate warnings made if NA’s are produced). To
+facilitate these steps there is an internal function in the utils.R file
+called <code>analysis_prep()</code>. This function will fill the missing
+dates and add columns of ‘CalendarYear’, ‘Month’, ‘MonthName’,
+‘WaterYear’, and ‘DayofYear’ to the data frame. It also creates a column
+of ‘AnalysisDate’ if necessary, that extracts the dates and converts
+them into a single year for columns or plotting. This is to provide
+consistency to the analysis functions (as the Wateryear can change based
+on the <code>water_year_start</code> argument choice). Any other columns
+(rolling means, yield, etc.) are added as necessary using the necessary
+tidying functions.</p>
+<p>For some functions a ‘RollingValue’ column is created for the
+statistics calculations so that a roll_day value of other than 1 can be
+used. For this, the add_rolling_days() function creates an additional
+column based on the users selection and is renamed to
+‘RollingValue’.</p>
+<p>At this point in a function the data frame of data, flow_data, has
+three columns of ‘Date’, ‘Value’ or ‘RollingValue’, and
+‘STATION_NUMBER’, and any other date and necessary column required to be
+filtered for analysis.</p>
+<p>The following is an example of the tidying steps (from
+<code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code>):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Fill missing dates, add date variables</span>
 <span class="va">flow_data</span> <span class="op">&lt;-</span> <span class="fu">analysis_prep</span><span class="op">(</span>data <span class="op">=</span> <span class="va">flow_data</span>, 
@@ -231,9 +330,19 @@
 <div class="section level4">
 <h4 id="data-filtering">Data Filtering<a class="anchor" aria-label="anchor" href="#data-filtering"></a>
 </h4>
-<p>With all the necessary columns of data for analysis, the data can be filtered for the years, months, dates, etc. as specified in the <code>fasstr</code> function arguments. These are mostly completed with simple tidy filtering functions. However when using the <code>complete_years</code> argument in some of the <code>fasstr</code> functions, there is an internal function in the utils.R file called <code>filter_complete_yrs()</code> that removes data from years with incomplete data.</p>
-<p>At this point in a function the data frame of data, flow_data, has three columns of ‘Date’, ‘Value’, and ‘STATION_NUMBER’, and any other date and necessary column, and is filtered for the analysis.</p>
-<p>The following is an example of the filtering steps (from <code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code>):</p>
+<p>With all the necessary columns of data for analysis, the data can be
+filtered for the years, months, dates, etc. as specified in the
+<code>fasstr</code> function arguments. These are mostly completed with
+simple tidy filtering functions. However when using the
+<code>complete_years</code> argument in some of the <code>fasstr</code>
+functions, there is an internal function in the utils.R file called
+<code>filter_complete_yrs()</code> that removes data from years with
+incomplete data.</p>
+<p>At this point in a function the data frame of data, flow_data, has
+three columns of ‘Date’, ‘Value’, and ‘STATION_NUMBER’, and any other
+date and necessary column, and is filtered for the analysis.</p>
+<p>The following is an example of the filtering steps (from
+<code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code>):</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Filter for the selected year (remove excluded years after)</span>
 <span class="va">flow_data</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">flow_data</span>, <span class="va">WaterYear</span> <span class="op">&gt;=</span> <span class="va">start_year</span> <span class="op">&amp;</span> <span class="va">WaterYear</span> <span class="op">&lt;=</span> <span class="va">end_year</span><span class="op">)</span>
@@ -242,10 +351,25 @@
 <div class="section level4">
 <h4 id="calculating-statistics">Calculating Statistics<a class="anchor" aria-label="anchor" href="#calculating-statistics"></a>
 </h4>
-<p>Now that the data contains all the necessary data to summarize, using the tidy methods of the tidyverse (predominately <code>tidyr</code> and <code>dplyr</code> packages), data is grouped by the necessary variables. Data is usually grouped by ‘STATION_NUMBER’ and then whatever time-frame variable the function calls for (years, months, days, etc).</p>
-<p>Then the data is typically analyzed using the <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">dplyr::summarize()</a></code> function (for means, median, minimums, etc). If an analysis considers if missing data is available or not, then the <code>na.rm</code> argument is set to the <code>ignore_missing</code> function provided in the <code>fasstr</code> functions. If <code>NAN</code> or <code>Inf</code> values are produced in the results, then they are replaced with <code>NA</code> for consistency. If percentiles are being calculated, another code chunk will loop through each percentile selected and attach to the data.</p>
-<p>Data is then ungrouped to allow for further data wrangling and outputting.</p>
-<p>The following is an example of the calculation steps (from <code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code>):</p>
+<p>Now that the data contains all the necessary data to summarize, using
+the tidy methods of the tidyverse (predominately <code>tidyr</code> and
+<code>dplyr</code> packages), data is grouped by the necessary
+variables. Data is usually grouped by ‘STATION_NUMBER’ and then whatever
+time-frame variable the function calls for (years, months, days,
+etc).</p>
+<p>Then the data is typically analyzed using the
+<code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">dplyr::summarize()</a></code> function (for means, median, minimums,
+etc). If an analysis considers if missing data is available or not, then
+the <code>na.rm</code> argument is set to the
+<code>ignore_missing</code> function provided in the <code>fasstr</code>
+functions. If <code>NAN</code> or <code>Inf</code> values are produced
+in the results, then they are replaced with <code>NA</code> for
+consistency. If percentiles are being calculated, another code chunk
+will loop through each percentile selected and attach to the data.</p>
+<p>Data is then ungrouped to allow for further data wrangling and
+outputting.</p>
+<p>The following is an example of the calculation steps (from
+<code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code>):</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Calculate basic stats</span>
 <span class="va">annual_stats</span> <span class="op">&lt;-</span>   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">flow_data</span>, <span class="va">STATION_NUMBER</span>, <span class="va">WaterYear</span><span class="op">)</span>,
@@ -280,10 +404,22 @@
 <div class="section level4">
 <h4 id="final-data-wrangling">Final Data Wrangling<a class="anchor" aria-label="anchor" href="#final-data-wrangling"></a>
 </h4>
-<p>To finalize the data results there are usually some final data filtering or wrangling steps. Some of these include some additional filtering (usually when using the <code>exclude_years</code> argument; replaces data with NA), providing warnings if NA’s are produced in the data, renaming the analysis date columns, and returning the names of the groups (i.e. ‘STATION_NUMBER’ column) if different, or removing it if it wasn’t provided (as listed in the original column names vector described above).</p>
-<p>If the option to transpose the results data was set to <code>TRUE</code> with the <code>transpose</code> argument, then the data is gathered and spread such that each statistics is a single row as opposed to a column in the original results.</p>
-<p>After all wrangling, the final results are returned from the function as a tibble.</p>
-<p>The following is an example of the final wrangling steps (from <code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code>):</p>
+<p>To finalize the data results there are usually some final data
+filtering or wrangling steps. Some of these include some additional
+filtering (usually when using the <code>exclude_years</code> argument;
+replaces data with NA), providing warnings if NA’s are produced in the
+data, renaming the analysis date columns, and returning the names of the
+groups (i.e. ‘STATION_NUMBER’ column) if different, or removing it if it
+wasn’t provided (as listed in the original column names vector described
+above).</p>
+<p>If the option to transpose the results data was set to
+<code>TRUE</code> with the <code>transpose</code> argument, then the
+data is gathered and spread such that each statistics is a single row as
+opposed to a column in the original results.</p>
+<p>After all wrangling, the final results are returned from the function
+as a tibble.</p>
+<p>The following is an example of the final wrangling steps (from
+<code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code>):</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Rename year column</span>
 <span class="va">annual_stats</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span><span class="va">annual_stats</span>, Year <span class="op">=</span> <span class="va">WaterYear</span><span class="op">)</span>
@@ -324,18 +460,52 @@
 <div class="section level2">
 <h2 id="plotting-functions-plot_">4. Plotting Functions (<code>plot_</code>)<a class="anchor" aria-label="anchor" href="#plotting-functions-plot_"></a>
 </h2>
-<p>The <code>fasstr</code> plotting functions (start with <code>plot_</code>) take the data calculated in the analysis functions and then plot the data with set or custom plotting templates.</p>
+<p>The <code>fasstr</code> plotting functions (start with
+<code>plot_</code>) take the data calculated in the analysis functions
+and then plot the data with set or custom plotting templates.</p>
 <div class="section level4">
 <h4 id="calculating-statistics-1">Calculating Statistics<a class="anchor" aria-label="anchor" href="#calculating-statistics-1"></a>
 </h4>
-<p>For the plotting functions data is typically calculated from the other <code>calc_</code> <code>fasstr</code> functions and then wrangled into proper formatting. Before calculating the data, various checks are performed on the arguments and then the <code>flowdata_import()</code> is first used to check the <code>data</code> or <code>station_data</code> selections. Then the values, dates, and groups columns are formatted properly and all other columns removed using the <code>format_all_cols()</code> internal function. This data frame and the function arguments are then passed onto the <code>fasstr</code> <code>calc_</code> function. Any final data wrangling is also then completed to set it up for the plotting functions. Some NA values may be replaced with substitute values to allow the plot to be produced along with the appropriate data warnings.</p>
+<p>For the plotting functions data is typically calculated from the
+other <code>calc_</code> <code>fasstr</code> functions and then wrangled
+into proper formatting. Before calculating the data, various checks are
+performed on the arguments and then the <code>flowdata_import()</code>
+is first used to check the <code>data</code> or
+<code>station_data</code> selections. Then the values, dates, and groups
+columns are formatted properly and all other columns removed using the
+<code>format_all_cols()</code> internal function. This data frame and
+the function arguments are then passed onto the <code>fasstr</code>
+<code>calc_</code> function. Any final data wrangling is also then
+completed to set it up for the plotting functions. Some NA values may be
+replaced with substitute values to allow the plot to be produced along
+with the appropriate data warnings.</p>
 </div>
 <div class="section level4">
 <h4 id="plotting-statistics">Plotting Statistics<a class="anchor" aria-label="anchor" href="#plotting-statistics"></a>
 </h4>
-<p>Before plotting, some variables are created based on the custom options provided in the arguments (axis labels etc).</p>
-<p>As there is the potential for many plots to be produced in the <code>fasstr</code> functions, a tidy method was used to create multiple plots simultaneously in an efficient process using <code>dplyr</code>, <code>tidyr</code>, <code>purrr</code>, and <code>ggplot2</code> packages to create a tibble of plots. See this <a href="https://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/" class="external-link">webpage</a> for more information on the method. For <code>fasstr</code> plotting functions, this entails creating a single tibble of groups (‘STATION_NUMBER’s), data, and plots. First the data is grouped by the grouping (typically ’STATION_NUMBER’s) using the <code>dplyr::group()</code> function; this will create a single plot for each grouping. Then using <code><a href="https://tidyr.tidyverse.org/reference/nest.html" class="external-link">tidyr::nest()</a></code> a tibble is created with two columns, the first being the ’STATION_NUMBER’ and the second being a tibble of data for each ‘STATION_NUMBER’ (a tibble of tibbles). Then using <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">dplyr::mutate()</a></code> function a column of ggplots is created; and using <code><a href="https://purrr.tidyverse.org/reference/map2.html" class="external-link">purrr::map2()</a></code> all of the plots can be created simultaneously (thus saving time in the function). As this type of table isn’t entirely user-friendly, each plot is extracted into a list and named appropriately (typically by each grouping and then the statistic).</p>
-<p>The following is an example of the process of the creating the plots (with simplified plotting).</p>
+<p>Before plotting, some variables are created based on the custom
+options provided in the arguments (axis labels etc).</p>
+<p>As there is the potential for many plots to be produced in the
+<code>fasstr</code> functions, a tidy method was used to create multiple
+plots simultaneously in an efficient process using <code>dplyr</code>,
+<code>tidyr</code>, <code>purrr</code>, and <code>ggplot2</code>
+packages to create a tibble of plots. See this <a href="https://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/" class="external-link">webpage</a>
+for more information on the method. For <code>fasstr</code> plotting
+functions, this entails creating a single tibble of groups
+(‘STATION_NUMBER’s), data, and plots. First the data is grouped by the
+grouping (typically ’STATION_NUMBER’s) using the
+<code>dplyr::group()</code> function; this will create a single plot for
+each grouping. Then using <code><a href="https://tidyr.tidyverse.org/reference/nest.html" class="external-link">tidyr::nest()</a></code> a tibble is created
+with two columns, the first being the ’STATION_NUMBER’ and the second
+being a tibble of data for each ‘STATION_NUMBER’ (a tibble of tibbles).
+Then using <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">dplyr::mutate()</a></code> function a column of ggplots is
+created; and using <code><a href="https://purrr.tidyverse.org/reference/map2.html" class="external-link">purrr::map2()</a></code> all of the plots can be
+created simultaneously (thus saving time in the function). As this type
+of table isn’t entirely user-friendly, each plot is extracted into a
+list and named appropriately (typically by each grouping and then the
+statistic).</p>
+<p>The following is an example of the process of the creating the plots
+(with simplified plotting).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Calculate the statistics</span>
 <span class="va">annual_stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'08NM116'</span>, <span class="st">'08NM240'</span><span class="op">)</span>,
@@ -383,58 +553,95 @@ $`08NM240_Annual_Statistics`</code></pre>
 <div class="section level2">
 <h2 id="internal-functions-utils-r-file">5. Internal Functions (utils.R file)<a class="anchor" aria-label="anchor" href="#internal-functions-utils-r-file"></a>
 </h2>
-<p>Within the package there is an R file called <a href="https://github.com/bcgov/fasstr/blob/main/R/utils.R" class="external-link">utils.R</a> that contains a list of functions that are used repeatedly throughout the various <code>fasstr</code> functions to minimize repetition. These functions are used internally and are not exported from the package.</p>
-<p>At the top of the file are several data formatting and wrangling functions:</p>
+<p>Within the package there is an R file called <a href="https://github.com/bcgov/fasstr/blob/main/R/utils.R" class="external-link">utils.R</a>
+that contains a list of functions that are used repeatedly throughout
+the various <code>fasstr</code> functions to minimize repetition. These
+functions are used internally and are not exported from the package.</p>
+<p>At the top of the file are several data formatting and wrangling
+functions:</p>
 <ul>
 <li>
-<code>flowdata_import()</code> - checks if either <code>station_number</code> or <code>data</code> arguments are provided; extracts HYDAT data or sets up data for next steps.</li>
+<code>flowdata_import()</code> - checks if either
+<code>station_number</code> or <code>data</code> arguments are provided;
+extracts HYDAT data or sets up data for next steps.</li>
 <li>
-<code>format_dates_col()</code> - checks for proper dates formats in column; renames columns to ‘Date’ if not.</li>
+<code>format_dates_col()</code> - checks for proper dates formats in
+column; renames columns to ‘Date’ if not.</li>
 <li>
-<code>format_values_col()</code> - checks for proper numeric formats in column; renames columns to ‘Value’ if not.</li>
+<code>format_values_col()</code> - checks for proper numeric formats
+in column; renames columns to ‘Value’ if not.</li>
 <li>
-<code>format_groups_col()</code> - checks for proper formats in column; renames columns to ‘STATION_NUMBER’ if not; if no groups provided, a temporary ‘STATION_NUMBER’ of ‘XXXXXXX’ is created for analysis.</li>
+<code>format_groups_col()</code> - checks for proper formats in
+column; renames columns to ‘STATION_NUMBER’ if not; if no groups
+provided, a temporary ‘STATION_NUMBER’ of ‘XXXXXXX’ is created for
+analysis.</li>
 <li>
-<code>format_all_cols()</code> - checks for proper formats of all dates, values, and groups columns; uses all three functions listed above; option to remove all other columns if <code>rm_other_cols = TRUE</code>.</li>
+<code>format_all_cols()</code> - checks for proper formats of all
+dates, values, and groups columns; uses all three functions listed
+above; option to remove all other columns if
+<code>rm_other_cols = TRUE</code>.</li>
 <li>
-<code>analysis_prep()</code> - fills missing dates with NA; adds dates columns of Years, day of years, and dates; formatted to calendar or water year as specified.</li>
+<code>analysis_prep()</code> - fills missing dates with NA; adds
+dates columns of Years, day of years, and dates; formatted to calendar
+or water year as specified.</li>
 <li>
-<code>filter_complete_yrs()</code> - filters data for years with which there is only complete annual data; required for some analyses.</li>
+<code>filter_complete_yrs()</code> - filters data for years with
+which there is only complete annual data; required for some
+analyses.</li>
 </ul>
-<p>Below these formatting and data wrangling functions are many functions used to check arguments and provide warnings when certain data is present. See the file for examples of these internal functions.</p>
+<p>Below these formatting and data wrangling functions are many
+functions used to check arguments and provide warnings when certain data
+is present. See the file for examples of these internal functions.</p>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="package-dependencies">6. Package Dependencies<a class="anchor" aria-label="anchor" href="#package-dependencies"></a>
 </h2>
-<p>The following list contains the packages required to complete many of the <code>fasstr</code> functions:</p>
+<p>The following list contains the packages required to complete many of
+the <code>fasstr</code> functions:</p>
 <ul>
 <li>
-<a href="https://cran.r-project.org/package=dplyr" class="external-link"><code>dplyr</code></a> - used for many tidy functions (grouping, summarizing, etc)</li>
+<a href="https://cran.r-project.org/package=dplyr" class="external-link"><code>dplyr</code></a> -
+used for many tidy functions (grouping, summarizing, etc)</li>
 <li>
-<a href="https://cran.r-project.org/package=e1071" class="external-link"><code>e1071</code></a> - used in the frequency analyses for determining skewness for the fitting distributions</li>
+<a href="https://cran.r-project.org/package=e1071" class="external-link"><code>e1071</code></a> -
+used in the frequency analyses for determining skewness for the fitting
+distributions</li>
 <li>
-<a href="https://cran.r-project.org/package=fitdistrplus" class="external-link"><code>fitdistrplus</code></a> - used in the frequency analyses for fitting data to the distributions</li>
+<a href="https://cran.r-project.org/package=fitdistrplus" class="external-link"><code>fitdistrplus</code></a>
+- used in the frequency analyses for fitting data to the
+distributions</li>
 <li>
-<a href="https://cran.r-project.org/package=ggplot2" class="external-link"><code>ggplot2</code></a> - used for plotting the data</li>
+<a href="https://cran.r-project.org/package=ggplot2" class="external-link"><code>ggplot2</code></a>
+- used for plotting the data</li>
 <li>
-<a href="https://cran.r-project.org/package=PearsonDS" class="external-link"><code>PearsonDS</code></a> - used in the frequency analyses for fitting data to the distributions</li>
+<a href="https://cran.r-project.org/package=PearsonDS" class="external-link"><code>PearsonDS</code></a>
+- used in the frequency analyses for fitting data to the
+distributions</li>
 <li>
-<a href="https://cran.r-project.org/package=plyr" class="external-link"><code>plyr</code></a> - used in the frequency analyses to handle data</li>
+<a href="https://cran.r-project.org/package=plyr" class="external-link"><code>plyr</code></a> -
+used in the frequency analyses to handle data</li>
 <li>
-<a href="https://cran.r-project.org/package=purrr" class="external-link"><code>purrr</code></a> - used in the plotting functions to plot many plots simultaneously</li>
+<a href="https://cran.r-project.org/package=purrr" class="external-link"><code>purrr</code></a> -
+used in the plotting functions to plot many plots simultaneously</li>
 <li>
-<a href="https://cran.r-project.org/package=RcppRoll" class="external-link"><code>RcppRoll</code></a> - used to add rolling means</li>
+<a href="https://cran.r-project.org/package=RcppRoll" class="external-link"><code>RcppRoll</code></a>
+- used to add rolling means</li>
 <li>
-<a href="https://cran.r-project.org/package=scales" class="external-link"><code>scales</code></a> - used in the plotting functions to customize plots</li>
+<a href="https://cran.r-project.org/package=scales" class="external-link"><code>scales</code></a>
+- used in the plotting functions to customize plots</li>
 <li>
-<a href="https://cran.r-project.org/package=tidyhydat" class="external-link"><code>tidyhydat</code></a> - used to extract data from a HYDAT database</li>
+<a href="https://cran.r-project.org/package=tidyhydat" class="external-link"><code>tidyhydat</code></a>
+- used to extract data from a HYDAT database</li>
 <li>
-<a href="https://cran.r-project.org/package=tidyr" class="external-link"><code>tidyr</code></a> - used for many tidy functions (gather, spread, etc)</li>
+<a href="https://cran.r-project.org/package=tidyr" class="external-link"><code>tidyr</code></a> -
+used for many tidy functions (gather, spread, etc)</li>
 <li>
-<a href="https://cran.r-project.org/package=openxlsx" class="external-link"><code>openxlsx</code></a> - used to write data as Excel files in the write_ functions</li>
+<a href="https://cran.r-project.org/package=openxlsx" class="external-link"><code>openxlsx</code></a>
+- used to write data as Excel files in the write_ functions</li>
 <li>
-<a href="https://cran.r-project.org/package=zyp" class="external-link"><code>zyp</code></a> - used in the trending function to calculate the trends</li>
+<a href="https://cran.r-project.org/package=zyp" class="external-link"><code>zyp</code></a> -
+used in the trending function to calculate the trends</li>
 </ul>
 </div>
   </div>
@@ -456,7 +663,7 @@ $`08NM240_Annual_Statistics`</code></pre>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer>

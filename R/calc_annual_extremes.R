@@ -55,7 +55,8 @@
 #' # Calculate custom 3-day max/min flow data with 'center' alignment
 #' calc_annual_extremes(station_number = "08NM116",
 #'                      roll_days = 3,
-#'                      roll_align = "center")
+#'                      roll_align = "center",
+#'                      start_year = 1980)
 #'                      
 #' }
 #' @export

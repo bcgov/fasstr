@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -52,7 +52,7 @@
   <a href="../reference/index.html">Functions</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -132,21 +132,51 @@
 
     
     
-<p><code>fasstr</code>, the Flow Analysis Summary Statistics Tool for R, is a set of <a href="https://www.r-project.org/" class="external-link">R</a> functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.</p>
-<p>This vignette documents the usage of the <code><a href="../reference/compute_annual_trends.html">compute_annual_trends()</a></code> function in <code>fasstr</code>. This vignette is a high-level adjunct to the details found in the function documentation (see <code>?compute_annual_trends()</code>). You’ll learn what arguments to provide to the function to customize your analysis, what analyses are computed, and what outputs are produced.</p>
+<p><code>fasstr</code>, the Flow Analysis Summary Statistics Tool for R,
+is a set of <a href="https://www.r-project.org/" class="external-link">R</a> functions to
+tidy, summarize, analyze, trend, and visualize streamflow data. This
+package summarizes continuous daily mean streamflow data into various
+daily, monthly, annual, and long-term statistics, completes trending and
+frequency analyses, with outputs in both table and plot formats.</p>
+<p>This vignette documents the usage of the
+<code><a href="../reference/compute_annual_trends.html">compute_annual_trends()</a></code> function in <code>fasstr</code>.
+This vignette is a high-level adjunct to the details found in the
+function documentation (see <code>?compute_annual_trends()</code>).
+You’ll learn what arguments to provide to the function to customize your
+analysis, what analyses are computed, and what outputs are produced.</p>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>Determining trends in streamflow data can provide information on potential changes in hydrological processes over time. The annual trending analysis with <code>fasstr</code> allows for customization of both the inputs and outputs. This function takes up to 107 annual streamflow metrics (calculated using various annual <code>fasstr</code> functions) and calculates prewhitened, non-parametric trends using the Mann-Kendall test performed using the <a href="https://CRAN.R-project.org/package=zyp" class="external-link"><code>zyp</code></a> R package. See the <code>zyp</code> <a href="https://CRAN.R-project.org/package=zyp/zyp.pdf" class="external-link">documentation</a> for more information on the methods.</p>
-<p>Each annual metric/time-series is analyzed for trends using trend-free prewhitening to remove lag-1 correlation (may artificially detect a significant trend). The slope of each metric over time is then estimated using the Theil-Sen approach. If the estimated slope is different from zero, then the data are detrended by the slope and the AR(1) 1s calculated for the detrended time series. The residuals and the trend are combined and then tested for significance using the Mann-Kendall trend test.</p>
-<p>The trending function results in a list containing two tibble data frame outputs and, if selected, plot for each metric trended.</p>
+<p>Determining trends in streamflow data can provide information on
+potential changes in hydrological processes over time. The annual
+trending analysis with <code>fasstr</code> allows for customization of
+both the inputs and outputs. This function takes up to 107 annual
+streamflow metrics (calculated using various annual <code>fasstr</code>
+functions) and calculates prewhitened, non-parametric trends using the
+Mann-Kendall test performed using the <a href="https://CRAN.R-project.org/package=zyp" class="external-link"><code>zyp</code></a> R
+package. See the <code>zyp</code> <a href="https://CRAN.R-project.org/package=zyp/zyp.pdf" class="external-link">documentation</a>
+for more information on the methods.</p>
+<p>Each annual metric/time-series is analyzed for trends using
+trend-free prewhitening to remove lag-1 correlation (may artificially
+detect a significant trend). The slope of each metric over time is then
+estimated using the Theil-Sen approach. If the estimated slope is
+different from zero, then the data are detrended by the slope and the
+AR(1) 1s calculated for the detrended time series. The residuals and the
+trend are combined and then tested for significance using the
+Mann-Kendall trend test.</p>
+<p>The trending function results in a list containing two tibble data
+frame outputs and, if selected, plot for each metric trended.</p>
 <ol style="list-style-type: decimal">
 <li>
-<strong>Annual_Trends_Data</strong> - data used for analysis calculated from various annual <code>fasstr</code> functions</li>
+<strong>Annual_Trends_Data</strong> - data used for analysis
+calculated from various annual <code>fasstr</code> functions</li>
 <li>
-<strong>Annual_Trends_Results</strong> - results of the <code>zyp</code> trending analysis, and includes various other statistics</li>
+<strong>Annual_Trends_Results</strong> - results of the
+<code>zyp</code> trending analysis, and includes various other
+statistics</li>
 <li>
-<strong>‘Sep_Maximum’</strong> - an example of each of 107 plots produced (one for each metric)</li>
+<strong>‘Sep_Maximum’</strong> - an example of each of 107 plots
+produced (one for each metric)</li>
 </ol>
 </div>
 <div class="section level2">
@@ -155,7 +185,12 @@
 <ul>
 <li><code><a href="../reference/compute_annual_trends.html">compute_annual_trends()</a></code></li>
 </ul>
-<p>To determine annual trends from a daily streamflow data set, the <code><a href="../reference/compute_annual_trends.html">compute_annual_trends()</a></code> function will take daily data, either from HYDAT using the <code>station_number</code> argument or your own data frame of data using the <code>data</code> argument to complete the analysis. To complete a custom trends analysis of data please see the <code>zyp</code> functions for more information.</p>
+<p>To determine annual trends from a daily streamflow data set, the
+<code><a href="../reference/compute_annual_trends.html">compute_annual_trends()</a></code> function will take daily data,
+either from HYDAT using the <code>station_number</code> argument or your
+own data frame of data using the <code>data</code> argument to complete
+the analysis. To complete a custom trends analysis of data please see
+the <code>zyp</code> functions for more information.</p>
 </div>
 <div class="section level2">
 <h2 id="usage-options-and-outputs">Usage, Options, and Outputs<a class="anchor" aria-label="anchor" href="#usage-options-and-outputs"></a>
@@ -163,23 +198,39 @@
 <div class="section level3">
 <h3 id="analysis-data">Analysis Data<a class="anchor" aria-label="anchor" href="#analysis-data"></a>
 </h3>
-<p>This function is provided to calculate trends on a multitude of annual metrics, as calculate by various annual and monthly <code>fasstr</code> functions. The functions will calculate metrics from each of the following functions:</p>
+<p>This function is provided to calculate trends on a multitude of
+annual metrics, as calculate by various annual and monthly
+<code>fasstr</code> functions. The functions will calculate metrics from
+each of the following functions:</p>
 <ul>
 <li>
-<code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code> - calculate annual summary statistics</li>
+<code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code> - calculate annual summary
+statistics</li>
 <li>
-<code><a href="../reference/calc_annual_cumulative_stats.html">calc_annual_cumulative_stats()</a></code> - calculate annual and seasonal cumulative flows, both volume and yield</li>
+<code><a href="../reference/calc_annual_cumulative_stats.html">calc_annual_cumulative_stats()</a></code> - calculate annual and
+seasonal cumulative flows, both volume and yield</li>
 <li>
-<code><a href="../reference/calc_annual_flow_timing.html">calc_annual_flow_timing()</a></code> - calculate annual flow timing</li>
+<code><a href="../reference/calc_annual_flow_timing.html">calc_annual_flow_timing()</a></code> - calculate annual flow
+timing</li>
 <li>
 <code><a href="../reference/calc_annual_lowflows.html">calc_annual_lowflows()</a></code> - calculate annual lowflows</li>
 <li>
-<code><a href="../reference/calc_annual_outside_normal.html">calc_annual_outside_normal()</a></code> - calculate annual days above and below normal</li>
+<code><a href="../reference/calc_annual_normal_days.html">calc_annual_normal_days()</a></code> - calculate annual days above
+and below normal</li>
 <li>
-<code><a href="../reference/calc_monthly_stats.html">calc_monthly_stats()</a></code> - calculate annual monthly summary statistics</li>
+<code><a href="../reference/calc_monthly_stats.html">calc_monthly_stats()</a></code> - calculate annual monthly summary
+statistics</li>
 </ul>
-<p>While each of the different metrics have default variables for their arguments, many of them can be customized. The following table shows which arguments are used for which statistics and what the defaults are. See the documentation for more information.</p>
+<p>While each of the different metrics have default variables for their
+arguments, many of them can be customized. The following table shows
+which arguments are used for which statistics and what the defaults are.
+See the documentation for more information.</p>
 <table class="table">
+<colgroup>
+<col width="23%">
+<col width="24%">
+<col width="51%">
+</colgroup>
 <thead><tr class="header">
 <th>Argument</th>
 <th>Corresponding Function</th>
@@ -199,14 +250,16 @@
 <tr class="odd">
 <td><code>stats_days</code></td>
 <td>
-<code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code> &amp; <code><a href="../reference/calc_monthly_stats.html">calc_monthly_stats()</a></code>
+<code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code> &amp;
+<code><a href="../reference/calc_monthly_stats.html">calc_monthly_stats()</a></code>
 </td>
 <td><code>1</code></td>
 </tr>
 <tr class="even">
 <td><code>stats_align</code></td>
 <td>
-<code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code> &amp; <code><a href="../reference/calc_monthly_stats.html">calc_monthly_stats()</a></code>
+<code><a href="../reference/calc_annual_stats.html">calc_annual_stats()</a></code> &amp;
+<code><a href="../reference/calc_monthly_stats.html">calc_monthly_stats()</a></code>
 </td>
 <td><code>"right"</code></td>
 </tr>
@@ -227,12 +280,19 @@
 </tr>
 <tr class="even">
 <td><code>normal_percentiles</code></td>
-<td><code><a href="../reference/calc_annual_outside_normal.html">calc_annual_outside_normal()</a></code></td>
+<td><code><a href="../reference/calc_annual_normal_days.html">calc_annual_normal_days()</a></code></td>
 <td><code>c(25,75)</code></td>
 </tr>
 </tbody>
 </table>
-<p>With fasstr version 0.4.0, the <code>months</code> argument is now included in the trending function to specify which months of the year to include for trending. For example, selecting <code>months = 7:9</code> means that all annual and monthly statistics will be calculated just from July through September to be tested for trends. This gives the user more flexibility to trend more statistics. Since selecting months may complicate seasonal totals, seasonal yields and seasonal volumes are not included in the results if not all 12 months are selected.</p>
+<p>With fasstr version 0.4.0, the <code>months</code> argument is now
+included in the trending function to specify which months of the year to
+include for trending. For example, selecting <code>months = 7:9</code>
+means that all annual and monthly statistics will be calculated just
+from July through September to be tested for trends. This gives the user
+more flexibility to trend more statistics. Since selecting months may
+complicate seasonal totals, seasonal yields and seasonal volumes are not
+included in the results if not all 12 months are selected.</p>
 <div class="section level4">
 <h4 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
 </h4>
@@ -254,155 +314,173 @@
                       lowflow_align <span class="op">=</span> <span class="st">"right"</span>,
                       timing_percent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">33</span>,<span class="fl">50</span>,<span class="fl">75</span><span class="op">)</span>,
                       normal_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">75</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>Example with custom months arguments that will trend data only from May through September:</p>
+<p>Example with custom months arguments that will trend data only from
+May through September:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
                       zyp_method <span class="op">=</span> <span class="st">"zhang"</span>,
                       start_year <span class="op">=</span> <span class="fl">1973</span>, end_year <span class="op">=</span> <span class="fl">2013</span>,
                       months <span class="op">=</span> <span class="fl">5</span><span class="op">:</span><span class="fl">9</span><span class="op">)</span></code></pre></div>
-<p>This annual data is provided in the <strong>Annual_Trends_Data</strong> tibble objects. The following is an example of the output, including all the annual metrics and a first few years of data used for the <code>zyp</code> trends analysis:</p>
-<pre><code>              Statistic          1973          1974          1975
-1        Annual_Maximum        37.700        66.000        48.700
-2           Annual_Mean         3.331         8.430         5.483
-3         Annual_Median         0.980         1.340         1.540
-4        Annual_Minimum         0.025         0.447         0.320
-5            Annual_P10         0.549         0.709         0.580
-6            Annual_P90         8.832        32.980        19.580
-7             Min_1_Day         0.025         0.447         0.320
-8         Min_1_Day_DoY       293.000       333.000        11.000
-9             Min_3_Day         0.045         0.533         0.378
-10        Min_3_Day_DoY       295.000       334.000        39.000
-11            Min_7_Day         0.194         0.602         0.416
-12        Min_7_Day_DoY       299.000       346.000        41.000
-13           Min_30_Day         0.574         0.665         0.494
-14       Min_30_Day_DoY       249.000       358.000        58.000
-15      Total_Volume_m3 105036393.421 265854182.477 172900396.854
-16    Jan-Jun_Volume_m3  84993926.226 223662988.720 136045958.439
-17    Jul-Dec_Volume_m3  20042467.195  42191193.757  36854438.415
-18    Jan-Mar_Volume_m3   5734540.834   8368012.779   5258217.605
-19    Apr-Jun_Volume_m3  79259385.392 215294975.941 130787740.834
-20    Jul-Sep_Volume_m3   7503580.782  35216640.131  24657350.460
-21    Oct-Dec_Volume_m3  12538886.413   6974553.626  12197087.955
-22       Total_Yield_mm       132.121       334.408       217.485
-23     Jan-Jun_Yield_mm       106.911       281.337       171.127
-24     Jul-Dec_Yield_mm        25.211        53.071        46.358
-25     Jan-Mar_Yield_mm         7.213        10.526         6.614
-26     Apr-Jun_Yield_mm        99.697       270.811       164.513
-27     Jul-Sep_Yield_mm         9.438        44.298        31.016
-28     Oct-Dec_Yield_mm        15.772         8.773        15.342
-29     DoY_25pct_TotalQ       138.000       135.000       146.000
-30     DoY_33pct_TotalQ       141.000       146.000       153.000
-31     DoY_50pct_TotalQ       151.000       158.000       162.000
-32     DoY_75pct_TotalQ       172.000       173.000       177.000
-33    Days_Below_Normal       230.000        69.000       129.000
-34    Days_Above_Normal        15.000        75.000        30.000
-35  Days_Outside_Normal       245.000       144.000       159.000
-36             Jan_Mean         0.730         1.023         0.625
-37           Jan_Median         0.705         1.020         0.595
-38          Jan_Maximum         0.963         1.260         1.050
-39          Jan_Minimum         0.595         0.864         0.320
-40              Jan_P10         0.626         0.906         0.507
-41              Jan_P20         0.643         0.934         0.538
-42             Feb_Mean         0.670         0.985         0.490
-43           Feb_Median         0.676         0.984         0.483
-44          Feb_Maximum         0.728         1.060         0.614
-45          Feb_Minimum         0.595         0.830         0.368
-46              Feb_P10         0.619         0.944         0.407
-47              Feb_P20         0.632         0.957         0.449
-48             Mar_Mean         0.806         1.211         0.896
-49           Mar_Median         0.799         1.120         0.943
-50          Mar_Maximum         0.951         2.140         1.390
-51          Mar_Minimum         0.685         0.855         0.677
-52              Mar_P10         0.708         0.937         0.694
-53              Mar_P20         0.736         0.983         0.716
-54             Apr_Mean         1.774         7.761         1.789
-55           Apr_Median         1.510         4.910         1.780
-56          Apr_Maximum         3.450        28.300         3.400
-57          Apr_Minimum         0.852         1.850         0.949
-58              Apr_P10         0.963         1.919         0.984
-59              Apr_P20         1.116         2.070         1.036
-60             May_Mean        16.395        29.845        16.274
-61           May_Median        15.200        30.300        16.800
-62          May_Maximum        37.700        50.400        32.300
-63          May_Minimum         3.450        15.900         3.340
-64              May_P10         4.420        17.500         5.210
-65              May_P20         5.950        20.100         6.820
-66             Jun_Mean        11.863        44.460        31.853
-67           Jun_Median        10.350        44.900        30.850
-68          Jun_Maximum        26.900        66.000        48.700
-69          Jun_Minimum         3.880        20.600        13.000
-70              Jun_P10         6.104        25.610        17.240
-71              Jun_P20         7.204        33.280        23.820
-72             Jul_Mean         1.422         9.966         4.922
-73           Jul_Median         0.926         8.210         3.450
-74          Jul_Maximum         4.980        24.800        10.900
-75          Jul_Minimum         0.462         2.420         1.180
-76              Jul_P10         0.518         3.790         1.250
-77              Jul_P20         0.561         5.380         1.460
-78             Aug_Mean         0.615         1.761         2.274
-79           Aug_Median         0.564         1.610         1.680
-80          Aug_Maximum         1.100         3.710         5.920
-81          Aug_Minimum         0.326         0.960         0.736
-82              Aug_P10         0.453         1.200         0.974
-83              Aug_P20         0.476         1.280         1.180
-84             Sep_Mean         0.789         1.468         2.076
-85           Sep_Median         0.685         1.395         1.750
-86          Sep_Maximum         2.270         2.100         5.100
-87          Sep_Minimum         0.399         1.130         1.390
-88              Sep_P10         0.470         1.199         1.460
-89              Sep_P20         0.496         1.246         1.536
-90             Oct_Mean         1.630         1.231         1.845
-91           Oct_Median         0.867         1.120         1.840
-92          Oct_Maximum         8.070         2.080         2.210
-93          Oct_Minimum         0.025         0.838         1.510
-94              Oct_P10         0.113         0.867         1.650
-95              Oct_P20         0.416         0.903         1.740
-96             Nov_Mean         1.760         0.710         1.488
-97           Nov_Median         1.485         0.711         1.400
-98          Nov_Maximum         3.060         0.943         2.940
-99          Nov_Minimum         1.220         0.447         0.906
-100             Nov_P10         1.327         0.616         1.047
-101             Nov_P20         1.350         0.633         1.128
-102            Dec_Mean         1.349         0.686         1.268
-103          Dec_Median         1.400         0.680         1.290
-104         Dec_Maximum         1.830         0.850         1.590
-105         Dec_Minimum         0.977         0.541         0.991
-106             Dec_P10         1.020         0.609         1.050
-107             Dec_P20         1.210         0.637         1.120</code></pre>
-<p>To provide examples of the outputs, an analysis will be completed on a Mission Creek HYDAT station from 1973 to 2013. The argument <code>zyp_method</code> is described below in the Analysis Results section:</p>
+<p>This annual data is provided in the
+<strong>Annual_Trends_Data</strong> tibble objects. The following is an
+example of the output, including all the annual metrics and a first few
+years of data used for the <code>zyp</code> trends analysis:</p>
+<pre><code>            Statistic          1973          1974          1975
+1      Annual_Maximum        37.700        66.000        48.700
+2         Annual_Mean         3.331         8.430         5.483
+3       Annual_Median         0.980         1.340         1.540
+4      Annual_Minimum         0.025         0.447         0.320
+5          Annual_P10         0.549         0.709         0.580
+6          Annual_P90         8.832        32.980        19.580
+7           Min_1_Day         0.025         0.447         0.320
+8       Min_1_Day_DoY       293.000       333.000        11.000
+9           Min_3_Day         0.045         0.533         0.378
+10      Min_3_Day_DoY       295.000       334.000        39.000
+11          Min_7_Day         0.194         0.602         0.416
+12      Min_7_Day_DoY       299.000       346.000        41.000
+13         Min_30_Day         0.574         0.665         0.494
+14     Min_30_Day_DoY       249.000       358.000        58.000
+15    Total_Volume_m3 105036393.421 265854182.477 172900396.854
+16  Jan-Jun_Volume_m3  84993926.226 223662988.720 136045958.439
+17  Jul-Dec_Volume_m3  20042467.195  42191193.757  36854438.415
+18  Jan-Mar_Volume_m3   5734540.834   8368012.779   5258217.605
+19  Apr-Jun_Volume_m3  79259385.392 215294975.941 130787740.834
+20  Jul-Sep_Volume_m3   7503580.782  35216640.131  24657350.460
+21  Oct-Dec_Volume_m3  12538886.413   6974553.626  12197087.955
+22     Total_Yield_mm       132.121       334.408       217.485
+23   Jan-Jun_Yield_mm       106.911       281.337       171.127
+24   Jul-Dec_Yield_mm        25.211        53.071        46.358
+25   Jan-Mar_Yield_mm         7.213        10.526         6.614
+26   Apr-Jun_Yield_mm        99.697       270.811       164.513
+27   Jul-Sep_Yield_mm         9.438        44.298        31.016
+28   Oct-Dec_Yield_mm        15.772         8.773        15.342
+29   DoY_25pct_TotalQ       138.000       135.000       146.000
+30   DoY_33pct_TotalQ       141.000       146.000       153.000
+31   DoY_50pct_TotalQ       151.000       158.000       162.000
+32   DoY_75pct_TotalQ       172.000       173.000       177.000
+33        Normal_Days       120.000       221.000       206.000
+34  Below_Normal_Days       230.000        69.000       129.000
+35  Above_Normal_Days        15.000        75.000        30.000
+36           Jan_Mean         0.730         1.023         0.625
+37         Jan_Median         0.705         1.020         0.595
+38        Jan_Maximum         0.963         1.260         1.050
+39        Jan_Minimum         0.595         0.864         0.320
+40            Jan_P10         0.626         0.906         0.507
+41            Jan_P20         0.643         0.934         0.538
+42           Feb_Mean         0.670         0.985         0.490
+43         Feb_Median         0.676         0.984         0.483
+44        Feb_Maximum         0.728         1.060         0.614
+45        Feb_Minimum         0.595         0.830         0.368
+46            Feb_P10         0.619         0.944         0.407
+47            Feb_P20         0.632         0.957         0.449
+48           Mar_Mean         0.806         1.211         0.896
+49         Mar_Median         0.799         1.120         0.943
+50        Mar_Maximum         0.951         2.140         1.390
+51        Mar_Minimum         0.685         0.855         0.677
+52            Mar_P10         0.708         0.937         0.694
+53            Mar_P20         0.736         0.983         0.716
+54           Apr_Mean         1.774         7.761         1.789
+55         Apr_Median         1.510         4.910         1.780
+56        Apr_Maximum         3.450        28.300         3.400
+57        Apr_Minimum         0.852         1.850         0.949
+58            Apr_P10         0.963         1.919         0.984
+59            Apr_P20         1.116         2.070         1.036
+60           May_Mean        16.395        29.845        16.274
+61         May_Median        15.200        30.300        16.800
+62        May_Maximum        37.700        50.400        32.300
+63        May_Minimum         3.450        15.900         3.340
+64            May_P10         4.420        17.500         5.210
+65            May_P20         5.950        20.100         6.820
+66           Jun_Mean        11.863        44.460        31.853
+67         Jun_Median        10.350        44.900        30.850
+68        Jun_Maximum        26.900        66.000        48.700
+69        Jun_Minimum         3.880        20.600        13.000
+70            Jun_P10         6.104        25.610        17.240
+71            Jun_P20         7.204        33.280        23.820
+72           Jul_Mean         1.422         9.966         4.922
+73         Jul_Median         0.926         8.210         3.450
+74        Jul_Maximum         4.980        24.800        10.900
+75        Jul_Minimum         0.462         2.420         1.180
+76            Jul_P10         0.518         3.790         1.250
+77            Jul_P20         0.561         5.380         1.460
+78           Aug_Mean         0.615         1.761         2.274
+79         Aug_Median         0.564         1.610         1.680
+80        Aug_Maximum         1.100         3.710         5.920
+81        Aug_Minimum         0.326         0.960         0.736
+82            Aug_P10         0.453         1.200         0.974
+83            Aug_P20         0.476         1.280         1.180
+84           Sep_Mean         0.789         1.468         2.076
+85         Sep_Median         0.685         1.395         1.750
+86        Sep_Maximum         2.270         2.100         5.100
+87        Sep_Minimum         0.399         1.130         1.390
+88            Sep_P10         0.470         1.199         1.460
+89            Sep_P20         0.496         1.246         1.536
+90           Oct_Mean         1.630         1.231         1.845
+91         Oct_Median         0.867         1.120         1.840
+92        Oct_Maximum         8.070         2.080         2.210
+93        Oct_Minimum         0.025         0.838         1.510
+94            Oct_P10         0.113         0.867         1.650
+95            Oct_P20         0.416         0.903         1.740
+96           Nov_Mean         1.760         0.710         1.488
+97         Nov_Median         1.485         0.711         1.400
+98        Nov_Maximum         3.060         0.943         2.940
+99        Nov_Minimum         1.220         0.447         0.906
+100           Nov_P10         1.327         0.616         1.047
+101           Nov_P20         1.350         0.633         1.128
+102          Dec_Mean         1.349         0.686         1.268
+103        Dec_Median         1.400         0.680         1.290
+104       Dec_Maximum         1.830         0.850         1.590
+105       Dec_Minimum         0.977         0.541         0.991
+106           Dec_P10         1.020         0.609         1.050
+107           Dec_P20         1.210         0.637         1.120</code></pre>
+<p>To provide examples of the outputs, an analysis will be completed on
+a Mission Creek HYDAT station from 1973 to 2013. The argument
+<code>zyp_method</code> is described below in the Analysis Results
+section:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">trends_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
                                          zyp_method <span class="op">=</span> <span class="st">"zhang"</span>,
                                          start_year <span class="op">=</span> <span class="fl">1973</span>, end_year <span class="op">=</span> <span class="fl">2013</span><span class="op">)</span></code></pre></div>
-<p>The following is an example of the outputted <strong>Annual_Trends_Data</strong> tibble:</p>
+<p>The following is an example of the outputted
+<strong>Annual_Trends_Data</strong> tibble:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">trends_analysis</span><span class="op">$</span><span class="va">Annual_Trends_Data</span></code></pre></div>
-<pre><code> [38;5;246m# A tibble: 107 x 43 [39m
+<pre><code> [38;5;246m# A tibble: 107 × 43 [39m
    STATION_NUMBER Statistic  `1973`  `1974` `1975` `1976`  `1977` `1978`  `1979`
     [3m [38;5;246m&lt;chr&gt; [39m [23m           [3m [38;5;246m&lt;fct&gt; [39m [23m        [3m [38;5;246m&lt;dbl&gt; [39m [23m    [3m [38;5;246m&lt;dbl&gt; [39m [23m   [3m [38;5;246m&lt;dbl&gt; [39m [23m   [3m [38;5;246m&lt;dbl&gt; [39m [23m    [3m [38;5;246m&lt;dbl&gt; [39m [23m   [3m [38;5;246m&lt;dbl&gt; [39m [23m    [3m [38;5;246m&lt;dbl&gt; [39m [23m
- [38;5;250m 1 [39m 08NM116        Annual_M~ 3.77 [38;5;246me [39m+1  66     48.7   71.1    36     44.5    43    
- [38;5;250m 2 [39m 08NM116        Annual_M~ 3.33 [38;5;246me [39m+0   8.43   5.48   8.18    4.38   6.75    4.40 
- [38;5;250m 3 [39m 08NM116        Annual_M~ 9.80 [38;5;246me [39m [31m-1 [39m   1.34   1.54   3.84    1.26   3.28    1.56 
- [38;5;250m 4 [39m 08NM116        Annual_M~ 2.50 [38;5;246me [39m [31m-2 [39m   0.447  0.320  0.736   0.564  0.532   0.411
- [38;5;250m 5 [39m 08NM116        Annual_P~ 5.49 [38;5;246me [39m [31m-1 [39m   0.709  0.580  0.884   0.776  0.828   0.618
- [38;5;250m 6 [39m 08NM116        Annual_P~ 8.83 [38;5;246me [39m+0  33.0   19.6   25.6    17.2   19.7    15.9  
+ [38;5;250m 1 [39m 08NM116        Annual_M… 3.77 [38;5;246me [39m+1  66     48.7   71.1    36     44.5    43    
+ [38;5;250m 2 [39m 08NM116        Annual_M… 3.33 [38;5;246me [39m+0   8.43   5.48   8.18    4.38   6.75    4.40 
+ [38;5;250m 3 [39m 08NM116        Annual_M… 9.80 [38;5;246me [39m [31m-1 [39m   1.34   1.54   3.84    1.26   3.28    1.56 
+ [38;5;250m 4 [39m 08NM116        Annual_M… 2.50 [38;5;246me [39m [31m-2 [39m   0.447  0.320  0.736   0.564  0.532   0.411
+ [38;5;250m 5 [39m 08NM116        Annual_P… 5.49 [38;5;246me [39m [31m-1 [39m   0.709  0.580  0.884   0.776  0.828   0.618
+ [38;5;250m 6 [39m 08NM116        Annual_P… 8.83 [38;5;246me [39m+0  33.0   19.6   25.6    17.2   19.7    15.9  
  [38;5;250m 7 [39m 08NM116        Min_1_Day 2.50 [38;5;246me [39m [31m-2 [39m   0.447  0.320  0.736   0.564  0.532   0.411
- [38;5;250m 8 [39m 08NM116        Min_1_Da~ 2.93 [38;5;246me [39m+2 333     11     38      73     55     268    
+ [38;5;250m 8 [39m 08NM116        Min_1_Da… 2.93 [38;5;246me [39m+2 333     11     38      73     55     268    
  [38;5;250m 9 [39m 08NM116        Min_3_Day 4.53 [38;5;246me [39m [31m-2 [39m   0.533  0.378  0.741   0.627  0.630   0.416
- [38;5;250m10 [39m 08NM116        Min_3_Da~ 2.95 [38;5;246me [39m+2 334     39     63     252      3     269    
- [38;5;246m# ... with 97 more rows, and 34 more variables: 1980 &lt;dbl&gt;, 1981 &lt;dbl&gt;, [39m
- [38;5;246m#   1982 &lt;dbl&gt;, 1983 &lt;dbl&gt;, 1984 &lt;dbl&gt;, 1985 &lt;dbl&gt;, 1986 &lt;dbl&gt;, 1987 &lt;dbl&gt;, [39m
- [38;5;246m#   1988 &lt;dbl&gt;, 1989 &lt;dbl&gt;, 1990 &lt;dbl&gt;, 1991 &lt;dbl&gt;, 1992 &lt;dbl&gt;, 1993 &lt;dbl&gt;, [39m
- [38;5;246m#   1994 &lt;dbl&gt;, 1995 &lt;dbl&gt;, 1996 &lt;dbl&gt;, 1997 &lt;dbl&gt;, 1998 &lt;dbl&gt;, 1999 &lt;dbl&gt;, [39m
- [38;5;246m#   2000 &lt;dbl&gt;, 2001 &lt;dbl&gt;, 2002 &lt;dbl&gt;, 2003 &lt;dbl&gt;, 2004 &lt;dbl&gt;, 2005 &lt;dbl&gt;, [39m
- [38;5;246m#   2006 &lt;dbl&gt;, 2007 &lt;dbl&gt;, 2008 &lt;dbl&gt;, 2009 &lt;dbl&gt;, 2010 &lt;dbl&gt;, 2011 &lt;dbl&gt;, [39m
- [38;5;246m#   2012 &lt;dbl&gt;, 2013 &lt;dbl&gt; [39m</code></pre>
+ [38;5;250m10 [39m 08NM116        Min_3_Da… 2.95 [38;5;246me [39m+2 334     39     63     252      3     269    
+ [38;5;246m# … with 97 more rows, and 34 more variables: `1980` &lt;dbl&gt;, `1981` &lt;dbl&gt;, [39m
+ [38;5;246m#   `1982` &lt;dbl&gt;, `1983` &lt;dbl&gt;, `1984` &lt;dbl&gt;, `1985` &lt;dbl&gt;, `1986` &lt;dbl&gt;, [39m
+ [38;5;246m#   `1987` &lt;dbl&gt;, `1988` &lt;dbl&gt;, `1989` &lt;dbl&gt;, `1990` &lt;dbl&gt;, `1991` &lt;dbl&gt;, [39m
+ [38;5;246m#   `1992` &lt;dbl&gt;, `1993` &lt;dbl&gt;, `1994` &lt;dbl&gt;, `1995` &lt;dbl&gt;, `1996` &lt;dbl&gt;, [39m
+ [38;5;246m#   `1997` &lt;dbl&gt;, `1998` &lt;dbl&gt;, `1999` &lt;dbl&gt;, `2000` &lt;dbl&gt;, `2001` &lt;dbl&gt;, [39m
+ [38;5;246m#   `2002` &lt;dbl&gt;, `2003` &lt;dbl&gt;, `2004` &lt;dbl&gt;, `2005` &lt;dbl&gt;, `2006` &lt;dbl&gt;, [39m
+ [38;5;246m#   `2007` &lt;dbl&gt;, `2008` &lt;dbl&gt;, `2009` &lt;dbl&gt;, `2010` &lt;dbl&gt;, `2011` &lt;dbl&gt;, … [39m</code></pre>
 </div>
 </div>
 <div class="section level3">
 <h3 id="analysis-results">Analysis Results<a class="anchor" aria-label="anchor" href="#analysis-results"></a>
 </h3>
-<p>To complete a trends analysis, a variable to the <code>zyp_method</code> argument must be provided, either <code>"zhang"</code> or <code>"yuepilon"</code>, designating the two different approaches to analyzing data for trends. The <code>zhang</code> method is recommended for hydrologic applications over <code>yuepilon</code> (see <code>zyp</code> documentation for more information on the differences between the two methods). After running the function, the results of the trending analysis will be outputted in the <strong>Annual_Trends_Results</strong> tibble data frame. See the <code>zyp</code> documentation for how to interpret the results. The results tibble contains the following columns:</p>
+<p>To complete a trends analysis, a variable to the
+<code>zyp_method</code> argument must be provided, either
+<code>"zhang"</code> or <code>"yuepilon"</code>, designating the two
+different approaches to analyzing data for trends. The
+<code>zhang</code> method is recommended for hydrologic applications
+over <code>yuepilon</code> (see <code>zyp</code> documentation for more
+information on the differences between the two methods). After running
+the function, the results of the trending analysis will be outputted in
+the <strong>Annual_Trends_Results</strong> tibble data frame. See the
+<code>zyp</code> documentation for how to interpret the results. The
+results tibble contains the following columns:</p>
 <table class="table">
 <colgroup>
 <col width="16%">
@@ -419,7 +497,8 @@
 </tr>
 <tr class="even">
 <td>lbound</td>
-<td>the lower bound of the trend’s confidence interval (<code>zyp</code>)</td>
+<td>the lower bound of the trend’s confidence interval
+(<code>zyp</code>)</td>
 </tr>
 <tr class="odd">
 <td>trend</td>
@@ -431,27 +510,33 @@
 </tr>
 <tr class="odd">
 <td>ubound</td>
-<td>the upper bound of the trend’s confidence interval (<code>zyp</code>)</td>
+<td>the upper bound of the trend’s confidence interval
+(<code>zyp</code>)</td>
 </tr>
 <tr class="even">
 <td>tau</td>
-<td>Kendall’s tau statistic computed on the final detrended timeseries (<code>zyp</code>)</td>
+<td>Kendall’s tau statistic computed on the final detrended timeseries
+(<code>zyp</code>)</td>
 </tr>
 <tr class="odd">
 <td>sig</td>
-<td>Kendall’s P-value computed for the final detrended timeseries (<code>zyp</code>)</td>
+<td>Kendall’s P-value computed for the final detrended timeseries
+(<code>zyp</code>)</td>
 </tr>
 <tr class="even">
 <td>nruns</td>
-<td>the number of runs required to converge upon a trend (<code>zyp</code>)</td>
+<td>the number of runs required to converge upon a trend
+(<code>zyp</code>)</td>
 </tr>
 <tr class="odd">
 <td>autocor</td>
-<td>the autocorrelation of the final detrended timeseries (<code>zyp</code>)</td>
+<td>the autocorrelation of the final detrended timeseries
+(<code>zyp</code>)</td>
 </tr>
 <tr class="even">
 <td>valid_frac</td>
-<td>the fraction of the data which is valid (not NA) once autocorrelation is removed (<code>zyp</code>)</td>
+<td>the fraction of the data which is valid (not NA) once
+autocorrelation is removed (<code>zyp</code>)</td>
 </tr>
 <tr class="odd">
 <td>linear</td>
@@ -491,10 +576,12 @@
 </tr>
 </tbody>
 </table>
-<p>The following is an example of the outputted <strong>Annual_Trends_Results</strong> tibble from the Mission Creek HYDAT station from 1973 to 2013:</p>
+<p>The following is an example of the outputted
+<strong>Annual_Trends_Results</strong> tibble from the Mission Creek
+HYDAT station from 1973 to 2013:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">trends_analysis</span><span class="op">$</span><span class="va">Annual_Trends_Results</span></code></pre></div>
-<pre><code> [38;5;246m# A tibble: 107 x 20 [39m
+<pre><code> [38;5;246m# A tibble: 107 × 20 [39m
    STATION_NUMBER Statistic        lbound    trend  trendp  ubound     tau   sig
     [3m [38;5;246m&lt;chr&gt; [39m [23m           [3m [38;5;246m&lt;fct&gt; [39m [23m              [3m [38;5;246m&lt;dbl&gt; [39m [23m     [3m [38;5;246m&lt;dbl&gt; [39m [23m    [3m [38;5;246m&lt;dbl&gt; [39m [23m    [3m [38;5;246m&lt;dbl&gt; [39m [23m    [3m [38;5;246m&lt;dbl&gt; [39m [23m  [3m [38;5;246m&lt;dbl&gt; [39m [23m
  [38;5;250m 1 [39m 08NM116        Annual_Maximum - [31m0 [39m [31m. [39m [31m368 [39m    5.71 [38;5;246me [39m [31m-2 [39m  2.34   0.517    0.040 [4m3 [24m 0.719
@@ -507,7 +594,7 @@
  [38;5;250m 8 [39m 08NM116        Min_1_Day_DoY  - [31m0 [39m [31m. [39m [31m5 [39m      1.74 [38;5;246me [39m+0 71.3    6.55     0.151  0.170
  [38;5;250m 9 [39m 08NM116        Min_3_Day      - [31m0 [39m [31m. [39m [31m00 [39m [31m6 [4m9 [24m [4m4 [24m [39m - [31m1 [39m [31m. [39m [31m22 [39m [38;5;246me [39m [31m-3 [39m - [31m0 [39m [31m. [39m [31m0 [39m [31m50 [4m1 [24m [39m 0.005 [4m3 [24m [4m4 [24m - [31m0 [39m [31m. [39m [31m0 [39m [31m28 [4m2 [24m [39m 0.807
  [38;5;250m10 [39m 08NM116        Min_3_Day_DoY  - [31m1 [39m [31m. [39m [31m65 [39m     7.57 [38;5;246me [39m [31m-1 [39m 31.0    3        0.075 [4m8 [24m 0.493
- [38;5;246m# ... with 97 more rows, and 12 more variables: nruns &lt;dbl&gt;, autocor &lt;dbl&gt;, [39m
+ [38;5;246m# … with 97 more rows, and 12 more variables: nruns &lt;dbl&gt;, autocor &lt;dbl&gt;, [39m
  [38;5;246m#   valid_frac &lt;dbl&gt;, linear &lt;dbl&gt;, intercept &lt;dbl&gt;, min_year &lt;dbl&gt;, [39m
  [38;5;246m#   max_year &lt;dbl&gt;, n_years &lt;int&gt;, mean &lt;dbl&gt;, median &lt;dbl&gt;, min &lt;dbl&gt;, [39m
  [38;5;246m#   max &lt;dbl&gt; [39m</code></pre>
@@ -515,8 +602,20 @@
 <div class="section level3">
 <h3 id="annual-trends-plots">Annual Trends Plots<a class="anchor" aria-label="anchor" href="#annual-trends-plots"></a>
 </h3>
-<p>To provide the ability to visualize the trends, a time-series plot for each metric is provided when <code>include_plots = TRUE</code> (default; set it to <code>FALSE</code> to produce no plots). Each plot will show the annual value for all years and if a numerical <code>zyp_alpha</code> value, a significance level indicating the trend exists, is provided (typically <code>0.05</code>) then a trend line of the calculated Sen’s Slope will also be plotted through the data. To plot no slopes, set <code>zyp_alpha = NA</code> (default) and to plot the lines regardless of significance, set <code>zyp_alpha = 1</code>. The metric name along with the significance level will be included as the title of the plot.</p>
-<p>The following plots demonstrate examples of where the <code>zyp_alpha</code> value is set to 0.05 and Sen’s Slopes trends are not and are significant, respectively.</p>
+<p>To provide the ability to visualize the trends, a time-series plot
+for each metric is provided when <code>include_plots = TRUE</code>
+(default; set it to <code>FALSE</code> to produce no plots). Each plot
+will show the annual value for all years and if a numerical
+<code>zyp_alpha</code> value, a significance level indicating the trend
+exists, is provided (typically <code>0.05</code>) then a trend line of
+the calculated Sen’s Slope will also be plotted through the data. To
+plot no slopes, set <code>zyp_alpha = NA</code> (default) and to plot
+the lines regardless of significance, set <code>zyp_alpha = 1</code>.
+The metric name along with the significance level will be included as
+the title of the plot.</p>
+<p>The following plots demonstrate examples of where the
+<code>zyp_alpha</code> value is set to 0.05 and Sen’s Slopes trends are
+not and are significant, respectively.</p>
 <p><img src="fasstr_trending_analysis_files/figure-html/unnamed-chunk-10-1.png" width="672"></p>
 <p><img src="fasstr_trending_analysis_files/figure-html/unnamed-chunk-11-1.png" width="672"></p>
 </div>
@@ -540,7 +639,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer>

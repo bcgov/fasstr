@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -38,7 +38,7 @@
   <a href="../reference/index.html">Functions</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -109,7 +109,8 @@
    restart every year and are only calculated in years with complete data.</p>
     </div>
 
-    <div id="ref-usage">Usage,<div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">add_cumulative_yield</span><span class="op">(</span>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">add_cumulative_yield</span><span class="op">(</span>
   <span class="va">data</span>,
   dates <span class="op">=</span> <span class="va">Date</span>,
   values <span class="op">=</span> <span class="va">Value</span>,
@@ -118,7 +119,8 @@
   <span class="va">basin_area</span>,
   water_year_start <span class="op">=</span> <span class="fl">1</span>,
   months <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span>
-<span class="op">)</span></code></pre></div></div>
+<span class="op">)</span></code></pre></div>
+    </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
@@ -176,7 +178,7 @@ months (<code>1:12</code>).</p></dd>
 <span class="r-in">                     basin_area <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></span>
 <span class="r-in">                     </span>
 <span class="r-in"><span class="op">}</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 21,983 x 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 21,983 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    STATION_NUMBER Date       Parameter Value Symbol Cumul_Yield_mm</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 08NM116        1949-04-01 Flow       1.13 E                  <span style="color: #BB0000;">NA</span></span>
@@ -189,7 +191,7 @@ months (<code>1:12</code>).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 08NM116        1949-04-08 Flow       2.35 <span style="color: #BB0000;">NA</span>                 <span style="color: #BB0000;">NA</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 08NM116        1949-04-09 Flow       2.78 <span style="color: #BB0000;">NA</span>                 <span style="color: #BB0000;">NA</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 08NM116        1949-04-10 Flow       2.94 <span style="color: #BB0000;">NA</span>                 <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ... with 21,973 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 21,973 more rows</span></span>
 </code></pre></div>
     </div>
   </div>
@@ -204,7 +206,7 @@ months (<code>1:12</code>).</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>

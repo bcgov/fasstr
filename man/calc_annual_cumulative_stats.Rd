@@ -107,7 +107,8 @@ calc_annual_cumulative_stats(station_number = "08NM116",
 # Calculate annual total yield statistics with a custom basin area
 calc_annual_cumulative_stats(station_number = "08NM116",
                              use_yield = TRUE,
-                             basin_area = 800) 
+                             basin_area = 800,
+                             start_year = 1980) 
                              
 }
 }

@@ -22,7 +22,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -40,7 +40,7 @@
   <a href="../reference/index.html">Functions</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -113,7 +113,8 @@
    plots, along with saving the Excel and image files in a directory.</p>
     </div>
 
-    <div id="ref-usage">Usage,<div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">write_full_analysis</span><span class="op">(</span>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">write_full_analysis</span><span class="op">(</span>
   <span class="va">data</span>,
   dates <span class="op">=</span> <span class="va">Date</span>,
   values <span class="op">=</span> <span class="va">Value</span>,
@@ -127,13 +128,15 @@
   <span class="va">exclude_years</span>,
   months <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span>,
   ignore_missing <span class="op">=</span> <span class="cn">FALSE</span>,
+  complete_years <span class="op">=</span> <span class="cn">FALSE</span>,
   allowed_missing_annual <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">ignore_missing</span>, <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span>,
   allowed_missing_monthly <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">ignore_missing</span>, <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span>,
   zyp_method <span class="op">=</span> <span class="st">"zhang"</span>,
   <span class="va">zyp_alpha</span>,
   <span class="va">file_name</span>,
   plot_filetype <span class="op">=</span> <span class="st">"pdf"</span>
-<span class="op">)</span></code></pre></div></div>
+<span class="op">)</span></code></pre></div>
+    </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
@@ -189,6 +192,8 @@ months (<code>1:12</code>). If not all months, seasonal total yield and volumetr
 <dd><p>Logical value indicating whether dates with missing values should be included in the calculation. If
 <code>TRUE</code> then a statistic will be calculated regardless of missing dates. If <code>FALSE</code> then only those statistics from
 time periods with no missing dates will be returned. Default <code>FALSE</code>.</p></dd>
+<dt>complete_years</dt>
+<dd><p>Logical values indicating whether to include only years with complete data in analysis. Default <code>FALSE</code>.</p></dd>
 <dt>allowed_missing_annual</dt>
 <dd><p>Numeric value between 0 and 100 indicating the <strong>percentage</strong> of missing dates allowed to be
 included to calculate an annual statistic (0 to 100 percent). If <code>'ignore_missing = FALSE'</code> then it defaults to <code>0</code> 
@@ -233,8 +238,8 @@ of a combined PDF. Default <code>'pdf'</code>.</p></dd>
          <code><a href="plot_annual_cumulative_stats.html">plot_annual_cumulative_stats</a></code>,
          <code><a href="calc_annual_flow_timing.html">calc_annual_flow_timing</a></code>,
          <code><a href="plot_annual_flow_timing.html">plot_annual_flow_timing</a></code>,
-         <code><a href="calc_annual_outside_normal.html">calc_annual_outside_normal</a></code>,
-         <code><a href="plot_annual_outside_normal.html">plot_annual_outside_normal</a></code>,
+         <code><a href="calc_annual_normal_days.html">calc_annual_normal_days</a></code>,
+         <code><a href="plot_annual_normal_days.html">plot_annual_normal_days</a></code>,
          <code><a href="calc_annual_lowflows.html">calc_annual_lowflows</a></code>,
          <code><a href="plot_annual_lowflows.html">plot_annual_lowflows</a></code>,
          <code><a href="plot_annual_means.html">plot_annual_means</a></code>,
@@ -286,7 +291,7 @@ of a combined PDF. Default <code>'pdf'</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>

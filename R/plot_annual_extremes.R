@@ -33,9 +33,10 @@
 #' # default alignment ('right')
 #' plot_annual_extremes(station_number = "08NM116") 
 #' 
-#' # Plot custom annual 3-day max/min flow data with 'center' alignment
+#' # Plot custom annual 3-day max and 7-min flow data with 'center' alignment
 #' plot_annual_extremes(station_number = "08NM116",
-#'                      roll_days = 3,
+#'                      roll_days_high = 3,
+#'                      roll_days_low = 7,
 #'                      roll_align = "center")
 #'                      
 #' }

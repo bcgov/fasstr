@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -35,7 +35,7 @@
   <a href="../reference/index.html">Functions</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -99,7 +99,57 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.4.1" id="fasstr-041">fasstr 0.4.1<a class="anchor" aria-label="anchor" href="#fasstr-041"></a></h2>
+<h2 class="page-header" data-toc-text="0.5.0" id="fasstr-050">fasstr 0.5.0<a class="anchor" aria-label="anchor" href="#fasstr-050"></a></h2>
+<p>Updated: 03 May 2022</p>
+<div class="section level4">
+<h4 id="new-functions-0-5-0">New functions:<a class="anchor" aria-label="anchor" href="#new-functions-0-5-0"></a></h4>
+<ul><li>plot_flow_data_symbols() - plots daily data with coloured points designating symbol categories from symbols column</li>
+<li>plot_annual_symbols() - plots symbols by day of year or annual counts or percent of days with symbols from symbols column<br></li>
+<li>plot_annual_stats2() - plotting annual stats in ribbons (similar to plot_daily_stats)</li>
+<li>plot_monthly_stats2() - plotting faceted monthly stats in ribbons (similar to plot_daily_stats)</li>
+<li>calc_annual_highflows() and plot_annual_highflows() - calcs/plots annual high flow data, similar to _annual_lowflow() functions</li>
+<li>calc_annual_extremes() - plots the values and dates from annual minimums and maximums for each year, replacing calc_annual_peaks()</li>
+<li>plot_annual_extremes() - plots the values and dates from annual minimums and maximums for each year, from calc_annual_extremes()</li>
+<li>plot_annual_extremes_year() - plots the values and dates from annual minimums and maximums fora given year</li>
+<li>calc_annual_normal_days() and plot_annual_normal_days() - counts number of normal and above/below normal days - replaced deprecated _annual_outside_normal() functions</li>
+<li>plot_annual_normal_days_year() - plot days above normal, below normal and normal for a specific year</li>
+<li>plot_annual_flow_timing_year() - plot annual timing of flows for a specific year</li>
+</ul></div>
+<div class="section level4">
+<h4 id="function-updates-0-5-0">Function updates:<a class="anchor" aria-label="anchor" href="#function-updates-0-5-0"></a></h4>
+<ul><li>plot_missing_data() - new default plot type in tile format. Can change to original bar plot using plot_type = “bar”.</li>
+<li>plot_data_screening() - now changes the geom_point style based on if data is complete or has missing data (plot_availability argument) and now allows choice of annual summary statistics (include_stats argument)</li>
+<li>screen_flow_data() - now add columns of counts of symbol categories provided by symbol column (HYDAT Symbol column). Can remove columns by using include_symbols = FALSE.</li>
+<li>plot_annual_means() - added 2 percentile (of annual means) lines to plot, added legend</li>
+<li>calc_annual_peaks() - deprecated, replaced with calc_annual_extremes()</li>
+<li>plot_annual_cumulative_stats() - new default plot type in bar format. Can change to original line plot using plot_type = “line”.</li>
+<li>calc_annual_outside_normal() and plot_annual_outside_normal() - deprecated, replaced with calc_annual_normal_days() and plot_annual_normal_days()</li>
+</ul></div>
+<div class="section level4">
+<h4 id="other-updates-0-5-0">Other updates:<a class="anchor" aria-label="anchor" href="#other-updates-0-5-0"></a></h4>
+<ul><li>Changed colour scales on many plots to the viridis palette</li>
+<li>Can now choose 0 and 100 percentiles (was previously between 1 and 99)</li>
+<li>Added ‘complete_years’ argument to several functions for cross-package consistency. Doesn’t change functionality, but sets/overrides ignore_missing to FALSE and allowed_missing to 0.</li>
+<li>“Year” axes now labeled “Water Year” if water_year_start != 1</li>
+<li>Some appropriate “Day of Year” axes now labeled “Day of Water Year” if water_year_start != 1</li>
+<li>Changed y-axis labels on plots using scales::cut_short_scale() to remove exponents on large numbers</li>
+<li>Annual plots with leading empty years (gaps, missing dates, etc) will now shift plot to first year of data</li>
+</ul></div>
+<div class="section level4">
+<h4 id="bug-fixes-0-5-0">Bug fixes:<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-0"></a></h4>
+<ul><li>complete_years function now applied to all functions in compute_ and write_full_analysis functions</li>
+<li>Removed HYDAT.sqlite file check in compute_HYDAT_peak_frequencies() - leaves check to tidyhydat</li>
+</ul></div>
+<div class="section level4">
+<h4 id="internal-code-0-5-0">Internal code:<a class="anchor" aria-label="anchor" href="#internal-code-0-5-0"></a></h4>
+<ul><li>cleaning up argument check functions (logical, numeric etc)</li>
+<li>new origin_date internal function</li>
+<li>new filter_complete_yrs arg option (keep_all) to keep all years of data, just setting NA if incomplete</li>
+<li>new complete_years fns to get lists of years and start/end/exclude years</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.4.1" id="fasstr-041">fasstr 0.4.1<small>2021-12-10</small><a class="anchor" aria-label="anchor" href="#fasstr-041"></a></h2>
 <p>Updated: 10 Dec 2021</p>
 <div class="section level5">
 <h5 id="updates-0-4-1">Updates:<a class="anchor" aria-label="anchor" href="#updates-0-4-1"></a></h5>
@@ -400,7 +450,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>

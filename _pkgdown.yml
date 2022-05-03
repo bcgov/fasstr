@@ -35,11 +35,13 @@ reference:
         for outliers, gaps, and missing dates.
   contents:
   - plot_flow_data
+  - plot_flow_data_symbols
   - screen_flow_data
   - plot_data_screening
   - plot_missing_dates
+  - plot_annual_symbols
   
-- title: Basic Summary Statistics
+- title: Flow Summary Statistics
   desc: Functions to calculate and plot mean, median, minimum, and selected 
         percentiles flows. Can select duration (e.g. 7-day, 30-day) of 
         statistics using 'roll_days' arguments.
@@ -48,6 +50,7 @@ reference:
   - plot_daily_stats  
   - calc_monthly_stats
   - plot_monthly_stats
+  - plot_monthly_stats2
   - calc_annual_stats
   - plot_annual_stats
   - plot_annual_stats2
@@ -61,9 +64,9 @@ reference:
   - calc_flow_percentile
   - plot_flow_duration
   
-- title: Cumulative Summary Statistics
+- title: Cumulative/Total Discharge Summary Statistics
   desc: Functions to calculate and plot mean, median, minimum, and selected 
-        percentiles flows for years (or seasons) by volume (cubic m) or by
+        percentiles flows for years (or seasons) by volume (cubic metres) or by
         area-based water yield (mm) using the 'use_yield' and 'basin_area' arguments.
   contents:
   - calc_annual_cumulative_stats
@@ -73,17 +76,22 @@ reference:
   - calc_daily_cumulative_stats
   - plot_daily_cumulative_stats    
   
-- title: Annual Hydrograph Statistics
+- title: Annual Statistics
   desc: Functions to calculate and plot various annual statistics.
   contents:
-  - calc_annual_flow_timing
-  - plot_annual_flow_timing
   - calc_annual_lowflows
-  - plot_annual_lowflows
+  - plot_annual_lowflows  
+  - calc_annual_highflows
+  - plot_annual_highflows
   - calc_annual_extremes
   - plot_annual_extremes
+  - plot_annual_extremes_year
+  - calc_annual_flow_timing
+  - plot_annual_flow_timing
+  - plot_annual_flow_timing_year
   - calc_annual_normal_days
   - plot_annual_normal_days
+  - plot_annual_normal_days_year
   - calc_all_annual_stats
 
 - title: Annual Trending Analysis

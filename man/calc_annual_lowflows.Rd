@@ -113,7 +113,8 @@ calc_annual_lowflows(station_number = "08NM116")
 # Calculate custom 3 and 7-day annual low flows with 'center' alignment
 calc_annual_lowflows(station_number = "08NM116",
                      roll_days = c(3,7),
-                     roll_align = "center")
+                     roll_align = "center",
+                     start_year = 1980)
                      
 }
 }

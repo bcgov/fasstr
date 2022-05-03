@@ -7,7 +7,7 @@ calc_annual_stats()
 calc_annual_lowflows()
 calc_annual_cumulative_stats()
 calc_annual_flow_timing()
-calc_annual_outside_normal()
+calc_annual_normal_days()
 calc_monthly_stats()
 
 "><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -28,7 +28,7 @@ calc_monthly_stats()
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -46,7 +46,7 @@ calc_monthly_stats()
   <a href="../reference/index.html">Functions</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -118,11 +118,12 @@ calc_monthly_stats()
 <li><p><code><a href="calc_annual_lowflows.html">calc_annual_lowflows()</a></code></p></li>
 <li><p><code><a href="calc_annual_cumulative_stats.html">calc_annual_cumulative_stats()</a></code></p></li>
 <li><p><code><a href="calc_annual_flow_timing.html">calc_annual_flow_timing()</a></code></p></li>
-<li><p><code><a href="calc_annual_outside_normal.html">calc_annual_outside_normal()</a></code></p></li>
+<li><p><code><a href="calc_annual_normal_days.html">calc_annual_normal_days()</a></code></p></li>
 <li><p><code><a href="calc_monthly_stats.html">calc_monthly_stats()</a></code></p></li>
 </ul></div>
 
-    <div id="ref-usage">Usage,<div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">calc_all_annual_stats</span><span class="op">(</span>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">calc_all_annual_stats</span><span class="op">(</span>
   <span class="va">data</span>,
   dates <span class="op">=</span> <span class="va">Date</span>,
   values <span class="op">=</span> <span class="va">Value</span>,
@@ -143,10 +144,12 @@ calc_monthly_stats()
   timing_percent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">33</span>, <span class="fl">50</span>, <span class="fl">75</span><span class="op">)</span>,
   normal_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">75</span><span class="op">)</span>,
   transpose <span class="op">=</span> <span class="cn">FALSE</span>,
+  complete_years <span class="op">=</span> <span class="cn">FALSE</span>,
   ignore_missing <span class="op">=</span> <span class="cn">FALSE</span>,
   allowed_missing_annual <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">ignore_missing</span>, <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span>,
   allowed_missing_monthly <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">ignore_missing</span>, <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div></div>
+<span class="op">)</span></code></pre></div>
+    </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
@@ -201,7 +204,7 @@ Used for <code><a href="calc_annual_stats.html">calc_annual_stats()</a></code> a
 <dt>stats_align</dt>
 <dd><p>Character string identifying the direction of the rolling mean on basic stats from the specified date, either by 
 the first (<code>'left'</code>), last (<code>'right'</code>), or middle (<code>'center'</code>) day of the rolling n-day group of observations.
-Default <code>'right'</code>. Used for <code><a href="calc_annual_stats.html">calc_annual_stats()</a></code>, <code><a href="calc_monthly_stats.html">calc_monthly_stats()</a></code>, and <code><a href="calc_annual_outside_normal.html">calc_annual_outside_normal()</a></code>
+Default <code>'right'</code>. Used for <code><a href="calc_annual_stats.html">calc_annual_stats()</a></code>, <code><a href="calc_monthly_stats.html">calc_monthly_stats()</a></code>, and <code><a href="calc_annual_normal_days.html">calc_annual_normal_days()</a></code>
 functions.</p></dd>
 <dt>lowflow_days</dt>
 <dd><p>Numeric vector of the number of days to apply a rolling mean on low flow stats. Default <code>c(1,3,7,30)</code>.
@@ -218,6 +221,8 @@ function. Default <code>c(25,33.3,50,75)</code>.</p></dd>
 normal range. Default <code>c(25,75)</code>.</p></dd>
 <dt>transpose</dt>
 <dd><p>Logical value indicating whether to transpose rows and columns of results. Default <code>FALSE</code>.</p></dd>
+<dt>complete_years</dt>
+<dd><p>Logical values indicating whether to include only years with complete data in analysis. Default <code>FALSE</code>.</p></dd>
 <dt>ignore_missing</dt>
 <dd><p>Logical value indicating whether dates with missing values should be included in the calculation. If
 <code>TRUE</code> then a statistic will be calculated regardless of missing dates. If <code>FALSE</code> then only those statistics from
@@ -248,7 +253,7 @@ minimums, and maximums.</p></dd>
          <code><a href="calc_annual_cumulative_stats.html">calc_annual_cumulative_stats</a></code>, 
          <code><a href="calc_annual_flow_timing.html">calc_annual_flow_timing</a></code>, 
          <code><a href="calc_monthly_stats.html">calc_monthly_stats</a></code>, 
-         <code><a href="calc_annual_outside_normal.html">calc_annual_outside_normal</a></code></p></div>
+         <code><a href="calc_annual_normal_days.html">calc_annual_normal_days</a></code></p></div>
     </div>
 
     <div id="ref-examples">
@@ -291,7 +296,7 @@ minimums, and maximums.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>

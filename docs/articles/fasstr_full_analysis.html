@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -52,7 +52,7 @@
   <a href="../reference/index.html">Functions</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -132,12 +132,32 @@
 
     
     
-<p><code>fasstr</code>, the Flow Analysis Summary Statistics Tool for R, is a set of <a href="https://www.r-project.org/" class="external-link">R</a> functions to tidy, summarize, analyze, trend, and visualize streamflow data. This package summarizes continuous daily mean streamflow data into various daily, monthly, annual, and long-term statistics, completes trending and frequency analyses, with outputs in both table and plot formats.</p>
-<p>This vignette documents the usage of the <code><a href="../reference/compute_full_analysis.html">compute_full_analysis()</a></code> and <code><a href="../reference/write_full_analysis.html">write_full_analysis()</a></code> functions in <code>fasstr</code>. This vignette is a high-level adjunct to the details found in the function documentation (see <code><a href="../reference/compute_full_analysis.html">?compute_full_analysis</a></code> and <code><a href="../reference/write_full_analysis.html">?write_full_analysis</a></code>). You’ll learn what arguments to provide to the function to customize your analyses, what analyses are computed, and what outputs are produced.</p>
+<p><code>fasstr</code>, the Flow Analysis Summary Statistics Tool for R,
+is a set of <a href="https://www.r-project.org/" class="external-link">R</a> functions to
+tidy, summarize, analyze, trend, and visualize streamflow data. This
+package summarizes continuous daily mean streamflow data into various
+daily, monthly, annual, and long-term statistics, completes trending and
+frequency analyses, with outputs in both table and plot formats.</p>
+<p>This vignette documents the usage of the
+<code><a href="../reference/compute_full_analysis.html">compute_full_analysis()</a></code> and
+<code><a href="../reference/write_full_analysis.html">write_full_analysis()</a></code> functions in <code>fasstr</code>.
+This vignette is a high-level adjunct to the details found in the
+function documentation (see <code><a href="../reference/compute_full_analysis.html">?compute_full_analysis</a></code> and
+<code><a href="../reference/write_full_analysis.html">?write_full_analysis</a></code>). You’ll learn what arguments to
+provide to the function to customize your analyses, what analyses are
+computed, and what outputs are produced.</p>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>The full analysis functions produce a suite of tables and plots from the various <code>fasstr</code> functions. There are seven groups of analyses (see below) which are stored in lists in the created object for the <code>compute_</code> function and written into an Excel workbook (and accompanying image files) for the <code>write_</code> function. All of the data selection (<code>data</code> or <code>station_number</code> arguments), data filtering, water year selection, missing dates options, basin area, and <code>zyp</code> trending arguments are used in this function to customize your data and analysis.</p>
+<p>The full analysis functions produce a suite of tables and plots from
+the various <code>fasstr</code> functions. There are seven groups of
+analyses (see below) which are stored in lists in the created object for
+the <code>compute_</code> function and written into an Excel workbook
+(and accompanying image files) for the <code>write_</code> function. All
+of the data selection (<code>data</code> or <code>station_number</code>
+arguments), data filtering, water year selection, missing dates options,
+basin area, and <code>zyp</code> trending arguments are used in this
+function to customize your data and analysis.</p>
 <p>The outputs are grouped into the following categories:</p>
 <ol style="list-style-type: decimal">
 <li>Screening</li>
@@ -148,7 +168,14 @@
 <li>Annual Trends</li>
 <li>Low-flow Frequencies</li>
 </ol>
-<p>While by default the function will create all outputs from all categories, there is the option to select which groups are analyzed using the <code>analyses</code> argument. By default the <code>analyses</code> argument is <code>1:7</code>, with numbers 1 through 7 representing each of the categories as listed above. So <code>analyses = 1</code> would output only the screening outputs; while <code>analyses = c(1,3,5:7)</code> would output all but the long-term and monthly analyses.</p>
+<p>While by default the function will create all outputs from all
+categories, there is the option to select which groups are analyzed
+using the <code>analyses</code> argument. By default the
+<code>analyses</code> argument is <code>1:7</code>, with numbers 1
+through 7 representing each of the categories as listed above. So
+<code>analyses = 1</code> would output only the screening outputs; while
+<code>analyses = c(1,3,5:7)</code> would output all but the long-term
+and monthly analyses.</p>
 </div>
 <div class="section level2">
 <h2 id="functions-and-data-inputs">Functions and Data Inputs<a class="anchor" aria-label="anchor" href="#functions-and-data-inputs"></a>
@@ -157,8 +184,15 @@
 <h3 id="compute_full_analysis-object-list">
 <code>compute_full_analysis()</code> Object List<a class="anchor" aria-label="anchor" href="#compute_full_analysis-object-list"></a>
 </h3>
-<p>When using this function all of the objects will be saved within a list with a first level of lists with each of the categories as listed above (ex. <code>$Screening</code> or <code>$Annual</code>). Within each of those lists are the outputted objects, or another list of objects (ex. <code>$Screening$Flow_Screening</code> or <code>$Annual$Annual_Flow_Timing</code>). Use subsetting techniques to extract an individual tibble or plot.</p>
-<p>The following is an example of how to run the function and then how extract individual objects from the list:</p>
+<p>When using this function all of the objects will be saved within a
+list with a first level of lists with each of the categories as listed
+above (ex. <code>$Screening</code> or <code>$Annual</code>). Within each
+of those lists are the outputted objects, or another list of objects
+(ex. <code>$Screening$Flow_Screening</code> or
+<code>$Annual$Annual_Flow_Timing</code>). Use subsetting techniques to
+extract an individual tibble or plot.</p>
+<p>The following is an example of how to run the function and then how
+extract individual objects from the list:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mission_creek</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_full_analysis.html">compute_full_analysis</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
                                        start_year <span class="op">=</span> <span class="fl">1981</span>,
@@ -176,8 +210,26 @@
 <h3 id="write_full_analysis-excel-and-image-files">
 <code>write_full_analysis()</code> Excel and Image Files<a class="anchor" aria-label="anchor" href="#write_full_analysis-excel-and-image-files"></a>
 </h3>
-<p>The writing function provides a option to directly save all results onto your computer, thereby allowing the user to explore the outputs in Excel and image file formats. You will be required to provide the name of a the Excel file to create using the <code>file_name</code> argument. If the analyses in groups 5 and/or 6 are selected than a folder with the same name will be created to store a number of plots that are not suitable for the Excel file. By default it will save those plots in “pdf” format, but can be altered using the <code>plot_filetype</code> arguments, if necessary. Within the Excel workbook each of the tables and plots are saved within specific worksheets. The first worksheet in all outputs contain an overview of the analysis to know which arguments and options were used. The second worksheet contains the data provided to the function (the data frame or the data from HYDAT). The last worksheet (after all the analysis sheets) contain a table of <code>fasstr</code> functions that can replicate each individual analysis output for further customization (these functions are also contained within the comments of the cells with table and plot titles).</p>
-<p>The following is an example of how to save all analyses to your computer:</p>
+<p>The writing function provides a option to directly save all results
+onto your computer, thereby allowing the user to explore the outputs in
+Excel and image file formats. You will be required to provide the name
+of a the Excel file to create using the <code>file_name</code> argument.
+If the analyses in groups 5 and/or 6 are selected than a folder with the
+same name will be created to store a number of plots that are not
+suitable for the Excel file. By default it will save those plots in
+“pdf” format, but can be altered using the <code>plot_filetype</code>
+arguments, if necessary. Within the Excel workbook each of the tables
+and plots are saved within specific worksheets. The first worksheet in
+all outputs contain an overview of the analysis to know which arguments
+and options were used. The second worksheet contains the data provided
+to the function (the data frame or the data from HYDAT). The last
+worksheet (after all the analysis sheets) contain a table of
+<code>fasstr</code> functions that can replicate each individual
+analysis output for further customization (these functions are also
+contained within the comments of the cells with table and plot
+titles).</p>
+<p>The following is an example of how to save all analyses to your
+computer:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/write_full_analysis.html">write_full_analysis</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
                     start_year <span class="op">=</span> <span class="fl">1981</span>,
@@ -188,7 +240,11 @@
 <div class="section level2">
 <h2 id="usage-options-and-outputs">Usage, Options, and outputs<a class="anchor" aria-label="anchor" href="#usage-options-and-outputs"></a>
 </h2>
-<p>The following is a table that lists of all objects and files (if <code>write_to_dir = TRUE)</code> created using the <code><a href="../reference/compute_full_analysis.html">compute_full_analysis()</a></code> function, with their respective section list / folder, type of object, and the function use to produce the object:</p>
+<p>The following is a table that lists of all objects and files (if
+<code>write_to_dir = TRUE)</code> created using the
+<code><a href="../reference/compute_full_analysis.html">compute_full_analysis()</a></code> function, with their respective
+section list / folder, type of object, and the function use to produce
+the object:</p>
 <table class="table">
 <colgroup>
 <col width="22%">
@@ -313,15 +369,15 @@
 </tr>
 <tr class="odd">
 <td>3 - Annual</td>
-<td>Annual_Days_Outside_Normal</td>
+<td>Annual_Normal_Days</td>
 <td>Table</td>
-<td><code><a href="../reference/calc_annual_outside_normal.html">calc_annual_outside_normal()</a></code></td>
+<td><code><a href="../reference/calc_annual_normal_days.html">calc_annual_normal_days()</a></code></td>
 </tr>
 <tr class="even">
 <td>3 - Annual</td>
-<td>Annual_Days_Outside_Normal_Plot</td>
-<td>Multiple Plots</td>
-<td><code><a href="../reference/plot_annual_outside_normal.html">plot_annual_outside_normal()</a></code></td>
+<td>Annual_Normal_Days_Plot</td>
+<td>Plot</td>
+<td><code><a href="../reference/plot_annual_normal_days.html">plot_annual_normal_days()</a></code></td>
 </tr>
 <tr class="odd">
 <td>3 - Annual</td>
@@ -478,7 +534,9 @@
 <div class="section level3">
 <h3 id="objects-examples">Objects Examples<a class="anchor" aria-label="anchor" href="#objects-examples"></a>
 </h3>
-<p>The following are examples of the outputs from the full analysis functions. Each plot is presented and only the first six rows from each table.</p>
+<p>The following are examples of the outputs from the full analysis
+functions. Each plot is presented and only the first six rows from each
+table.</p>
 <div class="section level4">
 <h4 id="screening">1. Screening<a class="anchor" aria-label="anchor" href="#screening"></a>
 </h4>
@@ -500,34 +558,41 @@
 5      1990         5 1.336667 1.382857 1.513067             795
 6      1990         6 1.470000 1.388571 1.504400             795</code></pre>
 <p><strong>Flow_Screening</strong></p>
-<pre><code>  STATION_NUMBER Year n_days n_Q n_missing_Q Minimum Maximum     Mean Median
-1        08NM116 1990    365 365           0   0.560    69.9 9.209290   1.98
-2        08NM116 1991    365 365           0   0.439    56.7 7.472605   1.74
-3        08NM116 1992    366 366           0   0.436    29.8 3.256295   1.19
-4        08NM116 1993    365 365           0   0.270    58.0 6.927921   2.57
-5        08NM116 1994    365 365           0   0.430    39.7 6.030022   1.26
-6        08NM116 1995    365 365           0   0.556    33.1 5.647830   2.26
-  StandardDeviation Jan_missing_Q Feb_missing_Q Mar_missing_Q Apr_missing_Q
-1         14.984546             0             0             0             0
-2         11.318678             0             0             0             0
-3          4.607470             0             0             0             0
-4         10.128417             0             0             0             0
-5          8.978709             0             0             0             0
-6          7.570999             0             0             0             0
-  May_missing_Q Jun_missing_Q Jul_missing_Q Aug_missing_Q Sep_missing_Q
+<pre><code>  STATION_NUMBER Year n_days n_Q n_missing_Q A_Symbol B_Symbol E_Symbol
+1        08NM116 1990    365 365           0        2       40        7
+2        08NM116 1991    365 365           0        0       90        0
+3        08NM116 1992    366 366           0        1       47        0
+4        08NM116 1993    365 365           0        2      103        0
+5        08NM116 1994    365 365           0        1      105       17
+6        08NM116 1995    365 365           0       21       94       30
+  No_Symbol Minimum Maximum     Mean Median StandardDeviation Jan_missing_Q
+1       316   0.560    69.9 9.209290   1.98         14.984546             0
+2       275   0.439    56.7 7.472605   1.74         11.318678             0
+3       318   0.436    29.8 3.256295   1.19          4.607470             0
+4       260   0.270    58.0 6.927921   2.57         10.128417             0
+5       242   0.430    39.7 6.030022   1.26          8.978709             0
+6       220   0.556    33.1 5.647830   2.26          7.570999             0
+  Feb_missing_Q Mar_missing_Q Apr_missing_Q May_missing_Q Jun_missing_Q
 1             0             0             0             0             0
 2             0             0             0             0             0
 3             0             0             0             0             0
 4             0             0             0             0             0
 5             0             0             0             0             0
 6             0             0             0             0             0
-  Oct_missing_Q Nov_missing_Q Dec_missing_Q
-1             0             0             0
-2             0             0             0
-3             0             0             0
-4             0             0             0
-5             0             0             0
-6             0             0             0</code></pre>
+  Jul_missing_Q Aug_missing_Q Sep_missing_Q Oct_missing_Q Nov_missing_Q
+1             0             0             0             0             0
+2             0             0             0             0             0
+3             0             0             0             0             0
+4             0             0             0             0             0
+5             0             0             0             0             0
+6             0             0             0             0             0
+  Dec_missing_Q
+1             0
+2             0
+3             0
+4             0
+5             0
+6             0</code></pre>
 <p><strong>Data_screening</strong></p>
 <p><img src="fasstr_full_analysis_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
 <p><strong>Missing_Dates</strong></p>
@@ -613,15 +678,15 @@
 4         7.601352        176.66572         69.23955        21.309609
 5        19.214382        193.97941         17.94229         8.062370
 6        10.327463        159.08142         24.13668        30.492136</code></pre>
-<p><strong>Annual_Days_Outside_Normal</strong></p>
-<pre><code>  STATION_NUMBER Year Days_Below_Normal Days_Above_Normal Days_Outside_Normal
-1        08NM116 1990                27                93                 120
-2        08NM116 1991                88                89                 177
-3        08NM116 1992               213                18                 231
-4        08NM116 1993                89                84                 173
-5        08NM116 1994               163                79                 242
-6        08NM116 1995                94                71                 165</code></pre>
-<p><strong>Annual_Days_Outside_Normal</strong></p>
+<p><strong>Annual_Normal_Days</strong></p>
+<pre><code>  STATION_NUMBER Year Normal_Days Below_Normal_Days Above_Normal_Days
+1        08NM116 1990         245                27                93
+2        08NM116 1991         188                88                89
+3        08NM116 1992         135               213                18
+4        08NM116 1993         192                89                84
+5        08NM116 1994         123               163                79
+6        08NM116 1995         200                94                71</code></pre>
+<p><strong>Annual_Normal_Days</strong></p>
 <p><img src="fasstr_full_analysis_files/figure-html/unnamed-chunk-17-1.png" width="672"></p>
 <p><strong>Annual_Flow_Timing</strong></p>
 <pre><code>  STATION_NUMBER Year DoY_25pct_TotalQ Date_25pct_TotalQ DoY_33.3pct_TotalQ
@@ -772,7 +837,8 @@
 6 0.8275 1.4175 1.5680</code></pre>
 <p><strong>Daily_Statistics</strong></p>
 <p><img src="fasstr_full_analysis_files/figure-html/unnamed-chunk-42-1.png" width="672"></p>
-<p><strong>Daily_Statistics_with_Years</strong> (a folder with a plot for each year)</p>
+<p><strong>Daily_Statistics_with_Years</strong> (a folder with a plot
+for each year)</p>
 <p><img src="fasstr_full_analysis_files/figure-html/unnamed-chunk-43-1.png" width="672"></p>
 <p><strong>Daily_Cumulative_Volume</strong></p>
 <pre><code>  STATION_NUMBER   Date DayofYear     Mean Median  Minimum Maximum        P5
@@ -791,7 +857,8 @@
 6 442800 739584.0 858081.6</code></pre>
 <p><strong>Daily_Cumulative_Volumetric_Stats</strong></p>
 <p><img src="fasstr_full_analysis_files/figure-html/unnamed-chunk-45-1.png" width="672"></p>
-<p><strong>Daily_Cumulative_Volume_with_Years</strong> (a folder with a plot for each year)</p>
+<p><strong>Daily_Cumulative_Volume_with_Years</strong> (a folder with a
+plot for each year)</p>
 <p><img src="fasstr_full_analysis_files/figure-html/unnamed-chunk-46-1.png" width="672"></p>
 <p><strong>Daily_Cumulative_Yield</strong></p>
 <pre><code>  STATION_NUMBER   Date DayofYear      Mean    Median    Minimum   Maximum
@@ -810,7 +877,8 @@
 6 0.42400121 0.55698113 0.9302943 1.0793479</code></pre>
 <p><strong>Daily_Cumulative_Yield_Stats</strong></p>
 <p><img src="fasstr_full_analysis_files/figure-html/unnamed-chunk-48-1.png" width="672"></p>
-<p><strong>Daily_Cumulative_Yield_with_Years</strong> (a folder with a plot for each year)</p>
+<p><strong>Daily_Cumulative_Yield_with_Years</strong> (a folder with a
+plot for each year)</p>
 <p><img src="fasstr_full_analysis_files/figure-html/unnamed-chunk-49-1.png" width="672"></p>
 </div>
 <div class="section level4">
@@ -853,7 +921,8 @@
 4     1990     2001      12  0.5189167  0.48750  0.270000  0.82200
 5     1990     2001      12  0.8742833  0.72240  0.632000  1.50000
 6     1990     2001      12 22.5512501 22.15000  8.295000 36.62000</code></pre>
-<p><strong>Annual_Trends_Results_Plots</strong> (a folder with a plot for each statistic)</p>
+<p><strong>Annual_Trends_Results_Plots</strong> (a folder with a plot
+for each statistic)</p>
 <p><img src="fasstr_full_analysis_files/figure-html/unnamed-chunk-52-1.png" width="672"></p>
 </div>
 <div class="section level4">
@@ -914,7 +983,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer>

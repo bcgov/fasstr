@@ -119,9 +119,8 @@ plot_flow_data_symbols <- function(data,
   flow_data <- dplyr::mutate(flow_data, Value = replace(Value, !Month %in% months, NA))
   
   if (anyNA(flow_data$Value)) 
-    warning(paste0("Did not plot ", sum(is.na(flow_data$Value)),
-                   " missing or excluded values between ", min(flow_data$Date), " and ", max(flow_data$Date),"."), 
-            call. = FALSE)
+    message(paste0("Note: Did not plot ", sum(is.na(flow_data$Value)),
+                   " missing or excluded values between ", min(flow_data$Date), " and ", max(flow_data$Date),"."))
   
   flow_data <- dplyr::mutate(flow_data,
                              Symbol = ifelse(is.na(Symbol), "No Symbol", Symbol),
@@ -136,7 +135,7 @@ sym_plots <- dplyr::mutate(
     data, STATION_NUMBER,
     ~ggplot2::ggplot(data = ., ggplot2::aes(x = Date, y = Value)) +
       ggplot2::geom_line(colour = "dodgerblue4", size = 0.2, na.rm = TRUE) +
-      ggplot2::geom_point(ggplot2::aes(color = Symbol), size = 1.5)+
+      ggplot2::geom_point(ggplot2::aes(color = Symbol), size = 1.5, na.rm = TRUE)+
       ggplot2::ylab("Daily Discharge (cms)") +
       {if(!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 8), expand = c(0, 0))} +
       {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
