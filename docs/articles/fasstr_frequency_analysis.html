@@ -288,20 +288,28 @@ annual lowflows function:</p>
 <span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">low_flows</span>, <span class="va">Year</span>, Value <span class="op">=</span> <span class="va">Min_7_Day</span><span class="op">)</span>
 <span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">low_flows</span>, Measure <span class="op">=</span> <span class="st">"7-Day"</span><span class="op">)</span>
 <span class="va">low_flows</span></code></pre></div>
-<pre><code> [38;5;246m# A tibble: 21 × 3 [39m
-    Year Value Measure
-    [3m [38;5;246m&lt;dbl&gt; [39m [23m  [3m [38;5;246m&lt;dbl&gt; [39m [23m  [3m [38;5;246m&lt;chr&gt; [39m [23m  
- [38;5;250m 1 [39m   [4m1 [24m980 0.655 7-Day  
- [38;5;250m 2 [39m   [4m1 [24m981 0.885 7-Day  
- [38;5;250m 3 [39m   [4m1 [24m982 1.05  7-Day  
- [38;5;250m 4 [39m   [4m1 [24m983 0.634 7-Day  
- [38;5;250m 5 [39m   [4m1 [24m984 0.784 7-Day  
- [38;5;250m 6 [39m   [4m1 [24m985 0.589 7-Day  
- [38;5;250m 7 [39m   [4m1 [24m986 0.719 7-Day  
- [38;5;250m 8 [39m   [4m1 [24m987 0.355 7-Day  
- [38;5;250m 9 [39m   [4m1 [24m988 0.186 7-Day  
- [38;5;250m10 [39m   [4m1 [24m989 0.577 7-Day  
- [38;5;246m# … with 11 more rows [39m</code></pre>
+<pre><code>   Year     Value Measure
+1  1980 0.6554286   7-Day
+2  1981 0.8852857   7-Day
+3  1982 1.0484286   7-Day
+4  1983 0.6335714   7-Day
+5  1984 0.7842857   7-Day
+6  1985 0.5892857   7-Day
+7  1986 0.7185714   7-Day
+8  1987 0.3554286   7-Day
+9  1988 0.1864286   7-Day
+10 1989 0.5771429   7-Day
+11 1990 0.9578571   7-Day
+12 1991 0.5078571   7-Day
+13 1992 0.5178571   7-Day
+14 1993 0.2981429   7-Day
+15 1994 0.4650000   7-Day
+16 1995 0.6657143   7-Day
+17 1996 0.9964286   7-Day
+18 1997 1.2628571   7-Day
+19 1998 0.5864286   7-Day
+20 1999 0.7337143   7-Day
+21 2000 0.5028571   7-Day</code></pre>
 <p>This data can then be applied to the
 <code><a href="../reference/compute_frequency_analysis.html">compute_frequency_analysis()</a></code> function. This example has the
 default column names in the data and this do not need to be listed, but
@@ -341,20 +349,37 @@ example):</p>
 <strong>Freq_Analysis_Data</strong> tibble:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Analysis_Data</span></code></pre></div>
-<pre><code> [38;5;246m# A tibble: 30 × 3 [39m
-    Year Measure Value
-    [3m [38;5;246m&lt;dbl&gt; [39m [23m  [3m [38;5;246m&lt;fct&gt; [39m [23m    [3m [38;5;246m&lt;dbl&gt; [39m [23m
- [38;5;250m 1 [39m   [4m1 [24m981 7-Day   0.885
- [38;5;250m 2 [39m   [4m1 [24m982 7-Day   1.05 
- [38;5;250m 3 [39m   [4m1 [24m983 7-Day   0.634
- [38;5;250m 4 [39m   [4m1 [24m984 7-Day   0.784
- [38;5;250m 5 [39m   [4m1 [24m985 7-Day   0.589
- [38;5;250m 6 [39m   [4m1 [24m986 7-Day   0.719
- [38;5;250m 7 [39m   [4m1 [24m987 7-Day   0.355
- [38;5;250m 8 [39m   [4m1 [24m988 7-Day   0.186
- [38;5;250m 9 [39m   [4m1 [24m989 7-Day   0.577
- [38;5;250m10 [39m   [4m1 [24m990 7-Day   0.958
- [38;5;246m# … with 20 more rows [39m</code></pre>
+<pre><code>   Year Measure     Value
+1  1981   7-Day 0.8852857
+2  1982   7-Day 1.0484286
+3  1983   7-Day 0.6335714
+4  1984   7-Day 0.7842857
+5  1985   7-Day 0.5892857
+6  1986   7-Day 0.7185714
+7  1987   7-Day 0.3554286
+8  1988   7-Day 0.1864286
+9  1989   7-Day 0.5771429
+10 1990   7-Day 0.9578571
+11 1991   7-Day 0.5078571
+12 1992   7-Day 0.5178571
+13 1993   7-Day 0.2981429
+14 1994   7-Day 0.4650000
+15 1995   7-Day 0.6657143
+16 1996   7-Day 0.9964286
+17 1997   7-Day 1.2628571
+18 1998   7-Day 0.5864286
+19 1999   7-Day 0.7337143
+20 2000   7-Day 0.5028571
+21 2001   7-Day 0.5705714
+22 2002   7-Day 0.3314286
+23 2003   7-Day 0.3628571
+24 2004   7-Day 0.5228571
+25 2005   7-Day 0.8890000
+26 2006   7-Day 0.6967143
+27 2007   7-Day 0.4538571
+28 2008   7-Day 0.4628571
+29 2009   7-Day 0.5021429
+30 2010   7-Day 0.4535714</code></pre>
 </div>
 <div class="section level3">
 <h3 id="frequency-plotting">Frequency Plotting<a class="anchor" aria-label="anchor" href="#frequency-plotting"></a>
@@ -390,20 +415,37 @@ the return period for each event, used for plotting. See the following
 for an example of this output:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Plot_Data</span></code></pre></div>
-<pre><code> [38;5;246m# A tibble: 30 × 5 [39m
-    Year Measure Value Probability `Return Period`
-    [3m [38;5;246m&lt;dbl&gt; [39m [23m  [3m [38;5;246m&lt;fct&gt; [39m [23m    [3m [38;5;246m&lt;dbl&gt; [39m [23m        [3m [38;5;246m&lt;dbl&gt; [39m [23m            [3m [38;5;246m&lt;dbl&gt; [39m [23m
- [38;5;250m 1 [39m   [4m1 [24m988 7-Day   0.186      0.032 [4m3 [24m           31   
- [38;5;250m 2 [39m   [4m1 [24m993 7-Day   0.298      0.064 [4m5 [24m           15.5 
- [38;5;250m 3 [39m   [4m2 [24m002 7-Day   0.331      0.096 [4m8 [24m           10.3 
- [38;5;250m 4 [39m   [4m1 [24m987 7-Day   0.355      0.129             7.75
- [38;5;250m 5 [39m   [4m2 [24m003 7-Day   0.363      0.161             6.2 
- [38;5;250m 6 [39m   [4m2 [24m010 7-Day   0.454      0.194             5.17
- [38;5;250m 7 [39m   [4m2 [24m007 7-Day   0.454      0.226             4.43
- [38;5;250m 8 [39m   [4m2 [24m008 7-Day   0.463      0.258             3.88
- [38;5;250m 9 [39m   [4m1 [24m994 7-Day   0.465      0.290             3.44
- [38;5;250m10 [39m   [4m2 [24m009 7-Day   0.502      0.323             3.1 
- [38;5;246m# … with 20 more rows [39m</code></pre>
+<pre><code>   Year Measure     Value Probability Return.Period
+1  1988   7-Day 0.1864286  0.03225806     31.000000
+2  1993   7-Day 0.2981429  0.06451613     15.500000
+3  2002   7-Day 0.3314286  0.09677419     10.333333
+4  1987   7-Day 0.3554286  0.12903226      7.750000
+5  2003   7-Day 0.3628571  0.16129032      6.200000
+6  2010   7-Day 0.4535714  0.19354839      5.166667
+7  2007   7-Day 0.4538571  0.22580645      4.428571
+8  2008   7-Day 0.4628571  0.25806452      3.875000
+9  1994   7-Day 0.4650000  0.29032258      3.444444
+10 2009   7-Day 0.5021429  0.32258065      3.100000
+11 2000   7-Day 0.5028571  0.35483871      2.818182
+12 1991   7-Day 0.5078571  0.38709677      2.583333
+13 1992   7-Day 0.5178571  0.41935484      2.384615
+14 2004   7-Day 0.5228571  0.45161290      2.214286
+15 2001   7-Day 0.5705714  0.48387097      2.066667
+16 1989   7-Day 0.5771429  0.51612903      1.937500
+17 1998   7-Day 0.5864286  0.54838710      1.823529
+18 1985   7-Day 0.5892857  0.58064516      1.722222
+19 1983   7-Day 0.6335714  0.61290323      1.631579
+20 1995   7-Day 0.6657143  0.64516129      1.550000
+21 2006   7-Day 0.6967143  0.67741935      1.476190
+22 1986   7-Day 0.7185714  0.70967742      1.409091
+23 1999   7-Day 0.7337143  0.74193548      1.347826
+24 1984   7-Day 0.7842857  0.77419355      1.291667
+25 1981   7-Day 0.8852857  0.80645161      1.240000
+26 2005   7-Day 0.8890000  0.83870968      1.192308
+27 1990   7-Day 0.9578571  0.87096774      1.148148
+28 1996   7-Day 0.9964286  0.90322581      1.107143
+29 1982   7-Day 1.0484286  0.93548387      1.068966
+30 1997   7-Day 1.2628571  0.96774194      1.033333</code></pre>
 <p>This data is then used for plotting and returned in the
 <strong>Freq_Plot</strong> <code>ggplot2</code> object. See the example
 below. To change the probabilities/vertical lines shown on the x-axis,
@@ -411,7 +453,7 @@ change the values using the <code>prob_scale_points</code> argument to
 list the breaks.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Plot</span></code></pre></div>
-<p><img src="fasstr_frequency_analysis_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
+<p><img src="fasstr_frequency_analysis_files/figure-html/unnamed-chunk-10-1.png" width="672"></p>
 </div>
 <div class="section level3">
 <h3 id="distribution-fitting-and-computing-frequency-quantiles">Distribution Fitting and Computing Frequency Quantiles<a class="anchor" aria-label="anchor" href="#distribution-fitting-and-computing-frequency-quantiles"></a>
@@ -467,7 +509,7 @@ plots, amongst other statistics. As per the
 <code><a href="https://rdrr.io/pkg/fitdistrplus/man/fitdist.html" class="external-link">fitdistrplus::fitdist</a></code> documentation, there are several ways
 to view the <code>fitdist</code> object, three of these including using
 the generic <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> and
-<code><a href="https://docs.ropensci.org/tidyhydat/reference/plot.html" class="external-link">plot()</a></code> functions. See the following examples for how to
+<code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> functions. See the following examples for how to
 view some of the fitting information.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></code></pre></div>
@@ -487,8 +529,8 @@ location  0.58975205
 scale    -0.03836902
 Loglikelihood:  9.973448   AIC:  -13.9469   BIC:  -9.743303 </code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></code></pre></div>
-<p><img src="fasstr_frequency_analysis_files/figure-html/unnamed-chunk-10-1.png" width="672"></p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></code></pre></div>
+<p><img src="fasstr_frequency_analysis_files/figure-html/unnamed-chunk-13-1.png" width="672"></p>
 <p>When <code>plot_curve</code> argument is set to <code>TRUE</code>
 (default) the computed frequency curves are plotted against the events
 data in the <strong>Freq_Plot</strong> object:</p>
@@ -497,7 +539,7 @@ data in the <strong>Freq_Plot</strong> object:</p>
                                             roll_days <span class="op">=</span> <span class="fl">7</span>,
                                             plot_curve <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Plot</span></code></pre></div>
-<p><img src="fasstr_frequency_analysis_files/figure-html/unnamed-chunk-11-1.png" width="672"></p>
+<p><img src="fasstr_frequency_analysis_files/figure-html/unnamed-chunk-14-1.png" width="672"></p>
 </div>
 <div class="section level4">
 <h4 id="fitted-quantiles">Fitted Quantiles<a class="anchor" aria-label="anchor" href="#fitted-quantiles"></a>
@@ -513,20 +555,18 @@ would be the 7-day flow value with a 5-year return period, so 0.409 cms
 in this example.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitted_Quantiles</span></code></pre></div>
-<pre><code> [38;5;246m# A tibble: 11 × 4 [39m
-   Distribution Probability `Return Period` `7-Day`
-    [3m [38;5;246m&lt;chr&gt; [39m [23m               [3m [38;5;246m&lt;dbl&gt; [39m [23m            [3m [38;5;246m&lt;dbl&gt; [39m [23m    [3m [38;5;246m&lt;dbl&gt; [39m [23m
- [38;5;250m 1 [39m PIII               0.01           100      0.194
- [38;5;250m 2 [39m PIII               0.05            20      0.280
- [38;5;250m 3 [39m PIII               0.1             10      0.334
- [38;5;250m 4 [39m PIII               0.2              5      0.409
- [38;5;250m 5 [39m PIII               0.5              2      0.578
- [38;5;250m 6 [39m PIII               0.8              1.25   0.772
- [38;5;250m 7 [39m PIII               0.9              1.11   0.881
- [38;5;250m 8 [39m PIII               0.95             1.05   0.972
- [38;5;250m 9 [39m PIII               0.975            1.03   1.05 
- [38;5;250m10 [39m PIII               0.98             1.02   1.08 
- [38;5;250m11 [39m PIII               0.99             1.01   1.14 </code></pre>
+<pre><code>   Distribution Probability Return.Period    X7.Day
+1          PIII       0.010    100.000000 0.1939235
+2          PIII       0.050     20.000000 0.2796278
+3          PIII       0.100     10.000000 0.3344622
+4          PIII       0.200      5.000000 0.4094482
+5          PIII       0.500      2.000000 0.5775901
+6          PIII       0.800      1.250000 0.7722251
+7          PIII       0.900      1.111111 0.8808996
+8          PIII       0.950      1.052632 0.9724210
+9          PIII       0.975      1.025641 1.0521211
+10         PIII       0.980      1.020408 1.0757757
+11         PIII       0.990      1.010101 1.1440783</code></pre>
 </div>
 <div class="section level4">
 <h4 id="notes-on-use-of-the-log-pearson-type-iii-distribution">Notes on use of the Log-Pearson Type III Distribution<a class="anchor" aria-label="anchor" href="#notes-on-use-of-the-log-pearson-type-iii-distribution"></a>

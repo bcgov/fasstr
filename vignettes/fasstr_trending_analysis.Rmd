@@ -6,7 +6,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-  
+
 
 ```{r options, include=FALSE}
 knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")))
@@ -130,8 +130,13 @@ trends_analysis <- compute_annual_trends(station_number = "08NM116",
 
 The following is an example of the outputted **Annual_Trends_Data** tibble:
 
-```{r, echo=TRUE, comment=NA}
+```{r, echo=TRUE, comment=NA,eval=FALSE}
 trends_analysis$Annual_Trends_Data
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(head(
+  trends_analysis$Annual_Trends_Data
+))
 ```
 
 ### Analysis Results
@@ -163,8 +168,13 @@ max	          | the maximum of all values used for trending
 
 The following is an example of the outputted **Annual_Trends_Results** tibble from the Mission Creek HYDAT station from 1973 to 2013:
 
-```{r, echo=TRUE, comment=NA}
+```{r, echo=TRUE, comment=NA, eval=FALSE}
 trends_analysis$Annual_Trends_Results
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(head(
+  trends_analysis$Annual_Trends_Results
+))
 ```
 
 ### Annual Trends Plots

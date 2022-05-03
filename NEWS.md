@@ -36,6 +36,7 @@ Updated: 03 May 2022
   * Some appropriate "Day of Year" axes now labeled "Day of Water Year" if water_year_start != 1
   * Changed y-axis labels on plots using scales::cut_short_scale() to remove exponents on large numbers
   * Annual plots with leading empty years (gaps, missing dates, etc) will now shift plot to first year of data
+  * Updated vignettes with new functions and updates
   
 ### Bug fixes:
   
