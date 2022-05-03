@@ -158,7 +158,7 @@ plot_annual_lowflows <- function(data,
                          ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "top")+
                          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
                          {if(length(unique(lowflow_doy$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(lowflow_doy$Year))}+
-                         ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
+                         ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6), expand = ggplot2::expansion(mult = c(0.1, 0.1)))+
                          ggplot2::ylab(ifelse(water_year_start == 1, "Day of Year", "Day of Water Year"))+
                          ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
                          ggplot2::scale_color_viridis_d()+
@@ -187,7 +187,8 @@ plot_annual_lowflows <- function(data,
                          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
                          {if(length(unique(lowflow_values$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(lowflow_values$Year))}+
                          ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
-                                                     labels = scales::label_number(scale_cut = scales::cut_short_scale())) +
+                                                     labels = scales::label_number(scale_cut = scales::cut_short_scale()),
+                                                     expand = ggplot2::expansion(mult = c(0.1, 0.1))) +
                          ggplot2::ylab(y_axis_title)+
                          ggplot2::xlab("Year")+
                          ggplot2::scale_color_viridis_d()+

@@ -25,6 +25,7 @@ plot_monthly_stats2(
   outer_percentiles = c(5, 95),
   log_discharge = TRUE,
   log_ticks = ifelse(log_discharge, TRUE, FALSE),
+  scales_discharge = "fixed",
   include_title = FALSE
 )
 }
@@ -92,6 +93,9 @@ outer percentiles ribbon for plotting. Default \code{c(5,95)}, set to \code{NULL
 
 \item{log_ticks}{Logical value to indicate plotting logarithmic scale ticks when \code{log_discharge = TRUE}. Ticks will not
 appear when \code{log_discharge = FALSE}. Default to \code{TRUE} when \code{log_discharge = TRUE}.}
+
+\item{scales_discharge}{String, either 'fixed' (all y-axis scales the same) or 'free' (each plot has their own scale). 
+Default \code{'fixed'}.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 }

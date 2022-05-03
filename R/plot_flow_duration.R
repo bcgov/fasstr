@@ -196,7 +196,7 @@ plot_flow_duration <- function(data,
     plot = purrr::map2(
       data, STATION_NUMBER,
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Percentile, y = Value, colour = Month)) +
-        ggplot2::geom_line(na.rm = TRUE, size = 0.8) +
+        ggplot2::geom_line(na.rm = TRUE) +
         {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0), breaks = scales::pretty_breaks(n = 8),
                                                         labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +
         {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10),
@@ -210,7 +210,6 @@ plot_flow_duration <- function(data,
         ggplot2::labs(color = 'Period') +
         {if (include_title & unique(.y) != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nPeriod')) } +
         ggplot2::theme_bw() +
-       # ggplot2::scale_color_viridis_d()+
         ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                        panel.grid = ggplot2::element_line(size = .2),
                        legend.justification = "top",

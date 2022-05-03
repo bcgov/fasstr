@@ -41,8 +41,6 @@
 #' }
 #' @export
 
-
-
 plot_annual_extremes <- function(data,
                                  dates = Date,
                                  values = Value,
@@ -63,8 +61,6 @@ plot_annual_extremes <- function(data,
                                  ignore_missing = FALSE,
                                  allowed_missing = ifelse(ignore_missing,100,0),
                                  include_title = FALSE){
-  
-  
   
   ## ARGUMENT CHECKS 
   ## others will be check in calc_ function
@@ -159,68 +155,65 @@ plot_annual_extremes <- function(data,
   colour_list <- c("dodgerblue2",
                    "orange")
   
-  # Create plots for each STATION_NUMBER in a tibble (see: http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/)
+  # Create plots for each STATION_NUMBER in a tibble
   doy_plots <- dplyr::group_by(peak_doy, STATION_NUMBER)
   doy_plots <- tidyr::nest(doy_plots)
   doy_plots <- dplyr::mutate(
     doy_plots,
-    plot = purrr::map2(data, STATION_NUMBER,
-                       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic, fill = Statistic)) +
-                         ggplot2::geom_line(alpha = 0.5, na.rm = TRUE)+
-                         ggplot2::geom_point(na.rm = TRUE, shape = 21, colour = "black", size = 2) +
-                         ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "top")+
-                         ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
-                         {if(length(unique(peak_doy$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(peak_doy$Year))}+
-                         ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
-                         ggplot2::ylab(ifelse(water_year_start == 1, "Day of Year", "Day of Water Year"))+
-                         ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
-                         #ggplot2::scale_color_viridis_d()+
-                         #ggplot2::scale_fill_viridis_d()+
-                         ggplot2::scale_color_manual(values = colour_list)+
-                         ggplot2::scale_fill_manual(values = colour_list)+
-                         ggplot2::theme_bw() +
-                         ggplot2::guides(colour = 'none', fill = "none")+
-                         {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
-                         ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                                        panel.grid = ggplot2::element_line(size = .2),
-                                        axis.title = ggplot2::element_text(size = 12),
-                                        axis.text = ggplot2::element_text(size = 10),
-                                        plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
-                                        strip.background = ggplot2::element_blank(),
-                                        strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
+    plot = purrr::map2(
+      data, STATION_NUMBER,
+      ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic, fill = Statistic)) +
+        ggplot2::geom_line(alpha = 0.5, na.rm = TRUE)+
+        ggplot2::geom_point(na.rm = TRUE, shape = 21, colour = "black", size = 2) +
+        ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "top")+
+        ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
+        {if(length(unique(peak_doy$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(peak_doy$Year))}+
+        ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
+        ggplot2::ylab(ifelse(water_year_start == 1, "Day of Year", "Day of Water Year"))+
+        ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
+        ggplot2::scale_color_manual(values = colour_list)+
+        ggplot2::scale_fill_manual(values = colour_list)+
+        ggplot2::theme_bw() +
+        ggplot2::guides(colour = 'none', fill = "none")+
+        {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
+        ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                       panel.grid = ggplot2::element_line(size = .2),
+                       axis.title = ggplot2::element_text(size = 12),
+                       axis.text = ggplot2::element_text(size = 10),
+                       plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
+                       strip.background = ggplot2::element_blank(),
+                       strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
     ))
   
   flow_plots <- dplyr::group_by(peak_values, STATION_NUMBER)
   flow_plots <- tidyr::nest(flow_plots)
   flow_plots <- dplyr::mutate(
     flow_plots,
-    plot = purrr::map2(data, STATION_NUMBER,
-                       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic, fill = Statistic)) +
-                         ggplot2::geom_line(alpha = 0.5, na.rm = TRUE)+
-                         ggplot2::geom_point(na.rm = TRUE, shape = 21, colour = "black", size = 2) +
-                         ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "top", scales = "free_y")+
-                         ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
-                         {if(length(unique(peak_values$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(peak_values$Year))}+
-                         ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
-                                                     labels = scales::label_number(scale_cut = scales::cut_short_scale())) +
-                         ggplot2::ylab(y_axis_title)+
-                         ggplot2::xlab("Year")+
-                         #ggplot2::scale_color_viridis_d()+
-                         #ggplot2::scale_fill_viridis_d()+
-                         ggplot2::scale_color_manual(values = colour_list)+
-                         ggplot2::scale_fill_manual(values = colour_list)+
-                         ggplot2::theme_bw() +
-                         ggplot2::guides(colour = 'none', fill = "none")+
-                         {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
-                         ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                                        panel.grid = ggplot2::element_line(size = .2),
-                                        axis.title = ggplot2::element_text(size = 12),
-                                        axis.text = ggplot2::element_text(size = 10),
-                                        plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
-                                        strip.background = ggplot2::element_blank(),
-                                        strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
+    plot = purrr::map2(
+      data, STATION_NUMBER,
+      ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic, fill = Statistic)) +
+        ggplot2::geom_line(alpha = 0.5, na.rm = TRUE)+
+        ggplot2::geom_point(na.rm = TRUE, shape = 21, colour = "black", size = 2) +
+        ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "top", scales = "free_y")+
+        ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
+        {if(length(unique(peak_values$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(peak_values$Year))}+
+        ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
+                                    labels = scales::label_number(scale_cut = scales::cut_short_scale())) +
+        ggplot2::ylab(y_axis_title)+
+        ggplot2::xlab("Year")+
+        ggplot2::scale_color_manual(values = colour_list)+
+        ggplot2::scale_fill_manual(values = colour_list)+
+        ggplot2::theme_bw() +
+        ggplot2::guides(colour = 'none', fill = "none")+
+        {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
+        ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                       panel.grid = ggplot2::element_line(size = .2),
+                       axis.title = ggplot2::element_text(size = 12),
+                       axis.text = ggplot2::element_text(size = 10),
+                       plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
+                       strip.background = ggplot2::element_blank(),
+                       strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
     ))
-  
   
   # Create a list of named plots extracted from the tibble
   plots_1 <- flow_plots$plot
@@ -237,10 +230,7 @@ plot_annual_extremes <- function(data,
   # Add the plots to the plot list
   plots <- c(plots_1, plots_2)
   
-  
-  
   plots
-  
   
 }
 

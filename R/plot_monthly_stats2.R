@@ -17,6 +17,7 @@
 #'    \code{calc_monthly_stats()} function. Produces a list containing a plot for each statistic. Returns a list of plots.
 #' 
 #' @inheritParams calc_monthly_stats
+#' @inheritParams plot_monthly_stats
 #' @inheritParams plot_annual_stats
 #' @inheritParams plot_annual_stats2
 #' 
@@ -69,6 +70,7 @@ plot_monthly_stats2 <- function(data,
                                 outer_percentiles = c(5,95),
                                 log_discharge = TRUE,
                                 log_ticks = ifelse(log_discharge, TRUE, FALSE),
+                                scales_discharge = "fixed",
                                 include_title = FALSE){
   
   
@@ -96,7 +98,8 @@ plot_monthly_stats2 <- function(data,
   log_ticks_checks(log_ticks, log_discharge)
   logical_arg_check(include_title)
   ptile_ribbons_checks(inner_percentiles, outer_percentiles)
-  
+  scales_checks(scales_discharge)
+  if (scales_discharge == "free") scales_discharge <- "free_y"
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
@@ -180,9 +183,9 @@ plot_monthly_stats2 <- function(data,
         {if(is.numeric(inner_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(inner_percentiles)),
                                                                                     ymax = paste0("P",max(inner_percentiles)),
                                                                                     fill = paste0("'",inner_name,"'")), na.rm = FALSE)} +
-        ggplot2::geom_line(ggplot2::aes(y = Median, colour = "Median"), size = 1, na.rm = TRUE) +
-        ggplot2::geom_line(ggplot2::aes(y = Mean, colour = "Mean"), size = 1, na.rm = TRUE) +
-        ggplot2::facet_wrap(~Month, scales = "fixed", strip.position = "top") +
+        ggplot2::geom_line(ggplot2::aes(y = Median, colour = "Median"), size = 0.5, na.rm = TRUE) +
+        ggplot2::geom_line(ggplot2::aes(y = Mean, colour = "Mean"), size = 0.5, na.rm = TRUE) +
+        ggplot2::facet_wrap(~Month, scales = scales_discharge, strip.position = "top") +
         ggplot2::scale_x_continuous(expand = c(0,0))+
         {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0), breaks = scales::pretty_breaks(n = 8),
                                                         labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +

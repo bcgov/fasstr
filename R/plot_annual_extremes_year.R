@@ -46,32 +46,32 @@
 
 
 plot_annual_extremes_year <- function(data,
-                                   dates = Date,
-                                   values = Value,
-                                   groups = STATION_NUMBER,
-                                   station_number,
-                                   year_to_plot = NA,
-                                   roll_days = 1,
-                                   roll_days_low = NA,
-                                   roll_days_high = NA,
-                                   roll_align = "right",
-                                   water_year_start = 1,
-                                   start_year,
-                                   end_year,
-                                   exclude_years,
-                                   months = 1:12,
-                                   months_low = NA,
-                                   months_high = NA,
-                                   log_discharge = TRUE,
-                                   log_ticks = FALSE,
-                                   include_title = FALSE,
-                                   plot_normal_percentiles = TRUE,
-                                   normal_percentiles = c(25,75),
-                                   plot_lowflow = TRUE,
-                                   plot_highflow = TRUE,
-                                   complete_years = FALSE,
-                                   ignore_missing = FALSE,
-                                   allowed_missing = ifelse(ignore_missing,100,0)){
+                                      dates = Date,
+                                      values = Value,
+                                      groups = STATION_NUMBER,
+                                      station_number,
+                                      year_to_plot = NA,
+                                      roll_days = 1,
+                                      roll_days_low = NA,
+                                      roll_days_high = NA,
+                                      roll_align = "right",
+                                      water_year_start = 1,
+                                      start_year,
+                                      end_year,
+                                      exclude_years,
+                                      months = 1:12,
+                                      months_low = NA,
+                                      months_high = NA,
+                                      log_discharge = TRUE,
+                                      log_ticks = FALSE,
+                                      include_title = FALSE,
+                                      plot_normal_percentiles = TRUE,
+                                      normal_percentiles = c(25,75),
+                                      plot_lowflow = TRUE,
+                                      plot_highflow = TRUE,
+                                      complete_years = FALSE,
+                                      ignore_missing = FALSE,
+                                      allowed_missing = ifelse(ignore_missing,100,0)){
   
   ## ARGUMENT CHECKS
   ## ---------------
@@ -106,7 +106,7 @@ plot_annual_extremes_year <- function(data,
   sort(normal_percentiles)
   logical_arg_check(plot_lowflow)
   logical_arg_check(plot_highflow)
-  
+  if (!plot_lowflow & !plot_highflow) stop("Both plot_lowflow and plot_highflow cannot be FALSE.", call. = FALSE)
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
@@ -133,14 +133,15 @@ plot_annual_extremes_year <- function(data,
   flow_data_year <- dplyr::filter(flow_data_year, WaterYear ==  year_to_plot)
   flow_data_year <- dplyr::select(flow_data_year, STATION_NUMBER, Flow_Date = Date, DayofYear, Value)
   # 
-  daily_stats <- calc_daily_stats(data = flow_data,
-                                  percentiles = normal_percentiles,
-                                  water_year_start = water_year_start,
-                                  start_year = start_year,
-                                  end_year = end_year,
-                                  exclude_years = exclude_years, 
-                                  complete_years = TRUE,
-                                  months = months)
+  daily_stats <- suppressMessages(
+    calc_daily_stats(data = flow_data,
+                     percentiles = normal_percentiles,
+                     water_year_start = water_year_start,
+                     start_year = start_year,
+                     end_year = end_year,
+                     exclude_years = exclude_years, 
+                     complete_years = TRUE,
+                     months = months))
   names(daily_stats)[names(daily_stats) == paste0("P",min(normal_percentiles))] <- "MIN"
   names(daily_stats)[names(daily_stats) == paste0("P",max(normal_percentiles))] <- "MAX"
   daily_stats <- dplyr::mutate(daily_stats, Date = as.Date(DayofYear, origin = origin_date))
@@ -149,20 +150,20 @@ plot_annual_extremes_year <- function(data,
   daily_stats <- dplyr::left_join(daily_stats, flow_data_year, by = c("STATION_NUMBER", "DayofYear"))
   
   ann_peaks <- calc_annual_extremes(data = flow_data,
-                                 water_year_start = water_year_start,
-                                 start_year = start_year,
-                                 end_year = end_year,
-                                 exclude_years = exclude_years, 
-                                 months = months,
-                                 months_low = months_low,
-                                 months_high = months_high,
-                                 roll_days = roll_days,
-                                 roll_days_low = roll_days_low,
-                                 roll_days_high = roll_days_high,
-                                 roll_align = roll_align,
-                                 complete_years = complete_years,
-                                 ignore_missing = ignore_missing,
-                                 allowed_missing = allowed_missing)
+                                    water_year_start = water_year_start,
+                                    start_year = start_year,
+                                    end_year = end_year,
+                                    exclude_years = exclude_years, 
+                                    months = months,
+                                    months_low = months_low,
+                                    months_high = months_high,
+                                    roll_days = roll_days,
+                                    roll_days_low = roll_days_low,
+                                    roll_days_high = roll_days_high,
+                                    roll_align = roll_align,
+                                    complete_years = complete_years,
+                                    ignore_missing = ignore_missing,
+                                    allowed_missing = allowed_missing)
   names(ann_peaks) <- c("STATION_NUMBER", "Year", "Min_Value", "Min_Doy", 
                         "Min_Date", "Max_Value", "Max_Doy", "Max_Date")
   ann_peaks_min <- dplyr::select(ann_peaks, STATION_NUMBER, Year, DayofYear = Min_Doy, dplyr::contains("Min"))
@@ -217,16 +218,30 @@ plot_annual_extremes_year <- function(data,
   high_lab <- paste0(roll_days_high,"-day Maximum") #"#440154FF" #
   low_lab <- paste0(roll_days_low,"-day Minimum") #"#440154FF" #
   if (plot_lowflow & plot_highflow) {
-    cols <- c(low_col,high_col)
-    names(cols) <- c(low_lab, high_lab)
+    fils <- c(high_col,low_col)
+    shp <- c(21, 21)
+    colors <- c("black", "black")
+    names(fils) <- c(high_lab, low_lab)
   } else if (!plot_lowflow & plot_highflow) {
-    cols <- c(high_col)
-    names(cols) <- c(high_lab)
+    fils <- c(high_col)
+    shp <- c(21)
+    colors <- c("black")
+    names(fils) <- c(high_lab)
   } else if (plot_lowflow & !plot_highflow) {
-    cols <- c(low_col)
-    names(cols) <- c(low_lab)
+    fils <- c(low_col)
+    shp <- c(21)
+    colors <- c("black")
+    names(fils) <- c(low_lab)
   }
-
+  if (plot_normal_percentiles) {
+    names <- c(names(fils),paste0("Historic Daily\nP",normal_percentiles[1],"-P",normal_percentiles[2]))
+    fils <- c(fils, "lightblue2")
+    shp <- c(shp, 22)
+    colors <- c(colors, "lightblue2")
+    names(fils) <- names
+  }
+  disch_name <- paste0("Daily Discharge")
+  
   # Create the daily stats plots
   timing_plots <- dplyr::group_by(ann_peaks, STATION_NUMBER)
   timing_plots <- tidyr::nest(timing_plots)
@@ -237,7 +252,7 @@ plot_annual_extremes_year <- function(data,
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Date)) +
         {if(plot_normal_percentiles) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = "MIN", ymax = "MAX"),
                                                           alpha = 0.4, colour = "lightblue2", fill = "lightblue2", na.rm = FALSE) } +
-        ggplot2::geom_line(ggplot2::aes(y = Value), size = 0.2, colour = "#264b96", na.rm = TRUE) +
+        ggplot2::geom_line(ggplot2::aes(y = Value, colour = disch_name), size = 0.2, na.rm = TRUE) +
         {if(plot_lowflow & roll_days_low > 1) ggplot2::geom_rect(ggplot2::aes(xmin = Min_Start, xmax = Min_End, ymax =Inf, ymin=0), 
                                                                  fill = low_col, alpha = 0.2, na.rm = TRUE) }+
         {if(plot_highflow & roll_days_high > 1) ggplot2::geom_rect(ggplot2::aes(xmin = Max_Start, xmax = Max_End, ymax =Inf, ymin=0), 
@@ -264,9 +279,12 @@ plot_annual_extremes_year <- function(data,
                               limits = as.Date(c(as.character(min(daily_stats$AnalysisDate, na.rm = TRUE)),
                                                  as.character(max(daily_stats$AnalysisDate, na.rm = TRUE)))),
                               expand = c(0,0)) +
-        ggplot2::scale_fill_manual(values = cols, name = paste0("Annual Peak\nfor ",
+        ggplot2::scale_fill_manual(values = fils, name = paste0("Annual Extremes\nfor ",
                                                                 ifelse(water_year_start == 1,"Year ","Water Year "),
                                                                 year_to_plot ))+
+        ggplot2::scale_colour_manual(values = stats::setNames("#264b96", disch_name), name = NULL)+
+        ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(shape = shp, colour = colors),
+                                                     order = 1) )+
         ggplot2::xlab("Day of Year") +
         ggplot2::ylab(y_axis_title) +
         {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +

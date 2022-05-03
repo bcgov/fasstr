@@ -167,7 +167,7 @@ plot_annual_means <- function(data,
                             mapping = ggplot2::aes(yintercept = unique(Ptile1) - unique(LTMAD), linetype = ptile_lab)) }+
             {if(!all(is.na(percentiles_mad))) ggplot2::geom_hline(size = 0.5, alpha = 0.7, na.rm = TRUE,
                             mapping = ggplot2::aes(yintercept = unique(Ptile2) - unique(LTMAD), linetype = ptile_lab)) }+
-        ggplot2::geom_bar(stat = "identity", mapping = ggplot2::aes(fill = "MAD Difference"), na.rm = TRUE, colour = "black", width = 1) +
+        ggplot2::geom_bar(stat = "identity", mapping = ggplot2::aes(fill = "MAD Difference from\nLong-term MAD"), na.rm = TRUE, colour = "black", width = 1) +
         ggplot2::geom_hline(size = 0.5, mapping = ggplot2::aes(yintercept = 0, linetype = "Long-term MAD")) +                         
         ggplot2::scale_y_continuous(labels = function(x) round(x + unique(.$LTMAD),3),
                                     breaks = scales::pretty_breaks(n = 10)) +
@@ -176,7 +176,7 @@ plot_annual_means <- function(data,
         ggplot2::ylab("Mean Annual Discharge (cms)") + #expression(Mean~Annual~Discharge~(m^3/s))
         {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
         ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
-        ggplot2::scale_fill_manual(values = c("MAD Difference" = "#21918c"))+
+        ggplot2::scale_fill_manual(values = c("MAD Difference from\nLong-term MAD" = "#21918c"))+
         ggplot2::scale_linetype_manual(values = ptile_cols)+
         ggplot2::guides(fill = ggplot2::guide_legend(order = 1), 
                         colour = ggplot2::guide_legend(order = 2))+

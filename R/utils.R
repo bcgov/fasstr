@@ -470,7 +470,7 @@ allowed_missing_checks <- function(allowed_missing, ignore_missing) {
   if (ignore_missing & allowed_missing == 0) {
     ignore_missing <- FALSE
     ## remove this notes?
-    warning(paste0("With 'ignore_missing = TRUE' and '", allowed_missing," = 0', '",
+    warning(paste0("With 'ignore_missing = TRUE' and 'allowed_missing' = 0, '",
                    allowed_missing, "' supercedes 'ignore_missing' and values will",
                    " return NA if any missing data."), call. = FALSE)
   }
@@ -484,3 +484,8 @@ allowed_narm <- function(value, allowed_missing){
 no_values_error <- function(values) {
   if (all(is.na(values))) stop("All daily values are NA, select or filter data for years with data.", call. = FALSE)
 }
+
+scales_checks <- function(scales_discharge) {
+ if (!scales_discharge %in% c("fixed", "free"))  stop("scales_discharge argument must be 'fixed' or 'free'.", call. = FALSE)
+}
+

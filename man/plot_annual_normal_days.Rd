@@ -68,7 +68,7 @@ months (\code{1:12}).}
 }
 \value{
 A list of ggplot2 objects with the following for each station provided:
-  \item{Annual_Days_Outside_Normal}{a plot that contains the number of days outside normal}
+  \item{Annual_Normal_Days}{a plot that contains the number of days outside normal}
   Default plots on each object:  
   \item{Normal_Days}{number of days per year below and above the daily normal (default 25/75th percentile)}
   \item{Below_Normal_Days}{number of days per year below the daily normal (default 25th percentile)}

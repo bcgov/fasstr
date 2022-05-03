@@ -123,6 +123,7 @@ plot_annual_normal_days_year <- function(data,
   ## CALC STATS
   ## ----------
   
+  # Get flow data for a specific years
   flow_data_year <- add_date_variables(flow_data, water_year_start = water_year_start)
   flow_data_year <- add_rolling_means(flow_data_year, roll_days = roll_days, roll_align = roll_align)
   flow_data_year <- dplyr::rename(flow_data_year, Orig_Value = Value)
@@ -130,20 +131,22 @@ plot_annual_normal_days_year <- function(data,
   flow_data_year <- dplyr::filter(flow_data_year, WaterYear ==  year_to_plot)
   flow_data_year <- dplyr::select(flow_data_year, STATION_NUMBER, Flow_Date = Date, DayofYear, Value)
   
-  daily_stats <- calc_daily_stats(data = flow_data,
-                                  percentiles = normal_percentiles,
-                                  roll_days = roll_days,
-                                  roll_align = roll_align,
-                                  water_year_start = water_year_start,
-                                  start_year = start_year,
-                                  end_year = end_year,
-                                  exclude_years = exclude_years,
-                                  complete_years = TRUE,
-                                  months = months)
-  
+  # Get daily normal percentiles
+  daily_stats <- suppressMessages(
+    calc_daily_stats(data = flow_data,
+                     percentiles = normal_percentiles,
+                     roll_days = roll_days,
+                     roll_align = roll_align,
+                     water_year_start = water_year_start,
+                     start_year = start_year,
+                     end_year = end_year,
+                     exclude_years = exclude_years,
+                     complete_years = TRUE,
+                     months = months))
   names(daily_stats)[names(daily_stats) == paste0("P",min(normal_percentiles))] <- "MIN"
   names(daily_stats)[names(daily_stats) == paste0("P",max(normal_percentiles))] <- "MAX"
   
+  # determine normality of annual points against percentiles
   daily_stats <- dplyr::mutate(daily_stats, Date = as.Date(DayofYear, origin = origin_date))
   daily_stats <- dplyr::mutate(daily_stats, AnalysisDate = Date)
   daily_stats <- dplyr::left_join(daily_stats, flow_data_year, by = c("STATION_NUMBER", "DayofYear"))
@@ -156,23 +159,37 @@ plot_annual_normal_days_year <- function(data,
   if (all(sapply(daily_stats[4:ncol(daily_stats)], function(x)all(is.na(x))))) {
     daily_stats[is.na(daily_stats)] <- 1
   }
+  
+  daily_stats <- fill_missing_dates(daily_stats, water_year_start = water_year_start)
+  daily_stats <- add_date_variables(daily_stats, water_year_start = water_year_start)
+  daily_stats <- dplyr::select(daily_stats, -c("CalendarYear", "Month", "MonthName", "WaterYear"))
+  
   ## PLOT STATS
   ## ----------
-  
   
   # Create axis label based on input columns
   y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (cubic metres)", #expression(Volume~(m^3))
                          ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)",
                                 "Discharge (cms)")) #expression(Discharge~(m^3/s))
   
-  daily_stats <- fill_missing_dates(daily_stats, water_year_start = water_year_start)
-  daily_stats <- add_date_variables(daily_stats, water_year_start = water_year_start)
-  daily_stats <- dplyr::select(daily_stats, -c("CalendarYear", "Month", "MonthName", "WaterYear"))
-  
-  # colour_list <- c("Above Normal" = "#264b96",
-  #                  "Normal" = "#27b376",
-  #                  "Below Normal" = "#bf212f") #f9a73e
-  
+  # Create colours for legend
+  colour_list <- c("Above Normal","Normal","Below Normal")
+  if (plot_normal_percentiles) {
+    names <- paste0("Historic Daily\nP",normal_percentiles[1],"-P",normal_percentiles[2])
+    fils <- stats::setNames(c(scales::viridis_pal()(length(colour_list)),"lightblue2"),#
+                            c(colour_list, names))
+    shp <- c(21, 21, 21, 22)
+    colors <- c("black", "black" ,"black", "lightblue2")
+    
+  } else {
+    fils <- stats::setNames(c(scales::viridis_pal()(length(colour_list))),#
+                            c(colour_list))
+    shp <- c(21, 21, 21)
+    colors <- c("black", "black" ,"black")
+    
+  }
+  disch_name <- ifelse(roll_days == 1, "Daily Discharge",
+                       paste0(roll_days, "-Day Discharge"))
   
   # Create the daily stats plots
   daily_plots <- dplyr::group_by(daily_stats, STATION_NUMBER)
@@ -183,27 +200,28 @@ plot_annual_normal_days_year <- function(data,
       data, STATION_NUMBER,
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Date)) +
         {if(plot_normal_percentiles) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = "MIN", ymax = "MAX"),
-                                                          alpha = 0.3, colour = "lightblue2", fill = "lightblue2", na.rm = FALSE) } +
-        {if(plot_flow_line) ggplot2::geom_line(ggplot2::aes(y = Value), , size = 0.1, colour = "#264b96") }+
+                                                          alpha = 0.3, colour = "lightblue2" ,fill = "lightblue2", na.rm = FALSE) } +
+        ggplot2::geom_line(ggplot2::aes(y = Value, colour = disch_name), size = 0.2, na.rm = TRUE) +
         ggplot2::geom_point(ggplot2::aes(y = Value, fill = Normal), size = 3, shape = 21, colour = "black") +
         {if(!log_discharge) ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.05)),
                                                         breaks = scales::pretty_breaks(n = 8),
                                                         labels = scales::label_number(scale_cut = scales::cut_short_scale()))}+
         {if(log_discharge) ggplot2::scale_y_log10(breaks = scales::log_breaks(n = 8, base = 10),
                                                   labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +
-        {if(log_discharge & log_ticks) ggplot2::annotation_logticks(base= 10, "left", colour = "grey25", size = 0.3,
+        {if(log_discharge & log_ticks) ggplot2::annotation_logticks(base = 10, "left", colour = "grey25", size = 0.3,
                                                                     short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
                                                                     long = ggplot2::unit(.2, "cm"))} +
         ggplot2::scale_x_date(date_labels = "%b", date_breaks = "1 month",
                               limits = as.Date(c(as.character(min(daily_stats$AnalysisDate, na.rm = TRUE)),
                                                  as.character(max(daily_stats$AnalysisDate, na.rm = TRUE)))),
                               expand = c(0,0)) +
-      #  ggplot2::scale_color_manual(values = colour_list, name = paste0("Normal Category\nfor ",
-      #                                                                  ifelse(water_year_start == 1,"Year ","Water Year "),
-      #                                                                  year_to_plot )) +
-        ggplot2::scale_fill_viridis_d(name = paste0("Normal Category\nfor ",
-                                                                        ifelse(water_year_start == 1,"Year ","Water Year "),
-                                                                        year_to_plot )) +
+        ggplot2::scale_fill_manual(values = fils,
+                                   name = paste0("Normal Category\nfor ",
+                                                 ifelse(water_year_start == 1,"Year ","Water Year "),
+                                                 year_to_plot )) +
+        ggplot2::scale_colour_manual(values = stats::setNames("#264b96", disch_name), name = NULL)+
+        ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(shape = shp, colour = colors),
+                                                     order = 1) )+
         ggplot2::xlab("Day of Year") +
         ggplot2::ylab(y_axis_title) +
         {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
@@ -221,8 +239,6 @@ plot_annual_normal_days_year <- function(data,
                        legend.spacing = ggplot2::unit(-0.4, "cm"),
                        legend.background = ggplot2::element_blank())
     ))
-  
-  
   
   # Create a list of named plots extracted from the tibble
   plots <- daily_plots$plot

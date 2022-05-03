@@ -22,7 +22,7 @@
 #' @inheritParams plot_annual_stats
 #'      
 #' @return A list of ggplot2 objects with the following for each station provided:
-#'   \item{Annual_Days_Outside_Normal}{a plot that contains the number of days outside normal}
+#'   \item{Annual_Normal_Days}{a plot that contains the number of days outside normal}
 #'   Default plots on each object:  
 #'   \item{Normal_Days}{number of days per year below and above the daily normal (default 25/75th percentile)}
 #'   \item{Below_Normal_Days}{number of days per year below the daily normal (default 25th percentile)}
@@ -152,9 +152,9 @@ plot_annual_normal_days <- function(data,
   # Create a list of named plots extracted from the tibble
   plots <- normal_plots$plot
   if (nrow(normal_plots) == 1) {
-    names(plots) <- "Annual_Days_Outside_Normal"
+    names(plots) <- "Annual_Normal_Days"
   } else {
-    names(plots) <- paste0(normal_plots$STATION_NUMBER, "_Annual_Days_Outside_Normal")
+    names(plots) <- paste0(normal_plots$STATION_NUMBER, "_Annual_Normal_Days")
   }
 
   plots

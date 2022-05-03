@@ -490,7 +490,7 @@ write_full_analysis <- function(data,
              title = paste0("Number of Missing Dates Per Month (", start_year, "-", end_year, ")"),
              col = ncol(flow_screening_out) + 2,
              row = 29,
-             height = 6,
+             height = 4,
              width = 8.5,
              comment = missingingplot_function)
     
@@ -910,7 +910,7 @@ write_full_analysis <- function(data,
                                       results$Annual$Annual_Flow_Timing, 
                                       by = c("STATION_NUMBER", "Year"))
     ann_other_out <- dplyr::left_join(ann_other_out, 
-                                      results$Annual$Annual_Days_Outside_Normal, 
+                                      results$Annual$Annual_Normal_Days, 
                                       by = c("STATION_NUMBER", "Year"))
     ann_other_out <- ann_other_out[,!colnames(ann_other_out) %in% "STATION_NUMBER"]
     add_table(wb = output_excel,
@@ -953,7 +953,7 @@ write_full_analysis <- function(data,
              comment = annual_timing_plot_function)
     add_plot(wb = output_excel,
              sheet = ann_oth_sheet,
-             plot = results$Annual$Annual_Days_Outside_Normal_Plot[[1]],
+             plot = results$Annual$Annual_Normal_Days_Plot[[1]],
              title = paste0("Annual Days Per Year Above, Below, and Outside Normal (", start_year, "-", end_year, ")"),
              col = ncol(ann_other_out) + 2 + 8,
              row = 31,
@@ -1745,6 +1745,4 @@ write_full_analysis <- function(data,
   } else {
     message(paste0("* DONE. For analysis results go to: '", normalizePath(paste0(file_name, ".xlsx"))))
   }
-  
-  
 }

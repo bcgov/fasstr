@@ -17,7 +17,8 @@
 #'    \code{calc_monthly_stats()} function. Produces a list containing a plot for each statistic. Returns a list of plots.
 #'    
 #' @param percentiles Numeric vector of percentiles to calculate. Set to \code{NA} if none required. Default \code{NA}.
-#' 
+#' @param scales_discharge String, either 'fixed' (all y-axis scales the same) or 'free' (each plot has their own scale). 
+#'     Default \code{'fixed'}.
 #' @inheritParams calc_monthly_stats
 #' @inheritParams plot_annual_stats
 #' 
@@ -70,6 +71,7 @@ plot_monthly_stats <- function(data,
                                allowed_missing = ifelse(ignore_missing,100,0),
                                log_discharge = FALSE,
                                log_ticks = ifelse(log_discharge, TRUE, FALSE),
+                               scales_discharge = "fixed",
                                include_title = FALSE){
   
   
@@ -99,7 +101,8 @@ plot_monthly_stats <- function(data,
   logical_arg_check(log_discharge)
   log_ticks_checks(log_ticks, log_discharge)
   logical_arg_check(include_title)
-  
+  scales_checks(scales_discharge)
+  if (scales_discharge == "free") scales_discharge <- "free_y"
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
@@ -159,7 +162,7 @@ plot_monthly_stats <- function(data,
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, colour = Month)) +
         ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
         ggplot2::geom_point(na.rm = TRUE) +
-        ggplot2::facet_wrap(~Month, scales = "fixed", strip.position = "top") +
+        ggplot2::facet_wrap(~Month, scales = scales_discharge, strip.position = "top") +
         #ggplot2::ggtitle(paste0("Monthly ", stat, " Flows")) +
         ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6))+
         {if(length(unique(monthly_data$Year)) < 6) ggplot2::scale_x_continuous(breaks = unique(monthly_data$Year))}+
@@ -187,9 +190,8 @@ plot_monthly_stats <- function(data,
         ggplot2::scale_colour_manual(values = c("Jan" = "dodgerblue3", "Feb" = "skyblue1", "Mar" = "turquoise",
                                                 "Apr" = "forestgreen", "May" = "limegreen", "Jun" = "gold",
                                                 "Jul" = "orange", "Aug" = "red", "Sep" = "darkred",
-                                                "Oct" = "orchid", "Nov" = "purple3", "Dec" = "midnightblue")) +
-        ggplot2::scale_color_viridis_d()
-    ))
+                                                "Oct" = "orchid", "Nov" = "purple3", "Dec" = "midnightblue"))
+      ))
 
 
   # Create a list of named plots extracted from the tibble
