@@ -62,7 +62,7 @@ calc_annual_outside_normal <- function(data,
                                        months = 1:12,
                                        transpose = FALSE){
   
-  message("calc_annual_outside_normal is deprecated. See calc_annual_normal_days().")
+  .Deprecated("calc_annual_normal_days")
   
   ## ARGUMENT CHECKS
   ## ---------------

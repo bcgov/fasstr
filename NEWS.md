@@ -1,7 +1,7 @@
 fasstr 0.5.0
 =========================
 
-Updated: 03 May 2022
+Updated: 05 May 2022
 
 ### New functions:
 
