@@ -1,7 +1,7 @@
 fasstr 0.5.0
 =========================
 
-Updated: 05 May 2022
+Updated: 10 May 2022
 
 ### New functions:
 
@@ -26,6 +26,7 @@ Updated: 05 May 2022
   * calc_annual_peaks() - deprecated, replaced with calc_annual_extremes()
   * plot_annual_cumulative_stats() - new default plot type in bar format. Can change to original line plot using plot_type = "line".
   * calc_annual_outside_normal() and plot_annual_outside_normal() - deprecated, replaced with calc_annual_normal_days() and plot_annual_normal_days()
+  * compute_frequency_analysis() - added logical 'compute_fitting' argument to fit plotting positions (TRUE, default) or don't and just return plotting position results (first 3 objects of output) (FALSE); add custom plot y-axis title
   
 ### Other updates:
   
