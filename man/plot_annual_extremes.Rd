@@ -11,16 +11,16 @@ plot_annual_extremes(
   groups = STATION_NUMBER,
   station_number,
   roll_days = 1,
-  roll_days_low = NA,
-  roll_days_high = NA,
+  roll_days_min = NA,
+  roll_days_max = NA,
   roll_align = "right",
   water_year_start = 1,
   start_year,
   end_year,
   exclude_years,
   months = 1:12,
-  months_low = NA,
-  months_high = NA,
+  months_min = NA,
+  months_max = NA,
   complete_years = FALSE,
   ignore_missing = FALSE,
   allowed_missing = ifelse(ignore_missing, 100, 0),
@@ -48,10 +48,10 @@ Leave blank if using \code{data} argument.}
 
 \item{roll_days}{Numeric value of the number of days to apply a rolling mean. Default \code{1}.}
 
-\item{roll_days_low}{Numeric value of the number of days to apply a rolling mean for low flows.  Will override 'roll_days' argument 
+\item{roll_days_min}{Numeric value of the number of days to apply a rolling mean for low flows.  Will override 'roll_days' argument 
 for low flows. Default \code{NA}.}
 
-\item{roll_days_high}{Numeric value of the number of days to apply a rolling mean for high flows.  Will override 'roll_days' argument 
+\item{roll_days_max}{Numeric value of the number of days to apply a rolling mean for high flows.  Will override 'roll_days' argument 
 for high flows. Default \code{NA}.}
 
 \item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
@@ -73,10 +73,10 @@ analysis. Default \code{1}.}
 \code{c(10:12,1)} for first four months (Oct-Jan) when \code{water_year_start = 10} (Oct). Default summarizes all 
 months (\code{1:12}).}
 
-\item{months_low}{Numeric vector of specified months for window of low flows (3 for March, 6:8 for Jun-Aug). Will override 'months' 
+\item{months_min}{Numeric vector of specified months for window of low flows (3 for March, 6:8 for Jun-Aug). Will override 'months' 
 argument for low flows. Default \code{NA}.}
 
-\item{months_high}{Numeric vector of specified months for window of high flows (3 for March, 6:8 for Jun-Aug). Will override 'months' 
+\item{months_max}{Numeric vector of specified months for window of high flows (3 for March, 6:8 for Jun-Aug). Will override 'months' 
 argument for high flows. Default \code{NA}.}
 
 \item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
@@ -111,8 +111,8 @@ plot_annual_extremes(station_number = "08NM116")
 
 # Plot custom annual 3-day max and 7-min flow data with 'center' alignment
 plot_annual_extremes(station_number = "08NM116",
-                     roll_days_high = 3,
-                     roll_days_low = 7,
+                     roll_days_max = 3,
+                     roll_days_min = 7,
                      roll_align = "center")
                      
 }

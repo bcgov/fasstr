@@ -133,19 +133,7 @@ plot_annual_means <- function(data,
   ## PLOT STATS
   ## ----------
   
-  # p1_lab <- paste0(roll_days_high,"-day Maximum") #"#440154FF" #
-  # low_lab <- paste0(roll_days_low,"-day Minimum") #"#440154FF" #
-  # if (plot_lowflow & plot_highflow) {
-  #   cols <- c(low_col,high_col)
-  #   names(cols) <- c(low_lab, high_lab)
-  # } else if (!plot_lowflow & plot_highflow) {
-  #   cols <- c(high_col)
-  #   names(cols) <- c(high_lab)
-  # } else if (plot_lowflow & !plot_highflow) {
-  #   cols <- c(low_col)
-  #   names(cols) <- c(low_lab)
-  # }
-  
+
   if (all(is.na(percentiles_mad))) {
     ptile_cols <- c("Long-term MAD" = 1)
   } else {

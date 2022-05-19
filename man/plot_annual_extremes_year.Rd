@@ -12,23 +12,23 @@ plot_annual_extremes_year(
   station_number,
   year_to_plot = NA,
   roll_days = 1,
-  roll_days_low = NA,
-  roll_days_high = NA,
+  roll_days_min = NA,
+  roll_days_max = NA,
   roll_align = "right",
   water_year_start = 1,
   start_year,
   end_year,
   exclude_years,
   months = 1:12,
-  months_low = NA,
-  months_high = NA,
+  months_min = NA,
+  months_max = NA,
   log_discharge = TRUE,
   log_ticks = FALSE,
   include_title = FALSE,
   plot_normal_percentiles = TRUE,
   normal_percentiles = c(25, 75),
-  plot_lowflow = TRUE,
-  plot_highflow = TRUE,
+  plot_min = TRUE,
+  plot_max = TRUE,
   complete_years = FALSE,
   ignore_missing = FALSE,
   allowed_missing = ifelse(ignore_missing, 100, 0)
@@ -57,10 +57,10 @@ Leave blank if using \code{data} argument.}
 
 \item{roll_days}{Numeric value of the number of days to apply a rolling mean. Default \code{1}.}
 
-\item{roll_days_low}{Numeric value of the number of days to apply a rolling mean for low flows.  Will override 'roll_days' argument 
+\item{roll_days_min}{Numeric value of the number of days to apply a rolling mean for low flows.  Will override 'roll_days' argument 
 for low flows. Default \code{NA}.}
 
-\item{roll_days_high}{Numeric value of the number of days to apply a rolling mean for high flows.  Will override 'roll_days' argument 
+\item{roll_days_max}{Numeric value of the number of days to apply a rolling mean for high flows.  Will override 'roll_days' argument 
 for high flows. Default \code{NA}.}
 
 \item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
@@ -79,13 +79,13 @@ analysis. Default \code{1}.}
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank or set to \code{NULL} to include all years.}
 
 \item{months}{Numeric vector of specific months to plot. For example, \code{3} for March, \code{6:8} for Jun-Aug.
-Will be overridden for low or high flow statistics if \code{months_low} or \code{months_high} set, but will still 
+Will be overridden for low or high flow statistics if \code{months_min} or \code{months_max} set, but will still 
 define the date limits on the x-axis. Default plots all months (\code{1:12}).}
 
-\item{months_low}{Numeric vector of specified months for window of low flows (3 for March, 6:8 for Jun-Aug). Will override 'months' 
+\item{months_min}{Numeric vector of specified months for window of low flows (3 for March, 6:8 for Jun-Aug). Will override 'months' 
 argument for low flows. Default \code{NA}.}
 
-\item{months_high}{Numeric vector of specified months for window of high flows (3 for March, 6:8 for Jun-Aug). Will override 'months' 
+\item{months_max}{Numeric vector of specified months for window of high flows (3 for March, 6:8 for Jun-Aug). Will override 'months' 
 argument for high flows. Default \code{NA}.}
 
 \item{log_discharge}{Logical value to indicate plotting the discharge axis (Y-axis) on a logarithmic scale. Default \code{FALSE}.}
@@ -100,9 +100,9 @@ appear when \code{log_discharge = FALSE}. Default to \code{TRUE} when \code{log_
 \item{normal_percentiles}{Numeric vector of two values, lower and upper percentiles, respectively indicating the limits of the 
 normal range. Default \code{c(25,75)}.}
 
-\item{plot_lowflow}{Logical value indicating whether to plot annual low flows. Default \code{TRUE}.}
+\item{plot_min}{Logical value indicating whether to plot annual low flows. Default \code{TRUE}.}
 
-\item{plot_highflow}{Logical value indicating whether to plot annual high flows. Default \code{TRUE}.}
+\item{plot_max}{Logical value indicating whether to plot annual high flows. Default \code{TRUE}.}
 
 \item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 
@@ -123,8 +123,8 @@ A list of ggplot2 objects with the following for each station provided:
 Plots an annual hydrograph for a specific year with the values and timing of annual n-day low and high flows.
    The 'normal' range of percentiles also plotted for reference and are calculated from only years of complete data. 
    Shows the values and dates of max/mins for a specific year from the \code{calc_annual_extremes()} and
-   \code{plot_annual_extremes()} functions. Can remove either low or high flows using \code{plot_lowflow = FALSE()} or 
-   \code{plot_highflow = FALSE()}, respectively. Returns a list of plots.
+   \code{plot_annual_extremes()} functions. Can remove either low or high flows using \code{plot_min = FALSE()} or 
+   \code{plot_max = FALSE()}, respectively. Returns a list of plots.
 }
 \examples{
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
@@ -132,8 +132,8 @@ if (file.exists(tidyhydat::hy_downloaded_db())) {
 
 # Plot the year 2000 with the annual maximum and minimums       
 plot_annual_extremes_year(station_number = "08NM116",
-                          roll_days_high = 3,
-                          roll_days_low = 7,
+                          roll_days_max = 3,
+                          roll_days_min = 7,
                           year_to_plot = 2001)
                  
 }
