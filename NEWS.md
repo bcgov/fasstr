@@ -1,7 +1,7 @@
 fasstr 0.5.0
 =========================
 
-Updated: 10 May 2022
+Updated: 19 May 2022
 
 ### New functions:
 
@@ -32,6 +32,7 @@ Updated: 10 May 2022
   
   * Changed colour scales on many plots to the viridis palette
   * Can now choose 0 and 100 percentiles (was previously between 1 and 99)
+  * Added args plot_inner_percentiles, plot_outer_percentiles, and changed include_extreme to plot_extreme in various functions
   * Added 'complete_years' argument to several functions for cross-package consistency. Doesn't change functionality, but sets/overrides ignore_missing to FALSE and allowed_missing to 0.
   * "Year" axes now labeled "Water Year" if water_year_start != 1
   * Some appropriate "Day of Year" axes now labeled "Day of Water Year" if water_year_start != 1

@@ -14,15 +14,16 @@
 #'
 #' @description Plots the long-term mean, median, maximum, minimum, and percentiles of annual monthly mean flow values for all
 #'    months and all data (Long-term) from a daily streamflow data set. Calculates statistics from all values, unless specified. 
-#'    The Maximum-Minimum band can be removed using the \code{include_extremes} argument and the percentile bands 
+#'    The Maximum-Minimum band can be removed using the \code{plot_extremes} argument and the percentile bands 
 #'    can be customized using the \code{inner_percentiles} and \code{outer_percentiles} arguments. Data calculated using the 
 #'    \code{calc_longterm_monthly_stats()} function. Returns a list of plots.
 #'
 #' @inheritParams calc_longterm_monthly_stats
 #' @inheritParams plot_annual_stats
+#' @inheritParams plot_daily_stats
 #' @param add_year Numeric value indicating a year of daily flows to add to the daily statistics plot.  Leave blank
 #'    or set to \code{NULL} for no years.
-#' @param include_extremes Logical value to indicate plotting a ribbon with the range of daily minimum and maximum flows. 
+#' @param plot_extremes Logical value to indicate plotting a ribbon with the range of daily minimum and maximum flows. 
 #'    Default \code{TRUE}.
 #' @param inner_percentiles Numeric vector of two percentile values indicating the lower and upper limits of the 
 #'    inner percentiles ribbon for plotting. Default \code{c(25,75)}, set to \code{NULL} for no inner ribbon.
@@ -71,7 +72,9 @@ plot_longterm_monthly_stats <- function(data,
                                         months = 1:12,
                                         complete_years = FALSE,
                                         ignore_missing = FALSE,
-                                        include_extremes = TRUE,
+                                        plot_extremes = TRUE,
+                                        plot_inner_percentiles = TRUE,
+                                        plot_outer_percentiles = TRUE,
                                         inner_percentiles = c(25,75),
                                         outer_percentiles = c(5,95),
                                         add_year,
@@ -105,7 +108,9 @@ plot_longterm_monthly_stats <- function(data,
   log_ticks_checks(log_ticks, log_discharge)
   logical_arg_check(include_title)  
   ptile_ribbons_checks(inner_percentiles, outer_percentiles)
-  
+  logical_arg_check(plot_extremes)
+  logical_arg_check(plot_inner_percentiles)
+  logical_arg_check(plot_outer_percentiles)
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
@@ -215,7 +220,7 @@ plot_longterm_monthly_stats <- function(data,
   # Create manual colour and fill options
   
   fill_manual_list <- c()
-  if (include_extremes) {
+  if (plot_extremes) {
     fill_manual_list <- c(fill_manual_list, "lightblue2")
     names(fill_manual_list) <- c(names(fill_manual_list), "Minimum-Maximum")
   }
@@ -251,13 +256,15 @@ plot_longterm_monthly_stats <- function(data,
     plot = purrr::map2(
       data, STATION_NUMBER, 
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Month, group = 1)) +
-        {if(include_extremes) ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maximum"), na.rm = FALSE)} +
-        {if(is.numeric(outer_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(outer_percentiles)), 
-                                                                                    ymax = paste0("P",max(outer_percentiles)), 
-                                                                                    fill = paste0("'",outer_name,"'")), na.rm = FALSE)} +
-        {if(is.numeric(inner_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(inner_percentiles)), 
-                                                                                    ymax = paste0("P",max(inner_percentiles)), 
-                                                                                    fill = paste0("'",inner_name,"'")), na.rm = FALSE)} +
+        {if(plot_extremes) ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maximum"), na.rm = FALSE)} +
+        {if(is.numeric(outer_percentiles) & plot_outer_percentiles) 
+          ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(outer_percentiles)), 
+                                                   ymax = paste0("P",max(outer_percentiles)), 
+                                                   fill = paste0("'",outer_name,"'")), na.rm = FALSE)} +
+        {if(is.numeric(inner_percentiles) & plot_inner_percentiles)
+          ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(inner_percentiles)), 
+                                                   ymax = paste0("P",max(inner_percentiles)), 
+                                                   fill = paste0("'",inner_name,"'")), na.rm = FALSE)} +
         ggplot2::geom_line(ggplot2::aes(y = Mean, color = "Mean"), size = .9, na.rm = TRUE) +
         ggplot2::geom_line(ggplot2::aes(y = Median, color = "Median"), size = .9, na.rm = TRUE) +
         ggplot2::geom_point(ggplot2::aes(y = Mean), size = 2, na.rm = TRUE, colour  = "paleturquoise") +

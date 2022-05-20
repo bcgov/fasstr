@@ -448,14 +448,14 @@ ptile_ribbons_checks <- function(inner_percentiles, outer_percentiles){
   if(!is.null(inner_percentiles)) {
     if (!is.numeric(inner_percentiles) )                stop("inner_percentiles must be two numeric values.", call. = FALSE)
     if (length(inner_percentiles) != 2 )                stop("inner_percentiles must be two numeric values (ex. c(25,75)).", call. = FALSE)
-    if (!all(is.na(inner_percentiles)) & (!all(inner_percentiles > 0 & inner_percentiles < 100)) )  
-      stop("inner_percentiles must be >0 and <100)", call. = FALSE)
+    if (!all(is.na(inner_percentiles)) & (!all(inner_percentiles >= 0 & inner_percentiles <= 100)) )  
+      stop("inner_percentiles must be >= 0 and <= 100)", call. = FALSE)
   }
   if(!is.null(outer_percentiles)) {
     if (!is.numeric(outer_percentiles) )                stop("outer_percentiles must be two numeric values.", call. = FALSE)
     if (length(outer_percentiles) != 2 )                stop("outer_percentiles must be two numeric values (ex. c(25,75)).", call. = FALSE)
-    if (!all(is.na(outer_percentiles)) & (!all(outer_percentiles > 0 & outer_percentiles < 100)) )  
-      stop("outer_percentiles must be >0 and <100)", call. = FALSE)
+    if (!all(is.na(outer_percentiles)) & (!all(outer_percentiles >= 0 & outer_percentiles <= 100)) )  
+      stop("outer_percentiles must be >= 0 and <= 100)", call. = FALSE)
   }
 }
 
@@ -486,6 +486,51 @@ no_values_error <- function(values) {
 }
 
 scales_checks <- function(scales_discharge) {
- if (!scales_discharge %in% c("fixed", "free"))  stop("scales_discharge argument must be 'fixed' or 'free'.", call. = FALSE)
+  if (!scales_discharge %in% c("fixed", "free"))  stop("scales_discharge argument must be 'fixed' or 'free'.", call. = FALSE)
 }
 
+conseq <- function(s, type = "num", wrap = NULL, sort = TRUE) {
+  
+  if(is.null(wrap) && type == "num") wrap <- TRUE
+  if(is.null(wrap) && type == "month") wrap <- FALSE
+  
+  if(sort) s <- sort(as.numeric(s))
+  
+  if(length(s) == 1) {
+    if(type == "num") return(as.character(s))
+    if(type == "month") return(month.abb[s])
+  }
+  
+  dif <- s[seq(length(s))][-1] - s[seq(length(s)-1)]
+  new <- !c(0, dif == 1)
+  cs <- cumsum(new)
+  res <- vector(mode="list", max(cs))
+  for(i in seq(res)){
+    s.i <- s[which(cs == i)]
+    if(length(s.i) > 2){
+      if(type == "num") res[[i]] <- paste(min(s.i), max(s.i), sep=":")
+      if(type == "month") res[[i]] <- paste(month.abb[min(s.i)],
+                                            month.abb[max(s.i)], sep="-")
+    } else {
+      if(type == "num") res[[i]] <- as.character(s.i)
+      if(type == "month") res[[i]] <- as.character(month.abb[s.i])
+    }
+  }
+  
+  res <- paste(unlist(res), collapse = ", ")
+  
+  if(wrap) res <- paste0("c(", res, ")")
+  
+  res
+}
+
+get_stn_years <- function(flow_data, year_col = "WaterYear"){
+  names(flow_data)[names(flow_data) == year_col] <- "WaterYear"
+  years_att <- dplyr::group_by(flow_data, STATION_NUMBER)
+  years_att <- dplyr::summarise(
+    years_att, 
+    start_year = min(WaterYear),
+    end_year = max(WaterYear),
+    excluded_years = list((start_year:end_year)[!start_year:end_year %in% unique(WaterYear)]))
+  years_att
+}

@@ -116,10 +116,14 @@
           "Max_Doy",
           "Max_Start",
           "Max_End",
+          "RollingValue_max",
+          "RollingValue_min",
           "RollingValue_High",
           "RollingValue_Low",
           "n_na",
-          "data")
+          "data",
+          "start_year",
+          "end_year")
       )
     invisible()
   }

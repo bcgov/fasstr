@@ -20,7 +20,9 @@ plot_monthly_stats2(
   complete_years = FALSE,
   ignore_missing = FALSE,
   allowed_missing = ifelse(ignore_missing, 100, 0),
-  include_extremes = TRUE,
+  plot_extremes = TRUE,
+  plot_inner_percentiles = TRUE,
+  plot_outer_percentiles = TRUE,
   inner_percentiles = c(25, 75),
   outer_percentiles = c(5, 95),
   log_discharge = TRUE,
@@ -80,8 +82,12 @@ included to calculate a statistic (0 to 100 percent). If \code{'ignore_missing =
 if \code{'ignore_missing = TRUE'} then it defaults to \code{100} (any missing dates allowed); consistent with 
 \code{ignore_missing} usage. Supersedes \code{ignore_missing} when used.}
 
-\item{include_extremes}{Logical value to indicate plotting a ribbon with the range of daily minimum and maximum flows. 
+\item{plot_extremes}{Logical value to indicate plotting a ribbon with the range of daily minimum and maximum flows. 
 Default \code{TRUE}.}
+
+\item{plot_inner_percentiles}{Logical value indicating whether to plot the inner percentiles ribbon. Default \code{TRUE}.}
+
+\item{plot_outer_percentiles}{Logical value indicating whether to plot the outer percentiles ribbon. Default \code{TRUE}.}
 
 \item{inner_percentiles}{Numeric vector of two percentile values indicating the lower and upper limits of the 
 inner percentiles ribbon for plotting. Default \code{c(25,75)}, set to \code{NULL} for no inner ribbon.}

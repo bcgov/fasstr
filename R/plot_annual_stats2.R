@@ -74,7 +74,9 @@ plot_annual_stats2 <- function(data,
                                complete_years = FALSE,
                                ignore_missing = FALSE,
                                allowed_missing = ifelse(ignore_missing,100,0),
-                               include_extremes = TRUE,
+                               plot_extremes = TRUE,
+                               plot_inner_percentiles = TRUE,
+                               plot_outer_percentiles = TRUE,
                                inner_percentiles = c(25,75),
                                outer_percentiles = c(5,95),
                                log_discharge = TRUE,
@@ -104,7 +106,9 @@ plot_annual_stats2 <- function(data,
   log_ticks_checks(log_ticks, log_discharge)
   logical_arg_check(include_title)
   ptile_ribbons_checks(inner_percentiles, outer_percentiles)
-  
+  logical_arg_check(plot_extremes)
+  logical_arg_check(plot_inner_percentiles)
+  logical_arg_check(plot_outer_percentiles)
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
@@ -138,7 +142,7 @@ plot_annual_stats2 <- function(data,
   
   # Remove all leading NA years
   annual_stats_plot <- dplyr::filter(dplyr::group_by(annual_stats_plot, STATION_NUMBER),
-                                Year >= Year[min(which(!is.na(.data[[names(annual_stats_plot)[3]]])))])
+                                     Year >= Year[min(which(!is.na(.data[[names(annual_stats_plot)[3]]])))])
   
   ## PLOT STATS
   ## ----------
@@ -148,7 +152,7 @@ plot_annual_stats2 <- function(data,
                          ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)", 
                                 "Discharge (cms)")) #expression(Discharge~(m^3/s))
   fill_manual_list <- c()
-  if (include_extremes) {
+  if (plot_extremes) {
     fill_manual_list <- c(fill_manual_list, "lightblue2")
     names(fill_manual_list) <- c(names(fill_manual_list), "Minimum-Maximum")
   }
@@ -176,13 +180,15 @@ plot_annual_stats2 <- function(data,
     plot = purrr::map2(
       data, STATION_NUMBER, 
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year)) +
-        {if(include_extremes) ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maximum"), na.rm = FALSE)} +
-        {if(is.numeric(outer_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(outer_percentiles)),
-                                                                                    ymax = paste0("P",max(outer_percentiles)),
-                                                                                    fill = paste0("'",outer_name,"'")), na.rm = FALSE)} +
-        {if(is.numeric(inner_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(inner_percentiles)),
-                                                                                    ymax = paste0("P",max(inner_percentiles)),
-                                                                                    fill = paste0("'",inner_name,"'")), na.rm = FALSE)} +
+        {if(plot_extremes) ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maximum"), na.rm = FALSE)} +
+        {if(is.numeric(outer_percentiles) & plot_outer_percentiles) 
+          ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(outer_percentiles)),
+                                                   ymax = paste0("P",max(outer_percentiles)),
+                                                   fill = paste0("'",outer_name,"'")), na.rm = FALSE)} +
+        {if(is.numeric(inner_percentiles) & plot_inner_percentiles)
+          ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(inner_percentiles)),
+                                                   ymax = paste0("P",max(inner_percentiles)),
+                                                   fill = paste0("'",inner_name,"'")), na.rm = FALSE)} +
         ggplot2::geom_line(ggplot2::aes(y = Median, colour = "Median"), size = 1, na.rm = TRUE) +
         ggplot2::geom_line(ggplot2::aes(y = Mean, colour = "Mean"), size = 1, na.rm = TRUE) +
         ggplot2::scale_x_continuous(expand = c(0,0))+
