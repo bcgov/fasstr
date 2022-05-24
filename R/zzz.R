@@ -123,7 +123,8 @@
           "n_na",
           "data",
           "start_year",
-          "end_year")
+          "end_year",
+          "name")
       )
     invisible()
   }

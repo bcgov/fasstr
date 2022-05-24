@@ -1,0 +1,221 @@
+# Copyright 2022 Province of British Columbia
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+# http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and limitations under the License.
+
+
+#' @title Plot monthly means and percent LTMADs
+#'
+#' @description Plot monthly means and add long-term mean annual discharge percentages. Calculates statistics
+#'    from all values, unless specified. Mean data calculated using \code{calc_longterm_daily_stats()} function. 
+#'    Returns a list of plots.
+#'
+#' @inheritParams calc_monthly_stats
+#' @inheritParams calc_longterm_mean
+#' @inheritParams plot_monthly_stats
+#' @param plot_months Numeric vector of months to include on the plot after calculating statistics. 
+#'     For example, \code{3} for March or \code{6:8} for Jun-Aug. Differs from 'months' argument where that
+#'     argument filters for specific months, this one just chooses which months to plot. Default \code{1:12}.
+#'
+#' @return A list of ggplot2 objects for with the following plots for each station provided:
+#'   \item{Annual_Means}{a plot that contains annual means with the long-term mean as the x-axis intercept}
+#'   
+#' @seealso \code{\link{calc_longterm_daily_stats}}
+#' @seealso \code{\link{calc_longterm_mean}}
+#'   
+#' @examples
+#' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
+#' if (file.exists(tidyhydat::hy_downloaded_db())) {
+#' 
+#' # Plot annual means
+#' plot_monthly_means(station_number = "08NM116")
+#'
+#' # Plot mean flows from July-September
+#' plot_monthly_means(station_number = "08NM116", 
+#'                    months = 7:9)
+#'                   
+#' }
+#' @export
+
+
+plot_monthly_means <- function(data,
+                               dates = Date,
+                               values = Value,
+                               groups = STATION_NUMBER,
+                               station_number,
+                               roll_days = 1,
+                               roll_align = "right",
+                               water_year_start = 1,
+                               start_year,
+                               end_year,
+                               exclude_years,
+                               months = 1:12,
+                               plot_months = 1:12,
+                               complete_years = FALSE,
+                               ignore_missing = FALSE,
+                               include_title = FALSE,
+                               percent_MAD = c(10,20,100)){ 
+  
+  ## ARGUMENT CHECKS
+  ## ---------------
+  
+  if (missing(data)) {
+    data <- NULL
+  }
+  if (missing(station_number)) {
+    station_number <- NULL
+  }
+  if (missing(start_year)) {
+    start_year <- 0
+  }
+  if (missing(end_year)) {
+    end_year <- 9999
+  }
+  if (missing(exclude_years)) {
+    exclude_years <- NULL
+  }
+  
+  logical_arg_check(include_title)
+  numeric_checks(percent_MAD)
+  
+  ## FLOW DATA CHECKS AND FORMATTING
+  ## -------------------------------
+  
+  # Check if data is provided and import it
+  flow_data <- flowdata_import(data = data, station_number = station_number)
+  
+  # Check and rename columns
+  flow_data <- format_all_cols(data = flow_data,
+                               dates = as.character(substitute(dates)),
+                               values = as.character(substitute(values)),
+                               groups = as.character(substitute(groups)),
+                               rm_other_cols = TRUE)
+  
+  
+  ## CALC STATS
+  ## ----------
+  
+  monthly_stats <- calc_longterm_daily_stats(data = flow_data,
+                                             roll_days = roll_days,
+                                             roll_align = roll_align,
+                                             water_year_start = water_year_start,
+                                             start_year = start_year,
+                                             end_year = end_year,
+                                             exclude_years = exclude_years, 
+                                             months = months,
+                                             complete_years = complete_years,
+                                             ignore_missing = ignore_missing,
+                                             include_longterm = FALSE)
+  
+  
+  monthly_stats <- dplyr::select(monthly_stats, STATION_NUMBER, Month, Mean)
+  
+  
+  if (!all(is.na(percent_MAD))) {
+    lt_mad <- suppressWarnings(calc_longterm_mean(data = flow_data,
+                                                  roll_days = roll_days,
+                                                  roll_align = roll_align,
+                                                  water_year_start = water_year_start,
+                                                  start_year = start_year,
+                                                  end_year = end_year,
+                                                  exclude_years = exclude_years, 
+                                                  months = months,
+                                                  complete_years = complete_years,
+                                                  percent_MAD = percent_MAD)
+    )
+    
+    if (100 %in% percent_MAD) {
+      lt_mad <- lt_mad[!names(lt_mad) %in% '100%MAD']
+    }
+    if (!100 %in% percent_MAD) {
+      lt_mad <- lt_mad[!names(lt_mad) %in% c('100%MAD','LTMAD')]
+    }
+    names(lt_mad) <- gsub("%MAD","% LTMAD",names(lt_mad))
+    
+    
+    lt_mad <- tidyr::pivot_longer(lt_mad, -1)
+    
+    monthly_stats <- dplyr::left_join(monthly_stats, lt_mad, by = "STATION_NUMBER")
+    monthly_stats <- dplyr::filter(monthly_stats, Month %in% month.abb[plot_months])
+    
+    if (100 %in% percent_MAD) {
+      monthly_stats <- dplyr::mutate(monthly_stats,
+                                     name = factor(name, levels = c("LTMAD", unique(monthly_stats$name)[unique(monthly_stats$name) != "LTMAD"])))
+    } else {
+      monthly_stats <- dplyr::mutate(monthly_stats,
+                                     name = factor(name, levels = unique(monthly_stats$name)))
+      
+    }
+  }
+  # return(lt_mad)
+  
+  
+  
+  ## PLOT STATS
+  ## ----------
+  
+  
+  # if (all(is.na(percent_MAD))) {
+  #   ptile_cols <- c("Long-term MAD" = 1)
+  # } else {
+  #   ptile_lab <- ifelse(any(is.na(percent_MAD)), paste0("MAD P",percentiles_mad[!is.na(percentiles_mad)]),
+  #                       paste0("MAD ", paste0("P",percentiles_mad, collapse = " and ")))
+  #   ptile_cols <- c(1,2)
+  #   names(ptile_cols) <- c("Long-term MAD",ptile_lab)
+  # }
+  
+  # Create plots for each STATION_NUMBER in a tibble (see: http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/)
+  tidy_plots <- dplyr::group_by(monthly_stats, STATION_NUMBER)
+  tidy_plots <- tidyr::nest(tidy_plots)
+  tidy_plots <- dplyr::mutate(
+    tidy_plots,
+    plot = purrr::map2(
+      data, STATION_NUMBER,
+      ~ggplot2::ggplot() +
+        ggplot2::geom_bar(data = dplyr::distinct(dplyr::select(.,1:2)), #ggplot2::aes(), 
+                          mapping = ggplot2::aes(x = Month, y = Mean, fill = "Monthly Mean"),
+                          stat = "identity",  na.rm = TRUE, colour = "black", width = 0.9) +
+        {if(!all(is.na(percent_MAD))) ggplot2::geom_hline(data = .,
+                                                          mapping = ggplot2::aes(yintercept = value, colour = name),
+                                                          size = 1, linetype = 2, na.rm = TRUE) }+
+        ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 10),
+                                    expand = ggplot2::expansion(mult = c(0, 0.05))) +
+        ggplot2::ylab("Discharge (cms)") +
+        {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
+        ggplot2::xlab("Month")+
+        ggplot2::scale_fill_manual(values = c("Monthly Mean" = "#21918c"), name = "Statistics")+
+        ggplot2::scale_color_viridis_d(option = "B", name = NULL, end = 0.9)+
+        ggplot2::guides(fill = ggplot2::guide_legend(order = 1),
+                        colour = ggplot2::guide_legend(order = 2))+
+        ggplot2::theme_bw() +
+        ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                       panel.grid = ggplot2::element_line(size = .2),
+                       axis.title = ggplot2::element_text(size = 12),
+                       axis.text = ggplot2::element_text(size = 10),
+                       plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
+                       panel.grid.minor.y = element_blank(),
+                       # panel.grid.major.x = element_blank(),
+                       legend.key.size = ggplot2::unit(0.4, "cm"),
+                       legend.spacing = ggplot2::unit(-0.4, "cm"),
+                       legend.background = ggplot2::element_blank())
+    ))
+  
+  # Create a list of named plots extracted from the tibble
+  plots <- tidy_plots$plot
+  if (nrow(tidy_plots) == 1) {
+    names(plots) <- "Monthly_Means"
+  } else {
+    names(plots) <- paste0(tidy_plots$STATION_NUMBER, "_Monthly_Means")
+  }
+  
+  plots
+  
+}
+

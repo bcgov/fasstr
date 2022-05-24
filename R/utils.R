@@ -380,6 +380,19 @@ numeric_range_checks <- function(percentiles) {
   }
 }
 
+numeric_checks <- function(numbers) {
+  if (!all(is.na(numbers))){
+    if (!is.numeric(numbers))                   
+      stop(paste0(as.character(substitute(numbers)), " argument must be numeric."), call. = FALSE)
+  }
+}
+
+list_check <- function(argument, list) {
+  if (length(argument) > 1)        stop("Only one plot_type logical value can be listed.", call. = FALSE)
+  if (!argument %in% list)       
+    stop(paste0(as.character(substitute(numbers))," argument must be one of '",paste0(list, collapse = "', '"),"'."), call. = FALSE)
+}
+
 log_ticks_checks <- function(log_ticks, log_discharge) {
   if (length(log_ticks) > 1)   stop("Only one log_ticks logical value can be listed.", call. = FALSE)
   if (!is.logical(log_ticks))  stop("log_ticks argument must be logical (TRUE/FALSE).", call. = FALSE)

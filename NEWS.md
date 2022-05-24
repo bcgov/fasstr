@@ -1,7 +1,7 @@
 fasstr 0.5.0
 =========================
 
-Updated: 19 May 2022
+Updated: 24 May 2022
 
 ### New functions:
 
@@ -9,6 +9,7 @@ Updated: 19 May 2022
   * plot_annual_symbols() - plots symbols by day of year or annual counts or percent of days with symbols from symbols column  
   * plot_annual_stats2() - plotting annual stats in ribbons (similar to plot_daily_stats)
   * plot_monthly_stats2() - plotting faceted monthly stats in ribbons (similar to plot_daily_stats)
+  * plot_monthly_means() - plotting long-term monthly means with percents of long-term MADs
   * calc_annual_highflows() and plot_annual_highflows() - calcs/plots annual high flow data, similar to _annual_lowflow() functions
   * calc_annual_extremes() - plots the values and dates from annual minimums and maximums for each year, replacing calc_annual_peaks()
   * plot_annual_extremes() - plots the values and dates from annual minimums and maximums for each year, from calc_annual_extremes()
