@@ -145,8 +145,8 @@ plot_data_screening <- function(data,
                                 plot = purrr::map2(data, STATION_NUMBER,
          ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value)) +
            ggplot2::geom_line(colour = "dodgerblue4", na.rm = TRUE) +
-           {if (!plot_availability) ggplot2::geom_point(colour = "firebrick3", na.rm = TRUE, size =3) }+
-           {if (plot_availability) ggplot2::geom_point(ggplot2::aes(shape = n_missing_Q), colour = "firebrick3", na.rm = TRUE, size =3) }+
+           {if (!plot_availability) ggplot2::geom_point(colour = "firebrick3", na.rm = TRUE, size = 2) }+
+           {if (plot_availability) ggplot2::geom_point(ggplot2::aes(shape = n_missing_Q), colour = "firebrick3", na.rm = TRUE, size =2) }+
            ggplot2::facet_wrap(~Statistic, ncol = 2, scales = "free_y", strip.position = "top") +
            ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
            {if(length(unique(flow_summary$Year)) < 5) ggplot2::scale_x_continuous(breaks = unique(flow_summary$Year))}+

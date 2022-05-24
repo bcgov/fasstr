@@ -161,7 +161,7 @@ plot_annual_means <- function(data,
                                     breaks = scales::pretty_breaks(n = 10)) +
         ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
         {if(length(unique(annual_stats$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(annual_stats$Year))}+
-        ggplot2::ylab("Mean Annual Discharge (cms)") + #expression(Mean~Annual~Discharge~(m^3/s))
+        ggplot2::ylab("Discharge (cms)") + #expression(Mean~Annual~Discharge~(m^3/s))
         {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
         ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
         ggplot2::scale_fill_manual(values = c("MAD Difference from\nLong-term MAD" = "#21918c"))+
