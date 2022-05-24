@@ -76,8 +76,8 @@ time periods with no missing dates will be returned. Default \code{FALSE}.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
 
-\item{percent_MAD}{Numeric vector of percents of long-term mean annual discharge to add to the table (ex. \code{20} for 20 percent 
-MAD or \code{c(5,10,20)} for multiple portions of MAD). Leave blank or set to NA for no values to be calculated.}
+\item{percent_MAD}{Numeric vector of percentages of long-term mean annual discharge to add to the plot (ex. \code{20} for 20 percent 
+MAD or \code{c(5,10,20)} for multiple percentages). Set to \code{NA} for none. Default \code{c(10,20,100)}.}
 }
 \value{
 A list of ggplot2 objects for with the following plots for each station provided:
@@ -92,12 +92,19 @@ Plot monthly means and add long-term mean annual discharge percentages. Calculat
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
 if (file.exists(tidyhydat::hy_downloaded_db())) {
 
-# Plot annual means
-plot_monthly_means(station_number = "08NM116")
+# Plot monthly means
+plot_monthly_means(station_number = "08NM116",
+                   complete_years = TRUE)
 
-# Plot mean flows from July-September
-plot_monthly_means(station_number = "08NM116", 
-                   months = 7:9)
+# Plot mean flows with custom LTMADs
+plot_monthly_means(station_number = "08NM116",
+                   complete_years = TRUE,
+                   percent_MAD = c(5,10,20,100))
+                   
+# Plot mean flows and plot just summer months
+plot_monthly_means(station_number = "08NM116",
+                   complete_years = TRUE, 
+                   plot_months = 6:9)
                   
 }
 }

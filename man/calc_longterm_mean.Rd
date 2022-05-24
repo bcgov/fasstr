@@ -65,7 +65,7 @@ analysis. Default \code{1}.}
 months (\code{1:12}).}
 
 \item{percent_MAD}{Numeric vector of percents of long-term mean annual discharge to add to the table (ex. \code{20} for 20 percent 
-MAD or \code{c(5,10,20)} for multiple portions of MAD). Leave blank or set to NA for no values to be calculated.}
+MAD or \code{c(5,10,20)} for multiple percentages). Leave blank or set to NA for no values to be calculated.}
 
 \item{transpose}{Logical value indicating whether to transpose rows and columns of results. Default \code{FALSE}.}
 }

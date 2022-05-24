@@ -23,7 +23,10 @@
 #' @param plot_months Numeric vector of months to include on the plot after calculating statistics. 
 #'     For example, \code{3} for March or \code{6:8} for Jun-Aug. Differs from 'months' argument where that
 #'     argument filters for specific months, this one just chooses which months to plot. Default \code{1:12}.
-#'
+#' @param percent_MAD Numeric vector of percentages of long-term mean annual discharge to add to the plot (ex. \code{20} for 20 percent 
+#'    MAD or \code{c(5,10,20)} for multiple percentages). Set to \code{NA} for none. Default \code{c(10,20,100)}.
+#'    
+#'    
 #' @return A list of ggplot2 objects for with the following plots for each station provided:
 #'   \item{Annual_Means}{a plot that contains annual means with the long-term mean as the x-axis intercept}
 #'   
@@ -34,12 +37,19 @@
 #' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
 #' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Plot annual means
-#' plot_monthly_means(station_number = "08NM116")
+#' # Plot monthly means
+#' plot_monthly_means(station_number = "08NM116",
+#'                    complete_years = TRUE)
 #'
-#' # Plot mean flows from July-September
-#' plot_monthly_means(station_number = "08NM116", 
-#'                    months = 7:9)
+#' # Plot mean flows with custom LTMADs
+#' plot_monthly_means(station_number = "08NM116",
+#'                    complete_years = TRUE,
+#'                    percent_MAD = c(5,10,20,100))
+#'                    
+#' # Plot mean flows and plot just summer months
+#' plot_monthly_means(station_number = "08NM116",
+#'                    complete_years = TRUE, 
+#'                    plot_months = 6:9)
 #'                   
 #' }
 #' @export
@@ -200,7 +210,7 @@ plot_monthly_means <- function(data,
                        axis.title = ggplot2::element_text(size = 12),
                        axis.text = ggplot2::element_text(size = 10),
                        plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
-                       panel.grid.minor.y = element_blank(),
+                       panel.grid.minor.y = ggplot2::element_blank(),
                        # panel.grid.major.x = element_blank(),
                        legend.key.size = ggplot2::unit(0.4, "cm"),
                        legend.spacing = ggplot2::unit(-0.4, "cm"),
