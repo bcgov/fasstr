@@ -176,7 +176,7 @@ plot_monthly_means <- function(data,
   }
  #  return(monthly_stats)
   
-  monthly_stats <- dplyr::mutate(group_by(monthly_stats, STATION_NUMBER, Month), 
+  monthly_stats <- dplyr::mutate(dplyr::group_by(monthly_stats, STATION_NUMBER, Month), 
                                  Mean = ifelse(duplicated(Mean), NA, Mean))
   
   ## PLOT STATS
