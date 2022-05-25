@@ -150,51 +150,40 @@ plot_monthly_means <- function(data,
     names(lt_mad) <- gsub("%MAD","% LTMAD",names(lt_mad))
     
     
-    lt_mad <- tidyr::pivot_longer(lt_mad, -1)
+    lt_mad <- tidyr::pivot_longer(lt_mad, -1, names_to = "LTMAD_Percent", values_to = "Value")
     
     monthly_stats <- dplyr::left_join(monthly_stats, lt_mad, by = "STATION_NUMBER")
     monthly_stats <- dplyr::filter(monthly_stats, Month %in% month.abb[plot_months])
     
     if (100 %in% percent_MAD) {
-      monthly_stats <- dplyr::mutate(monthly_stats,
-                                     name = factor(name, levels = c("LTMAD", unique(monthly_stats$name)[unique(monthly_stats$name) != "LTMAD"])))
+      monthly_stats <- dplyr::mutate(
+        monthly_stats,
+        LTMAD_Percent = factor(LTMAD_Percent, levels = c("LTMAD", unique(monthly_stats$LTMAD_Percent)[unique(monthly_stats$LTMAD_Percent) != "LTMAD"])))
     } else {
       monthly_stats <- dplyr::mutate(monthly_stats,
-                                     name = factor(name, levels = unique(monthly_stats$name)))
-      
+                                     LTMAD_Percent = factor(LTMAD_Percent, levels = unique(monthly_stats$LTMAD_Percent)))
     }
   }
-  # return(lt_mad)
+  # return(monthly_stats)
   
-  
+  monthly_stats <- dplyr::mutate(group_by(monthly_stats, STATION_NUMBER, Month), 
+                                 Mean = ifelse(duplicated(Mean), NA, Mean))
   
   ## PLOT STATS
   ## ----------
   
-  
-  # if (all(is.na(percent_MAD))) {
-  #   ptile_cols <- c("Long-term MAD" = 1)
-  # } else {
-  #   ptile_lab <- ifelse(any(is.na(percent_MAD)), paste0("MAD P",percentiles_mad[!is.na(percentiles_mad)]),
-  #                       paste0("MAD ", paste0("P",percentiles_mad, collapse = " and ")))
-  #   ptile_cols <- c(1,2)
-  #   names(ptile_cols) <- c("Long-term MAD",ptile_lab)
-  # }
-  
-  # Create plots for each STATION_NUMBER in a tibble (see: http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/)
   tidy_plots <- dplyr::group_by(monthly_stats, STATION_NUMBER)
   tidy_plots <- tidyr::nest(tidy_plots)
   tidy_plots <- dplyr::mutate(
     tidy_plots,
     plot = purrr::map2(
       data, STATION_NUMBER,
-      ~ggplot2::ggplot() +
-        ggplot2::geom_bar(data = dplyr::distinct(dplyr::select(.,1:2)), #ggplot2::aes(), 
-                          mapping = ggplot2::aes(x = Month, y = Mean, fill = "Monthly Mean"),
-                          stat = "identity",  na.rm = TRUE, colour = "black", width = 0.9) +
+      ~ggplot2::ggplot(data = ., ggplot2::aes(x = Month)) +
+        ggplot2::geom_bar(mapping = ggplot2::aes(y = Mean, fill = "Monthly Mean"),
+                          stat = "identity",  na.rm = TRUE, colour = "black", width = 0.9) +#dplyr::distinct(dplyr::select(.,1:2)), 
         {if(!all(is.na(percent_MAD))) ggplot2::geom_hline(data = .,
-                                                          mapping = ggplot2::aes(yintercept = value, colour = name),
-                                                          size = 1, linetype = 2, na.rm = TRUE) }+
+                                                          mapping = ggplot2::aes(yintercept = Value, colour = LTMAD_Percent),
+                                                          size = 0.7, linetype = 2, na.rm = TRUE) }+
         ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 10),
                                     expand = ggplot2::expansion(mult = c(0, 0.05))) +
         ggplot2::ylab("Discharge (cms)") +
@@ -211,7 +200,6 @@ plot_monthly_means <- function(data,
                        axis.text = ggplot2::element_text(size = 10),
                        plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
                        panel.grid.minor.y = ggplot2::element_blank(),
-                       # panel.grid.major.x = element_blank(),
                        legend.key.size = ggplot2::unit(0.4, "cm"),
                        legend.spacing = ggplot2::unit(-0.4, "cm"),
                        legend.background = ggplot2::element_blank())

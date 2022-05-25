@@ -832,14 +832,14 @@ Similar to `*_annual_lowflows()` and `*_annual_highflows()`, `calc_annual_extrem
 
 ```{r, comment=NA, eval=FALSE}
 calc_annual_extremes(station_number = "08NM116",
-                     roll_days_low = 7,
-                     roll_days_high = 3,
+                     roll_days_min = 7,
+                     roll_days_max = 3,
                      start_year = 1974)
 ```
 ```{r, comment=NA, echo=FALSE}
 data.frame(head(calc_annual_extremes(station_number = "08NM116",
-                                     roll_days_low = 7,
-                                     roll_days_high = 3,
+                                     roll_days_min = 7,
+                                     roll_days_max = 3,
                                      start_year = 1974)))
 ```
 
@@ -847,8 +847,8 @@ The annual extremes values and the days can be plotted:
 
 ```{r, fig.height = 3, fig.width = 7, comment=NA}
 plot_annual_extremes(station_number = "08NM116",
-                     roll_days_low = 7,
-                     roll_days_high = 3,
+                     roll_days_min = 7,
+                     roll_days_max = 3,
                      start_year = 1974)
 ```
 
@@ -856,8 +856,8 @@ The annual extremes values and the days for a given year can also be plotted:
 
 ```{r, fig.height = 3, fig.width = 8, comment=NA}
 plot_annual_extremes_year(station_number = "08NM116",
-                          roll_days_low = 7,
-                          roll_days_high = 3,
+                          roll_days_min = 7,
+                          roll_days_max = 3,
                           start_year = 1974,
                           year_to_plot = 1999)
 ```
