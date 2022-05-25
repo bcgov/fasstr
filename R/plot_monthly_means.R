@@ -128,26 +128,26 @@ plot_monthly_means <- function(data,
   monthly_stats <- dplyr::select(monthly_stats, STATION_NUMBER, Month, Mean)
   
   lt_mad <- suppressWarnings(calc_longterm_mean(data = flow_data,
-                                                     roll_days = roll_days,
-                                                     roll_align = roll_align,
-                                                     water_year_start = water_year_start,
-                                                     start_year = start_year,
-                                                     end_year = end_year,
-                                                     exclude_years = exclude_years, 
-                                                     months = months,
-                                                     complete_years = complete_years))
+                                                roll_days = roll_days,
+                                                roll_align = roll_align,
+                                                water_year_start = water_year_start,
+                                                start_year = start_year,
+                                                end_year = end_year,
+                                                exclude_years = exclude_years, 
+                                                months = months,
+                                                complete_years = complete_years))
   
   if (!all(is.na(percent_MAD))) {
     lt_mad_perc <- suppressWarnings(calc_longterm_mean(data = flow_data,
-                                                  roll_days = roll_days,
-                                                  roll_align = roll_align,
-                                                  water_year_start = water_year_start,
-                                                  start_year = start_year,
-                                                  end_year = end_year,
-                                                  exclude_years = exclude_years, 
-                                                  months = months,
-                                                  complete_years = complete_years,
-                                                  percent_MAD = percent_MAD)
+                                                       roll_days = roll_days,
+                                                       roll_align = roll_align,
+                                                       water_year_start = water_year_start,
+                                                       start_year = start_year,
+                                                       end_year = end_year,
+                                                       exclude_years = exclude_years, 
+                                                       months = months,
+                                                       complete_years = complete_years,
+                                                       percent_MAD = percent_MAD)
     )
     
     if (100 %in% percent_MAD) {
@@ -161,7 +161,6 @@ plot_monthly_means <- function(data,
     
     lt_mad_perc <- tidyr::pivot_longer(lt_mad_perc, -1, names_to = "LTMAD_Percent", values_to = "Value")
     
-    monthly_stats <- dplyr::left_join(monthly_stats, lt_mad, by = "STATION_NUMBER")
     monthly_stats <- dplyr::left_join(monthly_stats, lt_mad_perc, by = "STATION_NUMBER")
     monthly_stats <- dplyr::filter(monthly_stats, Month %in% month.abb[plot_months])
     
@@ -174,7 +173,9 @@ plot_monthly_means <- function(data,
                                      LTMAD_Percent = factor(LTMAD_Percent, levels = unique(monthly_stats$LTMAD_Percent)))
     }
   }
- #  return(monthly_stats)
+  monthly_stats <- dplyr::left_join(monthly_stats, lt_mad, by = "STATION_NUMBER")
+  
+  #  return(monthly_stats)
   
   monthly_stats <- dplyr::mutate(dplyr::group_by(monthly_stats, STATION_NUMBER, Month), 
                                  Mean = ifelse(duplicated(Mean), NA, Mean))
