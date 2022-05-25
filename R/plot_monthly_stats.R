@@ -135,23 +135,23 @@ plot_monthly_stats <- function(data,
                                      ignore_missing = ignore_missing,
                                      allowed_missing = allowed_missing)
   if (complete_years) {
-  # Remove all leading NA years
+    # Remove all leading NA years
     monthly_data <- dplyr::filter(dplyr::group_by(monthly_data, STATION_NUMBER),
-                                     Year >= Year[min(which(!is.na(.data[[names(monthly_data)[4]]])))])
+                                  Year >= Year[min(which(!is.na(.data[[names(monthly_data)[4]]])))])
   }
-
+  
   monthly_data <- tidyr::gather(monthly_data, Statistic, Value, -(1:3))
   monthly_data <- dplyr::mutate(monthly_data, Stat2 = Statistic)
-
+  
   # monthly_data
   ## PLOT STATS
   ## ----------
-
+  
   # Create axis label based on input columns
   y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (cubic metres)", #expression(Volume~(m^3))
                          ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)",
                                 "Discharge (cms)")) #expression(Discharge~(m^3/s))
-
+  
   # Create the daily stats plots
   monthly_plots <- dplyr::group_by(monthly_data, STATION_NUMBER, Statistic)
   monthly_plots <- tidyr::nest(monthly_plots)
@@ -166,9 +166,11 @@ plot_monthly_stats <- function(data,
         #ggplot2::ggtitle(paste0("Monthly ", stat, " Flows")) +
         ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6))+
         {if(length(unique(monthly_data$Year)) < 6) ggplot2::scale_x_continuous(breaks = unique(monthly_data$Year))}+
-        {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0), breaks = scales::pretty_breaks(n = 8),
+        {if(!log_discharge) ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.05)),
+                                                        breaks = scales::pretty_breaks(n = 8),
                                                         labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +
-        {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10),
+        {if(log_discharge) ggplot2::scale_y_log10(expand =ggplot2::expansion(mult = c(0, 0.05)), 
+                                                  breaks = scales::log_breaks(n = 8, base = 10),
                                                   labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +
         {if(log_discharge & log_ticks) ggplot2::annotation_logticks(
           base = 10, "left", colour = "grey25", size = 0.3,
@@ -191,9 +193,9 @@ plot_monthly_stats <- function(data,
                                                 "Apr" = "forestgreen", "May" = "limegreen", "Jun" = "gold",
                                                 "Jul" = "orange", "Aug" = "red", "Sep" = "darkred",
                                                 "Oct" = "orchid", "Nov" = "purple3", "Dec" = "midnightblue"))
-      ))
-
-
+    ))
+  
+  
   # Create a list of named plots extracted from the tibble
   plots <- monthly_plots$plot
   if (length(unique(monthly_plots$STATION_NUMBER)) == 1) {
@@ -201,9 +203,9 @@ plot_monthly_stats <- function(data,
   } else {
     names(plots) <- paste0(monthly_plots$STATION_NUMBER, "_", monthly_plots$Statistic, "_Monthly_Statistics")
   }
-
+  
   plots
-
+  
   
 }
 

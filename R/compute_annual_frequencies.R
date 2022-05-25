@@ -235,6 +235,10 @@ compute_annual_frequencies <- function(data,
                                          fit_quantiles = fit_quantiles,
                                          plot_curve = plot_curve)
   
+  analysis$Freq_Plot$labels$y <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (cubic metres)",
+                                        ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)",
+                                               "Discharge (cms)"))
+  
   return(analysis)
   
 }
