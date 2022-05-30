@@ -21,7 +21,7 @@ See the License for the specific language governing permissions and limitations 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![R-CMD-check](https://github.com/bcgov/fasstr/workflows/R-CMD-check/badge.svg)](https://github.com/bcgov/fasstr/actions)
 
-[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/fasstr)](https://cran.r-project.org/package=fasstr)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/fasstr)](https://cran.r-project.org/package=fasstr)
 [![CRAN
 Downloads](https://cranlogs.r-pkg.org/badges/fasstr?color=brightgreen)](https://CRAN.R-project.org/package=fasstr)
 [![cran
@@ -61,9 +61,8 @@ Useful features of functions include:
 -   choosing how missing dates are handled, amongst others.
 
 This package is maintained by the [Water Protection and Sustainability
-Branch of the British Columbia Ministry of Environment and Climate
-Change
-Strategy](https://www2.gov.bc.ca/gov/content/environment/air-land-water/water).
+Branch of the British Columbia Ministry of Land, Water and Resource
+Stewardship](https://www2.gov.bc.ca/gov/content/environment/air-land-water/water).
 
 ### Installation
 

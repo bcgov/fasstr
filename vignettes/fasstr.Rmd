@@ -34,7 +34,7 @@ Useful features of functions include:
 - selecting for rolling day averages (e.g. 7-day rolling average); and,
 - choosing how missing dates are handled, amongst others.
 
-This package is maintained by the [Water Protection and Sustainability Branch of the British Columbia Ministry of Environment and Climate Change Strategy](https://www2.gov.bc.ca/gov/content/environment/air-land-water/water).
+This package is maintained by the [Water Protection and Sustainability Branch of the British Columbia Land, Water and Resource Stewardship](https://www2.gov.bc.ca/gov/content/environment/air-land-water/water).
 
 ## Installation
 
