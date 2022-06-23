@@ -3,6 +3,7 @@ fasstr 0.5.0
 
 Updated: 24 May 2022
 
+
 ### New functions:
 
   * plot_flow_data_symbols() - plots daily data with coloured points designating symbol categories from symbols column

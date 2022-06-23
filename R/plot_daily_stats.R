@@ -119,11 +119,11 @@ plot_daily_stats <- function(data,
     end_year <- 9999
   }
   
-  logical_arg_check(log_discharge) 
   log_ticks_checks(log_ticks, log_discharge)
   add_year_checks(add_year)
   logical_arg_check(include_title)
   ptile_ribbons_checks(inner_percentiles, outer_percentiles)
+  logical_arg_check(log_discharge) 
   logical_arg_check(plot_extremes)
   logical_arg_check(plot_inner_percentiles)
   logical_arg_check(plot_outer_percentiles)
