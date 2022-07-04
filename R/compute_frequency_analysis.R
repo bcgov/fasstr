@@ -253,7 +253,7 @@ compute_frequency_analysis <- function(data,
                    axis.title.x.top = ggplot2::element_text(size = 12),
                    #legend.position = "right", 
                    #legend.spacing = ggplot2::unit(0, "cm"),
-                   #legend.justification = "top",
+                   #legend.justification = "right",
                    legend.text = ggplot2::element_text(size = 10),
                    legend.title = ggplot2::element_text(size = 10))
   

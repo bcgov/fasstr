@@ -1,7 +1,7 @@
 fasstr 0.5.0
 =========================
 
-Updated: 24 May 2022
+Updated: 04 July 2022
 
 
 ### New functions:
@@ -32,6 +32,7 @@ Updated: 24 May 2022
   
 ### Other updates:
   
+  * Plot legends now centered on right, not top
   * Changed colour scales on many plots to the viridis palette
   * Can now choose 0 and 100 percentiles (was previously between 1 and 99)
   * Added args plot_inner_percentiles, plot_outer_percentiles, and changed include_extreme to plot_extreme in various functions

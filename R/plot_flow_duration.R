@@ -212,7 +212,7 @@ plot_flow_duration <- function(data,
         ggplot2::theme_bw() +
         ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                        panel.grid = ggplot2::element_line(size = .2),
-                       legend.justification = "top",
+                       legend.justification = "right",
                        axis.text = ggplot2::element_text(size = 10, colour = "grey25"),
                        axis.title = ggplot2::element_text(size = 12, colour = "grey25"),
                        legend.text = ggplot2::element_text(size = 9, colour = "grey25"))

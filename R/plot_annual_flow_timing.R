@@ -147,7 +147,7 @@ plot_annual_flow_timing <- function(data,
         {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
         ggplot2::theme(legend.position = "right",
                        legend.spacing = ggplot2::unit(0, "cm"),
-                       legend.justification = "top",
+                       legend.justification = "right",
                        legend.text = ggplot2::element_text(size = 9),
                        panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                        panel.grid = ggplot2::element_line(size = .2),
