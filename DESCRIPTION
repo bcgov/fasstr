@@ -30,12 +30,12 @@ Imports:
     purrr (>= 0.3.2),
     RcppRoll (>= 0.3.0),
     scales (>= 1.0.0),
-    tidyhydat (>= 0.5.6),
+    tidyhydat (>= 0.4.0),
     tidyr (>= 0.8.3),
     zyp (>= 0.10.1.1)
 Suggests: 
     knitr,
     rmarkdown,
     testthat
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 VignetteBuilder: knitr

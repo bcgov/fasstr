@@ -124,7 +124,8 @@
           "data",
           "start_year",
           "end_year",
-          "name")
+          "name",
+          'LTMAD_Percent')
       )
     invisible()
   }
