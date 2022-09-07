@@ -75,7 +75,9 @@ A list of ggplot2 objects with the following for each station provided:
   \item{Days_Outside_Normal}{number of days per year below and above the daily normal (default 25/75th percentile)}
 }
 \description{
-Plots the number of days per year outside of the 'normal' range (typically between 25 and 75th percentiles) for
+This function has been superseded by the \code{plot_annual_normal_days()} function.
+   
+   Plots the number of days per year outside of the 'normal' range (typically between 25 and 75th percentiles) for
    each day of the year. Upper and lower-range percentiles are calculated for each day of the year of from all years, and then each 
    daily flow value for each year is compared. All days above or below the normal range are included. Calculates statistics from all 
    values from complete years, unless specified. Data calculated using \code{calc_annual_outside_normal()}

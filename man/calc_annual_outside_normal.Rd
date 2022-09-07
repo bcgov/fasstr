@@ -75,7 +75,9 @@ A tibble data frame with the following columns:
   Transposing data creates a column of "Statistics" and subsequent columns for each year selected.
 }
 \description{
-Calculates the number of days per year outside of the 'normal' range (typically between 25 and 75th percentiles) for
+This function has been superseded by the \code{calc_annual_normal_days()} function.
+   
+   Calculates the number of days per year outside of the 'normal' range (typically between 25 and 75th percentiles) for
    each day of the year. Upper and lower-range percentiles are calculated for each day of the year of from all years, and then each 
    daily flow value for each year is compared. All days above or below the normal range are included. Analysis methodology is based on
    Environment and Climate Change Canada's 

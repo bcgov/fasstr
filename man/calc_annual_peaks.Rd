@@ -112,7 +112,9 @@ A tibble data frame with the following columns:
   not transposed.
 }
 \description{
-Calculates annual n-day minimum and maximum values, and the day of year and date of occurrence of daily flow values
+This function has been superseded by the \code{calc_annual_extremes()} function.
+   
+   Calculates annual n-day minimum and maximum values, and the day of year and date of occurrence of daily flow values
    from a daily streamflow data set. Calculates statistics from all values, unless specified. Returns a tibble with statistics.
 }
 \examples{

@@ -13,7 +13,11 @@
 
 #' @title Calculate annual high and low flows
 #'
-#' @description Calculates annual n-day minimum and maximum values, and the day of year and date of occurrence of daily flow values
+#' @description 
+#'    
+#'    This function has been superseded by the \code{calc_annual_extremes()} function.
+#'    
+#'    Calculates annual n-day minimum and maximum values, and the day of year and date of occurrence of daily flow values
 #'    from a daily streamflow data set. Calculates statistics from all values, unless specified. Returns a tibble with statistics.
 #'
 #' @inheritParams calc_annual_stats
@@ -83,7 +87,10 @@ calc_annual_peaks <- function(data,
                               ignore_missing = FALSE,
                               allowed_missing = ifelse(ignore_missing,100,0)){
   
-
+  message("Note: this function has been superseded by the 'calc_annual_extremes()' function. ", 
+          "This function is still supported but no longer receives active development, ",
+          "as better solutions now exist.")
+  
   ## ARGUMENT CHECKS
   ## ---------------
   
