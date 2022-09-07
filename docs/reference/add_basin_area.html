@@ -104,7 +104,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">add_basin_area</span><span class="op">(</span><span class="va">data</span>, groups <span class="op">=</span> <span class="va">STATION_NUMBER</span>, <span class="va">station_number</span>, <span class="va">basin_area</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">add_basin_area</span><span class="op">(</span><span class="va">data</span>, groups <span class="op">=</span> <span class="va">STATION_NUMBER</span>, <span class="va">station_number</span>, <span class="va">basin_area</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -112,50 +112,60 @@
     <dl><dt>data</dt>
 <dd><p>Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank or set to <code>NULL</code> if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>groups</dt>
 <dd><p>Name of column in <code>data</code> that contains unique identifiers for different data sets, if applicable. Only required 
 if groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if 
 present. Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using <code>station_number</code> 
 argument.</p></dd>
+
+
 <dt>station_number</dt>
 <dd><p>Character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract daily streamflow data from a HYDAT database. Requires <code>tidyhydat</code> package and a HYDAT database.
 Leave blank if using <code>data</code> argument.</p></dd>
+
+
 <dt>basin_area</dt>
 <dd><p>Upstream drainage basin area, in square kilometres, to apply to observations. Three options:</p>
 <p>(1) Leave blank if <code>groups</code> is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.</p>
 <p>(2) A single numeric value to apply to all observations.</p>
 <p>(3) List each basin area for each group/station in groups (can override HYDAT value if listed) as such <code>c("08NM116" = 795, 
 "08NM242" = 10)</code>. If group is not listed the HYDAT area will be applied if it exists, otherwise it will be <code>NA</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A tibble data frame of the original source data with an additional column:</p>
+    
+
+<p>A tibble data frame of the original source data with an additional column:</p>
 <dl><dt>Basin_Area_sqkm</dt>
 <dd><p>area of upstream drainage basin area, in square kilometres</p></dd>
+
 </dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html" class="external-link">hy_downloaded_db</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Add the HYDAT basin area to a data frame with station numbers</span></span>
-<span class="r-in"><span class="va">flow_data</span> <span class="op">&lt;-</span> <span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_daily_flows.html" class="external-link">hy_daily_flows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">add_basin_area</span><span class="op">(</span>data <span class="op">=</span> <span class="va">flow_data</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Add the HYDAT basin area to data from HYDAT</span></span>
-<span class="r-in"><span class="fu">add_basin_area</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Set a custom basin area</span></span>
-<span class="r-in"><span class="fu">add_basin_area</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span>
-<span class="r-in">               basin_area <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></span>
-<span class="r-in">               </span>
-<span class="r-in"><span class="co"># Set multiple custom basin areas for multiple stations</span></span>
-<span class="r-in"><span class="fu">add_basin_area</span><span class="op">(</span>station_number <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"08NM116"</span>, <span class="st">"08NM242"</span><span class="op">)</span>,</span>
-<span class="r-in">               basin_area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"08NM116"</span> <span class="op">=</span> <span class="fl">800</span>, <span class="st">"08NM242"</span> <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span>         </span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html" class="external-link">hy_downloaded_db</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Add the HYDAT basin area to a data frame with station numbers</span></span></span>
+<span class="r-in"><span><span class="va">flow_data</span> <span class="op">&lt;-</span> <span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_daily_flows.html" class="external-link">hy_daily_flows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">add_basin_area</span><span class="op">(</span>data <span class="op">=</span> <span class="va">flow_data</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Add the HYDAT basin area to data from HYDAT</span></span></span>
+<span class="r-in"><span><span class="fu">add_basin_area</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Set a custom basin area</span></span></span>
+<span class="r-in"><span><span class="fu">add_basin_area</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span></span>
+<span class="r-in"><span>               basin_area <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></span></span>
+<span class="r-in"><span>               </span></span>
+<span class="r-in"><span><span class="co"># Set multiple custom basin areas for multiple stations</span></span></span>
+<span class="r-in"><span><span class="fu">add_basin_area</span><span class="op">(</span>station_number <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"08NM116"</span>, <span class="st">"08NM242"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>               basin_area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"08NM116"</span> <span class="op">=</span> <span class="fl">800</span>, <span class="st">"08NM242"</span> <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span>         </span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 34,432 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    STATION_NUMBER Date       Parameter Value Symbol Basin_Area_sqkm</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -184,7 +194,7 @@ Leave blank if using <code>data</code> argument.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -112,89 +112,126 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">compute_frequency_quantile</span><span class="op">(</span>
-  <span class="va">data</span>,
-  dates <span class="op">=</span> <span class="va">Date</span>,
-  values <span class="op">=</span> <span class="va">Value</span>,
-  <span class="va">station_number</span>,
-  roll_days <span class="op">=</span> <span class="cn">NA</span>,
-  roll_align <span class="op">=</span> <span class="st">"right"</span>,
-  return_period <span class="op">=</span> <span class="cn">NA</span>,
-  use_max <span class="op">=</span> <span class="cn">FALSE</span>,
-  use_log <span class="op">=</span> <span class="cn">FALSE</span>,
-  fit_distr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PIII"</span>, <span class="st">"weibull"</span><span class="op">)</span>,
-  fit_distr_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">fit_distr</span> <span class="op">==</span> <span class="st">"PIII"</span>, <span class="st">"MOM"</span>, <span class="st">"MLE"</span><span class="op">)</span>,
-  water_year_start <span class="op">=</span> <span class="fl">1</span>,
-  <span class="va">start_year</span>,
-  <span class="va">end_year</span>,
-  <span class="va">exclude_years</span>,
-  months <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span>,
-  ignore_missing <span class="op">=</span> <span class="cn">FALSE</span>,
-  allowed_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">ignore_missing</span>, <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">compute_frequency_quantile</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  dates <span class="op">=</span> <span class="va">Date</span>,</span>
+<span>  values <span class="op">=</span> <span class="va">Value</span>,</span>
+<span>  <span class="va">station_number</span>,</span>
+<span>  roll_days <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  roll_align <span class="op">=</span> <span class="st">"right"</span>,</span>
+<span>  return_period <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  use_max <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  use_log <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  fit_distr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PIII"</span>, <span class="st">"weibull"</span><span class="op">)</span>,</span>
+<span>  fit_distr_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">fit_distr</span> <span class="op">==</span> <span class="st">"PIII"</span>, <span class="st">"MOM"</span>, <span class="st">"MLE"</span><span class="op">)</span>,</span>
+<span>  water_year_start <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  <span class="va">start_year</span>,</span>
+<span>  <span class="va">end_year</span>,</span>
+<span>  <span class="va">exclude_years</span>,</span>
+<span>  months <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span>,</span>
+<span>  ignore_missing <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  allowed_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">ignore_missing</span>, <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>A data frame of data that contains columns of events, flow values, and measures (data type).</p></dd>
+
+
 <dt>dates</dt>
 <dd><p>Name of column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
 'Date' (default). Leave blank or set to <code>NULL</code> if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>values</dt>
 <dd><p>Column in <code>data</code> that contains numeric flow values, in units of cubic metres per second. Default <code>'Value'</code>.</p></dd>
+
+
 <dt>station_number</dt>
 <dd><p>Character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract daily streamflow data from a HYDAT database. Requires <code>tidyhydat</code> package and a HYDAT database.
 Leave blank if using <code>data</code> argument.</p></dd>
+
+
 <dt>roll_days</dt>
 <dd><p>Numeric value of the number of days to apply a rolling mean. Required.</p></dd>
+
+
 <dt>roll_align</dt>
 <dd><p>Character string identifying the direction of the rolling mean from the specified date, either by the first 
 (<code>'left'</code>), last (<code>'right'</code>), or middle (<code>'center'</code>) day of the rolling n-day group of observations. 
 Default <code>'right'</code>.</p></dd>
+
+
 <dt>return_period</dt>
 <dd><p>Numeric vector of the estimated time interval, in years, between flow events of a similar size, 
 inverse of probability, used to estimate the frequency statistic. Required.</p></dd>
+
+
 <dt>use_max</dt>
 <dd><p>Logical value to indicate using maximums rather than the minimums for analysis. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>use_log</dt>
 <dd><p>Logical value to indicate log-scale transforming of flow data before analysis. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>fit_distr</dt>
 <dd><p>Character string identifying the distribution to fit annual data, one of <code>'PIII'</code> (Log Pearson Type III)
 or <code>'weibull'</code> (Weibull) distributions. Default <code>'PIII'</code>.</p></dd>
+
+
 <dt>fit_distr_method</dt>
 <dd><p>Character string identifying the method used to fit the distribution, one of <code>'MOM'</code> (method of
 moments) or <code>'MLE'</code> (maximum likelihood estimation). Selected as <code>'MOM'</code> if <code>fit_distr ='PIII'</code> (default) or 
 <code>'MLE'</code> if <code>fit_distr = 'weibull'</code>.</p></dd>
+
+
 <dt>water_year_start</dt>
 <dd><p>Numeric value indicating the month (<code>1</code> through <code>12</code>) of the start of water year for
 analysis. Default <code>1</code>.</p></dd>
+
+
 <dt>start_year</dt>
 <dd><p>Numeric value of the first year to consider for analysis. Leave blank or set well before start date (i.e.
 <code>1800</code>) to use from the first year of the source data.</p></dd>
+
+
 <dt>end_year</dt>
 <dd><p>Numeric value of the last year to consider for analysis. Leave blank or set well after end date (i.e.
 <code>2100</code>) to use up to the last year of the source data.</p></dd>
+
+
 <dt>exclude_years</dt>
 <dd><p>Numeric vector of years to exclude from analysis. Leave blank or set to <code>NULL</code> to include all years.</p></dd>
+
+
 <dt>months</dt>
 <dd><p>Numeric vector of months to include in analysis. For example, <code>3</code> for March, <code>6:8</code> for Jun-Aug or 
 <code>c(10:12,1)</code> for first four months (Oct-Jan) when <code>water_year_start = 10</code> (Oct). Default summarizes all 
 months (<code>1:12</code>).</p></dd>
+
+
 <dt>ignore_missing</dt>
 <dd><p>Logical value indicating whether dates with missing values should be included in the calculation. If
 <code>TRUE</code> then a statistic will be calculated regardless of missing dates. If <code>FALSE</code> then only those statistics from
 time periods with no missing dates will be returned. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>allowed_missing</dt>
 <dd><p>Numeric value between 0 and 100 indicating the <strong>percentage</strong> of missing dates allowed to be
 included to calculate a statistic (0 to 100 percent). If <code>'ignore_missing = FALSE'</code> then it defaults to <code>0</code> (zero missing dates allowed),
 if <code>'ignore_missing = TRUE'</code> then it defaults to <code>100</code> (any missing dates allowed); consistent with 
 <code>ignore_missing</code> usage. Supersedes <code>ignore_missing</code> when used.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A numeric value of the frequency analysis quantile, given the roll_days and return_period.</p>
+    
+
+<p>A numeric value of the frequency analysis quantile, given the roll_days and return_period.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -203,16 +240,16 @@ if <code>'ignore_missing = TRUE'</code> then it defaults to <code>100</code> (an
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Working example:</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Compute the annual 7-day flow value with a 1 in 10 year return interval</span></span>
-<span class="r-in"><span class="fu">compute_frequency_quantile</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span>
-<span class="r-in">                           roll_days <span class="op">=</span> <span class="fl">7</span>,</span>
-<span class="r-in">                           return_period <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span class="r-in">                            </span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Working example:</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Compute the annual 7-day flow value with a 1 in 10 year return interval</span></span></span>
+<span class="r-in"><span><span class="fu">compute_frequency_quantile</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span></span>
+<span class="r-in"><span>                           roll_days <span class="op">=</span> <span class="fl">7</span>,</span></span>
+<span class="r-in"><span>                           return_period <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                            </span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -227,7 +264,7 @@ if <code>'ignore_missing = TRUE'</code> then it defaults to <code>100</code> (an
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

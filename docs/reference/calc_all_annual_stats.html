@@ -123,32 +123,32 @@ calc_monthly_stats()
 </ul></div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">calc_all_annual_stats</span><span class="op">(</span>
-  <span class="va">data</span>,
-  dates <span class="op">=</span> <span class="va">Date</span>,
-  values <span class="op">=</span> <span class="va">Value</span>,
-  groups <span class="op">=</span> <span class="va">STATION_NUMBER</span>,
-  <span class="va">station_number</span>,
-  <span class="va">basin_area</span>,
-  water_year_start <span class="op">=</span> <span class="fl">1</span>,
-  <span class="va">start_year</span>,
-  <span class="va">end_year</span>,
-  <span class="va">exclude_years</span>,
-  months <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span>,
-  annual_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">90</span><span class="op">)</span>,
-  monthly_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span>,
-  stats_days <span class="op">=</span> <span class="fl">1</span>,
-  stats_align <span class="op">=</span> <span class="st">"right"</span>,
-  lowflow_days <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">7</span>, <span class="fl">30</span><span class="op">)</span>,
-  lowflow_align <span class="op">=</span> <span class="st">"right"</span>,
-  timing_percent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">33</span>, <span class="fl">50</span>, <span class="fl">75</span><span class="op">)</span>,
-  normal_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">75</span><span class="op">)</span>,
-  transpose <span class="op">=</span> <span class="cn">FALSE</span>,
-  complete_years <span class="op">=</span> <span class="cn">FALSE</span>,
-  ignore_missing <span class="op">=</span> <span class="cn">FALSE</span>,
-  allowed_missing_annual <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">ignore_missing</span>, <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span>,
-  allowed_missing_monthly <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">ignore_missing</span>, <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calc_all_annual_stats</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  dates <span class="op">=</span> <span class="va">Date</span>,</span>
+<span>  values <span class="op">=</span> <span class="va">Value</span>,</span>
+<span>  groups <span class="op">=</span> <span class="va">STATION_NUMBER</span>,</span>
+<span>  <span class="va">station_number</span>,</span>
+<span>  <span class="va">basin_area</span>,</span>
+<span>  water_year_start <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  <span class="va">start_year</span>,</span>
+<span>  <span class="va">end_year</span>,</span>
+<span>  <span class="va">exclude_years</span>,</span>
+<span>  months <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span>,</span>
+<span>  annual_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">90</span><span class="op">)</span>,</span>
+<span>  monthly_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span>,</span>
+<span>  stats_days <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  stats_align <span class="op">=</span> <span class="st">"right"</span>,</span>
+<span>  lowflow_days <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">7</span>, <span class="fl">30</span><span class="op">)</span>,</span>
+<span>  lowflow_align <span class="op">=</span> <span class="st">"right"</span>,</span>
+<span>  timing_percent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">33</span>, <span class="fl">50</span>, <span class="fl">75</span><span class="op">)</span>,</span>
+<span>  normal_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">75</span><span class="op">)</span>,</span>
+<span>  transpose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  complete_years <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  ignore_missing <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  allowed_missing_annual <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">ignore_missing</span>, <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span>  allowed_missing_monthly <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">ignore_missing</span>, <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -156,93 +156,142 @@ calc_monthly_stats()
     <dl><dt>data</dt>
 <dd><p>Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank or set to <code>NULL</code> if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>dates</dt>
 <dd><p>Name of column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
 'Date' (default). Leave blank or set to <code>NULL</code> if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>values</dt>
 <dd><p>Name of column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>groups</dt>
 <dd><p>Name of column in <code>data</code> that contains unique identifiers for different data sets, if applicable. Only required 
 if groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if 
 present. Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using <code>station_number</code> 
 argument.</p></dd>
+
+
 <dt>station_number</dt>
 <dd><p>Character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract daily streamflow data from a HYDAT database. Requires <code>tidyhydat</code> package and a HYDAT database.
 Leave blank if using <code>data</code> argument.</p></dd>
+
+
 <dt>basin_area</dt>
 <dd><p>Upstream drainage basin area, in square kilometres, to apply to observations. Three options:</p>
 <p>(1) Leave blank if <code>groups</code> is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.</p>
 <p>(2) A single numeric value to apply to all observations.</p>
 <p>(3) List each basin area for each group/station in groups (can override HYDAT value if listed) as such <code>c("08NM116" = 795, 
 "08NM242" = 10)</code>. If group is not listed the HYDAT area will be applied if it exists, otherwise it will be <code>NA</code>.</p></dd>
+
+
 <dt>water_year_start</dt>
 <dd><p>Numeric value indicating the month (<code>1</code> through <code>12</code>) of the start of water year for
 analysis. Default <code>1</code>.</p></dd>
+
+
 <dt>start_year</dt>
 <dd><p>Numeric value of the first year to consider for analysis. Leave blank or set well before start date (i.e.
 <code>1800</code>) to use from the first year of the source data.</p></dd>
+
+
 <dt>end_year</dt>
 <dd><p>Numeric value of the last year to consider for analysis. Leave blank or set well after end date (i.e.
 <code>2100</code>) to use up to the last year of the source data.</p></dd>
+
+
 <dt>exclude_years</dt>
 <dd><p>Numeric vector of years to exclude from analysis. Leave blank or set to <code>NULL</code> to include all years.</p></dd>
+
+
 <dt>months</dt>
 <dd><p>Numeric vector of months to include in analysis. For example, <code>3</code> for March, <code>6:8</code> for Jun-Aug or 
 <code>c(10:12,1)</code> for first four months (Oct-Jan) when <code>water_year_start = 10</code> (Oct). Default summarizes all 
 months (<code>1:12</code>). If not <code>1:12</code>, seasonal total yield and volumetric flows will not be included.</p></dd>
+
+
 <dt>annual_percentiles</dt>
 <dd><p>Numeric vector of percentiles to calculate annually. Set to <code>NA</code> if none required. Used for
 <code><a href="calc_annual_stats.html">calc_annual_stats()</a></code> function. Default <code>c(10,90)</code>.</p></dd>
+
+
 <dt>monthly_percentiles</dt>
 <dd><p>Numeric vector of percentiles to calculate monthly for each year. Set to <code>NA</code> if none required. 
 Used for <code><a href="calc_monthly_stats.html">calc_monthly_stats()</a></code> function. Default <code>c(10,20)</code>.</p></dd>
+
+
 <dt>stats_days</dt>
 <dd><p>Numeric vector of the number of days to apply a rolling mean on basic stats. Default <code>c(1)</code>.
 Used for <code><a href="calc_annual_stats.html">calc_annual_stats()</a></code> and <code><a href="calc_monthly_stats.html">calc_monthly_stats()</a></code> functions.</p></dd>
+
+
 <dt>stats_align</dt>
 <dd><p>Character string identifying the direction of the rolling mean on basic stats from the specified date, either by 
 the first (<code>'left'</code>), last (<code>'right'</code>), or middle (<code>'center'</code>) day of the rolling n-day group of observations.
 Default <code>'right'</code>. Used for <code><a href="calc_annual_stats.html">calc_annual_stats()</a></code>, <code><a href="calc_monthly_stats.html">calc_monthly_stats()</a></code>, and <code><a href="calc_annual_normal_days.html">calc_annual_normal_days()</a></code>
 functions.</p></dd>
+
+
 <dt>lowflow_days</dt>
 <dd><p>Numeric vector of the number of days to apply a rolling mean on low flow stats. Default <code>c(1,3,7,30)</code>.
 Used for <code>calc_lowflow_stats()</code> function.</p></dd>
+
+
 <dt>lowflow_align</dt>
 <dd><p>Character string identifying the direction of the rolling mean on low flow stats from the specified date,
 either by the first (<code>'left'</code>), last (<code>'right'</code>), or middle (<code>'center'</code>) day of the rolling n-day group of 
 observations. Default <code>'right'</code>. Used for <code>calc_lowflow_stats()</code> function.</p></dd>
+
+
 <dt>timing_percent</dt>
 <dd><p>Numeric vector of percents of annual total flows to determine dates. Used for <code><a href="calc_annual_flow_timing.html">calc_annual_flow_timing()</a></code>
 function. Default <code>c(25,33.3,50,75)</code>.</p></dd>
+
+
 <dt>normal_percentiles</dt>
 <dd><p>Numeric vector of two values, lower and upper percentiles, respectively indicating the limits of the 
 normal range. Default <code>c(25,75)</code>.</p></dd>
+
+
 <dt>transpose</dt>
 <dd><p>Logical value indicating whether to transpose rows and columns of results. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>complete_years</dt>
 <dd><p>Logical values indicating whether to include only years with complete data in analysis. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>ignore_missing</dt>
 <dd><p>Logical value indicating whether dates with missing values should be included in the calculation. If
 <code>TRUE</code> then a statistic will be calculated regardless of missing dates. If <code>FALSE</code> then only those statistics from
 time periods with no missing dates will be returned. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>allowed_missing_annual</dt>
 <dd><p>Numeric value between 0 and 100 indicating the <strong>percentage</strong> of missing dates allowed to be
 included to calculate an annual statistic (0 to 100 percent). If <code>'ignore_missing = FALSE'</code> then it defaults to <code>0</code> 
 (zero missing dates allowed), if <code>'ignore_missing = TRUE'</code> then it defaults to <code>100</code> (any missing dates allowed); 
 consistent with <code>ignore_missing</code> usage. Supersedes <code>ignore_missing</code> when used. Only for annual means, percentiles,
 minimums, and maximums.</p></dd>
+
+
 <dt>allowed_missing_monthly</dt>
 <dd><p>Numeric value between 0 and 100 indicating the <strong>percentage</strong> of missing dates allowed to be
 included to calculate a monthly statistic (0 to 100 percent). If <code>'ignore_missing = FALSE'</code> then it defaults to <code>0</code> 
 (zero missing dates allowed), if <code>'ignore_missing = TRUE'</code> then it defaults to <code>100</code> (any missing dates allowed); 
 consistent with <code>ignore_missing</code> usage. Supersedes <code>ignore_missing</code> when used.Only for monthly means, percentiles,
 minimums, and maximums.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A tibble data frame with column "Year" and then 107 (default) variables from the fasstr annual functions.
+    
+
+<p>A tibble data frame with column "Year" and then 107 (default) variables from the fasstr annual functions.
    See listed functions above for default variables. Transposing data creates a column of "Statistics" and subsequent
    columns for each year selected.</p>
     </div>
@@ -258,30 +307,30 @@ minimums, and maximums.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Working examples:</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html" class="external-link">hy_downloaded_db</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Calculate all annual statistics from this package with default arguments</span></span>
-<span class="r-in"><span class="fu">calc_all_annual_stats</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Calculate all annual statistics from this package with default arguments </span></span>
-<span class="r-in"><span class="co"># with some default arguments shown to customize metrics</span></span>
-<span class="r-in"><span class="fu">calc_all_annual_stats</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span>
-<span class="r-in">                      annual_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">90</span><span class="op">)</span>,</span>
-<span class="r-in">                      monthly_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">20</span><span class="op">)</span>,</span>
-<span class="r-in">                      stats_days <span class="op">=</span> <span class="fl">1</span>,</span>
-<span class="r-in">                      stats_align <span class="op">=</span> <span class="st">"right"</span>,</span>
-<span class="r-in">                      lowflow_days <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">7</span>,<span class="fl">30</span><span class="op">)</span>,</span>
-<span class="r-in">                      lowflow_align <span class="op">=</span> <span class="st">"right"</span>,</span>
-<span class="r-in">                      timing_percent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">33</span>,<span class="fl">50</span>,<span class="fl">75</span><span class="op">)</span>,</span>
-<span class="r-in">                      normal_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">75</span><span class="op">)</span><span class="op">)</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Working examples:</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html" class="external-link">hy_downloaded_db</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calculate all annual statistics from this package with default arguments</span></span></span>
+<span class="r-in"><span><span class="fu">calc_all_annual_stats</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> </span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calculate all annual statistics from this package with default arguments </span></span></span>
+<span class="r-in"><span><span class="co"># with some default arguments shown to customize metrics</span></span></span>
+<span class="r-in"><span><span class="fu">calc_all_annual_stats</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span></span>
+<span class="r-in"><span>                      annual_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">90</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                      monthly_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">20</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                      stats_days <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>                      stats_align <span class="op">=</span> <span class="st">"right"</span>,</span></span>
+<span class="r-in"><span>                      lowflow_days <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">7</span>,<span class="fl">30</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                      lowflow_align <span class="op">=</span> <span class="st">"right"</span>,</span></span>
+<span class="r-in"><span>                      timing_percent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">33</span>,<span class="fl">50</span>,<span class="fl">75</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                      normal_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">75</span><span class="op">)</span><span class="op">)</span> </span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -296,7 +345,7 @@ minimums, and maximums.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

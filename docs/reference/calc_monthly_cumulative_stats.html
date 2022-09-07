@@ -108,22 +108,22 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">calc_monthly_cumulative_stats</span><span class="op">(</span>
-  <span class="va">data</span>,
-  dates <span class="op">=</span> <span class="va">Date</span>,
-  values <span class="op">=</span> <span class="va">Value</span>,
-  groups <span class="op">=</span> <span class="va">STATION_NUMBER</span>,
-  <span class="va">station_number</span>,
-  percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">25</span>, <span class="fl">75</span>, <span class="fl">95</span><span class="op">)</span>,
-  use_yield <span class="op">=</span> <span class="cn">FALSE</span>,
-  <span class="va">basin_area</span>,
-  water_year_start <span class="op">=</span> <span class="fl">1</span>,
-  <span class="va">start_year</span>,
-  <span class="va">end_year</span>,
-  <span class="va">exclude_years</span>,
-  months <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span>,
-  transpose <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calc_monthly_cumulative_stats</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  dates <span class="op">=</span> <span class="va">Date</span>,</span>
+<span>  values <span class="op">=</span> <span class="va">Value</span>,</span>
+<span>  groups <span class="op">=</span> <span class="va">STATION_NUMBER</span>,</span>
+<span>  <span class="va">station_number</span>,</span>
+<span>  percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">25</span>, <span class="fl">75</span>, <span class="fl">95</span><span class="op">)</span>,</span>
+<span>  use_yield <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">basin_area</span>,</span>
+<span>  water_year_start <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  <span class="va">start_year</span>,</span>
+<span>  <span class="va">end_year</span>,</span>
+<span>  <span class="va">exclude_years</span>,</span>
+<span>  months <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span>,</span>
+<span>  transpose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -131,114 +131,153 @@
     <dl><dt>data</dt>
 <dd><p>Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank or set to <code>NULL</code> if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>dates</dt>
 <dd><p>Name of column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
 'Date' (default). Leave blank or set to <code>NULL</code> if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>values</dt>
 <dd><p>Name of column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>groups</dt>
 <dd><p>Name of column in <code>data</code> that contains unique identifiers for different data sets, if applicable. Only required 
 if groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if 
 present. Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using <code>station_number</code> 
 argument.</p></dd>
+
+
 <dt>station_number</dt>
 <dd><p>Character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract daily streamflow data from a HYDAT database. Requires <code>tidyhydat</code> package and a HYDAT database.
 Leave blank if using <code>data</code> argument.</p></dd>
+
+
 <dt>percentiles</dt>
 <dd><p>Numeric vector of percentiles to calculate. Set to <code>NA</code> if none required. Default <code>c(5,25,75,95)</code>.</p></dd>
+
+
 <dt>use_yield</dt>
 <dd><p>Logical value indicating whether to calculate area-based water yield, in mm, instead of volumetric discharge. 
 Default <code>FALSE</code>.</p></dd>
+
+
 <dt>basin_area</dt>
 <dd><p>Upstream drainage basin area, in square kilometres, to apply to observations. Three options:</p>
 <p>(1) Leave blank if <code>groups</code> is STATION_NUMBER with HYDAT station numbers to extract basin areas from HYDAT.</p>
 <p>(2) A single numeric value to apply to all observations.</p>
 <p>(3) List each basin area for each group/station in groups (can override HYDAT value if listed) as such <code>c("08NM116" = 795, 
 "08NM242" = 10)</code>. If group is not listed the HYDAT area will be applied if it exists, otherwise it will be <code>NA</code>.</p></dd>
+
+
 <dt>water_year_start</dt>
 <dd><p>Numeric value indicating the month (<code>1</code> through <code>12</code>) of the start of water year for
 analysis. Default <code>1</code>.</p></dd>
+
+
 <dt>start_year</dt>
 <dd><p>Numeric value of the first year to consider for analysis. Leave blank or set well before start date (i.e.
 <code>1800</code>) to use from the first year of the source data.</p></dd>
+
+
 <dt>end_year</dt>
 <dd><p>Numeric value of the last year to consider for analysis. Leave blank or set well after end date (i.e.
 <code>2100</code>) to use up to the last year of the source data.</p></dd>
+
+
 <dt>exclude_years</dt>
 <dd><p>Numeric vector of years to exclude from analysis. Leave blank or set to <code>NULL</code> to include all years.</p></dd>
+
+
 <dt>months</dt>
 <dd><p>Numeric vector of months to include in analysis. For example, <code>3</code> for March, <code>6:8</code> for Jun-Aug or 
 <code>c(10:12,1)</code> for first four months (Oct-Jan) when <code>water_year_start = 10</code> (Oct). Default summarizes all 
 months (<code>1:12</code>). Need to be consecutive months for given year/water year to work properly.</p></dd>
+
+
 <dt>transpose</dt>
 <dd><p>Logical value indicating whether to transpose rows and columns of results. Default <code>FALSE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A tibble data frame with the following columns, default units in cubic metres, or millimetres if use_yield and basin_area provided:</p>
+    
+
+<p>A tibble data frame with the following columns, default units in cubic metres, or millimetres if use_yield and basin_area provided:</p>
 <dl><dt>Month</dt>
 <dd><p>month (MMM-DD) of cumulative statistics</p></dd>
-<dt>Mean</dt>
+
+  <dt>Mean</dt>
 <dd><p>monthly mean of all cumulative flows for a given month of the year</p></dd>
-<dt>Median</dt>
+
+  <dt>Median</dt>
 <dd><p>monthly mean of all cumulative flows for a given month of the year</p></dd>
-<dt>Maximum</dt>
+
+  <dt>Maximum</dt>
 <dd><p>monthly mean of all cumulative flows for a given month of the year</p></dd>
-<dt>Minimum</dt>
+
+  <dt>Minimum</dt>
 <dd><p>monthly mean of all cumulative flows for a given month of the year</p></dd>
-<dt>P'n'</dt>
+
+  <dt>P'n'</dt>
 <dd><p>each monthly n-th percentile selected of all cumulative flows for a given month of the year</p></dd>
+
 </dl><p>Default percentile columns:</p>
 <dl><dt>P5</dt>
 <dd><p>monthly 5th percentile of all cumulative flows for a given month of the year</p></dd>
-<dt>P25</dt>
+
+  <dt>P25</dt>
 <dd><p>monthly 25th percentile of all cumulative flows for a given month of the year</p></dd>
-<dt>P75</dt>
+
+  <dt>P75</dt>
 <dd><p>monthly 75th percentile of all cumulative flows for a given month of the year</p></dd>
-<dt>P95</dt>
+
+  <dt>P95</dt>
 <dd><p>monthly 95th percentile of all cumulative flows for a given month of the year</p></dd>
+
 </dl><p>Transposing data creates a column of "Statistics" and subsequent columns for each year selected.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html" class="external-link">hy_downloaded_db</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Calculate annual monthly cumulative volume statistics</span></span>
-<span class="r-in"><span class="fu">calc_monthly_cumulative_stats</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Calculate annual monthly cumulative volume statistics with default HYDAT basin area</span></span>
-<span class="r-in"><span class="fu">calc_monthly_cumulative_stats</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span>
-<span class="r-in">                              use_yield <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Calculate annual monthly cumulative volume statistics with custom basin area</span></span>
-<span class="r-in"><span class="fu">calc_monthly_cumulative_stats</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span>
-<span class="r-in">                              use_yield <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span class="r-in">                              basin_area <span class="op">=</span> <span class="fl">800</span><span class="op">)</span> </span>
-<span class="r-in">                              </span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html" class="external-link">hy_downloaded_db</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calculate annual monthly cumulative volume statistics</span></span></span>
+<span class="r-in"><span><span class="fu">calc_monthly_cumulative_stats</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> </span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calculate annual monthly cumulative volume statistics with default HYDAT basin area</span></span></span>
+<span class="r-in"><span><span class="fu">calc_monthly_cumulative_stats</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span></span>
+<span class="r-in"><span>                              use_yield <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calculate annual monthly cumulative volume statistics with custom basin area</span></span></span>
+<span class="r-in"><span><span class="fu">calc_monthly_cumulative_stats</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span></span>
+<span class="r-in"><span>                              use_yield <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                              basin_area <span class="op">=</span> <span class="fl">800</span><span class="op">)</span> </span></span>
+<span class="r-in"><span>                              </span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>One or more years contained partial data and were excluded. Only years with complete data were used for calculations.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 12 × 10</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    STATION_NUMBER Month   Mean Median Maximum Minimum     P5    P25    P75</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 08NM116        Jan     3.65   2.99    20.5    1.06   1.53   2.44   4.26</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 08NM116        Feb     7.03   5.95    30.7    2.16   3.25   4.53   7.65</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 08NM116        Mar    12.8   10.8     47.8    3.86   6.09   8.15  14.7 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 08NM116        Apr    37.3   33.9     92.6    9.86  13.2   22.5   45.3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 08NM116        May   120.   112.     208.    52.3   65.8   94.4  139.  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 08NM116        Jun   193.   198.     319.    95.3  102.   150.   231.  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 08NM116        Jul   213.   222.     377.   102.   111.   159.   254.  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 08NM116        Aug   220.   226.     390.   104.   114.   162.   269.  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 08NM116        Sep   227.   232.     405.   106.   118.   165.   280.  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 08NM116        Oct   234.   240.     422.   108.   122.   170.   287.  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> 08NM116        Nov   241.   243.     433.   110.   127.   176.   292.  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> 08NM116        Dec   245.   246.     439.   112.   130.   181.   296.  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 1 more variable: P95 &lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    STATION_NUM…¹ Month   Mean Median Maximum Minimum     P5    P25    P75    P95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 08NM116       Jan     3.65   2.99    20.5    1.06   1.53   2.44   4.26   6.46</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 08NM116       Feb     7.03   5.95    30.7    2.16   3.25   4.53   7.65  12.7 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 08NM116       Mar    12.8   10.8     47.8    3.86   6.09   8.15  14.7   24.2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 08NM116       Apr    37.3   33.9     92.6    9.86  13.2   22.5   45.3   76.7 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 08NM116       May   120.   112.     208.    52.3   65.8   94.4  139.   197.  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 08NM116       Jun   193.   198.     319.    95.3  102.   150.   231.   284.  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 08NM116       Jul   213.   222.     377.   102.   111.   159.   254.   321.  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 08NM116       Aug   220.   226.     390.   104.   114.   162.   269.   328.  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 08NM116       Sep   227.   232.     405.   106.   118.   165.   280.   334.  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 08NM116       Oct   234.   240.     422.   108.   122.   170.   287.   339.  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> 08NM116       Nov   241.   243.     433.   110.   127.   176.   292.   346.  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> 08NM116       Dec   245.   246.     439.   112.   130.   181.   296.   349.  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with abbreviated variable name ¹​STATION_NUMBER</span></span>
 </code></pre></div>
     </div>
   </div>
@@ -253,7 +292,7 @@ months (<code>1:12</code>). Need to be consecutive months for given year/water y
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

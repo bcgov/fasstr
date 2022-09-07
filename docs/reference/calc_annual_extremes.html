@@ -106,28 +106,28 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">calc_annual_extremes</span><span class="op">(</span>
-  <span class="va">data</span>,
-  dates <span class="op">=</span> <span class="va">Date</span>,
-  values <span class="op">=</span> <span class="va">Value</span>,
-  groups <span class="op">=</span> <span class="va">STATION_NUMBER</span>,
-  <span class="va">station_number</span>,
-  roll_days <span class="op">=</span> <span class="fl">1</span>,
-  roll_days_low <span class="op">=</span> <span class="cn">NA</span>,
-  roll_days_high <span class="op">=</span> <span class="cn">NA</span>,
-  roll_align <span class="op">=</span> <span class="st">"right"</span>,
-  water_year_start <span class="op">=</span> <span class="fl">1</span>,
-  <span class="va">start_year</span>,
-  <span class="va">end_year</span>,
-  <span class="va">exclude_years</span>,
-  months <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span>,
-  months_low <span class="op">=</span> <span class="cn">NA</span>,
-  months_high <span class="op">=</span> <span class="cn">NA</span>,
-  transpose <span class="op">=</span> <span class="cn">FALSE</span>,
-  complete_years <span class="op">=</span> <span class="cn">FALSE</span>,
-  ignore_missing <span class="op">=</span> <span class="cn">FALSE</span>,
-  allowed_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">ignore_missing</span>, <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calc_annual_extremes</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  dates <span class="op">=</span> <span class="va">Date</span>,</span>
+<span>  values <span class="op">=</span> <span class="va">Value</span>,</span>
+<span>  groups <span class="op">=</span> <span class="va">STATION_NUMBER</span>,</span>
+<span>  <span class="va">station_number</span>,</span>
+<span>  roll_days <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  roll_days_min <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  roll_days_max <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  roll_align <span class="op">=</span> <span class="st">"right"</span>,</span>
+<span>  water_year_start <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  <span class="va">start_year</span>,</span>
+<span>  <span class="va">end_year</span>,</span>
+<span>  <span class="va">exclude_years</span>,</span>
+<span>  months <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span>,</span>
+<span>  months_min <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  months_max <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  transpose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  complete_years <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  ignore_missing <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  allowed_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">ignore_missing</span>, <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -135,135 +135,189 @@
     <dl><dt>data</dt>
 <dd><p>Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank or set to <code>NULL</code> if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>dates</dt>
 <dd><p>Name of column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
 'Date' (default). Leave blank or set to <code>NULL</code> if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>values</dt>
 <dd><p>Name of column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>groups</dt>
 <dd><p>Name of column in <code>data</code> that contains unique identifiers for different data sets, if applicable. Only required 
 if groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if 
 present. Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using <code>station_number</code> 
 argument.</p></dd>
+
+
 <dt>station_number</dt>
 <dd><p>Character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract daily streamflow data from a HYDAT database. Requires <code>tidyhydat</code> package and a HYDAT database.
 Leave blank if using <code>data</code> argument.</p></dd>
+
+
 <dt>roll_days</dt>
 <dd><p>Numeric value of the number of days to apply a rolling mean. Default <code>1</code>.</p></dd>
-<dt>roll_days_low</dt>
+
+
+<dt>roll_days_min</dt>
 <dd><p>Numeric value of the number of days to apply a rolling mean for low flows.  Will override 'roll_days' argument 
 for low flows. Default <code>NA</code>.</p></dd>
-<dt>roll_days_high</dt>
+
+
+<dt>roll_days_max</dt>
 <dd><p>Numeric value of the number of days to apply a rolling mean for high flows.  Will override 'roll_days' argument 
 for high flows. Default <code>NA</code>.</p></dd>
+
+
 <dt>roll_align</dt>
 <dd><p>Character string identifying the direction of the rolling mean from the specified date, either by the first 
 (<code>'left'</code>), last (<code>'right'</code>), or middle (<code>'center'</code>) day of the rolling n-day group of observations. 
 Default <code>'right'</code>.</p></dd>
+
+
 <dt>water_year_start</dt>
 <dd><p>Numeric value indicating the month (<code>1</code> through <code>12</code>) of the start of water year for
 analysis. Default <code>1</code>.</p></dd>
+
+
 <dt>start_year</dt>
 <dd><p>Numeric value of the first year to consider for analysis. Leave blank or set well before start date (i.e.
 <code>1800</code>) to use from the first year of the source data.</p></dd>
+
+
 <dt>end_year</dt>
 <dd><p>Numeric value of the last year to consider for analysis. Leave blank or set well after end date (i.e.
 <code>2100</code>) to use up to the last year of the source data.</p></dd>
+
+
 <dt>exclude_years</dt>
 <dd><p>Numeric vector of years to exclude from analysis. Leave blank or set to <code>NULL</code> to include all years.</p></dd>
+
+
 <dt>months</dt>
 <dd><p>Numeric vector of months to include in analysis. For example, <code>3</code> for March, <code>6:8</code> for Jun-Aug or 
 <code>c(10:12,1)</code> for first four months (Oct-Jan) when <code>water_year_start = 10</code> (Oct). Default summarizes all 
 months (<code>1:12</code>).</p></dd>
-<dt>months_low</dt>
+
+
+<dt>months_min</dt>
 <dd><p>Numeric vector of specified months for window of low flows (3 for March, 6:8 for Jun-Aug). Will override 'months' 
 argument for low flows. Default <code>NA</code>.</p></dd>
-<dt>months_high</dt>
+
+
+<dt>months_max</dt>
 <dd><p>Numeric vector of specified months for window of high flows (3 for March, 6:8 for Jun-Aug). Will override 'months' 
 argument for high flows. Default <code>NA</code>.</p></dd>
+
+
 <dt>transpose</dt>
 <dd><p>Logical value indicating whether to transpose rows and columns of results. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>complete_years</dt>
 <dd><p>Logical values indicating whether to include only years with complete data in analysis. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>ignore_missing</dt>
 <dd><p>Logical value indicating whether dates with missing values should be included in the calculation. If
 <code>TRUE</code> then a statistic will be calculated regardless of missing dates. If <code>FALSE</code> then only those statistics from
 time periods with no missing dates will be returned. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>allowed_missing</dt>
 <dd><p>Numeric value between 0 and 100 indicating the <strong>percentage</strong> of missing dates allowed to be
 included to calculate a statistic (0 to 100 percent). If <code>'ignore_missing = FALSE'</code> then it defaults to <code>0</code> (zero missing dates allowed),
 if <code>'ignore_missing = TRUE'</code> then it defaults to <code>100</code> (any missing dates allowed); consistent with 
 <code>ignore_missing</code> usage. Supersedes <code>ignore_missing</code> when used.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A tibble data frame with the following columns:</p>
+    
+
+<p>A tibble data frame with the following columns:</p>
 <dl><dt>Year</dt>
 <dd><p>calendar or water year selected</p></dd>
-<dt>Min_'n'_Day</dt>
+
+  <dt>Min_'n'_Day</dt>
 <dd><p>annual minimum for selected n-day rolling mean, direction of mean specified by roll_align</p></dd>
-<dt>Min_'n'_Day_DoY</dt>
+
+  <dt>Min_'n'_Day_DoY</dt>
 <dd><p>day of year for selected annual minimum of n-day rolling mean</p></dd>
-<dt>Min_'n'_Day_Date</dt>
+
+  <dt>Min_'n'_Day_Date</dt>
 <dd><p>date (YYYY-MM-DD) for selected annual minimum of n-day rolling mean</p></dd>
-<dt>Max_'n'_Day</dt>
+
+  <dt>Max_'n'_Day</dt>
 <dd><p>annual maximum for selected n-day rolling mean, direction of mean specified by roll_align</p></dd>
-<dt>Max_'n'_Day_DoY</dt>
+
+  <dt>Max_'n'_Day_DoY</dt>
 <dd><p>day of year for selected annual maximum of n-day rolling mean</p></dd>
-<dt>Max_'n'_Day_Date</dt>
+
+  <dt>Max_'n'_Day_Date</dt>
 <dd><p>date (YYYY-MM-DD) for selected annual maximum of n-day rolling mean</p></dd>
+
 </dl><p>Default columns:</p>
 <dl><dt>Min_1_Day</dt>
 <dd><p>annual 1-day mean minimum (roll_align = right)</p></dd>
-<dt>Min_1_Day_DoY</dt>
+
+  <dt>Min_1_Day_DoY</dt>
 <dd><p>day of year of annual 1-day mean minimum</p></dd>
-<dt>Min_1_Day_Date</dt>
+
+  <dt>Min_1_Day_Date</dt>
 <dd><p>date (YYYY-MM-DD) of annual 1-day mean minimum</p></dd>
-<dt>Max_1_Day</dt>
+
+  <dt>Max_1_Day</dt>
 <dd><p>annual 1-day mean maximum (roll_align = right)</p></dd>
-<dt>Max_1_Day_DoY</dt>
+
+  <dt>Max_1_Day_DoY</dt>
 <dd><p>day of year of annual 1-day mean maximum</p></dd>
-<dt>Max_1_Day_Date</dt>
+
+  <dt>Max_1_Day_Date</dt>
 <dd><p>date (YYYY-MM-DD) of annual 1-day mean maximum</p></dd>
+   
 </dl><p>Transposing data creates a column of 'Statistics' and subsequent columns for each year selected. 'Date' statistics
   not transposed.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html" class="external-link">hy_downloaded_db</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Calculate annual 1-day (default) max/min flow data with </span></span>
-<span class="r-in"><span class="co"># default alignment ('right')</span></span>
-<span class="r-in"><span class="fu">calc_annual_extremes</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Calculate custom 3-day max/min flow data with 'center' alignment</span></span>
-<span class="r-in"><span class="fu">calc_annual_extremes</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span>
-<span class="r-in">                     roll_days <span class="op">=</span> <span class="fl">3</span>,</span>
-<span class="r-in">                     roll_align <span class="op">=</span> <span class="st">"center"</span>,</span>
-<span class="r-in">                     start_year <span class="op">=</span> <span class="fl">1980</span><span class="op">)</span></span>
-<span class="r-in">                     </span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html" class="external-link">hy_downloaded_db</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calculate annual 1-day (default) max/min flow data with </span></span></span>
+<span class="r-in"><span><span class="co"># default alignment ('right')</span></span></span>
+<span class="r-in"><span><span class="fu">calc_annual_extremes</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> </span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calculate custom 3-day max/min flow data with 'center' alignment</span></span></span>
+<span class="r-in"><span><span class="fu">calc_annual_extremes</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span></span>
+<span class="r-in"><span>                     roll_days <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>                     roll_align <span class="op">=</span> <span class="st">"center"</span>,</span></span>
+<span class="r-in"><span>                     start_year <span class="op">=</span> <span class="fl">1980</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                     </span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>One or more calculations included missing values and NA's were produced. If desired, filter data for complete years or months, or use the 'ignore_missing' or 'allowed_missing' arguments (if applicable) to ignore or allow some missing values.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>One or more calculations included missing values and NA's were produced. If desired, filter data for complete years or months, or use the 'ignore_missing' or 'allowed_missing' arguments (if applicable) to ignore or allow some missing values.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 38 × 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    STATION_NUMBER  Year Min_3_Day Min_3_Day_DoY Min_3_Day_Date Max_3_Day</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 08NM116         <span style="text-decoration: underline;">1</span>980     0.632             9 1980-01-09          34.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 08NM116         <span style="text-decoration: underline;">1</span>981     0.468           260 1981-09-17          54.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 08NM116         <span style="text-decoration: underline;">1</span>982     0.883             6 1982-01-06          50.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 08NM116         <span style="text-decoration: underline;">1</span>983     0.562           357 1983-12-23          57.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 08NM116         <span style="text-decoration: underline;">1</span>984     0.742           365 1984-12-30          50.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 08NM116         <span style="text-decoration: underline;">1</span>985     0.429           190 1985-07-09          49.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 08NM116         <span style="text-decoration: underline;">1</span>986     0.663            50 1986-02-19          70.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 08NM116         <span style="text-decoration: underline;">1</span>987     0.339           333 1987-11-29          31.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 08NM116         <span style="text-decoration: underline;">1</span>988     0.150            32 1988-02-01          32.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 08NM116         <span style="text-decoration: underline;">1</span>989     0.524           271 1989-09-28          34.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 28 more rows, and 2 more variables: Max_3_Day_DoY &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Max_3_Day_Date &lt;date&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    STATION_NUMBER  Year Min_3_Day Min_3_…¹ Min_3_Da…² Max_3…³ Max_3…⁴ Max_3_Da…⁵</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 08NM116         <span style="text-decoration: underline;">1</span>980     0.632        9 1980-01-09    34.8     127 1980-05-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 08NM116         <span style="text-decoration: underline;">1</span>981     0.468      260 1981-09-17    54.6     142 1981-05-22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 08NM116         <span style="text-decoration: underline;">1</span>982     0.883        6 1982-01-06    50.7     186 1982-07-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 08NM116         <span style="text-decoration: underline;">1</span>983     0.562      357 1983-12-23    57.7     149 1983-05-29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 08NM116         <span style="text-decoration: underline;">1</span>984     0.742      365 1984-12-30    50.4     166 1984-06-14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 08NM116         <span style="text-decoration: underline;">1</span>985     0.429      190 1985-07-09    49.2     144 1985-05-24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 08NM116         <span style="text-decoration: underline;">1</span>986     0.663       50 1986-02-19    70.8     150 1986-05-30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 08NM116         <span style="text-decoration: underline;">1</span>987     0.339      333 1987-11-29    31.9     122 1987-05-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 08NM116         <span style="text-decoration: underline;">1</span>988     0.150       32 1988-02-01    32.4     135 1988-05-14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 08NM116         <span style="text-decoration: underline;">1</span>989     0.524      271 1989-09-28    34.2     153 1989-06-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 28 more rows, and abbreviated variable names ¹​Min_3_Day_DoY,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ²​Min_3_Day_Date, ³​Max_3_Day, ⁴​Max_3_Day_DoY, ⁵​Max_3_Day_Date</span></span>
 </code></pre></div>
     </div>
   </div>
@@ -278,7 +332,7 @@ if <code>'ignore_missing = TRUE'</code> then it defaults to <code>100</code> (an
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -112,31 +112,31 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">compute_annual_frequencies</span><span class="op">(</span>
-  <span class="va">data</span>,
-  dates <span class="op">=</span> <span class="va">Date</span>,
-  values <span class="op">=</span> <span class="va">Value</span>,
-  <span class="va">station_number</span>,
-  roll_days <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">7</span>, <span class="fl">30</span><span class="op">)</span>,
-  roll_align <span class="op">=</span> <span class="st">"right"</span>,
-  use_max <span class="op">=</span> <span class="cn">FALSE</span>,
-  use_log <span class="op">=</span> <span class="cn">FALSE</span>,
-  prob_plot_position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"weibull"</span>, <span class="st">"median"</span>, <span class="st">"hazen"</span><span class="op">)</span>,
-  prob_scale_points <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.9999</span>, <span class="fl">0.999</span>, <span class="fl">0.99</span>, <span class="fl">0.9</span>, <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>, <span class="fl">0.02</span>, <span class="fl">0.01</span>, <span class="fl">0.001</span>,
-    <span class="fl">1e-04</span><span class="op">)</span>,
-  fit_distr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PIII"</span>, <span class="st">"weibull"</span><span class="op">)</span>,
-  fit_distr_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">fit_distr</span> <span class="op">==</span> <span class="st">"PIII"</span>, <span class="st">"MOM"</span>, <span class="st">"MLE"</span><span class="op">)</span>,
-  fit_quantiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.975</span>, <span class="fl">0.99</span>, <span class="fl">0.98</span>, <span class="fl">0.95</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span>, <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>, <span class="fl">0.05</span>, <span class="fl">0.01</span><span class="op">)</span>,
-  plot_curve <span class="op">=</span> <span class="cn">TRUE</span>,
-  water_year_start <span class="op">=</span> <span class="fl">1</span>,
-  <span class="va">start_year</span>,
-  <span class="va">end_year</span>,
-  <span class="va">exclude_years</span>,
-  months <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span>,
-  complete_years <span class="op">=</span> <span class="cn">FALSE</span>,
-  ignore_missing <span class="op">=</span> <span class="cn">FALSE</span>,
-  allowed_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">ignore_missing</span>, <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">compute_annual_frequencies</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  dates <span class="op">=</span> <span class="va">Date</span>,</span>
+<span>  values <span class="op">=</span> <span class="va">Value</span>,</span>
+<span>  <span class="va">station_number</span>,</span>
+<span>  roll_days <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">7</span>, <span class="fl">30</span><span class="op">)</span>,</span>
+<span>  roll_align <span class="op">=</span> <span class="st">"right"</span>,</span>
+<span>  use_max <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  use_log <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  prob_plot_position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"weibull"</span>, <span class="st">"median"</span>, <span class="st">"hazen"</span><span class="op">)</span>,</span>
+<span>  prob_scale_points <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.9999</span>, <span class="fl">0.999</span>, <span class="fl">0.99</span>, <span class="fl">0.9</span>, <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>, <span class="fl">0.02</span>, <span class="fl">0.01</span>, <span class="fl">0.001</span>,</span>
+<span>    <span class="fl">1e-04</span><span class="op">)</span>,</span>
+<span>  fit_distr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PIII"</span>, <span class="st">"weibull"</span><span class="op">)</span>,</span>
+<span>  fit_distr_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">fit_distr</span> <span class="op">==</span> <span class="st">"PIII"</span>, <span class="st">"MOM"</span>, <span class="st">"MLE"</span><span class="op">)</span>,</span>
+<span>  fit_quantiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.975</span>, <span class="fl">0.99</span>, <span class="fl">0.98</span>, <span class="fl">0.95</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span>, <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>, <span class="fl">0.05</span>, <span class="fl">0.01</span><span class="op">)</span>,</span>
+<span>  plot_curve <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  water_year_start <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  <span class="va">start_year</span>,</span>
+<span>  <span class="va">end_year</span>,</span>
+<span>  <span class="va">exclude_years</span>,</span>
+<span>  months <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span>,</span>
+<span>  complete_years <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  ignore_missing <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  allowed_missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">ignore_missing</span>, <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -144,86 +144,136 @@
     <dl><dt>data</dt>
 <dd><p>A data frame of daily data that contains columns of dates and flow values. Groupings and the <code>groups</code> argument
 are not used for this function (i.e. station numbers). Leave blank or set to <code>NULL</code> if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>dates</dt>
 <dd><p>Name of column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
 'Date' (default). Leave blank or set to <code>NULL</code> if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>values</dt>
 <dd><p>Name of column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>station_number</dt>
 <dd><p>Character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract daily streamflow data from a HYDAT database. Requires <code>tidyhydat</code> package and a HYDAT database.
 Leave blank if using <code>data</code> argument.</p></dd>
+
+
 <dt>roll_days</dt>
 <dd><p>Numeric value of the number of days to apply a rolling mean. Default <code>1</code>.</p></dd>
+
+
 <dt>roll_align</dt>
 <dd><p>Character string identifying the direction of the rolling mean from the specified date, either by the first 
 (<code>'left'</code>), last (<code>'right'</code>), or middle (<code>'center'</code>) day of the rolling n-day group of observations. 
 Default <code>'right'</code>.</p></dd>
+
+
 <dt>use_max</dt>
 <dd><p>Logical value to indicate using maximums rather than the minimums for analysis. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>use_log</dt>
 <dd><p>Logical value to indicate log-scale transforming of flow data before analysis. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>prob_plot_position</dt>
 <dd><p>Character string indicating the plotting positions used in the frequency plots, one of <code>'weibull'</code>,
 <code>'median'</code>, or <code>'hazen'</code>. Points are plotted against  (i-a)/(n+1-a-b) where <code>i</code> is the rank of the value; <code>n</code> is the 
 sample size and <code>a</code> and <code>b</code> are defined as: (a=0, b=0) for Weibull plotting positions; (a=.2; b=.3) for Median 
 plotting positions; and (a=.5; b=.5) for Hazen plotting positions. Default <code>'weibull'</code>.</p></dd>
+
+
 <dt>prob_scale_points</dt>
 <dd><p>Numeric vector of probabilities to be plotted along the X axis in the frequency plot. Inverse of 
 return period. Default <code>c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001)</code>.</p></dd>
+
+
 <dt>fit_distr</dt>
 <dd><p>Character string identifying the distribution to fit annual data, one of <code>'PIII'</code> (Log Pearson Type III)
 or <code>'weibull'</code> (Weibull) distributions. Default <code>'PIII'</code>.</p></dd>
+
+
 <dt>fit_distr_method</dt>
 <dd><p>Character string identifying the method used to fit the distribution, one of <code>'MOM'</code> (method of
 moments) or <code>'MLE'</code> (maximum likelihood estimation). Selected as <code>'MOM'</code> if <code>fit_distr ='PIII'</code> (default) or 
 <code>'MLE'</code> if <code>fit_distr = 'weibull'</code>.</p></dd>
+
+
 <dt>fit_quantiles</dt>
 <dd><p>Numeric vector of quantiles to be estimated from the fitted distribution. 
 Default <code>c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)</code>.</p></dd>
+
+
 <dt>plot_curve</dt>
 <dd><p>Logical value to indicate plotting the computed curve on the probability plot. Default <code>TRUE</code>.</p></dd>
+
+
 <dt>water_year_start</dt>
 <dd><p>Numeric value indicating the month (<code>1</code> through <code>12</code>) of the start of water year for
 analysis. Default <code>1</code>.</p></dd>
+
+
 <dt>start_year</dt>
 <dd><p>Numeric value of the first year to consider for analysis. Leave blank or set well before start date (i.e.
 <code>1800</code>) to use from the first year of the source data.</p></dd>
+
+
 <dt>end_year</dt>
 <dd><p>Numeric value of the last year to consider for analysis. Leave blank or set well after end date (i.e.
 <code>2100</code>) to use up to the last year of the source data.</p></dd>
+
+
 <dt>exclude_years</dt>
 <dd><p>Numeric vector of years to exclude from analysis. Leave blank or set to <code>NULL</code> to include all years.</p></dd>
+
+
 <dt>months</dt>
 <dd><p>Numeric vector of months to include in analysis. For example, <code>3</code> for March, <code>6:8</code> for Jun-Aug or 
 <code>c(10:12,1)</code> for first four months (Oct-Jan) when <code>water_year_start = 10</code> (Oct). Default summarizes all 
 months (<code>1:12</code>).</p></dd>
+
+
 <dt>complete_years</dt>
 <dd><p>Logical values indicating whether to include only years with complete data in analysis. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>ignore_missing</dt>
 <dd><p>Logical value indicating whether dates with missing values should be included in the calculation. If
 <code>TRUE</code> then a statistic will be calculated regardless of missing dates. If <code>FALSE</code> then only those statistics from
 time periods with no missing dates will be returned. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>allowed_missing</dt>
 <dd><p>Numeric value between 0 and 100 indicating the <strong>percentage</strong> of missing dates allowed to be
 included to calculate a statistic (0 to 100 percent). If <code>'ignore_missing = FALSE'</code> then it defaults to <code>0</code> (zero missing dates allowed),
 if <code>'ignore_missing = TRUE'</code> then it defaults to <code>100</code> (any missing dates allowed); consistent with 
 <code>ignore_missing</code> usage. Supersedes <code>ignore_missing</code> when used.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list with the following elements:</p>
+    
+
+<p>A list with the following elements:</p>
 <dl><dt>Freq_Analysis_Data</dt>
 <dd><p>Data frame with computed annual summary statistics used in analysis.</p></dd>
-<dt>Freq_Plot_Data</dt>
+
+  <dt>Freq_Plot_Data</dt>
 <dd><p>Data frame with co-ordinates used in frequency plot.</p></dd>
-<dt>Freq_Plot</dt>
+
+  <dt>Freq_Plot</dt>
 <dd><p>ggplot2 object with frequency plot.</p></dd>
-<dt>Freq_Fitting</dt>
+
+  <dt>Freq_Fitting</dt>
 <dd><p>List of fitted objects from fitdistrplus.</p></dd>
-<dt>Freq_Fitted_Quantiles</dt>
+
+  <dt>Freq_Fitted_Quantiles</dt>
 <dd><p>Data frame with fitted quantiles.</p></dd>
+
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -232,36 +282,36 @@ if <code>'ignore_missing = TRUE'</code> then it defaults to <code>100</code> (an
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Working examples (see arguments for further analysis options):</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Compute an annual frequency analysis using default arguments</span></span>
-<span class="r-in"><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">compute_annual_frequencies</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span>
-<span class="r-in">                                      start_year <span class="op">=</span> <span class="fl">1980</span>,</span>
-<span class="r-in">                                      end_year <span class="op">=</span> <span class="fl">2010</span><span class="op">)</span></span>
-<span class="r-in">                           </span>
-<span class="r-in"><span class="co"># Compute an annual frequency analysis using default arguments (as listed)</span></span>
-<span class="r-in"><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">compute_annual_frequencies</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span>
-<span class="r-in">                                      roll_days <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">7</span>,<span class="fl">30</span><span class="op">)</span>,</span>
-<span class="r-in">                                      start_year <span class="op">=</span> <span class="fl">1980</span>,</span>
-<span class="r-in">                                      end_year <span class="op">=</span> <span class="fl">2010</span>,</span>
-<span class="r-in">                                      prob_plot_position <span class="op">=</span> <span class="st">"weibull"</span>,</span>
-<span class="r-in">                                      prob_scale_points <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.9999</span>, <span class="fl">.999</span>, <span class="fl">.99</span>, <span class="fl">.9</span>, <span class="fl">.5</span>, </span>
-<span class="r-in">                                      <span class="fl">.2</span>, <span class="fl">.1</span>, <span class="fl">.02</span>, <span class="fl">.01</span>, <span class="fl">.001</span>, <span class="fl">.0001</span><span class="op">)</span>,</span>
-<span class="r-in">                                      fit_distr <span class="op">=</span> <span class="st">"PIII"</span>,</span>
-<span class="r-in">                                      fit_distr_method <span class="op">=</span> <span class="st">"MOM"</span><span class="op">)</span></span>
-<span class="r-in">                                      </span>
-<span class="r-in"><span class="co"># Compute a 7-day annual frequency analysis with "median" plotting positions</span></span>
-<span class="r-in"><span class="co"># and fitting the data to a weibull distribution (not default PIII)</span></span>
-<span class="r-in"><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">compute_annual_frequencies</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span>
-<span class="r-in">                                      roll_days <span class="op">=</span> <span class="fl">7</span>,</span>
-<span class="r-in">                                      start_year <span class="op">=</span> <span class="fl">1980</span>,</span>
-<span class="r-in">                                      end_year <span class="op">=</span> <span class="fl">2010</span>,</span>
-<span class="r-in">                                      prob_plot_position <span class="op">=</span> <span class="st">"median"</span>,</span>
-<span class="r-in">                                      fit_distr <span class="op">=</span> <span class="st">"weibull"</span><span class="op">)</span></span>
-<span class="r-in">               </span>
-<span class="r-in"><span class="op">}</span>            </span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Working examples (see arguments for further analysis options):</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Compute an annual frequency analysis using default arguments</span></span></span>
+<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">compute_annual_frequencies</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span></span>
+<span class="r-in"><span>                                      start_year <span class="op">=</span> <span class="fl">1980</span>,</span></span>
+<span class="r-in"><span>                                      end_year <span class="op">=</span> <span class="fl">2010</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                           </span></span>
+<span class="r-in"><span><span class="co"># Compute an annual frequency analysis using default arguments (as listed)</span></span></span>
+<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">compute_annual_frequencies</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span></span>
+<span class="r-in"><span>                                      roll_days <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">7</span>,<span class="fl">30</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                      start_year <span class="op">=</span> <span class="fl">1980</span>,</span></span>
+<span class="r-in"><span>                                      end_year <span class="op">=</span> <span class="fl">2010</span>,</span></span>
+<span class="r-in"><span>                                      prob_plot_position <span class="op">=</span> <span class="st">"weibull"</span>,</span></span>
+<span class="r-in"><span>                                      prob_scale_points <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.9999</span>, <span class="fl">.999</span>, <span class="fl">.99</span>, <span class="fl">.9</span>, <span class="fl">.5</span>, </span></span>
+<span class="r-in"><span>                                      <span class="fl">.2</span>, <span class="fl">.1</span>, <span class="fl">.02</span>, <span class="fl">.01</span>, <span class="fl">.001</span>, <span class="fl">.0001</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                      fit_distr <span class="op">=</span> <span class="st">"PIII"</span>,</span></span>
+<span class="r-in"><span>                                      fit_distr_method <span class="op">=</span> <span class="st">"MOM"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                                      </span></span>
+<span class="r-in"><span><span class="co"># Compute a 7-day annual frequency analysis with "median" plotting positions</span></span></span>
+<span class="r-in"><span><span class="co"># and fitting the data to a weibull distribution (not default PIII)</span></span></span>
+<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">compute_annual_frequencies</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span></span>
+<span class="r-in"><span>                                      roll_days <span class="op">=</span> <span class="fl">7</span>,</span></span>
+<span class="r-in"><span>                                      start_year <span class="op">=</span> <span class="fl">1980</span>,</span></span>
+<span class="r-in"><span>                                      end_year <span class="op">=</span> <span class="fl">2010</span>,</span></span>
+<span class="r-in"><span>                                      prob_plot_position <span class="op">=</span> <span class="st">"median"</span>,</span></span>
+<span class="r-in"><span>                                      fit_distr <span class="op">=</span> <span class="st">"weibull"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>               </span></span>
+<span class="r-in"><span><span class="op">}</span>            </span></span>
 </code></pre></div>
     </div>
   </div>
@@ -276,7 +326,7 @@ if <code>'ignore_missing = TRUE'</code> then it defaults to <code>100</code> (an
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

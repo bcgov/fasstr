@@ -194,17 +194,17 @@ extract an individual tibble or plot.</p>
 <p>The following is an example of how to run the function and then how
 extract individual objects from the list:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mission_creek</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_full_analysis.html">compute_full_analysis</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
-                                       start_year <span class="op">=</span> <span class="fl">1981</span>,
-                                       end_year <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span>
-
-<span class="va">screening_plot</span> <span class="op">&lt;-</span> <span class="va">mission_creek</span><span class="op">$</span><span class="va">Screening</span><span class="op">$</span><span class="va">Flow_Screening_Plot</span>
-
-<span class="va">daily_stats</span> <span class="op">&lt;-</span> <span class="va">mission_creek</span><span class="op">$</span><span class="va">Daily</span><span class="op">$</span><span class="va">Daily_Summary_Stats</span>
-
-<span class="va">daily_stats_with_1985</span> <span class="op">&lt;-</span> <span class="va">mission_creek</span><span class="op">$</span><span class="va">Daily</span><span class="op">$</span><span class="va">Daily_Summary_Stats_with_Years</span><span class="op">$</span><span class="va">`1985_Daily_Statistics`</span>
-
-<span class="va">trends_results</span> <span class="op">&lt;-</span> <span class="va">mission_creek</span><span class="op">$</span><span class="va">Trending</span><span class="op">$</span><span class="va">Annual_Trends_Results</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">mission_creek</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_full_analysis.html">compute_full_analysis</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span>
+<span>                                       start_year <span class="op">=</span> <span class="fl">1981</span>,</span>
+<span>                                       end_year <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">screening_plot</span> <span class="op">&lt;-</span> <span class="va">mission_creek</span><span class="op">$</span><span class="va">Screening</span><span class="op">$</span><span class="va">Flow_Screening_Plot</span></span>
+<span></span>
+<span><span class="va">daily_stats</span> <span class="op">&lt;-</span> <span class="va">mission_creek</span><span class="op">$</span><span class="va">Daily</span><span class="op">$</span><span class="va">Daily_Summary_Stats</span></span>
+<span></span>
+<span><span class="va">daily_stats_with_1985</span> <span class="op">&lt;-</span> <span class="va">mission_creek</span><span class="op">$</span><span class="va">Daily</span><span class="op">$</span><span class="va">Daily_Summary_Stats_with_Years</span><span class="op">$</span><span class="va">`1985_Daily_Statistics`</span></span>
+<span></span>
+<span><span class="va">trends_results</span> <span class="op">&lt;-</span> <span class="va">mission_creek</span><span class="op">$</span><span class="va">Trending</span><span class="op">$</span><span class="va">Annual_Trends_Results</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="write_full_analysis-excel-and-image-files">
@@ -231,10 +231,10 @@ titles).</p>
 <p>The following is an example of how to save all analyses to your
 computer:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/write_full_analysis.html">write_full_analysis</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
-                    start_year <span class="op">=</span> <span class="fl">1981</span>,
-                    end_year <span class="op">=</span> <span class="fl">2000</span>,
-                    file_name <span class="op">=</span> <span class="st">"Mission Creek"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/write_full_analysis.html">write_full_analysis</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span>
+<span>                    start_year <span class="op">=</span> <span class="fl">1981</span>,</span>
+<span>                    end_year <span class="op">=</span> <span class="fl">2000</span>,</span>
+<span>                    file_name <span class="op">=</span> <span class="st">"Mission Creek"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -983,7 +983,7 @@ for each statistic)</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

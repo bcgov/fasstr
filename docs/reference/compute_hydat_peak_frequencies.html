@@ -110,21 +110,21 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">compute_hydat_peak_frequencies</span><span class="op">(</span>
-  <span class="va">station_number</span>,
-  use_max <span class="op">=</span> <span class="cn">FALSE</span>,
-  use_log <span class="op">=</span> <span class="cn">FALSE</span>,
-  prob_plot_position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"weibull"</span>, <span class="st">"median"</span>, <span class="st">"hazen"</span><span class="op">)</span>,
-  prob_scale_points <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.9999</span>, <span class="fl">0.999</span>, <span class="fl">0.99</span>, <span class="fl">0.9</span>, <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>, <span class="fl">0.02</span>, <span class="fl">0.01</span>, <span class="fl">0.001</span>,
-    <span class="fl">1e-04</span><span class="op">)</span>,
-  fit_distr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PIII"</span>, <span class="st">"weibull"</span><span class="op">)</span>,
-  fit_distr_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">fit_distr</span> <span class="op">==</span> <span class="st">"PIII"</span>, <span class="st">"MOM"</span>, <span class="st">"MLE"</span><span class="op">)</span>,
-  fit_quantiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.975</span>, <span class="fl">0.99</span>, <span class="fl">0.98</span>, <span class="fl">0.95</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span>, <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>, <span class="fl">0.05</span>, <span class="fl">0.01</span><span class="op">)</span>,
-  <span class="va">start_year</span>,
-  <span class="va">end_year</span>,
-  <span class="va">exclude_years</span>,
-  plot_curve <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">compute_hydat_peak_frequencies</span><span class="op">(</span></span>
+<span>  <span class="va">station_number</span>,</span>
+<span>  use_max <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  use_log <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  prob_plot_position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"weibull"</span>, <span class="st">"median"</span>, <span class="st">"hazen"</span><span class="op">)</span>,</span>
+<span>  prob_scale_points <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.9999</span>, <span class="fl">0.999</span>, <span class="fl">0.99</span>, <span class="fl">0.9</span>, <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>, <span class="fl">0.02</span>, <span class="fl">0.01</span>, <span class="fl">0.001</span>,</span>
+<span>    <span class="fl">1e-04</span><span class="op">)</span>,</span>
+<span>  fit_distr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PIII"</span>, <span class="st">"weibull"</span><span class="op">)</span>,</span>
+<span>  fit_distr_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">fit_distr</span> <span class="op">==</span> <span class="st">"PIII"</span>, <span class="st">"MOM"</span>, <span class="st">"MLE"</span><span class="op">)</span>,</span>
+<span>  fit_quantiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.975</span>, <span class="fl">0.99</span>, <span class="fl">0.98</span>, <span class="fl">0.95</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span>, <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>, <span class="fl">0.05</span>, <span class="fl">0.01</span><span class="op">)</span>,</span>
+<span>  <span class="va">start_year</span>,</span>
+<span>  <span class="va">end_year</span>,</span>
+<span>  <span class="va">exclude_years</span>,</span>
+<span>  plot_curve <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -133,52 +133,82 @@
 <dd><p>A character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract annual peak minimum or maximum instantaneous streamflow data from a HYDAT database. Requires <code>tidyhydat</code> 
 package and a HYDAT database.</p></dd>
+
+
 <dt>use_max</dt>
 <dd><p>Logical value to indicate using maximums rather than the minimums for analysis. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>use_log</dt>
 <dd><p>Logical value to indicate log-scale transforming of flow data before analysis. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>prob_plot_position</dt>
 <dd><p>Character string indicating the plotting positions used in the frequency plots, one of <code>'weibull'</code>,
 <code>'median'</code>, or <code>'hazen'</code>. Points are plotted against  (i-a)/(n+1-a-b) where <code>i</code> is the rank of the value; <code>n</code> is the 
 sample size and <code>a</code> and <code>b</code> are defined as: (a=0, b=0) for Weibull plotting positions; (a=.2; b=.3) for Median 
 plotting positions; and (a=.5; b=.5) for Hazen plotting positions. Default <code>'weibull'</code>.</p></dd>
+
+
 <dt>prob_scale_points</dt>
 <dd><p>Numeric vector of probabilities to be plotted along the X axis in the frequency plot. Inverse of 
 return period. Default <code>c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001)</code>.</p></dd>
+
+
 <dt>fit_distr</dt>
 <dd><p>Character string identifying the distribution to fit annual data, one of <code>'PIII'</code> (Log Pearson Type III)
 or <code>'weibull'</code> (Weibull) distributions. Default <code>'PIII'</code>.</p></dd>
+
+
 <dt>fit_distr_method</dt>
 <dd><p>Character string identifying the method used to fit the distribution, one of <code>'MOM'</code> (method of
 moments) or <code>'MLE'</code> (maximum likelihood estimation). Selected as <code>'MOM'</code> if <code>fit_distr ='PIII'</code> (default) or 
 <code>'MLE'</code> if <code>fit_distr = 'weibull'</code>.</p></dd>
+
+
 <dt>fit_quantiles</dt>
 <dd><p>Numeric vector of quantiles to be estimated from the fitted distribution. 
 Default <code>c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)</code>.</p></dd>
+
+
 <dt>start_year</dt>
 <dd><p>Numeric value of the first year to consider for analysis. Leave blank or set well before start date (i.e.
 <code>1800</code>) to use from the first year of the source data.</p></dd>
+
+
 <dt>end_year</dt>
 <dd><p>Numeric value of the last year to consider for analysis. Leave blank or set well after end date (i.e.
 <code>2100</code>) to use up to the last year of the source data.</p></dd>
+
+
 <dt>exclude_years</dt>
 <dd><p>Numeric vector of years to exclude from analysis. Leave blank or set to <code>NULL</code> to include all years.</p></dd>
+
+
 <dt>plot_curve</dt>
 <dd><p>Logical value to indicate plotting the computed curve on the probability plot. Default <code>TRUE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list with the following elements:</p>
+    
+
+<p>A list with the following elements:</p>
 <dl><dt>Freq_Analysis_Data</dt>
 <dd><p>Data frame with computed annual summary statistics used in analysis.</p></dd>
-<dt>Freq_Plot_Data</dt>
+
+  <dt>Freq_Plot_Data</dt>
 <dd><p>Data frame with co-ordinates used in frequency plot.</p></dd>
-<dt>Freq_Plot</dt>
+
+  <dt>Freq_Plot</dt>
 <dd><p>ggplot2 object with frequency plot</p></dd>
-<dt>Freq_Fitting</dt>
+
+  <dt>Freq_Fitting</dt>
 <dd><p>List of fitted objects from fitdistrplus.</p></dd>
-<dt>Freq_Fitted_Quantiles</dt>
+
+  <dt>Freq_Fitted_Quantiles</dt>
 <dd><p>Data frame with fitted quantiles.</p></dd>
+
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -187,22 +217,22 @@ Default <code>c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)</code>.<
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Working examples (see arguments for further analysis options):</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Compute an annual peak frequency analysis using default arguments (instantaneous lows)</span></span>
-<span class="r-in"><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">compute_hydat_peak_frequencies</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span>
-<span class="r-in">                                          start_year <span class="op">=</span> <span class="fl">1980</span>,</span>
-<span class="r-in">                                          end_year <span class="op">=</span> <span class="fl">2010</span><span class="op">)</span></span>
-<span class="r-in">                               </span>
-<span class="r-in"><span class="co"># Compute an annual peak frequency analysis using default arguments (instantaneous highs)</span></span>
-<span class="r-in"><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">compute_hydat_peak_frequencies</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span>
-<span class="r-in">                                          start_year <span class="op">=</span> <span class="fl">1980</span>,</span>
-<span class="r-in">                                          end_year <span class="op">=</span> <span class="fl">2010</span>,</span>
-<span class="r-in">                                          use_max <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in">                                                            </span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Working examples (see arguments for further analysis options):</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Compute an annual peak frequency analysis using default arguments (instantaneous lows)</span></span></span>
+<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">compute_hydat_peak_frequencies</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span></span>
+<span class="r-in"><span>                                          start_year <span class="op">=</span> <span class="fl">1980</span>,</span></span>
+<span class="r-in"><span>                                          end_year <span class="op">=</span> <span class="fl">2010</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                               </span></span>
+<span class="r-in"><span><span class="co"># Compute an annual peak frequency analysis using default arguments (instantaneous highs)</span></span></span>
+<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">compute_hydat_peak_frequencies</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span></span>
+<span class="r-in"><span>                                          start_year <span class="op">=</span> <span class="fl">1980</span>,</span></span>
+<span class="r-in"><span>                                          end_year <span class="op">=</span> <span class="fl">2010</span>,</span></span>
+<span class="r-in"><span>                                          use_max <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                                                            </span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -217,7 +247,7 @@ Default <code>c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)</code>.<
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

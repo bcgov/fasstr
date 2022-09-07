@@ -112,96 +112,137 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">compute_frequency_analysis</span><span class="op">(</span>
-  <span class="va">data</span>,
-  events <span class="op">=</span> <span class="va">Year</span>,
-  values <span class="op">=</span> <span class="va">Value</span>,
-  measures <span class="op">=</span> <span class="va">Measure</span>,
-  use_max <span class="op">=</span> <span class="cn">FALSE</span>,
-  use_log <span class="op">=</span> <span class="cn">FALSE</span>,
-  prob_plot_position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"weibull"</span>, <span class="st">"median"</span>, <span class="st">"hazen"</span><span class="op">)</span>,
-  prob_scale_points <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.9999</span>, <span class="fl">0.999</span>, <span class="fl">0.99</span>, <span class="fl">0.9</span>, <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>, <span class="fl">0.02</span>, <span class="fl">0.01</span>, <span class="fl">0.001</span>,
-    <span class="fl">1e-04</span><span class="op">)</span>,
-  fit_distr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PIII"</span>, <span class="st">"weibull"</span><span class="op">)</span>,
-  fit_distr_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">fit_distr</span> <span class="op">==</span> <span class="st">"PIII"</span>, <span class="st">"MOM"</span>, <span class="st">"MLE"</span><span class="op">)</span>,
-  fit_quantiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.975</span>, <span class="fl">0.99</span>, <span class="fl">0.98</span>, <span class="fl">0.95</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span>, <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>, <span class="fl">0.05</span>, <span class="fl">0.01</span><span class="op">)</span>,
-  plot_curve <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">compute_frequency_analysis</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  events <span class="op">=</span> <span class="va">Year</span>,</span>
+<span>  values <span class="op">=</span> <span class="va">Value</span>,</span>
+<span>  measures <span class="op">=</span> <span class="va">Measure</span>,</span>
+<span>  use_max <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  use_log <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  prob_plot_position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"weibull"</span>, <span class="st">"median"</span>, <span class="st">"hazen"</span><span class="op">)</span>,</span>
+<span>  prob_scale_points <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.9999</span>, <span class="fl">0.999</span>, <span class="fl">0.99</span>, <span class="fl">0.9</span>, <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>, <span class="fl">0.02</span>, <span class="fl">0.01</span>, <span class="fl">0.001</span>,</span>
+<span>    <span class="fl">1e-04</span><span class="op">)</span>,</span>
+<span>  compute_fitting <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  fit_distr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PIII"</span>, <span class="st">"weibull"</span><span class="op">)</span>,</span>
+<span>  fit_distr_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">fit_distr</span> <span class="op">==</span> <span class="st">"PIII"</span>, <span class="st">"MOM"</span>, <span class="st">"MLE"</span><span class="op">)</span>,</span>
+<span>  fit_quantiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.975</span>, <span class="fl">0.99</span>, <span class="fl">0.98</span>, <span class="fl">0.95</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span>, <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>, <span class="fl">0.05</span>, <span class="fl">0.01</span><span class="op">)</span>,</span>
+<span>  plot_curve <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  plot_axis_title <span class="op">=</span> <span class="st">"Discharge (cms)"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>A data frame of data that contains columns of events, flow values, and measures (data type).</p></dd>
+
+
 <dt>events</dt>
 <dd><p>Column in <code>data</code> that contains event identifiers, typically year values. Default <code>'Year'</code>.</p></dd>
+
+
 <dt>values</dt>
 <dd><p>Column in <code>data</code> that contains numeric flow values, in units of cubic metres per second. Default <code>'Value'</code>.</p></dd>
+
+
 <dt>measures</dt>
 <dd><p>Column in <code>data</code> that contains measure identifiers (example data: '7-day low' or 'Annual Max'). Can have 
 multiple measures (ex. '7-day low' and '30-day low') in column if multiple statistics are desired. Default <code>'Measure'</code>.</p></dd>
+
+
 <dt>use_max</dt>
 <dd><p>Logical value to indicate using maximums rather than the minimums for analysis. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>use_log</dt>
 <dd><p>Logical value to indicate log-scale transforming of flow data before analysis. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>prob_plot_position</dt>
 <dd><p>Character string indicating the plotting positions used in the frequency plots, one of <code>'weibull'</code>,
 <code>'median'</code>, or <code>'hazen'</code>. Points are plotted against  (i-a)/(n+1-a-b) where <code>i</code> is the rank of the value; <code>n</code> is the 
 sample size and <code>a</code> and <code>b</code> are defined as: (a=0, b=0) for Weibull plotting positions; (a=.2; b=.3) for Median 
 plotting positions; and (a=.5; b=.5) for Hazen plotting positions. Default <code>'weibull'</code>.</p></dd>
+
+
 <dt>prob_scale_points</dt>
 <dd><p>Numeric vector of probabilities to be plotted along the X axis in the frequency plot. Inverse of 
 return period. Default <code>c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001)</code>.</p></dd>
+
+
+<dt>compute_fitting</dt>
+<dd><p>Logical value to indicate whether to fit plotting positions to a distribution. If 'FALSE' the output will
+return only the data, plotting positions, and plot. Default <code>TRUE</code>.</p></dd>
+
+
 <dt>fit_distr</dt>
 <dd><p>Character string identifying the distribution to fit annual data, one of <code>'PIII'</code> (Log Pearson Type III)
 or <code>'weibull'</code> (Weibull) distributions. Default <code>'PIII'</code>.</p></dd>
+
+
 <dt>fit_distr_method</dt>
 <dd><p>Character string identifying the method used to fit the distribution, one of <code>'MOM'</code> (method of
 moments) or <code>'MLE'</code> (maximum likelihood estimation). Selected as <code>'MOM'</code> if <code>fit_distr ='PIII'</code> (default) or 
 <code>'MLE'</code> if <code>fit_distr = 'weibull'</code>.</p></dd>
+
+
 <dt>fit_quantiles</dt>
 <dd><p>Numeric vector of quantiles to be estimated from the fitted distribution. 
 Default <code>c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)</code>.</p></dd>
+
+
 <dt>plot_curve</dt>
 <dd><p>Logical value to indicate plotting the computed curve on the probability plot. Default <code>TRUE</code>.</p></dd>
+
+
+<dt>plot_axis_title</dt>
+<dd><p>Character string of the plot y-axis title. Default <code>'Discharge (cms)'</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list with the following elements:</p>
+    
+
+<p>A list with the following elements:</p>
 <dl><dt>Freq_Analysis_Data</dt>
-<dd><p>Data frame with computed annual summary statistics used in analysis.</p></dd>
-<dt>Freq_Plot_Data</dt>
-<dd><p>Data frame with co-ordinates used in frequency plot.</p></dd>
-<dt>Freq_Plot</dt>
-<dd><p>ggplot2 object with frequency plot</p></dd>
-<dt>Freq_Fitting</dt>
+<dd><p>Data frame with provided data for analysis.</p></dd>
+
+  <dt>Freq_Plot_Data</dt>
+<dd><p>Data frame with plotting positions used in frequency plot.</p></dd>
+
+  <dt>Freq_Plot</dt>
+<dd><p>ggplot2 object with plotting positions and (optional) fitted curve.</p></dd>
+
+  <dt>Freq_Fitting</dt>
 <dd><p>List of fitted objects from fitdistrplus.</p></dd>
-<dt>Freq_Fitted_Quantiles</dt>
+
+  <dt>Freq_Fitted_Quantiles</dt>
 <dd><p>Data frame with fitted quantiles.</p></dd>
+
 </dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"> <span class="co"># Working example:</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Calculate some values to use for a frequency analysis </span></span>
-<span class="r-in"><span class="co"># (requires years, values for those years, and the name of the measure/metric)</span></span>
-<span class="r-in"><span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu"><a href="calc_annual_lowflows.html">calc_annual_lowflows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span>
-<span class="r-in">                                  start_year <span class="op">=</span> <span class="fl">1980</span>, </span>
-<span class="r-in">                                  end_year <span class="op">=</span> <span class="fl">2000</span>,</span>
-<span class="r-in">                                  roll_days <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">low_flows</span>, <span class="va">Year</span>, Value <span class="op">=</span> <span class="va">Min_7_Day</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">low_flows</span>, Measure <span class="op">=</span> <span class="st">"7-Day"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Compute the frequency analysis using the default parameters</span></span>
-<span class="r-in"><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">compute_frequency_analysis</span><span class="op">(</span>data <span class="op">=</span> <span class="va">low_flows</span>,</span>
-<span class="r-in">                                      events <span class="op">=</span> <span class="va">Year</span>,</span>
-<span class="r-in">                                      values <span class="op">=</span> <span class="va">Value</span>,</span>
-<span class="r-in">                                      measure <span class="op">=</span> <span class="va">Measure</span><span class="op">)</span></span>
-<span class="r-in">                            </span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="co"># Working example:</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calculate some values to use for a frequency analysis </span></span></span>
+<span class="r-in"><span><span class="co"># (requires years, values for those years, and the name of the measure/metric)</span></span></span>
+<span class="r-in"><span><span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu"><a href="calc_annual_lowflows.html">calc_annual_lowflows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span></span>
+<span class="r-in"><span>                                  start_year <span class="op">=</span> <span class="fl">1980</span>, </span></span>
+<span class="r-in"><span>                                  end_year <span class="op">=</span> <span class="fl">2000</span>,</span></span>
+<span class="r-in"><span>                                  roll_days <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">low_flows</span>, <span class="va">Year</span>, Value <span class="op">=</span> <span class="va">Min_7_Day</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">low_flows</span>, Measure <span class="op">=</span> <span class="st">"7-Day"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Compute the frequency analysis using the default parameters</span></span></span>
+<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">compute_frequency_analysis</span><span class="op">(</span>data <span class="op">=</span> <span class="va">low_flows</span>,</span></span>
+<span class="r-in"><span>                                      events <span class="op">=</span> <span class="va">Year</span>,</span></span>
+<span class="r-in"><span>                                      values <span class="op">=</span> <span class="va">Value</span>,</span></span>
+<span class="r-in"><span>                                      measure <span class="op">=</span> <span class="va">Measure</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                            </span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -216,7 +257,7 @@ Default <code>c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)</code>.<
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

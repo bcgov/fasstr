@@ -108,22 +108,22 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">calc_flow_percentile</span><span class="op">(</span>
-  <span class="va">data</span>,
-  dates <span class="op">=</span> <span class="va">Date</span>,
-  values <span class="op">=</span> <span class="va">Value</span>,
-  groups <span class="op">=</span> <span class="va">STATION_NUMBER</span>,
-  <span class="va">station_number</span>,
-  roll_days <span class="op">=</span> <span class="fl">1</span>,
-  roll_align <span class="op">=</span> <span class="st">"right"</span>,
-  <span class="va">flow_value</span>,
-  water_year_start <span class="op">=</span> <span class="fl">1</span>,
-  <span class="va">start_year</span>,
-  <span class="va">end_year</span>,
-  <span class="va">exclude_years</span>,
-  complete_years <span class="op">=</span> <span class="cn">FALSE</span>,
-  months <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calc_flow_percentile</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  dates <span class="op">=</span> <span class="va">Date</span>,</span>
+<span>  values <span class="op">=</span> <span class="va">Value</span>,</span>
+<span>  groups <span class="op">=</span> <span class="va">STATION_NUMBER</span>,</span>
+<span>  <span class="va">station_number</span>,</span>
+<span>  roll_days <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  roll_align <span class="op">=</span> <span class="st">"right"</span>,</span>
+<span>  <span class="va">flow_value</span>,</span>
+<span>  water_year_start <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  <span class="va">start_year</span>,</span>
+<span>  <span class="va">end_year</span>,</span>
+<span>  <span class="va">exclude_years</span>,</span>
+<span>  complete_years <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  months <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -131,73 +131,102 @@
     <dl><dt>data</dt>
 <dd><p>Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank or set to <code>NULL</code> if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>dates</dt>
 <dd><p>Name of column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
 'Date' (default). Leave blank or set to <code>NULL</code> if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>values</dt>
 <dd><p>Name of column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>groups</dt>
 <dd><p>Name of column in <code>data</code> that contains unique identifiers for different data sets, if applicable. Only required 
 if groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if 
 present. Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using <code>station_number</code> 
 argument.</p></dd>
+
+
 <dt>station_number</dt>
 <dd><p>Character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract daily streamflow data from a HYDAT database. Requires <code>tidyhydat</code> package and a HYDAT database.
 Leave blank if using <code>data</code> argument.</p></dd>
+
+
 <dt>roll_days</dt>
 <dd><p>Numeric value of the number of days to apply a rolling mean. Default <code>1</code>.</p></dd>
+
+
 <dt>roll_align</dt>
 <dd><p>Character string identifying the direction of the rolling mean from the specified date, either by the first 
 (<code>'left'</code>), last (<code>'right'</code>), or middle (<code>'center'</code>) day of the rolling n-day group of observations. 
 Default <code>'right'</code>.</p></dd>
+
+
 <dt>flow_value</dt>
 <dd><p>A numeric flow value of which to determine the percentile rank. Required.</p></dd>
+
+
 <dt>water_year_start</dt>
 <dd><p>Numeric value indicating the month (<code>1</code> through <code>12</code>) of the start of water year for
 analysis. Default <code>1</code>.</p></dd>
+
+
 <dt>start_year</dt>
 <dd><p>Numeric value of the first year to consider for analysis. Leave blank or set well before start date (i.e.
 <code>1800</code>) to use from the first year of the source data.</p></dd>
+
+
 <dt>end_year</dt>
 <dd><p>Numeric value of the last year to consider for analysis. Leave blank or set well after end date (i.e.
 <code>2100</code>) to use up to the last year of the source data.</p></dd>
+
+
 <dt>exclude_years</dt>
 <dd><p>Numeric vector of years to exclude from analysis. Leave blank or set to <code>NULL</code> to include all years.</p></dd>
+
+
 <dt>complete_years</dt>
 <dd><p>Logical values indicating whether to include only years with complete data in analysis. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>months</dt>
 <dd><p>Numeric vector of months to include in analysis. For example, <code>3</code> for March, <code>6:8</code> for Jun-Aug or 
 <code>c(10:12,1)</code> for first four months (Oct-Jan) when <code>water_year_start = 10</code> (Oct). Default summarizes all 
 months (<code>1:12</code>).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A tibble data frame, or a single numeric value if no station number provided, of the percentile rank of a given flow value.</p>
+    
+
+<p>A tibble data frame, or a single numeric value if no station number provided, of the percentile rank of a given flow value.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html" class="external-link">hy_downloaded_db</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Calculate the percentile rank of a 10-cms flow value from a full record</span></span>
-<span class="r-in"><span class="fu">calc_flow_percentile</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span>
-<span class="r-in">                     flow_value <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Calculate the percentile rank of a 10-cms flow value from years with no missing data</span></span>
-<span class="r-in"><span class="fu">calc_flow_percentile</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span>
-<span class="r-in">                     complete_years <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span class="r-in">                     flow_value <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span class="r-in">                     </span>
-<span class="r-in"><span class="co"># Calculate the percentile rank of a 10-cms flow value for June from years with no missing data</span></span>
-<span class="r-in"><span class="fu">calc_flow_percentile</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span>
-<span class="r-in">                     complete_years <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span class="r-in">                     months <span class="op">=</span> <span class="fl">6</span>,</span>
-<span class="r-in">                     flow_value <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span class="r-in">                     </span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html" class="external-link">hy_downloaded_db</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calculate the percentile rank of a 10-cms flow value from a full record</span></span></span>
+<span class="r-in"><span><span class="fu">calc_flow_percentile</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span></span>
+<span class="r-in"><span>                     flow_value <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calculate the percentile rank of a 10-cms flow value from years with no missing data</span></span></span>
+<span class="r-in"><span><span class="fu">calc_flow_percentile</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span></span>
+<span class="r-in"><span>                     complete_years <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                     flow_value <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                     </span></span>
+<span class="r-in"><span><span class="co"># Calculate the percentile rank of a 10-cms flow value for June from years with no missing data</span></span></span>
+<span class="r-in"><span><span class="fu">calc_flow_percentile</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span></span>
+<span class="r-in"><span>                     complete_years <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                     months <span class="op">=</span> <span class="fl">6</span>,</span></span>
+<span class="r-in"><span>                     flow_value <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                     </span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Calculation ignored missing values in data. Filter data to complete years or months if desired.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   STATION_NUMBER Percentile</span>
@@ -217,7 +246,7 @@ months (<code>1:12</code>).</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

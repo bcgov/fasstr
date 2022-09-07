@@ -108,7 +108,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">add_date_variables</span><span class="op">(</span><span class="va">data</span>, dates <span class="op">=</span> <span class="va">Date</span>, <span class="va">station_number</span>, water_year_start <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">add_date_variables</span><span class="op">(</span><span class="va">data</span>, dates <span class="op">=</span> <span class="va">Date</span>, <span class="va">station_number</span>, water_year_start <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -116,60 +116,74 @@
     <dl><dt>data</dt>
 <dd><p>Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank or set to <code>NULL</code> if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>dates</dt>
 <dd><p>Name of column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
 'Date' (default). Leave blank or set to <code>NULL</code> if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>station_number</dt>
 <dd><p>Character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract daily streamflow data from a HYDAT database. Requires <code>tidyhydat</code> package and a HYDAT database.
 Leave blank if using <code>data</code> argument.</p></dd>
+
+
 <dt>water_year_start</dt>
 <dd><p>Numeric value indicating the month (<code>1</code> through <code>12</code>) of the start of water year for
 analysis. Default <code>1</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A tibble data frame of the source data with additional columns:</p>
+    
+
+<p>A tibble data frame of the source data with additional columns:</p>
 <dl><dt>CalendarYear</dt>
 <dd><p>calendar year</p></dd>
-<dt>Month</dt>
+
+  <dt>Month</dt>
 <dd><p>numeric month (1 to 12)</p></dd>
-<dt>MonthName</dt>
+
+  <dt>MonthName</dt>
 <dd><p>month abbreviation (Jan-Dec)</p></dd>
-<dt>WaterYear</dt>
+
+  <dt>WaterYear</dt>
 <dd><p>year starting from the selected month start, water_year_start</p></dd>
-<dt>DayofYear</dt>
+
+  <dt>DayofYear</dt>
 <dd><p>day of the year from the selected month start (1-365 or 366)</p></dd>
+
 </dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html" class="external-link">hy_downloaded_db</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Add date variables using calendar years</span></span>
-<span class="r-in"><span class="fu">add_date_variables</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Add date variables using water years starting in August</span></span>
-<span class="r-in"><span class="fu">add_date_variables</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span>
-<span class="r-in">                   water_year_start <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
-<span class="r-in">                   </span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_test_db.html" class="external-link">hy_downloaded_db</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Add date variables using calendar years</span></span></span>
+<span class="r-in"><span><span class="fu">add_date_variables</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Add date variables using water years starting in August</span></span></span>
+<span class="r-in"><span><span class="fu">add_date_variables</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span></span>
+<span class="r-in"><span>                   water_year_start <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                   </span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 21,983 × 10</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    STATION_NUMBER Date       Parameter Value Symbol CalendarYear Month MonthName</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 08NM116        1949-04-01 Flow       1.13 E              <span style="text-decoration: underline;">1</span>949     4 Apr      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 08NM116        1949-04-02 Flow       1.53 E              <span style="text-decoration: underline;">1</span>949     4 Apr      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 08NM116        1949-04-03 Flow       2.07 E              <span style="text-decoration: underline;">1</span>949     4 Apr      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 08NM116        1949-04-04 Flow       2.07 E              <span style="text-decoration: underline;">1</span>949     4 Apr      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 08NM116        1949-04-05 Flow       2.21 E              <span style="text-decoration: underline;">1</span>949     4 Apr      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 08NM116        1949-04-06 Flow       2.21 <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">1</span>949     4 Apr      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 08NM116        1949-04-07 Flow       2.27 <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">1</span>949     4 Apr      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 08NM116        1949-04-08 Flow       2.35 <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">1</span>949     4 Apr      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 08NM116        1949-04-09 Flow       2.78 <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">1</span>949     4 Apr      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 08NM116        1949-04-10 Flow       2.94 <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">1</span>949     4 Apr      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 21,973 more rows, and 2 more variables: WaterYear &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   DayofYear &lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    STATI…¹ Date       Param…² Value Symbol Calen…³ Month Month…⁴ Water…⁵ Dayof…⁶</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 08NM116 1949-04-01 Flow     1.13 E         <span style="text-decoration: underline;">1</span>949     4 Apr        <span style="text-decoration: underline;">1</span>949     244</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 08NM116 1949-04-02 Flow     1.53 E         <span style="text-decoration: underline;">1</span>949     4 Apr        <span style="text-decoration: underline;">1</span>949     245</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 08NM116 1949-04-03 Flow     2.07 E         <span style="text-decoration: underline;">1</span>949     4 Apr        <span style="text-decoration: underline;">1</span>949     246</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 08NM116 1949-04-04 Flow     2.07 E         <span style="text-decoration: underline;">1</span>949     4 Apr        <span style="text-decoration: underline;">1</span>949     247</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 08NM116 1949-04-05 Flow     2.21 E         <span style="text-decoration: underline;">1</span>949     4 Apr        <span style="text-decoration: underline;">1</span>949     248</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 08NM116 1949-04-06 Flow     2.21 <span style="color: #BB0000;">NA</span>        <span style="text-decoration: underline;">1</span>949     4 Apr        <span style="text-decoration: underline;">1</span>949     249</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 08NM116 1949-04-07 Flow     2.27 <span style="color: #BB0000;">NA</span>        <span style="text-decoration: underline;">1</span>949     4 Apr        <span style="text-decoration: underline;">1</span>949     250</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 08NM116 1949-04-08 Flow     2.35 <span style="color: #BB0000;">NA</span>        <span style="text-decoration: underline;">1</span>949     4 Apr        <span style="text-decoration: underline;">1</span>949     251</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 08NM116 1949-04-09 Flow     2.78 <span style="color: #BB0000;">NA</span>        <span style="text-decoration: underline;">1</span>949     4 Apr        <span style="text-decoration: underline;">1</span>949     252</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 08NM116 1949-04-10 Flow     2.94 <span style="color: #BB0000;">NA</span>        <span style="text-decoration: underline;">1</span>949     4 Apr        <span style="text-decoration: underline;">1</span>949     253</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 21,973 more rows, and abbreviated variable names ¹​STATION_NUMBER,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ²​Parameter, ³​CalendarYear, ⁴​MonthName, ⁵​WaterYear, ⁶​DayofYear</span></span>
 </code></pre></div>
     </div>
   </div>
@@ -184,7 +198,7 @@ analysis. Default <code>1</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

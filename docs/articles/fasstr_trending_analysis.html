@@ -298,29 +298,29 @@ included in the results if not all 12 months are selected.</p>
 </h4>
 <p>Example with default arguments:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
-                      zyp_method <span class="op">=</span> <span class="st">"zhang"</span>,
-                      start_year <span class="op">=</span> <span class="fl">1973</span>, end_year <span class="op">=</span> <span class="fl">2013</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span>
+<span>                      zyp_method <span class="op">=</span> <span class="st">"zhang"</span>,</span>
+<span>                      start_year <span class="op">=</span> <span class="fl">1973</span>, end_year <span class="op">=</span> <span class="fl">2013</span><span class="op">)</span></span></code></pre></div>
 <p>Example with custom arguments:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
-                      zyp_method <span class="op">=</span> <span class="st">"zhang"</span>,
-                      start_year <span class="op">=</span> <span class="fl">1973</span>, end_year <span class="op">=</span> <span class="fl">2013</span>,
-                      annual_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">90</span><span class="op">)</span>,
-                      monthly_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">20</span><span class="op">)</span>,
-                      stats_days <span class="op">=</span> <span class="fl">1</span>,
-                      stats_align <span class="op">=</span> <span class="st">"right"</span>,
-                      lowflow_days <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">7</span>,<span class="fl">30</span><span class="op">)</span>,
-                      lowflow_align <span class="op">=</span> <span class="st">"right"</span>,
-                      timing_percent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">33</span>,<span class="fl">50</span>,<span class="fl">75</span><span class="op">)</span>,
-                      normal_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">75</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span>
+<span>                      zyp_method <span class="op">=</span> <span class="st">"zhang"</span>,</span>
+<span>                      start_year <span class="op">=</span> <span class="fl">1973</span>, end_year <span class="op">=</span> <span class="fl">2013</span>,</span>
+<span>                      annual_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">90</span><span class="op">)</span>,</span>
+<span>                      monthly_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">20</span><span class="op">)</span>,</span>
+<span>                      stats_days <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                      stats_align <span class="op">=</span> <span class="st">"right"</span>,</span>
+<span>                      lowflow_days <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">7</span>,<span class="fl">30</span><span class="op">)</span>,</span>
+<span>                      lowflow_align <span class="op">=</span> <span class="st">"right"</span>,</span>
+<span>                      timing_percent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">33</span>,<span class="fl">50</span>,<span class="fl">75</span><span class="op">)</span>,</span>
+<span>                      normal_percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">75</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Example with custom months arguments that will trend data only from
 May through September:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
-                      zyp_method <span class="op">=</span> <span class="st">"zhang"</span>,
-                      start_year <span class="op">=</span> <span class="fl">1973</span>, end_year <span class="op">=</span> <span class="fl">2013</span>,
-                      months <span class="op">=</span> <span class="fl">5</span><span class="op">:</span><span class="fl">9</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span>
+<span>                      zyp_method <span class="op">=</span> <span class="st">"zhang"</span>,</span>
+<span>                      start_year <span class="op">=</span> <span class="fl">1973</span>, end_year <span class="op">=</span> <span class="fl">2013</span>,</span>
+<span>                      months <span class="op">=</span> <span class="fl">5</span><span class="op">:</span><span class="fl">9</span><span class="op">)</span></span></code></pre></div>
 <p>This annual data is provided in the
 <strong>Annual_Trends_Data</strong> tibble objects. The following is an
 example of the output, including all the annual metrics and a first few
@@ -438,13 +438,13 @@ a Mission Creek HYDAT station from 1973 to 2013. The argument
 <code>zyp_method</code> is described below in the Analysis Results
 section:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">trends_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
-                                         zyp_method <span class="op">=</span> <span class="st">"zhang"</span>,
-                                         start_year <span class="op">=</span> <span class="fl">1973</span>, end_year <span class="op">=</span> <span class="fl">2013</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">trends_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_trends.html">compute_annual_trends</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span>
+<span>                                         zyp_method <span class="op">=</span> <span class="st">"zhang"</span>,</span>
+<span>                                         start_year <span class="op">=</span> <span class="fl">1973</span>, end_year <span class="op">=</span> <span class="fl">2013</span><span class="op">)</span></span></code></pre></div>
 <p>The following is an example of the outputted
 <strong>Annual_Trends_Data</strong> tibble:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">trends_analysis</span><span class="op">$</span><span class="va">Annual_Trends_Data</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">trends_analysis</span><span class="op">$</span><span class="va">Annual_Trends_Data</span></span></code></pre></div>
 <pre><code>  STATION_NUMBER      Statistic     X1973     X1974     X1975     X1976
 1        08NM116 Annual_Maximum 37.700001 66.000000 48.700001 71.099998
 2        08NM116    Annual_Mean  3.330682  8.430181  5.482636  8.180694
@@ -602,7 +602,7 @@ autocorrelation is removed (<code>zyp</code>)</td>
 <strong>Annual_Trends_Results</strong> tibble from the Mission Creek
 HYDAT station from 1973 to 2013:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">trends_analysis</span><span class="op">$</span><span class="va">Annual_Trends_Results</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">trends_analysis</span><span class="op">$</span><span class="va">Annual_Trends_Results</span></span></code></pre></div>
 <pre><code>  STATION_NUMBER      Statistic       lbound         trend      trendp
 1        08NM116 Annual_Maximum -0.367741985  0.0570881358  2.34061357
 2        08NM116    Annual_Mean -0.074223140 -0.0210267951 -0.86209860
@@ -665,7 +665,7 @@ not and are significant, respectively.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

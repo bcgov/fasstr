@@ -108,21 +108,21 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">write_flow_data</span><span class="op">(</span>
-  <span class="va">data</span>,
-  dates <span class="op">=</span> <span class="va">Date</span>,
-  values <span class="op">=</span> <span class="va">Value</span>,
-  groups <span class="op">=</span> <span class="va">STATION_NUMBER</span>,
-  <span class="va">station_number</span>,
-  water_year_start <span class="op">=</span> <span class="fl">1</span>,
-  <span class="va">start_year</span>,
-  <span class="va">end_year</span>,
-  <span class="va">start_date</span>,
-  <span class="va">end_date</span>,
-  <span class="va">file_name</span>,
-  fill_missing <span class="op">=</span> <span class="cn">FALSE</span>,
-  <span class="va">digits</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">write_flow_data</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  dates <span class="op">=</span> <span class="va">Date</span>,</span>
+<span>  values <span class="op">=</span> <span class="va">Value</span>,</span>
+<span>  groups <span class="op">=</span> <span class="va">STATION_NUMBER</span>,</span>
+<span>  <span class="va">station_number</span>,</span>
+<span>  water_year_start <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  <span class="va">start_year</span>,</span>
+<span>  <span class="va">end_year</span>,</span>
+<span>  <span class="va">start_date</span>,</span>
+<span>  <span class="va">end_date</span>,</span>
+<span>  <span class="va">file_name</span>,</span>
+<span>  fill_missing <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">digits</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -130,67 +130,92 @@
     <dl><dt>data</dt>
 <dd><p>Data frame of daily data that contains columns of dates, flow values, and (optional) groups (e.g. station numbers).
 Leave blank or set to <code>NULL</code> if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>dates</dt>
 <dd><p>Name of column in <code>data</code> that contains dates formatted YYYY-MM-DD. Only required if dates column name is not 
 'Date' (default). Leave blank or set to <code>NULL</code> if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>values</dt>
 <dd><p>Name of column in <code>data</code> that contains numeric flow values, in units of cubic metres per second.
 Only required if values column name is not 'Value' (default). Leave blank if using <code>station_number</code> argument.</p></dd>
+
+
 <dt>groups</dt>
 <dd><p>Name of column in <code>data</code> that contains unique identifiers for different data sets, if applicable. Only required 
 if groups column name is not 'STATION_NUMBER'. Function will automatically group by a column named 'STATION_NUMBER' if 
 present. Remove the 'STATION_NUMBER' column beforehand to remove this grouping. Leave blank if using <code>station_number</code> 
 argument.</p></dd>
+
+
 <dt>station_number</dt>
 <dd><p>Character string vector of seven digit Water Survey of Canada station numbers (e.g. <code>"08NM116"</code>) of
 which to extract daily streamflow data from a HYDAT database. Requires <code>tidyhydat</code> package and a HYDAT database.
 Leave blank if using <code>data</code> argument.</p></dd>
+
+
 <dt>water_year_start</dt>
 <dd><p>Numeric value indicating the month (<code>1</code> through <code>12</code>) of the start of water year for
 analysis. Default <code>1</code>.</p></dd>
+
+
 <dt>start_year</dt>
 <dd><p>Numeric value of the first year of data to write. Leave blank or set well before start date (i.e.
 <code>1800</code>) to use from the first year of the source data.</p></dd>
+
+
 <dt>end_year</dt>
 <dd><p>Numeric value of the last year of data to write. Leave blank or set well after end date (i.e.
 <code>2100</code>) to use up to the last year of the source data.</p></dd>
+
+
 <dt>start_date</dt>
 <dd><p>Date (YYYY-MM-DD) of first date of data to write. Leave blank or set well before start date (i.e.
 <code>1800-01-01</code>) if all dates required.</p></dd>
+
+
 <dt>end_date</dt>
 <dd><p>Date (YYYY-MM-DD) of last date of data to write. Leave blank or set well after end date (i.e.
 <code>2100-12-31</code>) if all dates required.</p></dd>
+
+
 <dt>file_name</dt>
 <dd><p>Character string naming the output file. If none provided, a default file name (with .xlsx) is provided (see 
 "Successfully created" message when using function for file name).</p></dd>
+
+
 <dt>fill_missing</dt>
 <dd><p>Logical value indicating whether to fill dates with missing flow data with NA. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>digits</dt>
 <dd><p>Integer indicating the number of decimal places or significant digits used to round flow values. Use follows 
 that of base::round() digits argument.</p></dd>
+
 </dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Working examples:</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Write data from a data frame</span></span>
-<span class="r-in"><span class="va">flow_data</span> <span class="op">&lt;-</span> <span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_daily_flows.html" class="external-link">hy_daily_flows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">write_flow_data</span><span class="op">(</span>data <span class="op">=</span> <span class="va">flow_data</span>, </span>
-<span class="r-in">                file_name <span class="op">=</span> <span class="st">"Mission_Creek_daily_flows.xlsx"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Write data directly from HYDAT</span></span>
-<span class="r-in"><span class="fu">write_flow_data</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span>
-<span class="r-in">                file_name <span class="op">=</span> <span class="st">"Mission_Creek_daily_flows.xlsx"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Write data directly from HYDAT and fill missing dates with NA</span></span>
-<span class="r-in"><span class="fu">write_flow_data</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span>
-<span class="r-in">                file_name <span class="op">=</span> <span class="st">"Mission_Creek_daily_flows.xlsx"</span>,</span>
-<span class="r-in">                fill_missing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Working examples:</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Write data from a data frame</span></span></span>
+<span class="r-in"><span><span class="va">flow_data</span> <span class="op">&lt;-</span> <span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_daily_flows.html" class="external-link">hy_daily_flows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">write_flow_data</span><span class="op">(</span>data <span class="op">=</span> <span class="va">flow_data</span>, </span></span>
+<span class="r-in"><span>                file_name <span class="op">=</span> <span class="st">"Mission_Creek_daily_flows.xlsx"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Write data directly from HYDAT</span></span></span>
+<span class="r-in"><span><span class="fu">write_flow_data</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span></span>
+<span class="r-in"><span>                file_name <span class="op">=</span> <span class="st">"Mission_Creek_daily_flows.xlsx"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Write data directly from HYDAT and fill missing dates with NA</span></span></span>
+<span class="r-in"><span><span class="fu">write_flow_data</span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span></span>
+<span class="r-in"><span>                file_name <span class="op">=</span> <span class="st">"Mission_Creek_daily_flows.xlsx"</span>,</span></span>
+<span class="r-in"><span>                fill_missing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -205,7 +230,7 @@ that of base::round() digits argument.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

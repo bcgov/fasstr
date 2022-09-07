@@ -281,13 +281,13 @@ second.</li>
 <p>Here is an example of data the can be provided, wrangled from the
 annual lowflows function:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_annual_lowflows.html">calc_annual_lowflows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, 
-                                  start_year <span class="op">=</span> <span class="fl">1980</span>, 
-                                  end_year <span class="op">=</span> <span class="fl">2000</span>,
-                                  roll_days <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>
-<span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">low_flows</span>, <span class="va">Year</span>, Value <span class="op">=</span> <span class="va">Min_7_Day</span><span class="op">)</span>
-<span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">low_flows</span>, Measure <span class="op">=</span> <span class="st">"7-Day"</span><span class="op">)</span>
-<span class="va">low_flows</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_annual_lowflows.html">calc_annual_lowflows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span>
+<span>                                  start_year <span class="op">=</span> <span class="fl">1980</span>, </span>
+<span>                                  end_year <span class="op">=</span> <span class="fl">2000</span>,</span>
+<span>                                  roll_days <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span>
+<span><span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">low_flows</span>, <span class="va">Year</span>, Value <span class="op">=</span> <span class="va">Min_7_Day</span><span class="op">)</span></span>
+<span><span class="va">low_flows</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">low_flows</span>, Measure <span class="op">=</span> <span class="st">"7-Day"</span><span class="op">)</span></span>
+<span><span class="va">low_flows</span></span></code></pre></div>
 <pre><code>   Year     Value Measure
 1  1980 0.6554286   7-Day
 2  1981 0.8852857   7-Day
@@ -315,10 +315,10 @@ annual lowflows function:</p>
 default column names in the data and this do not need to be listed, but
 are shown for demonstration.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/compute_frequency_analysis.html">compute_frequency_analysis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">low_flows</span>,
-                           events <span class="op">=</span> <span class="va">Year</span>,
-                           values <span class="op">=</span> <span class="va">Value</span>,
-                           measures <span class="op">=</span> <span class="va">Measure</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/compute_frequency_analysis.html">compute_frequency_analysis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">low_flows</span>,</span>
+<span>                           events <span class="op">=</span> <span class="va">Year</span>,</span>
+<span>                           values <span class="op">=</span> <span class="va">Value</span>,</span>
+<span>                           measures <span class="op">=</span> <span class="va">Measure</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -340,15 +340,15 @@ completed on a Mission Creek HYDAT station (the <code>plot_curve</code>
 argument is set to <code>FALSE</code> for the start of this
 example):</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">freq_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
-                                            start_year <span class="op">=</span> <span class="fl">1981</span>,
-                                            end_year <span class="op">=</span> <span class="fl">2010</span>,
-                                            roll_days <span class="op">=</span> <span class="fl">7</span>,
-                                            plot_curve <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">freq_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span>
+<span>                                            start_year <span class="op">=</span> <span class="fl">1981</span>,</span>
+<span>                                            end_year <span class="op">=</span> <span class="fl">2010</span>,</span>
+<span>                                            roll_days <span class="op">=</span> <span class="fl">7</span>,</span>
+<span>                                            plot_curve <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>The following is an example of the returned
 <strong>Freq_Analysis_Data</strong> tibble:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Analysis_Data</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Analysis_Data</span></span></code></pre></div>
 <pre><code>   Year Measure     Value
 1  1981   7-Day 0.8852857
 2  1982   7-Day 1.0484286
@@ -414,7 +414,7 @@ measure, and ranked by the event value, and provides the probability and
 the return period for each event, used for plotting. See the following
 for an example of this output:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Plot_Data</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Plot_Data</span></span></code></pre></div>
 <pre><code>   Year Measure     Value Probability Return.Period
 1  1988   7-Day 0.1864286  0.03225806     31.000000
 2  1993   7-Day 0.2981429  0.06451613     15.500000
@@ -452,7 +452,7 @@ below. To change the probabilities/vertical lines shown on the x-axis,
 change the values using the <code>prob_scale_points</code> argument to
 list the breaks.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Plot</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Plot</span></span></code></pre></div>
 <p><img src="fasstr_frequency_analysis_files/figure-html/unnamed-chunk-10-1.png" width="672"></p>
 </div>
 <div class="section level3">
@@ -512,7 +512,7 @@ the generic <code><a href="https://rdrr.io/r/base/print.html" class="external-li
 <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> functions. See the following examples for how to
 view some of the fitting information.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></span></code></pre></div>
 <pre><code>Fitting of the distribution ' PIII ' by matching moments 
 Parameters:
             estimate
@@ -520,7 +520,7 @@ shape    21.71135693
 location  0.58975205
 scale    -0.03836902</code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></span></code></pre></div>
 <pre><code>Fitting of the distribution ' PIII ' by matching moments 
 Parameters : 
             estimate
@@ -529,16 +529,16 @@ location  0.58975205
 scale    -0.03836902
 Loglikelihood:  9.973448   AIC:  -13.9469   BIC:  -9.743303 </code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitting</span><span class="op">$</span><span class="va">`7-Day`</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fasstr_frequency_analysis_files/figure-html/unnamed-chunk-13-1.png" width="672"></p>
 <p>When <code>plot_curve</code> argument is set to <code>TRUE</code>
 (default) the computed frequency curves are plotted against the events
 data in the <strong>Freq_Plot</strong> object:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">freq_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,
-                                            roll_days <span class="op">=</span> <span class="fl">7</span>,
-                                            plot_curve <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Plot</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">freq_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span>
+<span>                                            roll_days <span class="op">=</span> <span class="fl">7</span>,</span>
+<span>                                            plot_curve <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Plot</span></span></code></pre></div>
 <p><img src="fasstr_frequency_analysis_files/figure-html/unnamed-chunk-14-1.png" width="672"></p>
 </div>
 <div class="section level4">
@@ -554,7 +554,7 @@ tibble in the list. In the example below of the quantiles, the 7Q5 value
 would be the 7-day flow value with a 5-year return period, so 0.409 cms
 in this example.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitted_Quantiles</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">freq_analysis</span><span class="op">$</span><span class="va">Freq_Fitted_Quantiles</span></span></code></pre></div>
 <pre><code>   Distribution Probability Return.Period    X7.Day
 1          PIII       0.010    100.000000 0.1939235
 2          PIII       0.050     20.000000 0.2796278
@@ -607,7 +607,7 @@ minimums of zero flow) will not be accepted into the functions.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
