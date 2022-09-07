@@ -61,8 +61,7 @@ plot_annual_outside_normal <- function(data,
                                        months = 1:12,
                                        include_title = FALSE){
   
-  .Deprecated("plot_annual_normal_days")
-  
+
   ## ARGUMENT CHECKS
   ## ---------------
   

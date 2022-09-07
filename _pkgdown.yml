@@ -51,6 +51,7 @@ reference:
   - calc_monthly_stats
   - plot_monthly_stats
   - plot_monthly_stats2
+  - plot_monthly_means
   - calc_annual_stats
   - plot_annual_stats
   - plot_annual_stats2
@@ -124,6 +125,14 @@ reference:
   - write_results
   - write_plots
   - write_objects_list
+  
+- title: Superseded
+  desc: Functions that are still supported but no longer receive active 
+        development, as better solutions now exist.
+  contents:
+  - calc_annual_outside_normal
+  - calc_annual_peaks
+  - plot_annual_outside_normal
 
 articles:
   - title: Tutorials
@@ -170,10 +179,6 @@ navbar:
     - text: Exploration
     - text: Using USGS dataRetrieval data with fasstr
       href: articles/articles/fasstr_dataRetrieval.html
-    # - text: Fun with fasstr
-    #   href: articles/articles/fun_with_fasstr.html
-    # - text: R and Hydrology
-    #   href: articles/articles/general_hydrology.html
     - text: --------
     - text: Under the Hood
     - text: Internal Workflows

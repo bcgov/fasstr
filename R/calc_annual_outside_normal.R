@@ -62,8 +62,6 @@ calc_annual_outside_normal <- function(data,
                                        months = 1:12,
                                        transpose = FALSE){
   
-  .Deprecated("calc_annual_normal_days")
-  
   ## ARGUMENT CHECKS
   ## ---------------
   

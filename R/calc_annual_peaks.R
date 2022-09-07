@@ -83,8 +83,7 @@ calc_annual_peaks <- function(data,
                               ignore_missing = FALSE,
                               allowed_missing = ifelse(ignore_missing,100,0)){
   
-  .Deprecated("calc_annual_extremes")
-  
+
   ## ARGUMENT CHECKS
   ## ---------------
   
