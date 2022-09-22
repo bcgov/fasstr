@@ -282,7 +282,7 @@ plot_longterm_monthly_stats <- function(data,
         ggplot2::labs(colour = 'Monthly Statistics') +  
         {if (include_title & unique(.y) != "XXXXXXX") ggplot2::labs(colour = paste0(.y,'\n \nMonthly Statistics')) } +    
         ggplot2::theme(legend.position = "right",
-                       legend.justification = "top",
+                       legend.justification = "right",
                        legend.text = ggplot2::element_text(size = 9),
                        panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                        panel.grid = ggplot2::element_line(size = .2),
