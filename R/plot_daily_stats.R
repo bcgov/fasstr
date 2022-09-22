@@ -286,7 +286,7 @@ plot_daily_stats <- function(data,
                        panel.grid.major = ggplot2::element_line(size = .1),
                        legend.text = ggplot2::element_text(size = 9, colour = "grey25"),
                        legend.box = "vertical",
-                       legend.justification = "right",
+                       legend.justification = "top",
                        legend.key.size = ggplot2::unit(0.4, "cm"),
                        legend.spacing = ggplot2::unit(-0.4, "cm"),
                        legend.background = ggplot2::element_blank()) +
