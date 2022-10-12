@@ -1,7 +1,7 @@
 fasstr 0.5.0
 =========================
 
-Updated: 22 Sep 2022
+Updated: 11 Oct 2022
 
 
 ### New functions:
@@ -21,6 +21,7 @@ Updated: 22 Sep 2022
 
 ### Function updates:
 
+  * fixed fill_missing_dates water year bug
   * plot_missing_data() - new default plot type in tile format. Can change to original bar plot using plot_type = "bar".
   * plot_data_screening() - now changes the geom_point style based on if data is complete or has missing data (plot_availability argument) and now allows choice of annual summary statistics (include_stats argument)
   * screen_flow_data() - now add columns of counts of symbol categories provided by symbol column (HYDAT Symbol column). Can remove columns by using include_symbols = FALSE.
