@@ -108,7 +108,7 @@ fill_missing_dates <- function(data,
         
         max_month <- as.numeric(format(as.Date(max(flow_data_stn$Date, na.rm = TRUE)), format = "%m"))
         max_year <-  as.numeric(format(as.Date(max(flow_data_stn$Date, na.rm = TRUE)), format = "%Y"))
-        end_date <- as.Date(paste(ifelse(max_month > water_year_start, max_year + 1, max_year),
+        end_date <- as.Date(paste(ifelse(max_month >= water_year_start, max_year + 1, max_year),
                                   water_year_start, '01', sep = '-'), "%Y-%m-%d") - 1
         
       }
