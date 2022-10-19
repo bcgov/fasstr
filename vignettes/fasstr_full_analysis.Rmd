@@ -93,6 +93,7 @@ Analyses                  |	Object                                    |	Type    
 2 - Longterm	            |	Longterm_Monthly_Summary_Stats_Percentiles| Table             | `calc_longterm_monthly_stats()`
 2 - Longterm	            |	Longterm_Monthly_Summary_Stats_Plot       | Plot              | `plot_longterm_monthly_stats()`
 2 - Longterm	            |	Longterm_Daily_Summary_Stats_Percentiles  | Table             | `calc_longterm_daily_stats()`
+2 - Longterm	            |	Longterm_Monthly_Means_Plot               | Plot              | `plot_monthly_means()`
 2 - Longterm	            |	Longterm_Daily_Summary_Stats_Plot         | Plot              | `plot_longterm_daily_stats()`
 2 - Longterm	            |	Flow_Duration_Curves                      | Plot              | `plot_flow_duration()`
 3 - Annual	              |	Annual_Summary_Stats                     	| Table             | `calc_annual_stats()`

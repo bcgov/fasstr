@@ -1,7 +1,9 @@
 fasstr 0.5.0
 =========================
 
-Updated: 11 Oct 2022
+Updated: 19 Oct 2022
+
+  * This release is a major new update with additional functions and changes to existing functions to present data and plots in different ways and more consistency across functions, updating various colours to viridis scales for accessibility, as well as updating some internal processes and fixing some minor bugs. Some functions have been superseded by others, but all functions will still be available within the package.
 
 
 ### New functions:
@@ -21,7 +23,6 @@ Updated: 11 Oct 2022
 
 ### Function updates:
 
-  * fixed fill_missing_dates water year bug
   * plot_missing_data() - new default plot type in tile format. Can change to original bar plot using plot_type = "bar".
   * plot_data_screening() - now changes the geom_point style based on if data is complete or has missing data (plot_availability argument) and now allows choice of annual summary statistics (include_stats argument)
   * screen_flow_data() - now add columns of counts of symbol categories provided by symbol column (HYDAT Symbol column). Can remove columns by using include_symbols = FALSE.
@@ -43,11 +44,14 @@ Updated: 11 Oct 2022
   * Changed y-axis labels on plots using scales::cut_short_scale() to remove exponents on large numbers
   * Annual plots with leading empty years (gaps, missing dates, etc) will now shift plot to first year of data
   * Updated vignettes with new functions and updates
+  * Added complete_years and allowed_missing arguments to write_full_analysis outputs on the fasstr functions tab
   
 ### Bug fixes:
   
   * complete_years function now applied to all functions in compute_ and write_full_analysis functions
   * Removed HYDAT.sqlite file check in compute_HYDAT_peak_frequencies() - leaves check to tidyhydat
+  * fixed fill_missing_dates water year bug
+
 
 ### Internal code:
   

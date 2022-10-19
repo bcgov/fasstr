@@ -46,6 +46,7 @@
 #'          \code{\link{plot_longterm_monthly_stats}},
 #'          \code{\link{calc_longterm_daily_stats}},
 #'          \code{\link{plot_longterm_daily_stats}},
+#'          \code{\link{plot_monthly_means}},
 #'          \code{\link{plot_flow_duration}},
 #'          \code{\link{calc_annual_stats}},
 #'          \code{\link{plot_annual_stats}},
@@ -291,6 +292,15 @@ compute_full_analysis <- function(data,
                                                      ignore_missing = ignore_missing,
                                                      complete_years = complete_years)
     
+    # Monthly-means plot
+    lt_mon_means_plot <- plot_monthly_means(data = flow_data,
+                                            exclude_years = exclude_years,
+                                            water_year_start = water_year_start,
+                                            months = months,
+                                            ignore_missing = ignore_missing,
+                                            complete_years = complete_years,
+                                            percent_MAD = NA)
+    
     # Long-term stats with percentiles
     lt_stats <- calc_longterm_daily_stats(data = flow_data,
                                           exclude_years = exclude_years,
@@ -323,6 +333,7 @@ compute_full_analysis <- function(data,
     all_objects <- append(all_objects,    
                           list("Longterm" = list("Longterm_Monthly_Summary_Stats_Percentiles" = lt_mon_stats,
                                                  "Longterm_Monthly_Summary_Stats_Plot" = lt_mon_stats_plot,
+                                                 "Longterm_Monthly_Means_Plot" = lt_mon_means_plot,
                                                  "Longterm_Daily_Summary_Stats_Percentiles" = lt_stats,
                                                  "Longterm_Daily_Summary_Stats_Plot" = lt_stats_plot,
                                                  "Flow_Duration_Curves" = lt_flowduration_plot)))
