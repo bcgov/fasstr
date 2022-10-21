@@ -93,6 +93,7 @@ Analyses                  |	Object                                    |	Type    
 2 - Longterm	            |	Longterm_Monthly_Summary_Stats_Percentiles| Table             | `calc_longterm_monthly_stats()`
 2 - Longterm	            |	Longterm_Monthly_Summary_Stats_Plot       | Plot              | `plot_longterm_monthly_stats()`
 2 - Longterm	            |	Longterm_Daily_Summary_Stats_Percentiles  | Table             | `calc_longterm_daily_stats()`
+2 - Longterm	            |	Longterm_Monthly_Means_Plot               | Plot              | `plot_monthly_means()`
 2 - Longterm	            |	Longterm_Daily_Summary_Stats_Plot         | Plot              | `plot_longterm_daily_stats()`
 2 - Longterm	            |	Flow_Duration_Curves                      | Plot              | `plot_flow_duration()`
 3 - Annual	              |	Annual_Summary_Stats                     	| Table             | `calc_annual_stats()`
@@ -103,8 +104,8 @@ Analyses                  |	Object                                    |	Type    
 3 - Annual	              |	Annual_Cumul_Yield_Stats_mm_Plot          | Multiple Plots    | `plot_annual_cumulative_stats(use_yield=TRUE)`
 3 - Annual	              |	Annual_Flow_Timing     	                  | Table             | `calc_annual_flow_timing()`
 3 - Annual	              |	Annual_Flow_Timing_Plot	                  | Plot              | `plot_annual_flow_timing()`
-3 - Annual	              |	Annual_Days_Outside_Normal     	          | Table             | `calc_annual_outside_normal()`
-3 - Annual	              |	Annual_Days_Outside_Normal_Plot        	  | Multiple Plots    | `plot_annual_outside_normal()`
+3 - Annual	              |	Annual_Normal_Days     	                 | Table             | `calc_annual_normal_days()`
+3 - Annual	              |	Annual_Normal_Days_Plot                	  | Plot    | `plot_annual_normal_days()`
 3 - Annual	              |	Annual_Low_Flows     	                    | Table             | `calc_annual_lowflows()`
 3 - Annual	              |	Annual_Low_Flows_Plot                   	| Multiple Plots    | `plot_annual_lowflows()`
 3 - Annual	              |	Annual_Means    	                        | Plot              | `plot_annual_means()`
@@ -239,17 +240,17 @@ head(as.data.frame(calc_annual_cumulative_stats(station_number = "08NM116",
                                                 use_yield = TRUE)))
 ```
 
-**Annual_Days_Outside_Normal**
+**Annual_Normal_Days**
 
 ```{r,  echo=FALSE, comment=NA}
-head(as.data.frame(calc_annual_outside_normal(station_number = "08NM116",
+head(as.data.frame(calc_annual_normal_days(station_number = "08NM116",
                                               start_year = 1990, end_year = 2001)))
 ```
 
-**Annual_Days_Outside_Normal**
+**Annual_Normal_Days**
 
 ```{r,  echo=FALSE, fig.height = 4.5, fig.width = 7, comment=NA}
-plot_annual_outside_normal(station_number = "08NM116",
+plot_annual_normal_days(station_number = "08NM116",
                            start_year = 1990, end_year = 2001)[[1]]
 ```
 

@@ -11,7 +11,7 @@ fill_missing_dates(
   groups = STATION_NUMBER,
   station_number,
   water_year_start = 1,
-  fill_end_years = TRUE
+  pad_ends = TRUE
 )
 }
 \arguments{
@@ -36,7 +36,7 @@ Leave blank if using \code{data} argument.}
 \item{water_year_start}{Numeric value indicating the month (\code{1} through \code{12}) of the start of water year for
 analysis. Default \code{1}.}
 
-\item{fill_end_years}{Logical value indicating whether to fill incomplete start and end years with rows of dates. 
+\item{pad_ends}{Logical value indicating whether to fill incomplete start and end years with rows of dates. 
 If \code{FALSE} then only missing dates between the provided start and end dates will be filled. Default \code{TRUE}.}
 }
 \value{
@@ -45,7 +45,7 @@ A tibble data frame of the source data with additional rows where missing dates 
 \description{
 Fills data gaps of missing dates of the data provided. Builds a continuous data set from the start date to the end date.
    Only missing dates are filled, columns not specified as dates or groups will be filled with NA. Will completely fill first and 
-   last years, unless specified using \code{fill_end_years = FALSE}.
+   last years, unless specified using \code{pad_ends = FALSE}.
 }
 \examples{
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())

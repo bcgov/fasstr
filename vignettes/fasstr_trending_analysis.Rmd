@@ -6,7 +6,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-  
+
 
 ```{r options, include=FALSE}
 knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")))
@@ -52,7 +52,7 @@ This function is provided to calculate trends on a multitude of annual metrics, 
 - `calc_annual_cumulative_stats()` - calculate annual and seasonal cumulative flows, both volume and yield
 - `calc_annual_flow_timing()` - calculate annual flow timing
 - `calc_annual_lowflows()` - calculate annual lowflows
-- `calc_annual_outside_normal()` - calculate annual days above and below normal
+- `calc_annual_normal_days()` - calculate annual days above and below normal
 - `calc_monthly_stats()` - calculate annual monthly summary statistics
 
 While each of the different metrics have default variables for their arguments, many of them can be customized. The following table shows which arguments are used for which statistics and what the defaults are.  See the documentation for more information.
@@ -66,7 +66,7 @@ Argument             | Corresponding Function     |  Default
 `lowflow_days`      	 | `calc_annual_lowflows()` | `c(1,3,7,30)`
 `lowflow_align`        | `calc_annual_lowflows()` | `"right"`
 `timing_percent`       | `calc_annual_flow_timing()` | `c(25,33.3,50,75)`
-`normal_percentiles`   | `calc_annual_outside_normal()` | `c(25,75)`
+`normal_percentiles`   | `calc_annual_normal_days()` | `c(25,75)`
 
 With fasstr version 0.4.0, the `months` argument is now included in the trending function to specify which months of the year to include for trending. For example, selecting `months = 7:9` means that all annual and monthly statistics will be calculated just from July through September to be tested for trends. This gives the user more flexibility to trend more statistics. Since selecting months may complicate seasonal totals, seasonal yields and seasonal volumes are not included in the results if not all 12 months are selected.
 
@@ -130,8 +130,13 @@ trends_analysis <- compute_annual_trends(station_number = "08NM116",
 
 The following is an example of the outputted **Annual_Trends_Data** tibble:
 
-```{r, echo=TRUE, comment=NA}
+```{r, echo=TRUE, comment=NA,eval=FALSE}
 trends_analysis$Annual_Trends_Data
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(head(
+  trends_analysis$Annual_Trends_Data
+))
 ```
 
 ### Analysis Results
@@ -163,8 +168,13 @@ max	          | the maximum of all values used for trending
 
 The following is an example of the outputted **Annual_Trends_Results** tibble from the Mission Creek HYDAT station from 1973 to 2013:
 
-```{r, echo=TRUE, comment=NA}
+```{r, echo=TRUE, comment=NA, eval=FALSE}
 trends_analysis$Annual_Trends_Results
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(head(
+  trends_analysis$Annual_Trends_Results
+))
 ```
 
 ### Annual Trends Plots

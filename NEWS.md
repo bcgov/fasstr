@@ -1,3 +1,68 @@
+fasstr 0.5.0
+=========================
+
+Updated: 19 Oct 2022
+
+  * This release is a major new update with additional functions and changes to existing functions to present data and plots in different ways and more consistency across functions, updating various colours to viridis scales for accessibility, as well as updating some internal processes and fixing some minor bugs. Some functions have been superseded by others, but all functions will still be available within the package.
+
+
+### New functions:
+
+  * plot_flow_data_symbols() - plots daily data with coloured points designating symbol categories from symbols column
+  * plot_annual_symbols() - plots symbols by day of year or annual counts or percent of days with symbols from symbols column  
+  * plot_annual_stats2() - plotting annual stats in ribbons (similar to plot_daily_stats)
+  * plot_monthly_stats2() - plotting faceted monthly stats in ribbons (similar to plot_daily_stats)
+  * plot_monthly_means() - plotting long-term monthly means with percents of long-term MADs
+  * calc_annual_highflows() and plot_annual_highflows() - calcs/plots annual high flow data, similar to _annual_lowflow() functions
+  * calc_annual_extremes() - plots the values and dates from annual minimums and maximums for each year, replacing calc_annual_peaks()
+  * plot_annual_extremes() - plots the values and dates from annual minimums and maximums for each year, from calc_annual_extremes()
+  * plot_annual_extremes_year() - plots the values and dates from annual minimums and maximums fora given year
+  * calc_annual_normal_days() and plot_annual_normal_days() - counts number of normal and above/below normal days - replaced superseded _annual_outside_normal() functions
+  * plot_annual_normal_days_year() - plot days above normal, below normal and normal for a specific year
+  * plot_annual_flow_timing_year() - plot annual timing of flows for a specific year
+
+### Function updates:
+
+  * plot_missing_data() - new default plot type in tile format. Can change to original bar plot using plot_type = "bar".
+  * plot_data_screening() - now changes the geom_point style based on if data is complete or has missing data (plot_availability argument) and now allows choice of annual summary statistics (include_stats argument)
+  * screen_flow_data() - now add columns of counts of symbol categories provided by symbol column (HYDAT Symbol column). Can remove columns by using include_symbols = FALSE.
+  * plot_annual_means() - added 2 percentile (of annual means) lines to plot, added legend
+  * calc_annual_peaks() - superseded, replaced with calc_annual_extremes()
+  * plot_annual_cumulative_stats() - new default plot type in bar format. Can change to original line plot using plot_type = "line".
+  * calc_annual_outside_normal() and plot_annual_outside_normal() - superseded, replaced with calc_annual_normal_days() and plot_annual_normal_days()
+  * compute_frequency_analysis() - added logical 'compute_fitting' argument to fit plotting positions (TRUE, default) or don't and just return plotting position results (first 3 objects of output) (FALSE); add custom plot y-axis title
+  
+### Other updates:
+  
+  * Plot legends now centered on right, not top
+  * Changed colour scales on many plots to the viridis palette
+  * Can now choose 0 and 100 percentiles (was previously between 1 and 99)
+  * Added args plot_inner_percentiles, plot_outer_percentiles, and changed include_extreme to plot_extreme in various functions
+  * Added 'complete_years' argument to several functions for cross-package consistency. Doesn't change functionality, but sets/overrides ignore_missing to FALSE and allowed_missing to 0.
+  * "Year" axes now labeled "Water Year" if water_year_start != 1
+  * Some appropriate "Day of Year" axes now labeled "Day of Water Year" if water_year_start != 1
+  * Changed y-axis labels on plots using scales::cut_short_scale() to remove exponents on large numbers
+  * Annual plots with leading empty years (gaps, missing dates, etc) will now shift plot to first year of data
+  * Updated vignettes with new functions and updates
+  * Added complete_years and allowed_missing arguments to write_full_analysis outputs on the fasstr functions tab
+  
+### Bug fixes:
+  
+  * complete_years function now applied to all functions in compute_ and write_full_analysis functions
+  * Removed HYDAT.sqlite file check in compute_HYDAT_peak_frequencies() - leaves check to tidyhydat
+  * fixed fill_missing_dates water year bug
+
+
+### Internal code:
+  
+  * cleaning up argument check functions (logical, numeric etc)
+  * new origin_date internal function
+  * new filter_complete_yrs arg option (keep_all) to keep all years of data, just setting NA if incomplete
+  * new complete_years fns to get lists of years and start/end/exclude years
+  
+  
+  
+
 fasstr 0.4.1
 =========================
 
@@ -5,7 +70,7 @@ Updated: 10 Dec 2021
 
 #### Updates:
 
-  * Fixed major bug: Seasons identifiers were mislabeled when water_year_start > 1 for add_seasons() and various       functions use seasonal cumulative totals
+  * Fixed major bug: Seasons identifiers were mislabeled when water_year_start > 1 for add_seasons() and various functions use seasonal cumulative totals
   * Updated documentation - 'months' and other param descriptions
   * plot_flow_duration() - removed annotation ticks when not in log-scale
   * added 'log_ticks' argument to customize adding annotation_ticks or not when log scale

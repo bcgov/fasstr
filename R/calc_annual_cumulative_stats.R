@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-#' @title Calculate annual (and seasonal) cumulative flows
+#' @title Calculate annual (and seasonal) total cumulative flows
 #' 
 #' @description Calculates annual and seasonal total flows, as volumetric discharge or water yields, from a daily streamflow data set.
 #'    For water year and seasonal data, the year is identified by the year in which the year or season ends. Two-seasons and 
@@ -52,7 +52,8 @@
 #' # Calculate annual total yield statistics with a custom basin area
 #' calc_annual_cumulative_stats(station_number = "08NM116",
 #'                              use_yield = TRUE,
-#'                              basin_area = 800) 
+#'                              basin_area = 800,
+#'                              start_year = 1980) 
 #'                              
 #' }
 #' @export
@@ -72,10 +73,10 @@ calc_annual_cumulative_stats <- function(data,
                                          exclude_years, 
                                          months = 1:12,
                                          include_seasons = FALSE,
-                                         transpose = FALSE){
+                                         transpose = FALSE,
+                                         complete_years = FALSE){
   
-  
-  
+
   ## ARGUMENT CHECKS
   ## ---------------
   
@@ -102,12 +103,13 @@ calc_annual_cumulative_stats <- function(data,
     warning("Since not all months are selected, seasonal totals will not be included.", call. = FALSE)
   }
 
-  use_yield_checks(use_yield)
+  logical_arg_check(use_yield)
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
-  transpose_checks(transpose)
-  include_seasons_checks(include_seasons)
+  logical_arg_check(transpose)
+  logical_arg_check(include_seasons)
   months_checks(months)
+  logical_arg_check(complete_years)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -150,6 +152,7 @@ calc_annual_cumulative_stats <- function(data,
                            seasons_length = 3)
   flow_data <- dplyr::rename(flow_data, Seasons4 = Season)
 
+  flow_data <- filter_complete_yrs_val(complete_years, flow_data, keep_all = TRUE)
   
   # Add cumulative flows
   if (use_yield){
@@ -163,6 +166,7 @@ calc_annual_cumulative_stats <- function(data,
   
   # Filter data FOR SELECTED YEARS FOR REMAINDER OF CALCS
   flow_data <- dplyr::filter(flow_data, WaterYear >= start_year & WaterYear <= end_year)
+  
   
   # Stop if all data is NA
   #no_values_error(flow_data$daily_total)

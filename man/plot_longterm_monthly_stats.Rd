@@ -19,7 +19,9 @@ plot_longterm_monthly_stats(
   months = 1:12,
   complete_years = FALSE,
   ignore_missing = FALSE,
-  include_extremes = TRUE,
+  plot_extremes = TRUE,
+  plot_inner_percentiles = TRUE,
+  plot_outer_percentiles = TRUE,
   inner_percentiles = c(25, 75),
   outer_percentiles = c(5, 95),
   add_year,
@@ -74,8 +76,12 @@ months (\code{1:12}).}
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from
 time periods with no missing dates will be returned. Default \code{FALSE}.}
 
-\item{include_extremes}{Logical value to indicate plotting a ribbon with the range of daily minimum and maximum flows. 
+\item{plot_extremes}{Logical value to indicate plotting a ribbon with the range of daily minimum and maximum flows. 
 Default \code{TRUE}.}
+
+\item{plot_inner_percentiles}{Logical value indicating whether to plot the inner percentiles ribbon. Default \code{TRUE}.}
+
+\item{plot_outer_percentiles}{Logical value indicating whether to plot the outer percentiles ribbon. Default \code{TRUE}.}
 
 \item{inner_percentiles}{Numeric vector of two percentile values indicating the lower and upper limits of the 
 inner percentiles ribbon for plotting. Default \code{c(25,75)}, set to \code{NULL} for no inner ribbon.}
@@ -106,18 +112,13 @@ A list of ggplot2 objects with the following for each station provided:
 \description{
 Plots the long-term mean, median, maximum, minimum, and percentiles of annual monthly mean flow values for all
    months and all data (Long-term) from a daily streamflow data set. Calculates statistics from all values, unless specified. 
-   The Maximum-Minimum band can be removed using the \code{include_extremes} argument and the percentile bands 
+   The Maximum-Minimum band can be removed using the \code{plot_extremes} argument and the percentile bands 
    can be customized using the \code{inner_percentiles} and \code{outer_percentiles} arguments. Data calculated using the 
    \code{calc_longterm_monthly_stats()} function. Returns a list of plots.
 }
 \examples{
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
 if (file.exists(tidyhydat::hy_downloaded_db())) {
-
-# Plot longterm monthly statistics using data argument with defaults
-flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
-plot_longterm_monthly_stats(data = flow_data,
-                            start_year = 1980)
 
 # Plot longterm monthly statistics using station_number argument with defaults
 plot_longterm_monthly_stats(station_number = "08NM116",
@@ -127,7 +128,6 @@ plot_longterm_monthly_stats(station_number = "08NM116",
 plot_longterm_monthly_stats(station_number = "08NM116",
                             start_year = 1980,
                             add_year = 1985) 
-                              
                             
 }
 }

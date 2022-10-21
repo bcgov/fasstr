@@ -16,9 +16,9 @@ plot_flow_duration(
   start_year,
   end_year,
   exclude_years,
-  complete_years = FALSE,
   custom_months,
   custom_months_label,
+  complete_years = FALSE,
   ignore_missing = FALSE,
   months = 1:12,
   include_longterm = TRUE,
@@ -63,14 +63,14 @@ analysis. Default \code{1}.}
 
 \item{exclude_years}{Numeric vector of years to exclude from analysis. Leave blank or set to \code{NULL} to include all years.}
 
-\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
-
 \item{custom_months}{Numeric vector of months to combine to summarize (ex. \code{6:8} for Jun-Aug). Adds results to the end of table.
 If wanting months that overlap calendar years (ex. Oct-Mar), choose \code{water_year_start} that begins before the first 
 month listed. Leave blank for no custom month summary.}
 
 \item{custom_months_label}{Character string to label custom months. For example, if \code{months = 7:9} you may choose 
 \code{"Summer"} or \code{"Jul-Sep"}. Default \code{"Custom-Months"}.}
+
+\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from

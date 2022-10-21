@@ -13,11 +13,13 @@ compute_frequency_analysis(
   use_log = FALSE,
   prob_plot_position = c("weibull", "median", "hazen"),
   prob_scale_points = c(0.9999, 0.999, 0.99, 0.9, 0.5, 0.2, 0.1, 0.02, 0.01, 0.001,
-    0.0001),
+    1e-04),
+  compute_fitting = TRUE,
   fit_distr = c("PIII", "weibull"),
   fit_distr_method = ifelse(fit_distr == "PIII", "MOM", "MLE"),
   fit_quantiles = c(0.975, 0.99, 0.98, 0.95, 0.9, 0.8, 0.5, 0.2, 0.1, 0.05, 0.01),
-  plot_curve = TRUE
+  plot_curve = TRUE,
+  plot_axis_title = "Discharge (cms)"
 )
 }
 \arguments{
@@ -42,6 +44,9 @@ plotting positions; and (a=.5; b=.5) for Hazen plotting positions. Default \code
 \item{prob_scale_points}{Numeric vector of probabilities to be plotted along the X axis in the frequency plot. Inverse of 
 return period. Default \code{c(.9999, .999, .99, .9, .5, .2, .1, .02, .01, .001, .0001)}.}
 
+\item{compute_fitting}{Logical value to indicate whether to fit plotting positions to a distribution. If 'FALSE' the output will
+return only the data, plotting positions, and plot. Default \code{TRUE}.}
+
 \item{fit_distr}{Character string identifying the distribution to fit annual data, one of \code{'PIII'} (Log Pearson Type III)
 or \code{'weibull'} (Weibull) distributions. Default \code{'PIII'}.}
 
@@ -53,12 +58,14 @@ moments) or \code{'MLE'} (maximum likelihood estimation). Selected as \code{'MOM
 Default \code{c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01)}.}
 
 \item{plot_curve}{Logical value to indicate plotting the computed curve on the probability plot. Default \code{TRUE}.}
+
+\item{plot_axis_title}{Character string of the plot y-axis title. Default \code{'Discharge (cms)'}.}
 }
 \value{
 A list with the following elements:
-  \item{Freq_Analysis_Data}{Data frame with computed annual summary statistics used in analysis.}
-  \item{Freq_Plot_Data}{Data frame with co-ordinates used in frequency plot.}
-  \item{Freq_Plot}{ggplot2 object with frequency plot}
+  \item{Freq_Analysis_Data}{Data frame with provided data for analysis.}
+  \item{Freq_Plot_Data}{Data frame with plotting positions used in frequency plot.}
+  \item{Freq_Plot}{ggplot2 object with plotting positions and (optional) fitted curve.}
   \item{Freq_Fitting}{List of fitted objects from fitdistrplus.}
   \item{Freq_Fitted_Quantiles}{Data frame with fitted quantiles.}
 }

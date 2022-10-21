@@ -80,7 +80,8 @@ plot_annual_flow_timing(station_number = "08NM116")
 
 # Plot annual flow timing with custom percent totals
 plot_annual_flow_timing(station_number = "08NM116",
-                        percent_total = 50)
+                        percent_total = 50,
+                        start_year = 1980)
                         
 }
 }

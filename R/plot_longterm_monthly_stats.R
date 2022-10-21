@@ -14,15 +14,16 @@
 #'
 #' @description Plots the long-term mean, median, maximum, minimum, and percentiles of annual monthly mean flow values for all
 #'    months and all data (Long-term) from a daily streamflow data set. Calculates statistics from all values, unless specified. 
-#'    The Maximum-Minimum band can be removed using the \code{include_extremes} argument and the percentile bands 
+#'    The Maximum-Minimum band can be removed using the \code{plot_extremes} argument and the percentile bands 
 #'    can be customized using the \code{inner_percentiles} and \code{outer_percentiles} arguments. Data calculated using the 
 #'    \code{calc_longterm_monthly_stats()} function. Returns a list of plots.
 #'
 #' @inheritParams calc_longterm_monthly_stats
 #' @inheritParams plot_annual_stats
+#' @inheritParams plot_daily_stats
 #' @param add_year Numeric value indicating a year of daily flows to add to the daily statistics plot.  Leave blank
 #'    or set to \code{NULL} for no years.
-#' @param include_extremes Logical value to indicate plotting a ribbon with the range of daily minimum and maximum flows. 
+#' @param plot_extremes Logical value to indicate plotting a ribbon with the range of daily minimum and maximum flows. 
 #'    Default \code{TRUE}.
 #' @param inner_percentiles Numeric vector of two percentile values indicating the lower and upper limits of the 
 #'    inner percentiles ribbon for plotting. Default \code{c(25,75)}, set to \code{NULL} for no inner ribbon.
@@ -44,11 +45,6 @@
 #' # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())
 #' if (file.exists(tidyhydat::hy_downloaded_db())) {
 #' 
-#' # Plot longterm monthly statistics using data argument with defaults
-#' flow_data <- tidyhydat::hy_daily_flows(station_number = "08NM116")
-#' plot_longterm_monthly_stats(data = flow_data,
-#'                             start_year = 1980)
-#' 
 #' # Plot longterm monthly statistics using station_number argument with defaults
 #' plot_longterm_monthly_stats(station_number = "08NM116",
 #'                             start_year = 1980)
@@ -57,7 +53,6 @@
 #' plot_longterm_monthly_stats(station_number = "08NM116",
 #'                             start_year = 1980,
 #'                             add_year = 1985) 
-#'                               
 #'                             
 #' }
 #' @export
@@ -77,7 +72,9 @@ plot_longterm_monthly_stats <- function(data,
                                         months = 1:12,
                                         complete_years = FALSE,
                                         ignore_missing = FALSE,
-                                        include_extremes = TRUE,
+                                        plot_extremes = TRUE,
+                                        plot_inner_percentiles = TRUE,
+                                        plot_outer_percentiles = TRUE,
                                         inner_percentiles = c(25,75),
                                         outer_percentiles = c(5,95),
                                         add_year,
@@ -107,11 +104,13 @@ plot_longterm_monthly_stats <- function(data,
     add_year <- NULL
   }
   
-  log_discharge_checks(log_discharge)
+  logical_arg_check(log_discharge)
   log_ticks_checks(log_ticks, log_discharge)
-  include_title_checks(include_title)  
+  logical_arg_check(include_title)  
   ptile_ribbons_checks(inner_percentiles, outer_percentiles)
-  
+  logical_arg_check(plot_extremes)
+  logical_arg_check(plot_inner_percentiles)
+  logical_arg_check(plot_outer_percentiles)
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
@@ -221,7 +220,7 @@ plot_longterm_monthly_stats <- function(data,
   # Create manual colour and fill options
   
   fill_manual_list <- c()
-  if (include_extremes) {
+  if (plot_extremes) {
     fill_manual_list <- c(fill_manual_list, "lightblue2")
     names(fill_manual_list) <- c(names(fill_manual_list), "Minimum-Maximum")
   }
@@ -249,7 +248,6 @@ plot_longterm_monthly_stats <- function(data,
   y_axis_title <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (cubic metres)", #expression(Volume~(m^3))
                          ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)", 
                                 "Discharge (cms)")) #expression(Discharge~(m^3/s))
-  
   # Plot
   lt_plots <- dplyr::group_by(longterm_stats, STATION_NUMBER)
   lt_plots <- tidyr::nest(lt_plots)
@@ -258,21 +256,25 @@ plot_longterm_monthly_stats <- function(data,
     plot = purrr::map2(
       data, STATION_NUMBER, 
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Month, group = 1)) +
-        {if(include_extremes) ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maximum"), na.rm = FALSE)} +
-        {if(is.numeric(outer_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(outer_percentiles)), 
-                                                                                    ymax = paste0("P",max(outer_percentiles)), 
-                                                                                    fill = paste0("'",outer_name,"'")), na.rm = FALSE)} +
-        {if(is.numeric(inner_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(inner_percentiles)), 
-                                                                                    ymax = paste0("P",max(inner_percentiles)), 
-                                                                                    fill = paste0("'",inner_name,"'")), na.rm = FALSE)} +
+        {if(plot_extremes) ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maximum"), na.rm = FALSE)} +
+        {if(is.numeric(outer_percentiles) & plot_outer_percentiles) 
+          ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(outer_percentiles)), 
+                                                   ymax = paste0("P",max(outer_percentiles)), 
+                                                   fill = paste0("'",outer_name,"'")), na.rm = FALSE)} +
+        {if(is.numeric(inner_percentiles) & plot_inner_percentiles)
+          ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(inner_percentiles)), 
+                                                   ymax = paste0("P",max(inner_percentiles)), 
+                                                   fill = paste0("'",inner_name,"'")), na.rm = FALSE)} +
         ggplot2::geom_line(ggplot2::aes(y = Mean, color = "Mean"), size = .9, na.rm = TRUE) +
         ggplot2::geom_line(ggplot2::aes(y = Median, color = "Median"), size = .9, na.rm = TRUE) +
         ggplot2::geom_point(ggplot2::aes(y = Mean), size = 2, na.rm = TRUE, colour  = "paleturquoise") +
         ggplot2::geom_point(ggplot2::aes(y = Median), size = 2, na.rm = TRUE, colour = "dodgerblue4") +
-        {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8))}+
-        {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
+        {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8),
+                                                        labels = scales::label_number(scale_cut = scales::cut_short_scale()))}+
+        {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10),
+                                                  labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +
         {if(log_discharge & log_ticks) ggplot2::annotation_logticks(base = 10, "l", colour = "grey25", size = 0.3, short = ggplot2::unit(0.07, "cm"),
-                                                        mid = ggplot2::unit(0.15, "cm"), long = ggplot2::unit(0.2, "cm"))} +
+                                                                    mid = ggplot2::unit(0.15, "cm"), long = ggplot2::unit(0.2, "cm"))} +
         ggplot2::scale_x_discrete(expand = c(0.01,0.01)) +
         ggplot2::ylab(y_axis_title) +
         ggplot2::xlab(NULL) +
@@ -280,7 +282,7 @@ plot_longterm_monthly_stats <- function(data,
         ggplot2::labs(colour = 'Monthly Statistics') +  
         {if (include_title & unique(.y) != "XXXXXXX") ggplot2::labs(colour = paste0(.y,'\n \nMonthly Statistics')) } +    
         ggplot2::theme(legend.position = "right",
-                       legend.justification = "top",
+                       legend.justification = "right",
                        legend.text = ggplot2::element_text(size = 9),
                        panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                        panel.grid = ggplot2::element_line(size = .2),

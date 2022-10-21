@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_annual_cumulative_stats.R
 \name{calc_annual_cumulative_stats}
 \alias{calc_annual_cumulative_stats}
-\title{Calculate annual (and seasonal) cumulative flows}
+\title{Calculate annual (and seasonal) total cumulative flows}
 \usage{
 calc_annual_cumulative_stats(
   data,
@@ -18,7 +18,8 @@ calc_annual_cumulative_stats(
   exclude_years,
   months = 1:12,
   include_seasons = FALSE,
-  transpose = FALSE
+  transpose = FALSE,
+  complete_years = FALSE
 )
 }
 \arguments{
@@ -69,6 +70,8 @@ months (\code{1:12}). If not all months, seasonal total yield and volumetric flo
 \item{include_seasons}{Logical value indication whether to include seasonal yields or volumetric discharges. Default \code{TRUE}.}
 
 \item{transpose}{Logical value indicating whether to transpose rows and columns of results. Default \code{FALSE}.}
+
+\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 }
 \value{
 A tibble data frame with the following columns, ending with '_Volume_m3' or '_Yield_mm' based on selection:
@@ -104,7 +107,8 @@ calc_annual_cumulative_stats(station_number = "08NM116",
 # Calculate annual total yield statistics with a custom basin area
 calc_annual_cumulative_stats(station_number = "08NM116",
                              use_yield = TRUE,
-                             basin_area = 800) 
+                             basin_area = 800,
+                             start_year = 1980) 
                              
 }
 }

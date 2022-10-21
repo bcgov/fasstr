@@ -25,7 +25,7 @@
 #'  \item{\code{calc_annual_cumulative_stats()}}
 #'  \item{\code{calc_annual_flow_timing()}}
 #'  \item{\code{calc_monthly_stats()}}
-#'  \item{\code{calc_annual_outside_normal()}}
+#'  \item{\code{calc_annual_normal_days()}}
 #'  }
 #' 
 #' @inheritParams calc_all_annual_stats
@@ -111,6 +111,7 @@ compute_annual_trends <- function(data,
                                   lowflow_align = "right",
                                   timing_percent = c(25,33,50,75),
                                   normal_percentiles = c(25,75),
+                                  complete_years = FALSE,
                                   ignore_missing = FALSE,
                                   allowed_missing_annual = ifelse(ignore_missing,100,0),
                                   allowed_missing_monthly = ifelse(ignore_missing,100,0),
@@ -187,6 +188,7 @@ compute_annual_trends <- function(data,
                                        timing_percent = timing_percent,
                                        normal_percentiles = normal_percentiles,
                                        transpose = TRUE,
+                                       complete_years = complete_years,
                                        ignore_missing = ignore_missing,
                                        allowed_missing_annual = allowed_missing_annual,
                                        allowed_missing_monthly = allowed_missing_monthly)
@@ -244,7 +246,9 @@ compute_annual_trends <- function(data,
                                        Units= "Discharge (cms)",
                                        Units = replace(Units, grepl("Yield_mm", Statistic), "Yield (mm)"),
                                        Units = replace(Units, grepl("Volume_m3", Statistic), "Volume (cubic metres)"),
-                                       Units = replace(Units, grepl("DoY", Statistic), "Day of Year"),
+                                       Units = replace(Units, grepl("DoY", Statistic), ifelse(water_year_start == 1, 
+                                                                                              "Day of Year", 
+                                                                                              "Day of Water Year")),
                                        Units = replace(Units, grepl("Days", Statistic), "Number of Days"))
       
       
@@ -260,11 +264,12 @@ compute_annual_trends <- function(data,
           # ggplot2::geom_line(alpha = 0.3, na.rm = TRUE) +
           ggplot2::ggtitle(paste0(stat," (sig. = ", round(trends_results_stat$sig, 3), ")")) +
           #{if(length(unique(trends_results$STATION_NUMBER)) > 1) ggplot2::ggtitle(paste0(stn, ": ", stat,"   (Sig. = ", round(trends_results_stat$sig, 3), ")"))} +
-          ggplot2::xlab("Year") +
+          ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
           ggplot2::ylab(trends_data_stat$Units) +
           ggplot2::theme_bw() +
           ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 12)) +
-          ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
+          ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
+                                      labels = scales::label_number(scale_cut = scales::cut_short_scale())) +
           ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                          panel.grid = ggplot2::element_line(size = .2),
                          axis.title = ggplot2::element_text(size = 12),

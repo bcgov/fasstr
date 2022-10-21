@@ -46,7 +46,8 @@
 #' 
 #' # Plot annual flow timing with custom percent totals
 #' plot_annual_flow_timing(station_number = "08NM116",
-#'                         percent_total = 50)
+#'                         percent_total = 50,
+#'                         start_year = 1980)
 #'                         
 #' }
 #' @export
@@ -84,9 +85,8 @@ plot_annual_flow_timing <- function(data,
   if (missing(exclude_years)) {
     exclude_years <- NULL
   }
-
-  include_title_checks(include_title)
-
+  
+  logical_arg_check(include_title)
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
@@ -101,11 +101,8 @@ plot_annual_flow_timing <- function(data,
                                groups = as.character(substitute(groups)),
                                rm_other_cols = TRUE)
   
-  
-  
   ## CALC STATS
   ## ----------
-  
   timing_stats <- calc_annual_flow_timing(data = flow_data,
                                           dates = Date,
                                           values = Value,
@@ -116,36 +113,41 @@ plot_annual_flow_timing <- function(data,
                                           exclude_years = exclude_years,
                                           months = months)
   
+  timing_stats <- dplyr::filter(dplyr::group_by(timing_stats, STATION_NUMBER),
+                                Year >= Year[min(which(!is.na(.data[[names(timing_stats)[3]]])))])
+  
   timing_stats <- dplyr::select(timing_stats, STATION_NUMBER, Year, dplyr::contains("TotalQ"), -dplyr::contains("Date"))
   timing_stats <- tidyr::gather(timing_stats, Statistic, Value, -STATION_NUMBER, -Year)
   timing_stats <- dplyr::mutate(timing_stats, Statistic = substr(Statistic, 5, nchar(Statistic)))
   timing_stats <- dplyr::mutate(timing_stats, Statistic = paste0(gsub("pct_TotalQ", "", Statistic), " Percent"))
   
-  
-  
   ## PLOT STATS
-  ## ----------
+  ## ---------
   
   # Create plots for each STATION_NUMBER in a tibble (see: http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/)
   timing_plots <- dplyr::group_by(timing_stats, STATION_NUMBER)
   timing_plots <- tidyr::nest(timing_plots)
-  timing_plots <- dplyr::mutate(timing_plots,
-                              plot = purrr::map2(data, STATION_NUMBER, 
-      ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
+  timing_plots <- dplyr::mutate(
+    timing_plots,
+    plot = purrr::map2(
+      data, STATION_NUMBER,
+      ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic, fill = Statistic)) +
         ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
-        ggplot2::geom_point(na.rm = TRUE) +
+        ggplot2::geom_point(na.rm = TRUE, shape = 21, colour = "black", size = 2) +
         {if(length(percent_total) > 1) ggplot2::facet_wrap(~Statistic, scales = "free_y", ncol = 1, strip.position = "top")} +
         ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
         {if(length(unique(timing_stats$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(timing_stats$Year))}+
-        ggplot2::ylab("Day of Year") +
-        ggplot2::xlab("Year") +
-        #ggplot2::scale_color_brewer(palette = "Set1") +
+        ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6), expand = ggplot2::expansion(mult = c(0.1, 0.1)))+
+        ggplot2::ylab(ifelse(water_year_start == 1, "Day of Year", "Day of Water Year"))+
+        ggplot2::xlab(ifelse(water_year_start == 1, "Year", "Water Year"))+
+        ggplot2::scale_color_viridis_d()+
+        ggplot2::scale_fill_viridis_d()+
         ggplot2::theme_bw() +
-        ggplot2::guides(colour = 'none') +
+        ggplot2::guides(colour = 'none', fill = "none") +
         {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
-        ggplot2::theme(legend.position = "right", 
+        ggplot2::theme(legend.position = "right",
                        legend.spacing = ggplot2::unit(0, "cm"),
-                       legend.justification = "top",
+                       legend.justification = "right",
                        legend.text = ggplot2::element_text(size = 9),
                        panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                        panel.grid = ggplot2::element_line(size = .2),
@@ -154,7 +156,7 @@ plot_annual_flow_timing <- function(data,
                        plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
                        strip.background = ggplot2::element_blank(),
                        strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
-                              ))
+    ))
   
   # Create a list of named plots extracted from the tibble
   plots <- timing_plots$plot
@@ -165,7 +167,6 @@ plot_annual_flow_timing <- function(data,
   }
   
   plots
-      
   
 }
 

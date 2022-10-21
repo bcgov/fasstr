@@ -82,11 +82,11 @@ calc_longterm_percentile <- function(data,
   rolling_days_checks(roll_days, roll_align)
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
-  complete_yrs_checks(complete_years)
-  transpose_checks(transpose)
+  logical_arg_check(complete_years)
+  logical_arg_check(transpose)
   
   if (all(is.na(percentiles))) stop("percentiles argument is required.", call. = FALSE)
-  percentiles_checks(percentiles)
+  numeric_range_checks(percentiles)
   
   
   

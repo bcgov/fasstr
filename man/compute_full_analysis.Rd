@@ -17,6 +17,7 @@ compute_full_analysis(
   end_year,
   exclude_years,
   months = 1:12,
+  complete_years = FALSE,
   ignore_missing = FALSE,
   allowed_missing_annual = ifelse(ignore_missing, 100, 0),
   allowed_missing_monthly = ifelse(ignore_missing, 100, 0),
@@ -77,6 +78,8 @@ analysis. Default \code{1}.}
 \item{months}{Numeric vector of months to include in analysis. For example, \code{3} for March, \code{6:8} for Jun-Aug or 
 \code{c(10:12,1)} for first four months (Oct-Jan) when \code{water_year_start = 10} (Oct). Default summarizes all 
 months (\code{1:12}). If not all months, seasonal total yield and volumetric flows will not be included.}
+
+\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from
@@ -140,6 +143,7 @@ results <- compute_full_analysis(station_number = "08NM116",
          \code{\link{plot_longterm_monthly_stats}},
          \code{\link{calc_longterm_daily_stats}},
          \code{\link{plot_longterm_daily_stats}},
+         \code{\link{plot_monthly_means}},
          \code{\link{plot_flow_duration}},
          \code{\link{calc_annual_stats}},
          \code{\link{plot_annual_stats}},
@@ -147,8 +151,8 @@ results <- compute_full_analysis(station_number = "08NM116",
          \code{\link{plot_annual_cumulative_stats}},
          \code{\link{calc_annual_flow_timing}},
          \code{\link{plot_annual_flow_timing}},
-         \code{\link{calc_annual_outside_normal}},
-         \code{\link{plot_annual_outside_normal}},
+         \code{\link{calc_annual_normal_days}},
+         \code{\link{plot_annual_normal_days}},
          \code{\link{calc_annual_lowflows}},
          \code{\link{plot_annual_lowflows}},
          \code{\link{plot_annual_means}},

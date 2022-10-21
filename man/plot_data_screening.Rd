@@ -16,7 +16,9 @@ plot_data_screening(
   months = 1:12,
   start_year,
   end_year,
-  include_title = FALSE
+  include_title = FALSE,
+  plot_availability = TRUE,
+  include_stats = c("Mean", "Median", "Minimum", "Maximum", "Standard Deviation")
 )
 }
 \arguments{
@@ -58,6 +60,12 @@ months (\code{1:12}).}
 \code{2100}) to use up to the last year of the source data.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
+
+\item{plot_availability}{Logical value specifying whether to indicate if years contain complete data or missing values.
+Default \code{TRUE}. Use \code{FALSE} for original fasstr version.}
+
+\item{include_stats}{Vector of one or all of \code{c("Mean", "Median", "Minimum", "Maximum", "Standard Deviation")} to list
+annual summary statistics to plot for screening. Default all.}
 }
 \value{
 A list of ggplot2 objects with the following for each station provided:
@@ -69,8 +77,9 @@ A list of ggplot2 objects with the following for each station provided:
   \item{StandardDeviation}{annual 1 standard deviation of all daily flows for a given year}
 }
 \description{
-Plots the mean, median, maximum, minimum, standard deviation of annual flows. Calculates statistics
-   from all values, unless specified. Data calculated using \code{screen_flow_data()} function. Returns a list of plots.
+Plots the mean, median, maximum, minimum, standard deviation of annual flows and indicates data availability. 
+    Calculates statistics from all values, unless specified. Data calculated using \code{screen_flow_data()} function. 
+    Returns a list of plots.
 }
 \examples{
 # Run if HYDAT database has been downloaded (using tidyhydat::download_hydat())

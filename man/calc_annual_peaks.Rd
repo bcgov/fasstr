@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_annual_peaks.R
 \name{calc_annual_peaks}
 \alias{calc_annual_peaks}
-\title{Calculate annual peak flows}
+\title{Calculate annual high and low flows}
 \usage{
 calc_annual_peaks(
   data,
@@ -11,13 +11,18 @@ calc_annual_peaks(
   groups = STATION_NUMBER,
   station_number,
   roll_days = 1,
+  roll_days_low = NA,
+  roll_days_high = NA,
   roll_align = "right",
   water_year_start = 1,
   start_year,
   end_year,
   exclude_years,
   months = 1:12,
+  months_low = NA,
+  months_high = NA,
   transpose = FALSE,
+  complete_years = FALSE,
   ignore_missing = FALSE,
   allowed_missing = ifelse(ignore_missing, 100, 0)
 )
@@ -43,6 +48,12 @@ Leave blank if using \code{data} argument.}
 
 \item{roll_days}{Numeric value of the number of days to apply a rolling mean. Default \code{1}.}
 
+\item{roll_days_low}{Numeric value of the number of days to apply a rolling mean for low flows.  Will override 'roll_days' argument 
+for low flows. Default \code{NA}.}
+
+\item{roll_days_high}{Numeric value of the number of days to apply a rolling mean for high flows.  Will override 'roll_days' argument 
+for high flows. Default \code{NA}.}
+
 \item{roll_align}{Character string identifying the direction of the rolling mean from the specified date, either by the first 
 (\code{'left'}), last (\code{'right'}), or middle (\code{'center'}) day of the rolling n-day group of observations. 
 Default \code{'right'}.}
@@ -62,7 +73,15 @@ analysis. Default \code{1}.}
 \code{c(10:12,1)} for first four months (Oct-Jan) when \code{water_year_start = 10} (Oct). Default summarizes all 
 months (\code{1:12}).}
 
+\item{months_low}{Numeric vector of specified months for window of low flows (3 for March, 6:8 for Jun-Aug). Will override 'months' 
+argument for low flows. Default \code{NA}.}
+
+\item{months_high}{Numeric vector of specified months for window of high flows (3 for March, 6:8 for Jun-Aug). Will override 'months' 
+argument for high flows. Default \code{NA}.}
+
 \item{transpose}{Logical value indicating whether to transpose rows and columns of results. Default \code{FALSE}.}
+
+\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from
@@ -93,7 +112,9 @@ A tibble data frame with the following columns:
   not transposed.
 }
 \description{
-Calculates annual n-day minimum and maximum values, and the day of year and date of occurrence of daily flow values
+This function has been superseded by the \code{calc_annual_extremes()} function.
+   
+   Calculates annual n-day minimum and maximum values, and the day of year and date of occurrence of daily flow values
    from a daily streamflow data set. Calculates statistics from all values, unless specified. Returns a tibble with statistics.
 }
 \examples{

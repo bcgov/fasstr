@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![R-CMD-check](https://github.com/bcgov/fasstr/workflows/R-CMD-check/badge.svg)](https://github.com/bcgov/fasstr/actions)
 
-[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/fasstr)](https://cran.r-project.org/package=fasstr)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/fasstr)](https://cran.r-project.org/package=fasstr)
 [![CRAN
 Downloads](https://cranlogs.r-pkg.org/badges/fasstr?color=brightgreen)](https://CRAN.R-project.org/package=fasstr)
 [![cran
@@ -32,34 +32,31 @@ guide](https://bcgov.github.io/fasstr/)
 
 This package provides functions for streamflow data analysis, including:
 
--   data tidying (to prepare data for analyses; `add_*` and `fill_*`
-    functions),
--   data screening (to identify data range, outliers and missing data;
-    `screen_*` functions),
--   calculating summary statistics (long-term, annual, monthly and daily
-    statistics; `calc_*`functions),
--   computing analyses (volume frequency analyses and annual trending;
-    `compute_*` functions), and,
--   visualizing (data plotting the various statistics; `plot_*`
-    functions).
+- data tidying (to prepare data for analyses; `add_*` and `fill_*`
+  functions),
+- data screening (to identify data range, outliers and missing data;
+  `screen_*` functions),
+- calculating summary statistics (long-term, annual, monthly and daily
+  statistics; `calc_*`functions),
+- computing analyses (volume frequency analyses and annual trending;
+  `compute_*` functions), and,
+- visualizing (data plotting the various statistics; `plot_*`
+  functions).
 
 Useful features of functions include:
 
--   the integration of the `tidyhydat` package to pull streamflow data
-    from a Water Survey of Canada
-    [HYDAT](https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html)
-    database for analyses;
--   arguments for filtering of years and months in analyses and
-    plotting;
--   choosing the start month of your water year;
--   selecting for rolling day averages (e.g. 7-day rolling average);
-    and,
--   choosing how missing dates are handled, amongst others.
+- the integration of the `tidyhydat` package to pull streamflow data
+  from a Water Survey of Canada
+  [HYDAT](https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html)
+  database for analyses;
+- arguments for filtering of years and months in analyses and plotting;
+- choosing the start month of your water year;
+- selecting for rolling day averages (e.g. 7-day rolling average); and,
+- choosing how missing dates are handled, amongst others.
 
-This package is maintained by the [Water Protection and Sustainability
-Branch of the British Columbia Ministry of Environment and Climate
-Change
-Strategy](https://www2.gov.bc.ca/gov/content/environment/air-land-water/water).
+This package is maintained by the [Water Management Branch of the
+British Columbia Ministry of
+Forests](https://www2.gov.bc.ca/gov/content/environment/air-land-water/water).
 
 ### Installation
 
@@ -95,18 +92,17 @@ There are several vignettes and a cheatsheet to provide more information
 on the usage of `fasstr` functions and how to customize various argument
 options.
 
--   [Getting
-    Started](https://bcgov.github.io/fasstr/articles/fasstr.html)
--   [Users
-    Guide](https://bcgov.github.io/fasstr/articles/fasstr_users_guide.html)
--   [Computing an Annual Trends
-    Analysis](https://bcgov.github.io/fasstr/articles/fasstr_trending_analysis.html)
--   [Computing a Volume frequency
-    Analysis](https://bcgov.github.io/fasstr/articles/fasstr_frequency_analysis.html)
--   [Computing a Full fasstr
-    Analysis](https://bcgov.github.io/fasstr/articles/fasstr_full_analysis.html)
--   [Internal fasstr
-    Workflows](https://bcgov.github.io/fasstr/articles/fasstr_under_the_hood.html)
+- [Getting Started](https://bcgov.github.io/fasstr/articles/fasstr.html)
+- [Users
+  Guide](https://bcgov.github.io/fasstr/articles/fasstr_users_guide.html)
+- [Computing an Annual Trends
+  Analysis](https://bcgov.github.io/fasstr/articles/fasstr_trending_analysis.html)
+- [Computing a Volume frequency
+  Analysis](https://bcgov.github.io/fasstr/articles/fasstr_frequency_analysis.html)
+- [Computing a Full fasstr
+  Analysis](https://bcgov.github.io/fasstr/articles/fasstr_full_analysis.html)
+- [Internal fasstr
+  Workflows](https://bcgov.github.io/fasstr/articles/fasstr_under_the_hood.html)
 
 #### Cheatsheet
 
@@ -129,11 +125,11 @@ columns of dates (YYYY-MM-DD in date format), values (mean daily
 discharge in cubic metres per second in numeric format), and,
 optionally, grouping identifiers (character string of station names or
 numbers) is called. By default the functions will look for columns
-identified as ‘Date’, ‘Value’, and ‘STATION\_NUMBER’, respectively, to
-be compatible with the ‘tidyhydat’ defaults, but columns of different
-names can be identified using the `dates`, `values`, `groups` column
-arguments (ex. `values = Yield_mm`). The following is an example of an
-appropriate data frame (STATION\_NUMBER not required):
+identified as ‘Date’, ‘Value’, and ‘STATION_NUMBER’, respectively, to be
+compatible with the ‘tidyhydat’ defaults, but columns of different names
+can be identified using the `dates`, `values`, `groups` column arguments
+(ex. `values = Yield_mm`). The following is an example of an appropriate
+data frame (STATION_NUMBER not required):
 
     #>   STATION_NUMBER       Date Value
     #> 1        08NM116 1949-04-01  1.13
@@ -153,7 +149,7 @@ calculations will produce results of the functions.
 
 This package allows for multiple stations (or other groupings) to be
 analyzed in many of the functions provided identifiers are provided
-using the `groups` column argument (defaults to STATION\_NUMBER). If
+using the `groups` column argument (defaults to STATION_NUMBER). If
 grouping column doesn’t exist or is improperly named, then all values
 listed in the `values` column will be summarized.
 
@@ -244,7 +240,7 @@ will be `NA`. To apply a basin area (10 sqkm for example) to all daily
 observations, set the argument as `basin_area = 10`. If there are
 multiple stations or groups to apply multiple basin areas (using the
 `groups` argument), set them individually using this option:
-`basin_area = c("08NM116" = 795,  "08NM242" = 22)`. If a STATION\_NUMBER
+`basin_area = c("08NM116" = 795,  "08NM242" = 22)`. If a STATION_NUMBER
 column exists with HYDAT station numbers, the function will
 automatically use the basin areas provided in HYDAT, if available, so
 `basin_area` is not required. For your own analyses, you can add basin
@@ -286,7 +282,7 @@ calc_longterm_daily_stats(station_number = "08NM116",
                           end_year = 2010,
                           custom_months = 7:9, 
                           custom_months_label = "Summer")
-#> # A tibble: 14 x 8
+#> # A tibble: 14 × 8
 #>    STATION_NUMBER Month      Mean Median Maximum Minimum   P10   P90
 #>    <chr>          <fct>     <dbl>  <dbl>   <dbl>   <dbl> <dbl> <dbl>
 #>  1 08NM116        Jan        1.22  1        9.5    0.160 0.540  1.85
@@ -358,7 +354,7 @@ freq_results <- compute_annual_frequencies(station_number = "08NM116",
                                            fit_distr = "PIII",
                                            fit_distr_method = "MOM")
 freq_results$Freq_Fitted_Quantiles
-#> # A tibble: 11 x 4
+#> # A tibble: 11 × 4
 #>    Distribution Probability `Return Period` `7-Day`
 #>    <chr>              <dbl>           <dbl>   <dbl>
 #>  1 PIII               0.01           100      0.193
@@ -391,9 +387,8 @@ freq_results$Freq_Plot
 ### Project Status
 
 This package is set for delivery. This package is maintained by the
-Water Protection and Sustainability Branch of the [British Columbia
-Ministry of Environment and Climate Change
-Strategy](https://www2.gov.bc.ca/gov/content/environment/air-land-water/water).
+Water Management Branch of the [British Columbia Ministry of
+Forests](https://www2.gov.bc.ca/gov/content/environment/air-land-water/water).
 
 ### Getting Help or Reporting an Issue
 

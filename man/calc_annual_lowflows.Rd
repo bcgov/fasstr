@@ -18,6 +18,7 @@ calc_annual_lowflows(
   exclude_years,
   months = 1:12,
   transpose = FALSE,
+  complete_years = FALSE,
   ignore_missing = FALSE,
   allowed_missing = ifelse(ignore_missing, 100, 0)
 )
@@ -63,6 +64,8 @@ analysis. Default \code{1}.}
 months (\code{1:12}).}
 
 \item{transpose}{Logical value indicating whether to transpose rows and columns of results. Default \code{FALSE}.}
+
+\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from
@@ -110,7 +113,8 @@ calc_annual_lowflows(station_number = "08NM116")
 # Calculate custom 3 and 7-day annual low flows with 'center' alignment
 calc_annual_lowflows(station_number = "08NM116",
                      roll_days = c(3,7),
-                     roll_align = "center")
+                     roll_align = "center",
+                     start_year = 1980)
                      
 }
 }

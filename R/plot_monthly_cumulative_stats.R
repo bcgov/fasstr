@@ -99,10 +99,10 @@ plot_monthly_cumulative_stats <- function(data,
     add_year <- NULL
   }
   
-  log_discharge_checks(log_discharge) 
+  logical_arg_check(log_discharge) 
   log_ticks_checks(log_ticks, log_discharge)
   add_year_checks(add_year)
-  include_title_checks(include_title)  
+  logical_arg_check(include_title)  
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -155,11 +155,11 @@ plot_monthly_cumulative_stats <- function(data,
     year_data <- dplyr::filter(year_data, WaterYear >= start_year & WaterYear <= end_year)
     year_data <- dplyr::filter(year_data, !(WaterYear %in% exclude_years))
     
-   
+    
     year_data <- dplyr::filter(year_data, WaterYear == add_year)
     
     year_data <- dplyr::summarize(dplyr::group_by(year_data, STATION_NUMBER, WaterYear, MonthName),
-                                     Monthly_Total = max(Cumul_Flow, na.rm = FALSE))
+                                  Monthly_Total = max(Cumul_Flow, na.rm = FALSE))
     year_data <- dplyr::rename(year_data, "Month" = MonthName)
     
     # Add the daily data from add_year to the daily stats
@@ -173,66 +173,70 @@ plot_monthly_cumulative_stats <- function(data,
         warning("Daily data does not exist for the year listed in add_year and was not plotted.", call. = FALSE)
     }
   }
-    
+  
   monthly_stats[is.na(monthly_stats)] <- 0
   
   ## PLOT STATS
   ## ----------
-
+  
   # Create the daily stats plots
   monthly_plots <- dplyr::group_by(monthly_stats, STATION_NUMBER)
   monthly_plots <- tidyr::nest(monthly_plots)
-  monthly_plots <- dplyr::mutate(monthly_plots,
-                               plot = purrr::map2(data, STATION_NUMBER,
-       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Month, group = 1)) +
-         ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = P5, fill = "Min-5th Percentile")) +
-         ggplot2::geom_ribbon(ggplot2::aes(ymin = P5, ymax = P25, fill = "5th-25th Percentile")) +
-         ggplot2::geom_ribbon(ggplot2::aes(ymin = P25, ymax = P75, fill = "25th-75th Percentile")) +
-         ggplot2::geom_ribbon(ggplot2::aes(ymin = P75, ymax = P95, fill = "75th-95th Percentile")) +
-         ggplot2::geom_ribbon(ggplot2::aes(ymin = P95, ymax = Maximum, fill = "95th Percentile-Max")) +
-         ggplot2::geom_line(ggplot2::aes(y = Median, colour = "Median"), size = 0.7) +
-         ggplot2::geom_line(ggplot2::aes(y = Mean, colour = "Mean"), size = 0.7) +
-         ggplot2::scale_fill_manual(values = c("Min-5th Percentile" = "orange" , "5th-25th Percentile" = "yellow",
-                                               "25th-75th Percentile" = "skyblue1", "75th-95th Percentile" = "dodgerblue2",
-                                               "95th Percentile-Max" = "royalblue4"),
-                                    breaks = c("95th Percentile-Max", "75th-95th Percentile", "25th-75th Percentile",
-                                               "5th-25th Percentile", "Min-5th Percentile")) +
-         ggplot2::scale_color_manual(values = c("Median" = "purple3", "Mean" = "springgreen4")) +
-         {if (!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 7))} +
-         {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10) )} +
-         {if (log_discharge & log_ticks) ggplot2::annotation_logticks(base= 10, sides = "l", colour = "grey25", size = 0.3,
-                                                          short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
-                                                          long = ggplot2::unit(.2, "cm"))} +
-         ggplot2::xlab("Month")+
-         ggplot2::scale_x_discrete(expand = c(0.01,0.01)) +
-         {if (!use_yield) ggplot2::ylab("Cumulative Volume (cubic metres)")} +
-         {if(use_yield) ggplot2::ylab("Cumulative Yield (mm)")} +
-         ggplot2::theme_bw() +
-         ggplot2::labs(color = 'Monthly Statistics') +  
-         {if (include_title & .y != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nMonthly Statistics')) } +   
-         ggplot2::theme(axis.text=ggplot2::element_text(size = 10, colour = "grey25"),
-                        axis.title=ggplot2::element_text(size = 12, colour = "grey25"),
-                        axis.title.y=ggplot2::element_text(margin = ggplot2::margin(0,0,0,0)),
-                        axis.ticks = ggplot2::element_line(size = .1, colour = "grey25"),
-                        axis.ticks.length=ggplot2::unit(0.05, "cm"),
-                        panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                        panel.grid.minor = ggplot2::element_blank(),
-                        panel.grid.major = ggplot2::element_line(size = .1),
-                        panel.background = ggplot2::element_rect(fill = "grey94"),
-                        legend.text = ggplot2::element_text(size = 9, colour = "grey25"),
-                        legend.box = "vertical",
-                        legend.justification = "top",
-                        legend.key.size = ggplot2::unit(0.4, "cm"),
-                        legend.spacing = ggplot2::unit(-0.4, "cm"),
-                        legend.background = ggplot2::element_blank()) +
-         ggplot2::guides(colour = ggplot2::guide_legend(order = 1), fill = ggplot2::guide_legend(order = 2, title = NULL)) +
-         {if (is.numeric(add_year)) ggplot2::geom_line(ggplot2::aes(y = Monthly_Total, colour = "yr.colour"), size = 0.7)} +
-         {if (is.numeric(add_year)) ggplot2::scale_color_manual(values = c("Mean" = "paleturquoise", "Median" = "dodgerblue4", "yr.colour" = "red"),
-                                                                    labels = c("Mean", "Median", paste0(add_year, " Flows")))}
-                               ))
-                          
-
-
+  monthly_plots <- dplyr::mutate(
+    monthly_plots,
+    plot = purrr::map2(
+      data, STATION_NUMBER,
+      ~ggplot2::ggplot(data = ., ggplot2::aes(x = Month, group = 1)) +
+        ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = P5, fill = "Min-5th Percentile")) +
+        ggplot2::geom_ribbon(ggplot2::aes(ymin = P5, ymax = P25, fill = "5th-25th Percentile")) +
+        ggplot2::geom_ribbon(ggplot2::aes(ymin = P25, ymax = P75, fill = "25th-75th Percentile")) +
+        ggplot2::geom_ribbon(ggplot2::aes(ymin = P75, ymax = P95, fill = "75th-95th Percentile")) +
+        ggplot2::geom_ribbon(ggplot2::aes(ymin = P95, ymax = Maximum, fill = "95th Percentile-Max")) +
+        ggplot2::geom_line(ggplot2::aes(y = Median, colour = "Median"), size = 0.7) +
+        ggplot2::geom_line(ggplot2::aes(y = Mean, colour = "Mean"), size = 0.7) +
+        ggplot2::scale_fill_manual(values = c("Min-5th Percentile" = "orange" , "5th-25th Percentile" = "yellow",
+                                              "25th-75th Percentile" = "skyblue1", "75th-95th Percentile" = "dodgerblue2",
+                                              "95th Percentile-Max" = "royalblue4"),
+                                   breaks = c("95th Percentile-Max", "75th-95th Percentile", "25th-75th Percentile",
+                                              "5th-25th Percentile", "Min-5th Percentile")) +
+        ggplot2::scale_color_manual(values = c("Median" = "purple3", "Mean" = "springgreen4")) +
+        {if (!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 7),
+                                                         labels = scales::label_number(scale_cut = scales::cut_short_scale()))}+
+        {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10) ,
+                                                   labels = scales::label_number(scale_cut = scales::cut_short_scale()))}+
+        {if (log_discharge & log_ticks) ggplot2::annotation_logticks(base= 10, sides = "l", colour = "grey25", size = 0.3,
+                                                                     short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
+                                                                     long = ggplot2::unit(.2, "cm"))} +
+        ggplot2::xlab("Month")+
+        ggplot2::scale_x_discrete(expand = c(0.01,0.01)) +
+        {if (!use_yield) ggplot2::ylab("Cumulative Volume (cubic metres)")} +
+        {if(use_yield) ggplot2::ylab("Cumulative Yield (mm)")} +
+        ggplot2::theme_bw() +
+        ggplot2::labs(color = 'Monthly Statistics') +  
+        {if (include_title & .y != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nMonthly Statistics')) } +   
+        ggplot2::theme(axis.text=ggplot2::element_text(size = 10, colour = "grey25"),
+                       axis.title=ggplot2::element_text(size = 12, colour = "grey25"),
+                       axis.title.y=ggplot2::element_text(margin = ggplot2::margin(0,0,0,0)),
+                       axis.ticks = ggplot2::element_line(size = .1, colour = "grey25"),
+                       axis.ticks.length=ggplot2::unit(0.05, "cm"),
+                       panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                       panel.grid.minor = ggplot2::element_blank(),
+                       panel.grid.major = ggplot2::element_line(size = .1),
+                       panel.background = ggplot2::element_rect(fill = "grey94"),
+                       legend.text = ggplot2::element_text(size = 9, colour = "grey25"),
+                       legend.box = "vertical",
+                       legend.justification = "right",
+                       legend.key.size = ggplot2::unit(0.4, "cm"),
+                       legend.spacing = ggplot2::unit(-0.4, "cm"),
+                       legend.background = ggplot2::element_blank()) +
+        ggplot2::guides(colour = ggplot2::guide_legend(order = 1), fill = ggplot2::guide_legend(order = 2, title = NULL)) +
+        {if (is.numeric(add_year)) ggplot2::geom_line(ggplot2::aes(y = Monthly_Total, colour = "yr.colour"), size = 0.7)} +
+        {if (is.numeric(add_year)) ggplot2::scale_color_manual(values = c("Mean" = "paleturquoise", "Median" = "dodgerblue4", "yr.colour" = "red"),
+                                                               labels = c("Mean", "Median", paste0(add_year, " Flows")))}
+    ))
+  
+  
+  
   # Create a list of named plots extracted from the tibble
   plots <- monthly_plots$plot
   if (nrow(monthly_plots) == 1) {

@@ -12,7 +12,11 @@
 
 #' @title Plot annual days above and below normal
 #'
-#' @description Plots the number of days per year outside of the 'normal' range (typically between 25 and 75th percentiles) for
+#' @description 
+#'    
+#'    This function has been superseded by the \code{plot_annual_normal_days()} function.
+#'    
+#'    Plots the number of days per year outside of the 'normal' range (typically between 25 and 75th percentiles) for
 #'    each day of the year. Upper and lower-range percentiles are calculated for each day of the year of from all years, and then each 
 #'    daily flow value for each year is compared. All days above or below the normal range are included. Calculates statistics from all 
 #'    values from complete years, unless specified. Data calculated using \code{calc_annual_outside_normal()}
@@ -20,7 +24,7 @@
 #'
 #' @inheritParams calc_annual_outside_normal
 #' @inheritParams plot_annual_stats
-#' 
+#'      
 #' @return A list of ggplot2 objects with the following for each station provided:
 #'   \item{Annual_Days_Outside_Normal}{a plot that contains the number of days outside normal}
 #'   Default plots on each object:  
@@ -61,7 +65,9 @@ plot_annual_outside_normal <- function(data,
                                        months = 1:12,
                                        include_title = FALSE){
   
-  
+  message("Note: this function has been superseded by the 'plot_annual_normal_days()' function. ", 
+          "This function is still supported but no longer receives active development, ",
+          "as better solutions now exist.")
   
   ## ARGUMENT CHECKS
   ## ---------------
@@ -82,8 +88,7 @@ plot_annual_outside_normal <- function(data,
     exclude_years <- NULL
   }
   
-  include_title_checks(include_title)
-  
+  logical_arg_check(include_title)
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
@@ -104,30 +109,33 @@ plot_annual_outside_normal <- function(data,
   ## ----------
   
   normal_data <- calc_annual_outside_normal(data = flow_data,
-                                                    normal_percentiles = normal_percentiles,
-                                                    roll_days = roll_days,
-                                                    roll_align = roll_align,
-                                                    water_year_start = water_year_start,
-                                                    start_year = start_year,
-                                                    end_year = end_year,
-                                                    exclude_years = exclude_years, 
-                                                    months = months)
+                                            normal_percentiles = normal_percentiles,
+                                            roll_days = roll_days,
+                                            roll_align = roll_align,
+                                            water_year_start = water_year_start,
+                                            start_year = start_year,
+                                            end_year = end_year,
+                                            exclude_years = exclude_years, 
+                                            months = months)
   
+  # Remove all leading NA years
+  normal_data <- dplyr::filter(dplyr::group_by(normal_data, STATION_NUMBER),
+                               Year >= Year[min(which(!is.na(.data[[names(normal_data)[3]]])))])
 
-  normal_data <- tidyr::gather(normal_data, Statistic, Value, -STATION_NUMBER, -Year)
-  normal_data <- dplyr::mutate(normal_data, Statistic = substr(Statistic, 6, nchar(Statistic)))
-  normal_data <- dplyr::mutate(normal_data, Statistic = gsub("_", " ", Statistic))
-  
-  
-  
-  ## PLOT STATS
-  ## ----------
-  
-  # Create plots for each STATION_NUMBER in a tibble 
-  normal_plots <- dplyr::group_by(normal_data, STATION_NUMBER)
-  normal_plots <- tidyr::nest(normal_plots)
-  normal_plots <- dplyr::mutate(normal_plots,
-                                plot = purrr::map2(data, STATION_NUMBER, 
+    normal_data <- tidyr::gather(normal_data, Statistic, Value, -STATION_NUMBER, -Year)
+    normal_data <- dplyr::mutate(normal_data, Statistic = substr(Statistic, 6, nchar(Statistic)))
+    normal_data <- dplyr::mutate(normal_data, Statistic = gsub("_", " ", Statistic))
+    
+        ## PLOT STATS
+    ## ----------
+    
+    # Create plots for each STATION_NUMBER in a tibble 
+    normal_plots <- dplyr::group_by(normal_data, STATION_NUMBER)
+    normal_plots <- tidyr::nest(normal_plots)
+    normal_plots <- dplyr::mutate(
+      normal_plots,
+      plot = purrr::map2(
+        data, STATION_NUMBER, 
         ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
           ggplot2::geom_line(alpha = 0.5, na.rm = TRUE) +
           ggplot2::geom_point(na.rm = TRUE) +
@@ -136,7 +144,7 @@ plot_annual_outside_normal <- function(data,
           {if(length(unique(normal_data$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(normal_data$Year))}+
           ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
           ggplot2::ylab("Number of Days") +
-          ggplot2::xlab("Year") +
+          ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
           ggplot2::guides(colour = 'none') +
           ggplot2::theme_bw() +
           {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
@@ -147,7 +155,9 @@ plot_annual_outside_normal <- function(data,
                          plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
                          strip.background = ggplot2::element_blank(),
                          strip.text = ggplot2::element_text(hjust = 0, face = "bold", size = 10))
-                                ))
+      ))
+    
+  
   
   # Create a list of named plots extracted from the tibble
   plots <- normal_plots$plot
@@ -156,10 +166,8 @@ plot_annual_outside_normal <- function(data,
   } else {
     names(plots) <- paste0(normal_plots$STATION_NUMBER, "_Annual_Days_Outside_Normal")
   }
-  
+
   plots
-  
-  
-  
+
 }
 

@@ -82,6 +82,7 @@ calc_monthly_stats <- function(data,
                                months = 1:12,
                                transpose = FALSE,
                                spread = FALSE,
+                               complete_years = FALSE,
                                ignore_missing = FALSE,
                                allowed_missing = ifelse(ignore_missing,100,0)){
   
@@ -109,11 +110,20 @@ calc_monthly_stats <- function(data,
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)
-  ignore_missing_checks(ignore_missing)
+  logical_arg_check(ignore_missing)
   allowed_missing_checks(allowed_missing, ignore_missing)
-  transpose_checks(transpose)
-  spread_checks(spread)
+  logical_arg_check(transpose)
+  logical_arg_check(spread)
   if(transpose & spread) stop("Both spread and transpose arguments cannot be TRUE.", call. = FALSE)
+  
+  logical_arg_check(complete_years)
+  if (complete_years) {
+    if (ignore_missing | allowed_missing > 0) {
+      ignore_missing <- FALSE
+      allowed_missing <- 0
+      message("complete_years argument overrides ignore_missing and allowed_missing arguments.")
+    }
+  }
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -152,6 +162,8 @@ calc_monthly_stats <- function(data,
   
   # Stop if all data is NA
   no_values_error(flow_data$RollingValue)
+  
+  flow_data <- filter_complete_yrs(complete_years, flow_data, keep_all = TRUE)
   
   ## CALCULATE STATISTICS
   ## --------------------

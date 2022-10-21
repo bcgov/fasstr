@@ -12,7 +12,11 @@
 
 #' @title Calculate annual days above and below normal
 #'
-#' @description Calculates the number of days per year outside of the 'normal' range (typically between 25 and 75th percentiles) for
+#' @description 
+#'     
+#'    This function has been superseded by the \code{calc_annual_normal_days()} function.
+#'    
+#'    Calculates the number of days per year outside of the 'normal' range (typically between 25 and 75th percentiles) for
 #'    each day of the year. Upper and lower-range percentiles are calculated for each day of the year of from all years, and then each 
 #'    daily flow value for each year is compared. All days above or below the normal range are included. Analysis methodology is based on
 #'    Environment and Climate Change Canada's 
@@ -62,6 +66,9 @@ calc_annual_outside_normal <- function(data,
                                        months = 1:12,
                                        transpose = FALSE){
   
+  message("Note: this function has been superseded by the 'calc_annual_normal_days()' function. ", 
+          "This function is still supported but no longer receives active development, ",
+          "as better solutions now exist.")
   
   ## ARGUMENT CHECKS
   ## ---------------
@@ -86,10 +93,10 @@ calc_annual_outside_normal <- function(data,
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)
-  transpose_checks(transpose)
-  normal_percentiles_checks(normal_percentiles)
+  logical_arg_check(transpose)
+  numeric_range_checks(normal_percentiles)
   sort(normal_percentiles)
-    
+  
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
@@ -108,7 +115,7 @@ calc_annual_outside_normal <- function(data,
                                values = as.character(substitute(values)),
                                groups = as.character(substitute(groups)),
                                rm_other_cols = TRUE)
-
+  
   
   ## PREPARE FLOW DATA
   ## -----------------
@@ -137,7 +144,7 @@ calc_annual_outside_normal <- function(data,
   
   # Stop if all data is NA
   no_values_error(flow_data$RollingValue)
-
+  
   
   ## --------------------
   
@@ -150,24 +157,24 @@ calc_annual_outside_normal <- function(data,
   
   #Compute the number of days above and below normal for each year
   normals_stats <- dplyr::summarise(dplyr::group_by(flow_data_temp, STATION_NUMBER, WaterYear),
-                            Days_Below_Normal = sum(Value < LOWER, na.rm = FALSE),
-                            Days_Above_Normal = sum(Value > UPPER, na.rm = FALSE),
-                            Days_Outside_Normal = Days_Below_Normal + Days_Above_Normal)
+                                    Days_Below_Normal = sum(Value < LOWER, na.rm = FALSE),
+                                    Days_Above_Normal = sum(Value > UPPER, na.rm = FALSE),
+                                    Days_Outside_Normal = Days_Below_Normal + Days_Above_Normal)
   normals_stats <- dplyr::ungroup(normals_stats)
   normals_stats <- dplyr::rename(normals_stats, Year = WaterYear)
   
   
   #Remove any excluded
   normals_stats[normals_stats$Year %in% exclude_years, -(1:2)] <- NA
-
+  
   # Transpose data if selected
   if(transpose){
     # Get list of columns to order the Statistic column after transposing
     stat_levels <- names(normals_stats[-(1:2)])
-
+    
     normals_stats <- tidyr::gather(normals_stats, Statistic, Value, -Year, -STATION_NUMBER)
     normals_stats <- tidyr::spread(normals_stats, Year, Value)
-
+    
     # Order the columns
     normals_stats$Statistic <- factor(normals_stats$Statistic, levels = stat_levels)
     normals_stats <- dplyr::arrange(normals_stats, STATION_NUMBER, Statistic)
@@ -181,8 +188,8 @@ calc_annual_outside_normal <- function(data,
     missing_test <- dplyr::select(normals_stats, -dplyr::one_of(as.character(exclude_years)))
     missing_values_warning(missing_test[, 3:ncol(missing_test)])
   }
-
-
+  
+  
   # Recheck if station_number/grouping was in original flow_data and rename or remove as necessary
   if(as.character(substitute(groups)) %in% orig_cols) {
     names(normals_stats)[names(normals_stats) == "STATION_NUMBER"] <- as.character(substitute(groups))

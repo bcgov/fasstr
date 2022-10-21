@@ -18,6 +18,8 @@
 #'
 #' @inheritParams calc_annual_stats
 #' @param include_title Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.
+#' @param percentiles_mad Numeric vector of percentiles of annual means to plot, up to two values. Set to \code{NA} if none required. 
+#'     Default \code{c(10,90)}.
 #'
 #' @return A list of ggplot2 objects for with the following plots for each station provided:
 #'   \item{Annual_Means}{a plot that contains annual means with the long-term mean as the x-axis intercept}
@@ -51,9 +53,11 @@ plot_annual_means <- function(data,
                               end_year,
                               exclude_years,
                               months = 1:12,
+                              complete_years = FALSE,
                               ignore_missing = FALSE,
                               allowed_missing = ifelse(ignore_missing,100,0),
-                              include_title = FALSE){ 
+                              include_title = FALSE,
+                              percentiles_mad = c(10,90)){ 
   
   ## ARGUMENT CHECKS
   ## ---------------
@@ -74,7 +78,9 @@ plot_annual_means <- function(data,
     exclude_years <- NULL
   }
   
-  include_title_checks(include_title)
+  logical_arg_check(include_title)
+  percentiles_mad <- sort(percentiles_mad[1:2])
+  numeric_range_checks(percentiles_mad)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -102,13 +108,21 @@ plot_annual_means <- function(data,
                                     end_year = end_year,
                                     exclude_years = exclude_years, 
                                     months = months,
+                                    complete_years = complete_years,
                                     ignore_missing = ignore_missing,
                                     allowed_missing = allowed_missing)
+  
+  # Remove all leading NA years
+  annual_stats <- dplyr::filter(dplyr::group_by(annual_stats, STATION_NUMBER),
+                                Year >= Year[min(which(!is.na(.data[[names(annual_stats)[3]]])))])
   
   annual_stats <- dplyr::select(annual_stats, STATION_NUMBER, Year, Mean)
   
   lt_mad <- dplyr::group_by(annual_stats, STATION_NUMBER)
-  lt_mad <- dplyr::summarise(lt_mad, LTMAD = mean(Mean, na.rm = TRUE))
+  lt_mad <- dplyr::summarise(lt_mad, 
+                             LTMAD = mean(Mean, na.rm = TRUE),
+                             Ptile1 = quantile(Mean, probs = percentiles_mad[1]/100, na.rm=TRUE),
+                             Ptile2 = quantile(Mean, probs = percentiles_mad[2]/100, na.rm=TRUE))
   
   annual_stats <- dplyr::left_join(annual_stats, lt_mad, by = "STATION_NUMBER")
   annual_stats <- dplyr::mutate(annual_stats, 
@@ -119,27 +133,49 @@ plot_annual_means <- function(data,
   ## PLOT STATS
   ## ----------
   
+
+  if (all(is.na(percentiles_mad))) {
+    ptile_cols <- c("Long-term MAD" = 1)
+  } else {
+    ptile_lab <- ifelse(any(is.na(percentiles_mad)), paste0("MAD P",percentiles_mad[!is.na(percentiles_mad)]),
+                        paste0("MAD ", paste0("P",percentiles_mad, collapse = " and ")))
+    ptile_cols <- c(1,2)
+    names(ptile_cols) <- c("Long-term MAD",ptile_lab)
+  }
+  
   # Create plots for each STATION_NUMBER in a tibble (see: http://www.brodrigues.co/blog/2017-03-29-make-ggplot2-purrr/)
   tidy_plots <- dplyr::group_by(annual_stats, STATION_NUMBER)
   tidy_plots <- tidyr::nest(tidy_plots)
   tidy_plots <- dplyr::mutate(
     tidy_plots,
-    plot = purrr::map2(data, STATION_NUMBER,
-                       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = MAD_diff)) +
-                         ggplot2::geom_bar(stat = "identity", fill = "cornflowerblue", na.rm = TRUE) +
-                         ggplot2::geom_hline(yintercept = 0, size = 0.1) +
-                         ggplot2::scale_y_continuous(labels = function(x) round(x + unique(.$LTMAD),3),
-                                                     breaks = scales::pretty_breaks(n = 10)) +
-                         ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
-                         {if(length(unique(annual_stats$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(annual_stats$Year))}+
-                         ggplot2::ylab("Mean Annual Discharge (cms)") + #expression(Mean~Annual~Discharge~(m^3/s))
-                         {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
-                         ggplot2::theme_bw() +
-                         ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                                        panel.grid = ggplot2::element_line(size = .2),
-                                        axis.title = ggplot2::element_text(size = 12),
-                                        axis.text = ggplot2::element_text(size = 10),
-                                        plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"))
+    plot = purrr::map2(
+      data, STATION_NUMBER,
+      ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = MAD_diff)) +
+        {if(!all(is.na(percentiles_mad))) ggplot2::geom_hline(size = 0.5, alpha = 0.7, na.rm = TRUE,
+                            mapping = ggplot2::aes(yintercept = unique(Ptile1) - unique(LTMAD), linetype = ptile_lab)) }+
+            {if(!all(is.na(percentiles_mad))) ggplot2::geom_hline(size = 0.5, alpha = 0.7, na.rm = TRUE,
+                            mapping = ggplot2::aes(yintercept = unique(Ptile2) - unique(LTMAD), linetype = ptile_lab)) }+
+        ggplot2::geom_bar(stat = "identity", mapping = ggplot2::aes(fill = "MAD Difference from\nLong-term MAD"), na.rm = TRUE, colour = "black", width = 1) +
+        ggplot2::geom_hline(size = 0.5, mapping = ggplot2::aes(yintercept = 0, linetype = "Long-term MAD")) +                         
+        ggplot2::scale_y_continuous(labels = function(x) round(x + unique(.$LTMAD),3),
+                                    breaks = scales::pretty_breaks(n = 10)) +
+        ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
+        {if(length(unique(annual_stats$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(annual_stats$Year))}+
+        ggplot2::ylab("Discharge (cms)") + #expression(Mean~Annual~Discharge~(m^3/s))
+        {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
+        ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
+        ggplot2::scale_fill_manual(values = c("MAD Difference from\nLong-term MAD" = "#21918c"))+
+        ggplot2::scale_linetype_manual(values = ptile_cols)+
+        ggplot2::guides(fill = ggplot2::guide_legend(order = 1), 
+                        colour = ggplot2::guide_legend(order = 2))+
+        ggplot2::theme_bw() +
+        ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                       panel.grid = ggplot2::element_line(size = .2),
+                       axis.title = ggplot2::element_text(size = 12),
+                       axis.text = ggplot2::element_text(size = 10),
+                       plot.title = ggplot2::element_text(hjust = 1, size = 9, colour = "grey25"),
+                       legend.title = ggplot2::element_blank(),
+                       legend.spacing = ggplot2::unit(-.02, "cm"),)
     ))
   
   # Create a list of named plots extracted from the tibble

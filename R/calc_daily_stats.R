@@ -19,7 +19,6 @@
 #'    
 #' @inheritParams calc_annual_stats
 #' @param percentiles Numeric vector of percentiles to calculate. Set to \code{NA} if none required. Default \code{c(5,25,75,95)}.
-#' @param complete_years Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.          
 #'    
 #' @return A tibble data frame with the following columns:
 #'   \item{Date}{date (MMM-DD) of daily statistics}
@@ -74,10 +73,10 @@ calc_daily_stats <- function(data,
                              water_year_start = 1,
                              start_year,
                              end_year,
-                             exclude_years, 
-                             complete_years = FALSE,
+                             exclude_years,
                              months = 1:12,
-                             transpose = FALSE,
+                             transpose = FALSE, 
+                             complete_years = FALSE,
                              ignore_missing = FALSE){
   
   
@@ -101,13 +100,13 @@ calc_daily_stats <- function(data,
   }
 
   rolling_days_checks(roll_days, roll_align)
-  percentiles_checks(percentiles)
+  numeric_range_checks(percentiles)
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)
-  transpose_checks(transpose)
-  ignore_missing_checks(ignore_missing)
-  complete_yrs_checks(complete_years)
+  logical_arg_check(transpose)
+  logical_arg_check(ignore_missing)
+  logical_arg_check(complete_years)
     
   
   ## FLOW DATA CHECKS AND FORMATTING

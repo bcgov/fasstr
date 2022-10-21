@@ -123,15 +123,15 @@ calc_longterm_daily_stats <- function(data,
   }
   
   rolling_days_checks(roll_days, roll_align)
-  percentiles_checks(percentiles)
+  numeric_range_checks(percentiles)
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months = months)
-  transpose_checks(transpose)
-  ignore_missing_checks(ignore_missing)
-  complete_yrs_checks(complete_years)
+  logical_arg_check(transpose)
+  logical_arg_check(ignore_missing)
+  logical_arg_check(complete_years)
   custom_months_checks(custom_months, custom_months_label)
-  include_longterm_checks(include_longterm)
+  logical_arg_check(include_longterm)
   
   
   ## FLOW DATA CHECKS AND FORMATTING

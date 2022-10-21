@@ -15,19 +15,21 @@
 #' @description Plots means, medians, maximums, minimums, and percentiles for each day of the year of flow values 
 #'    from a daily streamflow data set. Can determine statistics of rolling mean days (e.g. 7-day flows) using the \code{roll_days} 
 #'    argument. Calculates statistics from all values, unless specified. The Maximum-Minimum band can be removed using the 
-#'    \code{include_extremes} argument and the percentile bands can be customized using the \code{inner_percentiles} and 
+#'    \code{plot_extremes} argument and the percentile bands can be customized using the \code{inner_percentiles} and 
 #'    \code{outer_percentiles} arguments. Data calculated using \code{calc_daily_stats()} function. Returns a list of plots.
 #'
 #' @inheritParams calc_daily_stats
 #' @inheritParams plot_annual_stats
 #' @param add_year Numeric value indicating a year of daily flows to add to the daily statistics plot.  Leave blank
 #'    or set to \code{NULL} for no years.
-#' @param include_extremes Logical value to indicate plotting a ribbon with the range of daily minimum and maximum flows. 
+#' @param plot_extremes Logical value to indicate plotting a ribbon with the range of daily minimum and maximum flows. 
 #'    Default \code{TRUE}.
 #' @param inner_percentiles Numeric vector of two percentile values indicating the lower and upper limits of the 
 #'    inner percentiles ribbon for plotting. Default \code{c(25,75)}, set to \code{NULL} for no inner ribbon.
 #' @param outer_percentiles Numeric vector of two percentile values indicating the lower and upper limits of the 
 #'    outer percentiles ribbon for plotting. Default \code{c(5,95)}, set to \code{NULL} for no outer ribbon.
+#' @param plot_inner_percentiles Logical value indicating whether to plot the inner percentiles ribbon. Default \code{TRUE}.
+#' @param plot_outer_percentiles Logical value indicating whether to plot the outer percentiles ribbon. Default \code{TRUE}.
 #'
 #' @return A list of ggplot2 objects with the following for each station provided:
 #'   \item{Daily_Stats}{a plot that contains daily flow statistics}
@@ -83,7 +85,9 @@ plot_daily_stats <- function(data,
                              complete_years = FALSE,
                              months = 1:12,
                              ignore_missing = FALSE,
-                             include_extremes = TRUE,
+                             plot_extremes = TRUE,
+                             plot_inner_percentiles = TRUE,
+                             plot_outer_percentiles = TRUE,
                              inner_percentiles = c(25,75),
                              outer_percentiles = c(5,95),
                              add_year,
@@ -115,12 +119,14 @@ plot_daily_stats <- function(data,
     end_year <- 9999
   }
   
-  log_discharge_checks(log_discharge) 
   log_ticks_checks(log_ticks, log_discharge)
   add_year_checks(add_year)
-  include_title_checks(include_title)
+  logical_arg_check(include_title)
   ptile_ribbons_checks(inner_percentiles, outer_percentiles)
-  
+  logical_arg_check(log_discharge) 
+  logical_arg_check(plot_extremes)
+  logical_arg_check(plot_inner_percentiles)
+  logical_arg_check(plot_outer_percentiles)
   
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
@@ -137,19 +143,7 @@ plot_daily_stats <- function(data,
   
   
   # Create origin date to apply to flow_data and Q_daily later on
-  if (water_year_start == 1)         {origin_date <- as.Date("1899-12-31")
-  } else if (water_year_start == 2)  {origin_date <- as.Date("1899-01-31")
-  } else if (water_year_start == 3)  {origin_date <- as.Date("1899-02-28")
-  } else if (water_year_start == 4)  {origin_date <- as.Date("1899-03-31")
-  } else if (water_year_start == 5)  {origin_date <- as.Date("1899-04-30")
-  } else if (water_year_start == 6)  {origin_date <- as.Date("1899-05-31")
-  } else if (water_year_start == 7)  {origin_date <- as.Date("1899-06-30")
-  } else if (water_year_start == 8)  {origin_date <- as.Date("1899-07-31")
-  } else if (water_year_start == 9)  {origin_date <- as.Date("1899-08-31")
-  } else if (water_year_start == 10) {origin_date <- as.Date("1899-09-30")
-  } else if (water_year_start == 11) {origin_date <- as.Date("1899-10-31")
-  } else if (water_year_start == 12) {origin_date <- as.Date("1899-11-30")
-  }
+  origin_date <- get_origin_date(water_year_start)
   
   
   
@@ -215,7 +209,7 @@ plot_daily_stats <- function(data,
   # Create manual colour and fill options
   
   fill_manual_list <- c()
-  if (include_extremes) {
+  if (plot_extremes) {
     fill_manual_list <- c(fill_manual_list, "lightblue2")
     names(fill_manual_list) <- c(names(fill_manual_list), "Minimum-Maximum")
   }
@@ -255,20 +249,24 @@ plot_daily_stats <- function(data,
     plot = purrr::map2(
       data, STATION_NUMBER,
       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Date)) +
-        {if(include_extremes) ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maximum"), na.rm = FALSE)} +
-        {if(is.numeric(outer_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(outer_percentiles)),
-                                                                                    ymax = paste0("P",max(outer_percentiles)),
-                                                                                    fill = paste0("'",outer_name,"'")), na.rm = FALSE)} +
-        {if(is.numeric(inner_percentiles)) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(inner_percentiles)),
-                                                                                    ymax = paste0("P",max(inner_percentiles)),
-                                                                                    fill = paste0("'",inner_name,"'")), na.rm = FALSE)} +
+        {if(plot_extremes) ggplot2::geom_ribbon(ggplot2::aes(ymin = Minimum, ymax = Maximum, fill = "Minimum-Maximum"), na.rm = FALSE)} +
+        {if(is.numeric(outer_percentiles) & plot_outer_percentiles) 
+          ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(outer_percentiles)),
+                                                   ymax = paste0("P",max(outer_percentiles)),
+                                                   fill = paste0("'",outer_name,"'")), na.rm = FALSE)} +
+        {if(is.numeric(inner_percentiles) & plot_inner_percentiles)
+          ggplot2::geom_ribbon(ggplot2::aes_string(ymin = paste0("P",min(inner_percentiles)),
+                                                   ymax = paste0("P",max(inner_percentiles)),
+                                                   fill = paste0("'",inner_name,"'")), na.rm = FALSE)} +
         ggplot2::geom_line(ggplot2::aes(y = Median, colour = "Median"), size = .5, na.rm = TRUE) +
         ggplot2::geom_line(ggplot2::aes(y = Mean, colour = "Mean"), size = .5, na.rm = TRUE) +
-        {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8))}+
-        {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
+        {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8),
+                                                        labels = scales::label_number(scale_cut = scales::cut_short_scale()))}+
+        {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10),
+                                                  labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +
         {if(log_discharge & log_ticks) ggplot2::annotation_logticks(base= 10, "left", colour = "grey25", size = 0.3,
-                                                        short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
-                                                        long = ggplot2::unit(.2, "cm"))} +
+                                                                    short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
+                                                                    long = ggplot2::unit(.2, "cm"))} +
         ggplot2::scale_x_date(date_labels = "%b", date_breaks = "1 month",
                               limits = as.Date(c(as.character(min(daily_stats$AnalysisDate, na.rm = TRUE)), 
                                                  as.character(max(daily_stats$AnalysisDate, na.rm = TRUE)))), 
@@ -288,7 +286,7 @@ plot_daily_stats <- function(data,
                        panel.grid.major = ggplot2::element_line(size = .1),
                        legend.text = ggplot2::element_text(size = 9, colour = "grey25"),
                        legend.box = "vertical",
-                       legend.justification = "top",
+                       legend.justification = "right",
                        legend.key.size = ggplot2::unit(0.4, "cm"),
                        legend.spacing = ggplot2::unit(-0.4, "cm"),
                        legend.background = ggplot2::element_blank()) +

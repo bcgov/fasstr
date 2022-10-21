@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_annual_cumulative_stats.R
 \name{plot_annual_cumulative_stats}
 \alias{plot_annual_cumulative_stats}
-\title{Plot annual (and seasonal) cumulative flows}
+\title{Plot annual (and seasonal) total cumulative flows}
 \usage{
 plot_annual_cumulative_stats(
   data,
@@ -18,7 +18,9 @@ plot_annual_cumulative_stats(
   exclude_years,
   months = 1:12,
   include_seasons = FALSE,
-  include_title = FALSE
+  include_title = FALSE,
+  complete_years = FALSE,
+  plot_type = "bar"
 )
 }
 \arguments{
@@ -70,6 +72,11 @@ months (\code{1:12}). If not all months, seasonal total yield and volumetric flo
 \item{include_seasons}{Logical value indication whether to include seasonal yields or volumetric discharges. Default \code{TRUE}.}
 
 \item{include_title}{Logical value to indicate adding the group/station number to the plot, if provided. Default \code{FALSE}.}
+
+\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
+
+\item{plot_type}{Type of plot, either \code{"bar"} or \code{"line"} styles. Default \code{"bar"}. 
+Use \code{"line"} for previous version of plot.}
 }
 \value{
 A list of ggplot2 objects with the following for each station provided:

@@ -1,17 +1,15 @@
-pandoc: 2.11.4
-pkgdown: 2.0.0
+pandoc: 2.19.2
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   fasstr_dataRetrieval: fasstr_dataRetrieval.html
-  fun_with_fasstr: fun_with_fasstr.html
-  general_hydrology: general_hydrology.html
   fasstr: fasstr.html
   fasstr_frequency_analysis: fasstr_frequency_analysis.html
   fasstr_full_analysis: fasstr_full_analysis.html
   fasstr_trending_analysis: fasstr_trending_analysis.html
   fasstr_under_the_hood: fasstr_under_the_hood.html
   fasstr_users_guide: fasstr_users_guide.html
-last_built: 2021-12-10T21:57Z
+last_built: 2022-10-20T06:07Z
 urls:
   reference: https://bcgov.github.io/fasstr/reference
   article: https://bcgov.github.io/fasstr/articles

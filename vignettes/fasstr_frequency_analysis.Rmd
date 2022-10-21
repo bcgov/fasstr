@@ -72,7 +72,7 @@ To complete a frequency analysis using custom data, like peaks-over-threshold an
 
 Here is an example of data the can be provided, wrangled from the annual lowflows function:
 
-```{r, echo=TRUE, comment=NA}
+```{r, echo=TRUE, comment=NA, eval=FALSE}
 low_flows <- calc_annual_lowflows(station_number = "08NM116", 
                                   start_year = 1980, 
                                   end_year = 2000,
@@ -80,6 +80,15 @@ low_flows <- calc_annual_lowflows(station_number = "08NM116",
 low_flows <- dplyr::select(low_flows, Year, Value = Min_7_Day)
 low_flows <- dplyr::mutate(low_flows, Measure = "7-Day")
 low_flows
+```
+```{r, comment=NA, echo=FALSE}
+low_flows <- calc_annual_lowflows(station_number = "08NM116", 
+                                  start_year = 1980, 
+                                  end_year = 2000,
+                                  roll_days = 7)
+low_flows <- dplyr::select(low_flows, Year, Value = Min_7_Day)
+low_flows <- dplyr::mutate(low_flows, Measure = "7-Day")
+data.frame(low_flows)
 ```
 
 This data can then be applied to the `compute_frequency_analysis()` function. This example has the default column names in the data and this do not need to be listed, but are shown for demonstration.
@@ -112,8 +121,13 @@ freq_analysis <- compute_annual_frequencies(station_number = "08NM116",
 
 The following is an example of the returned **Freq_Analysis_Data** tibble:
 
-```{r, echo=TRUE, comment=NA}
+```{r, echo=TRUE, comment=NA,eval=FALSE}
 freq_analysis$Freq_Analysis_Data
+```
+
+```{r, comment=NA, echo=FALSE}
+data.frame(freq_analysis$Freq_Analysis_Data
+)
 ```
 
 ### Frequency Plotting
@@ -132,8 +146,11 @@ The probability plotting positions (A and B constants) are selected using the `p
 
 With these options set, the data used for plotting is returned in the **Freq_Plot_Data** tibble object. The events are sorted by measure, and ranked by the event value, and provides the probability and the return period for each event, used for plotting. See the following for an example of this output:
 
-```{r, echo=TRUE, comment=NA}
+```{r, echo=TRUE, comment=NA, eval=FALSE}
 freq_analysis$Freq_Plot_Data
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(freq_analysis$Freq_Plot_Data)
 ```
 
 This data is then used for plotting and returned in the **Freq_Plot** `ggplot2` object. See the example below. To change the probabilities/vertical lines shown on the x-axis, change the values using the  `prob_scale_points` argument to list the breaks.
@@ -180,8 +197,11 @@ freq_analysis$Freq_Plot
 
 Based on the fitted distribution, flow events with specific probabilities/return periods (quantiles) can be extracted from the computed curves. The desired quantiles are selected by listing the probabilities in the `fit_quantiles` argument (defaults to `c(.975, .99, .98, .95, .90, .80, .50, .20, .10, .05, .01),`).  The results are returned in the **Freq_Fitted_Quantiles** tibble in the list. In the example below of the quantiles, the 7Q5 value would be the 7-day flow value with a 5-year return period, so 0.409 cms in this example.
 
-```{r, echo=TRUE, comment=NA}
+```{r, echo=TRUE, comment=NA,eval=FALSE}
 freq_analysis$Freq_Fitted_Quantiles
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(freq_analysis$Freq_Fitted_Quantiles)
 ```
 
 

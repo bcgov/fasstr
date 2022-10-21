@@ -95,10 +95,10 @@ plot_daily_cumulative_stats <- function(data,
     exclude_years <- NULL
   }
   
-  log_discharge_checks(log_discharge) 
+  logical_arg_check(log_discharge) 
   log_ticks_checks(log_ticks, log_discharge)
   add_year_checks(add_year)
-  include_title_checks(include_title)  
+  logical_arg_check(include_title)  
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -115,19 +115,8 @@ plot_daily_cumulative_stats <- function(data,
                                rm_other_cols = TRUE)
   
   # Create origin date to apply to flow_data and Q_daily later on
-  if (water_year_start == 1)         {origin_date <- as.Date("1899-12-31")
-  } else if (water_year_start == 2)  {origin_date <- as.Date("1899-01-31")
-  } else if (water_year_start == 3)  {origin_date <- as.Date("1899-02-28")
-  } else if (water_year_start == 4)  {origin_date <- as.Date("1899-03-31")
-  } else if (water_year_start == 5)  {origin_date <- as.Date("1899-04-30")
-  } else if (water_year_start == 6)  {origin_date <- as.Date("1899-05-31")
-  } else if (water_year_start == 7)  {origin_date <- as.Date("1899-06-30")
-  } else if (water_year_start == 8)  {origin_date <- as.Date("1899-07-31")
-  } else if (water_year_start == 9)  {origin_date <- as.Date("1899-08-31")
-  } else if (water_year_start == 10) {origin_date <- as.Date("1899-09-30")
-  } else if (water_year_start == 11) {origin_date <- as.Date("1899-10-31")
-  } else if (water_year_start == 12) {origin_date <- as.Date("1899-11-30")
-  }
+  origin_date <- get_origin_date(water_year_start)
+  
   
   ## CALC STATS
   ## ----------
@@ -216,8 +205,10 @@ plot_daily_cumulative_stats <- function(data,
                                         breaks = c("95th Percentile-Max", "75th-95th Percentile", "25th-75th Percentile",
                                                    "5th-25th Percentile", "Min-5th Percentile")) +
              ggplot2::scale_color_manual(values = c("Median" = "purple3", "Mean" = "springgreen4")) +
-             {if (!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 7))} +
-             {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10) )} +
+             {if (!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 7),
+                                                              labels = scales::label_number(scale_cut = scales::cut_short_scale()))}+
+             {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10) ,
+                                                        labels = scales::label_number(scale_cut = scales::cut_short_scale()))}+
              {if (log_discharge & log_ticks) ggplot2::annotation_logticks(base= 10, "left", colour = "grey25", size = 0.3,
                                                               short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
                                                               long = ggplot2::unit(.2, "cm"))} +
@@ -240,7 +231,7 @@ plot_daily_cumulative_stats <- function(data,
                             panel.background = ggplot2::element_rect(fill = "grey94"),
                             legend.text = ggplot2::element_text(size = 9, colour = "grey25"),
                             legend.box = "vertical",
-                            legend.justification = "top",
+                            legend.justification = "right",
                             legend.key.size = ggplot2::unit(0.4, "cm"),
                             legend.spacing = ggplot2::unit(-0.4, "cm"),
                             legend.background = ggplot2::element_blank()) +

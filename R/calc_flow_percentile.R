@@ -84,7 +84,7 @@ calc_flow_percentile <- function(data,
   rolling_days_checks(roll_days, roll_align)
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
-  complete_yrs_checks(complete_years)
+  logical_arg_check(complete_years)
   
   if (missing(flow_value))        stop("A numeric flow_value is required.", call. = FALSE)
   if (!is.numeric(flow_value))    stop("A numeric flow_value is required.", call. = FALSE)

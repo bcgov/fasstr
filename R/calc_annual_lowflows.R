@@ -50,7 +50,8 @@
 #' # Calculate custom 3 and 7-day annual low flows with 'center' alignment
 #' calc_annual_lowflows(station_number = "08NM116",
 #'                      roll_days = c(3,7),
-#'                      roll_align = "center")
+#'                      roll_align = "center",
+#'                      start_year = 1980)
 #'                      
 #' }
 #' @export
@@ -70,6 +71,7 @@ calc_annual_lowflows <- function(data,
                                  exclude_years, 
                                  months = 1:12,
                                  transpose = FALSE,
+                                 complete_years = FALSE,
                                  ignore_missing = FALSE,
                                  allowed_missing = ifelse(ignore_missing,100,0)){
   
@@ -97,9 +99,18 @@ calc_annual_lowflows <- function(data,
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)
-  transpose_checks(transpose)
-  ignore_missing_checks(ignore_missing)
+  logical_arg_check(transpose)
+  logical_arg_check(ignore_missing)
   allowed_missing_checks(allowed_missing, ignore_missing)
+  
+  logical_arg_check(complete_years)
+  if (complete_years) {
+    if (ignore_missing | allowed_missing > 0) {
+        ignore_missing <- FALSE
+        allowed_missing <- 0
+      message("complete_years argument overrides ignore_missing and allowed_missing arguments.")
+    }
+  }
   
   
   ## FLOW DATA CHECKS AND FORMATTING

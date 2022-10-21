@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -38,7 +38,7 @@
   <a href="../reference/index.html">Functions</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -109,59 +109,76 @@
    <code><a href="https://rdrr.io/r/grDevices/pdf.html" class="external-link">grDevices::pdf</a></code> function.</p>
     </div>
 
-    <div id="ref-usage">Usage,<div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">write_plots</span><span class="op">(</span>
-  <span class="va">plots</span>,
-  <span class="va">folder_name</span>,
-  <span class="va">plot_filetype</span>,
-  <span class="va">width</span>,
-  <span class="va">height</span>,
-  units <span class="op">=</span> <span class="st">"in"</span>,
-  dpi <span class="op">=</span> <span class="fl">300</span>,
-  combined_pdf <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div></div>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">write_plots</span><span class="op">(</span></span>
+<span>  <span class="va">plots</span>,</span>
+<span>  <span class="va">folder_name</span>,</span>
+<span>  <span class="va">plot_filetype</span>,</span>
+<span>  <span class="va">width</span>,</span>
+<span>  <span class="va">height</span>,</span>
+<span>  units <span class="op">=</span> <span class="st">"in"</span>,</span>
+<span>  dpi <span class="op">=</span> <span class="fl">300</span>,</span>
+<span>  combined_pdf <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+    </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>plots</dt>
 <dd><p>List of plots to write to disk.</p></dd>
+
+
 <dt>folder_name</dt>
 <dd><p>Name of folder to create on disk (if it does not exist) to write each plot from list. 
 If using <code>combined_pdf</code> argument, then it will be the name of the PDF document.</p></dd>
+
+
 <dt>plot_filetype</dt>
 <dd><p>Image type to write. One of <code>'png'</code>, <code>'eps'</code>, <code>'ps'</code>, <code>'tex'</code>, <code>'pdf'</code>, <code>'jpeg'</code>, 
 <code>'tiff'</code>, <code>'bmp'</code>, or <code>'svg'</code>. Image type will be overwritten if using <code>combined_pdf</code> is used.</p></dd>
+
+
 <dt>width</dt>
 <dd><p>Numeric plot width in <code>units</code>. If not supplied, uses the size of current graphics device.</p></dd>
+
+
 <dt>height</dt>
 <dd><p>Numeric plot height in <code>units</code>. If not supplied, uses the size of current graphics device.</p></dd>
+
+
 <dt>units</dt>
 <dd><p>Character string plot height and width units, one of <code>'in'</code>, <code>'cm'</code>, or <code>'mm'</code>. Default <code>'in'</code>.</p></dd>
+
+
 <dt>dpi</dt>
 <dd><p>Numeric resolution of plots. Default <code>300</code>.</p></dd>
+
+
 <dt>combined_pdf</dt>
 <dd><p>Logical value indicating whether to combine list of plots into one PDF document. Default <code>FALSE</code>.</p></dd>
+
 </dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Working examples:</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Example plots to save</span></span>
-<span class="r-in"><span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="plot_annual_lowflows.html">plot_annual_lowflows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Write the plots as "png" files</span></span>
-<span class="r-in"><span class="fu">write_plots</span><span class="op">(</span>plots <span class="op">=</span> <span class="va">plots</span>, </span>
-<span class="r-in">            folder_name <span class="op">=</span> <span class="st">"Low Flow Plots"</span>,</span>
-<span class="r-in">            plot_filetype <span class="op">=</span> <span class="st">"png"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Write the plots as a combined "pdf" document</span></span>
-<span class="r-in"><span class="fu">write_plots</span><span class="op">(</span>plots <span class="op">=</span> <span class="va">plots</span>, </span>
-<span class="r-in">            folder_name <span class="op">=</span> <span class="st">"Low Flow Plots"</span>,</span>
-<span class="r-in">            combined_pdf <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in">            </span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Working examples:</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example plots to save</span></span></span>
+<span class="r-in"><span><span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="plot_annual_lowflows.html">plot_annual_lowflows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Write the plots as "png" files</span></span></span>
+<span class="r-in"><span><span class="fu">write_plots</span><span class="op">(</span>plots <span class="op">=</span> <span class="va">plots</span>, </span></span>
+<span class="r-in"><span>            folder_name <span class="op">=</span> <span class="st">"Low Flow Plots"</span>,</span></span>
+<span class="r-in"><span>            plot_filetype <span class="op">=</span> <span class="st">"png"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Write the plots as a combined "pdf" document</span></span></span>
+<span class="r-in"><span><span class="fu">write_plots</span><span class="op">(</span>plots <span class="op">=</span> <span class="va">plots</span>, </span></span>
+<span class="r-in"><span>            folder_name <span class="op">=</span> <span class="st">"Low Flow Plots"</span>,</span></span>
+<span class="r-in"><span>            combined_pdf <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>            </span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -176,7 +193,7 @@ If using <code>combined_pdf</code> argument, then it will be the name of the PDF
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

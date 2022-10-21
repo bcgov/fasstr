@@ -12,7 +12,11 @@ vignette: >
 ```{r options, include=FALSE}
 knitr::opts_chunk$set(eval = nzchar(Sys.getenv("hydat_eval")),
                       # warning = FALSE, 
-                      message = FALSE)
+                      message = FALSE#,
+                      #  collapse = TRUE,
+                      # crayon.enabled = FALSE
+)
+#options(crayon.enabled = FALSE)
 ```
 
 
@@ -167,10 +171,17 @@ There are several functions that are used to prepare your flow data set for your
 
 The functions are set up to easily incorporate the use of the pipe operator:
 
-```{r exampletidy, comment=NA}
+```{r exampletidy, comment=NA, eval=FALSE}
 fill_missing_dates(station_number = "08HA011") %>% 
   add_date_variables() %>% 
   add_rolling_means(roll_days = 7)
+```
+```{r exampletidy2, comment=NA, echo=FALSE}
+data.frame(head(
+  fill_missing_dates(station_number = "08HA011") %>%
+    add_date_variables() %>%
+    add_rolling_means(roll_days = 7)
+))
 ```
 
 ### Filling missing dates
@@ -242,13 +253,13 @@ Odd roll_days example (column headers have alignment direction added):
 
 ```{r,  echo=FALSE, comment=NA}
 library(fasstr)
-head(add_rolling_means(station_number = "08HA011", roll_days = 5, roll_align = "left") %>% 
-       dplyr::rename("Q5Day_left" = Q5Day) %>% 
-       add_rolling_means(roll_days = 5, roll_align = "center") %>% 
-       dplyr::rename("Q5Day_center" = Q5Day) %>% 
-       add_rolling_means(roll_days = 5, roll_align = "right") %>% 
-       dplyr::rename("Q5Day_right" = Q5Day) %>% 
-       dplyr::select(-STATION_NUMBER, -Parameter, -Symbol))
+data.frame(head(add_rolling_means(station_number = "08HA011", roll_days = 5, roll_align = "left") %>% 
+                  dplyr::rename("Q5Day_left" = Q5Day) %>% 
+                  add_rolling_means(roll_days = 5, roll_align = "center") %>% 
+                  dplyr::rename("Q5Day_center" = Q5Day) %>% 
+                  add_rolling_means(roll_days = 5, roll_align = "right") %>% 
+                  dplyr::rename("Q5Day_right" = Q5Day) %>% 
+                  dplyr::select(-STATION_NUMBER, -Parameter, -Symbol)))
 
 ```
 
@@ -256,13 +267,13 @@ Even roll_days example:
 
 ```{r,  echo=FALSE, comment=NA}
 library(fasstr)
-head(add_rolling_means(station_number = "08HA011", roll_days = 6, roll_align = "left") %>% 
-       dplyr::rename("Q6Day_left" = Q6Day) %>% 
-       add_rolling_means(roll_days = 6, roll_align = "center") %>% 
-       dplyr::rename("Q6Day_center" = Q6Day) %>% 
-       add_rolling_means(roll_days = 6, roll_align = "right") %>% 
-       dplyr::rename("Q6Day_right" = Q6Day) %>% 
-       dplyr::select(-STATION_NUMBER, -Parameter, -Symbol))
+data.frame(head(add_rolling_means(station_number = "08HA011", roll_days = 6, roll_align = "left") %>% 
+                  dplyr::rename("Q6Day_left" = Q6Day) %>% 
+                  add_rolling_means(roll_days = 6, roll_align = "center") %>% 
+                  dplyr::rename("Q6Day_center" = Q6Day) %>% 
+                  add_rolling_means(roll_days = 6, roll_align = "right") %>% 
+                  dplyr::rename("Q6Day_right" = Q6Day) %>% 
+                  dplyr::select(-STATION_NUMBER, -Parameter, -Symbol)))
 
 ```
 
@@ -332,7 +343,7 @@ add_cumulative_yield(station_number = "08NM116",
 
 By utilizing the `data` argument as the first one list, it enables the user to work with the tidying functions within a tidy 'pipeline' and can pass onto the other `fasstr` functions.
 
-```{r, comment=NA}
+```{r, comment=NA, eval = FALSE}
 fill_missing_dates(station_number = "08NM116") %>% 
   add_date_variables(water_year_start = 9) %>%
   add_seasons(seasons_length = 3) %>% 
@@ -351,9 +362,11 @@ fill_missing_dates(station_number = "08NM116") %>%
 If you are looking at some data for the first time, it may be useful to explore the data quality and availability. The following functions will help to explore the data:
 
 - `plot_flow_data()` - plot daily mean streamflow
+- `plot_flow_data_symbols()` - plot daily mean streamflow with their symbols
 - `screen_flow_data()` - calculate annual summary and identify missing data
 - `plot_data_screening()` - plot annual summary statistics for data screening
 - `plot_missing_dates()` - plot annual and monthly missing dates
+- `plot_annual_symbols()` - plot annual counts of symbols
 
 To view the entire daily flow data set to view for gaps and outliers, or changes in flow over time, the `plot_flow_data()` function will plot all daily data in the data frame. The plot can be filtered by years and dates.
 
@@ -367,23 +380,41 @@ plot_flow_data(station_number = c("08NM241", "08NM242"),
                one_plot = TRUE) 
 ```
 
-The `screen_flow_data()` function provides an overview of the number of flow values per year and each month per year, along with annual minimums, maximums, means, and standard deviations to inspect for outliers in the data.
+To view a flow time series data quality from their provided HYDAT symbols (qualifer symbols like E for estimate, B for under ice etc.), or custom symbols/categories from a column called "Symbol", the `plot_flow_data()` function will plot all daily data in the data frame. The plot can be filtered by years and dates.
 
-```{r, comment=NA}
-screen_flow_data(station_number = "08NM116")
+```{r, fig.height = 2.5, fig.width = 7, comment=NA, warning=FALSE}
+plot_flow_data_symbols(station_number = "08NM116",
+                       start_year = 1972, end_year = 1976) 
 ```
 
-To view the summary data in the `screen_flow_data()` function, the `plot_data_screening()` function will plot the annual minimums, maximums, means, and standard deviations.
+The `screen_flow_data()` function provides an overview of the number of flow values per year and each month per year, along with annual minimums, maximums, means, and standard deviations to inspect for outliers in the data.
 
-```{r, fig.height = 3, fig.width = 7, comment=NA}
+```{r, comment=NA, eval=FALSE}
+screen_flow_data(station_number = "08NM116")
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(head(
+  screen_flow_data(station_number = "08NM116")
+))
+```
+To view the summary data in the `screen_flow_data()` function, the `plot_data_screening()` function will plot the annual minimums, maximums, means, medians, and standard deviations, with the point coloured by data availability.
+
+```{r, fig.height = 4, fig.width = 7, comment=NA}
 plot_data_screening(station_number = "08NM116") 
 ```
 
 Use the `plot_missing_dates()` function to plot out the missing dates for each month of each year to view for data availability and gaps.
 
-```{r, fig.height = 4, fig.width = 7, comment=NA}
+```{r, fig.height = 3, fig.width = 7, comment=NA}
 plot_missing_dates(station_number = "08NM116") 
 ```
+
+Use the `plot_annual_symbols()` function to plot the symbols on an annual basis to view the data quality and data availability. The default plots by day of year, but there are options to view annual counts of symbols.
+
+```{r, fig.height = 3, fig.width = 7, comment=NA}
+plot_annual_symbols(station_number = "08NM116") 
+```
+
 
 ***
 
@@ -425,9 +456,13 @@ The long-term `calc_` and `plot_` functions calculate the long-term and long-ter
 
 For `calc_longterm_daily_stats()`, for a given month, all daily flow values for a given month over the entire record are summarized together. For the 'Long-term' category, it summarizes all flow values over the entire record to determine the mean, median, maximum, minimum, and selected percentiles of daily flows. You can also specify a certain period of months to summarize together (ex. Jul-Sep flows) using the `custom_months` argument (listing the months) and labeling it using the `custom_months_label` argument (ex. "Summer Flows").
 
-```{r, comment=NA}
+```{r, comment=NA, eval=FALSE}
 calc_longterm_daily_stats(station_number = "08NM116", 
                           start_year = 1974)
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(calc_longterm_daily_stats(station_number = "08NM116", 
+                                     start_year = 1974))
 ```
 
 The `plot_longterm_daily_stats()` will plot the monthly mean, median, maximum, and minimum values along with selected inner and outer percentiles ribbons on one plot. Change the inner and outer percentile ranges using the `inner_percentiles` and `outer_percentiles` arguments, remove the maximum and minimum ribbon using `include_extremes = FALSE`, or add a specific year using `add_year`.
@@ -441,9 +476,13 @@ plot_longterm_daily_stats(station_number = "08NM116",
 
 Similarly, the `calc_longterm_monthly_stats()` functions will calculate the mean, median, maximum, and percentiles of monthly mean flows from all years. Meaning the all daily flows for each month and each year are averaged, and the statistics are based on these annual monthly means. The "Annual" data row summarizes the mean, median, maximum, and percentiles from all annual means.
 
-```{r, comment=NA}
+```{r, comment=NA, eval=FALSE}
 calc_longterm_monthly_stats(station_number = "08NM116", 
                             start_year = 1974)
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(calc_longterm_monthly_stats(station_number = "08NM116", 
+                                       start_year = 1974))
 ```
 
 The corresponding `plot_longterm_monthly_stats()` function plots the data, with similar options as `plot_longterm_daily_stats()`.
@@ -457,25 +496,34 @@ plot_longterm_monthly_stats(station_number = "08NM116",
 
 The `calc_annual_stats()` and `plot_annual_stats()` functions calculate the mean, median, maximum, minimum, and percentiles of daily flows for every year of data provided. In calculating, all daily flow values are grouped by year.
 
-```{r, comment=NA}
+```{r, comment=NA, eval=FALSE}
 calc_annual_stats(station_number = "08NM116", 
                   start_year = 1974)
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(head(calc_annual_stats(station_number = "08NM116", 
+                                  start_year = 1974)))
 ```
 
 The percentiles in the `plot_annual_stats()` function are fully customizable like the `calc_` function.
 
 ```{r, fig.height = 2.5, fig.width = 7, comment=NA}
 plot_annual_stats(station_number = "08NM116", 
-                  start_year = 1974) 
+                  start_year = 1974,
+                  log_discharge = TRUE) 
 ```
 
 #### Basic monthly statistics
 
 The `calc_monthly_stats()` and `plot_monthly_stats()` functions calculate the mean, median, maximum, minimum, and percentiles of daily flows for each month of each year. In calculating, all daily flow values are grouped by year and month.
 
-```{r, comment=NA}
+```{r, comment=NA, eval=FALSE}
 calc_monthly_stats(station_number = "08NM116", 
                    start_year = 1974)
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(head(calc_monthly_stats(station_number = "08NM116", 
+                                   start_year = 1974)))
 ```
 
 The percentiles in the `plot_monthly_stats()` function are fully customizable like the `calc_` function. A plot for each different statistic (means, medians, percentiles, etc.) is created to visualize the monthly patterns over the years.
@@ -489,9 +537,13 @@ plot_monthly_stats(station_number = "08NM116",
 
 The `calc_daily_stats()` and `plot_daily_stats()` functions calculate the mean, median, maximum, minimum, and percentiles of daily flows for each day of the year. For example, for a given day of year (i.e. day 1 (Jan-01) or day 2 (Jan-02)), all flow values for that day from the entire record are summarized together. Only the first 365 days of each year are summarized (ignores the 366th day from leap years). In calculating, all daily flow values are grouped by day of year.
 
-```{r, comment=NA}
+```{r, comment=NA, eval=FALSE}
 calc_daily_stats(station_number = "08NM116", 
                  start_year = 1974)
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(head(calc_daily_stats(station_number = "08NM116", 
+                                 start_year = 1974)))
 ```
 
 The plotting daily statistics function will plot the monthly mean, median, maximum, and minimum values along with selected inner and outer percentiles ribbons on one plot. Change the inner and outer percentile ranges using the `inner_percentiles` and `outer_percentiles` arguments, remove the maximum and minimum ribbon using `include_extremes = FALSE`, or add a specific year using `add_year`. 
@@ -528,26 +580,42 @@ plot_flow_duration(station_number = "08NM116",
 
 `calc_longterm_mean()` calculates the mean of all the daily flows, and specific percents of the long-term mean (using `percent_MAD` argument). It can also be known as the long-term mean annual discharge, MAD.
 
-```{r,  echo=TRUE, comment=NA}
+```{r,  echo=TRUE, comment=NA, eval=FALSE}
 calc_longterm_mean(station_number = "08NM116", 
                    start_year = 1974,
                    percent_MAD = c(5,10,20))
 ```
+```{r, comment=NA, echo=FALSE}
+data.frame(calc_longterm_mean(station_number = "08NM116", 
+                              start_year = 1974,
+                              percent_MAD = c(5,10,20)))
+```
 
 `calc_longterm_percentile()` calculates the selected long-term percentiles of all the daily flow values.
 
-```{r,  echo=TRUE, comment=NA}
+```{r,  echo=TRUE, comment=NA, eval=FALSE}
 calc_longterm_percentile(station_number = "08NM116",
                          start_year = 1974,
                          percentiles = c(25,50,75))
 ```
+```{r, comment=NA, echo=FALSE}
+data.frame(calc_longterm_percentile(station_number = "08NM116",
+                                    start_year = 1974,
+                                    percentiles = c(25,50,75)))
+```
+
 
 `calc_flow_percentile()` calculates the percentile rank of a specified flow value, provided as `flow_value`. It compares the flow value to all daily flow values to determines the percentile rank.
 
-```{r,  echo=TRUE, comment=NA}
+```{r,  echo=TRUE, comment=NA, eval=FALSE}
 calc_flow_percentile(station_number = "08NM116", 
                      start_year = 1974,
                      flow_value = 6.270)
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(calc_flow_percentile(station_number = "08NM116", 
+                                start_year = 1974,
+                                flow_value = 6.270))
 ```
 
 
@@ -592,16 +660,24 @@ While these functions default to volumetric flows, using `use_yield = TRUE` and 
 
 The `calc_annual_cumulative_stats()` function provides the total annual volume or runoff yield (if `use_yield = TRUE` is used). It totals all flows for a given year in cubic metres.
 
-```{r, comment=NA}
+```{r, comment=NA, eval=FALSE}
 calc_annual_cumulative_stats(station_number = "08NM116", start_year = 1974)
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(head(calc_annual_cumulative_stats(station_number = "08NM116", start_year = 1974)))
 ```
 
 By using the `include_seasons = TRUE` (logical TRUE/FALSE) argument, total seasonal flows columns will be added to the results. Two columns of two-seasons (2-six months), and four columns of four-seasons (4-three months) will be added.  The start month of the first seasons will begin in the first month of the year (ex. Jan for Calendar years or Oct for water years starting in October).
 
-```{r, comment=NA}
+```{r, comment=NA, eval=FALSE}
 calc_annual_cumulative_stats(station_number = "08NM116", 
                              start_year = 1974,
                              include_seasons = TRUE)
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(head(calc_annual_cumulative_stats(station_number = "08NM116", 
+                                             start_year = 1974,
+                                             include_seasons = TRUE)))
 ```
 
 The total volumes for each year can be plotted using the `plot_annual_cumulative_stats()` function. When using `include_seasons = TRUE` two additional plots will be created, one for two- and four-seasons.
@@ -616,9 +692,13 @@ plot_annual_cumulative_stats(station_number = "08NM116",
 
 The `calc_monthly_cumulative_stats()` and `plot_monthly_cumulative_stats()` functions calculate the mean, median, maximum, minimum, and percentiles of total cumulative monthly flows. For each month of each year, the total volume or runoff yield is determined. Then within a given year, the cumulative total for each month is determined by added all previous months (ex. Jan = Jan total; Feb = Jan+Feb totals, etc.). Then the mean, median, maximum, minimum, and percentiles are calculated based on those monthly cumulative totals for each year. In interpreting the information, if a given total flow is below the mean value, then the cumulative flow is less than average, or less volume has passed through the station than average at that point in time. The percentiles in the `calc_` function are flexible using the `percentiles` argument.
 
-```{r, comment=NA}
+```{r, comment=NA, eval=FALSE}
 calc_monthly_cumulative_stats(station_number = "08NM116", 
                               start_year = 1974)
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(calc_monthly_cumulative_stats(station_number = "08NM116", 
+                                         start_year = 1974))
 ```
 
 The `plot_monthly_cumulative_stats()` function will plot the monthly total mean, median, maximum, and minimum values along with the 5th, 25th, 75th, and 95th percentiles all on one plot. The percentiles are not customizable for this function. 
@@ -633,9 +713,13 @@ plot_monthly_cumulative_stats(station_number = "08NM116",
 
 The `calc_daily_cumulative_stats()` and `plot_daily_cumulative_stats()` functions calculate the mean, median, maximum, minimum, and percentiles of total cumulative daily flows. For each day of each year, the total volume or runoff yield is determined. Then within a given year, the cumulative total for each day is determined by added all previous days (ex. Jan-01 = Jan-01 total; Jan-02 = Jan-01+Jan-02 totals, etc.). Then the mean, median, maximum, minimum, and percentiles are calculated based on those daily cumulative totals for each year. In interpreting the information, if a given total flow is below the mean value, then the cumulative flow is less than average. In other words, less volume has passed through the station than normal at that point in time. Viewing the plot below may help understand how this function works. The percentiles in the `calc_` function are flexible using the `percentiles` argument.
 
-```{r, comment=NA}
+```{r, comment=NA, eval=FALSE}
 calc_daily_cumulative_stats(station_number = "08NM116", 
                             start_year = 1974)
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(head(calc_daily_cumulative_stats(station_number = "08NM116", 
+                                            start_year = 1974)))
 ```
 
 The `plot_daily_cumulative_stats()` function will plot the daily cumulative total mean, median, maximum, and minimum values along with the 5th, 25th, 75th, and 95th percentiles all on one plot. The percentiles are not customizable for this function. 
@@ -654,25 +738,38 @@ plot_daily_cumulative_stats(station_number = "08NM116",
 Beside the basic summary statistics, there are other useful statistics for interpreting annual streamflow data. They include the following::
 
 - `calc_annual_flow_timing()` - calculate annual flow timing
-- `calc_annual_lowflows()` - calculate annual low flow values and dates
-- `calc_annual_peaks()` - calculate annual low and high flow values and dates
-- `calc_annual_outside_normal()` - calculate annual days above and below normal
+- `calc_annual_lowflows()` - calculate multiple n-day annual low flow values and dates
+- `calc_annual_highflows()` - calculate multiple n-day annual high flow values and dates
+- `calc_annual_extremes()` - calculate annual low and high flow values and dates
+- `calc_annual_normal_days()` - calculate annual normal days and days above and below normal
 - `calc_all_annual_stats()` - calculate all `fasstr` annual statistics
 
 and their corresponding and other plotting functions:
 
 - `plot_annual_flow_timing()` - plot annual flow timing
-- `plot_annual_lowflows()` - plot annual low flow values and dates
-- `plot_annual_outside_normal()` - plot annual days above and below normal
+- `plot_annual_lowflows()` - plot multiple n-day annual low flow values and dates
+- `plot_annual_highflows()` - plot multiple n-day annual low flow values and dates
+- `plot_annual_extremes()` - plot annual low and high flow values and dates
+- `plot_annual_normal_days()` - plot annual normal days and days above and below normal
 - `plot_annual_means()` - plot annual means compared to the long-term mean
+
+There are also a few functions that view give some of the annual statistics context:
+
+- `plot_annual_flow_timing_year()` - plot annual flow timing for a given year
+- `plot_annual_extremes_year()` - plot annual low and high flow values and dates for a given year
+- `plot_annual_normal_days_year()` - plot annual normal days and days above and below normal for a given year
 
 #### Annual flow timing
 
 The `calc_annual_flow_timing()` calculates the day of year when a portion of a total annual volumetric flow has occurred. Using the `percent_total` argument, one or multiple portions of annual flow can be calculated. Using 50 as the `percent_total` is similar to the center of volume or timing of half flow. The day of year and date will be also be produced.
 
-```{r, comment=NA}
+```{r, comment=NA, eval=FALSE}
 calc_annual_flow_timing(station_number = "08NM116", 
                         start_year = 1974)
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(head(calc_annual_flow_timing(station_number = "08NM116", 
+                                        start_year = 1974)))
 ```
 
 The timing of flows can also be plotted.
@@ -682,13 +779,24 @@ plot_annual_flow_timing(station_number = "08NM116",
                         start_year = 1974) 
 ```
 
+The timing of flows for a given year can also be plotted.
+
+```{r, fig.height = 3.5, fig.width = 8, comment=NA}
+plot_annual_flow_timing_year(station_number = "08NM116",
+                             year_to_plot = 1999) 
+```
+
 #### Annual low-flows
 
 The `calc_annual_lowflows()` calculates the annual minimum values, the day of year, and dates of specified rolling mean days (can do multiple days if desired). 
 
-```{r, comment=NA}
+```{r, comment=NA, eval=FALSE}
 calc_annual_lowflows(station_number = "08NM116", 
                      start_year = 1974)
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(head(calc_annual_lowflows(station_number = "08NM116", 
+                                     start_year = 1974)))
 ```
 
 The annual low flow values and the day of the low flow values can be plotted, separately, using the `plot_annual_lowflows()` function.
@@ -698,30 +806,87 @@ plot_annual_lowflows(station_number = "08NM116",
                      start_year = 1974) 
 ```
 
-#### Annual peaks
+#### Annual high flows
 
-Similar to `calc_annual_lowflows()`, `calc_annual_peaks()` calculates the annual minimum and maximum values, the day of year, and dates of specified rolling mean days. 
+The `calc_annual_highflows()` calculates the annual maximum values, the day of year, and dates of specified rolling mean days (can do multiple days if desired). 
 
-```{r, comment=NA}
-calc_annual_peaks(station_number = "08NM116", 
-                  start_year = 1974)
+```{r, comment=NA, eval=FALSE}
+calc_annual_highflows(station_number = "08NM116", 
+                      start_year = 1974)
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(head(calc_annual_highflows(station_number = "08NM116", 
+                                      start_year = 1974)))
 ```
 
-
-#### Number of days per year outside of normal
-
-The `calc_annual_outside_normal()` calculates the number of days per year that are above and below "normal", "normal" typically defined as 25th and 75th percentiles. The normal limits can be determined using the `normal_percentiles` argument, listing the lower and upper normal ranges, respectively (e.g. `normal_percentiles = c(25, 75)`). The function calculates the lower and upper percentiles for each day of the year over all years and sums all days that are above or below the daily normal ranges for a given year. Rolling averages can also be used in this function using the `roll_days` argument.
-
-```{r, comment=NA}
-calc_annual_outside_normal(station_number = "08NM116", 
-                           start_year = 1974)
-```
-
-Each of the above, below, and total days outside of normal can be plotted using the `plot_annual_outside_normal()` function.
+The annual high flow values and the day of the high flow values can be plotted, separately, using the `plot_annual_highflows()` function.
 
 ```{r, fig.height = 4.5, fig.width = 7, comment=NA}
-plot_annual_outside_normal(station_number = "08NM116", 
-                           start_year = 1974) 
+plot_annual_highflows(station_number = "08NM116",
+                      start_year = 1974) 
+```
+
+#### Annual extreme (both high and low) flows
+
+Similar to `*_annual_lowflows()` and `*_annual_highflows()`, `calc_annual_extremes()` calculates the annual maximum and minimum values, the day of year, and dates of specified rolling mean days and specified months for each of the high and low flows. 
+
+```{r, comment=NA, eval=FALSE}
+calc_annual_extremes(station_number = "08NM116",
+                     roll_days_min = 7,
+                     roll_days_max = 3,
+                     start_year = 1974)
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(head(calc_annual_extremes(station_number = "08NM116",
+                                     roll_days_min = 7,
+                                     roll_days_max = 3,
+                                     start_year = 1974)))
+```
+
+The annual extremes values and the days can be plotted:
+
+```{r, fig.height = 3, fig.width = 7, comment=NA}
+plot_annual_extremes(station_number = "08NM116",
+                     roll_days_min = 7,
+                     roll_days_max = 3,
+                     start_year = 1974)
+```
+
+The annual extremes values and the days for a given year can also be plotted:
+
+```{r, fig.height = 3, fig.width = 8, comment=NA}
+plot_annual_extremes_year(station_number = "08NM116",
+                          roll_days_min = 7,
+                          roll_days_max = 3,
+                          start_year = 1974,
+                          year_to_plot = 1999)
+```
+
+#### Number of normal (and above/below normal) days per year
+
+The `calc_annual_normal_days()` calculates the number of days per year that are normal and above and below "normal", "normal" typically defined as 25th and 75th percentiles. The normal limits can be determined using the `normal_percentiles` argument, listing the lower and upper normal ranges, respectively (e.g. `normal_percentiles = c(25, 75)`). The function calculates the lower and upper percentiles for each day of the year over all years and sums all days that are within and above or below the daily normal ranges for a given year. Rolling averages can also be used in this function using the `roll_days` argument.
+
+```{r, comment=NA, eval=FALSE}
+calc_annual_normal_days(station_number = "08NM116", 
+                        start_year = 1974)
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(head(calc_annual_normal_days(station_number = "08NM116", 
+                                        start_year = 1974)))
+```
+
+Each of the above, below, and normal days can be plotted using the `plot_annual_normal_days()` function.
+
+```{r, fig.height = 3, fig.width = 7, comment=NA}
+plot_annual_normal_days(station_number = "08NM116", 
+                        start_year = 1974) 
+```
+
+The daily flows with normal categories for a given year can also be plotted.
+
+```{r, fig.height = 3.5, fig.width = 8, comment=NA}
+plot_annual_normal_days_year(station_number = "08NM116",
+                             year_to_plot = 1999) 
 ```
 
 #### Calculating all annual statistics
@@ -737,7 +902,7 @@ colnames(calc_all_annual_stats(station_number = "08NM116",
 
 The `plot_annual_means()` function provides a way to visualize how annual means fluctuate around the long-term mean. The x-axis is located at the long-term mean annual discharge (mean of all discharge values over all years) and the bars shows the annual means.  The plot is essentially an anomaly plot but with their y-value matching the mean value and not difference from the mean.
 
-```{r, fig.height = 3, fig.width = 7, comment=NA}
+```{r, fig.height = 3, fig.width = 8, comment=NA}
 plot_annual_means(station_number = "08NM116", 
                   start_year = 1974) 
 ```
@@ -976,32 +1141,43 @@ calc_annual_flow_timing(station_number = "08NM116",
                         percent_total = c(10,20))
 ```
 
-Example of plotting the number of days per years outside of the 10th and 90th percentiles (25th and 75th percentiles are default):
+Example of plotting the number of normal and above/below normal days per year of the 10th and 90th percentiles (25th and 75th percentiles are default):
 
-```{r, fig.height = 4.5, fig.width = 7, comment=NA}
-plot_annual_outside_normal(station_number = "08NM116", 
-                           start_year = 1980, 
-                           end_year = 2010,
-                           normal_percentiles = c(10,90))
+```{r, fig.height = 3, fig.width = 7, comment=NA}
+plot_annual_normal_days(station_number = "08NM116", 
+                        start_year = 1980, 
+                        end_year = 2010,
+                        normal_percentiles = c(10,90))
 ```
 
 #### Data frame options
 
 An option when working with the functions that produce data frames is to transpose the rows and columns of the data. Most functions by default provide data results such there are columns of statistics for each station and time period. See the example here:
 
-```{r, comment=NA}
+```{r, comment=NA, eval=FALSE}
 calc_longterm_daily_stats(station_number = "08NM116", 
                           start_year = 1980, 
                           end_year = 2010)
 ```
+```{r, comment=NA, echo=FALSE}
+data.frame(calc_longterm_daily_stats(station_number = "08NM116", 
+                                     start_year = 1980, 
+                                     end_year = 2010))
+```
 
 In some circumstances, however, it may be more convenient to wrangle the data such that there are columns for stations (or groupings) and a single column with all statistics, and then the values are placed in columns for each respective time period. See the following example when setting `transpose = TRUE`.
 
-```{r, comment=NA}
+```{r, comment=NA, eval=FALSE}
 calc_longterm_daily_stats(station_number = "08NM116", 
                           start_year = 1980, 
                           end_year = 2010,
                           transpose = TRUE)
+```
+```{r, comment=NA, echo=FALSE}
+data.frame(calc_longterm_daily_stats(station_number = "08NM116", 
+                                     start_year = 1980, 
+                                     end_year = 2010,
+                                     transpose = TRUE))
 ```
 
 #### Plotting options

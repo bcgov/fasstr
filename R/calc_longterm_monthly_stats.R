@@ -53,17 +53,6 @@
 #' # Calculate long-term monthly statistics regardless if there is missing data for a given year
 #' calc_longterm_monthly_stats(station_number = "08NM116",
 #'                             ignore_missing = TRUE)
-#'                   
-#' # Calculate long-term monthly statistics for water years starting in October
-#' calc_longterm_monthly_stats(station_number = "08NM116",
-#'                             start_year = 1980,
-#'                             water_year_start = 10)
-#'                   
-#' # Calculate long-term monthly statistics with custom years
-#' calc_longterm_monthly_stats(station_number = "08NM116",
-#'                             start_year = 1981,
-#'                             end_year = 2010,
-#'                             exclude_years = c(1991,1993:1995))
 #'                     
 #' # Calculate long-term monthly statistics and add custom stats for July-September
 #' calc_longterm_monthly_stats(station_number = "08NM116",
@@ -122,15 +111,15 @@ calc_longterm_monthly_stats <- function(data,
   }
   
   rolling_days_checks(roll_days, roll_align)
-  percentiles_checks(percentiles)
+  numeric_range_checks(percentiles)
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months = months)
-  transpose_checks(transpose)
-  ignore_missing_checks(ignore_missing)
-  complete_yrs_checks(complete_years)
+  logical_arg_check(transpose)
+  logical_arg_check(ignore_missing)
+  logical_arg_check(complete_years)
   custom_months_checks(custom_months, custom_months_label)
-  include_longterm_checks(include_annual)
+  logical_arg_check(include_annual)
   
   
   ## FLOW DATA CHECKS AND FORMATTING

@@ -15,12 +15,12 @@
 #'
 #' @description Fills data gaps of missing dates of the data provided. Builds a continuous data set from the start date to the end date.
 #'    Only missing dates are filled, columns not specified as dates or groups will be filled with NA. Will completely fill first and 
-#'    last years, unless specified using \code{fill_end_years = FALSE}.
+#'    last years, unless specified using \code{pad_ends = FALSE}.
 #'
 #' @inheritParams calc_annual_stats
 #' @param values Name of column in \code{data} that contains numeric flow values, in units of cubic metres per second. Not required as
 #'   of fasstr 0.3.3 as all other columns are filled with \code{NA}.
-#' @param fill_end_years Logical value indicating whether to fill incomplete start and end years with rows of dates. 
+#' @param pad_ends Logical value indicating whether to fill incomplete start and end years with rows of dates. 
 #'    If \code{FALSE} then only missing dates between the provided start and end dates will be filled. Default \code{TRUE}.
 #'  
 #' @return A tibble data frame of the source data with additional rows where missing dates existed.
@@ -46,7 +46,7 @@ fill_missing_dates <- function(data,
                                groups = STATION_NUMBER,
                                station_number,
                                water_year_start = 1,
-                               fill_end_years = TRUE){
+                               pad_ends = TRUE){
   
   
   ## ARGUMENT CHECKS
@@ -58,8 +58,8 @@ fill_missing_dates <- function(data,
   if (missing(station_number)) {
     station_number <- NULL
   }
-  if (!is.logical(fill_end_years[1]))        
-    stop("fill_end_years must be logical (TRUE/FALSE).", call. = FALSE)
+  if (!is.logical(pad_ends[1]))        
+    stop("pad_ends must be logical (TRUE/FALSE).", call. = FALSE)
   
   if (as.character(substitute(values)) != "Value") 
     message("values argument is deprected for this function and not required. values still filled with NA if provided.")
@@ -99,7 +99,7 @@ fill_missing_dates <- function(data,
       end_date <- max(flow_data_stn$Date, na.rm = TRUE)
       
       # Override start/end dates if filling end years
-      if (fill_end_years[1]) {
+      if (pad_ends[1]) {
         
         min_month <- as.numeric(format(as.Date(min(flow_data_stn$Date, na.rm = TRUE)), format = "%m"))
         min_year <-  as.numeric(format(as.Date(min(flow_data_stn$Date, na.rm = TRUE)), format = "%Y"))
@@ -108,7 +108,7 @@ fill_missing_dates <- function(data,
         
         max_month <- as.numeric(format(as.Date(max(flow_data_stn$Date, na.rm = TRUE)), format = "%m"))
         max_year <-  as.numeric(format(as.Date(max(flow_data_stn$Date, na.rm = TRUE)), format = "%Y"))
-        end_date <- as.Date(paste(ifelse(max_month > water_year_start, max_year + 1, max_year),
+        end_date <- as.Date(paste(ifelse(max_month >= water_year_start, max_year + 1, max_year),
                                   water_year_start, '01', sep = '-'), "%Y-%m-%d") - 1
         
       }

@@ -19,7 +19,9 @@ plot_longterm_daily_stats(
   months = 1:12,
   complete_years = FALSE,
   ignore_missing = FALSE,
-  include_extremes = TRUE,
+  plot_extremes = TRUE,
+  plot_inner_percentiles = TRUE,
+  plot_outer_percentiles = TRUE,
   inner_percentiles = c(25, 75),
   outer_percentiles = c(5, 95),
   add_year,
@@ -74,8 +76,12 @@ months (\code{1:12}).}
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from
 time periods with no missing dates will be returned. Default \code{FALSE}.}
 
-\item{include_extremes}{Logical value to indicate plotting a ribbon with the range of daily minimum and maximum flows. 
+\item{plot_extremes}{Logical value to indicate plotting a ribbon with the range of daily minimum and maximum flows. 
 Default \code{TRUE}.}
+
+\item{plot_inner_percentiles}{Logical value indicating whether to plot the inner percentiles ribbon. Default \code{TRUE}.}
+
+\item{plot_outer_percentiles}{Logical value indicating whether to plot the outer percentiles ribbon. Default \code{TRUE}.}
 
 \item{inner_percentiles}{Numeric vector of two percentile values indicating the lower and upper limits of the 
 inner percentiles ribbon for plotting. Default \code{c(25,75)}, set to \code{NULL} for no inner ribbon.}
@@ -106,7 +112,7 @@ A list of ggplot2 objects with the following for each station provided:
 \description{
 Plots the long-term mean, median, maximum, minimum, and percentiles of daily flow values for over all months and 
    all data (Long-term) from a daily streamflow data set. Calculates statistics from all values, unless specified. 
-   The Maximum-Minimum band can be removed using the \code{include_extremes} argument and the percentile bands can be
+   The Maximum-Minimum band can be removed using the \code{plot_extremes} argument and the percentile bands can be
    customized using the \code{inner_percentiles} and \code{outer_percentiles} arguments. Data calculated using the 
    \code{calc_longterm_daily_stats()} function. Returns a list of plots.
 }

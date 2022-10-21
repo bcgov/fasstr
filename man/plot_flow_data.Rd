@@ -106,14 +106,14 @@ plot_flow_data(station_number = "08NM116",
                end_year = 2010,
                exclude_years = c(1991,1993:1995))
                  
+# Plot data multiple groups on one plot
+plot_flow_data(station_number = c("08NM241", "08NM242"),
+               one_plot = TRUE) 
+               
 # Plot data between specific dates
 plot_flow_data(station_number = "08NM116",
                start_date = "1990-01-01",
                end_date = "1990-06-01")
-
-# Plot data multiple groups on one plot
-plot_flow_data(station_number = c("08NM241", "08NM242"),
-               one_plot = TRUE) 
                
 }
 }

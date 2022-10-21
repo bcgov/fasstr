@@ -25,6 +25,7 @@ compute_annual_trends(
   lowflow_align = "right",
   timing_percent = c(25, 33, 50, 75),
   normal_percentiles = c(25, 75),
+  complete_years = FALSE,
   ignore_missing = FALSE,
   allowed_missing_annual = ifelse(ignore_missing, 100, 0),
   allowed_missing_monthly = ifelse(ignore_missing, 100, 0),
@@ -90,7 +91,7 @@ Used for \code{calc_annual_stats()} and \code{calc_monthly_stats()} functions.}
 
 \item{stats_align}{Character string identifying the direction of the rolling mean on basic stats from the specified date, either by 
 the first (\code{'left'}), last (\code{'right'}), or middle (\code{'center'}) day of the rolling n-day group of observations.
-Default \code{'right'}. Used for \code{calc_annual_stats()}, \code{calc_monthly_stats()}, and \code{calc_annual_outside_normal()}
+Default \code{'right'}. Used for \code{calc_annual_stats()}, \code{calc_monthly_stats()}, and \code{calc_annual_normal_days()}
 functions.}
 
 \item{lowflow_days}{Numeric vector of the number of days to apply a rolling mean on low flow stats. Default \code{c(1,3,7,30)}.
@@ -105,6 +106,8 @@ function. Default \code{c(25,33.3,50,75)}.}
 
 \item{normal_percentiles}{Numeric vector of two values, lower and upper percentiles, respectively indicating the limits of the 
 normal range. Default \code{c(25,75)}.}
+
+\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
 
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from
@@ -144,7 +147,7 @@ Calculates prewhitened nonlinear trends on annual streamflow data. Uses the
  \item{\code{calc_annual_cumulative_stats()}}
  \item{\code{calc_annual_flow_timing()}}
  \item{\code{calc_monthly_stats()}}
- \item{\code{calc_annual_outside_normal()}}
+ \item{\code{calc_annual_normal_days()}}
  }
 }
 \examples{

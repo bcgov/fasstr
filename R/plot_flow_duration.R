@@ -68,9 +68,9 @@ plot_flow_duration <- function(data,
                                start_year,
                                end_year,
                                exclude_years,
-                               complete_years = FALSE,
                                custom_months,
                                custom_months_label,
+                               complete_years = FALSE,
                                ignore_missing = FALSE,
                                months = 1:12,
                                include_longterm = TRUE,
@@ -105,12 +105,12 @@ plot_flow_duration <- function(data,
     custom_months_label <- "Custom-Months"
   }
   
-  log_discharge_checks(log_discharge)
+  logical_arg_check(log_discharge)
   log_ticks_checks(log_ticks, log_discharge)
   custom_months_checks(custom_months, custom_months_label)
-  include_title_checks(include_title)
-  include_longterm_checks(include_longterm)
-    
+  logical_arg_check(include_title)
+  logical_arg_check(include_longterm)
+  
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -141,7 +141,7 @@ plot_flow_duration <- function(data,
                                                 custom_months = custom_months,
                                                 ignore_missing = ignore_missing)
   
-
+  
   
   # Setup and calculate the probabilites
   percentiles_data <- dplyr::select(percentiles_data, -Mean, -Median, -Maximum, -Minimum)
@@ -176,7 +176,7 @@ plot_flow_duration <- function(data,
   if (!is.null(custom_months)) { 
     colour_list[[ custom_months_label ]] <- "grey60"
   }
-
+  
   if (all(is.na(percentiles_data$Value))) {
     percentiles_data[is.na(percentiles_data)] <- 1
   }
@@ -191,29 +191,33 @@ plot_flow_duration <- function(data,
   
   flow_plots <- dplyr::group_by(percentiles_data, STATION_NUMBER)
   flow_plots <- tidyr::nest(flow_plots)
-  flow_plots <- dplyr::mutate(flow_plots,
-                            plot = purrr::map2(data, STATION_NUMBER,
-    ~ggplot2::ggplot(data = ., ggplot2::aes(x = Percentile, y = Value, colour = Month)) +
-      ggplot2::geom_line(na.rm = TRUE) +
-      {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10))} +
-      {if (!log_discharge) ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0, 0))} +
-      ggplot2::scale_x_continuous(expand = c(0,0), breaks = scales::pretty_breaks(n = 10)) +
-      ggplot2::ylab(y_axis_title) +
-      ggplot2::xlab("% Time flow equalled or exceeded") +
-      ggplot2::scale_color_manual(values = colour_list) +
-      {if (log_discharge & log_ticks) ggplot2:: annotation_logticks(sides = "l", base = 10, colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"),
-                                    mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))}+
-      ggplot2::labs(color = 'Period') +
-      {if (include_title & unique(.y) != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nPeriod')) } +
-      ggplot2::theme_bw() +
-      ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-                     panel.grid = ggplot2::element_line(size = .2),
-                     legend.justification = "top",
-                     axis.text = ggplot2::element_text(size = 10, colour = "grey25"),
-                     axis.title = ggplot2::element_text(size = 12, colour = "grey25"),
-                     legend.text = ggplot2::element_text(size = 9, colour = "grey25"))
-                            ))
-
+  flow_plots <- dplyr::mutate(
+    flow_plots,
+    plot = purrr::map2(
+      data, STATION_NUMBER,
+      ~ggplot2::ggplot(data = ., ggplot2::aes(x = Percentile, y = Value, colour = Month)) +
+        ggplot2::geom_line(na.rm = TRUE) +
+        {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0,0), breaks = scales::pretty_breaks(n = 8),
+                                                        labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +
+        {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10),
+                                                  labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +  
+        ggplot2::scale_x_continuous(expand = c(0,0), breaks = scales::pretty_breaks(n = 10)) +
+        ggplot2::ylab(y_axis_title) +
+        ggplot2::xlab("% Time flow equalled or exceeded") +
+        ggplot2::scale_color_manual(values = colour_list) +
+        {if (log_discharge & log_ticks) ggplot2:: annotation_logticks(sides = "l", base = 10, colour = "grey25", size = 0.3, short = ggplot2::unit(.07, "cm"),
+                                                                      mid = ggplot2::unit(.15, "cm"), long = ggplot2::unit(.2, "cm"))}+
+        ggplot2::labs(color = 'Period') +
+        {if (include_title & unique(.y) != "XXXXXXX") ggplot2::labs(color = paste0(.y,'\n \nPeriod')) } +
+        ggplot2::theme_bw() +
+        ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
+                       panel.grid = ggplot2::element_line(size = .2),
+                       legend.justification = "right",
+                       axis.text = ggplot2::element_text(size = 10, colour = "grey25"),
+                       axis.title = ggplot2::element_text(size = 12, colour = "grey25"),
+                       legend.text = ggplot2::element_text(size = 9, colour = "grey25"))
+    ))
+  
   # Create a list of named plots extracted from the tibble
   plots <- flow_plots$plot
   if (nrow(flow_plots) == 1) {
@@ -221,7 +225,7 @@ plot_flow_duration <- function(data,
   } else {
     names(plots) <- paste0(flow_plots$STATION_NUMBER, "_Flow_Duration")
   }
-
+  
   plots
-
+  
 }

@@ -34,6 +34,7 @@
 #'          \code{\link{plot_longterm_monthly_stats}},
 #'          \code{\link{calc_longterm_daily_stats}},
 #'          \code{\link{plot_longterm_daily_stats}},
+#'          \code{\link{plot_monthly_means}},
 #'          \code{\link{plot_flow_duration}},
 #'          \code{\link{calc_annual_stats}},
 #'          \code{\link{plot_annual_stats}},
@@ -41,8 +42,8 @@
 #'          \code{\link{plot_annual_cumulative_stats}},
 #'          \code{\link{calc_annual_flow_timing}},
 #'          \code{\link{plot_annual_flow_timing}},
-#'          \code{\link{calc_annual_outside_normal}},
-#'          \code{\link{plot_annual_outside_normal}},
+#'          \code{\link{calc_annual_normal_days}},
+#'          \code{\link{plot_annual_normal_days}},
 #'          \code{\link{calc_annual_lowflows}},
 #'          \code{\link{plot_annual_lowflows}},
 #'          \code{\link{plot_annual_means}},
@@ -95,6 +96,7 @@ write_full_analysis <- function(data,
                                 exclude_years,
                                 months = 1:12,
                                 ignore_missing = FALSE,
+                                complete_years = FALSE,
                                 allowed_missing_annual = ifelse(ignore_missing,100,0),
                                 allowed_missing_monthly = ifelse(ignore_missing,100,0),
                                 zyp_method = 'zhang',
@@ -130,10 +132,21 @@ write_full_analysis <- function(data,
   
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
-  ignore_missing_checks(ignore_missing)
+  logical_arg_check(ignore_missing)
   allowed_missing_checks(allowed_missing_annual, ignore_missing)
   allowed_missing_checks(allowed_missing_monthly, ignore_missing)
   months_checks(months)
+  
+  logical_arg_check(complete_years)
+  if (complete_years) {
+    if (ignore_missing | allowed_missing_annual > 0 | allowed_missing_monthly > 0) {
+      ignore_missing <- FALSE
+      allowed_missing_annual <- 0
+      allowed_missing_monthly <- 0
+      message("complete_years argument overrides ignore_missing and allowed_missing_* arguments.")
+    }
+  }
+  
   
   if (missing(file_name))     stop("A file name is required with the file_name argument to write all results.", call. = FALSE)
   
@@ -240,6 +253,7 @@ write_full_analysis <- function(data,
                           exclude_years = exclude_years,
                           months = months,
                           ignore_missing = ignore_missing,
+                          complete_years = complete_years,
                           allowed_missing_annual = allowed_missing_annual,
                           allowed_missing_monthly = allowed_missing_monthly,
                           zyp_method = zyp_method,
@@ -320,6 +334,11 @@ write_full_analysis <- function(data,
                       paste(""), 
                       paste0(", months = ", conseq_fn(months)))
   fn_missing <- ifelse(ignore_missing, paste0(", ignore_missing = TRUE"), "")
+  fn_allowmiss_ann <- ifelse(allowed_missing_annual > 0 , paste0(", allowed_missing = ", allowed_missing_annual), "")
+  fn_allowmiss_mon <- ifelse(allowed_missing_monthly > 0 , paste0(", allowed_missing = ", allowed_missing_monthly), "")
+  fn_allowmiss_ann_trend <- ifelse(allowed_missing_annual > 0 , paste0(", allowed_missing_annual = ", allowed_missing_annual), "")
+  fn_allowmiss_mon_trend <- ifelse(allowed_missing_monthly > 0 , paste0(", allowed_missing_monthly = ", allowed_missing_monthly), "")
+  fn_complete <- ifelse(complete_years, paste0(", complete_years = TRUE"), "")
   fn_zyp <- paste0(", zyp_method = '", zyp_method, "'",
                    ", zyp_alpha = ", ifelse(!is.na(zyp_alpha), zyp_alpha, "NA"))
   
@@ -332,6 +351,7 @@ write_full_analysis <- function(data,
                               fn_exclude,
                               fn_months,
                               fn_missing,
+                              fn_complete,
                               ifelse(6 %in% analyses, fn_zyp, ""),
                               ifelse(all(1:7 %in% analyses), 
                                      paste(", analyses = c(1:7)"), 
@@ -477,7 +497,7 @@ write_full_analysis <- function(data,
              title = paste0("Number of Missing Dates Per Month (", start_year, "-", end_year, ")"),
              col = ncol(flow_screening_out) + 2,
              row = 29,
-             height = 6,
+             height = 4,
              width = 8.5,
              comment = missingingplot_function)
     
@@ -529,6 +549,7 @@ write_full_analysis <- function(data,
                                     fn_exclude,
                                     fn_months,
                                     fn_missing,
+                                    fn_complete,
                                     ")")
     longtermplot_mon_function <- paste0("plot_longterm_monthly_stats(",
                                         fn_data,
@@ -537,6 +558,7 @@ write_full_analysis <- function(data,
                                         fn_exclude,
                                         fn_months,
                                         fn_missing,
+                                        fn_complete,
                                         ")")
     longterm_function <- paste0("calc_longterm_daily_stats(",
                                 fn_data,
@@ -545,6 +567,7 @@ write_full_analysis <- function(data,
                                 fn_exclude,
                                 fn_months,
                                 fn_missing,
+                                fn_complete,
                                 ")")
     longtermplot_function <- paste0("plot_longterm_daily_stats(",
                                     fn_data,
@@ -553,6 +576,7 @@ write_full_analysis <- function(data,
                                     fn_exclude,
                                     fn_months,
                                     fn_missing,
+                                    fn_complete,
                                     ")")
     durationplot_function <- paste0("plot_flow_duration(",
                                     fn_data,
@@ -561,6 +585,16 @@ write_full_analysis <- function(data,
                                     fn_exclude,
                                     fn_months,
                                     fn_missing,
+                                    fn_complete,
+                                    ")")
+    monthmeanplot_function <- paste0("plot_monthly_means(",
+                                    fn_data,
+                                    fn_wys,
+                                    fn_startend,
+                                    fn_exclude,
+                                    fn_months,
+                                    fn_missing,
+                                    fn_complete,
                                     ")")
     
     # Add data tables
@@ -593,6 +627,15 @@ write_full_analysis <- function(data,
              col = ncol(lt_stats_out) + 2,
              row = 24,
              height = 5,
+             width = 10,
+             comment = durationplot_function)
+    add_plot(wb = output_excel,
+             sheet = lt_sheet,
+             plot = results$Longterm$Longterm_Monthly_Means_Plot[[1]],
+             title = paste0("Long-term Monthly Means (", start_year, "-", end_year, ")"),
+             col = ncol(lt_stats_out) + 2,
+             row = 50,
+             height = 4,
              width = 10,
              comment = durationplot_function)
     
@@ -665,6 +708,8 @@ write_full_analysis <- function(data,
                                     fn_exclude,
                                     fn_months,
                                     fn_missing,
+                                    fn_allowmiss_ann,
+                                    fn_complete,
                                     ")")
     annual_plot_function <- paste0("plot_annual_stats(",
                                    fn_data,
@@ -673,6 +718,8 @@ write_full_analysis <- function(data,
                                    fn_exclude,
                                    fn_months,
                                    fn_missing,
+                                   fn_allowmiss_ann,
+                                   fn_complete,
                                    ")")
     annual_mean_plot_function <- paste0("plot_annual_means(",
                                         fn_data,
@@ -681,6 +728,8 @@ write_full_analysis <- function(data,
                                         fn_exclude,
                                         fn_months,
                                         fn_missing,
+                                        fn_allowmiss_ann,
+                                        fn_complete,
                                         ")")
     
     # Add data tables
@@ -738,6 +787,7 @@ write_full_analysis <- function(data,
                                   fn_wys,
                                   fn_startend,
                                   fn_exclude,
+                                  fn_complete,
                                   fn_months,
                                   ifelse(all(1:12 %in% months),", include_seasons = TRUE)",")"))
     annual_yield_function <- paste0("calc_annual_cumulative_stats(",
@@ -745,6 +795,7 @@ write_full_analysis <- function(data,
                                     fn_wys,
                                     fn_startend,
                                     fn_exclude,
+                                    fn_complete,
                                     fn_months,
                                     ", use_yield = TRUE",
                                     fn_area,
@@ -754,6 +805,7 @@ write_full_analysis <- function(data,
                                        fn_wys,
                                        fn_startend,
                                        fn_exclude,
+                                       fn_complete,
                                        fn_months,
                                        ifelse(all(1:12 %in% months),", include_seasons = TRUE)",")"))
     annual_yield_plot_function <- paste0("plot_annual_cumulative_stats(",
@@ -761,6 +813,7 @@ write_full_analysis <- function(data,
                                          fn_wys,
                                          fn_startend,
                                          fn_exclude,
+                                         fn_complete,
                                          fn_months,
                                          ", use_yield = TRUE",
                                          fn_area,
@@ -787,7 +840,7 @@ write_full_analysis <- function(data,
              title = paste0("Annual Total Volumetric Flows (", start_year, "-", end_year, ")"),
              col = ncol(ann_cumul_out) + 2,
              row = 2,
-             height = 2,
+             height = 2.2,
              width = 6,
              comment = annual_vol_plot_function)
     add_plot(wb = output_excel,
@@ -796,7 +849,7 @@ write_full_analysis <- function(data,
              title = paste0("Annual Total Yield Runoff (", start_year, "-", end_year, ")"),
              col = ncol(ann_cumul_out) + 2 + ifelse(all(1:12 %in% months),8,0),
              row = ifelse(all(1:12 %in% months),2,14),
-             height = 2,
+             height = 2.2,
              width = 6,
              comment = annual_yield_plot_function)
     if (all(1:12 %in% months)) {
@@ -806,7 +859,7 @@ write_full_analysis <- function(data,
                title = paste0("Seasonal (Two Seasons) Total Volumetric Flows (", start_year, "-", end_year, ")"),
                col = ncol(ann_cumul_out) + 2,
                row = 14,
-               height = 3.5,
+               height = 3,
                width = 6,
                comment = annual_vol_plot_function)
       add_plot(wb = output_excel,
@@ -815,7 +868,7 @@ write_full_analysis <- function(data,
                title = paste0("Seasonal (Four Seasons) Total Volumetric Flows (", start_year, "-", end_year, ")"),
                col = ncol(ann_cumul_out) + 2,
                row = 33,
-               height = 5,
+               height = 3,
                width = 6,
                comment = annual_vol_plot_function)
       add_plot(wb = output_excel,
@@ -824,7 +877,7 @@ write_full_analysis <- function(data,
                title = paste0("Seasonal (Two Seasons) Total Yield Runoff (", start_year, "-", end_year, ")"),
                col = ncol(ann_cumul_out) + 2 + 8,
                row = 14,
-               height = 3.5,
+               height = 3,
                width = 6,
                comment = annual_yield_plot_function)
       add_plot(wb = output_excel,
@@ -833,7 +886,7 @@ write_full_analysis <- function(data,
                title = paste0("Seasonal (Four Seasons) Total Yield Runoff (", start_year, "-", end_year, ")"),
                col = ncol(ann_cumul_out) + 2 + 8,
                row = 33,
-               height = 5,
+               height = 3,
                width = 6,
                comment = annual_yield_plot_function)
     }
@@ -854,6 +907,8 @@ write_full_analysis <- function(data,
                                    fn_exclude,
                                    fn_months,
                                    fn_missing,
+                                   fn_allowmiss_ann,
+                                   fn_complete,
                                    ")")
     annual_lows_plot_function <- paste0("plot_annual_lowflows(",
                                         fn_data,
@@ -862,12 +917,15 @@ write_full_analysis <- function(data,
                                         fn_exclude,
                                         fn_months,
                                         fn_missing,
+                                        fn_allowmiss_ann,
+                                        fn_complete,
                                         ")")
     annual_timing_function <- paste0("calc_annual_flow_timing(",
                                      fn_data,
                                      fn_wys,
                                      fn_startend,
                                      fn_exclude,
+                                     fn_complete,
                                      fn_months,
                                      ")")
     annual_timing_plot_function <- paste0("plot_annual_flow_timing(",
@@ -875,20 +933,23 @@ write_full_analysis <- function(data,
                                           fn_wys,
                                           fn_startend,
                                           fn_exclude,
+                                          fn_complete,
                                           fn_months,
                                           ")")
-    annual_norm_function <- paste0("calc_annual_outside_normal(",
+    annual_norm_function <- paste0("calc_annual_normal_days(",
                                    fn_data,
                                    fn_wys,
                                    fn_startend,
                                    fn_exclude,
+                                   fn_complete,
                                    fn_months,
                                    ")")
-    annual_norm_plot_function <- paste0("plot_annual_outside_normal(",
+    annual_norm_plot_function <- paste0("plot_annual_normal_days(",
                                         fn_data,
                                         fn_wys,
                                         fn_startend,
                                         fn_exclude,
+                                        fn_complete,
                                         fn_months,
                                         ")")
     
@@ -897,14 +958,14 @@ write_full_analysis <- function(data,
                                       results$Annual$Annual_Flow_Timing, 
                                       by = c("STATION_NUMBER", "Year"))
     ann_other_out <- dplyr::left_join(ann_other_out, 
-                                      results$Annual$Annual_Days_Outside_Normal, 
+                                      results$Annual$Annual_Normal_Days, 
                                       by = c("STATION_NUMBER", "Year"))
     ann_other_out <- ann_other_out[,!colnames(ann_other_out) %in% "STATION_NUMBER"]
     add_table(wb = output_excel,
               sheet = ann_oth_sheet,
               data = ann_other_out,
               title = paste0("Annual Low-flow Values (cubic metres per second) and Dates, Timing of Flows",
-                             " (day of year), and Number Days Above/Below Normal (", start_year, "-", end_year, ")"),
+                             " (day of year), and Number Days Normal and Above/Below Normal (", start_year, "-", end_year, ")"),
               col = 1,
               row = 1,
               comment = paste0(annual_lows_function, "              ", annual_timing_function,
@@ -940,12 +1001,12 @@ write_full_analysis <- function(data,
              comment = annual_timing_plot_function)
     add_plot(wb = output_excel,
              sheet = ann_oth_sheet,
-             plot = results$Annual$Annual_Days_Outside_Normal_Plot[[1]],
+             plot = results$Annual$Annual_Normal_Days_Plot[[1]],
              title = paste0("Annual Days Per Year Above, Below, and Outside Normal (", start_year, "-", end_year, ")"),
              col = ncol(ann_other_out) + 2 + 8,
              row = 31,
-             height = 4.5,
-             width = 6,
+             height = 3.5,
+             width = 7,
              comment = annual_norm_plot_function)
     
     # Add fasstr functions to table
@@ -1011,6 +1072,8 @@ write_full_analysis <- function(data,
                                    fn_exclude,
                                    fn_months,
                                    fn_missing,
+                                   fn_allowmiss_mon,
+                                   fn_complete,
                                    ")")
     month_stats_plot_function <- paste0("plot_monthly_stats(",
                                         fn_data,
@@ -1019,6 +1082,8 @@ write_full_analysis <- function(data,
                                         fn_exclude,
                                         fn_months,
                                         fn_missing,
+                                        fn_allowmiss_mon,
+                                        fn_complete,
                                         ")")
     
     
@@ -1029,6 +1094,7 @@ write_full_analysis <- function(data,
                                                          exclude_years = exclude_years,
                                                          water_year_start = water_year_start,
                                                          ignore_missing = ignore_missing,
+                                                         complete_years = complete_years,
                                                          spread = TRUE))
     mon_stats_out <- mon_stats_out[,!colnames(mon_stats_out) %in% "STATION_NUMBER"]
     add_table(wb = output_excel,
@@ -1219,6 +1285,7 @@ write_full_analysis <- function(data,
                                    fn_exclude,
                                    fn_months,
                                    fn_missing,
+                                   fn_complete,
                                    ")")
     daily_stats_plot_function <- paste0("plot_daily_stats(",
                                         fn_data,
@@ -1227,6 +1294,7 @@ write_full_analysis <- function(data,
                                         fn_exclude,
                                         fn_months,
                                         fn_missing,
+                                        fn_complete,
                                         ")")
     
     # Add data tables
@@ -1482,6 +1550,9 @@ write_full_analysis <- function(data,
                               ", zyp_method = '", zyp_method, "'",
                               ", zyp_alpha = ", zyp_alpha,
                               fn_missing,
+                              fn_allowmiss_ann_trend,
+                              fn_allowmiss_mon_trend,
+                              fn_complete,
                               ")")
     
     # Add data tables
@@ -1532,7 +1603,9 @@ write_full_analysis <- function(data,
       calc_annual_lowflows(data = flow_data_raw,
                            start_year = start_year, end_year = end_year, exclude_years = exclude_years,
                            water_year_start = water_year_start,
-                           ignore_missing = ignore_missing)
+                           ignore_missing = ignore_missing,
+                           complete_years = complete_years,
+                           allowed_missing = allowed_missing_annual)
     )
     data_check <- dplyr::select(data_check, Min_1_Day, Min_3_Day, Min_7_Day, Min_30_Day)
     
@@ -1560,6 +1633,8 @@ write_full_analysis <- function(data,
                                    ", fit_distr = 'PIII'",
                                    ", fit_distr_method = 'MOM'",
                                    fn_missing,
+                                   fn_allowmiss_ann,
+                                   fn_complete,
                                    ")")
       
       # Add data tables
@@ -1730,6 +1805,4 @@ write_full_analysis <- function(data,
   } else {
     message(paste0("* DONE. For analysis results go to: '", normalizePath(paste0(file_name, ".xlsx"))))
   }
-  
-  
 }

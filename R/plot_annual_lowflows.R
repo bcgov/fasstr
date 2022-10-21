@@ -55,6 +55,7 @@ plot_annual_lowflows <- function(data,
                                  end_year,
                                  exclude_years,
                                  months = 1:12,
+                                 complete_years = FALSE,
                                  ignore_missing = FALSE,
                                  allowed_missing = ifelse(ignore_missing,100,0),
                                  include_title = FALSE){
@@ -81,7 +82,7 @@ plot_annual_lowflows <- function(data,
     exclude_years <- NULL
   }
   
-  include_title_checks(include_title)
+  logical_arg_check(include_title)
   
   
   ## FLOW DATA CHECKS AND FORMATTING
@@ -109,34 +110,34 @@ plot_annual_lowflows <- function(data,
                                         end_year = end_year,
                                         exclude_years = exclude_years, 
                                         months = months,
+                                        complete_years = complete_years,
                                         ignore_missing = ignore_missing,
                                         allowed_missing = allowed_missing)
+  
+  # Remove all leading NA years
+  lowflow_stats <- dplyr::filter(dplyr::group_by(lowflow_stats, STATION_NUMBER),
+                                  Year >= Year[min(which(!is.na(.data[[names(lowflow_stats)[3]]])))])
   
   # Gather data and plot the minimums day
   lowflow_doy <- dplyr::select(lowflow_stats, STATION_NUMBER, Year, dplyr::contains("DoY"))
   stat_levels <- names(lowflow_doy[-(1:2)])
   stat_levels <- substr(stat_levels, 5, nchar(as.character(stat_levels)))
-  stat_levels <- paste0(gsub("_Day_DoY", "", stat_levels), " Day Mininum")
+  stat_levels <- paste0(gsub("_Day_DoY", "", stat_levels), " Day Minimum")
   
   lowflow_doy <- tidyr::gather(lowflow_doy, Statistic, Value, -STATION_NUMBER, -Year)
   lowflow_doy <- dplyr::mutate(lowflow_doy, Statistic = substr(Statistic, 5, nchar(as.character(Statistic))))
-  lowflow_doy <- dplyr::mutate(lowflow_doy, Statistic = paste0(gsub("_Day_DoY", "", Statistic), " Day Mininum"))
-  lowflow_doy <- dplyr::mutate(lowflow_doy, Statistic = as.factor(Statistic))
-  levels(lowflow_doy$Statistic) <- stat_levels
-  
-  
-  
+  lowflow_doy <- dplyr::mutate(lowflow_doy, Statistic = paste0(gsub("_Day_DoY", "", Statistic), " Day Minimum"))
+  lowflow_doy <- dplyr::mutate(lowflow_doy, Statistic = factor(Statistic, levels = stat_levels))
+
   # Gather data and plot the minimums values
   lowflow_values <- dplyr::select(lowflow_stats, STATION_NUMBER, Year, dplyr::contains("Day"), 
                                   -dplyr::contains("DoY"), -dplyr::contains("Date"))
   
   lowflow_values <- tidyr::gather(lowflow_values, Statistic, Value, -STATION_NUMBER, -Year)
   lowflow_values <- dplyr::mutate(lowflow_values, Statistic = substr(Statistic, 5, nchar(Statistic)))
-  lowflow_values <- dplyr::mutate(lowflow_values, Statistic = paste0(gsub("_Day", "", Statistic), " Day Mininum"))
-  lowflow_values <- dplyr::mutate(lowflow_values, Statistic = as.factor(Statistic))
-  levels(lowflow_values$Statistic) <- stat_levels
-  
-  
+  lowflow_values <- dplyr::mutate(lowflow_values, Statistic = paste0(gsub("_Day", "", Statistic), " Day Minimum"))
+  lowflow_values <- dplyr::mutate(lowflow_values, Statistic = factor(Statistic, levels = stat_levels))
+
   ## PLOT STATS
   ## ----------
   
@@ -151,18 +152,19 @@ plot_annual_lowflows <- function(data,
   doy_plots <- dplyr::mutate(
     doy_plots,
     plot = purrr::map2(data, STATION_NUMBER, 
-                       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
+                       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic, fill = Statistic)) +
                          ggplot2::geom_line(alpha = 0.5, na.rm = TRUE)+
-                         ggplot2::geom_point(na.rm = TRUE)+
+                         ggplot2::geom_point(na.rm = TRUE, shape = 21, colour = "black", size = 2) +
                          ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "top")+
                          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
                          {if(length(unique(lowflow_doy$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(lowflow_doy$Year))}+
-                         ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
-                         ggplot2::ylab("Day of Year")+
-                         ggplot2::xlab("Year")+
-                         # ggplot2::scale_color_brewer(palette = "Set1") +
+                         ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6), expand = ggplot2::expansion(mult = c(0.1, 0.1)))+
+                         ggplot2::ylab(ifelse(water_year_start == 1, "Day of Year", "Day of Water Year"))+
+                         ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
+                         ggplot2::scale_color_viridis_d()+
+                         ggplot2::scale_fill_viridis_d()+
                          ggplot2::theme_bw() +
-                         ggplot2::guides(colour = 'none')+
+                         ggplot2::guides(colour = 'none', fill = "none")+
                          {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
                          ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                                         panel.grid = ggplot2::element_line(size = .2),
@@ -178,18 +180,21 @@ plot_annual_lowflows <- function(data,
   flow_plots <- dplyr::mutate(
     flow_plots,
     plot = purrr::map2(data, STATION_NUMBER, 
-                       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic)) +
+                       ~ggplot2::ggplot(data = ., ggplot2::aes(x = Year, y = Value, color = Statistic, fill = Statistic)) +
                          ggplot2::geom_line(alpha = 0.5, na.rm = TRUE)+
-                         ggplot2::geom_point(na.rm = TRUE)+
+                         ggplot2::geom_point(na.rm = TRUE, shape = 21, colour = "black", size = 2) +
                          ggplot2::facet_wrap(~Statistic, ncol = 1, strip.position = "top")+
                          ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
                          {if(length(unique(lowflow_values$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(lowflow_values$Year))}+
-                         ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6))+
+                         ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
+                                                     labels = scales::label_number(scale_cut = scales::cut_short_scale()),
+                                                     expand = ggplot2::expansion(mult = c(0.1, 0.1))) +
                          ggplot2::ylab(y_axis_title)+
                          ggplot2::xlab("Year")+
-                         ggplot2::scale_color_brewer(palette = "Set1") +
+                         ggplot2::scale_color_viridis_d()+
+                         ggplot2::scale_fill_viridis_d()+
                          ggplot2::theme_bw() +
-                         ggplot2::guides(colour = 'none')+
+                         ggplot2::guides(colour = 'none', fill = "none")+
                          {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
                          ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
                                         panel.grid = ggplot2::element_line(size = .2),

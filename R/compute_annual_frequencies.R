@@ -86,6 +86,7 @@ compute_annual_frequencies <- function(data,
                                        end_year,
                                        exclude_years,
                                        months = 1:12,
+                                       complete_years = FALSE,
                                        ignore_missing = FALSE,
                                        allowed_missing = ifelse(ignore_missing,100,0)){
   
@@ -116,8 +117,17 @@ compute_annual_frequencies <- function(data,
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
   months_checks(months)
-  ignore_missing_checks(ignore_missing)
+  logical_arg_check(ignore_missing)
   allowed_missing_checks(allowed_missing, ignore_missing)
+  
+  logical_arg_check(complete_years)
+  if (complete_years) {
+    if (ignore_missing | allowed_missing > 0) {
+      ignore_missing <- FALSE
+      allowed_missing <- 0
+      message("complete_years argument overrides ignore_missing and allowed_missing arguments.")
+    }
+  }
   
   
   if (!is.logical(use_log))        
@@ -224,6 +234,10 @@ compute_annual_frequencies <- function(data,
                                          fit_distr_method = fit_distr_method,
                                          fit_quantiles = fit_quantiles,
                                          plot_curve = plot_curve)
+  
+  analysis$Freq_Plot$labels$y <- ifelse(as.character(substitute(values)) == "Volume_m3", "Volume (cubic metres)",
+                                        ifelse(as.character(substitute(values)) == "Yield_mm", "Yield (mm)",
+                                               "Discharge (cms)"))
   
   return(analysis)
   

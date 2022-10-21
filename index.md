@@ -21,7 +21,7 @@ See the License for the specific language governing permissions and limitations 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![R-CMD-check](https://github.com/bcgov/fasstr/workflows/R-CMD-check/badge.svg)](https://github.com/bcgov/fasstr/actions)
 
-[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/fasstr)](https://cran.r-project.org/package=fasstr)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/fasstr)](https://cran.r-project.org/package=fasstr)
 [![CRAN
 Downloads](https://cranlogs.r-pkg.org/badges/fasstr?color=brightgreen)](https://CRAN.R-project.org/package=fasstr)
 [![cran
@@ -36,34 +36,31 @@ long-term statistics, completes annual trends and frequency analyses.
 
 This package provides functions for streamflow data analysis, including:
 
--   data tidying (to prepare data for analyses; `add_*` and `fill_*`
-    functions),
--   data screening (to identify data range, outliers and missing data;
-    `screen_*` functions),
--   calculating summary statistics (long-term, annual, monthly and daily
-    statistics; `calc_*`functions),
--   computing analyses (volume frequency analyses and annual trending;
-    `compute_*` functions), and,
--   visualizing data (plotting the various statistics; `plot_*`
-    functions).
+- data tidying (to prepare data for analyses; `add_*` and `fill_*`
+  functions),
+- data screening (to identify data range, outliers and missing data;
+  `screen_*` functions),
+- calculating summary statistics (long-term, annual, monthly and daily
+  statistics; `calc_*`functions),
+- computing analyses (volume frequency analyses and annual trending;
+  `compute_*` functions), and,
+- visualizing data (plotting the various statistics; `plot_*`
+  functions).
 
 Useful features of functions include:
 
--   the integration of the `tidyhydat` package to pull streamflow data
-    from a Water Survey of Canada
-    [HYDAT](https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html)
-    database for analyses;
--   arguments for filtering of years and months in analyses and
-    plotting;
--   choosing the start month of your water year;
--   selecting for rolling day averages (e.g. 7-day rolling average);
-    and,
--   choosing how missing dates are handled, amongst others.
+- the integration of the `tidyhydat` package to pull streamflow data
+  from a Water Survey of Canada
+  [HYDAT](https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/monitoring/survey/data-products-services/national-archive-hydat.html)
+  database for analyses;
+- arguments for filtering of years and months in analyses and plotting;
+- choosing the start month of your water year;
+- selecting for rolling day averages (e.g. 7-day rolling average); and,
+- choosing how missing dates are handled, amongst others.
 
-This package is maintained by the [Water Protection and Sustainability
-Branch of the British Columbia Ministry of Environment and Climate
-Change
-Strategy](https://www2.gov.bc.ca/gov/content/environment/air-land-water/water).
+This package is maintained by the [Water Management Branch of the
+British Columbia Ministry of
+Forests](https://www2.gov.bc.ca/gov/content/environment/air-land-water/water).
 
 ### Installation
 
@@ -99,18 +96,17 @@ There are several vignettes and a cheatsheet to provide more information
 on the usage of `fasstr` functions and how to customize various argument
 options.
 
--   [Getting
-    Started](https://bcgov.github.io/fasstr/articles/fasstr.html)
--   [Users
-    Guide](https://bcgov.github.io/fasstr/articles/fasstr_users_guide.html)
--   [Computing an Annual Trends
-    Analysis](https://bcgov.github.io/fasstr/articles/fasstr_trending_analysis.html)
--   [Computing a Volume frequency
-    Analysis](https://bcgov.github.io/fasstr/articles/fasstr_frequency_analysis.html)
--   [Computing a Full fasstr
-    Analysis](https://bcgov.github.io/fasstr/articles/fasstr_full_analysis.html)
--   [Internal fasstr
-    Workflows](https://bcgov.github.io/fasstr/articles/fasstr_under_the_hood.html)
+- [Getting Started](https://bcgov.github.io/fasstr/articles/fasstr.html)
+- [Users
+  Guide](https://bcgov.github.io/fasstr/articles/fasstr_users_guide.html)
+- [Computing an Annual Trends
+  Analysis](https://bcgov.github.io/fasstr/articles/fasstr_trending_analysis.html)
+- [Computing a Volume frequency
+  Analysis](https://bcgov.github.io/fasstr/articles/fasstr_frequency_analysis.html)
+- [Computing a Full fasstr
+  Analysis](https://bcgov.github.io/fasstr/articles/fasstr_full_analysis.html)
+- [Internal fasstr
+  Workflows](https://bcgov.github.io/fasstr/articles/fasstr_under_the_hood.html)
 
 #### Cheatsheet
 

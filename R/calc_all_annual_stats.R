@@ -23,13 +23,13 @@
 #'  \item{\code{calc_annual_lowflows()}}
 #'  \item{\code{calc_annual_cumulative_stats()}}
 #'  \item{\code{calc_annual_flow_timing()}}
-#'  \item{\code{calc_annual_outside_normal()}}
+#'  \item{\code{calc_annual_normal_days()}}
 #'  \item{\code{calc_monthly_stats()}}
 #'  }
 #'    
 #' @inheritParams calc_annual_stats
 #' @inheritParams calc_annual_cumulative_stats
-#' @inheritParams calc_annual_outside_normal
+#' @inheritParams calc_annual_normal_days
 #' @param months Numeric vector of months to include in analysis. For example, \code{3} for March, \code{6:8} for Jun-Aug or 
 #'    \code{c(10:12,1)} for first four months (Oct-Jan) when \code{water_year_start = 10} (Oct). Default summarizes all 
 #'    months (\code{1:12}). If not \code{1:12}, seasonal total yield and volumetric flows will not be included.
@@ -41,7 +41,7 @@
 #'    Used for \code{calc_annual_stats()} and \code{calc_monthly_stats()} functions.
 #' @param stats_align Character string identifying the direction of the rolling mean on basic stats from the specified date, either by 
 #'    the first (\code{'left'}), last (\code{'right'}), or middle (\code{'center'}) day of the rolling n-day group of observations.
-#'    Default \code{'right'}. Used for \code{calc_annual_stats()}, \code{calc_monthly_stats()}, and \code{calc_annual_outside_normal()}
+#'    Default \code{'right'}. Used for \code{calc_annual_stats()}, \code{calc_monthly_stats()}, and \code{calc_annual_normal_days()}
 #'    functions.
 #' @param lowflow_days Numeric vector of the number of days to apply a rolling mean on low flow stats. Default \code{c(1,3,7,30)}.
 #'    Used for \code{calc_lowflow_stats()} function.
@@ -70,7 +70,7 @@
 #'          \code{\link{calc_annual_cumulative_stats}}, 
 #'          \code{\link{calc_annual_flow_timing}}, 
 #'          \code{\link{calc_monthly_stats}}, 
-#'          \code{\link{calc_annual_outside_normal}}
+#'          \code{\link{calc_annual_normal_days}}
 #'
 #' @examples
 #' \dontrun{
@@ -120,6 +120,7 @@ calc_all_annual_stats <- function(data,
                                   timing_percent = c(25,33,50,75),
                                   normal_percentiles = c(25,75),
                                   transpose = FALSE,
+                                  complete_years = FALSE,
                                   ignore_missing = FALSE,
                                   allowed_missing_annual = ifelse(ignore_missing,100,0),
                                   allowed_missing_monthly = ifelse(ignore_missing,100,0)){
@@ -150,20 +151,21 @@ calc_all_annual_stats <- function(data,
   
   water_year_checks(water_year_start)
   years_checks(start_year, end_year, exclude_years)
-  transpose_checks(transpose)
-  ignore_missing_checks(ignore_missing)
-  ann_percentiles_checks(annual_percentiles)
-  mon_percentiles_checks(monthly_percentiles)
+  logical_arg_check(transpose)
+  logical_arg_check(ignore_missing)
+  numeric_range_checks(annual_percentiles)
+  numeric_range_checks(monthly_percentiles)
   stats_days_checks(stats_days, stats_align)
   lowflow_days_checks(lowflow_days, lowflow_align)
-  timing_pct_checks(timing_percent)
+  numeric_range_checks(timing_percent)
   normal_percentiles_checks(normal_percentiles)
   sort(normal_percentiles)
   months_checks(months)
   allowed_missing_checks(allowed_missing_annual, ignore_missing)
   allowed_missing_checks(allowed_missing_monthly, ignore_missing)
   
-  
+  logical_arg_check(complete_years)
+
   ## FLOW DATA CHECKS AND FORMATTING
   ## -------------------------------
   
@@ -195,6 +197,7 @@ calc_all_annual_stats <- function(data,
                                                      end_year = end_year,
                                                      exclude_years = exclude_years, 
                                                      months = months,
+                                                     complete_years = complete_years,
                                                      ignore_missing = ignore_missing,
                                                      allowed_missing = allowed_missing_annual))
   
@@ -212,6 +215,7 @@ calc_all_annual_stats <- function(data,
                                                          end_year = end_year,
                                                          exclude_years = exclude_years,
                                                          months = months,
+                                                         complete_years = complete_years,
                                                          ignore_missing = ignore_missing,
                                                          allowed_missing = allowed_missing_annual))
   lowflow_stats <- dplyr::select(lowflow_stats, -dplyr::contains("Date"))
@@ -224,7 +228,8 @@ calc_all_annual_stats <- function(data,
                                                                 end_year = end_year,
                                                                 exclude_years = exclude_years,
                                                                 months = months,
-                                                                include_seasons = all(1:12 %in% months)))
+                                                                include_seasons = all(1:12 %in% months),
+                                                                complete_years = complete_years))
   
   totalyield_stats <- suppressWarnings(calc_annual_cumulative_stats(data = flow_data,
                                                                     use_yield = TRUE,
@@ -234,7 +239,8 @@ calc_all_annual_stats <- function(data,
                                                                     end_year = end_year,
                                                                     exclude_years = exclude_years,
                                                                     months = months,
-                                                                    include_seasons = all(1:12 %in% months)))
+                                                                    include_seasons = all(1:12 %in% months),
+                                                                    complete_years = complete_years))
   
   
   timing_stats <- suppressWarnings(calc_annual_flow_timing(data = flow_data,
@@ -257,11 +263,12 @@ calc_all_annual_stats <- function(data,
                                                      exclude_years = exclude_years,
                                                      months = months,
                                                      spread = TRUE,
+                                                     complete_years = complete_years,
                                                      ignore_missing = ignore_missing,
                                                      allowed_missing = allowed_missing_monthly))
   
   
-  normals_stats <- suppressWarnings(calc_annual_outside_normal(data = flow_data,
+  normals_stats <- suppressWarnings(calc_annual_normal_days(data = flow_data,
                                                                normal_percentiles = normal_percentiles,
                                                                roll_days = stats_days,
                                                                roll_align = stats_align,

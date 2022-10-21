@@ -19,6 +19,7 @@ calc_annual_stats(
   exclude_years,
   months = 1:12,
   transpose = FALSE,
+  complete_years = FALSE,
   ignore_missing = FALSE,
   allowed_missing = ifelse(ignore_missing, 100, 0)
 )
@@ -67,6 +68,8 @@ months (\code{1:12}).}
 
 \item{transpose}{Logical value indicating whether to transpose rows and columns of results. Default \code{FALSE}.}
 
+\item{complete_years}{Logical values indicating whether to include only years with complete data in analysis. Default \code{FALSE}.}
+
 \item{ignore_missing}{Logical value indicating whether dates with missing values should be included in the calculation. If
 \code{TRUE} then a statistic will be calculated regardless of missing dates. If \code{FALSE} then only those statistics from
 time periods with no missing dates will be returned. Default \code{FALSE}.}
@@ -112,12 +115,6 @@ calc_annual_stats(station_number = "08NM116",
 # Calculate annual statistics for water years starting in October
 calc_annual_stats(station_number = "08NM116",
                   water_year_start = 10)
-                  
-# Calculate annual statistics filtered for custom years
-calc_annual_stats(station_number = "08NM116",
-                  start_year = 1981,
-                  end_year = 2010,
-                  exclude_years = c(1991,1993:1995))
                   
 # Calculate annual statistics for 7-day flows for July-September 
 # months only, with 25 and 75th percentiles
