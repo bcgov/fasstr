@@ -99,9 +99,10 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.5.0" id="fasstr-050">fasstr 0.5.0<a class="anchor" aria-label="anchor" href="#fasstr-050"></a></h2>
-<p>Updated: 06 Sep 2022</p>
-<div class="section level4">
+<h2 class="page-header" data-toc-text="0.5.0" id="fasstr-050">fasstr 0.5.0<small>2022-10-21</small><a class="anchor" aria-label="anchor" href="#fasstr-050"></a></h2>
+<p>Updated: 19 Oct 2022</p>
+<ul><li>This release is a major new update with additional functions and changes to existing functions to present data and plots in different ways and more consistency across functions, updating various colours to viridis scales for accessibility, as well as updating some internal processes and fixing some minor bugs. Some functions have been superseded by others, but all functions will still be available within the package.</li>
+</ul><div class="section level4">
 <h4 id="new-functions-0-5-0">New functions:<a class="anchor" aria-label="anchor" href="#new-functions-0-5-0"></a></h4>
 <ul><li>plot_flow_data_symbols() - plots daily data with coloured points designating symbol categories from symbols column</li>
 <li>plot_annual_symbols() - plots symbols by day of year or annual counts or percent of days with symbols from symbols column<br></li>
@@ -139,11 +140,13 @@
 <li>Changed y-axis labels on plots using scales::cut_short_scale() to remove exponents on large numbers</li>
 <li>Annual plots with leading empty years (gaps, missing dates, etc) will now shift plot to first year of data</li>
 <li>Updated vignettes with new functions and updates</li>
+<li>Added complete_years and allowed_missing arguments to write_full_analysis outputs on the fasstr functions tab</li>
 </ul></div>
 <div class="section level4">
 <h4 id="bug-fixes-0-5-0">Bug fixes:<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-0"></a></h4>
 <ul><li>complete_years function now applied to all functions in compute_ and write_full_analysis functions</li>
 <li>Removed HYDAT.sqlite file check in compute_HYDAT_peak_frequencies() - leaves check to tidyhydat</li>
+<li>fixed fill_missing_dates water year bug</li>
 </ul></div>
 <div class="section level4">
 <h4 id="internal-code-0-5-0">Internal code:<a class="anchor" aria-label="anchor" href="#internal-code-0-5-0"></a></h4>
