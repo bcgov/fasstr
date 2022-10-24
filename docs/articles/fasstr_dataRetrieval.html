@@ -244,14 +244,14 @@ this situation using base R:</p>
 <span></span>
 <span><span class="co"># One station</span></span>
 <span><span class="va">usgs_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISdv.html" class="external-link">readNWISdv</a></span><span class="op">(</span>siteNumbers <span class="op">=</span> <span class="st">"12043300"</span>, </span>
-<span>                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>X_00060_00003 <span class="op">=</span> <span class="va">X_00060_00003</span> <span class="op">*</span> <span class="va">cfs_to_cms</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plot_flow_data.html">plot_flow_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">usgs_data</span>,</span>
 <span>               values <span class="op">=</span> <span class="va">X_00060_00003</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Multiple stations</span></span>
 <span><span class="va">usgs_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISdv.html" class="external-link">readNWISdv</a></span><span class="op">(</span>siteNumbers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"12043300"</span>, <span class="st">"12048000"</span><span class="op">)</span>,</span>
-<span>                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>X_00060_00003 <span class="op">=</span> <span class="va">X_00060_00003</span> <span class="op">*</span> <span class="va">cfs_to_cms</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plot_flow_data.html">plot_flow_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">usgs_data</span>,</span>
 <span>               values <span class="op">=</span> <span class="va">X_00060_00003</span>,</span>
@@ -290,15 +290,15 @@ R:</p>
 <span></span>
 <span><span class="co"># One station</span></span>
 <span><span class="va">usgs_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISdv.html" class="external-link">readNWISdv</a></span><span class="op">(</span>siteNumbers <span class="op">=</span> <span class="st">"12043300"</span>, </span>
-<span>                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">X_00060_00003</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">X_00060_00003</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">Value</span> <span class="op">*</span> <span class="va">cfs_to_cms</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Multiple stations</span></span>
 <span><span class="va">usgs_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISdv.html" class="external-link">readNWISdv</a></span><span class="op">(</span>siteNumbers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"12043300"</span>, <span class="st">"12048000"</span><span class="op">)</span>, </span>
-<span>                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>STATION_NUMBER <span class="op">=</span> <span class="va">site_no</span>, </span>
-<span>         Value <span class="op">=</span> <span class="va">X_00060_00003</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>         Value <span class="op">=</span> <span class="va">X_00060_00003</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">Value</span> <span class="op">*</span> <span class="va">cfs_to_cms</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Use a fasstr function</span></span>
@@ -327,9 +327,9 @@ converted to square kilometres (2.58999 sqkm per sqmile):</p>
 <span></span>
 <span><span class="co"># Get data and apply to fasstr function</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISdv.html" class="external-link">readNWISdv</a></span><span class="op">(</span>siteNumbers <span class="op">=</span> <span class="st">"12043300"</span>, </span>
-<span>           parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">X_00060_00003</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">Value</span> <span class="op">*</span> <span class="va">cfs_to_cms</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>           parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">X_00060_00003</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">Value</span> <span class="op">*</span> <span class="va">cfs_to_cms</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/plot_daily_cumulative_stats.html">plot_daily_cumulative_stats</a></span><span class="op">(</span>basin_area <span class="op">=</span> <span class="va">basin_area_NWIS</span>, </span>
 <span>                              use_yield <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                              add_year <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span></code></pre></div>
@@ -342,8 +342,8 @@ stations:</p>
 <span><span class="va">sqmile_to_sqkm</span> <span class="op">&lt;-</span> <span class="fl">2.58999</span></span>
 <span></span>
 <span><span class="co"># Get station information</span></span>
-<span><span class="va">site_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISsite.html" class="external-link">readNWISsite</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"12043300"</span>, <span class="st">"12048000"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">site_no</span>, <span class="va">drain_area_va</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span><span class="va">site_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISsite.html" class="external-link">readNWISsite</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"12043300"</span>, <span class="st">"12048000"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">site_no</span>, <span class="va">drain_area_va</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Basin_Area_sqkm <span class="op">=</span> <span class="va">drain_area_va</span> <span class="op">*</span> <span class="va">sqmile_to_sqkm</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create named vector of areas to send to basin area</span></span>
@@ -351,10 +351,10 @@ stations:</p>
 <span></span>
 <span><span class="co"># Get data and apply to fasstr function</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISdv.html" class="external-link">readNWISdv</a></span><span class="op">(</span>siteNumbers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"12043300"</span>, <span class="st">"12048000"</span><span class="op">)</span>, </span>
-<span>           parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>           parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">X_00060_00003</span>, </span>
-<span>         STATION_NUMBER <span class="op">=</span> <span class="va">site_no</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">Value</span> <span class="op">*</span> <span class="va">cfs_to_cms</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>         STATION_NUMBER <span class="op">=</span> <span class="va">site_no</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">Value</span> <span class="op">*</span> <span class="va">cfs_to_cms</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/plot_daily_cumulative_stats.html">plot_daily_cumulative_stats</a></span><span class="op">(</span>use_yield <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                              basin_area <span class="op">=</span> <span class="va">areas</span>,</span>
 <span>                              add_year <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span></code></pre></div>
@@ -382,8 +382,8 @@ already downloaded using <code>dataRetrieval</code>’s
 <span><span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span><span class="va">usgs_data</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># and in a pipeline</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISdv.html" class="external-link">readNWISdv</a></span><span class="op">(</span><span class="st">"12043300"</span>, parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu">usgs_to_hydat</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISdv.html" class="external-link">readNWISdv</a></span><span class="op">(</span><span class="st">"12043300"</span>, parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu">usgs_to_hydat</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>This second function integrates <code><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISdv.html" class="external-link">readNWISdv()</a></code> with the
 first function that will both download and convert the data for
@@ -404,7 +404,7 @@ first function that will both download and convert the data for
 <span><span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span><span class="va">usgs_data</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># and in a pipeline</span></span>
-<span><span class="fu">readNWISdv_hydat</span><span class="op">(</span><span class="st">"12043300"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span><span class="fu">readNWISdv_hydat</span><span class="op">(</span><span class="st">"12043300"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>This third function is the same as the second, but adds a column of
 drainage basin areas, in square kilometres, extracted and converted from
@@ -507,12 +507,12 @@ using base R:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># One station</span></span>
 <span><span class="va">usgs_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISdv.html" class="external-link">readNWISdv</a></span><span class="op">(</span>siteNumbers <span class="op">=</span> <span class="st">"12043300"</span>, </span>
-<span>                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">X_00060_00003</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Multiple stations</span></span>
 <span><span class="va">usgs_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISdv.html" class="external-link">readNWISdv</a></span><span class="op">(</span>siteNumbers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"12043300"</span>, <span class="st">"12048000"</span><span class="op">)</span>, </span>
-<span>                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>STATION_NUMBER <span class="op">=</span> <span class="va">site_no</span>, </span>
 <span>         Value <span class="op">=</span> <span class="va">X_00060_00003</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -543,7 +543,7 @@ following is an example of how to use the workaround, with appropriate
 renaming of columns or plot axes:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get a NWIS basin area</span></span>
-<span><span class="va">area_sqmile</span> <span class="op">&lt;-</span> <span class="fu">dataRetrieval</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISsite.html" class="external-link">readNWISsite</a></span><span class="op">(</span>siteNumbers <span class="op">=</span> <span class="st">"12043300"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span><span class="va">area_sqmile</span> <span class="op">&lt;-</span> <span class="fu">dataRetrieval</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISsite.html" class="external-link">readNWISsite</a></span><span class="op">(</span>siteNumbers <span class="op">=</span> <span class="st">"12043300"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">drain_area_va</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Drainage basin area conversion for fasstr</span></span>
@@ -551,28 +551,28 @@ renaming of columns or plot axes:</p>
 <span></span>
 <span><span class="co"># Get NWIS data</span></span>
 <span><span class="va">usgs_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISdv.html" class="external-link">readNWISdv</a></span><span class="op">(</span>siteNumbers <span class="op">=</span> <span class="st">"12043300"</span>, </span>
-<span>                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">X_00060_00003</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Add daily yield in inches, with 2323.2 basin area multiplier</span></span>
 <span><span class="fu"><a href="../reference/add_daily_yield.html">add_daily_yield</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">usgs_data</span>,</span>
-<span>                basin_area <span class="op">=</span> <span class="va">area_sqmile</span> <span class="op">*</span> <span class="va">area_adjust</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>                basin_area <span class="op">=</span> <span class="va">area_sqmile</span> <span class="op">*</span> <span class="va">area_adjust</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Yield_inch <span class="op">=</span> <span class="va">Yield_mm</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Calculate total annual inches, with multiplier</span></span>
 <span><span class="fu"><a href="../reference/calc_annual_cumulative_stats.html">calc_annual_cumulative_stats</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">usgs_data</span>, </span>
 <span>                             use_yield <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                             basin_area <span class="op">=</span> <span class="va">area_sqmile</span> <span class="op">*</span> <span class="va">area_adjust</span>,</span>
-<span>                             water_year_start <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>                             water_year_start <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Total_Yield_inch <span class="op">=</span> <span class="va">Total_Yield_mm</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Plot daily cumulative discharge, with multiplier</span></span>
 <span><span class="fu"><a href="../reference/plot_daily_cumulative_stats.html">plot_daily_cumulative_stats</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">usgs_data</span>, </span>
 <span>                            use_yield <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                            basin_area <span class="op">=</span> <span class="va">area_sqmile</span> <span class="op">*</span> <span class="va">area_adjust</span>,</span>
-<span>                            water_year_start <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu">magrittr</span><span class="fu">::</span><span class="fu"><a href="https://magrittr.tidyverse.org/reference/aliases.html" class="external-link">extract2</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="co"># extracts plot from list</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Runoff, inch"</span><span class="op">)</span></span></code></pre></div>
+<span>                            water_year_start <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu">magrittr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/magrittr/man/aliases.html" class="external-link">extract2</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="co"># extracts plot from list</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Runoff, inch"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="use-of-acre-feet-data-and-results">Use of acre-feet data and results<a class="anchor" aria-label="anchor" href="#use-of-acre-feet-data-and-results"></a>
@@ -587,14 +587,14 @@ appropriately (if no units in column headers or plot axis titles in cms
 <span></span>
 <span><span class="co"># Get NWIS data, rename to Value, and convert cfs to acre-feet</span></span>
 <span><span class="va">usgs_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISdv.html" class="external-link">readNWISdv</a></span><span class="op">(</span>siteNumbers <span class="op">=</span> <span class="st">"12043300"</span>, </span>
-<span>                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">X_00060_00003</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">X_00060_00003</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">Value</span> <span class="op">*</span> <span class="va">cfs_to_acft</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Plot the acre-feet units, extract the plot (using [[1]]), </span></span>
 <span><span class="co"># and rename the y-axis to appropriate units</span></span>
 <span><span class="fu"><a href="../reference/plot_daily_stats.html">plot_daily_stats</a></span><span class="op">(</span><span class="va">usgs_data</span>, complete_years <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Discharge, acre-feet per day"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Discharge, acre-feet per day"</span><span class="op">)</span></span></code></pre></div>
 <p>As some <code>fasstr</code> functions report numbers in volumetric
 discharge and derive values from ‘per seconds’ units (i.e. cms or cfs)
 the original values are multiplied by 86400 seconds to obtain the daily
@@ -609,15 +609,15 @@ cumulative acre-feet.</p>
 <span><span class="co"># Get NWIS data, rename to Value, and convert cfs to </span></span>
 <span><span class="co"># acre-feet per second</span></span>
 <span><span class="va">usgs_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISdv.html" class="external-link">readNWISdv</a></span><span class="op">(</span>siteNumbers <span class="op">=</span> <span class="st">"12043300"</span>, </span>
-<span>                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">X_00060_00003</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">X_00060_00003</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">Value</span> <span class="op">*</span> <span class="va">cfs_to_acftsec</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Plot the daily cumulative stats for all years with 2000 data,</span></span>
 <span><span class="co"># extract the plot and rename the y-axis</span></span>
 <span><span class="fu"><a href="../reference/plot_daily_cumulative_stats.html">plot_daily_cumulative_stats</a></span><span class="op">(</span><span class="va">usgs_data</span>, </span>
 <span>                            add_year <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Cumulative Discharge, acre-feet"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Cumulative Discharge, acre-feet"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Calculate annual and seasonal cumulative flows and</span></span>
 <span><span class="co"># rename the column headers</span></span>
@@ -645,17 +645,17 @@ area for the <code>usgs_data</code> data set.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get daily data for examples</span></span>
 <span><span class="va">usgs_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISdv.html" class="external-link">readNWISdv</a></span><span class="op">(</span>siteNumbers <span class="op">=</span> <span class="st">"12043300"</span>, </span>
-<span>                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>                        parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">X_00060_00003</span>,</span>
 <span>         STATION_NUMBER <span class="op">=</span> <span class="va">site_no</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Get drainage basin area for examples</span></span>
-<span><span class="va">usgs_basin_area</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISsite.html" class="external-link">readNWISsite</a></span><span class="op">(</span>siteNumbers <span class="op">=</span> <span class="st">"12043300"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span><span class="va">usgs_basin_area</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISsite.html" class="external-link">readNWISsite</a></span><span class="op">(</span>siteNumbers <span class="op">=</span> <span class="st">"12043300"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">drain_area_va</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Get daily data for examples with multiple stations</span></span>
 <span><span class="va">usgs_data_multiple</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISdv.html" class="external-link">readNWISdv</a></span><span class="op">(</span>siteNumbers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"12043300"</span>, <span class="st">"12048000"</span><span class="op">)</span>, </span>
-<span>                                 parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>                                 parameterCd <span class="op">=</span> <span class="st">"00060"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Value <span class="op">=</span> <span class="va">X_00060_00003</span>,</span>
 <span>         STATION_NUMBER <span class="op">=</span> <span class="va">site_no</span><span class="op">)</span></span></code></pre></div>
 <p>To be consistent with many USGS streamflow analyses, these examples
@@ -679,20 +679,20 @@ continuous pipeline and using water years. Note how the basin area
 correction is applied in the two <code>_cumulative_</code> functions and
 columns are renamed to match the appropriate units where necessary.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">usgs_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/fill_missing_dates.html">fill_missing_dates</a></span><span class="op">(</span>water_year_start <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/add_date_variables.html">add_date_variables</a></span><span class="op">(</span>water_year_start <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="va">usgs_data</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/fill_missing_dates.html">fill_missing_dates</a></span><span class="op">(</span>water_year_start <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_date_variables.html">add_date_variables</a></span><span class="op">(</span>water_year_start <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/add_seasons.html">add_seasons</a></span><span class="op">(</span>water_year_start <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>              seasons_length <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/add_rolling_means.html">add_rolling_means</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/add_daily_volume.html">add_daily_volume</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Volume_cuft <span class="op">=</span> <span class="va">Volume_m3</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/add_cumulative_volume.html">add_cumulative_volume</a></span><span class="op">(</span>water_year_start <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Cumul_Volume_cuft <span class="op">=</span> <span class="va">Cumul_Volume_m3</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/add_daily_yield.html">add_daily_yield</a></span><span class="op">(</span>basin_area <span class="op">=</span> <span class="va">usgs_basin_area</span> <span class="op">*</span> <span class="fl">2323.2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Yield_inch <span class="op">=</span> <span class="va">Yield_mm</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>  </span>
+<span>              seasons_length <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_rolling_means.html">add_rolling_means</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_daily_volume.html">add_daily_volume</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Volume_cuft <span class="op">=</span> <span class="va">Volume_m3</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_cumulative_volume.html">add_cumulative_volume</a></span><span class="op">(</span>water_year_start <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Cumul_Volume_cuft <span class="op">=</span> <span class="va">Cumul_Volume_m3</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_daily_yield.html">add_daily_yield</a></span><span class="op">(</span>basin_area <span class="op">=</span> <span class="va">usgs_basin_area</span> <span class="op">*</span> <span class="fl">2323.2</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Yield_inch <span class="op">=</span> <span class="va">Yield_mm</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span>  </span>
 <span>  <span class="fu"><a href="../reference/add_cumulative_yield.html">add_cumulative_yield</a></span><span class="op">(</span>water_year_start <span class="op">=</span> <span class="fl">10</span>, </span>
-<span>                       basin_area <span class="op">=</span> <span class="va">usgs_basin_area</span> <span class="op">*</span> <span class="fl">2323.2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>                       basin_area <span class="op">=</span> <span class="va">usgs_basin_area</span> <span class="op">*</span> <span class="fl">2323.2</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Cumul_Yield_inch <span class="op">=</span> <span class="va">Cumul_Yield_mm</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -715,7 +715,7 @@ station plots.</p>
 <span></span>
 <span><span class="co"># Plot the data, extract the plot, and rename the axis</span></span>
 <span><span class="fu"><a href="../reference/plot_flow_data.html">plot_flow_data</a></span><span class="op">(</span><span class="va">usgs_data</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Discharge, cfs"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Discharge, cfs"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Alternatively, plot the data, and rename the axis label by modifying the ggplot code</span></span>
 <span><span class="va">usgs_daily_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_flow_data.html">plot_flow_data</a></span><span class="op">(</span><span class="va">usgs_data</span><span class="op">)</span></span>
@@ -725,7 +725,7 @@ station plots.</p>
 <span><span class="co"># Plotting daily flows of multiple stations on one plot, extracting and renaming axis</span></span>
 <span><span class="fu"><a href="../reference/plot_flow_data.html">plot_flow_data</a></span><span class="op">(</span><span class="va">usgs_data_multiple</span>, </span>
 <span>               one_plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Discharge, cfs"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Discharge, cfs"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Plotting daily flows of multiple stations on different plots, and</span></span>
 <span><span class="co"># renaming axes of existing ggplot2 objects</span></span>
@@ -766,7 +766,7 @@ the plots will require renaming axes as noted.</p>
 <span>                   complete_years <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                   custom_months <span class="op">=</span> <span class="fl">7</span><span class="op">:</span><span class="fl">9</span>,</span>
 <span>                   custom_months_label <span class="op">=</span> <span class="st">"Summer"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Discharge, cubic feet per second"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Discharge, cubic feet per second"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Plot annual summary statistics, including annual 10th and 90th percentiles, starting</span></span>
 <span><span class="co"># in 1996 and making the axis logarithmic, and renaming the axis title</span></span>
@@ -775,7 +775,7 @@ the plots will require renaming axes as noted.</p>
 <span>                  percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">90</span><span class="op">)</span>,</span>
 <span>                  start_year <span class="op">=</span> <span class="fl">1996</span>,</span>
 <span>                  log_discharge <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Discharge, cubic feet per second"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Discharge, cubic feet per second"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Calculate annual 7- and 30-day low flows</span></span>
 <span><span class="fu"><a href="../reference/calc_annual_lowflows.html">calc_annual_lowflows</a></span><span class="op">(</span><span class="va">usgs_data</span>, </span>
@@ -819,7 +819,7 @@ the plots will require renaming axes as noted.</p>
 <span>                            use_yield <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                            basin_area <span class="op">=</span> <span class="va">usgs_basin_area</span> <span class="op">*</span> <span class="fl">2323.2</span>,</span>
 <span>                            water_year_start <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Cumulative Runoff, inches"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Cumulative Runoff, inches"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="examples-annual-trending">Examples: annual trending<a class="anchor" aria-label="anchor" href="#examples-annual-trending"></a>
@@ -980,12 +980,12 @@ arguments:</p>
 <span>                                           roll_days <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span>
 <span><span class="co"># Extract the plot and change the y-axis title to US units (doesn't change the original)</span></span>
 <span><span class="va">lowflow_plot</span> <span class="op">&lt;-</span> <span class="va">lowflow_7day</span><span class="op">$</span><span class="va">Freq_Plot</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Discharge, cubic feet per second"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Discharge, cubic feet per second"</span><span class="op">)</span></span></code></pre></div>
 <p>Compute a frequency analysis on annual instantaneous peak data from
 NWIS using the custom frequency analysis function:</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dataRetrieval function to get annual instantaneous peak data, grouped by water years</span></span>
-<span><span class="va">usgs_peaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISpeak.html" class="external-link">readNWISpeak</a></span><span class="op">(</span><span class="st">"12043300"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span><span class="va">usgs_peaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISpeak.html" class="external-link">readNWISpeak</a></span><span class="op">(</span><span class="st">"12043300"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Measure <span class="op">=</span> <span class="st">"Inst. Peaks"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Use the default column names for events and values for the custom analysis </span></span>
@@ -997,9 +997,9 @@ NWIS using the custom frequency analysis function:</p>
 <span>                                              use_max <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Can also do the analysis with renaming parameters to match fasstr function, within a pipeline</span></span>
-<span><span class="va">flood_frequency</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISpeak.html" class="external-link">readNWISpeak</a></span><span class="op">(</span><span class="st">"12043300"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>Year <span class="op">=</span> <span class="va">peak_dt</span>, Value <span class="op">=</span> <span class="va">peak_va</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Measure <span class="op">=</span> <span class="st">"Inst. Peaks"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span><span class="va">flood_frequency</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dataRetrieval/man/readNWISpeak.html" class="external-link">readNWISpeak</a></span><span class="op">(</span><span class="st">"12043300"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>Year <span class="op">=</span> <span class="va">peak_dt</span>, Value <span class="op">=</span> <span class="va">peak_va</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Measure <span class="op">=</span> <span class="st">"Inst. Peaks"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/compute_frequency_analysis.html">compute_frequency_analysis</a></span><span class="op">(</span>use_max <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">flood_frequency</span><span class="op">$</span><span class="va">Freq_Plot</span><span class="op">$</span><span class="va">labels</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="st">"Discharge, cubic feet per second"</span></span></code></pre></div>
 <p>Compute a single frequency quantile with default arguments. With this
