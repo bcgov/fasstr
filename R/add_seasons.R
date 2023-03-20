@@ -117,7 +117,7 @@ add_seasons <- function(data,
                                                    month_list[max(AnalysisMonth)], 
                                                    sep = "-"))
     
-    flow_data <- dplyr::left_join(flow_data, season_name, by = "Seasons_temp", all = TRUE)
+    flow_data <- dplyr::left_join(flow_data, season_name, by = "Seasons_temp")
   }
   
   flow_data <- dplyr::select(flow_data, -Seasons_temp, -AnalysisMonth)
@@ -139,7 +139,8 @@ add_seasons <- function(data,
   }
   
   # Regroup by the original groups
-  flow_data <- dplyr::group_by_at(flow_data,dplyr::vars(flow_data_groups))
+  flow_data <- dplyr::group_by(flow_data, dplyr::across(dplyr::all_of(flow_data_groups)))
+  #flow_data <- dplyr::group_by_at(flow_data,dplyr::vars(flow_data_groups))
   
   
   dplyr::as_tibble(flow_data)

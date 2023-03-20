@@ -164,7 +164,8 @@ calc_annual_lowflows <- function(data,
                                            MIN_VALUE = min(RollingValue, na.rm = allowed_narm(RollingValue, allowed_missing)),	     
                                            MIN_DAY = ifelse(is.na(MIN_VALUE), NA, DayofYear[which(RollingValue == MIN_VALUE)]),
                                            MIN_DATE= ifelse(is.na(MIN_VALUE), NA, Date[which(RollingValue == MIN_VALUE)]))
-    class(lowflow_stats_temp$MIN_DATE) <- "Date" # fixes ifelse and date issue
+    lowflow_stats_temp$MIN_DATE <- as.Date(lowflow_stats_temp$MIN_DATE, origin = "1970-01-01")
+    #class(lowflow_stats_temp$MIN_DATE) <- "Date" # fixes ifelse and date issue
     names(lowflow_stats_temp)[names(lowflow_stats_temp) == "MIN_VALUE"] <- paste0("Min_", day, "_Day")
     names(lowflow_stats_temp)[names(lowflow_stats_temp) == "MIN_DAY"] <- paste0("Min_", day, "_Day_DoY")
     names(lowflow_stats_temp)[names(lowflow_stats_temp) == "MIN_DATE"] <- paste0("Min_", day, "_Day_Date")

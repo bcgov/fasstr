@@ -199,8 +199,10 @@ calc_annual_extremes <- function(data,
   peak_stats_temp <- dplyr::left_join(peak_stats_temp_min, peak_stats_temp_max, by = c("STATION_NUMBER", "WaterYear"))
 
 
-  class(peak_stats_temp$MIN_DATE) <- "Date" # fixes ifelse and date issue
-  class(peak_stats_temp$MAX_DATE) <- "Date" # fixes ifelse and date issue
+  peak_stats_temp$MIN_DATE <- as.Date(peak_stats_temp$MIN_DATE, origin = "1970-01-01")
+  peak_stats_temp$MAX_DATE <- as.Date(peak_stats_temp$MAX_DATE, origin = "1970-01-01")
+  #class(peak_stats_temp$MIN_DATE) <- "Date" # fixes ifelse and date issue
+  #class(peak_stats_temp$MAX_DATE) <- "Date" # fixes ifelse and date issue
   names(peak_stats_temp)[names(peak_stats_temp) == "MIN_VALUE"] <- paste0("Min_", roll_days_min, "_Day")
   names(peak_stats_temp)[names(peak_stats_temp) == "MIN_DAY"] <- paste0("Min_", roll_days_min, "_Day_DoY")
   names(peak_stats_temp)[names(peak_stats_temp) == "MIN_DATE"] <- paste0("Min_", roll_days_min, "_Day_Date")

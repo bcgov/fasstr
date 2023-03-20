@@ -174,8 +174,8 @@ add_basin_area <- function(data,
   }
   
   # Regroup by the original groups
-  flow_data <- dplyr::group_by_at(flow_data,dplyr::vars(orig_groups))
-  
+  flow_data <- dplyr::group_by(flow_data, dplyr::across(dplyr::all_of(orig_groups)))
+  #flow_data <- dplyr::group_by_at(flow_data, dplyr::vars(orig_groups))  
   
   
   dplyr::as_tibble(flow_data)
