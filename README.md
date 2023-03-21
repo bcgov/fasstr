@@ -11,7 +11,7 @@
 [![CRAN
 Downloads](https://cranlogs.r-pkg.org/badges/fasstr?color=brightgreen)](https://CRAN.R-project.org/package=fasstr)
 [![cran
-checks](https://cranchecks.info/badges/worst/fasstr)](https://CRAN.R-project.org/web/checks/check_results_fasstr.html)
+checks](https://badges.cranchecks.info/worst/fasstr.svg)](https://cran.r-project.org/web/checks/check_results_fasstr.html)
 <!-- badges: end -->
 
 </div>
