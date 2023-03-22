@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
       </span>
     </div>
 
@@ -98,6 +98,16 @@
       <small>Source: <a href="https://github.com/bcgov/fasstr/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.5.1" id="fasstr-051">fasstr 0.5.1<a class="anchor" aria-label="anchor" href="#fasstr-051"></a></h2>
+<p>Updated: 20 Mar 2023</p>
+<div class="section level4">
+<h4 id="bug-fixes-0-5-1">Bug fixes:<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-1"></a></h4>
+<ul><li>fixed date_validate bug (issue#93) where functions could not assign date class when data frame was all NA (eg. Calc_annual_lowflows() for a seasonal station with no complete years).</li>
+<li>fixed add_seasons bug (issue#94) where left_join was not working properly</li>
+<li>updated some dplyr and ggplot2 coding with recent updates in those dependencies</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.5.0" id="fasstr-050">fasstr 0.5.0<small>2022-10-21</small><a class="anchor" aria-label="anchor" href="#fasstr-050"></a></h2>
 <p>Updated: 19 Oct 2022</p>
@@ -458,7 +468,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

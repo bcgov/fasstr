@@ -313,8 +313,8 @@ plot_annual_extremes_year <- function(data,
                                                                 year_to_plot ), limits = names(fils))+
         ggplot2::scale_colour_manual(values = stats::setNames("#264b96", disch_name), name = NULL,
                                      limits = names(stats::setNames("#264b96", disch_name)))+
-        #ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(shape = shp, colour = colors),
-        #                                             order = 1) )+
+        ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(shape = shp, colour = colors),
+                                                    order = 1) )+
         ggplot2::xlab("Day of Year") +
         ggplot2::ylab(y_axis_title) +
         {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
@@ -333,58 +333,6 @@ plot_annual_extremes_year <- function(data,
                        legend.background = ggplot2::element_blank())
     ))
   
-# ggplot2::ggplot(data = timing_plots, ggplot2::aes(x = Date)) +
-#         {if(plot_normal_percentiles) ggplot2::geom_ribbon(ggplot2::aes_string(ymin = "MIN", ymax = "MAX"),
-#                                                           alpha = 0.4, colour = "lightblue2", fill = "lightblue2", na.rm = FALSE) } +
-#         ggplot2::geom_line(ggplot2::aes(y = Value, colour = disch_name), size = 0.2, na.rm = TRUE) +
-#         {if(plot_min & roll_days_min > 1) ggplot2::geom_rect(ggplot2::aes(xmin = Min_Start, xmax = Min_End, ymax =Inf, ymin=0), 
-#                                                              fill = low_col, alpha = 0.2, na.rm = TRUE) }+
-#         {if(plot_max & roll_days_max > 1) ggplot2::geom_rect(ggplot2::aes(xmin = Max_Start, xmax = Max_End, ymax =Inf, ymin=0), 
-#                                                              fill = high_col, alpha = 0.2, na.rm = TRUE) }+
-#         {if(plot_min & roll_days_min > 1) ggplot2::geom_segment(ggplot2::aes(x = Min_Start, xend = Min_End, y = Min_Value, yend=Min_Value), 
-#                                                                 colour = low_col, size = 1, na.rm = TRUE)}+
-#         {if(plot_max & roll_days_max > 1) ggplot2::geom_segment(ggplot2::aes(x = Max_Start, xend = Max_End, y = Max_Value, yend=Max_Value), 
-#                                                                 colour = high_col, size = 1, na.rm = TRUE)}+
-#         {if(plot_min) ggplot2::geom_vline(data = dplyr::filter(timing_plots, !is.na(Min_Value)), ggplot2::aes(xintercept = Min_Start), colour = low_col, size = 1)}+
-#         {if(plot_min & roll_days_min > 1) ggplot2::geom_vline(data = dplyr::filter(timing_plots, !is.na(Min_Value)), ggplot2::aes(xintercept = Min_End), colour = low_col, size = 1)}+
-#         {if(plot_max) ggplot2::geom_vline(data = dplyr::filter(timing_plots, !is.na(Max_Value)), ggplot2::aes(xintercept = Max_Start), colour = high_col, size = 1)}+
-#         {if(plot_max & roll_days_max > 1) ggplot2::geom_vline(data = dplyr::filter(timing_plots, !is.na(Max_Value)) ,ggplot2::aes(xintercept = Max_End), colour = high_col, size = 1)}+
-#         {if(plot_min) ggplot2::geom_point(ggplot2::aes(x= Date, y = Min_Value, fill = low_lab), size = 3.5, na.rm = TRUE, shape = 21) }+
-#         {if(plot_max) ggplot2::geom_point(ggplot2::aes(x= Date, y = Max_Value, fill = high_lab), size = 3.5, na.rm = TRUE, shape = 21) }+
-#         {if(!log_discharge) ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.05)),
-#                                                         breaks = scales::pretty_breaks(n = 8),
-#                                                         labels = scales::label_number(scale_cut = scales::cut_short_scale()))}+
-#         {if(log_discharge) ggplot2::scale_y_log10(breaks = scales::log_breaks(n = 8, base = 10),
-#                                                   labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +
-#         {if(log_discharge & log_ticks) ggplot2::annotation_logticks(base= 10, "left", colour = "grey25", size = 0.3,
-#                                                                     short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
-#                                                                     long = ggplot2::unit(.2, "cm"))} +
-#         ggplot2::scale_x_date(date_labels = "%b", date_breaks = "1 month",
-#                               limits = as.Date(c(as.character(min(daily_stats$AnalysisDate, na.rm = TRUE)),
-#                                                  as.character(max(daily_stats$AnalysisDate, na.rm = TRUE)))),
-#                               expand = c(0,0)) +
-#         ggplot2::scale_fill_manual(values = fils, name = paste0("Annual Extremes\nfor ",
-#                                                                 ifelse(water_year_start == 1,"Year ","Water Year "),
-#                                                                 year_to_plot ))+
-#         ggplot2::scale_colour_manual(values = stats::setNames("#264b96", disch_name), name = NULL)+
-#        # ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(shape = shp, colour = colors),
-#        #                                              order = 1) )+
-#         ggplot2::xlab("Day of Year") +
-#         ggplot2::ylab(y_axis_title) +
-#       #  {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +
-#         ggplot2::theme_bw()+
-#         ggplot2::theme(axis.text = ggplot2::element_text(size = 10, colour = "grey25"),
-#                        axis.title = ggplot2::element_text(size = 12, colour = "grey25"),
-#                        axis.ticks = ggplot2::element_line(size = .1, colour = "grey25"),
-#                        axis.ticks.length = ggplot2::unit(0.05, "cm"),
-#                        axis.title.y = ggplot2::element_text(margin = ggplot2::margin(0,0,0,0)),
-#                        panel.border = ggplot2::element_rect(colour = "black", fill = NA, size = 1),
-#                        panel.grid.minor = ggplot2::element_blank(),
-#                        panel.grid.major = ggplot2::element_line(size = .1),
-#                        legend.text = ggplot2::element_text(size = 9, colour = "grey25"),
-#                        legend.key.size = ggplot2::unit(0.4, "cm"),
-#                        legend.spacing = ggplot2::unit(-0.4, "cm"),
-#                        legend.background = ggplot2::element_blank())
   
   
   # Create a list of named plots extracted from the tibble
