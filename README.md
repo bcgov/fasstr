@@ -1,6 +1,4 @@
 
-    ## Warning: package 'fasstr' was built under R version 4.2.3
-
 # fasstr <img src="man/figures/fasstr.png" align="right" />
 
 <!-- badges: start -->
