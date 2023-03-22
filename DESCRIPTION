@@ -13,8 +13,7 @@ Description: The Flow Analysis Summary Statistics Tool for R, 'fasstr', provides
 Depends: R (>= 3.3.0)
 License: Apache License 2.0
 URL: https://bcgov.github.io/fasstr/,
-     https://github.com/bcgov/fasstr, 
-     https://www2.gov.bc.ca/gov/content/environment/air-land-water/water
+     https://github.com/bcgov/fasstr
 BugReports: https://github.com/bcgov/fasstr/issues
 Encoding: UTF-8
 Imports:
