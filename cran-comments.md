@@ -1,3 +1,27 @@
+fasstr 0.5.1
+=========================
+
+## Submission 
+
+2023-03-22
+
+## Test environments
+
+* win-builder (via `devtools::check_win_devel()` and `devtools::check_win_release()`)
+* local Windows 10, R 4.2.1 (via R CMD check --as-cran)
+* macOS-latest (release) (via GitHub actions R-CMD-check)
+* windows-latest (release) (via GitHub actions R-CMD-check)
+* ubuntu-latest (devel) (via GitHub actions R-CMD-check)
+* ubuntu-latest (release) (via GitHub actions R-CMD-check)
+* ubuntu-latest (oldrel-1) (via GitHub actions R-CMD-check)
+* Fedora Linux, R-devel, clang, gfortran - r-hub
+* Ubuntu Linux 20.04 LTS, R-release, GCC - r-hub
+* Debian Linux, R-devel, GCC - r-hub
+* Windows Server 2008 R2 SP1, R-devel, 32/64 bit - r-hub
+* Windows Server 2022 R2 SP1, R-release, 32/64 bit - r-hub
+* macOS 10.13.6 High Sierra, R-release, brew - r-hub
+* macOS 10.13.6 High Sierra, R-release, CRAN's setup - r-hub
+
 fasstr 0.5.0
 =========================
 
