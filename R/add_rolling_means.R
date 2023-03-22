@@ -131,7 +131,8 @@ add_rolling_means <- function(data,
   }
   
   # Regroup by the original groups
-  flow_data <- dplyr::group_by_at(flow_data, dplyr::vars(flow_data_groups))
+  flow_data <- dplyr::group_by(flow_data, dplyr::across(dplyr::all_of(flow_data_groups)))
+  #flow_data <- dplyr::group_by_at(flow_data, dplyr::vars(flow_data_groups))
   
   
   dplyr::as_tibble(flow_data)

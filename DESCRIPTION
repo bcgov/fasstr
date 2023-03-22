@@ -1,6 +1,6 @@
 Package: fasstr
 Title: Analyze, Summarize, and Visualize Daily Streamflow Data
-Version: 0.5.0
+Version: 0.5.1
 Authors@R: c(person("Jon", "Goetz", email = "jon.goetz@gov.bc.ca", role = c("aut", "cre"),
              comment = c(ORCID = "0000-0002-4993-1119")), 
              person("Carl James", "Schwarz", email = "cschwarz.stat.sfu.ca@gmail.com", role = "aut"),
@@ -13,8 +13,7 @@ Description: The Flow Analysis Summary Statistics Tool for R, 'fasstr', provides
 Depends: R (>= 3.3.0)
 License: Apache License 2.0
 URL: https://bcgov.github.io/fasstr/,
-     https://github.com/bcgov/fasstr, 
-     https://www2.gov.bc.ca/gov/content/environment/air-land-water/water
+     https://github.com/bcgov/fasstr
 BugReports: https://github.com/bcgov/fasstr/issues
 Encoding: UTF-8
 Imports:
@@ -37,5 +36,5 @@ Suggests:
     knitr,
     rmarkdown,
     testthat
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr

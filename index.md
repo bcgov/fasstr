@@ -19,13 +19,13 @@ See the License for the specific language governing permissions and limitations 
 
 [![img](https://img.shields.io/badge/Lifecycle-Stable-97ca00)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![R-CMD-check](https://github.com/bcgov/fasstr/workflows/R-CMD-check/badge.svg)](https://github.com/bcgov/fasstr/actions)
+[![R-CMD-check](https://github.com/bcgov/fasstr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bcgov/fasstr/actions/workflows/R-CMD-check.yaml)
 
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/fasstr)](https://cran.r-project.org/package=fasstr)
 [![CRAN
 Downloads](https://cranlogs.r-pkg.org/badges/fasstr?color=brightgreen)](https://CRAN.R-project.org/package=fasstr)
 [![cran
-checks](https://cranchecks.info/badges/worst/fasstr)](https://CRAN.R-project.org/web/checks/check_results_fasstr.html)
+checks](https://badges.cranchecks.info/worst/fasstr.svg)](https://cran.r-project.org/web/checks/check_results_fasstr.html)
 <!-- badges: end -->
 
 The Flow Analysis Summary Statistics Tool for R (`fasstr`) is a set of

@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
       </span>
     </div>
 
@@ -603,27 +603,34 @@ autocorrelation is removed (<code>zyp</code>)</td>
 HYDAT station from 1973 to 2013:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trends_analysis</span><span class="op">$</span><span class="va">Annual_Trends_Results</span></span></code></pre></div>
-<pre><code>  STATION_NUMBER      Statistic       lbound         trend      trendp
-1        08NM116 Annual_Maximum -0.367741985  0.0570881358  2.34061357
-2        08NM116    Annual_Mean -0.074223140 -0.0210267951 -0.86209860
-3        08NM116  Annual_Median -0.035271167 -0.0124904912 -0.51211014
-4        08NM116 Annual_Minimum -0.006666193 -0.0009808113 -0.04021326
-5        08NM116     Annual_P10 -0.017499298 -0.0063876706 -0.26189449
-6        08NM116     Annual_P90 -0.255726706 -0.0302831595 -1.24160954
+<pre><code>  STATION_NUMBER      Statistic       lbound         trend     trendp
+1        08NM116 Annual_Maximum -0.367741985  0.0570881358  2.3406136
+2        08NM116    Annual_Mean -0.074223160 -0.0210267927 -0.8620985
+3        08NM116  Annual_Median -0.035271133 -0.0124905012 -0.5121105
+4        08NM116 Annual_Minimum -0.006666194 -0.0009808123 -0.0402133
+5        08NM116     Annual_P10 -0.017499298 -0.0063876706 -0.2618945
+6        08NM116     Annual_P90 -0.255726706 -0.0302831595 -1.2416095
        ubound         tau       sig nruns    autocor valid_frac        linear
 1 0.516666624  0.04026846 0.7192625     1 0.01369972          1  0.1380313468
-2 0.038457647 -0.07179487 0.5216482     4 0.08209108          1 -0.0019323059
-3 0.007693643 -0.14102565 0.2040979     3 0.06425806          1 -0.0088832751
-4 0.004085118 -0.04871795 0.6664041     3 0.08438438          1  0.0004937281
-5 0.005695283 -0.10512821 0.3453057     4 0.47516686          1 -0.0049319510
-6 0.199289847 -0.03333334 0.7708403     3 0.13185011          1  0.0101482580
-   intercept min_year max_year n_years       mean    median       min      max
-1 50.9015322     1973     2013      41 51.9585367 52.299999 29.799999 86.20000
-2  6.9349162     1973     2013      41  6.1988672  6.235263  2.876137 11.13412
-3  1.9761653     1973     2013      41  1.9552683  1.710000  0.856000  3.95000
-4  0.5002090     1973     2013      41  0.4810732  0.485000  0.025000  0.82200
-5  0.8558584     1973     2013      41  0.8147268  0.730200  0.341000  1.50000
-6 20.3637020     1973     2013      41 20.2456342 19.700001  5.874000 36.62000</code></pre>
+2 0.038457631 -0.07179487 0.5216482     4 0.08208012          1 -0.0019323059
+3 0.007693628 -0.14102565 0.2040979     3 0.06435808          1 -0.0088832751
+4 0.004085119 -0.04871795 0.6664041     4 0.08440387          1  0.0004937281
+5 0.005695283 -0.10512821 0.3453057     5 0.47516677          1 -0.0049319510
+6 0.199289847 -0.03333334 0.7708403     4 0.13185024          1  0.0101482580
+   intercept lbound_intercept ubound_intercept min_year max_year n_years
+1 50.9015322     21.804136811       79.7152348     1973     2013      41
+2  6.9349161      2.866094958       10.5580963     1973     2013      41
+3  1.9761652      0.454868274        4.0202190     1973     2013      41
+4  0.5002090      0.166538940        0.8613161     1973     2013      41
+5  0.8558584     -0.007427143        1.9272266     1973     2013      41
+6 20.3637020      5.576070188       36.8692482     1973     2013      41
+        mean    median       min      max
+1 51.9585367 52.299999 29.799999 86.20000
+2  6.1988672  6.235263  2.876137 11.13412
+3  1.9552683  1.710000  0.856000  3.95000
+4  0.4810732  0.485000  0.025000  0.82200
+5  0.8147268  0.730200  0.341000  1.50000
+6 20.2456342 19.700001  5.874000 36.62000</code></pre>
 </div>
 <div class="section level3">
 <h3 id="annual-trends-plots">Annual Trends Plots<a class="anchor" aria-label="anchor" href="#annual-trends-plots"></a>
@@ -665,7 +672,7 @@ not and are significant, respectively.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

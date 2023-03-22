@@ -31,7 +31,6 @@ Useful links:
 \itemize{
   \item \url{https://bcgov.github.io/fasstr/}
   \item \url{https://github.com/bcgov/fasstr}
-  \item \url{https://www2.gov.bc.ca/gov/content/environment/air-land-water/water}
   \item Report bugs at \url{https://github.com/bcgov/fasstr/issues}
 }
 

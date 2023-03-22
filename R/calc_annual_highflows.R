@@ -164,7 +164,8 @@ calc_annual_highflows <- function(data,
                                             MAX_VALUE = max(RollingValue, na.rm = allowed_narm(RollingValue, allowed_missing)),	     
                                             MAX_DAY = ifelse(is.na(MAX_VALUE), NA, DayofYear[which(RollingValue == MAX_VALUE)]),
                                             MAX_DATE= ifelse(is.na(MAX_VALUE), NA, Date[which(RollingValue == MAX_VALUE)]))
-    class(highflow_stats_temp$MAX_DATE) <- "Date" # fixes ifelse and date issue
+    highflow_stats_temp$MAX_DATE <- as.Date(highflow_stats_temp$MAX_DATE, origin = "1970-01-01")
+    #class(highflow_stats_temp$MAX_DATE) <- "Date" # fixes ifelse and date issue
     names(highflow_stats_temp)[names(highflow_stats_temp) == "MAX_VALUE"] <- paste0("Max_", day, "_Day")
     names(highflow_stats_temp)[names(highflow_stats_temp) == "MAX_DAY"] <- paste0("Max_", day, "_Day_DoY")
     names(highflow_stats_temp)[names(highflow_stats_temp) == "MAX_DATE"] <- paste0("Max_", day, "_Day_Date")

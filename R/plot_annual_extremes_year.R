@@ -74,6 +74,33 @@ plot_annual_extremes_year <- function(data,
                                       complete_years = FALSE,
                                       ignore_missing = FALSE,
                                       allowed_missing = ifelse(ignore_missing,100,0)){
+  # data = NULL
+  # dates = "Date"
+  # values = "Value"
+  # groups = "STATION_NUMBER"
+  # station_number = "08NM116"
+  # year_to_plot = NA
+  # roll_days = 1
+  # roll_days_min = NA
+  # roll_days_max = NA
+  # roll_align = "right"
+  # water_year_start = 1
+  # start_year = 0
+  # end_year <- 9999
+  # exclude_years = NULL
+  # months = 1:12
+  # months_min = NA
+  # months_max = NA
+  # log_discharge = TRUE
+  # log_ticks = FALSE
+  # include_title = FALSE
+  # plot_normal_percentiles = TRUE
+  # normal_percentiles = c(25,75)
+  # plot_min = TRUE
+  # plot_max = TRUE
+  # complete_years = FALSE
+  # ignore_missing = FALSE
+  # allowed_missing = ifelse(ignore_missing,100,0)
   
   ## ARGUMENT CHECKS
   ## ---------------
@@ -118,9 +145,9 @@ plot_annual_extremes_year <- function(data,
   
   # Check and rename columns
   flow_data <- format_all_cols(data = flow_data,
-                               dates = as.character(substitute(dates)),
-                               values = as.character(substitute(values)),
-                               groups = as.character(substitute(groups)),
+                               dates = as.character(substitute("Date")),
+                               values = as.character(substitute("Value")),
+                               groups = as.character(substitute("STATION_NUMBER")),
                                rm_other_cols = TRUE)
   
   
@@ -283,10 +310,11 @@ plot_annual_extremes_year <- function(data,
                               expand = c(0,0)) +
         ggplot2::scale_fill_manual(values = fils, name = paste0("Annual Extremes\nfor ",
                                                                 ifelse(water_year_start == 1,"Year ","Water Year "),
-                                                                year_to_plot ))+
-        ggplot2::scale_colour_manual(values = stats::setNames("#264b96", disch_name), name = NULL)+
+                                                                year_to_plot ), limits = names(fils))+
+        ggplot2::scale_colour_manual(values = stats::setNames("#264b96", disch_name), name = NULL,
+                                     limits = names(stats::setNames("#264b96", disch_name)))+
         ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(shape = shp, colour = colors),
-                                                     order = 1) )+
+                                                    order = 1) )+
         ggplot2::xlab("Day of Year") +
         ggplot2::ylab(y_axis_title) +
         {if (include_title & .y != "XXXXXXX") ggplot2::ggtitle(paste(.y)) } +

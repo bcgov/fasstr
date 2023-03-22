@@ -218,8 +218,10 @@ plot_annual_normal_days_year <- function(data,
         ggplot2::scale_fill_manual(values = fils,
                                    name = paste0("Normal Category\nfor ",
                                                  ifelse(water_year_start == 1,"Year ","Water Year "),
-                                                 year_to_plot )) +
-        ggplot2::scale_colour_manual(values = stats::setNames("#264b96", disch_name), name = NULL)+
+                                                 year_to_plot ),
+                                   limits = names(fils)) +
+        ggplot2::scale_colour_manual(values = stats::setNames("#264b96", disch_name), name = NULL,
+                                     limits = names(stats::setNames("#264b96", disch_name)))+
         ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(shape = shp, colour = colors),
                                                      order = 1) )+
         ggplot2::xlab("Day of Year") +

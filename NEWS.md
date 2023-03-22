@@ -1,3 +1,16 @@
+fasstr 0.5.1
+=========================
+
+Updated: 20 Mar 2023
+
+### Bug fixes:
+
+  * fixed date_validate bug (issue#93) where functions could not assign date class when data frame was all NA (eg. Calc_annual_lowflows() for a seasonal station with no complete years).
+  * fixed add_seasons bug (issue#94) where left_join was not working properly
+  * updated some dplyr and ggplot2 coding with recent updates in those dependencies
+
+
+
 fasstr 0.5.0
 =========================
 
