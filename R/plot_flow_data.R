@@ -187,9 +187,9 @@ plot_flow_data <- function(data,
           ggplot2::ylab(y_axis_title) +
           {if(plot_by_year) ggplot2::facet_wrap(~WaterYear, scales = "free_x")} +
           {if(!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 8),
-                                                          labels = scales::label_number(scale_cut = scales::cut_short_scale()))}+
+                                                          labels = scales::label_number(scale_cut = append(scales::cut_short_scale(),1,1)))}+
           {if(log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10),
-                                                    labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +
+                                                    labels = scales::label_number(scale_cut = append(scales::cut_short_scale(),1,1)))} +
           {if(plot_by_year) ggplot2::scale_x_date(date_labels = "%b", expand = c(0,0))} +
           {if(!plot_by_year) ggplot2::scale_x_date(breaks = scales::pretty_breaks(n = 12))} +
           {if(!log_discharge) ggplot2::expand_limits(y = c(0, max(.$Value) * 1.05))} +

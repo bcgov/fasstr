@@ -205,9 +205,9 @@ plot_annual_normal_days_year <- function(data,
         ggplot2::geom_point(ggplot2::aes(y = Value, fill = Normal), size = 3, shape = 21, colour = "black") +
         {if(!log_discharge) ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.05)),
                                                         breaks = scales::pretty_breaks(n = 8),
-                                                        labels = scales::label_number(scale_cut = scales::cut_short_scale()))}+
+                                                        labels = scales::label_number(scale_cut = append(scales::cut_short_scale(),1,1)))}+
         {if(log_discharge) ggplot2::scale_y_log10(breaks = scales::log_breaks(n = 8, base = 10),
-                                                  labels = scales::label_number(scale_cut = scales::cut_short_scale()))} +
+                                                  labels = scales::label_number(scale_cut = append(scales::cut_short_scale(),1,1)))} +
         {if(log_discharge & log_ticks) ggplot2::annotation_logticks(base = 10, "left", colour = "grey25", size = 0.3,
                                                                     short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
                                                                     long = ggplot2::unit(.2, "cm"))} +

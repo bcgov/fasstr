@@ -199,7 +199,7 @@ plot_annual_extremes <- function(data,
         ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
         {if(length(unique(peak_values$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(peak_values$Year))}+
         ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
-                                    labels = scales::label_number(scale_cut = scales::cut_short_scale())) +
+                                    labels = scales::label_number(scale_cut = append(scales::cut_short_scale(),1,1))) +
         ggplot2::ylab(y_axis_title)+
         ggplot2::xlab("Year")+
         ggplot2::scale_color_manual(values = colour_list)+

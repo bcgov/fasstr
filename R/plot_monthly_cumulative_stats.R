@@ -201,9 +201,9 @@ plot_monthly_cumulative_stats <- function(data,
                                               "5th-25th Percentile", "Min-5th Percentile")) +
         ggplot2::scale_color_manual(values = c("Median" = "purple3", "Mean" = "springgreen4")) +
         {if (!log_discharge) ggplot2::scale_y_continuous(expand = c(0, 0), breaks = scales::pretty_breaks(n = 7),
-                                                         labels = scales::label_number(scale_cut = scales::cut_short_scale()))}+
+                                                         labels = scales::label_number(scale_cut = append(scales::cut_short_scale(),1,1)))}+
         {if (log_discharge) ggplot2::scale_y_log10(expand = c(0, 0), breaks = scales::log_breaks(n = 8, base = 10) ,
-                                                   labels = scales::label_number(scale_cut = scales::cut_short_scale()))}+
+                                                   labels = scales::label_number(scale_cut = append(scales::cut_short_scale(),1,1)))}+
         {if (log_discharge & log_ticks) ggplot2::annotation_logticks(base= 10, sides = "l", colour = "grey25", size = 0.3,
                                                                      short = ggplot2::unit(.07, "cm"), mid = ggplot2::unit(.15, "cm"),
                                                                      long = ggplot2::unit(.2, "cm"))} +

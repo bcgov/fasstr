@@ -174,7 +174,7 @@ plot_annual_cumulative_stats <- function(data,
           ggplot2::geom_point(na.rm = TRUE)+
           ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
           ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
-                                      labels = scales::label_number(scale_cut = scales::cut_short_scale()))+
+                                      labels = scales::label_number(scale_cut = append(scales::cut_short_scale(),1,1)))+
           ggplot2::ylab(expression(Volume~(m^3))) +
           {if (use_yield) ggplot2::ylab("Yield (mm)")} +
           ggplot2::xlab(ifelse(water_year_start ==1, "Year", "Water Year"))+
@@ -215,7 +215,7 @@ plot_annual_cumulative_stats <- function(data,
             ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
             {if(length(unique(seasons2_data$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(seasons2_data$Year))}+
             ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
-                                        labels = scales::label_number(scale_cut = scales::cut_short_scale()))+
+                                        labels = scales::label_number(scale_cut = append(scales::cut_short_scale(),1,1)))+
             ggplot2::ylab("Volume (cubic metres)") +
             {if (use_yield) ggplot2::ylab("Yield (mm)")} +
             ggplot2::xlab("Year")+
@@ -246,7 +246,7 @@ plot_annual_cumulative_stats <- function(data,
             ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
             {if(length(unique(seasons4_data$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(seasons4_data$Year))}+
             ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
-                                        labels = scales::label_number(scale_cut = scales::cut_short_scale()))+
+                                        labels = scales::label_number(scale_cut = append(scales::cut_short_scale(),1,1)))+
             ggplot2::ylab("Volume (cubic metres)") +
             {if (use_yield) ggplot2::ylab("Yield (mm)")} +
             ggplot2::xlab("Year")+
@@ -292,7 +292,7 @@ plot_annual_cumulative_stats <- function(data,
           ggplot2::geom_bar(position = "stack", stat = "identity", na.rm = TRUE, width=1, colour = "black") +
           ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 6)) +
           ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
-                                      labels = scales::label_number(scale_cut = scales::cut_short_scale()),
+                                      labels = scales::label_number(scale_cut = append(scales::cut_short_scale(),1,1)),
                                       expand = ggplot2::expansion(mult = c(0, 0.05)))+
           ggplot2::ylab("Volume (cubic metres)") +
           {if (use_yield) ggplot2::ylab("Yield (mm)")} +
@@ -332,7 +332,7 @@ plot_annual_cumulative_stats <- function(data,
             ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
             {if(length(unique(seasons2_data$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(seasons2_data$Year))}+
             ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
-                                        labels = scales::label_number(scale_cut = scales::cut_short_scale()),
+                                        labels = scales::label_number(scale_cut = append(scales::cut_short_scale(),1,1)),
                                         expand = ggplot2::expansion(mult = c(0, 0.05)))+
             ggplot2::ylab("Volume (cubic metres)") +
             {if (use_yield) ggplot2::ylab("Yield (mm)")} +
@@ -363,7 +363,7 @@ plot_annual_cumulative_stats <- function(data,
             ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8))+
             {if(length(unique(seasons4_data$Year)) < 8) ggplot2::scale_x_continuous(breaks = unique(seasons4_data$Year))}+
             ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
-                                        labels = scales::label_number(scale_cut = scales::cut_short_scale()),
+                                        labels = scales::label_number(scale_cut = append(scales::cut_short_scale(),1,1)),
                                         expand = ggplot2::expansion(mult = c(0, 0.05)))+
             ggplot2::ylab("Volume (cubic metres)") +
             {if (use_yield) ggplot2::ylab("Yield (mm)")} +
