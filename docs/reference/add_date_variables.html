@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -169,21 +169,21 @@ analysis. Default <code>1</code>.</p></dd>
 <span class="r-in"><span>                   water_year_start <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
 <span class="r-in"><span>                   </span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 23,079 × 10</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    STATI…¹ Date       Param…² Value Symbol Calen…³ Month Month…⁴ Water…⁵ Dayof…⁶</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 08NM116 1949-04-01 Flow     1.13 E         <span style="text-decoration: underline;">1</span>949     4 Apr        <span style="text-decoration: underline;">1</span>949     244</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 08NM116 1949-04-02 Flow     1.53 E         <span style="text-decoration: underline;">1</span>949     4 Apr        <span style="text-decoration: underline;">1</span>949     245</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 08NM116 1949-04-03 Flow     2.07 E         <span style="text-decoration: underline;">1</span>949     4 Apr        <span style="text-decoration: underline;">1</span>949     246</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 08NM116 1949-04-04 Flow     2.07 E         <span style="text-decoration: underline;">1</span>949     4 Apr        <span style="text-decoration: underline;">1</span>949     247</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 08NM116 1949-04-05 Flow     2.21 E         <span style="text-decoration: underline;">1</span>949     4 Apr        <span style="text-decoration: underline;">1</span>949     248</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 08NM116 1949-04-06 Flow     2.21 <span style="color: #BB0000;">NA</span>        <span style="text-decoration: underline;">1</span>949     4 Apr        <span style="text-decoration: underline;">1</span>949     249</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 08NM116 1949-04-07 Flow     2.27 <span style="color: #BB0000;">NA</span>        <span style="text-decoration: underline;">1</span>949     4 Apr        <span style="text-decoration: underline;">1</span>949     250</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 08NM116 1949-04-08 Flow     2.35 <span style="color: #BB0000;">NA</span>        <span style="text-decoration: underline;">1</span>949     4 Apr        <span style="text-decoration: underline;">1</span>949     251</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 08NM116 1949-04-09 Flow     2.78 <span style="color: #BB0000;">NA</span>        <span style="text-decoration: underline;">1</span>949     4 Apr        <span style="text-decoration: underline;">1</span>949     252</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 08NM116 1949-04-10 Flow     2.94 <span style="color: #BB0000;">NA</span>        <span style="text-decoration: underline;">1</span>949     4 Apr        <span style="text-decoration: underline;">1</span>949     253</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 23,069 more rows, and abbreviated variable names ¹​STATION_NUMBER,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ²​Parameter, ³​CalendarYear, ⁴​MonthName, ⁵​WaterYear, ⁶​DayofYear</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 23,444 × 10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    STATION_NUMBER Date       Parameter Value Symbol CalendarYear Month MonthName</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 08NM116        1949-04-01 Flow       1.13 E              <span style="text-decoration: underline;">1</span>949     4 Apr      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 08NM116        1949-04-02 Flow       1.53 E              <span style="text-decoration: underline;">1</span>949     4 Apr      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 08NM116        1949-04-03 Flow       2.07 E              <span style="text-decoration: underline;">1</span>949     4 Apr      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 08NM116        1949-04-04 Flow       2.07 E              <span style="text-decoration: underline;">1</span>949     4 Apr      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 08NM116        1949-04-05 Flow       2.21 E              <span style="text-decoration: underline;">1</span>949     4 Apr      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 08NM116        1949-04-06 Flow       2.21 <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">1</span>949     4 Apr      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 08NM116        1949-04-07 Flow       2.27 <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">1</span>949     4 Apr      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 08NM116        1949-04-08 Flow       2.35 <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">1</span>949     4 Apr      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 08NM116        1949-04-09 Flow       2.78 <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">1</span>949     4 Apr      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 08NM116        1949-04-10 Flow       2.94 <span style="color: #BB0000;">NA</span>             <span style="text-decoration: underline;">1</span>949     4 Apr      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 23,434 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 more variables: WaterYear &lt;dbl&gt;, DayofYear &lt;dbl&gt;</span></span>
 </code></pre></div>
     </div>
   </div>

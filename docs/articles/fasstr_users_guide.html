@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fasstr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -389,8 +389,8 @@ yields on an annual basis (in millimetres)</li>
 <p>The functions are set up to easily incorporate the use of the pipe
 operator:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/fill_missing_dates.html">fill_missing_dates</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08HA011"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/add_date_variables.html">add_date_variables</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/fill_missing_dates.html">fill_missing_dates</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08HA011"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_date_variables.html">add_date_variables</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/add_rolling_means.html">add_rolling_means</a></span><span class="op">(</span>roll_days <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span></code></pre></div>
 <pre><code>  STATION_NUMBER       Date Parameter Value Symbol CalendarYear Month MonthName
 1        08HA011 1960-01-01      Flow  62.9      E         1960     1       Jan
@@ -429,7 +429,7 @@ filled:</p>
 <span><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_daily_flows.html" class="external-link">hy_daily_flows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Gap filled with NA's</span></span>
-<span><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_daily_flows.html" class="external-link">hy_daily_flows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span><span class="fu">tidyhydat</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/tidyhydat/reference/hy_daily_flows.html" class="external-link">hy_daily_flows</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/fill_missing_dates.html">fill_missing_dates</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>It is ideal to fill missing dates before using other
 <code>add_*</code> functions so dates added are not missing the other
@@ -622,14 +622,14 @@ enables the user to work with the tidying functions within a tidy
 ‘pipeline’ and can pass onto the other <code>fasstr</code>
 functions.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/fill_missing_dates.html">fill_missing_dates</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/add_date_variables.html">add_date_variables</a></span><span class="op">(</span>water_year_start <span class="op">=</span> <span class="fl">9</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/add_seasons.html">add_seasons</a></span><span class="op">(</span>seasons_length <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/add_rolling_means.html">add_rolling_means</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/add_basin_area.html">add_basin_area</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/add_daily_volume.html">add_daily_volume</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/add_daily_yield.html">add_daily_yield</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/add_cumulative_volume.html">add_cumulative_volume</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/fill_missing_dates.html">fill_missing_dates</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_date_variables.html">add_date_variables</a></span><span class="op">(</span>water_year_start <span class="op">=</span> <span class="fl">9</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/add_seasons.html">add_seasons</a></span><span class="op">(</span>seasons_length <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_rolling_means.html">add_rolling_means</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/add_basin_area.html">add_basin_area</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/add_daily_volume.html">add_daily_volume</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/add_daily_yield.html">add_daily_yield</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/add_cumulative_volume.html">add_cumulative_volume</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/add_cumulative_yield.html">add_cumulative_yield</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
@@ -749,7 +749,8 @@ view annual counts of symbols.</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_annual_symbols.html">plot_annual_symbols</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> </span></code></pre></div>
 <pre><code>$Annual_Symbols</code></pre>
-<pre><code>Warning:  [1m [22mRemoved 144 rows containing missing values (`geom_tile()`).</code></pre>
+<pre><code>Warning:  [1m [22mRemoved 146 rows containing missing values or values outside the scale range
+(`geom_tile()`).</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-25-1.png" width="672"></p>
 <hr>
 </div>
@@ -839,20 +840,20 @@ argument (ex. “Summer Flows”).</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/calc_longterm_daily_stats.html">calc_longterm_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span>
 <span>                          start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></span></code></pre></div>
-<pre><code>   STATION_NUMBER     Month      Mean  Median Maximum Minimum     P10    P90
-1         08NM116       Jan  1.122294  0.9340    9.50   0.160  0.5706  1.750
-2         08NM116       Feb  1.127140  0.9435    5.81   0.140  0.5064  1.900
-3         08NM116       Mar  1.748453  1.2400   17.50   0.380  0.6776  3.404
-4         08NM116       Apr  8.169997  5.8000   53.50   0.505  1.4200 18.300
-5         08NM116       May 25.182745 22.4000   95.40   2.550 10.4000 44.340
-6         08NM116       Jun 22.375935 19.9000   86.20   0.450  6.1390 40.800
-7         08NM116       Jul  6.237522  3.9700   76.80   0.332  1.2200 13.900
-8         08NM116       Aug  2.176655  1.6300   22.40   0.427  0.8466  4.008
-9         08NM116       Sep  2.319518  1.6300   17.60   0.364  0.7859  4.751
-10        08NM116       Oct  2.152216  1.7200   15.20   0.267  0.8576  4.122
-11        08NM116       Nov  1.950852  1.5600   11.70   0.260  0.6078  3.741
-12        08NM116       Dec  1.254868  1.0700    7.30   0.244  0.5468  2.150
-13        08NM116 Long-term  6.331062  1.8200   95.40   0.140  0.7060 20.100</code></pre>
+<pre><code>   STATION_NUMBER     Month      Mean Median Maximum Minimum     P10    P90
+1         08NM116       Jan  1.116021  0.930    9.50   0.160  0.5717  1.750
+2         08NM116       Feb  1.118619  0.934    5.81   0.140  0.5070  1.880
+3         08NM116       Mar  1.732962  1.230   17.50   0.380  0.6800  3.369
+4         08NM116       Apr  8.135122  5.780   53.50   0.505  1.4200 18.120
+5         08NM116       May 25.034315 22.000   95.40   2.550 10.4700 43.900
+6         08NM116       Jun 22.137576 19.650   86.20   0.450  6.0990 40.500
+7         08NM116       Jul  6.137695  3.825   76.80   0.332  1.1870 13.630
+8         08NM116       Aug  2.157565  1.620   22.40   0.427  0.8494  3.990
+9         08NM116       Sep  2.295582  1.615   17.60   0.364  0.7880  4.700
+10        08NM116       Oct  2.136288  1.695   15.20   0.267  0.8637  4.082
+11        08NM116       Nov  1.962619  1.570   11.70   0.260  0.6117  3.750
+12        08NM116       Dec  1.271259  1.080    7.30   0.244  0.5500  2.166
+13        08NM116 Long-term  6.282538  1.805   95.40   0.140  0.7080 19.900</code></pre>
 <p>The <code><a href="../reference/plot_longterm_daily_stats.html">plot_longterm_daily_stats()</a></code> will plot the monthly
 mean, median, maximum, and minimum values along with selected inner and
 outer percentiles ribbons on one plot. Change the inner and outer
@@ -877,33 +878,33 @@ maximum, and percentiles from all annual means.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/calc_longterm_monthly_stats.html">calc_longterm_monthly_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span>
 <span>                            start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></span></code></pre></div>
 <pre><code>   STATION_NUMBER  Month      Mean     Median   Maximum    Minimum        P10
-1         08NM116    Jan  1.122294  0.9679032  6.117742  0.3155161  0.6246516
-2         08NM116    Feb  1.128056  0.9607586  3.831786  0.3528276  0.5149286
-3         08NM116    Mar  1.748453  1.4009677  6.926774  0.5067419  0.8168000
-4         08NM116    Apr  8.169997  7.7613333 23.880333  1.5993333  2.9978667
-5         08NM116    May 25.182745 23.8483871 48.122581 13.9861288 16.1646452
-6         08NM116    Jun 22.375935 21.8166669 48.640000  3.1504333 11.3063333
-7         08NM116    Jul  6.237522  4.5012903 25.639355  0.9213871  2.0231935
-8         08NM116    Aug  2.176655  1.7938710 10.193548  0.8721290  1.1316645
-9         08NM116    Sep  2.319518  1.7580000  8.109333  0.6999667  1.0131933
-10        08NM116    Oct  2.152216  1.8951613  5.661290  0.5329032  1.0350516
-11        08NM116    Nov  1.950852  1.5526667  5.413667  0.4982333  0.7192933
-12        08NM116    Dec  1.254868  1.0968065  3.648387  0.4502581  0.5574323
-13        08NM116 Annual  6.330833  6.2744794 11.134121  2.8761370  4.3721797
+1         08NM116    Jan  1.116021  0.9628871  6.117742  0.3155161  0.6246903
+2         08NM116    Feb  1.119439  0.9530400  3.831786  0.3528276  0.5169643
+3         08NM116    Mar  1.732962  1.3363387  6.926774  0.5067419  0.8178419
+4         08NM116    Apr  8.135122  7.7333333 23.880333  1.5993333  3.0382333
+5         08NM116    May 25.034315 23.8032259 48.122581 13.9861288 16.1880001
+6         08NM116    Jun 22.137576 21.5011668 48.640000  3.1504333 10.8967667
+7         08NM116    Jul  6.137695  4.4229032 25.639355  0.9213871  1.8967678
+8         08NM116    Aug  2.157565  1.7775806 10.193548  0.8721290  1.1333774
+9         08NM116    Sep  2.295582  1.7156667  8.109333  0.6999667  1.0157533
+10        08NM116    Oct  2.136288  1.8703226  5.661290  0.5329032  1.0412000
+11        08NM116    Nov  1.962619  1.6126333  5.413667  0.4982333  0.7207867
+12        08NM116    Dec  1.271259  1.1046774  3.648387  0.4502581  0.5605258
+13        08NM116 Annual  6.282280  6.2583836 11.134121  2.8761370  4.2507660
          P90
-1   1.643419
-2   1.696507
-3   2.764129
-4  12.821133
-5  33.928387
-6  36.802000
-7  12.742839
-8   3.365161
-9   3.991000
-10  3.628335
-11  3.316533
-12  2.093226
-13  8.441362</code></pre>
+1   1.633452
+2   1.689794
+3   2.739387
+4  12.749600
+5  33.679355
+6  36.800667
+7  12.676645
+8   3.362903
+9   3.959333
+10  3.616171
+11  3.294233
+12  2.084677
+13  8.438567</code></pre>
 <p>The corresponding <code><a href="../reference/plot_longterm_monthly_stats.html">plot_longterm_monthly_stats()</a></code> function
 plots the data, with similar options as
 <code><a href="../reference/plot_longterm_daily_stats.html">plot_longterm_daily_stats()</a></code>.</p>
@@ -937,7 +938,8 @@ fully customizable like the <code>calc_</code> function.</p>
 <span>                  start_year <span class="op">=</span> <span class="fl">1974</span>,</span>
 <span>                  log_discharge <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </span></code></pre></div>
 <pre><code>$Annual_Statistics</code></pre>
-<pre><code>Warning:  [1m [22mTransformation introduced infinite values in continuous y-axis</code></pre>
+<pre><code>Warning in ggplot2::scale_y_log10(expand = ggplot2::expansion(mult = c(0.02, :
+ [1m [22m [32mlog-10 [39m transformation introduced infinite values.</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-34-1.png" width="672"></p>
 </div>
 <div class="section level4">
@@ -982,20 +984,20 @@ values are grouped by day of year.</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/calc_daily_stats.html">calc_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span>
 <span>                 start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></span></code></pre></div>
-<pre><code>  STATION_NUMBER   Date DayofYear     Mean Median Minimum Maximum     P5    P25
-1        08NM116 Jan-01         1 1.070319  0.977   0.328    2.51 0.5455 0.6850
-2        08NM116 Jan-02         2 1.044745  0.929   0.310    2.26 0.5320 0.6795
-3        08NM116 Jan-03         3 1.024426  0.905   0.290    2.00 0.5290 0.7020
-4        08NM116 Jan-04         4 1.035596  0.910   0.284    2.52 0.5113 0.7235
-5        08NM116 Jan-05         5 1.021064  0.899   0.302    2.25 0.5390 0.7090
-6        08NM116 Jan-06         6 1.015681  0.870   0.315    2.32 0.5201 0.7335
-    P75   P95
-1 1.300 1.850
-2 1.300 1.870
-3 1.195 1.927
-4 1.215 1.905
-5 1.190 1.929
-6 1.250 1.871</code></pre>
+<pre><code>  STATION_NUMBER   Date DayofYear     Mean Median Minimum Maximum      P5
+1        08NM116 Jan-01         1 1.068750 0.9860   0.328    2.51 0.54725
+2        08NM116 Jan-02         2 1.042771 0.9395   0.310    2.26 0.53400
+3        08NM116 Jan-03         3 1.022583 0.9205   0.290    2.00 0.53050
+4        08NM116 Jan-04         4 1.032208 0.9025   0.284    2.52 0.51335
+5        08NM116 Jan-05         5 1.016521 0.8950   0.302    2.25 0.54050
+6        08NM116 Jan-06         6 1.010042 0.8625   0.315    2.32 0.52045
+      P25    P75    P95
+1 0.69150 1.2750 1.8500
+2 0.69025 1.2750 1.8650
+3 0.70300 1.1875 1.9215
+4 0.73175 1.1975 1.8875
+5 0.70950 1.1850 1.9105
+6 0.73800 1.2400 1.8545</code></pre>
 <p>The plotting daily statistics function will plot the monthly mean,
 median, maximum, and minimum values along with selected inner and outer
 percentiles ribbons on one plot. Change the inner and outer percentile
@@ -1045,15 +1047,15 @@ long-term mean annual discharge, MAD.</p>
 <span>                   start_year <span class="op">=</span> <span class="fl">1974</span>,</span>
 <span>                   percent_MAD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">10</span>,<span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code>  STATION_NUMBER    LTMAD    X5.MAD   X10.MAD  X20.MAD
-1        08NM116 6.331062 0.3165531 0.6331062 1.266212</code></pre>
+1        08NM116 6.282538 0.3141269 0.6282538 1.256508</code></pre>
 <p><code><a href="../reference/calc_longterm_percentile.html">calc_longterm_percentile()</a></code> calculates the selected
 long-term percentiles of all the daily flow values.</p>
 <div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/calc_longterm_percentile.html">calc_longterm_percentile</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>,</span>
 <span>                         start_year <span class="op">=</span> <span class="fl">1974</span>,</span>
 <span>                         percentiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">50</span>,<span class="fl">75</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code>  STATION_NUMBER  P25  P50  P75
-1        08NM116 1.03 1.82 5.67</code></pre>
+<pre><code>  STATION_NUMBER  P25   P50  P75
+1        08NM116 1.03 1.805 5.58</code></pre>
 <p><code><a href="../reference/calc_flow_percentile.html">calc_flow_percentile()</a></code> calculates the percentile rank of
 a specified flow value, provided as <code>flow_value</code>. It compares
 the flow value to all daily flow values to determines the percentile
@@ -1063,7 +1065,7 @@ rank.</p>
 <span>                     start_year <span class="op">=</span> <span class="fl">1974</span>,</span>
 <span>                     flow_value <span class="op">=</span> <span class="fl">6.270</span><span class="op">)</span></span></code></pre></div>
 <pre><code>  STATION_NUMBER Percentile
-1        08NM116     76.397</code></pre>
+1        08NM116     76.506</code></pre>
 </div>
 <div class="section level4">
 <h4 id="basic-statistics-and-plotting-volumetric-and-yield-flows">Basic statistics and plotting volumetric and yield flows<a class="anchor" aria-label="anchor" href="#basic-statistics-and-plotting-volumetric-and-yield-flows"></a>
@@ -1084,13 +1086,13 @@ functions, by listing the <code>values</code> argument as either
 ‘Volume_m3’ or ‘Yield_mm’ (from their respective <code>add_*</code>
 functions), the discharge axis title will adjust accordingly.</p>
 <div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/add_daily_volume.html">add_daily_volume</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/add_daily_volume.html">add_daily_volume</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/plot_annual_stats.html">plot_annual_stats</a></span><span class="op">(</span>values <span class="op">=</span> <span class="st">"Volume_m3"</span>,</span>
 <span>                    start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </span></code></pre></div>
 <pre><code>$Annual_Statistics</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-50-1.png" width="672"></p>
 <div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/add_daily_yield.html">add_daily_yield</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html" class="external-link">%&gt;%</a></span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/add_daily_yield.html">add_daily_yield</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/plot_daily_stats.html">plot_daily_stats</a></span><span class="op">(</span>values <span class="op">=</span> <span class="st">"Yield_mm"</span>,</span>
 <span>                   start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span> </span></code></pre></div>
 <pre><code>$Daily_Statistics</code></pre>
@@ -1205,31 +1207,31 @@ function are flexible using the <code>percentiles</code> argument.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/calc_monthly_cumulative_stats.html">calc_monthly_cumulative_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span>
 <span>                              start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></span></code></pre></div>
 <pre><code>   STATION_NUMBER Month      Mean    Median   Maximum    Minimum        P5
-1         08NM116   Jan   3005952   2592432  16385760   845078.4   1503135
-2         08NM116   Feb   5757593   4928947  24560928  1729123.2   2724589
-3         08NM116   Mar  10440650   8677498  38265696  3086380.8   4902707
-4         08NM116   Apr  31617282  28485389  74097331  9895046.4  13125819
-5         08NM116   May  99066747  93268887 159751008 50343551.6  54632431
-6         08NM116   Jun 157065172 158564131 255162529 76246877.0  90921640
-7         08NM116   Jul 173771752 177670628 301884193 81422928.3  99999127
-8         08NM116   Aug 179601706 181262189 311904865 84962822.7 103871315
-9         08NM116   Sep 185613898 188800847 323685505 86777136.3 106433697
-10        08NM116   Oct 191378392 192925325 337755745 88204464.3 109851699
-11        08NM116   Nov 196435000 196449148 346120993 89495885.1 111684986
-12        08NM116   Dec 199796039 197871983 351125627 90701856.3 113122665
+1         08NM116   Jan   2989150   2578997  16385760   845078.4   1511767
+2         08NM116   Feb   5719475   4890888  24560928  1729123.2   2734102
+3         08NM116   Mar  10361041   8635205  38265696  3086380.8   4918048
+4         08NM116   Apr  31447278  28262347  74097331  9895046.4  13166271
+5         08NM116   May  98499186  91484726 159751008 50343551.6  54647836
+6         08NM116   Jun 155879782 156396614 255162529 76246877.0  91034245
+7         08NM116   Jul 172318984 177471648 301884193 81422928.3 100164933
+8         08NM116   Aug 178097805 180792130 311904865 84962822.7 103379933
+9         08NM116   Sep 184047954 187290446 323685505 86777136.3 106057482
+10        08NM116   Oct 189769786 192634934 337755745 88204464.3 109521011
+11        08NM116   Nov 194856894 195413731 346120993 89495885.1 112134313
+12        08NM116   Dec 198261834 197364384 351125627 90701856.3 113557244
          P25       P75       P95
-1    1950221   3407616   5231434
-2    3743410   6122650  10551946
-3    6587179  11744741  20279117
-4   24031642  36248083  63880462
-5   77104137 117601934 155839473
-6  123343214 185879578 228437522
-7  128909577 208896667 259840380
-8  132292699 219312101 265726294
-9  137414966 228368981 270057785
-10 143054726 231213701 274458404
-11 148326379 235173715 280909365
-12 152096011 239892883 284372018</code></pre>
+1    1952813   3339360   5216443
+2    3765031   6026702  10457035
+3    6599167  11733746  20042554
+4   23414530  36003874  63254900
+5   75785976 115911497 155790364
+6  117396280 185669021 228096484
+7  125320132 206338168 259162943
+8  129012415 218750047 264965395
+9  132618708 227954197 269259345
+10 136306260 230884539 273618393
+11 141394377 234482947 279956659
+12 145426017 238912243 283363324</code></pre>
 <p>The <code><a href="../reference/plot_monthly_cumulative_stats.html">plot_monthly_cumulative_stats()</a></code> function will plot
 the monthly total mean, median, maximum, and minimum values along with
 the 5th, 25th, 75th, and 95th percentiles all on one plot. The
@@ -1260,20 +1262,20 @@ function are flexible using the <code>percentiles</code> argument.</p>
 <div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/calc_daily_cumulative_stats.html">calc_daily_cumulative_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span>
 <span>                            start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></span></code></pre></div>
-<pre><code>  STATION_NUMBER   Date DayofYear      Mean   Median  Minimum Maximum       P5
-1        08NM116 Jan-01         1  92475.57  84412.8  28339.2  216864  47131.2
-2        08NM116 Jan-02         2 182741.51 164678.4  55123.2  412128  92793.6
-3        08NM116 Jan-03         3 271251.88 241488.0  80179.2  581472 136987.2
-4        08NM116 Jan-04         4 360727.35 316137.6 104716.8  768960 183902.4
-5        08NM116 Jan-05         5 448947.27 391478.4 130809.6  952992 233496.0
-6        08NM116 Jan-06         6 536702.09 474681.6 158025.6 1123200 282398.4
+<pre><code>  STATION_NUMBER   Date DayofYear     Mean   Median  Minimum Maximum       P5
+1        08NM116 Jan-01         1  92340.0  85190.4  28339.2  216864  47282.4
+2        08NM116 Jan-02         2 182435.4 166363.2  55123.2  412128  93139.2
+3        08NM116 Jan-03         3 270786.6 245203.2  80179.2  581472 137570.4
+4        08NM116 Jan-04         4 359969.4 320241.6 104716.8  768960 184528.8
+5        08NM116 Jan-05         5 447796.8 392601.6 130809.6  952992 234036.0
+6        08NM116 Jan-06         6 535064.4 466732.8 158025.6 1123200 283024.8
        P25      P75      P95
-1  59184.0 112320.0 159840.0
-2 117892.8 220320.0 325209.6
-3 176083.2 331344.0 482544.0
-4 239932.8 430272.0 621216.0
-5 307497.6 531792.0 778377.6
-6 367113.6 636163.2 958867.2</code></pre>
+1  59745.6 110160.0 159840.0
+2 119383.2 218160.0 325123.2
+3 178891.2 328968.0 482328.0
+4 241358.4 429408.0 620352.0
+5 309182.4 531576.0 776779.2
+6 368366.4 636033.6 953942.4</code></pre>
 <p>The <code><a href="../reference/plot_daily_cumulative_stats.html">plot_daily_cumulative_stats()</a></code> function will plot the
 daily cumulative total mean, median, maximum, and minimum values along
 with the 5th, 25th, 75th, and 95th percentiles all on one plot. The
@@ -1527,8 +1529,8 @@ plotted:</p>
 <span>                          start_year <span class="op">=</span> <span class="fl">1974</span>,</span>
 <span>                          year_to_plot <span class="op">=</span> <span class="fl">1999</span><span class="op">)</span></span></code></pre></div>
 <pre><code>$Annual_Extremes_Year</code></pre>
-<pre><code>Warning:  [1m [22mTransformation introduced infinite values in continuous y-axis
- [1m [22mTransformation introduced infinite values in continuous y-axis</code></pre>
+<pre><code>Warning in ggplot2::scale_y_log10(breaks = scales::log_breaks(n = 8, base = 10), :  [1m [22m [32mlog-10 [39m transformation introduced infinite values.
+ [1m [22m [32mlog-10 [39m transformation introduced infinite values.</code></pre>
 <p><img src="fasstr_users_guide_files/figure-html/unnamed-chunk-76-1.png" width="768"></p>
 </div>
 <div class="section level4">
@@ -1548,12 +1550,12 @@ this function using the <code>roll_days</code> argument.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/calc_annual_normal_days.html">calc_annual_normal_days</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, </span>
 <span>                        start_year <span class="op">=</span> <span class="fl">1974</span><span class="op">)</span></span></code></pre></div>
 <pre><code>  STATION_NUMBER Year Normal_Days Below_Normal_Days Above_Normal_Days
-1        08NM116 1974         209                78                78
-2        08NM116 1975         196               136                33
-3        08NM116 1976         168                51               147
-4        08NM116 1977         250               106                 9
-5        08NM116 1978         236                17               112
-6        08NM116 1979         139               155                71</code></pre>
+1        08NM116 1974         210                77                78
+2        08NM116 1975         197               135                33
+3        08NM116 1976         172                51               143
+4        08NM116 1977         253               103                 9
+5        08NM116 1978         237                16               112
+6        08NM116 1979         144               150                71</code></pre>
 <p>Each of the above, below, and normal days can be plotted using the
 <code><a href="../reference/plot_annual_normal_days.html">plot_annual_normal_days()</a></code> function.</p>
 <div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
@@ -2115,19 +2117,18 @@ displayed:</p>
 <p>Customizing a plot by using additional <code>ggplot2</code>
 functions:</p>
 <div class="sourceCode" id="cb153"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code>Warning: package 'ggplot2' was built under R version 4.2.3</code></pre>
-<div class="sourceCode" id="cb155"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create the plot list and extract the plot using [[1]]</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create the plot list and extract the plot using [[1]]</span></span>
 <span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_daily_stats.html">plot_daily_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span>, start_year <span class="op">=</span> <span class="fl">1980</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># Customize the plot with various `ggplot2` functions</span></span>
 <span><span class="va">plot</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">1.5</span>, colour <span class="op">=</span> <span class="st">"red"</span>, linetype <span class="op">=</span> <span class="fl">2</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"1900-03-01"</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"darkgray"</span>, linetype <span class="op">=</span> <span class="fl">1</span>, size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"1900-08-05"</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"darkgray"</span>, linetype <span class="op">=</span> <span class="fl">1</span>, size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Mission Creek Annual Hydrograph"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Flow (cms)"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">1.5</span>, colour <span class="op">=</span> <span class="st">"red"</span>, linetype <span class="op">=</span> <span class="fl">2</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"1900-03-01"</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"darkgray"</span>, linetype <span class="op">=</span> <span class="fl">1</span>, size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"1900-08-05"</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"darkgray"</span>, linetype <span class="op">=</span> <span class="fl">1</span>, size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Mission Creek Annual Hydrograph"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Flow (cms)"</span><span class="op">)</span></span></code></pre></div>
 <pre><code>Warning:  [1m [22mUsing `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
  [36mℹ [39m Please use `linewidth` instead.
  [90mThis warning is displayed once every 8 hours. [39m
@@ -2189,14 +2190,14 @@ argument options for this function include:</p>
 <p>The following will write an “xlsx” file called
 “08NM116_data_data.xlsx” into your working directory that includes all
 daily flow data from that station in HYDAT:</p>
-<div class="sourceCode" id="cb157"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb155"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/write_flow_data.html">write_flow_data</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></span></code></pre></div>
 <p>The following is an example of possible customization:</p>
-<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="#cb158-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_flow_data</span>(<span class="at">station_number =</span> <span class="st">"08NM116"</span>,</span>
-<span id="cb158-2"><a href="#cb158-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">start_year =</span> <span class="dv">1960</span>,</span>
-<span id="cb158-3"><a href="#cb158-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">end_year =</span> <span class="dv">1970</span></span>
-<span id="cb158-4"><a href="#cb158-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">fill_missing =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb158-5"><a href="#cb158-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">file_name =</span> <span class="st">"mission_creek.csv"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb156-1"><a href="#cb156-1" tabindex="-1"></a><span class="fu">write_flow_data</span>(<span class="at">station_number =</span> <span class="st">"08NM116"</span>,</span>
+<span id="cb156-2"><a href="#cb156-2" tabindex="-1"></a>                <span class="at">start_year =</span> <span class="dv">1960</span>,</span>
+<span id="cb156-3"><a href="#cb156-3" tabindex="-1"></a>                <span class="at">end_year =</span> <span class="dv">1970</span></span>
+<span id="cb156-4"><a href="#cb156-4" tabindex="-1"></a>                <span class="at">fill_missing =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb156-5"><a href="#cb156-5" tabindex="-1"></a>                <span class="at">file_name =</span> <span class="st">"mission_creek.csv"</span>)</span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="writing-a-data-frame">Writing a data frame<a class="anchor" aria-label="anchor" href="#writing-a-data-frame"></a>
@@ -2210,7 +2211,7 @@ you to decide on file extensions of “xlsx”, “xls”, or “csv” by inclu
 it in the <code>file_name</code> argument when you name the file. This
 function also allows you to round all numeric columns by selecting the
 number of digits using the numeric <code>digits</code> argument.</p>
-<div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb157"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">annual_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_annual_stats.html">calc_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/write_results.html">write_results</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">annual_data</span>,</span>
@@ -2232,7 +2233,7 @@ will be created. Options to customize output size with
 <code>ggplots2:ggsave()</code>, can also be used.</p>
 <p>The following will save each annual plot as a “png” file in a folder
 called “Annual Plots” in the working directory:</p>
-<div class="sourceCode" id="cb160"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb158"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">annual_plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_annual_stats.html">plot_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"08NM116"</span>,<span class="st">"08NM242"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/write_plots.html">write_plots</a></span><span class="op">(</span>plots <span class="op">=</span> <span class="va">annual_data</span>,</span>
@@ -2241,14 +2242,14 @@ called “Annual Plots” in the working directory:</p>
 <p>The following will save all annual plots as combined “pdf” document
 called “Annual Plots” in the working directory with each plot on a
 different page:</p>
-<div class="sourceCode" id="cb161"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">annual_plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_annual_stats.html">plot_annual_stats</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"08NM116"</span>,<span class="st">"08NM242"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/write_plots.html">write_plots</a></span><span class="op">(</span>plots <span class="op">=</span> <span class="va">annual_data</span>,</span>
 <span>            folder_name <span class="op">=</span> <span class="st">"Annual Plots"</span>,</span>
 <span>            combined_pdf <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>If you would prefer to save the plots using other functions, like the
-<code><a href="https://rdrr.io/pkg/ggplot2/man/ggsave.html" class="external-link">ggplot2::ggsave()</a></code> function, the desired plot must subsetted
+<code><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggplot2::ggsave()</a></code> function, the desired plot must subsetted
 from the list first so the object provided the function is a plot object
 and not a list. Individual plots can be subsetted from their lists using
 either the dollar sign, $
@@ -2275,7 +2276,7 @@ as similar to those in <code>ggplots2:ggsave()</code> can also be
 used.</p>
 <p>The following will save all plots and tables in a folder called
 “Frequency Analysis” in the working directory:</p>
-<div class="sourceCode" id="cb162"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb160"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">freq_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_annual_frequencies.html">compute_annual_frequencies</a></span><span class="op">(</span>station_number <span class="op">=</span> <span class="st">"08NM116"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/write_objects_list.html">write_objects_list</a></span><span class="op">(</span>list <span class="op">=</span> <span class="va">freq_analysis</span>,</span>
