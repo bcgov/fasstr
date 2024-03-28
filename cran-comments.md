@@ -1,4 +1,38 @@
-fasstr 0.5.1
+fasstr 0.5.2
+=========================
+
+## Submission 
+
+2024-03-28
+
+## R CMD check results
+
+0 errors | 0 warnings | 0 notes
+
+## Test environments
+
+* win-builder (via `devtools::check_win_devel()` and `devtools::check_win_release()`)
+* local Windows 10, R 4.3.3 (via R CMD check --as-cran)
+* macOS-latest (release) (via GitHub actions R-CMD-check)
+* windows-latest (release) (via GitHub actions R-CMD-check)
+* ubuntu-latest (devel) (via GitHub actions R-CMD-check)
+* ubuntu-latest (release) (via GitHub actions R-CMD-check)
+* ubuntu-latest (oldrel-1) (via GitHub actions R-CMD-check)
+* Fedora Linux, R-devel, clang, gfortran - r-hub
+* Ubuntu Linux 20.04 LTS, R-release, GCC - r-hub
+* Debian Linux, R-devel, GCC - r-hub
+* Windows Server 2022 R2 SP1, R-devel, 32/64 bit - r-hub
+* Windows Server 2022 R2 SP1, R-release, 32/64 bit - r-hub
+
+## revdepcheck results
+
+We checked 0 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+
+ * We saw 0 new problems
+ * We failed to check 0 packages
+ 
+ 
+ fasstr 0.5.1
 =========================
 
 ## Submission 
