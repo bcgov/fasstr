@@ -54,9 +54,8 @@ Useful features of functions include:
 - selecting for rolling day averages (e.g. 7-day rolling average); and,
 - choosing how missing dates are handled, amongst others.
 
-This package is maintained by the [Water Management Branch of the
-British Columbia Ministry of
-Forests](https://www2.gov.bc.ca/gov/content/environment/air-land-water/water).
+This package is maintained by the Water Management Branch of the British
+Columbia Ministry of Water, Land and Resource Stewardship.
 
 ### Installation
 
@@ -387,8 +386,8 @@ freq_results$Freq_Plot
 ### Project Status
 
 This package is set for delivery. This package is maintained by the
-Water Management Branch of the [British Columbia Ministry of
-Forests](https://www2.gov.bc.ca/gov/content/environment/air-land-water/water).
+Water Management Branch of the British Columbia Ministry of Water, Land
+and Resource Stewardship.
 
 ### Getting Help or Reporting an Issue
 
