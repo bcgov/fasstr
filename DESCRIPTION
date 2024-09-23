@@ -19,7 +19,7 @@ Encoding: UTF-8
 Imports:
     dplyr (>= 0.8.1),
     e1071 (>= 1.7.0.1),
-    fitdistrplus (>= 1.0.14),
+    fitdistrplus (>= 1.2-1),
     ggplot2 (>= 3.1.0),
     grDevices,
     lubridate,

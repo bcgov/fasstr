@@ -1,3 +1,14 @@
+fasstr 0.5.3
+=========================
+
+Updated: 23 Sep 2024
+
+### Bug fixes:
+
+  * an error occurs with method-of-moments frequency analyses with fitdistrplus version 1.2-1. Internal fasstr code has been adjusted to the fitdistrplus changes.
+  
+  
+  
 fasstr 0.5.2
 =========================
 

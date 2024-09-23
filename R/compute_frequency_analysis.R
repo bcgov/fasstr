@@ -317,7 +317,7 @@ compute_frequency_analysis <- function(data,
       }
       
       if(fit_method == "MLE") {fit <- fitdistrplus::fitdist(x$Value, distr, start = start, control = list(maxit = 1000)) }# , trace=1, REPORT=1))
-      if(fit_method == "MOM") {fit <- fitdistrplus::fitdist(x$Value, distr, start = start,
+      if(fit_method == "MOM") {fit <- fitdistrplus::fitdist(x$Value, distr, start = start, calcvcov = FALSE,
                                                             method = "mme", order = 1:3, memp = ePIII, control = list(maxit = 1000))
       } # fixed at MOM estimates
       fit
