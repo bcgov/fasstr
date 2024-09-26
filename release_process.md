@@ -18,13 +18,7 @@ devtools::check() ## build locally
 ```
 
 ## Build and check on rhub
-```
-library(rhub)
-
-check_with_rdevel()
-check_for_cran()
-check_on_windows()
-```
+GitHub Actions using `rhub::rhub_check(platforms = c("linux","macos","windows","ubuntu-release"))`
 
 ## Run this in the console
 ```
@@ -49,7 +43,7 @@ git push --tags
 ```
 
 ```
-# Copyright 2019 Province of British Columbia
+# Copyright 2024 Province of British Columbia
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
