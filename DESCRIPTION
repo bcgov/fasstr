@@ -10,7 +10,7 @@ Authors@R: c(person("Jon", "Goetz", email = "jon.goetz@gov.bc.ca", role = c("aut
              person("Province of British Columbia", role = "cph"))
 Description: The Flow Analysis Summary Statistics Tool for R, 'fasstr', provides various functions to tidy and screen daily stream discharge data, calculate and visualize various summary statistics and metrics, and compute annual trending and volume frequency analyses. 
      It features useful function arguments for filtering of and handling dates, customizing data and metrics, and the ability to pull daily data directly from the Water Survey of Canada hydrometric database (<https://collaboration.cmc.ec.gc.ca/cmc/hydrometrics/www/>).
-Depends: R (>= 3.3.0)
+Depends: R (>= 4.2.0)
 License: Apache License 2.0
 URL: https://bcgov.github.io/fasstr/,
      https://github.com/bcgov/fasstr
@@ -29,7 +29,7 @@ Imports:
     purrr (>= 0.3.2),
     RcppRoll (>= 0.3.0),
     scales (>= 1.0.0),
-    tidyhydat (>= 0.4.0),
+    tidyhydat (>= 0.7.0),
     tidyr (>= 0.8.3),
     zyp (>= 0.10.1.1)
 Suggests: 
